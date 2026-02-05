@@ -241,7 +241,7 @@ void Graphics2D::DrawImage(Graphics2D& graphics, PTexture tex, float x, float y,
 void Graphics2D::DrawString(Graphics2D& graphics, std::string text, float x, float y){
     auto font = graphics.context.font.get();
     if(!font) return;
-    font->drawText(text, Math3D::Vec2(x, y), graphics.uiCamera, graphics.context.foregroundColor.get(), false); // Disable Caching
+    font->drawText(text, Math3D::Vec2(x, y), graphics.uiCamera, graphics.context.foregroundColor.get(), true);
 }
 
 void Graphics2D::drawMesh(std::shared_ptr<ModelPart> part, const Math3D::Mat4& modelMatrix, PTexture tex){

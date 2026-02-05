@@ -97,7 +97,16 @@ void FreeTypeFont::_initFont(){
 
 void FreeTypeFont::drawText(std::string text, Math3D::Vec2 position, PCamera camera, Color color, bool useCache){
     if(!this->textureAtlasPtr || !camera)  return;
-    if(this->meshCache.size() > 500) this->clearCache();
+    constexpr size_t MAX_TEXT_CACHE = 500;
+    constexpr size_t TRIM_BATCH = 100;
+    if(this->meshCache.size() > MAX_TEXT_CACHE){
+        size_t toRemove = Math3D::Min(TRIM_BATCH, this->meshCache.size());
+        for(size_t i = 0; i < toRemove; ++i){
+            auto it = meshCache.begin();
+            if(it == meshCache.end()) break;
+            meshCache.erase(it);
+        }
+    }
 
     TextCacheKey key = {text, color};
     std::shared_ptr<ModelPart> meshToDraw = nullptr;

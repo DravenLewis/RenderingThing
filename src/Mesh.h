@@ -190,9 +190,7 @@ class Mesh : public IDrawable{
 
         std::vector<Vertex>& getVertecies() {return this->verticies;}
 
-        static void Unbind(){
-            glBindVertexArray(0);
-        }
+        static void Unbind();
 
         ~Mesh();
 };

@@ -2,7 +2,7 @@
 #define MATERIAL_H
 
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <memory>
 
 #include "ShaderProgram.h"
@@ -31,7 +31,7 @@ struct MaterialProperty : public IMaterialProperty{
 class Material{
     private:
         std::shared_ptr<ShaderProgram> programObjPtr;
-        std::map<std::string, std::shared_ptr<IMaterialProperty>> properties;
+        std::unordered_map<std::string, std::shared_ptr<IMaterialProperty>> properties;
     public:
         Material(std::shared_ptr<ShaderProgram> program) : programObjPtr(program) {
             if(program){

@@ -21,11 +21,14 @@ void Mesh::reload(){
     _genBuffers();
 }
 
+namespace {
+    GLuint g_lastBoundVao = 0;
+}
+
 void Mesh::bind(){
-    int id = 0;
-    glGetIntegerv(GL_VERTEX_ARRAY_BINDING,&id);
-    if(this->VAO != 0 && id != this->VAO){
+    if(this->VAO != 0 && g_lastBoundVao != this->VAO){
         glBindVertexArray(this->VAO);
+        g_lastBoundVao = this->VAO;
     }
 }
 
@@ -112,7 +115,15 @@ void Mesh::setLocationAttributeOffset(int attribute, int dataSize, int dataOffse
 }
 
 void Mesh::dispose(){
+    if(g_lastBoundVao == this->VAO){
+        g_lastBoundVao = 0;
+    }
     glDeleteVertexArrays(1,&(this->VAO));
     glDeleteBuffers(1,&(this->VBO));
     glDeleteBuffers(1,&(this->EBO));
+}
+
+void Mesh::Unbind(){
+    glBindVertexArray(0);
+    g_lastBoundVao = 0;
 }
