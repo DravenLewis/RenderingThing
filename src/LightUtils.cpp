@@ -5,16 +5,25 @@
 #include <unordered_set>
 #include <cstring>
 #include "Logbot.h"
+#include "ShadowRenderer.h"
+#include "Math.h"
 
 namespace {
     constexpr GLuint LIGHT_UBO_BINDING = 0;
 
     struct alignas(16) LightUBO {
-        float meta[4] = {0.0f, 0.0f, 0.0f, 0.0f};      // x=type
+        float meta[4] = {0.0f, 0.0f, -1.0f, 1.0f};     // x=type, y=shadowType, z=shadowMapIndex, w=shadowStrength
         float position[4] = {0.0f, 0.0f, 0.0f, 0.0f};
         float direction[4] = {0.0f, 0.0f, 0.0f, 0.0f};
         float color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
         float params[4] = {1.0f, 10.0f, 1.0f, 45.0f};  // intensity, range, falloff, spotAngle
+        float shadow[4] = {0.0025f, 0.005f, 0.0f, 0.0f}; // bias, normalBias, unused
+        float lightMatrix[16] = {
+            1,0,0,0,
+            0,1,0,0,
+            0,0,1,0,
+            0,0,0,1
+        };
     };
 
     struct alignas(16) LightBlockUBO {
@@ -97,7 +106,13 @@ void LightUniformUploader::UploadLights(std::shared_ptr<ShaderProgram> program, 
         const Light& src = lights[i];
         LightUBO& dst = block.lights[i];
 
+        ShadowLightData shadowData;
+        ShadowRenderer::GetShadowDataForLight(i, src, shadowData);
+
         dst.meta[0] = static_cast<float>(static_cast<int>(src.type));
+        dst.meta[1] = static_cast<float>(static_cast<int>(shadowData.shadowType));
+        dst.meta[2] = static_cast<float>(shadowData.shadowMapIndex);
+        dst.meta[3] = shadowData.shadowStrength;
         dst.position[0] = src.position.x;
         dst.position[1] = src.position.y;
         dst.position[2] = src.position.z;
@@ -117,6 +132,14 @@ void LightUniformUploader::UploadLights(std::shared_ptr<ShaderProgram> program, 
         dst.params[1] = src.range;
         dst.params[2] = src.falloff;
         dst.params[3] = src.spotAngle;
+
+        dst.shadow[0] = shadowData.shadowBias;
+        dst.shadow[1] = shadowData.shadowNormalBias;
+
+        const float* m = glm::value_ptr(shadowData.lightMatrix.data);
+        for(int k = 0; k < 16; ++k){
+            dst.lightMatrix[k] = m[k];
+        }
     }
 
     if(!g_hasLastBlock || std::memcmp(&block, &g_lastBlock, sizeof(LightBlockUBO)) != 0){

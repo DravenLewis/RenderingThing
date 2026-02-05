@@ -20,6 +20,7 @@ class Texture{
         GLuint textureID;
         std::shared_ptr<Graphics::Image::Image> cpuImage;
         int width, height;
+        bool ownsTexture = true;
     public:
 
         Texture() : textureID(0), width(0), height(0){};
@@ -41,6 +42,7 @@ class Texture{
         static std::shared_ptr<Texture> Load(PAsset asset);
         static std::shared_ptr<Texture> CreateEmpty(int width, int height);
         static std::shared_ptr<Texture> CreateFromAlphaBuffer(int width, int height, const unsigned char* alphaData);
+        static std::shared_ptr<Texture> CreateFromExisting(GLuint id, int width, int height, bool owns = false);
 
         static void Unload(std::shared_ptr<Texture>& tex){
             if(tex){

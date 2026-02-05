@@ -25,6 +25,7 @@
 #include "Graphics2D.h"
 
 #include "debug_helpers/FrameTimeGraph.h"
+#include "ShadowRenderer.h"
 
 PModel cubeModel;
 PModel lucille;
@@ -282,7 +283,6 @@ void run(){
     Graphics2D::SetBackgroundColor(*g, Color::WHITE);
     frameTimeGraph.draw(*g, 0, uiScreen->getHeight() - 70, uiScreen->getWidth(), 60);
     
-
     g->end();
 
     mainScreen->drawToWindow(window); 

@@ -1,5 +1,6 @@
 
 #include "Screen.h"
+#include "ShadowRenderer.h"
 
 PCamera Screen::CurrentCamera = nullptr;
 
@@ -215,6 +216,10 @@ void Screen::bind(bool clear){
 
     glEnable(GL_DEPTH_TEST);
     this->bound = true;
+
+    if(this->camera){
+        ShadowRenderer::BeginFrame(this->camera);
+    }
 }
 
 void Screen::unbind(){

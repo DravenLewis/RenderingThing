@@ -64,7 +64,7 @@ void Texture::unbind() const {
 }
 
 void Texture::dispose(){
-    if(textureID != 0){
+    if(textureID != 0 && ownsTexture){
         textureLogger.Log(LOG_INFO, "Deleting Texture ID: %u", textureID);
         glDeleteTextures(1, &textureID);
         textureID = 0;
@@ -164,5 +164,14 @@ std::shared_ptr<Texture> Texture::CreateFromAlphaBuffer(int width, int height, c
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     glBindTexture(GL_TEXTURE_2D, 0);
+    return tex;
+}
+
+std::shared_ptr<Texture> Texture::CreateFromExisting(GLuint id, int width, int height, bool owns){
+    auto tex = std::make_shared<Texture>();
+    tex->textureID = id;
+    tex->width = width;
+    tex->height = height;
+    tex->ownsTexture = owns;
     return tex;
 }

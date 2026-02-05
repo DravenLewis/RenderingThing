@@ -2,11 +2,14 @@
 #include "ModelPart.h"
 
 #include "Logbot.h"
+#include "ShadowRenderer.h"
 
 void ModelPart::draw(const Math3D::Mat4& parent, const Math3D::Mat4& view, const Math3D::Mat4& proj){
     if(!mesh) return;
 
     Math3D::Mat4 worldMatrix = parent * localTransform.toMat4();
+
+    ShadowRenderer::RenderShadows(mesh, worldMatrix, material);
 
     if(material){
         material->set<Math3D::Mat4>("u_model", worldMatrix);

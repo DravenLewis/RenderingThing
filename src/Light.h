@@ -12,6 +12,12 @@ enum class LightType {
     SPOT
 };
 
+enum class ShadowType {
+    Hard,
+    Standard,
+    Smooth
+};
+
 #define MAX_LIGHTS 8
 
 struct Light {
@@ -23,6 +29,11 @@ struct Light {
     float range;             // Maximum distance for point/spot lights
     float falloff;           // 1.0 = linear, 2.0 = quadratic, 3.0 = cubic, etc
     float spotAngle;         // For spot lights (in degrees)
+    bool castsShadows;
+    ShadowType shadowType;
+    float shadowBias;
+    float shadowNormalBias;
+    float shadowStrength;
     
     Light()
         : type(LightType::POINT),
@@ -32,7 +43,12 @@ struct Light {
           intensity(1.0f),
           range(10.0f),
           falloff(1.0f),
-          spotAngle(45.0f)
+          spotAngle(45.0f),
+          castsShadows(false),
+          shadowType(ShadowType::Smooth),
+          shadowBias(0.001f),
+          shadowNormalBias(0.002f),
+          shadowStrength(1.0f)
     {}
     
     static Light CreatePointLight(
@@ -49,6 +65,7 @@ struct Light {
         light.intensity = intensity;
         light.range = range;
         light.falloff = falloff;
+        light.castsShadows = false;
         return light;
     }
     
@@ -62,6 +79,8 @@ struct Light {
         light.direction = Math3D::Vec3(glm::normalize(glm::vec3(direction.x, direction.y, direction.z)));
         light.color = color;
         light.intensity = intensity;
+        light.range = 200.0f;
+        light.castsShadows = true;
         return light;
     }
     
@@ -83,6 +102,7 @@ struct Light {
         light.range = range;
         light.falloff = falloff;
         light.spotAngle = spotAngle;
+        light.castsShadows = true;
         return light;
     }
 };

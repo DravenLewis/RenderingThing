@@ -32,6 +32,8 @@ class Material{
     private:
         std::shared_ptr<ShaderProgram> programObjPtr;
         std::unordered_map<std::string, std::shared_ptr<IMaterialProperty>> properties;
+        bool castsShadowsFlag = true;
+        bool receivesShadowsFlag = true;
     public:
         Material(std::shared_ptr<ShaderProgram> program) : programObjPtr(program) {
             if(program){
@@ -41,6 +43,8 @@ class Material{
                     }
                 }
             }
+
+            set<int>("u_receiveShadows", receivesShadowsFlag ? 1 : 0);
         };
         virtual ~Material(){};
 
@@ -75,6 +79,15 @@ class Material{
         std::shared_ptr<ShaderProgram> getShader(){
             return this->programObjPtr;
         }
+
+        void setCastsShadows(bool value){ castsShadowsFlag = value; }
+        bool castsShadows() const { return castsShadowsFlag; }
+
+        void setReceivesShadows(bool value){
+            receivesShadowsFlag = value;
+            set<int>("u_receiveShadows", receivesShadowsFlag ? 1 : 0);
+        }
+        bool receivesShadows() const { return receivesShadowsFlag; }
 
         static std::shared_ptr<Material> Copy(std::shared_ptr<Material> material){
             if(!material) return nullptr;

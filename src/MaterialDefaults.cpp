@@ -2,6 +2,7 @@
 #include "MaterialDefaults.h"
 #include "Screen.h"
 #include "Logbot.h"
+#include "ShadowRenderer.h"
 
 using namespace MaterialDefaults;
 
@@ -117,6 +118,7 @@ void LitColorMaterial::bind(){
     Material::bind();
     // Upload lights from global light manager
     LightUniformUploader::UploadLights(this->getShader(), LightManager::GlobalLightManager.getAllLights());
+    ShadowRenderer::BindShadowSamplers(this->getShader());
 }
 
 std::shared_ptr<LitColorMaterial> LitColorMaterial::Create(Math3D::Vec4 color){
@@ -174,6 +176,7 @@ void LitImageMaterial::bind(){
     Material::bind();
     // Upload lights from global light manager
     LightUniformUploader::UploadLights(this->getShader(), LightManager::GlobalLightManager.getAllLights());
+    ShadowRenderer::BindShadowSamplers(this->getShader());
 }
 
 std::shared_ptr<LitImageMaterial> LitImageMaterial::Create(PTexture tex, Math3D::Vec4 color){
@@ -232,6 +235,7 @@ void FlatColorMaterial::bind(){
     Material::bind();
     // Important: Use global lights
     LightUniformUploader::UploadLights(this->getShader(), LightManager::GlobalLightManager.getAllLights());
+    ShadowRenderer::BindShadowSamplers(this->getShader());
 }
 
 std::shared_ptr<FlatColorMaterial> FlatColorMaterial::Create(Math3D::Vec4 color) {
@@ -291,6 +295,7 @@ void FlatImageMaterial::bind(){
 
     Material::bind();
     LightUniformUploader::UploadLights(this->getShader(), LightManager::GlobalLightManager.getAllLights());
+    ShadowRenderer::BindShadowSamplers(this->getShader());
 }
 
 std::shared_ptr<FlatImageMaterial> FlatImageMaterial::Create(std::shared_ptr<Texture> tex, Math3D::Vec4 color) {
