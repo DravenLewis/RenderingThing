@@ -22,9 +22,9 @@ out vec4 FragColor;
 
 uniform sampler2D u_texture;
 uniform vec4 u_color;
+uniform vec3 u_viewPos;
 uniform Light u_lights[MAX_LIGHTS];
 uniform int u_lightCount;
-uniform vec3 u_viewPos;
 
 vec3 calculateLight(Light light, vec3 norm, vec3 viewDir, vec3 fragPos, vec4 texColor) {
     vec3 result = vec3(0.0);

@@ -97,6 +97,7 @@ Shader ShaderProgram::compile(){
 
     this->shaderLog += this->_generateProgramLog(this->programHandle);
     this->shaderLog += "\n";
+    this->uniformLocationCache.clear();
 
     return this->programHandle;
 }
@@ -114,6 +115,17 @@ void ShaderProgram::bind(){
         
 Shader ShaderProgram::getID(){
     return this->programHandle;
+}
+
+GLint ShaderProgram::getUniformLocationCached(const std::string& name){
+    auto it = uniformLocationCache.find(name);
+    if(it != uniformLocationCache.end()){
+        return it->second;
+    }
+
+    GLint loc = glGetUniformLocation(getID(), name.c_str());
+    uniformLocationCache.emplace(name, loc);
+    return loc;
 }
 
 void ShaderProgram::unbind(){

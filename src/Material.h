@@ -8,7 +8,7 @@
 #include "ShaderProgram.h"
 
 struct IMaterialProperty{
-    virtual void apply(ShaderProgram& shader, const std::string& name) = 0;
+    virtual void apply(ShaderProgram& shader, const std::string& name, bool assumeBound) = 0;
     virtual ~IMaterialProperty() = default;
 };
 
@@ -17,10 +17,14 @@ struct MaterialProperty : public IMaterialProperty{
     T value;
     MaterialProperty(T val) : value(val) {};
 
-    void apply(ShaderProgram& shader, const std::string& name) override{
+    void apply(ShaderProgram& shader, const std::string& name, bool assumeBound) override{
         Uniform<T> uni;
         uni.set(this->value);
-        shader.setUniform(name,uni);
+        if(assumeBound){
+            shader.setUniformFast(name,uni);
+        }else{
+            shader.setUniform(name,uni);
+        }
     }
 };
 
@@ -42,6 +46,15 @@ class Material{
 
         template<typename T>
         bool set(const std::string& name, T value){
+            auto it = properties.find(name);
+            if(it != properties.end()){
+                auto existing = std::dynamic_pointer_cast<MaterialProperty<T>>(it->second);
+                if(existing){
+                    existing->value = value;
+                    return true;
+                }
+            }
+
             properties[name] = std::make_shared<MaterialProperty<T>>(value);
             return true;
         }
@@ -51,7 +64,7 @@ class Material{
             programObjPtr->bind();
 
             for(auto const& [name, prop] : properties){
-                prop->apply(*programObjPtr, name);
+                prop->apply(*programObjPtr, name, true);
             }
         };
 

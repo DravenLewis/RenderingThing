@@ -73,7 +73,7 @@ void RenderWindow::dispose(){
 
 void RenderWindow::swap(){
     SDL_GL_SwapWindow(this->windowPtr);
-    glFinish(); // Maybe a fix.
+    //glFinish(); // Maybe a fix.
 }
 
 bool RenderWindow::setWindowSize(int width, int height){

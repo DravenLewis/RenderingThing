@@ -7,6 +7,7 @@
 #include <SDL3/SDL_opengl.h>
 #include <memory>
 #include <map>
+#include <unordered_map>
 
 
 #include "Math.h"
@@ -118,6 +119,9 @@ class ShaderProgram{
     
         Shader programHandle = 0;
         std::string shaderLog;
+        std::unordered_map<std::string, GLint> uniformLocationCache;
+
+        GLint getUniformLocationCached(const std::string& name);
 
         std::string _generateShaderLog(Shader shader){
             GLint success;
@@ -216,10 +220,20 @@ class ShaderProgram{
         
         template<typename T>
         void setUniform(const std::string& name, const Uniform<T>& uniform){
-            GLint loc = glGetUniformLocation(getID(), name.c_str());
             bind();
-            GLUniformUpload::upload(loc, uniform.get());
+            GLint loc = getUniformLocationCached(name);
+            if(loc != -1){
+                GLUniformUpload::upload(loc, uniform.get());
+            }
             //unbind();
+        }
+
+        template<typename T>
+        void setUniformFast(const std::string& name, const Uniform<T>& uniform){
+            GLint loc = getUniformLocationCached(name);
+            if(loc != -1){
+                GLUniformUpload::upload(loc, uniform.get());
+            }
         }
 
         Shader getID();
