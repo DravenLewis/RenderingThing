@@ -2,70 +2,130 @@
 
 #include <glad/glad.h>
 #include <unordered_map>
+#include <unordered_set>
+#include <cstring>
+#include "Logbot.h"
+
+namespace {
+    constexpr GLuint LIGHT_UBO_BINDING = 0;
+
+    struct alignas(16) LightUBO {
+        float meta[4] = {0.0f, 0.0f, 0.0f, 0.0f};      // x=type
+        float position[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+        float direction[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+        float color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+        float params[4] = {1.0f, 10.0f, 1.0f, 45.0f};  // intensity, range, falloff, spotAngle
+    };
+
+    struct alignas(16) LightBlockUBO {
+        float header[4] = {0.0f, 0.0f, 0.0f, 0.0f};    // x=lightCount
+        LightUBO lights[MAX_LIGHTS];
+    };
+
+    GLuint g_lightUbo = 0;
+    std::unordered_set<GLuint> g_boundPrograms;
+    std::unordered_set<GLuint> g_loggedPrograms;
+    std::unordered_map<GLuint, int> g_lastLightCount;
+    bool g_hasLastBlock = false;
+    LightBlockUBO g_lastBlock;
+
+    void ensureLightUboCreated() {
+        if(g_lightUbo != 0){
+            return;
+        }
+
+        glGenBuffers(1, &g_lightUbo);
+        glBindBuffer(GL_UNIFORM_BUFFER, g_lightUbo);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(LightBlockUBO), nullptr, GL_DYNAMIC_DRAW);
+        glBindBufferRange(GL_UNIFORM_BUFFER, LIGHT_UBO_BINDING, g_lightUbo, 0, sizeof(LightBlockUBO));
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    }
+
+    void ensureProgramBoundToLightBlock(GLuint programId) {
+        if(programId == 0){
+            return;
+        }
+
+        if(g_boundPrograms.find(programId) != g_boundPrograms.end()){
+            return;
+        }
+
+        GLuint blockIndex = glGetUniformBlockIndex(programId, "LightBlock");
+        if(blockIndex != GL_INVALID_INDEX){
+            glUniformBlockBinding(programId, blockIndex, LIGHT_UBO_BINDING);
+        }
+
+        if(g_loggedPrograms.find(programId) == g_loggedPrograms.end()){
+            if(blockIndex == GL_INVALID_INDEX){
+                LogBot.Log(LOG_ERRO, "LightBlock uniform block not found for program %u", programId);
+            }else{
+                GLint blockSize = 0;
+                GLint activeUniforms = 0;
+                glGetActiveUniformBlockiv(programId, blockIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &blockSize);
+                glGetActiveUniformBlockiv(programId, blockIndex, GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &activeUniforms);
+                LogBot.Log(LOG_INFO, "LightBlock bound for program %u (size=%d bytes, uniforms=%d)", programId, blockSize, activeUniforms);
+            }
+            g_loggedPrograms.insert(programId);
+        }
+
+        g_boundPrograms.insert(programId);
+    }
+}
 
 void LightUniformUploader::UploadLights(std::shared_ptr<ShaderProgram> program, const std::vector<Light>& lights) {
     if(!program || program->getID() == 0){
         return;
     }
 
+    ensureLightUboCreated();
+    ensureProgramBoundToLightBlock(program->getID());
+
+    LightBlockUBO block;
+    std::memset(&block, 0, sizeof(LightBlockUBO));
     int lightCount = static_cast<int>(lights.size());
-    if (lightCount > MAX_LIGHTS) lightCount = MAX_LIGHTS;
+    if(lightCount > MAX_LIGHTS) lightCount = MAX_LIGHTS;
+    block.header[0] = static_cast<float>(lightCount);
 
-    struct LightUniforms {
-        GLint typeLoc = -1;
-        GLint posLoc = -1;
-        GLint dirLoc = -1;
-        GLint colorLoc = -1;
-        GLint intensityLoc = -1;
-        GLint rangeLoc = -1;
-        GLint falloffLoc = -1;
-        GLint angleLoc = -1;
-    };
-
-    struct CachedLightUniforms {
-        GLint countLoc = -1;
-        std::vector<LightUniforms> lights;
-    };
-
-    static std::unordered_map<GLuint, CachedLightUniforms> cache;
-
-    const GLuint programId = program->getID();
-    auto it = cache.find(programId);
-    if(it == cache.end()){
-        CachedLightUniforms cached;
-        cached.countLoc = glGetUniformLocation(programId, "u_lightCount");
-        cached.lights.resize(MAX_LIGHTS);
-
-        for(int i = 0; i < MAX_LIGHTS; ++i){
-            std::string uniformBase = "u_lights[" + std::to_string(i) + "]";
-            cached.lights[i].typeLoc = glGetUniformLocation(programId, (uniformBase + ".type").c_str());
-            cached.lights[i].posLoc = glGetUniformLocation(programId, (uniformBase + ".position").c_str());
-            cached.lights[i].dirLoc = glGetUniformLocation(programId, (uniformBase + ".direction").c_str());
-            cached.lights[i].colorLoc = glGetUniformLocation(programId, (uniformBase + ".color").c_str());
-            cached.lights[i].intensityLoc = glGetUniformLocation(programId, (uniformBase + ".intensity").c_str());
-            cached.lights[i].rangeLoc = glGetUniformLocation(programId, (uniformBase + ".range").c_str());
-            cached.lights[i].falloffLoc = glGetUniformLocation(programId, (uniformBase + ".falloff").c_str());
-            cached.lights[i].angleLoc = glGetUniformLocation(programId, (uniformBase + ".spotAngle").c_str());
-        }
-
-        it = cache.emplace(programId, std::move(cached)).first;
+    auto lastIt = g_lastLightCount.find(program->getID());
+    if(lastIt == g_lastLightCount.end() || lastIt->second != lightCount){
+        int firstType = (lightCount > 0) ? static_cast<int>(lights[0].type) : -1;
+        LogBot.Log(LOG_INFO, "LightUBO upload: program %u count=%d firstType=%d", program->getID(), lightCount, firstType);
+        g_lastLightCount[program->getID()] = lightCount;
     }
 
-    if (it->second.countLoc != -1) {
-        glUniform1i(it->second.countLoc, lightCount);
+    for(int i = 0; i < lightCount; ++i){
+        const Light& src = lights[i];
+        LightUBO& dst = block.lights[i];
+
+        dst.meta[0] = static_cast<float>(static_cast<int>(src.type));
+        dst.position[0] = src.position.x;
+        dst.position[1] = src.position.y;
+        dst.position[2] = src.position.z;
+        dst.position[3] = 0.0f;
+
+        dst.direction[0] = src.direction.x;
+        dst.direction[1] = src.direction.y;
+        dst.direction[2] = src.direction.z;
+        dst.direction[3] = 0.0f;
+
+        dst.color[0] = src.color.x;
+        dst.color[1] = src.color.y;
+        dst.color[2] = src.color.z;
+        dst.color[3] = src.color.w;
+
+        dst.params[0] = src.intensity;
+        dst.params[1] = src.range;
+        dst.params[2] = src.falloff;
+        dst.params[3] = src.spotAngle;
     }
 
-    for (int i = 0; i < lightCount; ++i) {
-        const Light& light = lights[i];
-        const LightUniforms& u = it->second.lights[i];
+    if(!g_hasLastBlock || std::memcmp(&block, &g_lastBlock, sizeof(LightBlockUBO)) != 0){
+        glBindBuffer(GL_UNIFORM_BUFFER, g_lightUbo);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(LightBlockUBO), &block);
+        glBindBufferRange(GL_UNIFORM_BUFFER, LIGHT_UBO_BINDING, g_lightUbo, 0, sizeof(LightBlockUBO));
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-        if (u.typeLoc != -1) glUniform1i(u.typeLoc, static_cast<int>(light.type));
-        if (u.posLoc != -1) glUniform3f(u.posLoc, light.position.x, light.position.y, light.position.z);
-        if (u.dirLoc != -1) glUniform3f(u.dirLoc, light.direction.x, light.direction.y, light.direction.z);
-        if (u.colorLoc != -1) glUniform4f(u.colorLoc, light.color.x, light.color.y, light.color.z, light.color.w);
-        if (u.intensityLoc != -1) glUniform1f(u.intensityLoc, light.intensity);
-        if (u.rangeLoc != -1) glUniform1f(u.rangeLoc, light.range);
-        if (u.falloffLoc != -1) glUniform1f(u.falloffLoc, light.falloff);
-        if (u.angleLoc != -1) glUniform1f(u.angleLoc, light.spotAngle);
+        g_lastBlock = block;
+        g_hasLastBlock = true;
     }
 }

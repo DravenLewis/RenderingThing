@@ -3,14 +3,11 @@
 #define MAX_LIGHTS 8
 
 struct Light {
-    int type;                // 0 = Point, 1 = Directional, 2 = Spot
-    vec3 position;
-    vec3 direction;
+    vec4 meta;               // x=type
+    vec4 position;
+    vec4 direction;
     vec4 color;
-    float intensity;
-    float range;
-    float falloff;
-    float spotAngle;
+    vec4 params;             // x=intensity, y=range, z=falloff, w=spotAngle
 };
     
 in vec3 v_fragPos;
@@ -22,20 +19,25 @@ out vec4 FragColor;
     
 uniform vec4 u_color;
 uniform vec3 u_viewPos;
-uniform Light u_lights[MAX_LIGHTS];
-uniform int u_lightCount;
+
+layout(std140) uniform LightBlock {
+    vec4 u_lightHeader;      // x=lightCount
+    Light u_lights[MAX_LIGHTS];
+};
 
 vec3 calculateLight(Light light, vec3 norm, vec3 viewDir, vec3 fragPos) {
     vec3 result = vec3(0.0);
     
-    if (light.type == 0) {
+    int lightType = int(light.meta.x + 0.5);
+
+    if (lightType == 0) {
         // Point Light
-        vec3 lightDir = normalize(light.position - fragPos);
-        float distance = length(light.position - fragPos);
+        vec3 lightDir = normalize(light.position.xyz - fragPos);
+        float distance = length(light.position.xyz - fragPos);
         
         float attenuation = 0.0;
-        if (distance < light.range) {
-            attenuation = 1.0 / pow(max(distance, 0.1), light.falloff);
+        if (distance < light.params.y) {
+            attenuation = 1.0 / pow(max(distance, 0.1), light.params.z);
             attenuation = clamp(attenuation, 0.0, 1.0);
         }
         
@@ -49,11 +51,11 @@ vec3 calculateLight(Light light, vec3 norm, vec3 viewDir, vec3 fragPos) {
         float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
         vec3 specular = specularStrength * spec * light.color.rgb * attenuation;
         
-        result = (diffuse + specular) * light.intensity;
+        result = (diffuse + specular) * light.params.x;
         
-    } else if (light.type == 1) {
+    } else if (lightType == 1) {
         // Directional Light
-        vec3 lightDir = normalize(-light.direction);
+        vec3 lightDir = normalize(-light.direction.xyz);
         
         // Diffuse
         float diff = max(dot(norm, lightDir), 0.0);
@@ -65,19 +67,19 @@ vec3 calculateLight(Light light, vec3 norm, vec3 viewDir, vec3 fragPos) {
         float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
         vec3 specular = specularStrength * spec * light.color.rgb;
         
-        result = (diffuse + specular) * light.intensity;
+        result = (diffuse + specular) * light.params.x;
         
-    } else if (light.type == 2) {
+    } else if (lightType == 2) {
         // Spot Light
-        vec3 lightDir = normalize(light.position - fragPos);
-        float distance = length(light.position - fragPos);
+        vec3 lightDir = normalize(light.position.xyz - fragPos);
+        float distance = length(light.position.xyz - fragPos);
         
         float attenuation = 0.0;
-        if (distance < light.range) {
-            float theta = degrees(acos(dot(-lightDir, normalize(light.direction))));
+        if (distance < light.params.y) {
+            float theta = degrees(acos(dot(-lightDir, normalize(light.direction.xyz))));
             
-            if (theta < light.spotAngle) {
-                attenuation = 1.0 / pow(max(distance, 0.1), light.falloff);
+            if (theta < light.params.w) {
+                attenuation = 1.0 / pow(max(distance, 0.1), light.params.z);
                 attenuation = clamp(attenuation, 0.0, 1.0);
             }
         }
@@ -92,7 +94,7 @@ vec3 calculateLight(Light light, vec3 norm, vec3 viewDir, vec3 fragPos) {
         float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
         vec3 specular = specularStrength * spec * light.color.rgb * attenuation;
         
-        result = (diffuse + specular) * light.intensity;
+        result = (diffuse + specular) * light.params.x;
     }
     
     return result;
@@ -108,7 +110,8 @@ void main() {
     
     // Calculate contribution from all lights
     vec3 totalLight = vec3(0.0);
-    for (int i = 0; i < u_lightCount && i < MAX_LIGHTS; i++) {
+    int lightCount = int(u_lightHeader.x + 0.5);
+    for (int i = 0; i < lightCount && i < MAX_LIGHTS; i++) {
         totalLight += calculateLight(u_lights[i], norm, viewDir, v_fragPos);
     }
     

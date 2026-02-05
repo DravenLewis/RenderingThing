@@ -78,6 +78,8 @@ Shader ShaderProgram::compile(){
 
     this->programHandle = glCreateProgram();
 
+    bool anyShaderFailed = false;
+
     auto bundles = _getShaderBundles();
     for(auto& bundle : bundles){
         if(bundle.valid){
@@ -85,7 +87,17 @@ Shader ShaderProgram::compile(){
             this->shaderLog += this->_generateShaderLog(bundle.shaderHandle);
             this->shaderLog += "\n";
 
-            if(bundle.shaderHandle == 0) bundle.valid = false;
+            if(bundle.shaderHandle == 0){
+                bundle.valid = false;
+                anyShaderFailed = true;
+            }else{
+                GLint success = 0;
+                glGetShaderiv(bundle.shaderHandle, GL_COMPILE_STATUS, &success);
+                if(!success){
+                    bundle.valid = false;
+                    anyShaderFailed = true;
+                }
+            }
 
             if(bundle.valid){
                 glAttachShader(this->programHandle, bundle.shaderHandle);
@@ -98,6 +110,13 @@ Shader ShaderProgram::compile(){
     this->shaderLog += this->_generateProgramLog(this->programHandle);
     this->shaderLog += "\n";
     this->uniformLocationCache.clear();
+
+    GLint linkSuccess = 0;
+    glGetProgramiv(this->programHandle, GL_LINK_STATUS, &linkSuccess);
+    if(!linkSuccess || anyShaderFailed){
+        glDeleteProgram(this->programHandle);
+        this->programHandle = 0;
+    }
 
     return this->programHandle;
 }
