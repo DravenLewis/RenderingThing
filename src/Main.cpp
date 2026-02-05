@@ -27,9 +27,16 @@
 #include "debug_helpers/FrameTimeGraph.h"
 #include "ShadowRenderer.h"
 
+#include "PBRMaterial.h"
+#include "CubeMap.h"
+#include "SkyboxMaterial.h"
+#include "SkyBox.h"
+
 PModel cubeModel;
 PModel lucille;
 PModel meshModel;
+PModel orb;
+PSkyBox skybox;
 
 RenderWindow* window;
 
@@ -50,7 +57,7 @@ PScreen mainScreen;
 PTexture p;
 
 float frameTimeSpike= 0;
-bool showDepthMap = false;
+bool showDebugWidgets = false;
 
 #define DEBUG_COLORS 0
 
@@ -76,8 +83,8 @@ int main(){
                     window->toggleFullscreen();
                 }
 
-                if(event.key.key == SDLK_F11){
-                    showDepthMap = !showDepthMap;
+                if(event.key.key == SDLK_F10){
+                    showDebugWidgets = !showDebugWidgets;
                 }
 
                 if(event.key.key == SDLK_ESCAPE){
@@ -124,9 +131,6 @@ int main(){
 
 void init(){
    
-    //font = TrueTypeFont::Create(AssetManager::Instance.getOrLoad("@assets/fonts/arial.ttf"), 24.0f);
-    //font = Font::Create<FreeTypeFont>(AssetManager::Instance.getOrLoad("@assets/fonts/arial.ttf"), 24.0f);
-
     ground = Model::Create();
     meshModel = Model::Create();
 
@@ -154,12 +158,17 @@ void init(){
     PTexture textureImageTop = Texture::Load(AssetManager::Instance.getOrLoad("@assets/images/grass_top_col.png"));
     PTexture textureImageSides = Texture::Load(AssetManager::Instance.getOrLoad("@assets/images/grass_side.png"));
     PTexture textureImageBottom = Texture::Load(AssetManager::Instance.getOrLoad("@assets/images/dirt.png"));
+    PTexture textureUVDefault = Texture::Load(AssetManager::Instance.getOrLoad("@assets/images/uv.png"));
 
-    PMaterial TopMaterial = MaterialDefaults::LitImageMaterial::Create(textureImageTop);
-    PMaterial SideMaterial = MaterialDefaults::LitImageMaterial::Create(textureImageSides);
-    PMaterial BottomMaterial = MaterialDefaults::LitImageMaterial::Create(textureImageBottom);
+    PMaterial TopMaterial = MaterialDefaults::FlatImageMaterial::Create(textureImageTop);
+    PMaterial SideMaterial = MaterialDefaults::FlatImageMaterial::Create(textureImageSides);
+    PMaterial BottomMaterial = MaterialDefaults::FlatImageMaterial::Create(textureImageBottom);
     
     p = textureImageSides;
+
+    skybox = SkyBoxLoader::CreateSkyBox("@assets/images/skybox/default", "skybox_default");
+    
+    //skybox->setBackfaceCulling(false); // So we actually see it; Didnt Work....
 
     ground->addPart(ModelPartPrefabs::MakePlane(200,200,TopMaterial));
     ground->transform().setPosition(Math3D::Vec3(0,-5,0));
@@ -203,14 +212,34 @@ void init(){
     #endif
 
     cubeModel = ModelPrefabs::MakeCube(1.0f,cubeMaterialInformation);
-    lucille = OBJLoader::LoadFromAsset(AssetManager::Instance.getOrLoad("@assets/models/lucille/lucille.obj"), MaterialDefaults::FlatImageMaterial::Create(textureImageBottom));
 
-    auto PointLight = Light::CreatePointLight(Math3D::Vec3(0,0,0), Color::fromRGBA32(0x00FF00FF), 1.0f, 5.0f);
-    auto SunLight = Light::CreateDirectionalLight(-Math3D::Vec3::up(), Color::WHITE, 1.0f);
+    auto mat = PBRMaterial::Create(Color::WHITE);
+    mat->BaseColor = Color(1.0f,1.00f,0.34f);
+    mat->Metallic = 1.0f;
+    mat->Roughness = 0.01f;
+    mat->EmissiveStrength = 0;
+    mat->OcclusionStrength = 1.0f;
+    mat->NormalTex = Texture::Load(AssetManager::Instance.getOrLoad("@assets/images/golden_material/DirtyGold01_Normal.png"));
+    mat->NormalScale = 0.05;
+    mat->EnvMap = skybox->getCubeMap();
+    mat->EnvStrength = 0.7f;
+    
+    lucille = OBJLoader::LoadFromAsset(AssetManager::Instance.getOrLoad("@assets/models/lucille/lucille.obj"),mat);
+    orb = OBJLoader::LoadFromAsset(AssetManager::Instance.getOrLoad("@assets/models/theorb/orb.obj"), MaterialDefaults::FlatImageMaterial::Create(textureUVDefault));
 
 
-    LightManager::GlobalLightManager.addLight(PointLight);
+    LightManager::GlobalLightManager.clearLights();
+
+    // Key warm directional + a few points to make metals pop
+    auto SunLight = Light::CreateDirectionalLight(Math3D::Vec3(-0.3f, -1.0f, -0.2f), Color::fromRGBA255(255, 244, 214, 255), 1.2f);
+    auto KeyPoint = Light::CreatePointLight(Math3D::Vec3(4.5f, 6.0f, 2.0f), Color::fromRGBA255(255, 230, 180, 255), 6.5f, 18.0f, 2.0f);
+    auto FillPoint = Light::CreatePointLight(Math3D::Vec3(-6.0f, 3.0f, 6.0f), Color::fromRGBA255(120, 180, 255, 255), 3.0f, 20.0f, 2.0f);
+    auto RimPoint = Light::CreatePointLight(Math3D::Vec3(0.0f, 7.0f, -8.0f), Color::fromRGBA255(255, 255, 255, 255), 4.0f, 20.0f, 2.0f);
+
     LightManager::GlobalLightManager.addLight(SunLight);
+    LightManager::GlobalLightManager.addLight(KeyPoint);
+    LightManager::GlobalLightManager.addLight(FillPoint);
+    LightManager::GlobalLightManager.addLight(RimPoint);
 
     if(lucille){
         lucille->transform().setPosition(Math3D::Vec3(0, 0, -5.0f));
@@ -218,6 +247,10 @@ void init(){
 
     if(cubeModel){
         cubeModel->transform().setPosition(Math3D::Vec3(-10.0f,0,-10.0f));
+    }
+
+    if(orb){
+        orb->transform().setPosition(Math3D::Vec3(-10.0f,0,30.0f));
     }
 }
 
@@ -230,7 +263,7 @@ void run(){
     totalTime += deltaTime;
 
     if(deltaTime > frameTimeSpike) frameTimeSpike = deltaTime;
-    frameTimeGraph.push(deltaTime);
+    if(showDebugWidgets) frameTimeGraph.push(deltaTime);
 
     fpsC->update(deltaTime, manager);
 
@@ -239,13 +272,26 @@ void run(){
 
     mainScreen->bind();
 
+    if(skybox && cam){
+        skybox->draw(cam);
+    }
+
     if(lucille && cam){
         lucille->transform().rotateAxisAngle(Math3D::Vec3(1.0f, 1.0f, 1.0f), 50 * deltaTime);
+        float pulse = 1.0f + (0.2f * Math3D::Sin(2.0f * totalTime));
+        //lucille->transform().setUniformScale(pulse);
         lucille->draw(cam);
     }
 
-    cubeModel->transform().rotateAxisAngle(Math3D::Vec3(1,1,1), 50 * deltaTime);
-    cubeModel->draw(cam);
+    if(cubeModel && cam){
+        cubeModel->transform().rotateAxisAngle(Math3D::Vec3(1,1,1), 50 * deltaTime);
+        cubeModel->draw(cam);
+    }
+
+    if(orb && cam){
+        orb->transform().rotateAxisAngle(Math3D::Vec3(1,1,1), 50 * deltaTime);
+        orb->draw(cam);
+    }
 
     if(ground){
         ground->draw(cam);
@@ -276,6 +322,10 @@ void run(){
 
     //font->drawText(info,Math3D::Vec2(30,30),uiScreen->getCamera(),Color::WHITE, false);
 
+    Color c0 = Color::fromRGBA255(10,10,32,128);
+    Graphics2D::SetBackgroundColor(*g, c0);
+    Graphics2D::FillRect(*g, 0, 0, 600, 140);
+
     Color c1 = Color::WHITE;
     Graphics2D::SetForegroundColor(*g, c1);
     Graphics2D::DrawString(*g,info,30,30);
@@ -284,14 +334,16 @@ void run(){
     //Graphics2D::DrawLine(*g,30,200,100,200);
     //Graphics2D::FillRect(*g,30,400,100,100);
     //Graphics2D::DrawImage(*g,p,150,400,100,100);
-    Color c2 = Color::fromRGBA255(10,10,32,128);
-    Graphics2D::SetBackgroundColor(*g, c2);
-    Graphics2D::FillRect(*g, 0, uiScreen->getHeight() - 100, uiScreen->getWidth(), 100);
-    Graphics2D::SetBackgroundColor(*g, Color::WHITE);
-    frameTimeGraph.draw(*g, 0, uiScreen->getHeight() - 70, uiScreen->getWidth(), 60);
+    if(showDebugWidgets){
+        Color c2 = Color::fromRGBA255(10,10,32,128);
+        Graphics2D::SetBackgroundColor(*g, c2);
+        Graphics2D::FillRect(*g, 0, uiScreen->getHeight() - 100, uiScreen->getWidth(), 100);
+        Graphics2D::SetBackgroundColor(*g, Color::WHITE);
+        frameTimeGraph.draw(*g, 0, uiScreen->getHeight() - 70, uiScreen->getWidth(), 60);
+    }
     
     auto shadowTex = ShadowRenderer::GetDepthBuffer();
-    if(shadowTex && showDepthMap){
+    if(shadowTex && showDebugWidgets){
         Graphics2D::DrawImage(*g, shadowTex, uiScreen->getWidth() - (uiScreen->getWidth() / 4.0f) - 30, 30,uiScreen->getWidth() / 4.0f, uiScreen->getHeight() / 4.0f);
     }
 

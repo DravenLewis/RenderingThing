@@ -16,7 +16,7 @@
 
 Logbot textureLogger = Logbot::CreateInstance("Texture");
 
-Texture::Texture(std::shared_ptr<Graphics::Image::Image> imagePtr) :
+Texture::Texture(std::shared_ptr<Graphics::Image::Image> imagePtr, GLenum imageHint) :
     textureID(0), width(0), height(0), cpuImage(imagePtr){
 
     if(!cpuImage){
@@ -37,7 +37,7 @@ Texture::Texture(std::shared_ptr<Graphics::Image::Image> imagePtr) :
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     glTexImage2D(
-        GL_TEXTURE_2D, 
+        imageHint, 
         0, 
         GL_RGBA8, 
         width, height, 
@@ -75,7 +75,16 @@ void Texture::FlipVerticallyOnLoad(int i){
     stbi_set_flip_vertically_on_load(i);
 }
 
-std::shared_ptr<Texture> Texture::Load(PAsset asset){
+std::shared_ptr<Texture> Texture::Load(PAsset asset, GLenum imageHint){
+    auto cpuImg = LoadImage(asset);
+    if(!cpuImg){
+        return nullptr;
+    }
+
+    return std::make_shared<Texture>(cpuImg, imageHint);
+}
+
+std::shared_ptr<Graphics::Image::Image> Texture::LoadImage(PAsset asset){
     if(!asset){
         textureLogger.Log(LOG_ERRO,"Asset was invalid (nullptr)");
         return nullptr;
@@ -112,7 +121,7 @@ std::shared_ptr<Texture> Texture::Load(PAsset asset){
     std::memcpy(cpuImg->pixelData.data(), stb_integer_data, stb_w * stb_h * 4);
     stbi_image_free(stb_integer_data);
 
-    return std::make_shared<Texture>(cpuImg);
+    return cpuImg;
 }
 
 std::shared_ptr<Texture> Texture::CreateEmpty(int width, int height){

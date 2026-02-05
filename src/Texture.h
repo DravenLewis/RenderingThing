@@ -25,7 +25,7 @@ class Texture{
 
         Texture() : textureID(0), width(0), height(0){};
         ~Texture();
-        Texture(std::shared_ptr<Graphics::Image::Image> image);
+        Texture(std::shared_ptr<Graphics::Image::Image> image, GLenum imageHint = GL_TEXTURE_2D);
         Texture(const Texture&) = delete; // dont allow copying Texture tex = val.getTexture(); is invald Texture* tex = val.getTexturePtr() is okay tho.
         Texture(int width, int height) : textureID(0), width(width), height(height) {};
 
@@ -39,7 +39,8 @@ class Texture{
 
         std::shared_ptr<Graphics::Image::Image> getImageData() const {return cpuImage;}
 
-        static std::shared_ptr<Texture> Load(PAsset asset);
+        static std::shared_ptr<Texture> Load(PAsset asset, GLenum imageHint = GL_TEXTURE_2D);
+        static std::shared_ptr<Graphics::Image::Image> LoadImage(PAsset asset);
         static std::shared_ptr<Texture> CreateEmpty(int width, int height);
         static std::shared_ptr<Texture> CreateFromAlphaBuffer(int width, int height, const unsigned char* alphaData);
         static std::shared_ptr<Texture> CreateFromExisting(GLuint id, int width, int height, bool owns = false);

@@ -12,6 +12,7 @@
 
 #include "Math.h"
 #include "Texture.h"
+#include "CubeMap.h"
 
 
 template <typename T>
@@ -28,6 +29,21 @@ class Uniform {
 };
 
 namespace GLUniformUpload {
+    struct TextureSlot {
+        std::shared_ptr<Texture> texture;
+        int slot = 0;
+
+        TextureSlot() = default;
+        TextureSlot(std::shared_ptr<Texture> tex, int s = 0) : texture(tex), slot(s) {}
+    };
+
+    struct CubeMapSlot {
+        std::shared_ptr<CubeMap> cubemap;
+        int slot = 0;
+
+        CubeMapSlot() = default;
+        CubeMapSlot(std::shared_ptr<CubeMap> map, int s = 0) : cubemap(map), slot(s) {}
+    };
 
     inline void upload(GLint loc, int v) {
         glUniform1i(loc, v);
@@ -72,6 +88,30 @@ namespace GLUniformUpload {
 
         glBindTexture(GL_TEXTURE_2D, 0);
         glUniform1i(loc, 0);
+        return;
+    }
+
+    inline void upload(GLint loc, const TextureSlot& texSlot){
+        if(texSlot.texture){
+            texSlot.texture->bind(texSlot.slot);
+            glUniform1i(loc, texSlot.slot);
+            return;
+        }
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glUniform1i(loc, texSlot.slot);
+        return;
+    }
+
+    inline void upload(GLint loc, const CubeMapSlot& mapSlot){
+        if(mapSlot.cubemap){
+            mapSlot.cubemap->bind(mapSlot.slot);
+            glUniform1i(loc, mapSlot.slot);
+            return;
+        }
+
+        glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+        glUniform1i(loc, mapSlot.slot);
         return;
     }
 }

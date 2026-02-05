@@ -139,7 +139,13 @@ Shader ShaderProgram::getID(){
 GLint ShaderProgram::getUniformLocationCached(const std::string& name){
     auto it = uniformLocationCache.find(name);
     if(it != uniformLocationCache.end()){
-        return it->second;
+        if(it->second != -1){
+            return it->second;
+        }
+        // Retry in case the location was cached before the program was fully linked.
+        GLint retry = glGetUniformLocation(getID(), name.c_str());
+        it->second = retry;
+        return retry;
     }
 
     GLint loc = glGetUniformLocation(getID(), name.c_str());
