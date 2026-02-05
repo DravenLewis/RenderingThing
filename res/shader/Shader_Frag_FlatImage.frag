@@ -1,7 +1,7 @@
 #version 410 core
 
 #define MAX_LIGHTS 8
-#define MAX_SHADOW_MAPS_2D 4
+#define MAX_SHADOW_MAPS_2D 16
 #define MAX_SHADOW_MAPS_CUBE 2
 
 struct Light {
@@ -11,7 +11,8 @@ struct Light {
     vec4 color;
     vec4 params;         // x=intensity, y=range, z=falloff, w=spotAngle
     vec4 shadow;         // x=bias, y=normalBias
-    mat4 lightMatrix;    // directional/spot
+    vec4 cascadeSplits;  // view-space split distances
+    mat4 lightMatrices[4];   // directional cascades / spot uses [0]
 };
     
 in vec3 v_fragPos;
@@ -24,6 +25,7 @@ out vec4 FragColor;
 uniform sampler2D u_texture;
 uniform vec4 u_color;
 uniform vec3 u_viewPos;
+uniform mat4 u_view;
 uniform int u_receiveShadows;
 
 layout(std140) uniform LightBlock {
@@ -191,12 +193,21 @@ void main() {
             float visibility = 1.0;
             int lType = int(light.meta.x + 0.5);
             int sType = int(light.meta.y + 0.5);
-            int sIndex = int(light.meta.z + 0.5);
+            int baseIndex = int(light.meta.z + 0.5);
 
             if(lType == 0){
-                visibility = sampleShadowCube(sType, sIndex, v_fragPos, light.position.xyz, light.params.y, bias);
+                visibility = sampleShadowCube(sType, baseIndex, v_fragPos, light.position.xyz, light.params.y, bias);
             }else{
-                visibility = sampleShadow2D(sType, sIndex, light.lightMatrix * vec4(v_fragPos, 1.0), bias);
+                int cascadeCount = int(light.shadow.z + 0.5);
+                float viewDepth = length(u_viewPos - v_fragPos);
+                int cascadeIndex = 0;
+                if(cascadeCount > 1){
+                    if(viewDepth > light.cascadeSplits.x) cascadeIndex = 1;
+                    if(viewDepth > light.cascadeSplits.y) cascadeIndex = 2;
+                    if(viewDepth > light.cascadeSplits.z) cascadeIndex = 3;
+                    cascadeIndex = clamp(cascadeIndex, 0, cascadeCount - 1);
+                }
+                visibility = sampleShadow2D(sType, baseIndex + cascadeIndex, light.lightMatrices[cascadeIndex] * vec4(v_fragPos, 1.0), bias);
             }
 
             visibility = mix(1.0, visibility, clamp(light.meta.w, 0.0, 1.0));

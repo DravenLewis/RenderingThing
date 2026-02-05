@@ -50,6 +50,7 @@ PScreen mainScreen;
 PTexture p;
 
 float frameTimeSpike= 0;
+bool showDepthMap = false;
 
 #define DEBUG_COLORS 0
 
@@ -75,9 +76,15 @@ int main(){
                     window->toggleFullscreen();
                 }
 
+                if(event.key.key == SDLK_F11){
+                    showDepthMap = !showDepthMap;
+                }
+
                 if(event.key.key == SDLK_ESCAPE){
                     window->close();
                 }
+
+
             } 
 
             if (event.type == SDL_EVENT_WINDOW_RESIZED){
@@ -283,6 +290,11 @@ void run(){
     Graphics2D::SetBackgroundColor(*g, Color::WHITE);
     frameTimeGraph.draw(*g, 0, uiScreen->getHeight() - 70, uiScreen->getWidth(), 60);
     
+    auto shadowTex = ShadowRenderer::GetDepthBuffer();
+    if(shadowTex && showDepthMap){
+        Graphics2D::DrawImage(*g, shadowTex, uiScreen->getWidth() - (uiScreen->getWidth() / 4.0f) - 30, 30,uiScreen->getWidth() / 4.0f, uiScreen->getHeight() / 4.0f);
+    }
+
     g->end();
 
     mainScreen->drawToWindow(window); 

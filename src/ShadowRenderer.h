@@ -20,7 +20,14 @@ struct ShadowLightData {
     float shadowStrength = 1.0f;
     float shadowBias = 0.0025f;
     float shadowNormalBias = 0.005f;
-    Math3D::Mat4 lightMatrix = Math3D::Mat4(1.0f); // For directional/spot
+    int cascadeCount = 1;
+    Math3D::Vec4 cascadeSplits = Math3D::Vec4(0,0,0,0);
+    Math3D::Mat4 lightMatrices[4] = {
+        Math3D::Mat4(1.0f),
+        Math3D::Mat4(1.0f),
+        Math3D::Mat4(1.0f),
+        Math3D::Mat4(1.0f)
+    };
 };
 
 class ShadowRenderer {

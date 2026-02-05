@@ -11,7 +11,7 @@
 #include "ModelPart.h"
 
 namespace {
-    constexpr int MAX_SHADOW_MAPS_2D = 4;
+    constexpr int MAX_SHADOW_MAPS_2D = 16;
     constexpr int MAX_SHADOW_MAPS_CUBE = 2;
     constexpr int SHADOW_TEX_UNIT_BASE_2D = 8;
     constexpr int SHADOW_TEX_UNIT_BASE_CUBE = 12;
@@ -115,12 +115,12 @@ void ShadowRenderer::ensureShadowPrograms() {
 
 }
 
-Math3D::Mat4 ShadowRenderer::computeDirectionalMatrix(const Light& light, PCamera camera) {
-    Math3D::Vec3 camPos = camera->transform().position;
-    float defaultRange = Math3D::Min(camera->getSettings().farPlane, 200.0f);
-    float range = Math3D::Max(10.0f, (light.range > 0.0f) ? light.range : defaultRange);
-    Math3D::Vec3 lightDir = Math3D::Vec3(glm::normalize(glm::vec3(light.direction.x, light.direction.y, light.direction.z)));
-    Math3D::Vec3 lightPos = camPos - lightDir * range;
+    Math3D::Mat4 ShadowRenderer::computeDirectionalMatrix(const Light& light, PCamera camera) {
+        Math3D::Vec3 camPos = camera->transform().position;
+        float defaultRange = Math3D::Min(camera->getSettings().farPlane, 200.0f);
+        float range = Math3D::Max(10.0f, (light.range > 0.0f) ? light.range : defaultRange);
+        Math3D::Vec3 lightDir = Math3D::Vec3(glm::normalize(glm::vec3(light.direction.x, light.direction.y, light.direction.z)));
+        Math3D::Vec3 lightPos = camPos - lightDir * range;
 
     glm::vec3 up(0,1,0);
     if(std::abs(glm::dot(glm::vec3(lightDir.x, lightDir.y, lightDir.z), up)) > 0.99f){
@@ -141,6 +141,94 @@ Math3D::Mat4 ShadowRenderer::computeDirectionalMatrix(const Light& light, PCamer
     );
 
     return Math3D::Mat4(proj * view);
+}
+
+static void computeDirectionalCascades(
+    const Light& light,
+    PCamera camera,
+    int cascadeCount,
+    std::vector<float>& outSplits,
+    std::vector<Math3D::Mat4>& outMatrices
+){
+    outSplits.clear();
+    outMatrices.clear();
+    if(!camera || cascadeCount <= 0) return;
+
+    float nearPlane = camera->getSettings().nearPlane;
+    float farPlane = Math3D::Min(camera->getSettings().farPlane, (light.range > 0.0f) ? light.range : camera->getSettings().farPlane);
+    float lambda = 0.5f;
+
+    std::vector<float> splits;
+    splits.reserve(cascadeCount);
+    for(int i = 1; i <= cascadeCount; ++i){
+        float p = static_cast<float>(i) / static_cast<float>(cascadeCount);
+        float logSplit = nearPlane * std::pow(farPlane / nearPlane, p);
+        float linearSplit = nearPlane + (farPlane - nearPlane) * p;
+        float split = lambda * logSplit + (1.0f - lambda) * linearSplit;
+        splits.push_back(split);
+    }
+
+    glm::mat4 view = (glm::mat4)camera->getViewMatrix();
+    glm::mat4 invView = glm::inverse(view);
+
+    Math3D::Vec3 lightDir = Math3D::Vec3(glm::normalize(glm::vec3(light.direction.x, light.direction.y, light.direction.z)));
+    glm::vec3 up(0,1,0);
+    if(std::abs(glm::dot(glm::vec3(lightDir.x, lightDir.y, lightDir.z), up)) > 0.99f){
+        up = glm::vec3(0,0,1);
+    }
+
+    float prevSplit = nearPlane;
+    for(int i = 0; i < cascadeCount; ++i){
+        float splitDist = splits[i];
+        float tanHalfFov = std::tan(glm::radians(camera->getSettings().fov * 0.5f));
+        float aspect = camera->getSettings().aspect;
+
+        float nearH = tanHalfFov * prevSplit;
+        float nearW = nearH * aspect;
+        float farH = tanHalfFov * splitDist;
+        float farW = farH * aspect;
+
+        std::vector<glm::vec3> corners;
+        corners.reserve(8);
+        corners.push_back(glm::vec3( nearW,  nearH, -prevSplit));
+        corners.push_back(glm::vec3(-nearW,  nearH, -prevSplit));
+        corners.push_back(glm::vec3( nearW, -nearH, -prevSplit));
+        corners.push_back(glm::vec3(-nearW, -nearH, -prevSplit));
+        corners.push_back(glm::vec3( farW,  farH, -splitDist));
+        corners.push_back(glm::vec3(-farW,  farH, -splitDist));
+        corners.push_back(glm::vec3( farW, -farH, -splitDist));
+        corners.push_back(glm::vec3(-farW, -farH, -splitDist));
+
+        glm::vec3 center(0);
+        for(auto& c : corners){
+            glm::vec4 world = invView * glm::vec4(c, 1.0f);
+            c = glm::vec3(world) / world.w;
+            center += c;
+        }
+        center /= static_cast<float>(corners.size());
+
+        glm::vec3 lightPos = center - glm::vec3(lightDir.x, lightDir.y, lightDir.z) * 100.0f;
+        glm::mat4 lightView = glm::lookAt(lightPos, center, up);
+
+        glm::vec3 minV(FLT_MAX), maxV(-FLT_MAX);
+        for(auto& c : corners){
+            glm::vec4 ls = lightView * glm::vec4(c, 1.0f);
+            minV = glm::min(minV, glm::vec3(ls));
+            maxV = glm::max(maxV, glm::vec3(ls));
+        }
+
+        float zMult = 10.0f;
+        float nearZ = -maxV.z - zMult;
+        float farZ = -minV.z + zMult;
+        if(nearZ < 0.1f) nearZ = 0.1f;
+        if(farZ < nearZ + 0.1f) farZ = nearZ + 0.1f;
+
+        glm::mat4 lightProj = glm::ortho(minV.x, maxV.x, minV.y, maxV.y, nearZ, farZ);
+
+        outMatrices.push_back(Math3D::Mat4(lightProj * lightView));
+        outSplits.push_back(splitDist);
+        prevSplit = splitDist;
+    }
 }
 
 Math3D::Mat4 ShadowRenderer::computeSpotMatrix(const Light& light) {
@@ -198,7 +286,45 @@ void ShadowRenderer::BeginFrame(PCamera camera) {
         data.shadowNormalBias = light.shadowNormalBias;
 
         if(light.castsShadows){
-            if(light.type == LightType::DIRECTIONAL || light.type == LightType::SPOT){
+            if(light.type == LightType::DIRECTIONAL){
+                int cascadeCount = 4;
+                std::vector<float> splits;
+                std::vector<Math3D::Mat4> matrices;
+                computeDirectionalCascades(light, camera, cascadeCount, splits, matrices);
+
+                if(static_cast<int>(g_shadow2D.size()) < g_active2D + cascadeCount){
+                    while(static_cast<int>(g_shadow2D.size()) < g_active2D + cascadeCount){
+                        g_shadow2D.push_back(ShadowSlot2D{ShadowMap2D(getShadowMapSize2D(light))});
+                    }
+                }
+
+                int mapSize = getShadowMapSize2D(light);
+                for(int c = 0; c < cascadeCount && g_active2D < MAX_SHADOW_MAPS_2D; ++c){
+                    ShadowSlot2D& slot = g_shadow2D[g_active2D];
+                    if(slot.map.getSize() != mapSize){
+                        slot.map.resize(mapSize);
+                    }
+                    slot.lightIndex = static_cast<int>(i);
+                    slot.matrix = (c < static_cast<int>(matrices.size())) ? matrices[c] : Math3D::Mat4(1.0f);
+                    if(c == 0){
+                        data.shadowMapIndex = g_active2D;
+                    }
+                    g_active2D++;
+                }
+
+                data.cascadeCount = cascadeCount;
+                data.cascadeSplits = Math3D::Vec4(
+                    splits.size() > 0 ? splits[0] : 0.0f,
+                    splits.size() > 1 ? splits[1] : 0.0f,
+                    splits.size() > 2 ? splits[2] : 0.0f,
+                    splits.size() > 3 ? splits[3] : 0.0f
+                );
+
+                for(int c = 0; c < 4; ++c){
+                    data.lightMatrices[c] = (c < static_cast<int>(matrices.size())) ? matrices[c] : Math3D::Mat4(1.0f);
+                }
+
+            }else if(light.type == LightType::SPOT){
                 if(g_active2D < MAX_SHADOW_MAPS_2D){
                     int mapSize = getShadowMapSize2D(light);
                     if(static_cast<int>(g_shadow2D.size()) <= g_active2D){
@@ -209,11 +335,11 @@ void ShadowRenderer::BeginFrame(PCamera camera) {
 
                     ShadowSlot2D& slot = g_shadow2D[g_active2D];
                     slot.lightIndex = static_cast<int>(i);
-                    slot.matrix = (light.type == LightType::DIRECTIONAL)
-                        ? computeDirectionalMatrix(light, camera)
-                        : computeSpotMatrix(light);
+                    slot.matrix = computeSpotMatrix(light);
                     data.shadowMapIndex = g_active2D;
-                    data.lightMatrix = slot.matrix;
+                    data.cascadeCount = 1;
+                    data.cascadeSplits = Math3D::Vec4(light.range, light.range, light.range, light.range);
+                    data.lightMatrices[0] = slot.matrix;
                     g_active2D++;
                 }
             }else if(light.type == LightType::POINT){
@@ -231,6 +357,8 @@ void ShadowRenderer::BeginFrame(PCamera camera) {
                     slot.farPlane = Math3D::Max(1.0f, light.range);
                     computePointMatrices(light, slot.matrices);
                     data.shadowMapIndex = g_activeCube;
+                    data.cascadeCount = 1;
+                    data.cascadeSplits = Math3D::Vec4(slot.farPlane, slot.farPlane, slot.farPlane, slot.farPlane);
                     g_activeCube++;
                 }
             }
@@ -484,5 +612,10 @@ void ShadowRenderer::GetShadowDataForLight(size_t index, const Light& light, Sha
     outData.shadowStrength = light.shadowStrength;
     outData.shadowBias = light.shadowBias;
     outData.shadowNormalBias = light.shadowNormalBias;
-    outData.lightMatrix = Math3D::Mat4(1.0f);
+    outData.cascadeCount = 1;
+    outData.cascadeSplits = Math3D::Vec4(0,0,0,0);
+    outData.lightMatrices[0] = Math3D::Mat4(1.0f);
+    outData.lightMatrices[1] = Math3D::Mat4(1.0f);
+    outData.lightMatrices[2] = Math3D::Mat4(1.0f);
+    outData.lightMatrices[3] = Math3D::Mat4(1.0f);
 }

@@ -17,8 +17,21 @@ namespace {
         float direction[4] = {0.0f, 0.0f, 0.0f, 0.0f};
         float color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
         float params[4] = {1.0f, 10.0f, 1.0f, 45.0f};  // intensity, range, falloff, spotAngle
-        float shadow[4] = {0.0025f, 0.005f, 0.0f, 0.0f}; // bias, normalBias, unused
-        float lightMatrix[16] = {
+        float shadow[4] = {0.0025f, 0.005f, 1.0f, 0.0f}; // bias, normalBias, cascadeCount, unused
+        float cascadeSplits[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+        float lightMatrices[16 * 4] = {
+            1,0,0,0,
+            0,1,0,0,
+            0,0,1,0,
+            0,0,0,1,
+            1,0,0,0,
+            0,1,0,0,
+            0,0,1,0,
+            0,0,0,1,
+            1,0,0,0,
+            0,1,0,0,
+            0,0,1,0,
+            0,0,0,1,
             1,0,0,0,
             0,1,0,0,
             0,0,1,0,
@@ -135,10 +148,18 @@ void LightUniformUploader::UploadLights(std::shared_ptr<ShaderProgram> program, 
 
         dst.shadow[0] = shadowData.shadowBias;
         dst.shadow[1] = shadowData.shadowNormalBias;
+        dst.shadow[2] = static_cast<float>(shadowData.cascadeCount);
 
-        const float* m = glm::value_ptr(shadowData.lightMatrix.data);
-        for(int k = 0; k < 16; ++k){
-            dst.lightMatrix[k] = m[k];
+        dst.cascadeSplits[0] = shadowData.cascadeSplits.x;
+        dst.cascadeSplits[1] = shadowData.cascadeSplits.y;
+        dst.cascadeSplits[2] = shadowData.cascadeSplits.z;
+        dst.cascadeSplits[3] = shadowData.cascadeSplits.w;
+
+        for(int m = 0; m < 4; ++m){
+            const float* matPtr = glm::value_ptr(shadowData.lightMatrices[m].data);
+            for(int k = 0; k < 16; ++k){
+                dst.lightMatrices[m * 16 + k] = matPtr[k];
+            }
         }
     }
 
