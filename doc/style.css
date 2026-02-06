@@ -465,7 +465,7 @@ p code, li code {
 
 .color-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 100px);
+  grid-template-columns: repeat(auto-fill, 32px);
   gap: 2px;
 }
 
@@ -477,8 +477,8 @@ p code, li code {
   display: grid;
   background: transparent;
   color: var(--text);
-  width: 100px;
-  height: 100px;
+  width: 32px;
+  height: 32px;
 }
 
 .color-chip {
