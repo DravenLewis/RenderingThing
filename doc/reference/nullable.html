@@ -143,10 +143,10 @@ Nullable instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Nullable() : tPtr(nullptr) {}</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>Nullable(std::nullptr_t) : tPtr(nullptr) {}</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>Nullable(std::shared_ptr&lt;T&gt; valuePtr) : tPtr(valuePtr) {}</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>Nullable(const T&amp; valueRef) : tPtr(std::make_shared&lt;T&gt;(valueRef)) {}</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>Nullable() : tPtr(nullptr) { }</code></td><td>Constructs a Nullable. Parameters: none.</td></tr>
+<tr><td><code>Nullable(std::nullptr_t) : tPtr(nullptr) { }</code></td><td>Constructs a Nullable. Parameters: std::nullptr_t.</td></tr>
+<tr><td><code>Nullable(std::shared_ptr&lt;T&gt; valuePtr) : tPtr(valuePtr) { }</code></td><td>Constructs a Nullable. Parameters: std::shared_ptr&lt;T&gt; valuePtr.</td></tr>
+<tr><td><code>Nullable(const T&amp; valueRef) : tPtr(std::make_shared&lt;T&gt;(valueRef)) { }</code></td><td>Constructs a Nullable. Parameters: const T&amp; valueRef.</td></tr>
         </tbody>
       </table>
 
@@ -155,52 +155,22 @@ Nullable instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>T getValueOrDefault(const T&amp; defaultValue) const {
-            return (tPtr) ? *tPtr : defaultValue</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-
-        bool hasValue() const { return tPtr != nullptr</code></td><td>Returns whether the condition is met.</td></tr>
-<tr><td><code>}
-
-        explicit operator bool() const {return tPtr != nullptr</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        T&amp; operator*() { return *tPtr</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        const T&amp; operator*() const { return *tPtr</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        T* operator-&gt;() { return tPtr.get()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-        const T* operator-&gt;() const { return tPtr.get()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-
-        bool operator==(const Nullable&lt;T&gt;&amp; other) const {
-            if(!tPtr &amp;&amp; !other.tPtr) return true</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if(!tPtr || !other.tPtr) return false</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        bool operator!=(const Nullable&lt;T&gt;&amp; other) const {
-            return !(*this == other)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        bool operator==(std::nullptr_t) const { return !tPtr</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>bool operator!=(std::nullptr_t) const { return tPtr != nullptr</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>T getValueOrDefault(const T&amp; defaultValue) const { }</code></td><td>Returns T. Parameters: const T&amp; defaultValue.</td></tr>
+<tr><td><code>bool hasValue() const { }</code></td><td>Returns bool. Parameters: none.</td></tr>
+<tr><td><code>explicit operator bool() const { }</code></td><td>Returns operator. Parameters: none.</td></tr>
+<tr><td><code>T&amp; operator*() { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>const T&amp; operator*() const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>T* operator-&gt;() { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>const T* operator-&gt;() const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>bool operator==(const Nullable&lt;T&gt;&amp; other) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>bool operator!=(const Nullable&lt;T&gt;&amp; other) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>bool operator==(std::nullptr_t) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>bool operator!=(std::nullptr_t) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
         </tbody>
       </table>
 
       
       
-      <h2>Public Data</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>return *tPtr == *other.tPtr</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-        </tbody>
-      </table>
-
 
       <h2>Public API</h2>
       <pre><code class="language-cpp">Nullable() : tPtr(nullptr) {};

@@ -143,8 +143,8 @@ auto instance = Font::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Font() : fontSize(0) {}</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>virtual ~Font() = default</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>Font() : fontSize(0) { }</code></td><td>Constructs a Font. Parameters: none.</td></tr>
+<tr><td><code>virtual ~Font() = default</code></td><td>Constructs a Font. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -153,23 +153,9 @@ auto instance = Font::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>virtual void drawText(std::string text = &quot;&quot;, Math3D::Vec2 position = Math3D::Vec2(0,0), PCamera camera = nullptr, Color color = Color::WHITE, bool useCache = true) = 0</code></td><td>Renders content using the current settings.</td></tr>
-<tr><td><code>void clearCache(){
-            this-&gt;meshCache.clear()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if(!asset){
-                FontLogger.Log(LOG_ERRO, &quot;Asset was null&quot;)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-            if(!asset-&gt;loaded()){
-                FontLogger.Log(LOG_ERRO, &quot;Cannot create font from unloaded asset, make sure its loaded, call Asset::load() or AssetManager::getOrLoad()&quot;)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-            auto font = std::make_shared&lt;T&gt;()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>font-&gt;_initFont()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        PAsset getAssetPointer(){
-            return this-&gt;assetPtr</code></td><td>Returns the requested value.</td></tr>
+<tr><td><code>virtual void drawText(std::string text = &quot;&quot;, Math3D::Vec2 position = Math3D::Vec2(0,0), PCamera camera = nullptr, Color color = Color::WHITE, bool useCache = true) = 0</code></td><td>Renders content using the current settings. Parameters: std::string text, Math3D::Vec2 position, 0), PCamera camera, Color color, bool useCache.</td></tr>
+<tr><td><code>void clearCache(){ }</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>PAsset getAssetPointer(){ }</code></td><td>Returns PAsset. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -178,31 +164,13 @@ auto instance = Font::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>inline static Logbot FontLogger = Logbot::CreateInstance(&quot;Font&quot;)</code></td><td>Creates a new instance or resource.</td></tr>
-<tr><td><code>}
-
-        
-        
-        template&lt;typename T&gt;
-        static inline std::shared_ptr&lt;T&gt; Create(PAsset asset, float fontSize = 18.0f){
-            static_assert(std::is_base_of&lt;Font, T&gt;::value, &quot;Class must inherit from Font.&quot;)</code></td><td>Creates a new instance or resource.</td></tr>
+<tr><td><code>inline static Logbot FontLogger = Logbot::CreateInstance(&quot;Font&quot;)</code></td><td>Creates and returns a new instance or resource. Parameters: &quot;Font&quot;.</td></tr>
+<tr><td><code>template&lt;typename T&gt;
+        static inline std::shared_ptr&lt;T&gt; Create(PAsset asset, float fontSize = 18.0f){ }</code></td><td>Creates and returns a new instance or resource. Parameters: PAsset asset, float fontSize.</td></tr>
         </tbody>
       </table>
 
       
-      <h2>Public Data</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>return nullptr</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return nullptr</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>font-&gt;assetPtr = asset</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>font-&gt;fontSize = fontSize</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return font</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-        </tbody>
-      </table>
-
 
       <h2>Public API</h2>
       <pre><code class="language-cpp">inline static Logbot FontLogger = Logbot::CreateInstance(&quot;Font&quot;);

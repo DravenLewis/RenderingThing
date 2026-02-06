@@ -143,8 +143,8 @@ Color instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Color(float r = 0.f, float g = 0.f, float b = 0.f, float a = 1.0f) : Vec4(r,g,b,a) {}</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>Color(const Math3D::Vec4&amp; vec) : Vec4(vec.x,vec.y,vec.z,vec.w) {}</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>Color(float r = 0.f, float g = 0.f, float b = 0.f, float a = 1.0f) : Vec4(r,g,b,a) { }</code></td><td>Constructs a Color. Parameters: float r, float g, float b, float a.</td></tr>
+<tr><td><code>Color(const Math3D::Vec4&amp; vec) : Vec4(vec.x,vec.y,vec.z,vec.w) { }</code></td><td>Constructs a Color. Parameters: const Math3D::Vec4&amp; vec.</td></tr>
         </tbody>
       </table>
 
@@ -153,45 +153,17 @@ Color instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>uint32_t toRGBA32() const {
-        uint32_t col = 0</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>col += static_cast&lt;int&gt;(std::round(Math3D::Clamp&lt;float&gt;(x,0,1) * 255.0f))</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>col = (col &lt;&lt; 8) + static_cast&lt;int&gt;(std::round(Math3D::Clamp&lt;float&gt;(y,0.0f,1.0f) * 255.0f))</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>col = (col &lt;&lt; 8) + static_cast&lt;int&gt;(std::round(Math3D::Clamp&lt;float&gt;(z,0.0f,1.0f) * 255.0f))</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>col = (col &lt;&lt; 8) + static_cast&lt;int&gt;(std::round(Math3D::Clamp&lt;float&gt;(w,0.0f,1.0f) * 255.0f))</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    void setRed(float value){ x = Math3D::Clamp&lt;float&gt;(value,0.0f,1.0f)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-    void setGreen(float value){ y = Math3D::Clamp&lt;float&gt;(value,0.0f,1.0f)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-    void setBlue(float value){ z = Math3D::Clamp&lt;float&gt;(value,0.0f,1.0f)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-    void setAlpha(float value){ w = Math3D::Clamp&lt;float&gt;(value,0.0f,1.0f)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-
-    float getRed() {return x</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>float getGreen() {return y</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>float getBlue() {return z</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>float getAlpha() {return w</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>return Math3D::Vec4(nr,ng,nb,na)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int g = ((rgba) &gt;&gt; 16) &amp; 0xFF</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int b = ((rgba) &gt;&gt; 8) &amp; 0xFF</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int a = ((rgba)) &amp; 0xFF</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return fromRGBA255(r,g,b,a)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int g = ((rgb) &gt;&gt; 8) &amp; 0xFF</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int b = ((rgb)) &amp; 0xFF</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return fromRGBA255(r,g,b,a)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    
-    bool operator==(const Color&amp; other) const {
-        
-        return x == other.x &amp;&amp; y == other.y &amp;&amp; z == other.z &amp;&amp; w == other.w</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    bool operator!=(const Color&amp; other) const {
-        return !(*this == other)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>uint32_t toRGBA32() const { }</code></td><td>Returns uint32_t. Parameters: none.</td></tr>
+<tr><td><code>void setRed(float value){ }</code></td><td>Sets the requested value. Parameters: float value.</td></tr>
+<tr><td><code>void setGreen(float value){ }</code></td><td>Sets the requested value. Parameters: float value.</td></tr>
+<tr><td><code>void setBlue(float value){ }</code></td><td>Sets the requested value. Parameters: float value.</td></tr>
+<tr><td><code>void setAlpha(float value){ }</code></td><td>Sets the requested value. Parameters: float value.</td></tr>
+<tr><td><code>float getRed() { }</code></td><td>Returns float. Parameters: none.</td></tr>
+<tr><td><code>float getGreen() { }</code></td><td>Returns float. Parameters: none.</td></tr>
+<tr><td><code>float getBlue() { }</code></td><td>Returns float. Parameters: none.</td></tr>
+<tr><td><code>float getAlpha() { }</code></td><td>Returns float. Parameters: none.</td></tr>
+<tr><td><code>bool operator==(const Color&amp; other) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>bool operator!=(const Color&amp; other) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -200,86 +172,53 @@ Color instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>static Math3D::Vec4 fromRGBA255(int r, int g, int b, int a = 255){
-        float nr = r / 255.0f</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    static Math3D::Vec4 fromRGBA32(uint32_t rgba){
-        int r = ((rgba) &gt;&gt; 24) &amp; 0xFF</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    static Math3D::Vec4 fromRGB24(uint32_t rgb){
-        int r = ((rgb) &gt;&gt; 16) &amp; 0xFF</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    inline static Color fromVec4(Vec4 colorVec){
-        Color color</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    inline static const Math3D::Vec4 RED = Color::fromRGBA32(0xFF0000FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 GREEN = Color::fromRGBA32(0x00FF00FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 BLUE = Color::fromRGBA32(0x0000FFFF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 MAGENTA = Color::fromRGBA32(0xFF00FFFF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 YELLOW = Color::fromRGBA32(0xFFFF00FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 CYAN = Color::fromRGBA32(0x00FFFFFF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 BLACK = Color::fromRGBA32(0x000000FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 WHITE = Color::fromRGBA32(0xFFFFFFFF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 CLEAR = Color::fromRGBA32(0x00000000)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 GRAY         = Color::fromRGBA32(0x808080FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 LIGHT_GRAY   = Color::fromRGBA32(0xD3D3D3FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 DARK_GRAY    = Color::fromRGBA32(0x404040FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 SILVER       = Color::fromRGBA32(0xC0C0C0FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 CHARCOAL     = Color::fromRGBA32(0x36454FFF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 BEIGE        = Color::fromRGBA32(0xF5F5DCFF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 ORANGE       = Color::fromRGBA32(0xFFA500FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 GOLD         = Color::fromRGBA32(0xFFD700FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 CORAL        = Color::fromRGBA32(0xFF7F50FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 CRIMSON      = Color::fromRGBA32(0xDC143CFF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 MAROON       = Color::fromRGBA32(0x800000FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 TOMATO       = Color::fromRGBA32(0xFF6347FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 SALMON       = Color::fromRGBA32(0xFA8072FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 BROWN        = Color::fromRGBA32(0xA52A2AFF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 NAVY         = Color::fromRGBA32(0x000080FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 SKY_BLUE     = Color::fromRGBA32(0x87CEEBFF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 STEEL_BLUE   = Color::fromRGBA32(0x4682B4FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 TEAL         = Color::fromRGBA32(0x008080FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 TURQUOISE    = Color::fromRGBA32(0x40E0D0FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 FOREST_GREEN = Color::fromRGBA32(0x228B22FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 LIME         = Color::fromRGBA32(0x32CD32FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 MINT         = Color::fromRGBA32(0x98FF98FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 OLIVE        = Color::fromRGBA32(0x808000FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 PURPLE       = Color::fromRGBA32(0x800080FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 VIOLET       = Color::fromRGBA32(0xEE82EEFF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 INDIGO       = Color::fromRGBA32(0x4B0082FF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 SLATE_BLUE   = Color::fromRGBA32(0x6A5ACDFF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 LAVENDER     = Color::fromRGBA32(0xE6E6FAFF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 PINK         = Color::fromRGBA32(0xFFC0CBFF)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline static const Math3D::Vec4 HOT_PINK     = Color::fromRGBA32(0xFF69B4FF)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>static Math3D::Vec4 fromRGBA255(int r, int g, int b, int a = 255){ }</code></td><td>Returns Math3D::Vec4. Parameters: int r, int g, int b, int a.</td></tr>
+<tr><td><code>static Math3D::Vec4 fromRGBA32(uint32_t rgba){ }</code></td><td>Returns Math3D::Vec4. Parameters: uint32_t rgba.</td></tr>
+<tr><td><code>static Math3D::Vec4 fromRGB24(uint32_t rgb){ }</code></td><td>Returns Math3D::Vec4. Parameters: uint32_t rgb.</td></tr>
+<tr><td><code>inline static Color fromVec4(Vec4 colorVec){ }</code></td><td>Returns Color. Parameters: Vec4 colorVec.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 RED = Color::fromRGBA32(0xFF0000FF)</code></td><td>Returns const Math3D::Vec4 RED = Color::. Parameters: 0xFF0000FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 GREEN = Color::fromRGBA32(0x00FF00FF)</code></td><td>Returns const Math3D::Vec4 GREEN = Color::. Parameters: 0x00FF00FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 BLUE = Color::fromRGBA32(0x0000FFFF)</code></td><td>Returns const Math3D::Vec4 BLUE = Color::. Parameters: 0x0000FFFF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 MAGENTA = Color::fromRGBA32(0xFF00FFFF)</code></td><td>Returns const Math3D::Vec4 MAGENTA = Color::. Parameters: 0xFF00FFFF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 YELLOW = Color::fromRGBA32(0xFFFF00FF)</code></td><td>Returns const Math3D::Vec4 YELLOW = Color::. Parameters: 0xFFFF00FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 CYAN = Color::fromRGBA32(0x00FFFFFF)</code></td><td>Returns const Math3D::Vec4 CYAN = Color::. Parameters: 0x00FFFFFF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 BLACK = Color::fromRGBA32(0x000000FF)</code></td><td>Returns const Math3D::Vec4 BLACK = Color::. Parameters: 0x000000FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 WHITE = Color::fromRGBA32(0xFFFFFFFF)</code></td><td>Returns const Math3D::Vec4 WHITE = Color::. Parameters: 0xFFFFFFFF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 CLEAR = Color::fromRGBA32(0x00000000)</code></td><td>Returns const Math3D::Vec4 CLEAR = Color::. Parameters: 0x00000000.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 GRAY         = Color::fromRGBA32(0x808080FF)</code></td><td>Returns const Math3D::Vec4 GRAY         = Color::. Parameters: 0x808080FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 LIGHT_GRAY   = Color::fromRGBA32(0xD3D3D3FF)</code></td><td>Returns const Math3D::Vec4 LIGHT_GRAY   = Color::. Parameters: 0xD3D3D3FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 DARK_GRAY    = Color::fromRGBA32(0x404040FF)</code></td><td>Returns const Math3D::Vec4 DARK_GRAY    = Color::. Parameters: 0x404040FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 SILVER       = Color::fromRGBA32(0xC0C0C0FF)</code></td><td>Returns const Math3D::Vec4 SILVER       = Color::. Parameters: 0xC0C0C0FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 CHARCOAL     = Color::fromRGBA32(0x36454FFF)</code></td><td>Returns const Math3D::Vec4 CHARCOAL     = Color::. Parameters: 0x36454FFF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 BEIGE        = Color::fromRGBA32(0xF5F5DCFF)</code></td><td>Returns const Math3D::Vec4 BEIGE        = Color::. Parameters: 0xF5F5DCFF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 ORANGE       = Color::fromRGBA32(0xFFA500FF)</code></td><td>Returns const Math3D::Vec4 ORANGE       = Color::. Parameters: 0xFFA500FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 GOLD         = Color::fromRGBA32(0xFFD700FF)</code></td><td>Returns const Math3D::Vec4 GOLD         = Color::. Parameters: 0xFFD700FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 CORAL        = Color::fromRGBA32(0xFF7F50FF)</code></td><td>Returns const Math3D::Vec4 CORAL        = Color::. Parameters: 0xFF7F50FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 CRIMSON      = Color::fromRGBA32(0xDC143CFF)</code></td><td>Returns const Math3D::Vec4 CRIMSON      = Color::. Parameters: 0xDC143CFF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 MAROON       = Color::fromRGBA32(0x800000FF)</code></td><td>Returns const Math3D::Vec4 MAROON       = Color::. Parameters: 0x800000FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 TOMATO       = Color::fromRGBA32(0xFF6347FF)</code></td><td>Returns const Math3D::Vec4 TOMATO       = Color::. Parameters: 0xFF6347FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 SALMON       = Color::fromRGBA32(0xFA8072FF)</code></td><td>Returns const Math3D::Vec4 SALMON       = Color::. Parameters: 0xFA8072FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 BROWN        = Color::fromRGBA32(0xA52A2AFF)</code></td><td>Returns const Math3D::Vec4 BROWN        = Color::. Parameters: 0xA52A2AFF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 NAVY         = Color::fromRGBA32(0x000080FF)</code></td><td>Returns const Math3D::Vec4 NAVY         = Color::. Parameters: 0x000080FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 SKY_BLUE     = Color::fromRGBA32(0x87CEEBFF)</code></td><td>Returns const Math3D::Vec4 SKY_BLUE     = Color::. Parameters: 0x87CEEBFF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 STEEL_BLUE   = Color::fromRGBA32(0x4682B4FF)</code></td><td>Returns const Math3D::Vec4 STEEL_BLUE   = Color::. Parameters: 0x4682B4FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 TEAL         = Color::fromRGBA32(0x008080FF)</code></td><td>Returns const Math3D::Vec4 TEAL         = Color::. Parameters: 0x008080FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 TURQUOISE    = Color::fromRGBA32(0x40E0D0FF)</code></td><td>Returns const Math3D::Vec4 TURQUOISE    = Color::. Parameters: 0x40E0D0FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 FOREST_GREEN = Color::fromRGBA32(0x228B22FF)</code></td><td>Returns const Math3D::Vec4 FOREST_GREEN = Color::. Parameters: 0x228B22FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 LIME         = Color::fromRGBA32(0x32CD32FF)</code></td><td>Returns const Math3D::Vec4 LIME         = Color::. Parameters: 0x32CD32FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 MINT         = Color::fromRGBA32(0x98FF98FF)</code></td><td>Returns const Math3D::Vec4 MINT         = Color::. Parameters: 0x98FF98FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 OLIVE        = Color::fromRGBA32(0x808000FF)</code></td><td>Returns const Math3D::Vec4 OLIVE        = Color::. Parameters: 0x808000FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 PURPLE       = Color::fromRGBA32(0x800080FF)</code></td><td>Returns const Math3D::Vec4 PURPLE       = Color::. Parameters: 0x800080FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 VIOLET       = Color::fromRGBA32(0xEE82EEFF)</code></td><td>Returns const Math3D::Vec4 VIOLET       = Color::. Parameters: 0xEE82EEFF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 INDIGO       = Color::fromRGBA32(0x4B0082FF)</code></td><td>Returns const Math3D::Vec4 INDIGO       = Color::. Parameters: 0x4B0082FF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 SLATE_BLUE   = Color::fromRGBA32(0x6A5ACDFF)</code></td><td>Returns const Math3D::Vec4 SLATE_BLUE   = Color::. Parameters: 0x6A5ACDFF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 LAVENDER     = Color::fromRGBA32(0xE6E6FAFF)</code></td><td>Returns const Math3D::Vec4 LAVENDER     = Color::. Parameters: 0xE6E6FAFF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 PINK         = Color::fromRGBA32(0xFFC0CBFF)</code></td><td>Returns const Math3D::Vec4 PINK         = Color::. Parameters: 0xFFC0CBFF.</td></tr>
+<tr><td><code>inline static const Math3D::Vec4 HOT_PINK     = Color::fromRGBA32(0xFF69B4FF)</code></td><td>Returns const Math3D::Vec4 HOT_PINK     = Color::. Parameters: 0xFF69B4FF.</td></tr>
         </tbody>
       </table>
 
       
-      <h2>Public Data</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>return col</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float ng = g / 255.0f</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float nb = b / 255.0f</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float na = a / 255.0f</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int a = 255</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>color.x = colorVec.x</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>color.y = colorVec.y</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>color.z = colorVec.z</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>color.w = colorVec.w</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return color</code></td><td>Performs the operation described by the name.</td></tr>
-        </tbody>
-      </table>
-
 
       <h2>Public API</h2>
       <pre><code class="language-cpp">struct Color : public Math3D::Vec4{

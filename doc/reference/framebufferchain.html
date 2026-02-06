@@ -144,10 +144,9 @@ FrameBufferChain instance;</code></pre>
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
 <tr><td><code>private:
-        FrameBufferChain() = delete</code></td><td>Constructs the object.</td></tr>
+        FrameBufferChain() = delete</code></td><td>Deleted; this overload is not available.</td></tr>
 <tr><td><code>public:
-        FrameBufferChain(int s) : size(s) {
-            frameBufferPtrArray.resize(s)</code></td><td>Constructs the object.</td></tr>
+        FrameBufferChain(int s) : size(s) { }</code></td><td>Constructs a FrameBufferChain. Parameters: int s.</td></tr>
         </tbody>
       </table>
 
@@ -156,27 +155,11 @@ FrameBufferChain instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>std::shared_ptr&lt;FrameBuffer&gt; getAtIndex(int index){
-            if(index &lt; 0 || index &gt;= size) return nullptr</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-
-        void setAtIndex(int index, std::shared_ptr&lt;FrameBuffer&gt; fbPtr){
-            if(index &lt; 0 || index &gt;= size) return</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-
-        int getSize(){
-            return size</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-
-        void resize(int newSize){
-            if(newSize &lt;= 0) return</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>frameBufferPtrArray.resize(newSize)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        void resizeBuffers(int width, int height){
-            for(auto buffer : frameBufferPtrArray){
-                if(buffer) {
-                    buffer-&gt;resize(width,height)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>std::shared_ptr&lt;FrameBuffer&gt; getAtIndex(int index){ }</code></td><td>Returns std::shared_ptr&lt;FrameBuffer&gt;. Parameters: int index.</td></tr>
+<tr><td><code>void setAtIndex(int index, std::shared_ptr&lt;FrameBuffer&gt; fbPtr){ }</code></td><td>Sets the requested value. Parameters: int index, std::shared_ptr&lt;FrameBuffer&gt; fbPtr.</td></tr>
+<tr><td><code>int getSize(){ }</code></td><td>Returns int. Parameters: none.</td></tr>
+<tr><td><code>void resize(int newSize){ }</code></td><td>Returns void. Parameters: int newSize.</td></tr>
+<tr><td><code>void resizeBuffers(int width, int height){ }</code></td><td>Returns void. Parameters: int width, int height.</td></tr>
         </tbody>
       </table>
 
@@ -186,15 +169,8 @@ FrameBufferChain instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>int size = 0</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>std::vector&lt;std::shared_ptr&lt;FrameBuffer&gt;&gt; frameBufferPtrArray</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return frameBufferPtrArray[index]</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>frameBufferPtrArray[index] = fbPtr</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>size = newSize</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-            }
-        }</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>int size = 0</code></td><td>Data member of type int.</td></tr>
+<tr><td><code>std::vector&lt;std::shared_ptr&lt;FrameBuffer&gt;&gt; frameBufferPtrArray</code></td><td>Data member of type std::vector&lt;std::shared_ptr&lt;FrameBuffer&gt;&gt;.</td></tr>
         </tbody>
       </table>
 

@@ -143,7 +143,7 @@ Graphics2D instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Graphics2D(PScreen screenContext)</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>Graphics2D(PScreen screenContext)</code></td><td>Constructs a Graphics2D. Parameters: PScreen screenContext.</td></tr>
         </tbody>
       </table>
 
@@ -152,10 +152,10 @@ Graphics2D instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>void resize(int w, int h)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void begin()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void end()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>GraphicsContext&amp; getContext()</code></td><td>Returns the requested value.</td></tr>
+<tr><td><code>void resize(int w, int h)</code></td><td>Returns void. Parameters: int w, int h.</td></tr>
+<tr><td><code>void begin()</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>void end()</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>GraphicsContext&amp; getContext()</code></td><td>Returns GraphicsContext&amp;. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -164,18 +164,18 @@ Graphics2D instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>static void SetForegroundColor(Graphics2D&amp; graphics, const Color&amp; foregroundColor = Color::WHITE)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>static void SetBackgroundColor(Graphics2D&amp; graphics, const Color&amp; backgroundColor = Color::BLACK)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>static void SetStrokeWidth(Graphics2D&amp; graphics, float width = 1.0f)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>static void SetFontSize(Graphics2D&amp; graphics, float size = 1.0f)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>static void SetFont(Graphics2D&amp; graphics, PFont font)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>static void DrawLine(Graphics2D&amp; graphics, float x1, float y1, float x2, float y2)</code></td><td>Renders content using the current settings.</td></tr>
-<tr><td><code>static void DrawRect(Graphics2D&amp; graphics, float x, float y, float w, float h)</code></td><td>Renders content using the current settings.</td></tr>
-<tr><td><code>static void FillRect(Graphics2D&amp; graphics, float x, float y, float w, float h)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>static void DrawEllipse(Graphics2D&amp; graphics, float x, float y, float w, float h)</code></td><td>Renders content using the current settings.</td></tr>
-<tr><td><code>static void FillEllipse(Graphics2D&amp; graphics, float x, float y, float w, float h)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>static void DrawImage(Graphics2D&amp; graphics, PTexture tex, float x, float y, float w = -1, float h = -1)</code></td><td>Renders content using the current settings.</td></tr>
-<tr><td><code>static void DrawString(Graphics2D&amp; graphics, std::string text, float x, float y)</code></td><td>Renders content using the current settings.</td></tr>
+<tr><td><code>static void SetForegroundColor(Graphics2D&amp; graphics, const Color&amp; foregroundColor = Color::WHITE)</code></td><td>Sets the requested value. Parameters: Graphics2D&amp; graphics, const Color&amp; foregroundColor.</td></tr>
+<tr><td><code>static void SetBackgroundColor(Graphics2D&amp; graphics, const Color&amp; backgroundColor = Color::BLACK)</code></td><td>Sets the requested value. Parameters: Graphics2D&amp; graphics, const Color&amp; backgroundColor.</td></tr>
+<tr><td><code>static void SetStrokeWidth(Graphics2D&amp; graphics, float width = 1.0f)</code></td><td>Sets the requested value. Parameters: Graphics2D&amp; graphics, float width.</td></tr>
+<tr><td><code>static void SetFontSize(Graphics2D&amp; graphics, float size = 1.0f)</code></td><td>Sets the requested value. Parameters: Graphics2D&amp; graphics, float size.</td></tr>
+<tr><td><code>static void SetFont(Graphics2D&amp; graphics, PFont font)</code></td><td>Sets the requested value. Parameters: Graphics2D&amp; graphics, PFont font.</td></tr>
+<tr><td><code>static void DrawLine(Graphics2D&amp; graphics, float x1, float y1, float x2, float y2)</code></td><td>Renders content using the current settings. Parameters: Graphics2D&amp; graphics, float x1, float y1, float x2, float y2.</td></tr>
+<tr><td><code>static void DrawRect(Graphics2D&amp; graphics, float x, float y, float w, float h)</code></td><td>Renders content using the current settings. Parameters: Graphics2D&amp; graphics, float x, float y, float w, float h.</td></tr>
+<tr><td><code>static void FillRect(Graphics2D&amp; graphics, float x, float y, float w, float h)</code></td><td>Returns void. Parameters: Graphics2D&amp; graphics, float x, float y, float w, float h.</td></tr>
+<tr><td><code>static void DrawEllipse(Graphics2D&amp; graphics, float x, float y, float w, float h)</code></td><td>Renders content using the current settings. Parameters: Graphics2D&amp; graphics, float x, float y, float w, float h.</td></tr>
+<tr><td><code>static void FillEllipse(Graphics2D&amp; graphics, float x, float y, float w, float h)</code></td><td>Returns void. Parameters: Graphics2D&amp; graphics, float x, float y, float w, float h.</td></tr>
+<tr><td><code>static void DrawImage(Graphics2D&amp; graphics, PTexture tex, float x, float y, float w = -1, float h = -1)</code></td><td>Renders content using the current settings. Parameters: Graphics2D&amp; graphics, PTexture tex, float x, float y, float w, float h.</td></tr>
+<tr><td><code>static void DrawString(Graphics2D&amp; graphics, std::string text, float x, float y)</code></td><td>Renders content using the current settings. Parameters: Graphics2D&amp; graphics, std::string text, float x, float y.</td></tr>
         </tbody>
       </table>
 

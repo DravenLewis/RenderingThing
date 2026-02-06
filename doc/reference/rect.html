@@ -146,25 +146,15 @@ Rect instance;</code></pre>
 <tr><td><code>Rect(Vec2 pos, Vec2 size):
                 position(pos.x,pos.y),
                 size(size.x,size.y)
-            {}
-
-            Rect(float x, float y, float w, float h):
+            { }</code></td><td>Constructs a Rect. Parameters: Vec2 pos, Vec2 size.</td></tr>
+<tr><td><code>Rect(float x, float y, float w, float h):
                 position(x,y),
                 size(w,h)
-            {}
-
-            Rect():
+            { }</code></td><td>Constructs a Rect. Parameters: float x, float y, float w, float h.</td></tr>
+<tr><td><code>Rect():
                 position(0,0),
                 size(RECTANGLE_SIZE,RECTANGLE_SIZE)
-            {}
-
-            bool intercects(const Rect&amp; r){
-                return !( 
-                    position.x + size.x &lt; r.position.x ||
-                    position.x &gt; r.position.x + r.size.x ||
-                    position.y + size.y &lt; r.position.y ||
-                    position.y &gt; r.position.y + r.size.y
-                )</code></td><td>Constructs the object.</td></tr>
+            { }</code></td><td>Constructs a Rect. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -173,39 +163,11 @@ Rect instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-
-            bool contains(const Rect&amp; r){
-                return (
-                    r.position.x &gt;= position.x &amp;&amp;
-                    r.position.y &gt;= position.y &amp;&amp;
-                    r.position.x + r.size.x &lt;= position.x + size.x &amp;&amp;
-                    r.position.y + r.size.y &lt;= position.y + size.y
-                )</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-            void operator= (const Rect&amp; rect) {
-                position.x = rect.position.x, 
-                position.y = rect.position.y,
-                size.x = rect.size.x</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-            bool operator== (const Rect&amp; rect) {
-                return (
-                    position.x == rect.position.x &amp;&amp;
-                    position.y == rect.position.y &amp;&amp;
-                    size.x == rect.size.x &amp;&amp;
-                    size.y == rect.size.y
-                )</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-            bool operator!= (const Rect&amp; rect) {
-                return (
-                    position.x != rect.position.x ||
-                    position.y != rect.position.y ||
-                    size.x != rect.size.x ||
-                    size.y != rect.size.y
-                )</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>bool intercects(const Rect&amp; r){ }</code></td><td>Returns bool. Parameters: const Rect&amp; r.</td></tr>
+<tr><td><code>bool contains(const Rect&amp; r){ }</code></td><td>Returns bool. Parameters: const Rect&amp; r.</td></tr>
+<tr><td><code>void operator= (const Rect&amp; rect) { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>bool operator== (const Rect&amp; rect) { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>bool operator!= (const Rect&amp; rect) { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -216,12 +178,10 @@ Rect instance;</code></pre>
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
 <tr><td><code>private:
-            const int RECTANGLE_SIZE = 10</code></td><td>Performs the operation described by the name.</td></tr>
+            const int RECTANGLE_SIZE = 10</code></td><td>Data member of type private: const int.</td></tr>
 <tr><td><code>public:
-            Vec2 position</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>Vec2 size</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>size.y = rect.size.y</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+            Vec2 position</code></td><td>Data member of type public: Vec2.</td></tr>
+<tr><td><code>Vec2 size</code></td><td>Data member of type Vec2.</td></tr>
         </tbody>
       </table>
 

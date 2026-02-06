@@ -143,8 +143,7 @@ ShaderProgram instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>~ShaderProgram(){
-            glDeleteProgram(programHandle)</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>~ShaderProgram(){ }</code></td><td>Constructs a ShaderProgram. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -153,43 +152,29 @@ ShaderProgram instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>void setVertexShader(std::string glsl)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>void setFragmentShader(std::string glsl)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>void setGeometryShader(std::string glsl)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>void setTesselationShader(std::string glsl)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>void setComputeShader(std::string glsl)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>void setTaskShader(std::string glsl)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>void setRTXShader(std::string glsl)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>ShaderBundle&amp; getVertexShader()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>ShaderBundle&amp; getFragmentShader()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>ShaderBundle&amp; getGeometryShader()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>ShaderBundle&amp; getTesselationShader()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>ShaderBundle&amp; getComputeShader()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>ShaderBundle&amp; getTaskShader()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>ShaderBundle&amp; getRTXShader()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>std::string getLog()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>Shader compile()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void bind()</code></td><td>Binds the resource for use.</td></tr>
-<tr><td><code>void unbind()</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>void setVertexShader(std::string glsl)</code></td><td>Sets the requested value. Parameters: std::string glsl.</td></tr>
+<tr><td><code>void setFragmentShader(std::string glsl)</code></td><td>Sets the requested value. Parameters: std::string glsl.</td></tr>
+<tr><td><code>void setGeometryShader(std::string glsl)</code></td><td>Sets the requested value. Parameters: std::string glsl.</td></tr>
+<tr><td><code>void setTesselationShader(std::string glsl)</code></td><td>Sets the requested value. Parameters: std::string glsl.</td></tr>
+<tr><td><code>void setComputeShader(std::string glsl)</code></td><td>Sets the requested value. Parameters: std::string glsl.</td></tr>
+<tr><td><code>void setTaskShader(std::string glsl)</code></td><td>Sets the requested value. Parameters: std::string glsl.</td></tr>
+<tr><td><code>void setRTXShader(std::string glsl)</code></td><td>Sets the requested value. Parameters: std::string glsl.</td></tr>
+<tr><td><code>ShaderBundle&amp; getVertexShader()</code></td><td>Returns ShaderBundle&amp;. Parameters: none.</td></tr>
+<tr><td><code>ShaderBundle&amp; getFragmentShader()</code></td><td>Returns ShaderBundle&amp;. Parameters: none.</td></tr>
+<tr><td><code>ShaderBundle&amp; getGeometryShader()</code></td><td>Returns ShaderBundle&amp;. Parameters: none.</td></tr>
+<tr><td><code>ShaderBundle&amp; getTesselationShader()</code></td><td>Returns ShaderBundle&amp;. Parameters: none.</td></tr>
+<tr><td><code>ShaderBundle&amp; getComputeShader()</code></td><td>Returns ShaderBundle&amp;. Parameters: none.</td></tr>
+<tr><td><code>ShaderBundle&amp; getTaskShader()</code></td><td>Returns ShaderBundle&amp;. Parameters: none.</td></tr>
+<tr><td><code>ShaderBundle&amp; getRTXShader()</code></td><td>Returns ShaderBundle&amp;. Parameters: none.</td></tr>
+<tr><td><code>std::string getLog()</code></td><td>Returns std::string. Parameters: none.</td></tr>
+<tr><td><code>Shader compile()</code></td><td>Returns Shader. Parameters: none.</td></tr>
+<tr><td><code>void bind()</code></td><td>Binds this resource for use. Parameters: none.</td></tr>
+<tr><td><code>void unbind()</code></td><td>Returns void. Parameters: none.</td></tr>
 <tr><td><code>template&lt;typename T&gt;
-        void setUniform(const std::string&amp; name, const Uniform&lt;T&gt;&amp; uniform){
-            bind()</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>GLint loc = getUniformLocationCached(name)</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>if(loc != -1){
-                GLUniformUpload::upload(loc, uniform.get())</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-            
-        }
-
-        template&lt;typename T&gt;
-        void setUniformFast(const std::string&amp; name, const Uniform&lt;T&gt;&amp; uniform){
-            GLint loc = getUniformLocationCached(name)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>if(loc != -1){
-                GLUniformUpload::upload(loc, uniform.get())</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        }
-
-        Shader getID()</code></td><td>Returns the requested value.</td></tr>
+        void setUniform(const std::string&amp; name, const Uniform&lt;T&gt;&amp; uniform){ }</code></td><td>Sets the requested value. Parameters: const std::string&amp; name, const Uniform&lt;T&gt;&amp; uniform.</td></tr>
+<tr><td><code>template&lt;typename T&gt;
+        void setUniformFast(const std::string&amp; name, const Uniform&lt;T&gt;&amp; uniform){ }</code></td><td>Sets the requested value. Parameters: const std::string&amp; name, const Uniform&lt;T&gt;&amp; uniform.</td></tr>
+<tr><td><code>Shader getID()</code></td><td>Returns Shader. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -198,19 +183,11 @@ ShaderProgram instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>static Shader GetCurrentShaderProgram()</code></td><td>Returns the requested value.</td></tr>
+<tr><td><code>static Shader GetCurrentShaderProgram()</code></td><td>Returns Shader. Parameters: none.</td></tr>
         </tbody>
       </table>
 
       
-      <h2>Public Data</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-        </tbody>
-      </table>
-
 
       <h2>Public API</h2>
       <pre><code class="language-cpp">void setVertexShader(std::string glsl);

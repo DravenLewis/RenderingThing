@@ -145,7 +145,7 @@ auto instance = Model::Create(/* args */);</code></pre>
         <tbody>
 <tr><td><code>public:
 
-        Model() = default</code></td><td>Constructs the object.</td></tr>
+        Model() = default</code></td><td>Constructs a Model. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -154,55 +154,16 @@ auto instance = Model::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Model&amp; addPart(std::shared_ptr&lt;ModelPart&gt; part){
-            modelParts.push_back(part)</code></td><td>Adds an item to the collection.</td></tr>
-<tr><td><code>}
-
-        Math3D::Transform&amp; transform(){
-            return modelTransform</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        void setBackfaceCulling(bool enabled){
-            enableBackfaceCulling = enabled</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-
-        bool isBackfaceCullingEnabled() const {
-            return enableBackfaceCulling</code></td><td>Returns whether the condition is met.</td></tr>
-<tr><td><code>}
-
-        void draw(
+<tr><td><code>Model&amp; addPart(std::shared_ptr&lt;ModelPart&gt; part){ }</code></td><td>Returns Model&amp;. Parameters: std::shared_ptr&lt;ModelPart&gt; part.</td></tr>
+<tr><td><code>Math3D::Transform&amp; transform(){ }</code></td><td>Returns Math3D::Transform&amp;. Parameters: none.</td></tr>
+<tr><td><code>void setBackfaceCulling(bool enabled){ }</code></td><td>Sets the requested value. Parameters: bool enabled.</td></tr>
+<tr><td><code>bool isBackfaceCullingEnabled() const { }</code></td><td>Returns bool. Parameters: none.</td></tr>
+<tr><td><code>void draw(
             const Math3D::Mat4&amp; parent = Math3D::Mat4(),
             const Math3D::Mat4&amp; view = Math3D::Mat4(),
             const Math3D::Mat4&amp; projection = Math3D::Mat4()
-        ) override {
-
-            Math3D::Mat4 global = parent * transform().toMat4()</code></td><td>Renders content using the current settings.</td></tr>
-<tr><td><code>if(enableBackfaceCulling){
-                glEnable(GL_CULL_FACE)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glCullFace(GL_BACK)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}else{
-                glDisable(GL_CULL_FACE)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-            for(auto part : modelParts){
-                if(part){
-                    part-&gt;draw(global, view, projection)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-            }
-
-            
-            glEnable(GL_CULL_FACE)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glCullFace(GL_BACK)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void draw(PCamera cam, Nullable&lt;Math3D::Transform&gt; parentTransform = nullptr){
-            if(!cam) return</code></td><td>Renders content using the current settings.</td></tr>
-<tr><td><code>auto parentMatrix = parentTransform.hasValue() 
-                ? parentTransform-&gt;toMat4()
-                : Math3D::Mat4(1.0f)</code></td><td>Returns whether the condition is met.</td></tr>
-<tr><td><code>this-&gt;draw(
-                parentMatrix,
-                cam-&gt;getViewMatrix(),
-                cam-&gt;getProjectionMatrix()
-            )</code></td><td>Renders content using the current settings.</td></tr>
+        ) override { }</code></td><td>Renders content using the current settings. Parameters: const Math3D::Mat4&amp; parent, const Math3D::Mat4&amp; view, const Math3D::Mat4&amp; projection.</td></tr>
+<tr><td><code>void draw(PCamera cam, Nullable&lt;Math3D::Transform&gt; parentTransform = nullptr){ }</code></td><td>Renders content using the current settings. Parameters: PCamera cam, Nullable&lt;Math3D::Transform&gt; parentTransform.</td></tr>
         </tbody>
       </table>
 
@@ -211,10 +172,7 @@ auto instance = Model::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-
-        static std::shared_ptr&lt;Model&gt; Create(){
-            return std::make_shared&lt;Model&gt;()</code></td><td>Creates a new instance or resource.</td></tr>
+<tr><td><code>static std::shared_ptr&lt;Model&gt; Create(){ }</code></td><td>Creates and returns a new instance or resource. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -224,12 +182,9 @@ auto instance = Model::Create(/* args */);</code></pre>
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
 <tr><td><code>private:
-        Math3D::Transform modelTransform</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>std::vector&lt;std::shared_ptr&lt;ModelPart&gt;&gt; modelParts</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>bool enableBackfaceCulling = true</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return *this</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+        Math3D::Transform modelTransform</code></td><td>Data member of type private: Math3D::Transform.</td></tr>
+<tr><td><code>std::vector&lt;std::shared_ptr&lt;ModelPart&gt;&gt; modelParts</code></td><td>Data member of type std::vector&lt;std::shared_ptr&lt;ModelPart&gt;&gt;.</td></tr>
+<tr><td><code>bool enableBackfaceCulling = true</code></td><td>Data member of type bool.</td></tr>
         </tbody>
       </table>
 

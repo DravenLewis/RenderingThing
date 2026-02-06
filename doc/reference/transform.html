@@ -144,13 +144,7 @@ Transform instance;</code></pre>
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
 <tr><td><code>Transform(Vec3 pos = Vec3::zero(), Quat rot = Quat(), Vec3 scl = Vec3::one())
-            : position(pos), rotation(rot), scale(scl) {}
-
-        
-        Mat4 toMat4() const {
-            
-            glm::mat4 m = glm::mat4(1.0f)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>return Transform((Vec3)trans, rot, (Vec3)scaleVec)</code></td><td>Constructs the object.</td></tr>
+            : position(pos), rotation(rot), scale(scl) { }</code></td><td>Constructs a Transform. Parameters: Vec3 pos, Quat rot, Vec3 scl.</td></tr>
         </tbody>
       </table>
 
@@ -159,121 +153,27 @@ Transform instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>m = glm::translate(m, (glm::vec3)position)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>m *= glm::toMat4((glm::quat)rotation)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>m = glm::scale(m, (glm::vec3)scale)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return Mat4(m)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        
-        
-        
-        Mat4 operator*(const Transform&amp; child) const {
-            return this-&gt;toMat4() * child.toMat4()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        
-        Vec3 forward() const { return rotation * Vec3(0, 0, 1)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        Vec3 right()   const { return rotation * Vec3(1, 0, 0)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        Vec3 up()      const { return rotation * Vec3(0, 1, 0)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        
-        void setRotation(float x, float y, float z) {
-            rotation = Quat::FromEuler(Vec3(x, y, z))</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-
-        void setRotation(const Vec3&amp; eulerAngles) {
-            rotation = Quat::FromEuler(eulerAngles)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-
-        
-
-        
-        void setPosition(const Vec3&amp; p) { position = p</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-        void setPosition(float x, float y, float z) { position = Vec3(x,y,z)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-        void translate(const Vec3&amp; delta) { position += delta</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        void translate(float x = 0, float y = 0, float z = 0) { position += Vec3(x,y,z)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        void setX(float x) { position.x = x</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-        void setY(float y) { position.y = y</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-        void setZ(float z) { position.z = z</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-
-        
-        void setScale(const Vec3&amp; s) { scale = s</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-        void setUniformScale(float s) { scale = Vec3(s, s, s)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-        void setScale(float x = 1.0f, float y = 1.0f, float z = 1.0f) {scale = Vec3(x, y, z)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-
-        
-        void rotateAxisAngle(const Vec3&amp; axis, float angleDeg, bool localSpace = true) {
-            Quat q = Quat::AngleAxis(angleDeg, axis)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if(localSpace){
-                rotation = rotation * q</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-            rotation = rotation.normalize()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        
-        void lookAt(const Vec3&amp; target, const Vec3&amp; worldUp = Vec3(0,1,0)) {
-            Vec3 dir = target - position</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float lengthSquared = dir.length() * dir.length()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if (lengthSquared &lt; 1e-8f) return</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>Vec3 f = dir.normalize()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>Vec3 up = worldUp.normalize()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if (fabs(Vec3::dot(f, up)) &gt; 0.999f) {
-                up = Vec3::cross(f, Vec3::right()).normalize()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float upLengthSquared = up.length() * up.length()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if (upLengthSquared &lt; 1e-6f)
-                    up = Vec3::cross(f, Vec3::forward()).normalize()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-            Vec3 r = Vec3::cross(up,f).normalize()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>Vec3 u = Vec3::cross(f, r)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>rotMat[0] = (glm::vec3) r</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>rotMat[1] = (glm::vec3) u</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>rotMat[2] = (glm::vec3) f</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>rotation = Quat::FromMat3(rotMat)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glm::vec3 trans = glm::vec3(m[3])</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glm::vec3 col0 = glm::vec3(m[0])</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glm::vec3 col1 = glm::vec3(m[1])</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glm::vec3 col2 = glm::vec3(m[2])</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float sx = glm::length(col0)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float sy = glm::length(col1)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float sz = glm::length(col2)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glm::vec3 scaleVec(sx &gt; 1e-8f ? sx : 0.0f,
-                               sy &gt; 1e-8f ? sy : 0.0f,
-                               sz &gt; 1e-8f ? sz : 0.0f)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if (sx &gt; 1e-8f) rotMat[0] = col0 / sx</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>else rotMat[0] = glm::vec3(1,0,0)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if (sy &gt; 1e-8f) rotMat[1] = col1 / sy</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>else rotMat[1] = glm::vec3(0,1,0)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if (sz &gt; 1e-8f) rotMat[2] = col2 / sz</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>else rotMat[2] = glm::vec3(0,0,1)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>Quat rot = (Quat)glm::quat_cast(rotMat)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        
-        void setFromMat4(const Mat4&amp; m) {
-            *this = Transform::fromMat4(m)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-
-        void reset(){
-            this-&gt;setPosition(Math3D::Vec3(0,0))</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>this-&gt;setScale(Math3D::Vec3(1,1,1))</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>this-&gt;setRotation(0.0f,0.0f,0.0f)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>return Vec3(p.x, p.y, p.z)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>Mat4 toMat4() const { }</code></td><td>Returns Mat4. Parameters: none.</td></tr>
+<tr><td><code>Mat4 operator*(const Transform&amp; child) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>Vec3 forward() const { }</code></td><td>Returns Vec3. Parameters: none.</td></tr>
+<tr><td><code>Vec3 right()   const { }</code></td><td>Returns Vec3. Parameters: none.</td></tr>
+<tr><td><code>Vec3 up()      const { }</code></td><td>Returns Vec3. Parameters: none.</td></tr>
+<tr><td><code>void setRotation(float x, float y, float z) { }</code></td><td>Sets the requested value. Parameters: float x, float y, float z.</td></tr>
+<tr><td><code>void setRotation(const Vec3&amp; eulerAngles) { }</code></td><td>Sets the requested value. Parameters: const Vec3&amp; eulerAngles.</td></tr>
+<tr><td><code>void setPosition(const Vec3&amp; p) { }</code></td><td>Sets the requested value. Parameters: const Vec3&amp; p.</td></tr>
+<tr><td><code>void setPosition(float x, float y, float z) { }</code></td><td>Sets the requested value. Parameters: float x, float y, float z.</td></tr>
+<tr><td><code>void translate(const Vec3&amp; delta) { }</code></td><td>Returns void. Parameters: const Vec3&amp; delta.</td></tr>
+<tr><td><code>void translate(float x = 0, float y = 0, float z = 0) { }</code></td><td>Returns void. Parameters: float x, float y, float z.</td></tr>
+<tr><td><code>void setX(float x) { }</code></td><td>Sets the requested value. Parameters: float x.</td></tr>
+<tr><td><code>void setY(float y) { }</code></td><td>Sets the requested value. Parameters: float y.</td></tr>
+<tr><td><code>void setZ(float z) { }</code></td><td>Sets the requested value. Parameters: float z.</td></tr>
+<tr><td><code>void setScale(const Vec3&amp; s) { }</code></td><td>Sets the requested value. Parameters: const Vec3&amp; s.</td></tr>
+<tr><td><code>void setUniformScale(float s) { }</code></td><td>Sets the requested value. Parameters: float s.</td></tr>
+<tr><td><code>void setScale(float x = 1.0f, float y = 1.0f, float z = 1.0f) { }</code></td><td>Sets the requested value. Parameters: float x, float y, float z.</td></tr>
+<tr><td><code>void rotateAxisAngle(const Vec3&amp; axis, float angleDeg, bool localSpace = true) { }</code></td><td>Returns void. Parameters: const Vec3&amp; axis, float angleDeg, bool localSpace.</td></tr>
+<tr><td><code>void lookAt(const Vec3&amp; target, const Vec3&amp; worldUp = Vec3(0,1,0)) { }</code></td><td>Returns void. Parameters: const Vec3&amp; target, const Vec3&amp; worldUp, 1, 0).</td></tr>
+<tr><td><code>void setFromMat4(const Mat4&amp; m) { }</code></td><td>Sets the requested value. Parameters: const Mat4&amp; m.</td></tr>
+<tr><td><code>void reset(){ }</code></td><td>Returns void. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -282,17 +182,8 @@ Transform instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-
-        
-        static Transform fromMat4(const Mat4&amp; m_in) {
-            
-            glm::mat4 m = (glm::mat4)m_in</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        
-        static Vec3 transformPoint(const Mat4&amp; parentMat, const Vec3&amp; localPoint) {
-            glm::vec4 p = (glm::mat4)parentMat * glm::vec4((glm::vec3)localPoint, 1.0f)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>static Transform fromMat4(const Mat4&amp; m_in) { }</code></td><td>Returns Transform. Parameters: const Mat4&amp; m_in.</td></tr>
+<tr><td><code>static Vec3 transformPoint(const Mat4&amp; parentMat, const Vec3&amp; localPoint) { }</code></td><td>Returns Vec3. Parameters: const Mat4&amp; parentMat, const Vec3&amp; localPoint.</td></tr>
         </tbody>
       </table>
 
@@ -301,14 +192,9 @@ Transform instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Vec3 position</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>Quat rotation</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>Vec3 scale</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}else{
-                rotation = q * rotation</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glm::mat3 rotMat</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glm::mat3 rotMat</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>Vec3 position</code></td><td>Data member of type Vec3.</td></tr>
+<tr><td><code>Quat rotation</code></td><td>Data member of type Quat.</td></tr>
+<tr><td><code>Vec3 scale</code></td><td>Data member of type Vec3.</td></tr>
         </tbody>
       </table>
 

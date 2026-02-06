@@ -143,11 +143,11 @@ Texture instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Texture() : textureID(0), width(0), height(0){}</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>~Texture()</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>Texture(std::shared_ptr&lt;Graphics::Image::Image&gt; image, GLenum imageHint = GL_TEXTURE_2D)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>Texture(const Texture&amp;) = delete</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>Texture(int width, int height) : textureID(0), width(width), height(height) {}</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>Texture() : textureID(0), width(0), height(0){ }</code></td><td>Constructs a Texture. Parameters: none.</td></tr>
+<tr><td><code>~Texture()</code></td><td>Constructs a Texture. Parameters: none.</td></tr>
+<tr><td><code>Texture(std::shared_ptr&lt;Graphics::Image::Image&gt; image, GLenum imageHint = GL_TEXTURE_2D)</code></td><td>Constructs a Texture. Parameters: std::shared_ptr&lt;Graphics::Image::Image&gt; image, GLenum imageHint.</td></tr>
+<tr><td><code>Texture(const Texture&amp;) = delete</code></td><td>Deleted; this overload is not available.</td></tr>
+<tr><td><code>Texture(int width, int height) : textureID(0), width(width), height(height) { }</code></td><td>Constructs a Texture. Parameters: int width, int height.</td></tr>
         </tbody>
       </table>
 
@@ -156,18 +156,13 @@ Texture instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>void bind(unsigned int slot = 0) const</code></td><td>Binds the resource for use.</td></tr>
-<tr><td><code>void unbind() const</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void dispose()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline int getWidth() {return this-&gt;width</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-        inline int getHeight() {return this-&gt;height</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-        GLuint&amp; getID() {return this-&gt;textureID</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-
-        std::shared_ptr&lt;Graphics::Image::Image&gt; getImageData() const {return cpuImage</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>tex.reset()</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>void bind(unsigned int slot = 0) const</code></td><td>Binds this resource for use. Parameters: unsigned int slot.</td></tr>
+<tr><td><code>void unbind() const</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>void dispose()</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>inline int getWidth() { }</code></td><td>Returns int. Parameters: none.</td></tr>
+<tr><td><code>inline int getHeight() { }</code></td><td>Returns int. Parameters: none.</td></tr>
+<tr><td><code>GLuint&amp; getID() { }</code></td><td>Returns GLuint&amp;. Parameters: none.</td></tr>
+<tr><td><code>std::shared_ptr&lt;Graphics::Image::Image&gt; getImageData() const { }</code></td><td>Returns std::shared_ptr&lt;Graphics::Image::Image&gt;. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -176,20 +171,13 @@ Texture instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-
-        static std::shared_ptr&lt;Texture&gt; Load(PAsset asset, GLenum imageHint = GL_TEXTURE_2D)</code></td><td>Loads data or resources.</td></tr>
-<tr><td><code>static std::shared_ptr&lt;Graphics::Image::Image&gt; LoadImage(PAsset asset)</code></td><td>Loads data or resources.</td></tr>
-<tr><td><code>static std::shared_ptr&lt;Texture&gt; CreateEmpty(int width, int height)</code></td><td>Creates a new instance or resource.</td></tr>
-<tr><td><code>static std::shared_ptr&lt;Texture&gt; CreateFromAlphaBuffer(int width, int height, const unsigned char* alphaData)</code></td><td>Creates a new instance or resource.</td></tr>
-<tr><td><code>static std::shared_ptr&lt;Texture&gt; CreateFromExisting(GLuint id, int width, int height, bool owns = false)</code></td><td>Creates a new instance or resource.</td></tr>
-<tr><td><code>static void Unload(std::shared_ptr&lt;Texture&gt;&amp; tex){
-            if(tex){
-                tex-&gt;dispose()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        }
-
-        static void FlipVerticallyOnLoad(int i)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>static std::shared_ptr&lt;Texture&gt; Load(PAsset asset, GLenum imageHint = GL_TEXTURE_2D)</code></td><td>Loads data or resources. Parameters: PAsset asset, GLenum imageHint.</td></tr>
+<tr><td><code>static std::shared_ptr&lt;Graphics::Image::Image&gt; LoadImage(PAsset asset)</code></td><td>Loads data or resources. Parameters: PAsset asset.</td></tr>
+<tr><td><code>static std::shared_ptr&lt;Texture&gt; CreateEmpty(int width, int height)</code></td><td>Creates and returns a new instance or resource. Parameters: int width, int height.</td></tr>
+<tr><td><code>static std::shared_ptr&lt;Texture&gt; CreateFromAlphaBuffer(int width, int height, const unsigned char* alphaData)</code></td><td>Creates and returns a new instance or resource. Parameters: int width, int height, const unsigned char* alphaData.</td></tr>
+<tr><td><code>static std::shared_ptr&lt;Texture&gt; CreateFromExisting(GLuint id, int width, int height, bool owns = false)</code></td><td>Creates and returns a new instance or resource. Parameters: GLuint id, int width, int height, bool owns.</td></tr>
+<tr><td><code>static void Unload(std::shared_ptr&lt;Texture&gt;&amp; tex){ }</code></td><td>Returns void. Parameters: std::shared_ptr&lt;Texture&gt;&amp; tex.</td></tr>
+<tr><td><code>static void FlipVerticallyOnLoad(int i)</code></td><td>Returns void. Parameters: int i.</td></tr>
         </tbody>
       </table>
 

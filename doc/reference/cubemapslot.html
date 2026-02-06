@@ -143,8 +143,8 @@ CubeMapSlot instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>CubeMapSlot() = default</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>CubeMapSlot(std::shared_ptr&lt;CubeMap&gt; map, int s = 0) : cubemap(map), slot(s) {}</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>CubeMapSlot() = default</code></td><td>Constructs a CubeMapSlot. Parameters: none.</td></tr>
+<tr><td><code>CubeMapSlot(std::shared_ptr&lt;CubeMap&gt; map, int s = 0) : cubemap(map), slot(s) { }</code></td><td>Constructs a CubeMapSlot. Parameters: std::shared_ptr&lt;CubeMap&gt; map, int s.</td></tr>
         </tbody>
       </table>
 
@@ -155,8 +155,8 @@ CubeMapSlot instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>std::shared_ptr&lt;CubeMap&gt; cubemap</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int slot = 0</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>std::shared_ptr&lt;CubeMap&gt; cubemap</code></td><td>Data member of type std::shared_ptr&lt;CubeMap&gt;.</td></tr>
+<tr><td><code>int slot = 0</code></td><td>Data member of type int.</td></tr>
         </tbody>
       </table>
 

@@ -144,15 +144,8 @@ auto instance = FileBlob::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>std::string asString() const {
-        return std::string(data.begin(), data.end())</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    size_t size() const {
-        return data.size()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>fblob.data.resize(size)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>size_t length = std::strlen(fromString)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>fblob.data.assign(fromString, fromString + length)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>std::string asString() const { }</code></td><td>Returns std::string. Parameters: none.</td></tr>
+<tr><td><code>size_t size() const { }</code></td><td>Returns size_t. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -161,18 +154,9 @@ auto instance = FileBlob::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-
-    static FileBlob Create(int size){
-        FileBlob fblob</code></td><td>Creates a new instance or resource.</td></tr>
-<tr><td><code>}
-
-    static FileBlob Create(const char* fromString) {
-        if (!fromString) return {}</code></td><td>Creates a new instance or resource.</td></tr>
-<tr><td><code>}
-
-    static FileBlob Create(const BinaryBuffer&amp; dataBuffer) {
-        FileBlob fblob</code></td><td>Creates a new instance or resource.</td></tr>
+<tr><td><code>static FileBlob Create(int size){ }</code></td><td>Creates and returns a new instance or resource. Parameters: int size.</td></tr>
+<tr><td><code>static FileBlob Create(const char* fromString) { }</code></td><td>Creates and returns a new instance or resource. Parameters: const char* fromString.</td></tr>
+<tr><td><code>static FileBlob Create(const BinaryBuffer&amp; dataBuffer) { }</code></td><td>Creates and returns a new instance or resource. Parameters: const BinaryBuffer&amp; dataBuffer.</td></tr>
         </tbody>
       </table>
 
@@ -181,13 +165,7 @@ auto instance = FileBlob::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>BinaryBuffer data</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return fblob</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>FileBlob fblob</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return fblob</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>fblob.data = dataBuffer</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return fblob</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>BinaryBuffer data</code></td><td>Data member of type BinaryBuffer.</td></tr>
         </tbody>
       </table>
 

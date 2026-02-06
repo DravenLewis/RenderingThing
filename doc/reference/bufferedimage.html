@@ -143,9 +143,9 @@ BufferedImage instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>BufferedImage(int width, int height) : Image(width, height){}
-                BufferedImage(const Image&amp; src) : Image(src) {}
-                BufferedImage() = delete</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>BufferedImage(int width, int height) : Image(width, height){ }</code></td><td>Constructs a BufferedImage. Parameters: int width, int height.</td></tr>
+<tr><td><code>BufferedImage(const Image&amp; src) : Image(src) { }</code></td><td>Constructs a BufferedImage. Parameters: const Image&amp; src.</td></tr>
+<tr><td><code>BufferedImage() = delete</code></td><td>Deleted; this overload is not available.</td></tr>
         </tbody>
       </table>
 
@@ -154,37 +154,15 @@ BufferedImage instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>uint32_t getValueAt(int x, int y) {
-                    if(x &lt; 0 || y &lt; 0 || x &gt;= width || y &gt;= height) return 0</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-
-                void setValueAt(int x, int y, uint32_t value){
-                    if(x &lt; 0 || y &lt; 0 || x &gt;= width || y &gt;= height || value &lt; 0 || value &gt; 0xFFFFFFFF /** MAX RGBA value */) return</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-
-                Color getPixelAt(int x, int y){
-                    return Color::fromRGBA32(getValueAt(x,y))</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-
-                void setPixelAt(int x, int y, Color col){
-                    setValueAt(x,y,col.toRGBA32())</code></td><td>Sets the requested value.</td></tr>
+<tr><td><code>uint32_t getValueAt(int x, int y) { }</code></td><td>Returns uint32_t. Parameters: int x, int y.</td></tr>
+<tr><td><code>void setValueAt(int x, int y, uint32_t value){ }</code></td><td>Sets the requested value. Parameters: int x, int y, uint32_t value.</td></tr>
+<tr><td><code>Color getPixelAt(int x, int y){ }</code></td><td>Returns Color. Parameters: int x, int y.</td></tr>
+<tr><td><code>void setPixelAt(int x, int y, Color col){ }</code></td><td>Sets the requested value. Parameters: int x, int y, Color col.</td></tr>
         </tbody>
       </table>
 
       
       
-      <h2>Public Data</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>int index = x + y * width</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return pixelData[index]</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int index = x + y * width</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>pixelData[index] = value</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-        </tbody>
-      </table>
-
 
       <h2>Public API</h2>
       <pre><code class="language-cpp">struct BufferedImage : public Image{

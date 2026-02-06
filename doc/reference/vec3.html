@@ -143,39 +143,9 @@ Vec3 instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Vec3(float x = 0.f, float y = 0.f, float z = 0.f) : x(x), y(y), z(z) {}
-        Vec3(float v) : x(v), y(v), z(v) {}
-        Vec3(const glm::vec3&amp; v) : x(v.x), y(v.y), z(v.z) {}
-
-        operator glm::vec3() const { return glm::vec3(x, y, z)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>}
-
-        
-        Vec3 operator+(const Vec3&amp; o) const { return Vec3(x + o.x, y + o.y, z + o.z)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>}
-        Vec3 operator-(const Vec3&amp; o) const { return Vec3(x - o.x, y - o.y, z - o.z)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>}
-        Vec3 operator-() const { return Vec3(-x, -y, -z)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>}
-        Vec3 operator*(const Vec3&amp; o) const { return Vec3(x * o.x, y * o.y, z * o.z)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>} 
-        Vec3 operator*(float s)       const { return Vec3(x * s, y * s, z * s)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>}
-
-        
-        static Vec3 zero()  { return Vec3(0,0,0)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        static Vec3 one()   { return Vec3(1,1,1)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        static Vec3 up()    { return Vec3(0,1,0)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        static Vec3 right() { return Vec3(1,0,0)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        static Vec3 forward(){ return Vec3(0,0,1)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        Vec3 normalize() const { return Vec3(glm::normalize((glm::vec3)*this))</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        static Vec3 cross(const Vec3&amp; a, const Vec3&amp; b) { return Vec3(glm::cross((glm::vec3)a, (glm::vec3)b))</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>Vec3(float x = 0.f, float y = 0.f, float z = 0.f) : x(x), y(y), z(z) { }</code></td><td>Constructs a Vec3. Parameters: float x, float y, float z.</td></tr>
+<tr><td><code>Vec3(float v) : x(v), y(v), z(v) { }</code></td><td>Constructs a Vec3. Parameters: float v.</td></tr>
+<tr><td><code>Vec3(const glm::vec3&amp; v) : x(v.x), y(v.y), z(v.z) { }</code></td><td>Constructs a Vec3. Parameters: const glm::vec3&amp; v.</td></tr>
         </tbody>
       </table>
 
@@ -184,21 +154,18 @@ Vec3 instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-        Vec3&amp; operator+=(const Vec3&amp; o) { x += o.x</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        Vec3&amp; operator-=(const Vec3&amp; o) { x -= o.x</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        bool operator==(const Vec3&amp;t) const {return (x == t.x &amp;&amp; y == t.y &amp;&amp; z == t.z)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        bool operator!=(const Vec3&amp;t) const {return (x != t.x || y != t.y || z != t.z)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>} 
-
-        
-        float length() const { return glm::length((glm::vec3)*this)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float theta =  ACos(dot) * time</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>Vec3 rel = (end - start * dot).normalize()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return ((start * Cos(theta)) + (rel * Sin(theta)))</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>operator glm::vec3() const { }</code></td><td>Returns operator glm::. Parameters: none.</td></tr>
+<tr><td><code>Vec3 operator+(const Vec3&amp; o) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>Vec3 operator-(const Vec3&amp; o) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>Vec3 operator-() const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>Vec3 operator*(const Vec3&amp; o) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>Vec3 operator*(float s)       const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>Vec3&amp; operator+=(const Vec3&amp; o) { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>Vec3&amp; operator-=(const Vec3&amp; o) { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>bool operator==(const Vec3&amp;t) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>bool operator!=(const Vec3&amp;t) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>float length() const { }</code></td><td>Returns float. Parameters: none.</td></tr>
+<tr><td><code>Vec3 normalize() const { }</code></td><td>Returns Vec3. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -207,15 +174,15 @@ Vec3 instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-        
-        static float dot(const Vec3&amp; a, const Vec3&amp; b) { return glm::dot((glm::vec3)a, (glm::vec3)b)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        static float distance(const Vec3&amp; a, const Vec3&amp; b) { return glm::distance((glm::vec3)a, (glm::vec3)b)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        static Vec3 Slerp(const Vec3&amp; start, const Vec3&amp; end, float time){
-            float dot = Clamp(Vec3::dot(start,end),-1.0f,1.0f)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>static Vec3 zero()  { }</code></td><td>Returns Vec3. Parameters: none.</td></tr>
+<tr><td><code>static Vec3 one()   { }</code></td><td>Returns Vec3. Parameters: none.</td></tr>
+<tr><td><code>static Vec3 up()    { }</code></td><td>Returns Vec3. Parameters: none.</td></tr>
+<tr><td><code>static Vec3 right() { }</code></td><td>Returns Vec3. Parameters: none.</td></tr>
+<tr><td><code>static Vec3 forward(){ }</code></td><td>Returns Vec3. Parameters: none.</td></tr>
+<tr><td><code>static float dot(const Vec3&amp; a, const Vec3&amp; b) { }</code></td><td>Returns float. Parameters: const Vec3&amp; a, const Vec3&amp; b.</td></tr>
+<tr><td><code>static Vec3 cross(const Vec3&amp; a, const Vec3&amp; b) { }</code></td><td>Returns Vec3. Parameters: const Vec3&amp; a, const Vec3&amp; b.</td></tr>
+<tr><td><code>static float distance(const Vec3&amp; a, const Vec3&amp; b) { }</code></td><td>Returns float. Parameters: const Vec3&amp; a, const Vec3&amp; b.</td></tr>
+<tr><td><code>static Vec3 Slerp(const Vec3&amp; start, const Vec3&amp; end, float time){ }</code></td><td>Returns Vec3. Parameters: const Vec3&amp; start, const Vec3&amp; end, float time.</td></tr>
         </tbody>
       </table>
 
@@ -224,14 +191,7 @@ Vec3 instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>float x, y, z</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>y += o.y</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>z += o.z</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return *this</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>y -= o.y</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>z -= o.z</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return *this</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>float x, y, z</code></td><td>Data member of type float x, y,.</td></tr>
         </tbody>
       </table>
 

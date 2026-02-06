@@ -143,9 +143,9 @@ InputManager instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>InputManager() : windowPtr(nullptr) {}</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>InputManager(std::shared_ptr&lt;RenderWindow&gt; window)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>~InputManager()</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>InputManager() : windowPtr(nullptr) { }</code></td><td>Constructs a InputManager. Parameters: none.</td></tr>
+<tr><td><code>InputManager(std::shared_ptr&lt;RenderWindow&gt; window)</code></td><td>Constructs a InputManager. Parameters: std::shared_ptr&lt;RenderWindow&gt; window.</td></tr>
+<tr><td><code>~InputManager()</code></td><td>Constructs a InputManager. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -154,45 +154,28 @@ InputManager instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>void onKeyUp(int keyCode)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void onKeyDown(int keyCode)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void onMousePressed(int button)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void onMouseReleased(int button)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void onMouseMoved(int x, int y)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void onMouseScroll(float dz)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void addEventHandler(std::shared_ptr&lt;IEventHandler&gt; handler)</code></td><td>Adds an item to the collection.</td></tr>
-<tr><td><code>bool isKeyDown(int keyCode)</code></td><td>Returns whether the condition is met.</td></tr>
-<tr><td><code>void setMouseCaptureMode(MouseLockMode mode)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>InputInformation getInputInfo() const {
-            return inputInfo</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-
-        Math3D::Vec2 getMousePosition() const { return Math3D::Vec2(this-&gt;inputInfo.mouseX, this-&gt;inputInfo.mouseY)</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-        bool isLMBDown() const { return this-&gt;inputInfo.mouse_left_button</code></td><td>Returns whether the condition is met.</td></tr>
-<tr><td><code>}
-        bool isMMBDown() const { return this-&gt;inputInfo.mouse_middle_button</code></td><td>Returns whether the condition is met.</td></tr>
-<tr><td><code>}
-        bool isRMBDown() const { return this-&gt;inputInfo.mouse_right_button</code></td><td>Returns whether the condition is met.</td></tr>
-<tr><td><code>}
-        float getScrollWheel() const {return this-&gt;inputInfo.wheel</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-        Math3D::Vec2 getMouseAxisDelta() const {return this-&gt;inputInfo.mouseAxis</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-        MouseLockMode getMouseCaptureMode() const {return this-&gt;mouseCaptureMode</code></td><td>Returns the requested value.</td></tr>
+<tr><td><code>void onKeyUp(int keyCode)</code></td><td>Returns void. Parameters: int keyCode.</td></tr>
+<tr><td><code>void onKeyDown(int keyCode)</code></td><td>Returns void. Parameters: int keyCode.</td></tr>
+<tr><td><code>void onMousePressed(int button)</code></td><td>Returns void. Parameters: int button.</td></tr>
+<tr><td><code>void onMouseReleased(int button)</code></td><td>Returns void. Parameters: int button.</td></tr>
+<tr><td><code>void onMouseMoved(int x, int y)</code></td><td>Returns void. Parameters: int x, int y.</td></tr>
+<tr><td><code>void onMouseScroll(float dz)</code></td><td>Returns void. Parameters: float dz.</td></tr>
+<tr><td><code>void addEventHandler(std::shared_ptr&lt;IEventHandler&gt; handler)</code></td><td>Returns void. Parameters: std::shared_ptr&lt;IEventHandler&gt; handler.</td></tr>
+<tr><td><code>bool isKeyDown(int keyCode)</code></td><td>Returns bool. Parameters: int keyCode.</td></tr>
+<tr><td><code>void setMouseCaptureMode(MouseLockMode mode)</code></td><td>Sets the requested value. Parameters: MouseLockMode mode.</td></tr>
+<tr><td><code>InputInformation getInputInfo() const { }</code></td><td>Returns InputInformation. Parameters: none.</td></tr>
+<tr><td><code>Math3D::Vec2 getMousePosition() const { }</code></td><td>Returns Math3D::Vec2. Parameters: none.</td></tr>
+<tr><td><code>bool isLMBDown() const { }</code></td><td>Returns bool. Parameters: none.</td></tr>
+<tr><td><code>bool isMMBDown() const { }</code></td><td>Returns bool. Parameters: none.</td></tr>
+<tr><td><code>bool isRMBDown() const { }</code></td><td>Returns bool. Parameters: none.</td></tr>
+<tr><td><code>float getScrollWheel() const { }</code></td><td>Returns float. Parameters: none.</td></tr>
+<tr><td><code>Math3D::Vec2 getMouseAxisDelta() const { }</code></td><td>Returns Math3D::Vec2. Parameters: none.</td></tr>
+<tr><td><code>MouseLockMode getMouseCaptureMode() const { }</code></td><td>Returns MouseLockMode. Parameters: none.</td></tr>
         </tbody>
       </table>
 
       
       
-      <h2>Public Data</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-        </tbody>
-      </table>
-
 
       <h2>Public API</h2>
       <pre><code class="language-cpp">InputManager() : windowPtr(nullptr) {};

@@ -143,11 +143,11 @@ ShadowMapCube instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>ShadowMapCube() = default</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>explicit ShadowMapCube(int size)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>~ShadowMapCube()</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>ShadowMapCube(const ShadowMapCube&amp;) = delete</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>ShadowMapCube(ShadowMapCube&amp;&amp; other) noexcept</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>ShadowMapCube() = default</code></td><td>Constructs a ShadowMapCube. Parameters: none.</td></tr>
+<tr><td><code>explicit ShadowMapCube(int size)</code></td><td>Constructs a ShadowMapCube. Parameters: int size.</td></tr>
+<tr><td><code>~ShadowMapCube()</code></td><td>Constructs a ShadowMapCube. Parameters: none.</td></tr>
+<tr><td><code>ShadowMapCube(const ShadowMapCube&amp;) = delete</code></td><td>Deleted; this overload is not available.</td></tr>
+<tr><td><code>ShadowMapCube(ShadowMapCube&amp;&amp; other) noexcept</code></td><td>Constructs a ShadowMapCube. Parameters: ShadowMapCube&amp;&amp; other.</td></tr>
         </tbody>
       </table>
 
@@ -156,28 +156,19 @@ ShadowMapCube instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>ShadowMapCube&amp; operator=(const ShadowMapCube&amp;) = delete</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ShadowMapCube&amp; operator=(ShadowMapCube&amp;&amp; other) noexcept</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void resize(int newSize)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void bindFace(GLenum face) const</code></td><td>Binds the resource for use.</td></tr>
-<tr><td><code>void unbind() const</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void clear() const</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>GLuint getDepthTexture() const { return depthCube</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-    int getSize() const { return size</code></td><td>Returns the requested value.</td></tr>
+<tr><td><code>ShadowMapCube&amp; operator=(const ShadowMapCube&amp;) = delete</code></td><td>Deleted; this overload is not available.</td></tr>
+<tr><td><code>ShadowMapCube&amp; operator=(ShadowMapCube&amp;&amp; other) noexcept</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>void resize(int newSize)</code></td><td>Returns void. Parameters: int newSize.</td></tr>
+<tr><td><code>void bindFace(GLenum face) const</code></td><td>Binds this resource for use. Parameters: GLenum face.</td></tr>
+<tr><td><code>void unbind() const</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>void clear() const</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>GLuint getDepthTexture() const { }</code></td><td>Returns GLuint. Parameters: none.</td></tr>
+<tr><td><code>int getSize() const { }</code></td><td>Returns int. Parameters: none.</td></tr>
         </tbody>
       </table>
 
       
       
-      <h2>Public Data</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-        </tbody>
-      </table>
-
 
       <h2>Public API</h2>
       <pre><code class="language-cpp">ShadowMapCube() = default;

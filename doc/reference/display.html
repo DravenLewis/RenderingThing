@@ -140,46 +140,18 @@ Display instance;</code></pre>
       
       
       
-      <h2>Member Functions</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>SDL_GetDisplays(&amp;count)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>SDL_free(displays)</code></td><td>Performs the operation described by the name.</td></tr>
-        </tbody>
-      </table>
-
       
       <h2>Static Functions</h2>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>static int getDisplayCount(){
-        int count</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-
-    static SDL_DisplayID getDisplay(int id){
-        if(id &gt;= 0 &amp;&amp; id &lt; getDisplayCount()){
-            SDL_DisplayID* displays = SDL_GetDisplays(NULL)</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-    }
-
-    static SDL_DisplayID getPrimary(){
-        return getDisplay(0)</code></td><td>Returns the requested value.</td></tr>
+<tr><td><code>static int getDisplayCount(){ }</code></td><td>Returns int. Parameters: none.</td></tr>
+<tr><td><code>static SDL_DisplayID getDisplay(int id){ }</code></td><td>Returns SDL_DisplayID. Parameters: int id.</td></tr>
+<tr><td><code>static SDL_DisplayID getPrimary(){ }</code></td><td>Returns SDL_DisplayID. Parameters: none.</td></tr>
         </tbody>
       </table>
 
       
-      <h2>Public Data</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>return count</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return displays[id]</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-        </tbody>
-      </table>
-
 
       <h2>Public API</h2>
       <pre><code class="language-cpp">struct Display{

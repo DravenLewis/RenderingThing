@@ -143,15 +143,7 @@ Logbot instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Logbot(std::string name) : loggingName(name) {}
-
-    template&lt;typename... Args&gt;
-    std::string LogBasic(std::string message, Args... args) {
-        DepthGuard guard</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>}
-
-    static Logbot CreateInstance(std::string loggerName) {
-        return Logbot(loggerName)</code></td><td>Creates a new instance or resource.</td></tr>
+<tr><td><code>Logbot(std::string name) : loggingName(name) { }</code></td><td>Constructs a Logbot. Parameters: std::string name.</td></tr>
         </tbody>
       </table>
 
@@ -160,54 +152,30 @@ Logbot instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>lastFormattedValue = StringUtils::Format(StringUtils::Format(&quot;[Log: %s] %s&quot;, loggingName.c_str(), message.c_str()), args...)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>internalPrint(lastFormattedValue)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    template&lt;typename... Args&gt;
-    std::string Log(LogType type, std::string message, Args... args) {
-        DepthGuard guard</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>std::string header = StringUtils::Format(&quot;[%s] %s&quot;, type.asText().c_str(), message.c_str())</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>lastFormattedValue = LogBasic(header, args...)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>internalPrint(lastFormattedValue)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    template&lt;typename... Args&gt;
-    std::string LogVerbose(LogType type, std::string message, Args... args) {
-        DepthGuard guard</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>std::string timedMessage = StringUtils::Format(&quot;[%s] %s&quot;, getCurrentTimeString().c_str(), message.c_str())</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>lastFormattedValue = Log(type, timedMessage, args...)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>internalPrint(lastFormattedValue)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    void Break(){
-        internalPrint(&quot;&quot;, true)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    void Repeat(std::string c, int length){
-        std::string lineString</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>i++){
-            lineString.append(c)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        internalPrint(lineString, true)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>template&lt;typename... Args&gt;
+    std::string LogBasic(std::string message, Args... args) { }</code></td><td>Returns template&lt;... Args&gt;
+    std::string. Parameters: std::string message, Args... args.</td></tr>
+<tr><td><code>template&lt;typename... Args&gt;
+    std::string Log(LogType type, std::string message, Args... args) { }</code></td><td>Returns template&lt;... Args&gt;
+    std::string. Parameters: LogType type, std::string message, Args... args.</td></tr>
+<tr><td><code>template&lt;typename... Args&gt;
+    std::string LogVerbose(LogType type, std::string message, Args... args) { }</code></td><td>Returns template&lt;... Args&gt;
+    std::string. Parameters: LogType type, std::string message, Args... args.</td></tr>
+<tr><td><code>void Break(){ }</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>void Repeat(std::string c, int length){ }</code></td><td>Returns void. Parameters: std::string c, int length.</td></tr>
         </tbody>
       </table>
 
       
-      
-      <h2>Public Data</h2>
+      <h2>Static Functions</h2>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>return lastFormattedValue</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return lastFormattedValue</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return lastFormattedValue</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>for(int i = 0</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>i &lt; length</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>static Logbot CreateInstance(std::string loggerName) { }</code></td><td>Creates and returns a new instance or resource. Parameters: std::string loggerName.</td></tr>
         </tbody>
       </table>
 
+      
 
       <h2>Public API</h2>
       <pre><code class="language-cpp">Logbot(std::string name) : loggingName(name) {}

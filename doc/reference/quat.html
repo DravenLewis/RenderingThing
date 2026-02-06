@@ -143,39 +143,9 @@ Quat instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Quat() : x(0.0f), y(0.0f), z(0.0f), w(1.0f) {}
-        Quat(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
-        Quat(const glm::quat&amp; q) : x(q.x), y(q.y), z(q.z), w(q.w) {}
-
-        
-        static Quat FromEuler(const Vec3&amp; eulerAngles) {
-            
-            glm::quat q = glm::quat(glm::radians((glm::vec3)eulerAngles))</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>return Quat(q)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>}
-
-        
-        static Quat AngleAxis(float angleDeg, const Vec3&amp; axis) {
-            return Quat(glm::angleAxis(glm::radians(angleDeg), (glm::vec3)axis))</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        
-        static Quat FromMat3(const glm::mat3&amp; m) {
-            return Quat(glm::quat_cast(m))</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return Quat(q)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>}
-
-        static Quat Lerp(const Quat&amp; start, const Quat&amp; end, float time){
-            return Quat(glm::mix((glm::quat)start, (glm::quat)end, time))</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        static Quat Slerp(const Quat&amp; start, const Quat&amp; end, float time){
-            return Quat(glm::slerp((glm::quat)start, (glm::quat)end, time))</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        
-        Quat operator*(const Quat&amp; o) const {
-            return Quat((glm::quat)*this * (glm::quat)o)</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>Quat() : x(0.0f), y(0.0f), z(0.0f), w(1.0f) { }</code></td><td>Constructs a Quat. Parameters: none.</td></tr>
+<tr><td><code>Quat(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) { }</code></td><td>Constructs a Quat. Parameters: float x, float y, float z, float w.</td></tr>
+<tr><td><code>Quat(const glm::quat&amp; q) : x(q.x), y(q.y), z(q.z), w(q.w) { }</code></td><td>Constructs a Quat. Parameters: const glm::quat&amp; q.</td></tr>
         </tbody>
       </table>
 
@@ -184,36 +154,33 @@ Quat instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-
-        
-        Quat normalize() const {
-            glm::quat q = (glm::quat)*this</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>q = glm::normalize(q)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-
-        operator glm::quat() const { return glm::quat(w, x, y, z)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>} 
-
-        
-        Vec3 operator*(const Vec3&amp; v) const {
-            return Vec3(glm::rotate((glm::quat)*this, (glm::vec3)v))</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        
-        
-        glm::mat4 toMat4() const { return glm::toMat4((glm::quat)*this)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>Quat normalize() const { }</code></td><td>Returns Quat. Parameters: none.</td></tr>
+<tr><td><code>operator glm::quat() const { }</code></td><td>Returns operator glm::. Parameters: none.</td></tr>
+<tr><td><code>Vec3 operator*(const Vec3&amp; v) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>Quat operator*(const Quat&amp; o) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>glm::mat4 toMat4() const { }</code></td><td>Returns glm::mat4. Parameters: none.</td></tr>
         </tbody>
       </table>
 
       
+      <h2>Static Functions</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>static Quat FromEuler(const Vec3&amp; eulerAngles) { }</code></td><td>Returns Quat. Parameters: const Vec3&amp; eulerAngles.</td></tr>
+<tr><td><code>static Quat AngleAxis(float angleDeg, const Vec3&amp; axis) { }</code></td><td>Returns Quat. Parameters: float angleDeg, const Vec3&amp; axis.</td></tr>
+<tr><td><code>static Quat FromMat3(const glm::mat3&amp; m) { }</code></td><td>Returns Quat. Parameters: const glm::mat3&amp; m.</td></tr>
+<tr><td><code>static Quat Lerp(const Quat&amp; start, const Quat&amp; end, float time){ }</code></td><td>Returns Quat. Parameters: const Quat&amp; start, const Quat&amp; end, float time.</td></tr>
+<tr><td><code>static Quat Slerp(const Quat&amp; start, const Quat&amp; end, float time){ }</code></td><td>Returns Quat. Parameters: const Quat&amp; start, const Quat&amp; end, float time.</td></tr>
+        </tbody>
+      </table>
+
       
       <h2>Public Data</h2>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>float x, y, z, w</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>float x, y, z, w</code></td><td>Data member of type float x, y, z,.</td></tr>
         </tbody>
       </table>
 

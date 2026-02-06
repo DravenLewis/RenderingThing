@@ -11,7 +11,8 @@ Goals:
   3) Member tables (Member Types, Constructors/Destructors, Member Functions, Static Functions, Public Data)
   4) Public API code block
   5) Full Class Layout code block
-- Member tables should list signatures + short descriptions.
+- Member tables should list signatures + detailed descriptions. Use parameter lists and return types to differentiate overloads (e.g., constructors with different parameter types must have different descriptions). Mark deleted overloads as unavailable.
+- When parsing headers, strip inline function bodies (e.g., `inline bool loaded() const { ... }`) before splitting members so definitions are not truncated.
 - Maintain the Settings panel behavior (theme, accent color list from Color.h; close on outside click; use Bootstrap Icons locally).
 - Highlight cards on the Overview page should link to relevant reference pages.
 - Border radius max is 5px app-wide.

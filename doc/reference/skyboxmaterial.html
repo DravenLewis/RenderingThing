@@ -143,7 +143,7 @@ auto instance = SkyboxMaterial::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>SkyboxMaterial(std::shared_ptr&lt;ShaderProgram&gt; program)</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>SkyboxMaterial(std::shared_ptr&lt;ShaderProgram&gt; program)</code></td><td>Constructs a SkyboxMaterial. Parameters: std::shared_ptr&lt;ShaderProgram&gt; program.</td></tr>
         </tbody>
       </table>
 
@@ -152,7 +152,7 @@ auto instance = SkyboxMaterial::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>void bind() override</code></td><td>Binds the resource for use.</td></tr>
+<tr><td><code>void bind() override</code></td><td>Binds this resource for use. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -161,7 +161,7 @@ auto instance = SkyboxMaterial::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>static std::shared_ptr&lt;SkyboxMaterial&gt; Create(std::shared_ptr&lt;CubeMap&gt; envMap)</code></td><td>Creates a new instance or resource.</td></tr>
+<tr><td><code>static std::shared_ptr&lt;SkyboxMaterial&gt; Create(std::shared_ptr&lt;CubeMap&gt; envMap)</code></td><td>Creates and returns a new instance or resource. Parameters: std::shared_ptr&lt;CubeMap&gt; envMap.</td></tr>
         </tbody>
       </table>
 
@@ -170,7 +170,7 @@ auto instance = SkyboxMaterial::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>ValueContainer&lt;std::shared_ptr&lt;CubeMap&gt;&gt; EnvMap</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>ValueContainer&lt;std::shared_ptr&lt;CubeMap&gt;&gt; EnvMap</code></td><td>Data member of type ValueContainer&lt;std::shared_ptr&lt;CubeMap&gt;&gt;.</td></tr>
         </tbody>
       </table>
 

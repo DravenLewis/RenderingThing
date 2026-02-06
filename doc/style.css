@@ -316,6 +316,12 @@ pre {
   cursor: pointer;
   text-transform: none;
   letter-spacing: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.copy-btn i {
+  margin-left: 6px;
 }
 
 .copy-btn:hover {
@@ -459,25 +465,25 @@ p code, li code {
 
 .color-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(auto-fill, 100px);
+  gap: 2px;
 }
 
 .color-swatch {
   border: 1px solid var(--line);
   border-radius: 5px;
-  padding: 8px;
+  padding: 0;
   cursor: pointer;
   display: grid;
-  gap: 6px;
   background: transparent;
   color: var(--text);
-  font-size: 12px;
+  width: 100px;
+  height: 100px;
 }
 
 .color-chip {
   width: 100%;
-  height: 24px;
+  height: 100%;
   border-radius: 5px;
   border: 1px solid rgba(0, 0, 0, 0.12);
 }

@@ -144,15 +144,7 @@ FirstPersonController instance;</code></pre>
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
 <tr><td><code>FirstPersonController(std::shared_ptr&lt;Camera&gt; cam) 
-        : m_Camera(cam) {}
-
-    /**
-     * Registers this controller with the InputManager.
-     * Must be called after the shared_ptr for the controller is created.
-     */
-    void init(std::shared_ptr&lt;InputManager&gt; inputManager) {
-        if (inputManager) {
-            inputManager-&gt;addEventHandler(shared_from_this())</code></td><td>Constructs the object.</td></tr>
+        : m_Camera(cam) { }</code></td><td>Constructs a FirstPersonController. Parameters: std::shared_ptr&lt;Camera&gt; cam.</td></tr>
         </tbody>
       </table>
 
@@ -161,94 +153,34 @@ FirstPersonController instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-    }
-
-    /**
+<tr><td><code>/**
+     * Registers this controller with the InputManager.
+     * Must be called after the shared_ptr for the controller is created.
+     */
+    void init(std::shared_ptr&lt;InputManager&gt; inputManager) { }</code></td><td>Returns /**
+     * Registers this controller with the InputManager.
+     * Must be called after the shared_ptr for the controller is created.
+     */
+    void. Parameters: std::shared_ptr&lt;InputManager&gt; inputManager.</td></tr>
+<tr><td><code>/**
      * Call this every frame in your main loop.
      * @param dt Delta time (time elapsed since last frame)
      * @param input Reference to your InputManager to check key states
      */
-    void update(float dt, std::shared_ptr&lt;InputManager&gt; input) {
-        if (!m_Camera) return</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>auto transform = m_Camera-&gt;transform()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float velocity = ((input-&gt;isKeyDown(SDL_SCANCODE_LSHIFT)) ? ((m_MoveSpeed * m_fastScale) * dt) : (m_MoveSpeed * dt))</code></td><td>Returns whether the condition is met.</td></tr>
-<tr><td><code>if (input-&gt;isKeyDown(SDL_SCANCODE_W)) transform.position -= transform.forward() * velocity</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if (input-&gt;isKeyDown(SDL_SCANCODE_S)) transform.position += transform.forward() * velocity</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if (input-&gt;isKeyDown(SDL_SCANCODE_A)) transform.position -= transform.right() * velocity</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if (input-&gt;isKeyDown(SDL_SCANCODE_D)) transform.position += transform.right() * velocity</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if (input-&gt;isKeyDown(SDL_SCANCODE_SPACE))  transform.position += transform.up() * velocity</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if (input-&gt;isKeyDown(SDL_SCANCODE_C)) transform.position -= transform.up() * velocity</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if (input-&gt;isKeyDown(SDL_SCANCODE_LEFT))  m_Yaw += rotationSpeed</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if (input-&gt;isKeyDown(SDL_SCANCODE_RIGHT)) m_Yaw -= rotationSpeed</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if (input-&gt;isKeyDown(SDL_SCANCODE_UP))    m_Pitch += rotationSpeed</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if (input-&gt;isKeyDown(SDL_SCANCODE_DOWN))  m_Pitch -= rotationSpeed</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>updateCameraRotation(transform)</code></td><td>Updates internal state.</td></tr>
-<tr><td><code>m_Camera-&gt;setTransform(transform)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-
-    
-
-    virtual bool onMouseMoved(int x, int y,InputManager&amp; manager) override {
-
-        if(manager.getMouseCaptureMode() != MouseLockMode::LOCKED) return false</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float dx = (float)(x - lastX) * m_LookSensitivity</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float dy = (float)(lastY - y) * m_LookSensitivity</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>m_Pitch = Math3D::Clamp(m_Pitch, -89.0f, 89.0f)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>*/
-
-        if (manager.getMouseCaptureMode() != MouseLockMode::LOCKED) return false</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float dx = (float)x * m_LookSensitivity</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float dy = (float)-y * m_LookSensitivity</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>m_Pitch = Math3D::Clamp(m_Pitch, -89.0f, 89.0f)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    
-    virtual bool onKeyUp(int k,InputManager&amp; m) override { 
-        if(k == SDL_SCANCODE_GRAVE &amp;&amp; (m.getMouseCaptureMode() == MouseLockMode::LOCKED || m.getMouseCaptureMode() == MouseLockMode::CAPTURED)){
-            m.setMouseCaptureMode(MouseLockMode::FREE)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-    virtual bool onKeyDown(int k,InputManager&amp; m) override { return false</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-    virtual bool onMousePressed(int b,InputManager&amp; m) override { 
-        if(b == SDL_BUTTON_LEFT &amp;&amp; m.getMouseCaptureMode() != MouseLockMode::LOCKED){
-            m.setMouseCaptureMode(MouseLockMode::LOCKED)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-    virtual bool onMouseReleased(int b,InputManager&amp; m) override { return false</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-    virtual bool onMouseScroll(float z,InputManager&amp; m) override { 
-        if(m.getMouseCaptureMode() == MouseLockMode::LOCKED) this-&gt;m_fastScale += z / 10.0f</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if(this-&gt;m_fastScale &lt; 0) this-&gt;m_fastScale = 0.1</code></td><td>Performs the operation described by the name.</td></tr>
+    void update(float dt, std::shared_ptr&lt;InputManager&gt; input) { }</code></td><td>Returns /**
+     * Call this every frame in your main loop.
+     * @param dt Delta. Parameters: time elapsed since last frame.</td></tr>
+<tr><td><code>virtual bool onMouseMoved(int x, int y,InputManager&amp; manager) override { }</code></td><td>Returns bool. Parameters: int x, int y, InputManager&amp; manager.</td></tr>
+<tr><td><code>virtual bool onKeyUp(int k,InputManager&amp; m) override { }</code></td><td>Returns bool. Parameters: int k, InputManager&amp; m.</td></tr>
+<tr><td><code>virtual bool onKeyDown(int k,InputManager&amp; m) override { }</code></td><td>Returns bool. Parameters: int k, InputManager&amp; m.</td></tr>
+<tr><td><code>virtual bool onMousePressed(int b,InputManager&amp; m) override { }</code></td><td>Returns bool. Parameters: int b, InputManager&amp; m.</td></tr>
+<tr><td><code>virtual bool onMouseReleased(int b,InputManager&amp; m) override { }</code></td><td>Returns bool. Parameters: int b, InputManager&amp; m.</td></tr>
+<tr><td><code>virtual bool onMouseScroll(float z,InputManager&amp; m) override { }</code></td><td>Returns bool. Parameters: float z, InputManager&amp; m.</td></tr>
         </tbody>
       </table>
 
       
       
-      <h2>Public Data</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>float rotationSpeed = 100.0f * dt</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>/*
-        
-        static int lastX = x, lastY = y</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>lastX = x</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>lastY = y</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>m_Yaw   += dx</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>m_Pitch += dy</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return true</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>m_Yaw   -= dx</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>m_Pitch += dy</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return true</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        return false</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        return false</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return false</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-        </tbody>
-      </table>
-
 
       <h2>Public API</h2>
       <pre><code class="language-cpp">FirstPersonController(std::shared_ptr&lt;Camera&gt; cam) 

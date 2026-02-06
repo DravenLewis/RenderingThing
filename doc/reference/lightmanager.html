@@ -143,11 +143,7 @@ LightManager instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>LightManager() : lights() {}
-    
-    void addLight(const Light&amp; light) {
-        if (lights.size() &lt; MAX_LIGHTS) {
-            lights.push_back(light)</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>LightManager() : lights() { }</code></td><td>Constructs a LightManager. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -156,33 +152,13 @@ LightManager instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-    }
-    
-    void removeLight(size_t index) {
-        if (index &lt; lights.size()) {
-            lights.erase(lights.begin() + index)</code></td><td>Removes an item from the collection.</td></tr>
-<tr><td><code>}
-    }
-    
-    void clearLights() {
-        lights.clear()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-    
-    size_t getLightCount() const {
-        return lights.size()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-    
-    Light&amp; getLight(size_t index) {
-        return lights[index]</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-    
-    const Light&amp; getLight(size_t index) const {
-        return lights[index]</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-    
-    const std::vector&lt;Light&gt;&amp; getAllLights() const {
-        return lights</code></td><td>Returns the requested value.</td></tr>
+<tr><td><code>void addLight(const Light&amp; light) { }</code></td><td>Returns void. Parameters: const Light&amp; light.</td></tr>
+<tr><td><code>void removeLight(size_t index) { }</code></td><td>Returns void. Parameters: size_t index.</td></tr>
+<tr><td><code>void clearLights() { }</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>size_t getLightCount() const { }</code></td><td>Returns size_t. Parameters: none.</td></tr>
+<tr><td><code>Light&amp; getLight(size_t index) { }</code></td><td>Returns Light&amp;. Parameters: size_t index.</td></tr>
+<tr><td><code>const Light&amp; getLight(size_t index) const { }</code></td><td>Returns const Light&amp;. Parameters: size_t index.</td></tr>
+<tr><td><code>const std::vector&lt;Light&gt;&amp; getAllLights() const { }</code></td><td>Returns const std::vector&lt;Light&gt;&amp;. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -192,9 +168,7 @@ LightManager instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-    
-    static LightManager GlobalLightManager</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>static LightManager GlobalLightManager</code></td><td>Data member of type static LightManager.</td></tr>
         </tbody>
       </table>
 

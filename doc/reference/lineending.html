@@ -144,8 +144,7 @@ LineEnding instance;</code></pre>
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
 <tr><td><code>public:
-        LineEnding(const char* ending){
-            this-&gt;ending = ending</code></td><td>Constructs the object.</td></tr>
+        LineEnding(const char* ending){ }</code></td><td>Constructs a LineEnding. Parameters: const char* ending.</td></tr>
         </tbody>
       </table>
 
@@ -154,10 +153,7 @@ LineEnding instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-
-        const char* get(){
-            return this-&gt;ending</code></td><td>Returns the requested value.</td></tr>
+<tr><td><code>const char* get(){ }</code></td><td>Returns const char*. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -168,11 +164,9 @@ LineEnding instance;</code></pre>
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
 <tr><td><code>private:
-        const char* ending</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        static const LineEnding UNIX</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>static const LineEnding WINDOWS</code></td><td>Performs the operation described by the name.</td></tr>
+        const char* ending</code></td><td>Data member of type private: const char*.</td></tr>
+<tr><td><code>static const LineEnding UNIX</code></td><td>Data member of type static const LineEnding.</td></tr>
+<tr><td><code>static const LineEnding WINDOWS</code></td><td>Data member of type static const LineEnding.</td></tr>
         </tbody>
       </table>
 

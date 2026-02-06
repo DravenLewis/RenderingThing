@@ -144,7 +144,7 @@ auto instance = ModelPartFactory::Create(/* args */);</code></pre>
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
 <tr><td><code>public:
-        ModelPartFactory() = default</code></td><td>Constructs the object.</td></tr>
+        ModelPartFactory() = default</code></td><td>Constructs a ModelPartFactory. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -153,9 +153,9 @@ auto instance = ModelPartFactory::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>ModelPartFactory&amp; addVertex(Vertex vtx, int* index = nullptr)</code></td><td>Adds an item to the collection.</td></tr>
-<tr><td><code>ModelPartFactory&amp; defineFace(int vtx1, int vtx2, int vtx3, int vtx4 = -1)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>std::shared_ptr&lt;ModelPart&gt; assemble()</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>ModelPartFactory&amp; addVertex(Vertex vtx, int* index = nullptr)</code></td><td>Returns ModelPartFactory&amp;. Parameters: Vertex vtx, int* index.</td></tr>
+<tr><td><code>ModelPartFactory&amp; defineFace(int vtx1, int vtx2, int vtx3, int vtx4 = -1)</code></td><td>Returns ModelPartFactory&amp;. Parameters: int vtx1, int vtx2, int vtx3, int vtx4.</td></tr>
+<tr><td><code>std::shared_ptr&lt;ModelPart&gt; assemble()</code></td><td>Returns std::shared_ptr&lt;ModelPart&gt;. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -164,7 +164,7 @@ auto instance = ModelPartFactory::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>static ModelPartFactory Create(std::shared_ptr&lt;Material&gt; material)</code></td><td>Creates a new instance or resource.</td></tr>
+<tr><td><code>static ModelPartFactory Create(std::shared_ptr&lt;Material&gt; material)</code></td><td>Creates and returns a new instance or resource. Parameters: std::shared_ptr&lt;Material&gt; material.</td></tr>
         </tbody>
       </table>
 
@@ -174,10 +174,10 @@ auto instance = ModelPartFactory::Create(/* args */);</code></pre>
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
 <tr><td><code>private:
-        std::shared_ptr&lt;Mesh&gt; meshInstancePtr</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>std::shared_ptr&lt;Material&gt; materialInstancePtr</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>std::vector&lt;Vertex&gt; vertexCache</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>std::vector&lt;uint32_t&gt; faceCache</code></td><td>Performs the operation described by the name.</td></tr>
+        std::shared_ptr&lt;Mesh&gt; meshInstancePtr</code></td><td>Data member of type private: std::shared_ptr&lt;Mesh&gt;.</td></tr>
+<tr><td><code>std::shared_ptr&lt;Material&gt; materialInstancePtr</code></td><td>Data member of type std::shared_ptr&lt;Material&gt;.</td></tr>
+<tr><td><code>std::vector&lt;Vertex&gt; vertexCache</code></td><td>Data member of type std::vector&lt;Vertex&gt;.</td></tr>
+<tr><td><code>std::vector&lt;uint32_t&gt; faceCache</code></td><td>Data member of type std::vector&lt;uint32_t&gt;.</td></tr>
         </tbody>
       </table>
 

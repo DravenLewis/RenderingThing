@@ -144,12 +144,8 @@ auto instance = FrameBuffer::Create(/* args */);</code></pre>
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
 <tr><td><code>public:
-        FrameBuffer(int width, int height) : width(width), height(height) {
-            glGenFramebuffers(1, &amp;fboID)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>}
-
-        ~FrameBuffer(){
-            glDeleteFramebuffers(1, &amp;fboID)</code></td><td>Constructs the object.</td></tr>
+        FrameBuffer(int width, int height) : width(width), height(height) { }</code></td><td>Constructs a FrameBuffer. Parameters: int width, int height.</td></tr>
+<tr><td><code>~FrameBuffer(){ }</code></td><td>Constructs a FrameBuffer. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -158,86 +154,14 @@ auto instance = FrameBuffer::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>depthTexture = std::make_shared&lt;Texture&gt;()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glGenTextures(1, &amp;tid)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>depthTexture-&gt;getID() = tid</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>if(depthTexture-&gt;getID() == 0) {
-                LogBot.Log(LOG_FATL, &quot;[FrameBuffer] CRITICAL: glGenTextures failed for Depth Texture!&quot;)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-            glBindTexture(GL_TEXTURE_2D, depthTexture-&gt;getID())</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>bind()</code></td><td>Binds the resource for use.</td></tr>
-<tr><td><code>glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture-&gt;getID(), 0)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glDrawBuffer(GL_NONE)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glReadBuffer(GL_NONE)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>unbind()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        void bind(){
-            glBindFramebuffer(GL_FRAMEBUFFER, fboID)</code></td><td>Binds the resource for use.</td></tr>
-<tr><td><code>glViewport(0,0,width, height)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        void unbind(){
-            glBindFramebuffer(GL_FRAMEBUFFER, 0)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        void resize(int width, int height){
-            this-&gt;width = width</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if(depthTexture){
-                glBindTexture(GL_TEXTURE_2D, depthTexture-&gt;getID())</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glBindTexture(GL_TEXTURE_2D, 0)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        }
-
-        void attachTexture(PTexture tex){
-
-            this-&gt;texturePtr = tex</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>bind()</code></td><td>Binds the resource for use.</td></tr>
-<tr><td><code>glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex-&gt;getID(), 0)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glDrawBuffers(1, drawBuffers)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glReadBuffer(GL_COLOR_ATTACHMENT0)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if (status != GL_FRAMEBUFFER_COMPLETE) {
-                std::string error</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>switch (status) {
-                    case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:         error = &quot;Incomplete Attachment&quot;</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-                LogBot.Log(LOG_ERRO, &quot;[FrameBuffer] FBO Error: %s (Code: %u)&quot;, error.c_str(), status)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-            unbind()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        bool validate(){
-            bind()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>bool complete = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>unbind()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        void clear(Color clearColor = Color::BLACK){
-            glClearColor(
-                clearColor.getRed(),
-                clearColor.getGreen(),
-                clearColor.getBlue(),
-                clearColor.getAlpha()
-            )</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        PTexture getTexture(){
-            return texturePtr</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-
-        PTexture getDepthTexture(){
-            return depthTexture</code></td><td>Returns the requested value.</td></tr>
+<tr><td><code>void bind(){ }</code></td><td>Binds this resource for use. Parameters: none.</td></tr>
+<tr><td><code>void unbind(){ }</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>void resize(int width, int height){ }</code></td><td>Returns void. Parameters: int width, int height.</td></tr>
+<tr><td><code>void attachTexture(PTexture tex){ }</code></td><td>Returns void. Parameters: PTexture tex.</td></tr>
+<tr><td><code>bool validate(){ }</code></td><td>Returns bool. Parameters: none.</td></tr>
+<tr><td><code>void clear(Color clearColor = Color::BLACK){ }</code></td><td>Returns void. Parameters: Color clearColor.</td></tr>
+<tr><td><code>PTexture getTexture(){ }</code></td><td>Returns PTexture. Parameters: none.</td></tr>
+<tr><td><code>PTexture getDepthTexture(){ }</code></td><td>Returns PTexture. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -246,10 +170,7 @@ auto instance = FrameBuffer::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-
-        static std::shared_ptr&lt;FrameBuffer&gt; Create(int width, int height){
-            auto fbuffer = std::make_shared&lt;FrameBuffer&gt;(width, height)</code></td><td>Creates a new instance or resource.</td></tr>
+<tr><td><code>static std::shared_ptr&lt;FrameBuffer&gt; Create(int width, int height){ }</code></td><td>Creates and returns a new instance or resource. Parameters: int width, int height.</td></tr>
         </tbody>
       </table>
 
@@ -259,24 +180,10 @@ auto instance = FrameBuffer::Create(/* args */);</code></pre>
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
 <tr><td><code>private:
-        FrameBufferObject fboID</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int width, height</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>PTexture texturePtr</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>PTexture depthTexture</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>GLuint tid</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f }</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>this-&gt;height = height</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>GLenum drawBuffers[1] = {GL_COLOR_ATTACHMENT0}</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>break</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: error = &quot;Missing Attachment&quot;</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>break</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>case GL_FRAMEBUFFER_UNSUPPORTED:                   error = &quot;Unsupported Format&quot;</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>break</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>default:                                           error = &quot;Unknown Error&quot;</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>break</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return complete</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return fbuffer</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+        FrameBufferObject fboID</code></td><td>Data member of type private: FrameBufferObject.</td></tr>
+<tr><td><code>int width, height</code></td><td>Data member of type int width,.</td></tr>
+<tr><td><code>PTexture texturePtr</code></td><td>Data member of type PTexture.</td></tr>
+<tr><td><code>PTexture depthTexture</code></td><td>Data member of type PTexture.</td></tr>
         </tbody>
       </table>
 

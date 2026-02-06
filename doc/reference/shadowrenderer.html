@@ -145,12 +145,12 @@ ShadowRenderer instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>static void BeginFrame(PCamera camera)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>static void RenderShadows(const std::shared_ptr&lt;Mesh&gt;&amp; mesh, const Math3D::Mat4&amp; model, const std::shared_ptr&lt;Material&gt;&amp; material)</code></td><td>Renders content using the current settings.</td></tr>
-<tr><td><code>static void BindShadowSamplers(const std::shared_ptr&lt;ShaderProgram&gt;&amp; program)</code></td><td>Binds the resource for use.</td></tr>
-<tr><td><code>static void GetShadowDataForLight(size_t index, const Light&amp; light, ShadowLightData&amp; outData)</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>static bool IsEnabled()</code></td><td>Returns whether the condition is met.</td></tr>
-<tr><td><code>static std::shared_ptr&lt;Texture&gt; GetDepthBuffer()</code></td><td>Returns the requested value.</td></tr>
+<tr><td><code>static void BeginFrame(PCamera camera)</code></td><td>Returns void. Parameters: PCamera camera.</td></tr>
+<tr><td><code>static void RenderShadows(const std::shared_ptr&lt;Mesh&gt;&amp; mesh, const Math3D::Mat4&amp; model, const std::shared_ptr&lt;Material&gt;&amp; material)</code></td><td>Renders content using the current settings. Parameters: const std::shared_ptr&lt;Mesh&gt;&amp; mesh, const Math3D::Mat4&amp; model, const std::shared_ptr&lt;Material&gt;&amp; material.</td></tr>
+<tr><td><code>static void BindShadowSamplers(const std::shared_ptr&lt;ShaderProgram&gt;&amp; program)</code></td><td>Binds this resource for use. Parameters: const std::shared_ptr&lt;ShaderProgram&gt;&amp; program.</td></tr>
+<tr><td><code>static void GetShadowDataForLight(size_t index, const Light&amp; light, ShadowLightData&amp; outData)</code></td><td>Returns void. Parameters: size_t index, const Light&amp; light, ShadowLightData&amp; outData.</td></tr>
+<tr><td><code>static bool IsEnabled()</code></td><td>Returns bool. Parameters: none.</td></tr>
+<tr><td><code>static std::shared_ptr&lt;Texture&gt; GetDepthBuffer()</code></td><td>Returns std::shared_ptr&lt;Texture&gt;. Parameters: none.</td></tr>
         </tbody>
       </table>
 

@@ -140,127 +140,23 @@ auto instance = ModelPartPrefabs::Create(/* args */);</code></pre>
       
       
       
-      <h2>Member Functions</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>auto factory = ModelPartFactory::Create(mat)</code></td><td>Creates a new instance or resource.</td></tr>
-<tr><td><code>factory
-            .addVertex(Vertex::Build(Math3D::Vec3(-1.0f,0.0f,-1.0f)).UV(0,0).Norm(normal), &amp;v1)
-            .addVertex(Vertex::Build(Math3D::Vec3( 1.0f,0.0f,-1.0f)).UV(1,0).Norm(normal), &amp;v2)
-            .addVertex(Vertex::Build(Math3D::Vec3( 1.0f,0.0f, 1.0f)).UV(1,1).Norm(normal), &amp;v3)
-            .addVertex(Vertex::Build(Math3D::Vec3(-1.0f,0.0f, 1.0f)).UV(0,1).Norm(normal), &amp;v4)
-            .defineFace(v1,v4,v3,v2)</code></td><td>Adds an item to the collection.</td></tr>
-<tr><td><code>part = factory.assemble()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>part-&gt;localTransform.setScale(Math3D::Vec3(width,1.0f,height))</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>factory
-            
-            .addVertex(Vertex::Build(Math3D::Vec3(-1.0f, -1.0f,  1.0f)).UV(0,0).Norm(Math3D::Vec3(0,0,1)), &amp;v0)
-            .addVertex(Vertex::Build(Math3D::Vec3( 1.0f, -1.0f,  1.0f)).UV(1,0).Norm(Math3D::Vec3(0,0,1)), &amp;v1)
-            .addVertex(Vertex::Build(Math3D::Vec3( 1.0f,  1.0f,  1.0f)).UV(1,1).Norm(Math3D::Vec3(0,0,1)), &amp;v2)
-            .addVertex(Vertex::Build(Math3D::Vec3(-1.0f,  1.0f,  1.0f)).UV(0,1).Norm(Math3D::Vec3(0,0,1)), &amp;v3)
-
-            
-            .addVertex(Vertex::Build(Math3D::Vec3( 1.0f, -1.0f, -1.0f)).UV(0,0).Norm(Math3D::Vec3(0,0,-1)), &amp;v4)
-            .addVertex(Vertex::Build(Math3D::Vec3(-1.0f, -1.0f, -1.0f)).UV(1,0).Norm(Math3D::Vec3(0,0,-1)), &amp;v5)
-            .addVertex(Vertex::Build(Math3D::Vec3(-1.0f,  1.0f, -1.0f)).UV(1,1).Norm(Math3D::Vec3(0,0,-1)), &amp;v6)
-            .addVertex(Vertex::Build(Math3D::Vec3( 1.0f,  1.0f, -1.0f)).UV(0,1).Norm(Math3D::Vec3(0,0,-1)), &amp;v7)
-
-            
-            .addVertex(Vertex::Build(Math3D::Vec3(-1.0f,  1.0f, -1.0f)).UV(0,0).Norm(Math3D::Vec3(0,1,0)), &amp;v8)
-            .addVertex(Vertex::Build(Math3D::Vec3( 1.0f,  1.0f, -1.0f)).UV(1,0).Norm(Math3D::Vec3(0,1,0)), &amp;v9)
-            .addVertex(Vertex::Build(Math3D::Vec3( 1.0f,  1.0f,  1.0f)).UV(1,1).Norm(Math3D::Vec3(0,1,0)), &amp;v10)
-            .addVertex(Vertex::Build(Math3D::Vec3(-1.0f,  1.0f,  1.0f)).UV(0,1).Norm(Math3D::Vec3(0,1,0)), &amp;v11)
-
-            
-            .addVertex(Vertex::Build(Math3D::Vec3(-1.0f, -1.0f, -1.0f)).UV(0,1).Norm(Math3D::Vec3(0,-1,0)), &amp;v12)
-            .addVertex(Vertex::Build(Math3D::Vec3( 1.0f, -1.0f, -1.0f)).UV(1,1).Norm(Math3D::Vec3(0,-1,0)), &amp;v13)
-            .addVertex(Vertex::Build(Math3D::Vec3( 1.0f, -1.0f,  1.0f)).UV(1,0).Norm(Math3D::Vec3(0,-1,0)), &amp;v14)
-            .addVertex(Vertex::Build(Math3D::Vec3(-1.0f, -1.0f,  1.0f)).UV(0,0).Norm(Math3D::Vec3(0,-1,0)), &amp;v15)
-
-            
-            .addVertex(Vertex::Build(Math3D::Vec3( 1.0f, -1.0f, -1.0f)).UV(0,0).Norm(Math3D::Vec3(1,0,0)), &amp;v16)
-            .addVertex(Vertex::Build(Math3D::Vec3( 1.0f, -1.0f,  1.0f)).UV(1,0).Norm(Math3D::Vec3(1,0,0)), &amp;v17)
-            .addVertex(Vertex::Build(Math3D::Vec3( 1.0f,  1.0f,  1.0f)).UV(1,1).Norm(Math3D::Vec3(1,0,0)), &amp;v18)
-            .addVertex(Vertex::Build(Math3D::Vec3( 1.0f,  1.0f, -1.0f)).UV(0,1).Norm(Math3D::Vec3(1,0,0)), &amp;v19)
-
-            
-            .addVertex(Vertex::Build(Math3D::Vec3(-1.0f, -1.0f,  1.0f)).UV(0,0).Norm(Math3D::Vec3(-1,0,0)), &amp;v20)
-            .addVertex(Vertex::Build(Math3D::Vec3(-1.0f, -1.0f, -1.0f)).UV(1,0).Norm(Math3D::Vec3(-1,0,0)), &amp;v21)
-            .addVertex(Vertex::Build(Math3D::Vec3(-1.0f,  1.0f, -1.0f)).UV(1,1).Norm(Math3D::Vec3(-1,0,0)), &amp;v22)
-            .addVertex(Vertex::Build(Math3D::Vec3(-1.0f,  1.0f,  1.0f)).UV(0,1).Norm(Math3D::Vec3(-1,0,0)), &amp;v23)
-
-            
-            .defineFace(v0, v1, v2, v3)   
-            .defineFace(v4, v5, v6, v7)   
-            .defineFace(v8, v9, v10, v11) 
-            .defineFace(v12, v13, v14, v15) 
-            .defineFace(v16, v17, v18, v19) 
-            .defineFace(v20, v21, v22, v23)</code></td><td>Adds an item to the collection.</td></tr>
-<tr><td><code>auto part = factory.assemble()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>part-&gt;localTransform.setScale(Math3D::Vec3(width, height, depth))</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>factory.addVertex(Vertex::Build(Math3D::Vec3(0,0,0)).UV(0.5f,0.5f).Norm(normal), &amp;centerIndex)</code></td><td>Adds an item to the collection.</td></tr>
-<tr><td><code>i++){
-            float theta = (float)i / (float)segments * 2.0f * (float) Math3D::PI</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float x = Math3D::Cos(theta)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float z = Math3D::Sin(theta)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>factory.addVertex(Vertex::Build(Math3D::Vec3(x,0.0f,z)).UV(u,v).Norm(normal), &amp;currentIndex)</code></td><td>Adds an item to the collection.</td></tr>
-<tr><td><code>if(i == 0) firstEdgeIndex = currentIndex</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if(i &gt; 0){
-                factory.defineFace(centerIndex, currentIndex, lastEdgeIndex)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        auto part = factory.assemble()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>part-&gt;localTransform.setScale(Math3D::Vec3(radius, 1.0f, radius))</code></td><td>Sets the requested value.</td></tr>
-        </tbody>
-      </table>
-
       
       <h2>Static Functions</h2>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>static std::shared_ptr&lt;ModelPart&gt; MakePlane(float width, float height, PMaterial mat = MaterialDefaults::ColorMaterial::Create(Color::RED), Math3D::Vec3 normal = Math3D::Vec3(0,1,0)){
-        std::shared_ptr&lt;ModelPart&gt; part</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    static std::shared_ptr&lt;ModelPart&gt; MakeBox(float width, float height, float depth,PMaterial mat = MaterialDefaults::ColorMaterial::Create(Color::RED)){
-        auto factory = ModelPartFactory::Create(mat)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    static std::shared_ptr&lt;ModelPart&gt; MakeCirclePlane(
+<tr><td><code>static std::shared_ptr&lt;ModelPart&gt; MakePlane(float width, float height, PMaterial mat = MaterialDefaults::ColorMaterial::Create(Color::RED), Math3D::Vec3 normal = Math3D::Vec3(0,1,0)){ }</code></td><td>Returns std::shared_ptr&lt;ModelPart&gt;. Parameters: float width, float height, PMaterial mat, Math3D::Vec3 normal, 1, 0).</td></tr>
+<tr><td><code>static std::shared_ptr&lt;ModelPart&gt; MakeBox(float width, float height, float depth,PMaterial mat = MaterialDefaults::ColorMaterial::Create(Color::RED)){ }</code></td><td>Returns std::shared_ptr&lt;ModelPart&gt;. Parameters: float width, float height, float depth, PMaterial mat.</td></tr>
+<tr><td><code>static std::shared_ptr&lt;ModelPart&gt; MakeCirclePlane(
         float radius, 
         int segments = 32, 
         PMaterial material = MaterialDefaults::ColorMaterial::Create(Color::RED), 
         Math3D::Vec3 normal = Math3D::Vec3(0,1,0)
-    ){
-        auto factory = ModelPartFactory::Create(material)</code></td><td>Performs the operation described by the name.</td></tr>
+    ){ }</code></td><td>Returns std::shared_ptr&lt;ModelPart&gt;. Parameters: float radius, int segments, PMaterial material, Math3D::Vec3 normal, 1, 0).</td></tr>
         </tbody>
       </table>
 
       
-      <h2>Public Data</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>int v1, v2, v3, v4</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return part</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return part</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int centerIndex</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int firstEdgeIndex = -1, lastEdgeIndex = -1</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>for(int i = 0</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>i &lt;= segments</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int currentIndex</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float u = x * 0.5f + 0.5f</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float v = z * 0.5f + 0.5f</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-            lastEdgeIndex = currentIndex</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return part</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-        </tbody>
-      </table>
-
 
       <h2>Public API</h2>
       <pre><code class="language-cpp">struct ModelPartPrefabs{

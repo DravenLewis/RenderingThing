@@ -143,13 +143,8 @@ Mat4 instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Mat4(float diagonal = 1.0f) : data(glm::mat4(diagonal)) {}
-        Mat4(const glm::mat4&amp; m) : data(m) {}
-        operator glm::mat4() const { return data</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>} 
-        
-        
-        Mat4 operator*(const Mat4&amp; o) const { return Mat4(data * o.data)</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>Mat4(float diagonal = 1.0f) : data(glm::mat4(diagonal)) { }</code></td><td>Constructs a Mat4. Parameters: float diagonal.</td></tr>
+<tr><td><code>Mat4(const glm::mat4&amp; m) : data(m) { }</code></td><td>Constructs a Mat4. Parameters: const glm::mat4&amp; m.</td></tr>
         </tbody>
       </table>
 
@@ -158,21 +153,10 @@ Mat4 instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-
-        
-        
-        
-        void decompose(Vec3&amp; outPos, Quat&amp; outRot, Vec3&amp; outScale) const {
-            glm::vec3 scale, translation, skew</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glm::decompose(data, scale, orientation, translation, skew, perspective)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>outPos = Vec3(translation)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>outRot = Quat(orientation)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>outScale = Vec3(scale)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        
-        Vec3 getPosition() const { return Vec3(data[3])</code></td><td>Returns the requested value.</td></tr>
+<tr><td><code>operator glm::mat4() const { }</code></td><td>Returns operator glm::. Parameters: none.</td></tr>
+<tr><td><code>void decompose(Vec3&amp; outPos, Quat&amp; outRot, Vec3&amp; outScale) const { }</code></td><td>Returns void. Parameters: Vec3&amp; outPos, Quat&amp; outRot, Vec3&amp; outScale.</td></tr>
+<tr><td><code>Vec3 getPosition() const { }</code></td><td>Returns Vec3. Parameters: none.</td></tr>
+<tr><td><code>Mat4 operator*(const Mat4&amp; o) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -182,10 +166,7 @@ Mat4 instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>glm::mat4 data</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glm::vec4 perspective</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glm::quat orientation</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>glm::mat4 data</code></td><td>Data member of type glm::mat4.</td></tr>
         </tbody>
       </table>
 

@@ -143,8 +143,7 @@ GrayscaleEffect instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>GrayscaleEffect(){
-            shader = std::make_shared&lt;ShaderProgram&gt;()</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>GrayscaleEffect(){ }</code></td><td>Constructs a GrayscaleEffect. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -153,21 +152,7 @@ GrayscaleEffect instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>shader-&gt;setVertexShader(Graphics::ShaderDefaults::SCREEN_VERT_SRC)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>shader-&gt;setFragmentShader(GRAYSCALE_SHADER)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>shader-&gt;compile()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        void apply(PTexture tex, PTexture depthTex, PFrameBuffer outFbo, std::shared_ptr&lt;ModelPart&gt; quad) override {
-
-            outFbo-&gt;bind()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>outFbo-&gt;clear()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>glDisable(GL_DEPTH_TEST)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>shader-&gt;bind()</code></td><td>Binds the resource for use.</td></tr>
-<tr><td><code>Uniform&lt;PTexture&gt; u_tex(tex)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>shader-&gt;setUniform(&quot;screenTexture&quot;, u_tex)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>quad-&gt;draw(Math3D::Mat4(),Math3D::Mat4(),Math3D::Mat4())</code></td><td>Renders content using the current settings.</td></tr>
-<tr><td><code>outFbo-&gt;unbind()</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>void apply(PTexture tex, PTexture depthTex, PFrameBuffer outFbo, std::shared_ptr&lt;ModelPart&gt; quad) override { }</code></td><td>Returns void. Parameters: PTexture tex, PTexture depthTex, PFrameBuffer outFbo, std::shared_ptr&lt;ModelPart&gt; quad.</td></tr>
         </tbody>
       </table>
 
@@ -176,22 +161,11 @@ GrayscaleEffect instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-
-        static Graphics::PostProcessing::PPostProcessingEffect New(){
-            return std::make_shared&lt;GrayscaleEffect&gt;()</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>static Graphics::PostProcessing::PPostProcessingEffect New(){ }</code></td><td>Returns Graphics::PostProcessing::PPostProcessingEffect. Parameters: none.</td></tr>
         </tbody>
       </table>
 
       
-      <h2>Public Data</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-        </tbody>
-      </table>
-
 
       <h2>Public API</h2>
       <pre><code class="language-cpp">GrayscaleEffect(){

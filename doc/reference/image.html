@@ -143,12 +143,9 @@ auto instance = Image::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Image() = delete</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>Image(int width, int height){
-                    if(width &lt;= 0 || height &lt;= 0) throw std::runtime_error(&quot;Cannot have 0 or Negative Dimension.&quot;)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>}
-                Image(const Image&amp; src) : width(src.width), height(src.height){
-                    pixelData.resize(static_cast&lt;size_t&gt;(width) * height)</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>Image() = delete</code></td><td>Deleted; this overload is not available.</td></tr>
+<tr><td><code>Image(int width, int height){ }</code></td><td>Constructs a Image. Parameters: int width, int height.</td></tr>
+<tr><td><code>Image(const Image&amp; src) : width(src.width), height(src.height){ }</code></td><td>Constructs a Image. Parameters: const Image&amp; src.</td></tr>
         </tbody>
       </table>
 
@@ -157,49 +154,23 @@ auto instance = Image::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>pixelData.resize(static_cast&lt;size_t&gt;(width) * height)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if(!src.empty() &amp;&amp; (src.size() == pixDat.size())){
-                        pixDat = src</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-                    auto image = std::make_shared&lt;Image&gt;(width,height)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-                int getWidth() const { return width</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-                int getHeight() const {return height</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-                std::vector&lt;uint32_t&gt; getPixelData() const {return pixelData</code></td><td>Returns the requested value.</td></tr>
+<tr><td><code>int getWidth() const { }</code></td><td>Returns int. Parameters: none.</td></tr>
+<tr><td><code>int getHeight() const { }</code></td><td>Returns int. Parameters: none.</td></tr>
+<tr><td><code>std::vector&lt;uint32_t&gt; getPixelData() const { }</code></td><td>Returns std::vector&lt;uint32_t&gt;. Parameters: none.</td></tr>
         </tbody>
       </table>
 
       
-      <h2>Static Functions</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>}
-
-                static std::shared_ptr&lt;Image&gt; Create(int width, int height, const std::vector&lt;uint32_t&gt;&amp; src = {}){
-
-                    std::vector&lt;uint32_t&gt; pixDat(width * height, 0x000000FF)</code></td><td>Creates a new instance or resource.</td></tr>
-        </tbody>
-      </table>
-
       
       <h2>Public Data</h2>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
 <tr><td><code>public:
-                std::vector&lt;uint32_t&gt; pixelData</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int width, height</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>this-&gt;width = width</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>this-&gt;height = height</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>this-&gt;pixelData = src.pixelData</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>image-&gt;pixelData = pixDat</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return image</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+                std::vector&lt;uint32_t&gt; pixelData</code></td><td>Data member of type public: std::vector&lt;uint32_t&gt;.</td></tr>
+<tr><td><code>int width, height</code></td><td>Data member of type int width,.</td></tr>
+<tr><td><code>static std::shared_ptr&lt;Image&gt; Create(int width, int height, const std::vector&lt;uint32_t&gt;&amp; src = { }</code></td><td>Data member of type static std::shared_ptr&lt;Image&gt; Create(int width, int height, const std::vector&lt;uint32_t&gt;&amp;.</td></tr>
+<tr><td><code>){ }</code></td><td>Data member of type ){.</td></tr>
         </tbody>
       </table>
 

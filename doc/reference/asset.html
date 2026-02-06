@@ -142,7 +142,7 @@ Asset instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>typedef std::vector&lt;std::shared_ptr&lt;Asset&gt;&gt; AssetPack</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>typedef std::vector&lt;std::shared_ptr&lt;Asset&gt;&gt; AssetPack</code></td><td>Type alias declared by this class.</td></tr>
         </tbody>
       </table>
 
@@ -151,10 +151,10 @@ Asset instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Asset() = delete</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>Asset(std::unique_ptr&lt;File&gt; currentFileHandle)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>Asset(std::string path)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>~Asset()</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>Asset() = delete</code></td><td>Deleted; this overload is not available.</td></tr>
+<tr><td><code>Asset(std::unique_ptr&lt;File&gt; currentFileHandle)</code></td><td>Constructs a Asset. Parameters: std::unique_ptr&lt;File&gt; currentFileHandle.</td></tr>
+<tr><td><code>Asset(std::string path)</code></td><td>Constructs a Asset. Parameters: std::string path.</td></tr>
+<tr><td><code>~Asset()</code></td><td>Constructs a Asset. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -163,11 +163,11 @@ Asset instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>std::unique_ptr&lt;File&gt;&amp; getFileHandle()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>bool load()</code></td><td>Loads data or resources.</td></tr>
-<tr><td><code>std::string asString()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>BinaryBuffer asRaw()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>inline bool loaded() const {return isLoaded</code></td><td>Loads data or resources.</td></tr>
+<tr><td><code>std::unique_ptr&lt;File&gt;&amp; getFileHandle()</code></td><td>Returns std::unique_ptr&lt;File&gt;&amp;. Parameters: none.</td></tr>
+<tr><td><code>bool load()</code></td><td>Loads data or resources. Parameters: none.</td></tr>
+<tr><td><code>std::string asString()</code></td><td>Returns std::string. Parameters: none.</td></tr>
+<tr><td><code>BinaryBuffer asRaw()</code></td><td>Returns BinaryBuffer. Parameters: none.</td></tr>
+<tr><td><code>inline bool loaded() const { }</code></td><td>Loads data or resources. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -176,20 +176,12 @@ Asset instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>static void LoadAssets(AssetPack &amp;pack)</code></td><td>Loads data or resources.</td></tr>
-<tr><td><code>static Asset CopyAsset(const Asset &amp;asset)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>static void LoadAssets(AssetPack &amp;pack)</code></td><td>Loads data or resources. Parameters: AssetPack &amp;pack.</td></tr>
+<tr><td><code>static Asset CopyAsset(const Asset &amp;asset)</code></td><td>Returns Asset. Parameters: const Asset &amp;asset.</td></tr>
         </tbody>
       </table>
 
       
-      <h2>Public Data</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-        </tbody>
-      </table>
-
 
       <h2>Public API</h2>
       <pre><code class="language-cpp">Asset() = delete;

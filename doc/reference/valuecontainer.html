@@ -145,9 +145,8 @@ ValueContainer instance;</code></pre>
         <tbody>
 <tr><td><code>public:
 
-        ValueContainer() = default</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>ValueContainer(const T&amp; v){
-            val = v</code></td><td>Constructs the object.</td></tr>
+        ValueContainer() = default</code></td><td>Constructs a ValueContainer. Parameters: none.</td></tr>
+<tr><td><code>ValueContainer(const T&amp; v){ }</code></td><td>Constructs a ValueContainer. Parameters: const T&amp; v.</td></tr>
         </tbody>
       </table>
 
@@ -156,21 +155,13 @@ ValueContainer instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>std::function&lt;bool(T,T)&gt; on_change</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        void set(const T&amp; v) {
-            if(!empty &amp;&amp; v == val) return</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>if(on_change){
-                if(empty || on_change(val, v)){
-                    val = v</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>T&amp; get() {return val</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-
-        void onChange(std::function&lt;bool(T,T)&gt; fn){on_change = std::move(fn)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void operator= (const T&amp; v){set(v)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>void operator==(const ValueContainer&lt;T&gt;&amp; v) const {return (v.val == this-&gt;val)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void operator!=(const ValueContainer&lt;T&gt;&amp; v) const {return (v.val != this-&gt;val)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>std::function&lt;bool(T,T)&gt; on_change</code></td><td>Returns std::function&lt;. Parameters: T, T.</td></tr>
+<tr><td><code>void set(const T&amp; v) { }</code></td><td>Sets the requested value. Parameters: const T&amp; v.</td></tr>
+<tr><td><code>T&amp; get() { }</code></td><td>Returns T&amp;. Parameters: none.</td></tr>
+<tr><td><code>void onChange(std::function&lt;bool(T,T)&gt; fn){ }</code></td><td>Returns void. Parameters: std::function&lt;bool(T,T)&gt; fn.</td></tr>
+<tr><td><code>void operator= (const T&amp; v){ }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>void operator==(const ValueContainer&lt;T&gt;&amp; v) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>void operator!=(const ValueContainer&lt;T&gt;&amp; v) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -181,20 +172,8 @@ ValueContainer instance;</code></pre>
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
 <tr><td><code>private:
-        T val{}</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>bool empty = true</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>empty = false</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>empty = false</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-            }else{
-                val = v</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>empty = false</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        }</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+        T val{ }</code></td><td>Data member of type private: T val{.</td></tr>
+<tr><td><code>bool empty = true</code></td><td>Data member of type bool.</td></tr>
         </tbody>
       </table>
 

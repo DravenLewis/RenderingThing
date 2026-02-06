@@ -143,7 +143,7 @@ File instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>File(std::string path)</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>File(std::string path)</code></td><td>Constructs a File. Parameters: std::string path.</td></tr>
         </tbody>
       </table>
 
@@ -152,17 +152,17 @@ File instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>bool exists()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>bool isDirectory()</code></td><td>Returns whether the condition is met.</td></tr>
-<tr><td><code>std::string getFileName()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>std::string getFileType()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>bool createFile()</code></td><td>Creates a new instance or resource.</td></tr>
-<tr><td><code>bool deleteFile()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>bool open(std::ios::openmode options)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>std::fstream&amp; getStream()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>bool isOpen()</code></td><td>Returns whether the condition is met.</td></tr>
-<tr><td><code>void close()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>std::string&amp; getPath()</code></td><td>Returns the requested value.</td></tr>
+<tr><td><code>bool exists()</code></td><td>Returns bool. Parameters: none.</td></tr>
+<tr><td><code>bool isDirectory()</code></td><td>Returns bool. Parameters: none.</td></tr>
+<tr><td><code>std::string getFileName()</code></td><td>Returns std::string. Parameters: none.</td></tr>
+<tr><td><code>std::string getFileType()</code></td><td>Returns std::string. Parameters: none.</td></tr>
+<tr><td><code>bool createFile()</code></td><td>Creates and returns a new instance or resource. Parameters: none.</td></tr>
+<tr><td><code>bool deleteFile()</code></td><td>Returns bool. Parameters: none.</td></tr>
+<tr><td><code>bool open(std::ios::openmode options)</code></td><td>Returns bool. Parameters: std::ios::openmode options.</td></tr>
+<tr><td><code>std::fstream&amp; getStream()</code></td><td>Returns std::fstream&amp;. Parameters: none.</td></tr>
+<tr><td><code>bool isOpen()</code></td><td>Returns bool. Parameters: none.</td></tr>
+<tr><td><code>void close()</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>std::string&amp; getPath()</code></td><td>Returns std::string&amp;. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -171,7 +171,7 @@ File instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>static std::string GetCWD()</code></td><td>Returns the requested value.</td></tr>
+<tr><td><code>static std::string GetCWD()</code></td><td>Returns std::string. Parameters: none.</td></tr>
         </tbody>
       </table>
 

@@ -140,50 +140,12 @@ auto instance = ModelPrefabs::Create(/* args */);</code></pre>
       
       
       
-      <h2>Member Functions</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>struct CubeMaterialDefinition{
-        PMaterial matTop = MaterialDefaults::ColorMaterial::Create(Color::MAGENTA)</code></td><td>Creates a new instance or resource.</td></tr>
-<tr><td><code>PMaterial matBottom = MaterialDefaults::ColorMaterial::Create(Color::MAGENTA)</code></td><td>Creates a new instance or resource.</td></tr>
-<tr><td><code>PMaterial matLeft = MaterialDefaults::ColorMaterial::Create(Color::MAGENTA)</code></td><td>Creates a new instance or resource.</td></tr>
-<tr><td><code>PMaterial matRight = MaterialDefaults::ColorMaterial::Create(Color::MAGENTA)</code></td><td>Creates a new instance or resource.</td></tr>
-<tr><td><code>PMaterial matFront = MaterialDefaults::ColorMaterial::Create(Color::MAGENTA)</code></td><td>Creates a new instance or resource.</td></tr>
-<tr><td><code>PMaterial matBack = MaterialDefaults::ColorMaterial::Create(Color::MAGENTA)</code></td><td>Creates a new instance or resource.</td></tr>
-<tr><td><code>std::shared_ptr&lt;ModelPart&gt; cubeTop = ModelPartPrefabs::MakePlane(scale, scale, matDef-&gt;matTop)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>cubeTop-&gt;localTransform.setPosition(Math3D::Vec3(0.0f,1.0f,0.0f))</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>cubeTop-&gt;localTransform.setRotation(0.0f,0.0f,0.0f)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>std::shared_ptr&lt;ModelPart&gt; cubeBottom = ModelPartPrefabs::MakePlane(scale, scale, matDef-&gt;matBottom)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>cubeBottom-&gt;localTransform.setPosition(Math3D::Vec3(0.0f,-1.0f,0.0f))</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>cubeBottom-&gt;localTransform.setRotation(180.0f,0.0f,0.0f)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>std::shared_ptr&lt;ModelPart&gt; cubeLeft = ModelPartPrefabs::MakePlane(scale, scale, matDef-&gt;matLeft)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>cubeLeft-&gt;localTransform.setPosition(Math3D::Vec3(-1.0f,0.0f,0.0f))</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>cubeLeft-&gt;localTransform.setRotation(0.0f,-90.0f,90.0f)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>std::shared_ptr&lt;ModelPart&gt; cubeRight = ModelPartPrefabs::MakePlane(scale, scale, matDef-&gt;matRight)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>cubeRight-&gt;localTransform.setPosition(Math3D::Vec3(1.0f,0.0f,0.0f))</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>cubeRight-&gt;localTransform.setRotation(0.0f,90.0f,-90.0f)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>std::shared_ptr&lt;ModelPart&gt; cubeFront = ModelPartPrefabs::MakePlane(scale, scale, matDef-&gt;matFront)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>cubeFront-&gt;localTransform.setPosition(Math3D::Vec3(0.0f,0.0f,1.0f))</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>cubeFront-&gt;localTransform.setRotation(-90.0f,180.0f,180.0f)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>std::shared_ptr&lt;ModelPart&gt; cubeBack = ModelPartPrefabs::MakePlane(scale, scale, matDef-&gt;matBack)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>cubeBack-&gt;localTransform.setPosition(Math3D::Vec3(0.0f,0.0f,-1.0f))</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>cubeBack-&gt;localTransform.setRotation(90.0f,180.0f,0.0f)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>model-&gt;addPart(cubeTop).addPart(cubeBottom).addPart(cubeLeft).addPart(cubeRight).addPart(cubeFront).addPart(cubeBack)</code></td><td>Adds an item to the collection.</td></tr>
-        </tbody>
-      </table>
-
       
       <h2>Static Functions</h2>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>static std::shared_ptr&lt;CubeMaterialDefinition&gt; Create() {return std::make_shared&lt;CubeMaterialDefinition&gt;()</code></td><td>Creates a new instance or resource.</td></tr>
-<tr><td><code>static std::shared_ptr&lt;CubeMaterialDefinition&gt; CreateSame(PMaterial mat) {
-            auto def = std::make_shared&lt;CubeMaterialDefinition&gt;()</code></td><td>Creates a new instance or resource.</td></tr>
-<tr><td><code>static std::shared_ptr&lt;Model&gt; MakeCube(float scale = 1.0f, std::shared_ptr&lt;CubeMaterialDefinition&gt; matDef = CubeMaterialDefinition::Create()){
-
-        auto model = Model::Create()</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>static std::shared_ptr&lt;Model&gt; MakeCube(float scale = 1.0f, std::shared_ptr&lt;CubeMaterialDefinition&gt; matDef = CubeMaterialDefinition::Create()){ }</code></td><td>Returns std::shared_ptr&lt;Model&gt;. Parameters: float scale, std::shared_ptr&lt;CubeMaterialDefinition&gt; matDef.</td></tr>
         </tbody>
       </table>
 
@@ -192,18 +154,7 @@ auto instance = ModelPrefabs::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>def-&gt;matFront = mat</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>def-&gt;matBack = mat</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>def-&gt;matLeft = mat</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>def-&gt;matRight = mat</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>def-&gt;matTop = mat</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>def-&gt;matBottom = mat</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return def</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return model</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>struct CubeMaterialDefinition{ }</code></td><td>Data member of type struct CubeMaterialDefinition{.</td></tr>
         </tbody>
       </table>
 

@@ -144,89 +144,16 @@ Vertex instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Vertex&amp; Pos(const Math3D::Vec3&amp; pos){
-        this-&gt;Position = pos</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    Vertex&amp; Pos(float x = 0, float y = 0, float z = 0){
-        return Pos(Math3D::Vec3(x,y,z))</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    Vertex&amp; Norm(const Math3D::Vec3&amp; nml){
-        this-&gt;Normal = nml</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    Vertex&amp; Norm(float x = 0, float y = 0, float z = 0){
-        return Norm(Math3D::Vec3(x,y,z))</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    Vertex&amp; UV(const Math3D::Vec2&amp; pos){
-        this-&gt;TexCoords = pos</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    Vertex&amp; UV(float u = 0, float v = 0){
-        return UV(Math3D::Vec2(u,v))</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    Vertex&amp; Col(const Math3D::Vec4&amp; col){
-        this-&gt;Color = col</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    Vertex&amp; Col(float r = 0, float g = 0, float b = 0, float a = 1){
-        return Col(Math3D::Vec4(r,g,b,a))</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>i &lt; floats.size()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>i++){
-            if(i &lt; dataSize){
-                first12.push_back(floats[i])</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if(first12.size() &gt;= 3){
-            vtx.Position.x = first12[0]</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        if(first12.size() &gt;= 7){
-            vtx.Color.x = first12[3]</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        if(first12.size() &gt;= 10){
-            vtx.Normal.x = first12[7]</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        if(first12.size() &gt;= 12){
-            vtx.TexCoords.x = first12[10]</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>/* XYZRGBANNUV */
-        vertexVector.push_back(v.Position.x)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>vertexVector.push_back(v.Position.y)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>vertexVector.push_back(v.Position.z)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>vertexVector.push_back(v.Color.x)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>vertexVector.push_back(v.Color.y)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>vertexVector.push_back(v.Color.z)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>vertexVector.push_back(v.Color.w)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>vertexVector.push_back(v.Normal.x)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>vertexVector.push_back(v.Normal.y)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>vertexVector.push_back(v.Normal.z)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>vertexVector.push_back(v.TexCoords.x)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>vertexVector.push_back(v.TexCoords.y)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    bool operator==(const Vertex&amp; vtx) const {
-        return
-            Math3D::AreClose(Position.x, vtx.Position.x) &amp;&amp;
-            Math3D::AreClose(Position.y, vtx.Position.y) &amp;&amp;
-            Math3D::AreClose(Position.z, vtx.Position.z) &amp;&amp;
-
-            Math3D::AreClose(Normal.x, vtx.Normal.x) &amp;&amp;
-            Math3D::AreClose(Normal.y, vtx.Normal.y) &amp;&amp;
-            Math3D::AreClose(Normal.z, vtx.Normal.z) &amp;&amp;
-
-            Math3D::AreClose(TexCoords.x, vtx.TexCoords.x) &amp;&amp;
-            Math3D::AreClose(TexCoords.y, vtx.TexCoords.y)  &amp;&amp;
-            Math3D::AreClose(Color.x, vtx.Color.x) &amp;&amp;
-            Math3D::AreClose(Color.y, vtx.Color.y)  &amp;&amp;
-            Math3D::AreClose(Color.z, vtx.Color.z)  &amp;&amp;
-            Math3D::AreClose(Color.w, vtx.Color.w)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    bool operator!=(const Vertex&amp; vtx) const {
-        return !(*this == vtx)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>Vertex&amp; Pos(const Math3D::Vec3&amp; pos){ }</code></td><td>Returns Vertex&amp;. Parameters: const Math3D::Vec3&amp; pos.</td></tr>
+<tr><td><code>Vertex&amp; Pos(float x = 0, float y = 0, float z = 0){ }</code></td><td>Returns Vertex&amp;. Parameters: float x, float y, float z.</td></tr>
+<tr><td><code>Vertex&amp; Norm(const Math3D::Vec3&amp; nml){ }</code></td><td>Returns Vertex&amp;. Parameters: const Math3D::Vec3&amp; nml.</td></tr>
+<tr><td><code>Vertex&amp; Norm(float x = 0, float y = 0, float z = 0){ }</code></td><td>Returns Vertex&amp;. Parameters: float x, float y, float z.</td></tr>
+<tr><td><code>Vertex&amp; UV(const Math3D::Vec2&amp; pos){ }</code></td><td>Returns Vertex&amp;. Parameters: const Math3D::Vec2&amp; pos.</td></tr>
+<tr><td><code>Vertex&amp; UV(float u = 0, float v = 0){ }</code></td><td>Returns Vertex&amp;. Parameters: float u, float v.</td></tr>
+<tr><td><code>Vertex&amp; Col(const Math3D::Vec4&amp; col){ }</code></td><td>Returns Vertex&amp;. Parameters: const Math3D::Vec4&amp; col.</td></tr>
+<tr><td><code>Vertex&amp; Col(float r = 0, float g = 0, float b = 0, float a = 1){ }</code></td><td>Returns Vertex&amp;. Parameters: float r, float g, float b, float a.</td></tr>
+<tr><td><code>bool operator==(const Vertex&amp; vtx) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>bool operator!=(const Vertex&amp; vtx) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -235,19 +162,9 @@ Vertex instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-
-
-    static Vertex Build(Math3D::Vec3 pos = Math3D::Vec3::zero(),Math3D::Vec4 color = Math3D::Vec4(1,1,1,1), Math3D::Vec3 normal = Math3D::Vec3::zero(), Math3D::Vec2 texcords = Math3D::Vec2(0,0)){
-        Vertex vtx</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    static Vertex Compose(std::vector&lt;float&gt;&amp; floats, int dataSize = VERTEX_DATA_WIDTH /* XYZRGBANNUV */){
-        std::vector&lt;float&gt; first12</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    static std::vector&lt;float&gt; Decompose(Vertex &amp;v){
-        std::vector&lt;float&gt; vertexVector</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>static Vertex Build(Math3D::Vec3 pos = Math3D::Vec3::zero(),Math3D::Vec4 color = Math3D::Vec4(1,1,1,1), Math3D::Vec3 normal = Math3D::Vec3::zero(), Math3D::Vec2 texcords = Math3D::Vec2(0,0)){ }</code></td><td>Returns Vertex. Parameters: Math3D::Vec3 pos, Math3D::Vec4 color, 1, 1, 1), Math3D::Vec3 normal, Math3D::Vec2 texcords, 0).</td></tr>
+<tr><td><code>static Vertex Compose(std::vector&lt;float&gt;&amp; floats, int dataSize = VERTEX_DATA_WIDTH /* XYZRGBANNUV */){ }</code></td><td>Returns Vertex. Parameters: std::vector&lt;float&gt;&amp; floats, int dataSize.</td></tr>
+<tr><td><code>static std::vector&lt;float&gt; Decompose(Vertex &amp;v){ }</code></td><td>Returns std::vector&lt;float&gt;. Parameters: Vertex &amp;v.</td></tr>
         </tbody>
       </table>
 
@@ -256,44 +173,11 @@ Vertex instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Math3D::Vec3 Position</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>Math3D::Vec3 Normal</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>Math3D::Vec2 TexCoords</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>Math3D::Vec4 Color</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>static const int VERTEX_DATA_WIDTH = 12</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return *this</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return *this</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return *this</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return *this</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>vtx.Position = pos</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>vtx.Normal = normal</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>vtx.Color = color</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>vtx.TexCoords = texcords</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return vtx</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>for(int i = 0</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}else{
-                break</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        }
-
-
-        Vertex vtx</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>vtx.Position.y = first12[1]</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>vtx.Position.z = first12[2]</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>vtx.Color.y = first12[4]</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>vtx.Color.z = first12[5]</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>vtx.Color.w = first12[6]</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>vtx.Normal.y = first12[8]</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>vtx.Normal.z = first12[9]</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>vtx.TexCoords.y = first12[11]</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        
-        
-
-        return vtx</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return vertexVector</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>Math3D::Vec3 Position</code></td><td>Data member of type Math3D::Vec3.</td></tr>
+<tr><td><code>Math3D::Vec3 Normal</code></td><td>Data member of type Math3D::Vec3.</td></tr>
+<tr><td><code>Math3D::Vec2 TexCoords</code></td><td>Data member of type Math3D::Vec2.</td></tr>
+<tr><td><code>Math3D::Vec4 Color</code></td><td>Data member of type Math3D::Vec4.</td></tr>
+<tr><td><code>static const int VERTEX_DATA_WIDTH = 12</code></td><td>Data member of type static const int.</td></tr>
         </tbody>
       </table>
 

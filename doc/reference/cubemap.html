@@ -143,10 +143,10 @@ CubeMap instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>CubeMap() = default</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>~CubeMap()</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>CubeMap(const CubeMap&amp;) = delete</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>CubeMap(CubeMap&amp;&amp; other) noexcept</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>CubeMap() = default</code></td><td>Constructs a CubeMap. Parameters: none.</td></tr>
+<tr><td><code>~CubeMap()</code></td><td>Constructs a CubeMap. Parameters: none.</td></tr>
+<tr><td><code>CubeMap(const CubeMap&amp;) = delete</code></td><td>Deleted; this overload is not available.</td></tr>
+<tr><td><code>CubeMap(CubeMap&amp;&amp; other) noexcept</code></td><td>Constructs a CubeMap. Parameters: CubeMap&amp;&amp; other.</td></tr>
         </tbody>
       </table>
 
@@ -155,14 +155,13 @@ CubeMap instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>CubeMap&amp; operator=(const CubeMap&amp;) = delete</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>CubeMap&amp; operator=(CubeMap&amp;&amp; other) noexcept</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void bind(unsigned int slot = 0) const</code></td><td>Binds the resource for use.</td></tr>
-<tr><td><code>void unbind() const</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void dispose()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int getSize() const { return size</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-        GLuint getID() const { return textureID</code></td><td>Returns the requested value.</td></tr>
+<tr><td><code>CubeMap&amp; operator=(const CubeMap&amp;) = delete</code></td><td>Deleted; this overload is not available.</td></tr>
+<tr><td><code>CubeMap&amp; operator=(CubeMap&amp;&amp; other) noexcept</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>void bind(unsigned int slot = 0) const</code></td><td>Binds this resource for use. Parameters: unsigned int slot.</td></tr>
+<tr><td><code>void unbind() const</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>void dispose()</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>int getSize() const { }</code></td><td>Returns int. Parameters: none.</td></tr>
+<tr><td><code>GLuint getID() const { }</code></td><td>Returns GLuint. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -171,16 +170,14 @@ CubeMap instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-
-        static std::shared_ptr&lt;CubeMap&gt; Load(
+<tr><td><code>static std::shared_ptr&lt;CubeMap&gt; Load(
             PAsset posX,
             PAsset negX,
             PAsset posY,
             PAsset negY,
             PAsset posZ,
             PAsset negZ
-        )</code></td><td>Loads data or resources.</td></tr>
+        )</code></td><td>Loads data or resources. Parameters: PAsset posX, PAsset negX, PAsset posY, PAsset negY, PAsset posZ, PAsset negZ.</td></tr>
         </tbody>
       </table>
 

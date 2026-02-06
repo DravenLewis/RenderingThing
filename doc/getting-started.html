@@ -129,7 +129,7 @@
     <main class="content">
 
       <h1>Getting Started</h1>
-      <p>This guide covers how to build and run RenderingThing locally using the existing <code>build.bat</code> workflow.</p>
+      <p>This guide covers how to build and run RenderingThing locally using <code>make</code>.</p>
 
       <h2 id="prerequisites">Prerequisites</h2>
       <ul>
@@ -139,18 +139,12 @@
       </ul>
 
       <h2 id="build-and-run">Build and Run</h2>
-      <p>The <code>build.bat</code> script supports clean, debug, release, and run shortcuts.</p>
-      <pre><code class="language-batch">build.bat
-build.bat debug
-build.bat release
-build.bat run debug
-build.bat run release
-build.bat clean
+      <p>Use <code>make</code> to build the project. Targets are defined by the project makefiles.</p>
+      <pre><code class="language-bash">make
+make config=debug
+make config=release
+make clean
 </code></pre>
-
-      <div class="callout">
-        The default build mode is debug when you run <code>build.bat</code> with no arguments.
-      </div>
 
       <h2 id="project-layout">Project Layout</h2>
       <pre><code class="language-text">src/        Engine and renderer source
@@ -161,7 +155,7 @@ doc/        Local documentation site
 </code></pre>
 
       <h2 id="controls">Controls</h2>
-      <p>These controls are bound in <code>src/Main.cpp</code>:</p>
+      <p>These controls are bound in the sample app:</p>
       <ul>
         <li><code>F11</code> toggles fullscreen.</li>
         <li><code>F10</code> toggles debug widgets.</li>

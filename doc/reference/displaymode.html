@@ -142,43 +142,20 @@ DisplayMode instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>typedef std::vector&lt;DisplayMode&gt; DisplayModes</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>typedef std::vector&lt;DisplayMode&gt; DisplayModes</code></td><td>Type alias declared by this class.</td></tr>
         </tbody>
       </table>
 
       
       
-      <h2>Member Functions</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>SDL_DisplayMode** modeList = SDL_GetFullscreenDisplayModes(display,&amp;displayCount)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if(modeList){
-            availableModes.reserve(displayCount)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>DisplayMode dMode = DisplayMode::New(rawMode-&gt;w, rawMode-&gt;h)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>availableModes.push_back(dMode)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-            SDL_free((void*) modeList)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>smode.internal = std::move(mode.__compatInternal)</code></td><td>Performs the operation described by the name.</td></tr>
-        </tbody>
-      </table>
-
       
       <h2>Static Functions</h2>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>static DisplayMode New(int width = 640, int height = 480, GLVersionInfo glInfo = GLVersionInfo(), bool fs = false, bool rs = false, int bs = 1, int dbw = 24){
-        DisplayMode mode</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    static DisplayMode::DisplayModes GetAvailableFullscreenDisplayModes(SDL_DisplayID display = DISPLAY_PRIMARY){
-        DisplayModes availableModes</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-
-    static SDL_DisplayMode ToSDLDisplayMode(DisplayMode&amp; mode){
-        SDL_DisplayMode smode</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>static DisplayMode New(int width = 640, int height = 480, GLVersionInfo glInfo = GLVersionInfo(), bool fs = false, bool rs = false, int bs = 1, int dbw = 24){ }</code></td><td>Returns DisplayMode. Parameters: int width, int height, GLVersionInfo glInfo, bool fs, bool rs, int bs, int dbw.</td></tr>
+<tr><td><code>static DisplayMode::DisplayModes GetAvailableFullscreenDisplayModes(SDL_DisplayID display = DISPLAY_PRIMARY){ }</code></td><td>Returns DisplayMode::DisplayModes. Parameters: SDL_DisplayID display.</td></tr>
+<tr><td><code>static SDL_DisplayMode ToSDLDisplayMode(DisplayMode&amp; mode){ }</code></td><td>Returns SDL_DisplayMode. Parameters: DisplayMode&amp; mode.</td></tr>
         </tbody>
       </table>
 
@@ -187,54 +164,21 @@ DisplayMode instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>int windowResolutionX</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int windowResolutionY</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>bool fullScreen</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>bool resizable</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int bufferSize</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int depthBitWidth</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>SDL_DisplayID __compatDisplayID = 0</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>SDL_PixelFormat __compatPixelFormat = SDL_PIXELFORMAT_RGBA8888</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>SDL_DisplayModeData* __compatInternal = nullptr</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float __compatPixelDensity = 0</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float __compatRefreshRate = 0</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int  __refreshRateDenom = 0</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int __refreshRateNumer = 0</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>GLVersionInfo versionInfo</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>static const int FIRST = 0</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>mode.windowResolutionX = width</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>mode.windowResolutionY = height</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>mode.versionInfo = glInfo</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>mode.fullScreen = fs</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>mode.resizable = rs</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>mode.bufferSize = bs</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>mode.depthBitWidth = dbw</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return mode</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int displayCount</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>for(int i = 0</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>i &lt; displayCount</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>i++){
-                const SDL_DisplayMode* rawMode = modeList[i]</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>dMode.__compatDisplayID = rawMode-&gt;displayID</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>dMode.__compatPixelFormat = rawMode-&gt;format</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>dMode.__compatInternal = rawMode-&gt;internal</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>dMode.__compatPixelDensity = rawMode-&gt;pixel_density</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>dMode.__compatRefreshRate = rawMode-&gt;refresh_rate</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>dMode.__refreshRateDenom = rawMode-&gt;refresh_rate_denominator</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>dMode.__refreshRateNumer = rawMode-&gt;refresh_rate_numerator</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        return availableModes</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>smode.displayID = mode.__compatDisplayID</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>smode.format = mode.__compatPixelFormat</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>smode.w = mode.windowResolutionX</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>smode.h = mode.windowResolutionY</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>smode.pixel_density = mode.__compatPixelDensity</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>smode.refresh_rate = mode.__compatRefreshRate</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>smode.refresh_rate_denominator = mode.__refreshRateDenom</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>smode.refresh_rate_numerator = mode.__refreshRateNumer</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return smode</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>int windowResolutionX</code></td><td>Data member of type int.</td></tr>
+<tr><td><code>int windowResolutionY</code></td><td>Data member of type int.</td></tr>
+<tr><td><code>bool fullScreen</code></td><td>Data member of type bool.</td></tr>
+<tr><td><code>bool resizable</code></td><td>Data member of type bool.</td></tr>
+<tr><td><code>int bufferSize</code></td><td>Data member of type int.</td></tr>
+<tr><td><code>int depthBitWidth</code></td><td>Data member of type int.</td></tr>
+<tr><td><code>SDL_DisplayID __compatDisplayID = 0</code></td><td>Data member of type SDL_DisplayID.</td></tr>
+<tr><td><code>SDL_PixelFormat __compatPixelFormat = SDL_PIXELFORMAT_RGBA8888</code></td><td>Data member of type SDL_PixelFormat.</td></tr>
+<tr><td><code>SDL_DisplayModeData* __compatInternal = nullptr</code></td><td>Data member of type SDL_DisplayModeData*.</td></tr>
+<tr><td><code>float __compatPixelDensity = 0</code></td><td>Data member of type float.</td></tr>
+<tr><td><code>float __compatRefreshRate = 0</code></td><td>Data member of type float.</td></tr>
+<tr><td><code>int  __refreshRateDenom = 0</code></td><td>Data member of type int.</td></tr>
+<tr><td><code>int __refreshRateNumer = 0</code></td><td>Data member of type int.</td></tr>
+<tr><td><code>GLVersionInfo versionInfo</code></td><td>Data member of type GLVersionInfo.</td></tr>
+<tr><td><code>static const int FIRST = 0</code></td><td>Data member of type static const int.</td></tr>
         </tbody>
       </table>
 

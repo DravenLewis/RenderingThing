@@ -153,26 +153,8 @@ ShaderCache instance;</code></pre>
         std::string compute = &quot;&quot;,
         std::string task = &quot;&quot;,
         std::string srtx = &quot;&quot;
-    ){
-        
-        auto it = programCache.find(name)</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>if(it != programCache.end()){
-            return it-&gt;second</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        auto program = std::make_shared&lt;ShaderProgram&gt;()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if(vtx.size() != 0) program-&gt;setVertexShader(vtx)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if(frag.size() != 0) program-&gt;setFragmentShader(frag)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if(geom.size() != 0) program-&gt;setGeometryShader(geom)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if(tess.size() != 0) program-&gt;setTesselationShader(tess)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if(compute.size() != 0) program-&gt;setComputeShader(compute)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if(task.size() != 0) program-&gt;setTaskShader(task)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if(srtx.size() != 0) program-&gt;setRTXShader(srtx)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>program-&gt;compile()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-    void clear(){
-        programCache.clear()</code></td><td>Performs the operation described by the name.</td></tr>
+    ){ }</code></td><td>Returns std::shared_ptr&lt;ShaderProgram&gt;. Parameters: std::string name, std::string vtx, std::string frag, std::string geom, std::string tess, std::string compute, std::string task, std::string srtx.</td></tr>
+<tr><td><code>void clear(){ }</code></td><td>Returns void. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -182,10 +164,7 @@ ShaderCache instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>std::map&lt;std::string, std::shared_ptr&lt;ShaderProgram&gt;&gt; programCache</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>programCache[name] = program</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return program</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>std::map&lt;std::string, std::shared_ptr&lt;ShaderProgram&gt;&gt; programCache</code></td><td>Data member of type std::map&lt;std::string, std::shared_ptr&lt;ShaderProgram&gt;&gt;.</td></tr>
         </tbody>
       </table>
 

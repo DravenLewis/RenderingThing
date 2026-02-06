@@ -143,16 +143,8 @@ Camera instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Camera(const Camera&amp;) = delete</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>Camera() = default</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>}
-
-        static std::shared_ptr&lt;Camera&gt; CreatePerspective(float fov, Math3D::Vec2 size, float zNear, float zFar){
-            auto cam = std::shared_ptr&lt;Camera&gt;(new Camera())</code></td><td>Creates a new instance or resource.</td></tr>
-<tr><td><code>}
-
-        static std::shared_ptr&lt;Camera&gt; CreateOrthogonal(Math3D::Rect viewPlane, float zNear, float zFar){
-            auto cam = std::shared_ptr&lt;Camera&gt;(new Camera())</code></td><td>Creates a new instance or resource.</td></tr>
+<tr><td><code>Camera(const Camera&amp;) = delete</code></td><td>Deleted; this overload is not available.</td></tr>
+<tr><td><code>Camera() = default</code></td><td>Constructs a Camera. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -161,75 +153,40 @@ Camera instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Camera&amp; operator=(const Camera&amp;) = delete</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>Camera&amp; operator=(const Camera&amp;) = delete</code></td><td>Deleted; this overload is not available.</td></tr>
 <tr><td><code>public:
 
-        Math3D::Transform&amp; transform() { return cameraTransform</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        void setTransform(const Math3D::Transform&amp; tfm) {this-&gt;cameraTransform = tfm</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-        CameraSettings&amp; getSettings() {return this-&gt;settings</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
+        Math3D::Transform&amp; transform() { }</code></td><td>Returns public:
 
-        void setAspect(float a){ this-&gt;settings.aspect = a</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-        void setAspect(float width, float height) {this-&gt;settings.aspect = width / height</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-
-
-        Math3D::Mat4 getViewMatrix() const {
-            auto mat = this-&gt;cameraTransform.toMat4()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>return Math3D::Mat4(glm::inverse(glm::mat4(mat.data)))</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        Math3D::Mat4 getProjectionMatrix(){
-            if(settings.isOrtho){
-                return glm::ortho(
-                    settings.viewPlane.position.x,
-                    settings.viewPlane.position.x + settings.viewPlane.size.x,
-                    settings.viewPlane.position.y + settings.viewPlane.size.y,
-                    settings.viewPlane.position.y
-                )</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-
-            return glm::perspective(
-                glm::radians(settings.fov),
-                settings.aspect,
-                settings.nearPlane,
-                settings.farPlane
-            )</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        void resize(float w, float h){
-            if(this-&gt;getSettings().isOrtho) {
-                this-&gt;getSettings().viewPlane = Math3D::Rect(0, 0, w, h)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-            this-&gt;setAspect((float) w / h)</code></td><td>Sets the requested value.</td></tr>
+        Math3D::Transform&amp;. Parameters: none.</td></tr>
+<tr><td><code>void setTransform(const Math3D::Transform&amp; tfm) { }</code></td><td>Sets the requested value. Parameters: const Math3D::Transform&amp; tfm.</td></tr>
+<tr><td><code>CameraSettings&amp; getSettings() { }</code></td><td>Returns CameraSettings&amp;. Parameters: none.</td></tr>
+<tr><td><code>void setAspect(float a){ }</code></td><td>Sets the requested value. Parameters: float a.</td></tr>
+<tr><td><code>void setAspect(float width, float height) { }</code></td><td>Sets the requested value. Parameters: float width, float height.</td></tr>
+<tr><td><code>Math3D::Mat4 getViewMatrix() const { }</code></td><td>Returns Math3D::Mat4. Parameters: none.</td></tr>
+<tr><td><code>Math3D::Mat4 getProjectionMatrix(){ }</code></td><td>Returns Math3D::Mat4. Parameters: none.</td></tr>
+<tr><td><code>void resize(float w, float h){ }</code></td><td>Returns void. Parameters: float w, float h.</td></tr>
         </tbody>
       </table>
 
       
+      <h2>Static Functions</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>static std::shared_ptr&lt;Camera&gt; CreatePerspective(float fov, Math3D::Vec2 size, float zNear, float zFar){ }</code></td><td>Creates and returns a new instance or resource. Parameters: float fov, Math3D::Vec2 size, float zNear, float zFar.</td></tr>
+<tr><td><code>static std::shared_ptr&lt;Camera&gt; CreateOrthogonal(Math3D::Rect viewPlane, float zNear, float zFar){ }</code></td><td>Creates and returns a new instance or resource. Parameters: Math3D::Rect viewPlane, float zNear, float zFar.</td></tr>
+        </tbody>
+      </table>
+
       
       <h2>Public Data</h2>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
 <tr><td><code>private:
-        Math3D::Transform cameraTransform</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>CameraSettings settings</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>cam-&gt;settings.fov = fov</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>cam-&gt;settings.aspect = size.x / size.y</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>cam-&gt;settings.nearPlane = zNear</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>cam-&gt;settings.farPlane = zFar</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>cam-&gt;settings.isOrtho = false</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return cam</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>cam-&gt;settings.viewPlane = viewPlane</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>cam-&gt;settings.nearPlane = zNear</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>cam-&gt;settings.farPlane = zFar</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>cam-&gt;settings.isOrtho = true</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return cam</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+        Math3D::Transform cameraTransform</code></td><td>Data member of type private: Math3D::Transform.</td></tr>
+<tr><td><code>CameraSettings settings</code></td><td>Data member of type CameraSettings.</td></tr>
         </tbody>
       </table>
 

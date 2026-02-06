@@ -26,12 +26,12 @@
     const panel = document.createElement('div');
     panel.id = 'settings-panel';
     panel.className = 'settings-panel';
-    panel.innerHTML = '\
-      <h3>Theme</h3>\
-      <div class="settings-row" id="theme-options"></div>\
-      <h3>Accent Colors (Color.h)</h3>\
-      <div class="color-grid" id="accent-color-grid"></div>\
-    ';
+    panel.innerHTML = `
+      <h3>Theme</h3>
+      <div class="settings-row" id="theme-options"></div>
+      <h3>Accent Colors (Color.h)</h3>
+      <div class="color-grid" id="accent-color-grid"></div>
+    `;
     body.appendChild(panel);
   }
 
@@ -95,10 +95,12 @@
   function highlight(code, language) {
     let html = escapeHtml(code);
     const placeholders = [];
+    const tokenPrefix = '@@RTPH_';
+    const tokenSuffix = '@@';
 
     function stash(regex, className) {
       html = html.replace(regex, function (match) {
-        const key = '@@' + placeholders.length + '@@';
+        const key = tokenPrefix + String(placeholders.length) + tokenSuffix;
         placeholders.push('<span class="token ' + className + '">' + match + '</span>');
         return key;
       });
@@ -128,9 +130,12 @@
       common();
     }
 
-    html = html.replace(/@@(\d+)@@/g, function (_, index) {
+    const tokenRegex = new RegExp(tokenPrefix.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&') + '(\\d+)' + tokenSuffix, 'g');
+    html = html.replace(tokenRegex, function (_, index) {
       return placeholders[Number(index)];
     });
+    // Safety: strip any leftover placeholders
+    html = html.replace(new RegExp(tokenPrefix.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&') + '\\d+' + tokenSuffix, 'g'), '');
 
     return html;
   }
@@ -154,13 +159,19 @@
       const copyBtn = document.createElement('button');
       copyBtn.className = 'copy-btn';
       copyBtn.type = 'button';
-      copyBtn.textContent = 'Copy';
+      const copyLabel = document.createElement('span');
+      copyLabel.textContent = 'Copy';
+      copyBtn.appendChild(copyLabel);
+      const copyIcon = document.createElement('i');
+      copyIcon.className = 'bi bi-clipboard';
+      copyIcon.setAttribute('aria-hidden', 'true');
+      copyBtn.appendChild(copyIcon);
       copyBtn.addEventListener('click', function () {
         const raw = pre.getAttribute('data-raw') || block.textContent;
         navigator.clipboard.writeText(raw).then(function () {
-          copyBtn.textContent = 'Copied';
+          copyLabel.textContent = 'Copied';
           setTimeout(function () {
-            copyBtn.textContent = 'Copy';
+            copyLabel.textContent = 'Copy';
           }, 1200);
         });
       });
@@ -274,8 +285,8 @@
     const colorRoot = document.getElementById('accent-color-grid');
     if (!themeRoot || !colorRoot) return;
 
-    const storedTheme = localStorage.getItem('rt-docs-theme') || 'system';
-    const storedAccent = localStorage.getItem('rt-docs-accent') || '#0f6cbd';
+    const storedTheme = sessionStorage.getItem('rt-docs-theme') || localStorage.getItem('rt-docs-theme') || 'system';
+    const storedAccent = sessionStorage.getItem('rt-docs-accent') || localStorage.getItem('rt-docs-accent') || '#0f6cbd';
 
     applyTheme(storedTheme);
     applyAccent(storedAccent);
@@ -287,7 +298,7 @@
       btn.type = 'button';
       btn.textContent = opt.label;
       btn.addEventListener('click', function () {
-        localStorage.setItem('rt-docs-theme', opt.id);
+        sessionStorage.setItem('rt-docs-theme', opt.id);
         applyTheme(opt.id);
         themeRoot.querySelectorAll('.theme-option').forEach(function (b) { b.classList.remove('active'); });
         btn.classList.add('active');
@@ -300,24 +311,17 @@
       const btn = document.createElement('button');
       btn.className = 'color-swatch' + (c.hex.toLowerCase() === storedAccent.toLowerCase() ? ' active' : '');
       btn.type = 'button';
+      btn.setAttribute('aria-label', c.name + ' ' + c.hex);
+      btn.title = c.name + ' ' + c.hex;
 
       const chip = document.createElement('div');
       chip.className = 'color-chip';
       chip.style.background = c.hex;
 
-      const label = document.createElement('div');
-      label.textContent = c.name;
-
-      const value = document.createElement('div');
-      value.className = 'muted';
-      value.textContent = c.hex;
-
       btn.appendChild(chip);
-      btn.appendChild(label);
-      btn.appendChild(value);
 
       btn.addEventListener('click', function () {
-        localStorage.setItem('rt-docs-accent', c.hex);
+        sessionStorage.setItem('rt-docs-accent', c.hex);
         applyAccent(c.hex);
         colorRoot.querySelectorAll('.color-swatch').forEach(function (b) { b.classList.remove('active'); });
         btn.classList.add('active');

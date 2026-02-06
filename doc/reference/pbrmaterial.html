@@ -143,7 +143,7 @@ auto instance = PBRMaterial::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>PBRMaterial(std::shared_ptr&lt;ShaderProgram&gt; program)</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>PBRMaterial(std::shared_ptr&lt;ShaderProgram&gt; program)</code></td><td>Constructs a PBRMaterial. Parameters: std::shared_ptr&lt;ShaderProgram&gt; program.</td></tr>
         </tbody>
       </table>
 
@@ -152,7 +152,7 @@ auto instance = PBRMaterial::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>void bind() override</code></td><td>Binds the resource for use.</td></tr>
+<tr><td><code>void bind() override</code></td><td>Binds this resource for use. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -161,7 +161,7 @@ auto instance = PBRMaterial::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>static std::shared_ptr&lt;PBRMaterial&gt; Create(Math3D::Vec4 baseColor = Color::WHITE)</code></td><td>Creates a new instance or resource.</td></tr>
+<tr><td><code>static std::shared_ptr&lt;PBRMaterial&gt; Create(Math3D::Vec4 baseColor = Color::WHITE)</code></td><td>Creates and returns a new instance or resource. Parameters: Math3D::Vec4 baseColor.</td></tr>
         </tbody>
       </table>
 
@@ -170,26 +170,26 @@ auto instance = PBRMaterial::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>ValueContainer&lt;Math3D::Vec4&gt; BaseColor</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt; BaseColorTex</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;float&gt; Metallic</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;float&gt; Roughness</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt; MetallicRoughnessTex</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt; NormalTex</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;float&gt; NormalScale</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt; EmissiveTex</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;Math3D::Vec3&gt; EmissiveColor</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;float&gt; EmissiveStrength</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt; OcclusionTex</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;float&gt; OcclusionStrength</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;std::shared_ptr&lt;CubeMap&gt;&gt; EnvMap</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;float&gt; EnvStrength</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;int&gt; UseEnvMap</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;Math3D::Vec2&gt; UVScale</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;Math3D::Vec2&gt; UVOffset</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;float&gt; AlphaCutoff</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;int&gt; UseAlphaClip</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;Math3D::Vec3&gt; ViewPos</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>ValueContainer&lt;Math3D::Vec4&gt; BaseColor</code></td><td>Data member of type ValueContainer&lt;Math3D::Vec4&gt;.</td></tr>
+<tr><td><code>ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt; BaseColorTex</code></td><td>Data member of type ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;.</td></tr>
+<tr><td><code>ValueContainer&lt;float&gt; Metallic</code></td><td>Data member of type ValueContainer&lt;float&gt;.</td></tr>
+<tr><td><code>ValueContainer&lt;float&gt; Roughness</code></td><td>Data member of type ValueContainer&lt;float&gt;.</td></tr>
+<tr><td><code>ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt; MetallicRoughnessTex</code></td><td>Data member of type ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;.</td></tr>
+<tr><td><code>ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt; NormalTex</code></td><td>Data member of type ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;.</td></tr>
+<tr><td><code>ValueContainer&lt;float&gt; NormalScale</code></td><td>Data member of type ValueContainer&lt;float&gt;.</td></tr>
+<tr><td><code>ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt; EmissiveTex</code></td><td>Data member of type ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;.</td></tr>
+<tr><td><code>ValueContainer&lt;Math3D::Vec3&gt; EmissiveColor</code></td><td>Data member of type ValueContainer&lt;Math3D::Vec3&gt;.</td></tr>
+<tr><td><code>ValueContainer&lt;float&gt; EmissiveStrength</code></td><td>Data member of type ValueContainer&lt;float&gt;.</td></tr>
+<tr><td><code>ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt; OcclusionTex</code></td><td>Data member of type ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;.</td></tr>
+<tr><td><code>ValueContainer&lt;float&gt; OcclusionStrength</code></td><td>Data member of type ValueContainer&lt;float&gt;.</td></tr>
+<tr><td><code>ValueContainer&lt;std::shared_ptr&lt;CubeMap&gt;&gt; EnvMap</code></td><td>Data member of type ValueContainer&lt;std::shared_ptr&lt;CubeMap&gt;&gt;.</td></tr>
+<tr><td><code>ValueContainer&lt;float&gt; EnvStrength</code></td><td>Data member of type ValueContainer&lt;float&gt;.</td></tr>
+<tr><td><code>ValueContainer&lt;int&gt; UseEnvMap</code></td><td>Data member of type ValueContainer&lt;int&gt;.</td></tr>
+<tr><td><code>ValueContainer&lt;Math3D::Vec2&gt; UVScale</code></td><td>Data member of type ValueContainer&lt;Math3D::Vec2&gt;.</td></tr>
+<tr><td><code>ValueContainer&lt;Math3D::Vec2&gt; UVOffset</code></td><td>Data member of type ValueContainer&lt;Math3D::Vec2&gt;.</td></tr>
+<tr><td><code>ValueContainer&lt;float&gt; AlphaCutoff</code></td><td>Data member of type ValueContainer&lt;float&gt;.</td></tr>
+<tr><td><code>ValueContainer&lt;int&gt; UseAlphaClip</code></td><td>Data member of type ValueContainer&lt;int&gt;.</td></tr>
+<tr><td><code>ValueContainer&lt;Math3D::Vec3&gt; ViewPos</code></td><td>Data member of type ValueContainer&lt;Math3D::Vec3&gt;.</td></tr>
         </tbody>
       </table>
 

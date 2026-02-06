@@ -143,10 +143,7 @@ auto instance = ShaderBundle::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-
-    ~ShaderBundle(){
-        glDeleteShader(shaderHandle)</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>~ShaderBundle(){ }</code></td><td>Constructs a ShaderBundle. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -156,8 +153,7 @@ auto instance = ShaderBundle::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>static ShaderBundle Create(std::string&amp; glsl){
-        ShaderBundle bundle</code></td><td>Creates a new instance or resource.</td></tr>
+<tr><td><code>static ShaderBundle Create(std::string&amp; glsl){ }</code></td><td>Creates and returns a new instance or resource. Parameters: std::string&amp; glsl.</td></tr>
         </tbody>
       </table>
 
@@ -166,13 +162,10 @@ auto instance = ShaderBundle::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Shader shaderHandle</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>std::string shader_code</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ShaderType type</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>bool valid = false</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>bundle.shader_code = glsl</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return bundle</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>Shader shaderHandle</code></td><td>Data member of type Shader.</td></tr>
+<tr><td><code>std::string shader_code</code></td><td>Data member of type std::string.</td></tr>
+<tr><td><code>ShaderType type</code></td><td>Data member of type ShaderType.</td></tr>
+<tr><td><code>bool valid = false</code></td><td>Data member of type bool.</td></tr>
         </tbody>
       </table>
 

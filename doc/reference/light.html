@@ -157,45 +157,29 @@ Light instance;</code></pre>
           shadowBias(0.001f),
           shadowNormalBias(0.002f),
           shadowStrength(1.0f)
-    {}
-    
-    static Light CreatePointLight(
-        Math3D::Vec3 position,
-        Math3D::Vec4 color = Color::WHITE,
-        float intensity = 1.0f,
-        float range = 10.0f,
-        float falloff = 1.0f
-    ) {
-        Light light</code></td><td>Constructs the object.</td></tr>
+    { }</code></td><td>Constructs a Light. Parameters: none.</td></tr>
         </tbody>
       </table>
 
       
-      <h2>Member Functions</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>light.direction = Math3D::Vec3(glm::normalize(glm::vec3(direction.x, direction.y, direction.z)))</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>light.direction = Math3D::Vec3(glm::normalize(glm::vec3(direction.x, direction.y, direction.z)))</code></td><td>Performs the operation described by the name.</td></tr>
-        </tbody>
-      </table>
-
       
       <h2>Static Functions</h2>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-    
-    static Light CreateDirectionalLight(
+<tr><td><code>static Light CreatePointLight(
+        Math3D::Vec3 position,
+        Math3D::Vec4 color = Color::WHITE,
+        float intensity = 1.0f,
+        float range = 10.0f,
+        float falloff = 1.0f
+    ) { }</code></td><td>Creates and returns a new instance or resource. Parameters: Math3D::Vec3 position, Math3D::Vec4 color, float intensity, float range, float falloff.</td></tr>
+<tr><td><code>static Light CreateDirectionalLight(
         Math3D::Vec3 direction,
         Math3D::Vec4 color = Color::WHITE,
         float intensity = 1.0f
-    ) {
-        Light light</code></td><td>Creates a new instance or resource.</td></tr>
-<tr><td><code>}
-    
-    static Light CreateSpotLight(
+    ) { }</code></td><td>Creates and returns a new instance or resource. Parameters: Math3D::Vec3 direction, Math3D::Vec4 color, float intensity.</td></tr>
+<tr><td><code>static Light CreateSpotLight(
         Math3D::Vec3 position,
         Math3D::Vec3 direction,
         Math3D::Vec4 color = Color::WHITE,
@@ -203,8 +187,7 @@ Light instance;</code></pre>
         float range = 10.0f,
         float falloff = 1.0f,
         float spotAngle = 45.0f
-    ) {
-        Light light</code></td><td>Creates a new instance or resource.</td></tr>
+    ) { }</code></td><td>Creates and returns a new instance or resource. Parameters: Math3D::Vec3 position, Math3D::Vec3 direction, Math3D::Vec4 color, float intensity, float range, float falloff, float spotAngle.</td></tr>
         </tbody>
       </table>
 
@@ -213,43 +196,19 @@ Light instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>LightType type</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>Math3D::Vec3 position</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>Math3D::Vec3 direction</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>Math3D::Vec4 color</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float intensity</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float range</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float falloff</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float spotAngle</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>bool castsShadows</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ShadowType shadowType</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float shadowBias</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float shadowNormalBias</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>float shadowStrength</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>light.type = LightType::POINT</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>light.position = position</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>light.color = color</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>light.intensity = intensity</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>light.range = range</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>light.falloff = falloff</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>light.castsShadows = false</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return light</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>light.type = LightType::DIRECTIONAL</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>light.color = color</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>light.intensity = intensity</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>light.range = 200.0f</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>light.castsShadows = true</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return light</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>light.type = LightType::SPOT</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>light.position = position</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>light.color = color</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>light.intensity = intensity</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>light.range = range</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>light.falloff = falloff</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>light.spotAngle = spotAngle</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>light.castsShadows = true</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return light</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>LightType type</code></td><td>Data member of type LightType.</td></tr>
+<tr><td><code>Math3D::Vec3 position</code></td><td>Data member of type Math3D::Vec3.</td></tr>
+<tr><td><code>Math3D::Vec3 direction</code></td><td>Data member of type Math3D::Vec3.</td></tr>
+<tr><td><code>Math3D::Vec4 color</code></td><td>Data member of type Math3D::Vec4.</td></tr>
+<tr><td><code>float intensity</code></td><td>Data member of type float.</td></tr>
+<tr><td><code>float range</code></td><td>Data member of type float.</td></tr>
+<tr><td><code>float falloff</code></td><td>Data member of type float.</td></tr>
+<tr><td><code>float spotAngle</code></td><td>Data member of type float.</td></tr>
+<tr><td><code>bool castsShadows</code></td><td>Data member of type bool.</td></tr>
+<tr><td><code>ShadowType shadowType</code></td><td>Data member of type ShadowType.</td></tr>
+<tr><td><code>float shadowBias</code></td><td>Data member of type float.</td></tr>
+<tr><td><code>float shadowNormalBias</code></td><td>Data member of type float.</td></tr>
+<tr><td><code>float shadowStrength</code></td><td>Data member of type float.</td></tr>
         </tbody>
       </table>
 

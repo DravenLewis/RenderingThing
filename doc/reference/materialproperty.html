@@ -143,7 +143,7 @@ MaterialProperty instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>MaterialProperty(T val) : value(val) {}</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>MaterialProperty(T val) : value(val) { }</code></td><td>Constructs a MaterialProperty. Parameters: T val.</td></tr>
         </tbody>
       </table>
 
@@ -152,13 +152,7 @@ MaterialProperty instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>void apply(ShaderProgram&amp; shader, const std::string&amp; name, bool assumeBound) override{
-        Uniform&lt;T&gt; uni</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>uni.set(this-&gt;value)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>if(assumeBound){
-            shader.setUniformFast(name,uni)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}else{
-            shader.setUniform(name,uni)</code></td><td>Sets the requested value.</td></tr>
+<tr><td><code>void apply(ShaderProgram&amp; shader, const std::string&amp; name, bool assumeBound) override{ }</code></td><td>Returns void. Parameters: ShaderProgram&amp; shader, const std::string&amp; name, bool assumeBound.</td></tr>
         </tbody>
       </table>
 
@@ -168,9 +162,7 @@ MaterialProperty instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>T value</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-    }</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>T value</code></td><td>Data member of type T.</td></tr>
         </tbody>
       </table>
 

@@ -143,12 +143,8 @@ Material instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Material(std::shared_ptr&lt;ShaderProgram&gt; program) : programObjPtr(program) {
-            if(program){
-                if(program-&gt;getID() == 0){
-                    if(program-&gt;compile() == 0){
-                        LogBot.Log(LOG_ERRO, &quot;Failed to Compile Shader / Shader Program: \n\n%s&quot;,program-&gt;getLog().c_str())</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>virtual ~Material(){}</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>Material(std::shared_ptr&lt;ShaderProgram&gt; program) : programObjPtr(program) { }</code></td><td>Constructs a Material. Parameters: std::shared_ptr&lt;ShaderProgram&gt; program.</td></tr>
+<tr><td><code>virtual ~Material(){ }</code></td><td>Constructs a Material. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -157,48 +153,15 @@ Material instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-                }
-            }
-
-            set&lt;int&gt;(&quot;u_receiveShadows&quot;, receivesShadowsFlag ? 1 : 0)</code></td><td>Performs the operation described by the name.</td></tr>
 <tr><td><code>template&lt;typename T&gt;
-        bool set(const std::string&amp; name, T value){
-            auto it = properties.find(name)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>if(it != properties.end()){
-                auto existing = std::dynamic_pointer_cast&lt;MaterialProperty&lt;T&gt;&gt;(it-&gt;second)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if(existing){
-                    existing-&gt;value = value</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-            }
-
-            properties[name] = std::make_shared&lt;MaterialProperty&lt;T&gt;&gt;(value)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        virtual void bind(){
-            if(!programObjPtr) return</code></td><td>Binds the resource for use.</td></tr>
-<tr><td><code>programObjPtr-&gt;bind()</code></td><td>Binds the resource for use.</td></tr>
-<tr><td><code>for(auto const&amp; [name, prop] : properties){
-                prop-&gt;apply(*programObjPtr, name, true)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void unbind(){
-            programObjPtr-&gt;unbind()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        std::shared_ptr&lt;ShaderProgram&gt; getShader(){
-            return this-&gt;programObjPtr</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-
-        void setCastsShadows(bool value){ castsShadowsFlag = value</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-        bool castsShadows() const { return castsShadowsFlag</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        void setReceivesShadows(bool value){
-            receivesShadowsFlag = value</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>set&lt;int&gt;(&quot;u_receiveShadows&quot;, receivesShadowsFlag ? 1 : 0)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        bool receivesShadows() const { return receivesShadowsFlag</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>auto n_material = std::make_shared&lt;Material&gt;(material-&gt;getShader())</code></td><td>Returns the requested value.</td></tr>
+        bool set(const std::string&amp; name, T value){ }</code></td><td>Sets the requested value. Parameters: const std::string&amp; name, T value.</td></tr>
+<tr><td><code>virtual void bind(){ }</code></td><td>Binds this resource for use. Parameters: none.</td></tr>
+<tr><td><code>void unbind(){ }</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>std::shared_ptr&lt;ShaderProgram&gt; getShader(){ }</code></td><td>Returns std::shared_ptr&lt;ShaderProgram&gt;. Parameters: none.</td></tr>
+<tr><td><code>void setCastsShadows(bool value){ }</code></td><td>Sets the requested value. Parameters: bool value.</td></tr>
+<tr><td><code>bool castsShadows() const { }</code></td><td>Returns bool. Parameters: none.</td></tr>
+<tr><td><code>void setReceivesShadows(bool value){ }</code></td><td>Sets the requested value. Parameters: bool value.</td></tr>
+<tr><td><code>bool receivesShadows() const { }</code></td><td>Returns bool. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -207,34 +170,14 @@ Material instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-
-        static std::shared_ptr&lt;Material&gt; Copy(std::shared_ptr&lt;Material&gt; material){
-            if(!material) return nullptr</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        template&lt;typename T&gt;
-        static std::shared_ptr&lt;T&gt; GetAs(std::shared_ptr&lt;Material&gt; matPtr){
-            return std::dynamic_pointer_cast&lt;T&gt;(matPtr)</code></td><td>Returns the requested value.</td></tr>
+<tr><td><code>static std::shared_ptr&lt;Material&gt; Copy(std::shared_ptr&lt;Material&gt; material){ }</code></td><td>Returns std::shared_ptr&lt;Material&gt;. Parameters: std::shared_ptr&lt;Material&gt; material.</td></tr>
+<tr><td><code>template&lt;typename T&gt;
+        static std::shared_ptr&lt;T&gt; GetAs(std::shared_ptr&lt;Material&gt; matPtr){ }</code></td><td>Returns template&lt; T&gt;
+         std::shared_ptr&lt;T&gt;. Parameters: std::shared_ptr&lt;Material&gt; matPtr.</td></tr>
         </tbody>
       </table>
 
       
-      <h2>Public Data</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return true</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return true</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        }</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>n_material-&gt;properties = material-&gt;properties</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return n_material</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-        </tbody>
-      </table>
-
 
       <h2>Public API</h2>
       <pre><code class="language-cpp">Material(std::shared_ptr&lt;ShaderProgram&gt; program) : programObjPtr(program) {

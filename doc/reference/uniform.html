@@ -143,10 +143,8 @@ Uniform instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Uniform() = default</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>Uniform(const T&amp; v) : value(v) {}
-
-        void set(const T&amp; v) { value = v</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>Uniform() = default</code></td><td>Constructs a Uniform. Parameters: none.</td></tr>
+<tr><td><code>Uniform(const T&amp; v) : value(v) { }</code></td><td>Constructs a Uniform. Parameters: const T&amp; v.</td></tr>
         </tbody>
       </table>
 
@@ -155,21 +153,13 @@ Uniform instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-        const T&amp; get() const { return value</code></td><td>Returns the requested value.</td></tr>
+<tr><td><code>void set(const T&amp; v) { }</code></td><td>Sets the requested value. Parameters: const T&amp; v.</td></tr>
+<tr><td><code>const T&amp; get() const { }</code></td><td>Returns const T&amp;. Parameters: none.</td></tr>
         </tbody>
       </table>
 
       
       
-      <h2>Public Data</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-        </tbody>
-      </table>
-
 
       <h2>Public API</h2>
       <pre><code class="language-cpp">Uniform() = default;

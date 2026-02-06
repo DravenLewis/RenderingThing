@@ -143,10 +143,10 @@ Mesh instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Mesh(){}</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>Mesh(const Mesh&amp;) = delete</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>Mesh(Mesh&amp;&amp; other) noexcept</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>~Mesh()</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>Mesh(){ }</code></td><td>Constructs a Mesh. Parameters: none.</td></tr>
+<tr><td><code>Mesh(const Mesh&amp;) = delete</code></td><td>Deleted; this overload is not available.</td></tr>
+<tr><td><code>Mesh(Mesh&amp;&amp; other) noexcept</code></td><td>Constructs a Mesh. Parameters: Mesh&amp;&amp; other.</td></tr>
+<tr><td><code>~Mesh()</code></td><td>Constructs a Mesh. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -155,20 +155,20 @@ Mesh instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>void upload(std::vector&lt;Vertex&gt; verts, std::vector&lt;uint32_t&gt; faces)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void reload()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void bind()</code></td><td>Binds the resource for use.</td></tr>
+<tr><td><code>void upload(std::vector&lt;Vertex&gt; verts, std::vector&lt;uint32_t&gt; faces)</code></td><td>Returns void. Parameters: std::vector&lt;Vertex&gt; verts, std::vector&lt;uint32_t&gt; faces.</td></tr>
+<tr><td><code>void reload()</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>void bind()</code></td><td>Binds this resource for use. Parameters: none.</td></tr>
 <tr><td><code>void draw(
             const Math3D::Mat4&amp; parent = Math3D::Mat4(),
             const Math3D::Mat4&amp; view = Math3D::Mat4(),
             const Math3D::Mat4&amp; projection = Math3D::Mat4()
-        ) override</code></td><td>Renders content using the current settings.</td></tr>
-<tr><td><code>void dispose()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>std::vector&lt;Math3D::Vec3&gt; getVerticiesVectorArray()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>std::vector&lt;float&gt; getVerticiesAsRawFloatArray()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>std::vector&lt;float&gt; getRawVertexData()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>void setLocationAttributeOffset(int attribute, int dataSize, int dataOffset)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>std::vector&lt;Vertex&gt;&amp; getVertecies() {return this-&gt;verticies</code></td><td>Returns the requested value.</td></tr>
+        ) override</code></td><td>Renders content using the current settings. Parameters: const Math3D::Mat4&amp; parent, const Math3D::Mat4&amp; view, const Math3D::Mat4&amp; projection.</td></tr>
+<tr><td><code>void dispose()</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>std::vector&lt;Math3D::Vec3&gt; getVerticiesVectorArray()</code></td><td>Returns std::vector&lt;Math3D::Vec3&gt;. Parameters: none.</td></tr>
+<tr><td><code>std::vector&lt;float&gt; getVerticiesAsRawFloatArray()</code></td><td>Returns std::vector&lt;float&gt;. Parameters: none.</td></tr>
+<tr><td><code>std::vector&lt;float&gt; getRawVertexData()</code></td><td>Returns std::vector&lt;float&gt;. Parameters: none.</td></tr>
+<tr><td><code>void setLocationAttributeOffset(int attribute, int dataSize, int dataOffset)</code></td><td>Sets the requested value. Parameters: int attribute, int dataSize, int dataOffset.</td></tr>
+<tr><td><code>std::vector&lt;Vertex&gt;&amp; getVertecies() { }</code></td><td>Returns std::vector&lt;Vertex&gt;&amp;. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -177,9 +177,7 @@ Mesh instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-
-        static void Unbind()</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>static void Unbind()</code></td><td>Returns void. Parameters: none.</td></tr>
         </tbody>
       </table>
 

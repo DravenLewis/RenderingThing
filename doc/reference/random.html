@@ -143,11 +143,8 @@ Random instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-
-            Random(uint64_t seed) {
-                setSeed(seed)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>Random() : Random(std::chrono::system_clock::now().time_since_epoch().count()) {}</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>Random(uint64_t seed) { }</code></td><td>Constructs a Random. Parameters: uint64_t seed.</td></tr>
+<tr><td><code>Random() : Random(std::chrono::system_clock::now().time_since_epoch().count()) { }</code></td><td>Constructs a Random. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -158,26 +155,13 @@ Random instance;</code></pre>
         <tbody>
 <tr><td><code>public:
 
-            void setSeed(uint64_t seed){
-                this-&gt;seed = seed</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>this-&gt;rng = std::mt19937(this-&gt;seed)</code></td><td>Performs the operation described by the name.</td></tr>
+            void setSeed(uint64_t seed){ }</code></td><td>Sets the requested value. Parameters: uint64_t seed.</td></tr>
 <tr><td><code>template&lt;typename T&gt;
-            T range(T lowerBound, T upperBound){
-                static_assert(std::is_arithmetic_v&lt;T&gt;, &quot;Argument MUST be a Numeric Type&quot;)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if constexpr (std::is_floating_point_v&lt;T&gt;){
-                    std::uniform_real_distribution&lt;T&gt; dist(lowerBound, upperBound)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return dist(this-&gt;rng)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>std::uniform_int_distribution&lt;CommonInt&gt; dist(lowerBound, upperBound)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return dist(this-&gt;rng)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-                std::uniform_int_distribution&lt;&gt; dist(lowerBound, upperBound)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return dist(this-&gt;rng)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-            template&lt;typename T&gt;
-            T next(T upperBound){
-                return this-&gt;range&lt;T&gt;(0, upperBound)</code></td><td>Performs the operation described by the name.</td></tr>
+            T range(T lowerBound, T upperBound){ }</code></td><td>Returns template&lt; T&gt;
+            T. Parameters: T lowerBound, T upperBound.</td></tr>
+<tr><td><code>template&lt;typename T&gt;
+            T next(T upperBound){ }</code></td><td>Returns template&lt; T&gt;
+            T. Parameters: T upperBound.</td></tr>
         </tbody>
       </table>
 
@@ -188,12 +172,8 @@ Random instance;</code></pre>
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
 <tr><td><code>private:
-            uint64_t seed</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>std::mt19937 rng</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}else{
-                    using CommonInt = typename std::common_type&lt;T, int&gt;::type</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+            uint64_t seed</code></td><td>Data member of type private: uint64_t.</td></tr>
+<tr><td><code>std::mt19937 rng</code></td><td>Data member of type std::mt19937.</td></tr>
         </tbody>
       </table>
 

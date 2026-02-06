@@ -142,165 +142,34 @@ StringUtils instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>typedef std::vector&lt;std::string&gt; StringArray</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>typedef std::vector&lt;std::string&gt; StringArray</code></td><td>Type alias declared by this class.</td></tr>
         </tbody>
       </table>
 
       
       
-      <h2>Member Functions</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>std::transform(newString.begin(), newString.end(), newString.begin(),[](unsigned char c){ 
-                return std::tolower(c)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>std::transform(newString.begin(), newString.end(), newString.begin(),[](unsigned char c){ 
-                return std::toupper(c)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return tempString.find(ToLowerCase(value)) != std::string::npos</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>size_t foundLocation = newString.find(search)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>newString = newString.replace(foundLocation, search.length(), value)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>while((index = newString.find(search, index)) != std::string::npos){
-                    newString = newString.replace(index, search.length(), value)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>index += value.length()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>size_t firstNonWhiteSpaceChar = newString.find_first_not_of(whiteSpaceChars)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if(firstNonWhiteSpaceChar == std::string::npos){ 
-                newString.clear()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-            newString.erase(0, firstNonWhiteSpaceChar)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>size_t lastNonWhiteSpaceChar = newString.find_last_not_of(whiteSpaceChars)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if(lastNonWhiteSpaceChar != std::string::npos){
-                newString.erase(lastNonWhiteSpaceChar + 1)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>while((index = stringCopy.find(delimiter)) != std::string::npos){ 
-                currentSplit = stringCopy.substr(0,index)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>splitParts.push_back(currentSplit)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>stringCopy.erase(0, index + delimiter.length())</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-            splitParts.push_back(stringCopy)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>va_start(arguments, source)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>va_copy(argumentsCopy, arguments)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int length = std::vsnprintf(0,0,source.c_str(), argumentsCopy)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>va_end(argumentsCopy)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if(length &lt; 0){
-                va_end(arguments)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-            std::vector&lt;char&gt; buffer(length + 1)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>std::vsnprintf(buffer.data(), buffer.size(), source.c_str(), arguments)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>va_end(arguments)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return std::string(buffer.data())</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>*/
-            #pragma endregion
-
-            int length = std::snprintf(nullptr,0,source.c_str(), std::forward&lt;Args&gt;(args)...)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if(length &lt;= 0){
-                return source</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-            std::string result(length,&#x27;\0&#x27;)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>std::snprintf(result.data(), length + 1, source.c_str(), std::forward&lt;Args&gt;(args)...)</code></td><td>Performs the operation described by the name.</td></tr>
-        </tbody>
-      </table>
-
       
       <h2>Static Functions</h2>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>static std::string ToLowerCase(const std::string&amp; source){
-            std::string newString = source</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        static std::string ToUpperCase(const std::string&amp; source){
-            std::string newString = source</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        static bool Contains(const std::string&amp; source, std::string value){
-            return source.find(value) != std::string::npos</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        static bool ContainsIgnoreCase(const std::string&amp; source, std::string value){
-            std::string tempString = ToLowerCase(source)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        static std::string Replace(const std::string&amp; source, std::string search, std::string value){
-            if(Contains(source, search)){
-                std::string newString = source</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        static std::string ReplaceAll(const std::string&amp; source, std::string search, std::string value){
-            if(Contains(source, search)){
-                std::string newString = source</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        static bool EndsWith(const std::string&amp; source, std::string value){
-            if(Contains(source, value) &amp;&amp; source.length() &gt;= value.length()){
-                return (source.compare(source.length() - value.length(), value.length(), value)) == 0</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        static bool BeginsWith(const std::string&amp; source, std::string value){
-            if(Contains(source, value) &amp;&amp; source.length() &gt;= value.length()){
-                return (source.compare(0,value.length(), value) == 0)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        static std::string Trim(const std::string&amp; source){
-            const std::string whiteSpaceChars = &quot; \n\r\t\f\v&quot;</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        static StringArray Split(const std::string&amp; source, std::string delimiter){
-            std::string stringCopy = source</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-
-        template&lt;typename... Args&gt;
-        static std::string Format(const std::string&amp; source,Args... args){
-            #pragma region Old Code
-            /*va_list arguments</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>static std::string ToLowerCase(const std::string&amp; source){ }</code></td><td>Returns std::string. Parameters: const std::string&amp; source.</td></tr>
+<tr><td><code>static std::string ToUpperCase(const std::string&amp; source){ }</code></td><td>Returns std::string. Parameters: const std::string&amp; source.</td></tr>
+<tr><td><code>static bool Contains(const std::string&amp; source, std::string value){ }</code></td><td>Returns bool. Parameters: const std::string&amp; source, std::string value.</td></tr>
+<tr><td><code>static bool ContainsIgnoreCase(const std::string&amp; source, std::string value){ }</code></td><td>Returns bool. Parameters: const std::string&amp; source, std::string value.</td></tr>
+<tr><td><code>static std::string Replace(const std::string&amp; source, std::string search, std::string value){ }</code></td><td>Returns std::string. Parameters: const std::string&amp; source, std::string search, std::string value.</td></tr>
+<tr><td><code>static std::string ReplaceAll(const std::string&amp; source, std::string search, std::string value){ }</code></td><td>Returns std::string. Parameters: const std::string&amp; source, std::string search, std::string value.</td></tr>
+<tr><td><code>static bool EndsWith(const std::string&amp; source, std::string value){ }</code></td><td>Returns bool. Parameters: const std::string&amp; source, std::string value.</td></tr>
+<tr><td><code>static bool BeginsWith(const std::string&amp; source, std::string value){ }</code></td><td>Returns bool. Parameters: const std::string&amp; source, std::string value.</td></tr>
+<tr><td><code>static std::string Trim(const std::string&amp; source){ }</code></td><td>Returns std::string. Parameters: const std::string&amp; source.</td></tr>
+<tr><td><code>static StringArray Split(const std::string&amp; source, std::string delimiter){ }</code></td><td>Returns StringArray. Parameters: const std::string&amp; source, std::string delimiter.</td></tr>
+<tr><td><code>template&lt;typename... Args&gt;
+        static std::string Format(const std::string&amp; source,Args... args){ }</code></td><td>Returns template&lt;... Args&gt;
+         std::string. Parameters: const std::string&amp; source, Args... args.</td></tr>
         </tbody>
       </table>
 
       
-      <h2>Public Data</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>})</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return newString</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>})</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return newString</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return newString</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-            return source</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>size_t index = 0</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-                return newString</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-            return source</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}   
-            
-            return false</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}   
-            
-            return false</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>std::string newString = source</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return newString</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-            return newString</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>StringArray splitParts</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>size_t index = 0</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>std::string currentSplit</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return splitParts</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>va_list argumentsCopy</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return source</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return result</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-        </tbody>
-      </table>
-
 
       <h2>Public API</h2>
       <pre><code class="language-cpp">typedef std::vector&lt;std::string&gt; StringArray;

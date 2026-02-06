@@ -143,22 +143,8 @@ Vec2 instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Vec2(float x = 0.f, float y = 0.f) : x(x), y(y) {}
-        Vec2(const glm::vec2&amp; v) : x(v.x), y(v.y) {}
-
-        operator glm::vec2() const { return glm::vec2(x, y)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>}
-
-        Vec2 operator+(const Vec2&amp; o) const { return Vec2(x + o.x, y + o.y)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>}
-        Vec2 operator-(const Vec2&amp; o) const { return Vec2(x - o.x, y - o.y)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>}
-        Vec2 operator-() const { return Vec2(-x, -y)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>}
-
-        Vec2 operator*(float s)       const { return Vec2(x * s, y * s)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>}
-        Vec2 normalize() const { return Vec2(glm::normalize((glm::vec2)*this))</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>Vec2(float x = 0.f, float y = 0.f) : x(x), y(y) { }</code></td><td>Constructs a Vec2. Parameters: float x, float y.</td></tr>
+<tr><td><code>Vec2(const glm::vec2&amp; v) : x(v.x), y(v.y) { }</code></td><td>Constructs a Vec2. Parameters: const glm::vec2&amp; v.</td></tr>
         </tbody>
       </table>
 
@@ -167,12 +153,15 @@ Vec2 instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-        bool operator==(const Vec2&amp;t) const {return (x == t.x &amp;&amp; y == t.y)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        bool operator!=(const Vec2&amp;t) const {return (x != t.x || y != t.y)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        float length() const { return glm::length((glm::vec2)*this)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>operator glm::vec2() const { }</code></td><td>Returns operator glm::. Parameters: none.</td></tr>
+<tr><td><code>Vec2 operator+(const Vec2&amp; o) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>Vec2 operator-(const Vec2&amp; o) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>Vec2 operator-() const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>Vec2 operator*(float s)       const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>bool operator==(const Vec2&amp;t) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>bool operator!=(const Vec2&amp;t) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>float length() const { }</code></td><td>Returns float. Parameters: none.</td></tr>
+<tr><td><code>Vec2 normalize() const { }</code></td><td>Returns Vec2. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -182,8 +171,7 @@ Vec2 instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>float x, y</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>float x, y</code></td><td>Data member of type float x,.</td></tr>
         </tbody>
       </table>
 

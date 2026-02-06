@@ -143,8 +143,8 @@ TextureSlot instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>TextureSlot() = default</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>TextureSlot(std::shared_ptr&lt;Texture&gt; tex, int s = 0) : texture(tex), slot(s) {}</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>TextureSlot() = default</code></td><td>Constructs a TextureSlot. Parameters: none.</td></tr>
+<tr><td><code>TextureSlot(std::shared_ptr&lt;Texture&gt; tex, int s = 0) : texture(tex), slot(s) { }</code></td><td>Constructs a TextureSlot. Parameters: std::shared_ptr&lt;Texture&gt; tex, int s.</td></tr>
         </tbody>
       </table>
 
@@ -155,8 +155,8 @@ TextureSlot instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>std::shared_ptr&lt;Texture&gt; texture</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int slot = 0</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>std::shared_ptr&lt;Texture&gt; texture</code></td><td>Data member of type std::shared_ptr&lt;Texture&gt;.</td></tr>
+<tr><td><code>int slot = 0</code></td><td>Data member of type int.</td></tr>
         </tbody>
       </table>
 

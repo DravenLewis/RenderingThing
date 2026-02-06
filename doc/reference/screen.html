@@ -143,8 +143,8 @@ Screen instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Screen(int width, int height)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>~Screen()</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>Screen(int width, int height)</code></td><td>Constructs a Screen. Parameters: int width, int height.</td></tr>
+<tr><td><code>~Screen()</code></td><td>Constructs a Screen. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -153,26 +153,23 @@ Screen instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>void processRenderPipeline()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void drawToWindow(RenderWindow* window, bool clearWindow = true)</code></td><td>Renders content using the current settings.</td></tr>
-<tr><td><code>void resize(int w, int h)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>int getWidth()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>int getHeight()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>void bind(bool clear = true)</code></td><td>Binds the resource for use.</td></tr>
-<tr><td><code>void unbind()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void addEffect(Graphics::PostProcessing::PPostProcessingEffect effect)</code></td><td>Adds an item to the collection.</td></tr>
-<tr><td><code>void clearEffects()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>PTexture getDisplayTexture()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>PCamera getCamera() const { return camera</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-        void setCamera(PCamera cam, bool makeCurrent = true)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>void makeCameraCurrent()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void setClearColor(Color color) { this-&gt;clearColor = color</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>} 
-        Color&amp; getClearColor() { return this-&gt;clearColor</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-        void clear(Color c = Color::BLACK)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>bool isBound() const { return bound</code></td><td>Returns whether the condition is met.</td></tr>
+<tr><td><code>void processRenderPipeline()</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>void drawToWindow(RenderWindow* window, bool clearWindow = true)</code></td><td>Renders content using the current settings. Parameters: RenderWindow* window, bool clearWindow.</td></tr>
+<tr><td><code>void resize(int w, int h)</code></td><td>Returns void. Parameters: int w, int h.</td></tr>
+<tr><td><code>int getWidth()</code></td><td>Returns int. Parameters: none.</td></tr>
+<tr><td><code>int getHeight()</code></td><td>Returns int. Parameters: none.</td></tr>
+<tr><td><code>void bind(bool clear = true)</code></td><td>Binds this resource for use. Parameters: bool clear.</td></tr>
+<tr><td><code>void unbind()</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>void addEffect(Graphics::PostProcessing::PPostProcessingEffect effect)</code></td><td>Returns void. Parameters: Graphics::PostProcessing::PPostProcessingEffect effect.</td></tr>
+<tr><td><code>void clearEffects()</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>PTexture getDisplayTexture()</code></td><td>Returns PTexture. Parameters: none.</td></tr>
+<tr><td><code>PCamera getCamera() const { }</code></td><td>Returns PCamera. Parameters: none.</td></tr>
+<tr><td><code>void setCamera(PCamera cam, bool makeCurrent = true)</code></td><td>Sets the requested value. Parameters: PCamera cam, bool makeCurrent.</td></tr>
+<tr><td><code>void makeCameraCurrent()</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>void setClearColor(Color color) { }</code></td><td>Sets the requested value. Parameters: Color color.</td></tr>
+<tr><td><code>Color&amp; getClearColor() { }</code></td><td>Returns Color&amp;. Parameters: none.</td></tr>
+<tr><td><code>void clear(Color c = Color::BLACK)</code></td><td>Returns void. Parameters: Color c.</td></tr>
+<tr><td><code>bool isBound() const { }</code></td><td>Returns bool. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -181,20 +178,12 @@ Screen instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>static void MakeCameraCurrent(PCamera camera)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>static PCamera GetCurrentCamera()</code></td><td>Returns the requested value.</td></tr>
+<tr><td><code>static void MakeCameraCurrent(PCamera camera)</code></td><td>Returns void. Parameters: PCamera camera.</td></tr>
+<tr><td><code>static PCamera GetCurrentCamera()</code></td><td>Returns PCamera. Parameters: none.</td></tr>
         </tbody>
       </table>
 
       
-      <h2>Public Data</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
-        </tbody>
-      </table>
-
 
       <h2>Public API</h2>
       <pre><code class="language-cpp">Screen(int width, int height);

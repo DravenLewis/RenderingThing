@@ -144,33 +144,10 @@ AssetManager instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>void manageAsset(std::shared_ptr&lt;Asset&gt; assetPtr){
-            if(!assetPtr) return</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>std::string name = assetPtr-&gt;getFileHandle()-&gt;getFileName()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-
-        void unmanageAsset(const std::string&amp; name){
-            if(assetMap[name]){
-                std::shared_ptr&lt;Asset&gt; asset = assetMap[name]</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>assetMap.erase(name)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        }
-
-        bool hasAsset(const std::string&amp; name){
-            return assetMap.find(name) != assetMap.end()</code></td><td>Returns whether the condition is met.</td></tr>
-<tr><td><code>}
-
-        std::shared_ptr&lt;Asset&gt; getOrLoad(const std::string&amp; name){
-            std::string fileName = StringUtils::Replace(name,&quot;\\&quot;, &quot;/&quot;)</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>auto namePath = StringUtils::Split(fileName, &quot;/&quot;)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>fileName = namePath.back()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if(hasAsset(fileName)){
-                return assetMap[fileName]</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-            auto assetPtr = std::make_shared&lt;Asset&gt;(name)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>if(assetPtr-&gt;load()){
-                manageAsset(assetPtr)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>void manageAsset(std::shared_ptr&lt;Asset&gt; assetPtr){ }</code></td><td>Returns void. Parameters: std::shared_ptr&lt;Asset&gt; assetPtr.</td></tr>
+<tr><td><code>void unmanageAsset(const std::string&amp; name){ }</code></td><td>Returns void. Parameters: const std::string&amp; name.</td></tr>
+<tr><td><code>bool hasAsset(const std::string&amp; name){ }</code></td><td>Returns bool. Parameters: const std::string&amp; name.</td></tr>
+<tr><td><code>std::shared_ptr&lt;Asset&gt; getOrLoad(const std::string&amp; name){ }</code></td><td>Returns std::shared_ptr&lt;Asset&gt;. Parameters: const std::string&amp; name.</td></tr>
         </tbody>
       </table>
 
@@ -180,14 +157,7 @@ AssetManager instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>this-&gt;assetMap[name] = assetPtr</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>return assetPtr</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-            return nullptr</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-
-        static AssetManager Instance</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>static AssetManager Instance</code></td><td>Data member of type static AssetManager.</td></tr>
         </tbody>
       </table>
 

@@ -144,12 +144,19 @@ LogType instance;</code></pre>
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
 <tr><td><code>public:
-    LogType(std::string value) : value(value) {}
-    std::string asText() { return value</code></td><td>Constructs the object.</td></tr>
+    LogType(std::string value) : value(value) { }</code></td><td>Constructs a LogType. Parameters: std::string value.</td></tr>
         </tbody>
       </table>
 
       
+      <h2>Member Functions</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>std::string asText() { }</code></td><td>Returns std::string. Parameters: none.</td></tr>
+        </tbody>
+      </table>
+
       
       
       <h2>Public Data</h2>
@@ -157,8 +164,7 @@ LogType instance;</code></pre>
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
 <tr><td><code>private:
-    std::string value</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+    std::string value</code></td><td>Data member of type private: std::string.</td></tr>
         </tbody>
       </table>
 

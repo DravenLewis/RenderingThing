@@ -143,11 +143,10 @@ auto instance = TrippleBuffer::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>TrippleBuffer() = delete</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>TrippleBuffer() = delete</code></td><td>Deleted; this overload is not available.</td></tr>
 <tr><td><code>public:
 
-        TrippleBuffer(int width, int height) : width(width), height(height) {
-            chain.setAtIndex(0, FrameBuffer::Create(width, height))</code></td><td>Constructs the object.</td></tr>
+        TrippleBuffer(int width, int height) : width(width), height(height) { }</code></td><td>Constructs a TrippleBuffer. Parameters: int width, int height.</td></tr>
         </tbody>
       </table>
 
@@ -157,63 +156,19 @@ auto instance = TrippleBuffer::Create(/* args */);</code></pre>
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
 <tr><td><code>private:
-        FrameBufferChain chain = FrameBufferChain(3)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>chain.setAtIndex(1, FrameBuffer::Create(width, height))</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>chain.setAtIndex(2, FrameBuffer::Create(width, height))</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-
-        std::shared_ptr&lt;FrameBuffer&gt; getFront(){
-            return chain.getAtIndex(0)</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-        
-        std::shared_ptr&lt;FrameBuffer&gt; getMiddle(){
-            return chain.getAtIndex(1)</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-
-        std::shared_ptr&lt;FrameBuffer&gt; getBack(){
-            return chain.getAtIndex(2)</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-
-
-        
-
-        std::shared_ptr&lt;FrameBuffer&gt; getDisplayBuffer(){
-            return getFront()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-
-        std::shared_ptr&lt;FrameBuffer&gt; getEditBuffer(){
-            return getMiddle()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-
-        std::shared_ptr&lt;FrameBuffer&gt; getDrawBuffer(){
-            return getBack()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>}
-
-        
-
-        void setFront(std::shared_ptr&lt;FrameBuffer&gt; framePtr){
-            chain.setAtIndex(0,framePtr)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-
-        void setMiddle(std::shared_ptr&lt;FrameBuffer&gt; framePtr){
-            chain.setAtIndex(1,framePtr)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-
-        void setBack(std::shared_ptr&lt;FrameBuffer&gt; framePtr){
-            chain.setAtIndex(2,framePtr)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-
-        void swapBuffers(){
-            auto frontBuffer = getFront()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>auto middleBuffer = getMiddle()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>auto backBuffer = getBack()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>setFront(middleBuffer)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>setMiddle(backBuffer)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>setBack(frontBuffer)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>}
-
-        void resizeBuffers(int width, int height){
-            chain.resizeBuffers(width, height)</code></td><td>Performs the operation described by the name.</td></tr>
+        FrameBufferChain chain = FrameBufferChain(3)</code></td><td>Returns private:
+        FrameBufferChain chain =. Parameters: 3.</td></tr>
+<tr><td><code>std::shared_ptr&lt;FrameBuffer&gt; getFront(){ }</code></td><td>Returns std::shared_ptr&lt;FrameBuffer&gt;. Parameters: none.</td></tr>
+<tr><td><code>std::shared_ptr&lt;FrameBuffer&gt; getMiddle(){ }</code></td><td>Returns std::shared_ptr&lt;FrameBuffer&gt;. Parameters: none.</td></tr>
+<tr><td><code>std::shared_ptr&lt;FrameBuffer&gt; getBack(){ }</code></td><td>Returns std::shared_ptr&lt;FrameBuffer&gt;. Parameters: none.</td></tr>
+<tr><td><code>std::shared_ptr&lt;FrameBuffer&gt; getDisplayBuffer(){ }</code></td><td>Returns std::shared_ptr&lt;FrameBuffer&gt;. Parameters: none.</td></tr>
+<tr><td><code>std::shared_ptr&lt;FrameBuffer&gt; getEditBuffer(){ }</code></td><td>Returns std::shared_ptr&lt;FrameBuffer&gt;. Parameters: none.</td></tr>
+<tr><td><code>std::shared_ptr&lt;FrameBuffer&gt; getDrawBuffer(){ }</code></td><td>Returns std::shared_ptr&lt;FrameBuffer&gt;. Parameters: none.</td></tr>
+<tr><td><code>void setFront(std::shared_ptr&lt;FrameBuffer&gt; framePtr){ }</code></td><td>Sets the requested value. Parameters: std::shared_ptr&lt;FrameBuffer&gt; framePtr.</td></tr>
+<tr><td><code>void setMiddle(std::shared_ptr&lt;FrameBuffer&gt; framePtr){ }</code></td><td>Sets the requested value. Parameters: std::shared_ptr&lt;FrameBuffer&gt; framePtr.</td></tr>
+<tr><td><code>void setBack(std::shared_ptr&lt;FrameBuffer&gt; framePtr){ }</code></td><td>Sets the requested value. Parameters: std::shared_ptr&lt;FrameBuffer&gt; framePtr.</td></tr>
+<tr><td><code>void swapBuffers(){ }</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>void resizeBuffers(int width, int height){ }</code></td><td>Returns void. Parameters: int width, int height.</td></tr>
         </tbody>
       </table>
 
@@ -223,8 +178,7 @@ auto instance = TrippleBuffer::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>int width, height</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>int width, height</code></td><td>Data member of type int width,.</td></tr>
         </tbody>
       </table>
 

@@ -140,27 +140,20 @@ GraphicsContext instance;</code></pre>
       
       
       
-      <h2>Member Functions</h2>
-      <table class="ref-table">
-        <thead><tr><th>Member</th><th>Description</th></tr></thead>
-        <tbody>
-<tr><td><code>private:
-        ValueContainer&lt;PAsset&gt; defaultFontLocation{AssetManager::Instance.getOrLoad(&quot;@assets/fonts/arial.ttf&quot;)}</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>ValueContainer&lt;PFont&gt; font{Font::Create&lt;FreeTypeFont&gt;(defaultFontLocation.get(), 18.0f)}</code></td><td>Returns the requested value.</td></tr>
-        </tbody>
-      </table>
-
       
       
       <h2>Public Data</h2>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
+<tr><td><code>private:
+        ValueContainer&lt;PAsset&gt; defaultFontLocation{ }</code></td><td>Data member of type private: ValueContainer&lt;PAsset&gt; defaultFontLocation{.</td></tr>
 <tr><td><code>public:
-        ValueContainer&lt;Color&gt; foregroundColor{Color::WHITE}</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;Color&gt; backgroundColor{Color::BLACK}</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;float&gt; strokeWidth{1.0f}</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;int&gt; fontSize{18}</code></td><td>Performs the operation described by the name.</td></tr>
+        ValueContainer&lt;Color&gt; foregroundColor{ }</code></td><td>Data member of type public: ValueContainer&lt;Color&gt; foregroundColor{.</td></tr>
+<tr><td><code>ValueContainer&lt;Color&gt; backgroundColor{ }</code></td><td>Data member of type ValueContainer&lt;Color&gt; backgroundColor{.</td></tr>
+<tr><td><code>ValueContainer&lt;float&gt; strokeWidth{ }</code></td><td>Data member of type ValueContainer&lt;float&gt; strokeWidth{.</td></tr>
+<tr><td><code>ValueContainer&lt;PFont&gt; font{ }</code></td><td>Data member of type ValueContainer&lt;PFont&gt; font{.</td></tr>
+<tr><td><code>ValueContainer&lt;int&gt; fontSize{ }</code></td><td>Data member of type ValueContainer&lt;int&gt; fontSize{.</td></tr>
         </tbody>
       </table>
 

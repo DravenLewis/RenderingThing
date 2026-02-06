@@ -143,7 +143,7 @@ auto instance = LitImageMaterial::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>LitImageMaterial(std::shared_ptr&lt;ShaderProgram&gt; program, std::shared_ptr&lt;Texture&gt; texture)</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>LitImageMaterial(std::shared_ptr&lt;ShaderProgram&gt; program, std::shared_ptr&lt;Texture&gt; texture)</code></td><td>Constructs a LitImageMaterial. Parameters: std::shared_ptr&lt;ShaderProgram&gt; program, std::shared_ptr&lt;Texture&gt; texture.</td></tr>
         </tbody>
       </table>
 
@@ -152,7 +152,7 @@ auto instance = LitImageMaterial::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>void bind() override</code></td><td>Binds the resource for use.</td></tr>
+<tr><td><code>void bind() override</code></td><td>Binds this resource for use. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -161,7 +161,7 @@ auto instance = LitImageMaterial::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>static std::shared_ptr&lt;LitImageMaterial&gt; Create(PTexture tex, Math3D::Vec4 color = Color::WHITE)</code></td><td>Creates a new instance or resource.</td></tr>
+<tr><td><code>static std::shared_ptr&lt;LitImageMaterial&gt; Create(PTexture tex, Math3D::Vec4 color = Color::WHITE)</code></td><td>Creates and returns a new instance or resource. Parameters: PTexture tex, Math3D::Vec4 color.</td></tr>
         </tbody>
       </table>
 
@@ -170,9 +170,9 @@ auto instance = LitImageMaterial::Create(/* args */);</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>ValueContainer&lt;Math3D::Vec4&gt; Color</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt; Tex</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>ValueContainer&lt;Math3D::Vec3&gt; ViewPos</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>ValueContainer&lt;Math3D::Vec4&gt; Color</code></td><td>Data member of type ValueContainer&lt;Math3D::Vec4&gt;.</td></tr>
+<tr><td><code>ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt; Tex</code></td><td>Data member of type ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;.</td></tr>
+<tr><td><code>ValueContainer&lt;Math3D::Vec3&gt; ViewPos</code></td><td>Data member of type ValueContainer&lt;Math3D::Vec3&gt;.</td></tr>
         </tbody>
       </table>
 

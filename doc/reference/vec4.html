@@ -143,14 +143,9 @@ Vec4 instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>Vec4(float x = 0.f, float y = 0.f, float z = 0.f, float w = 1.f) : x(x), y(y), z(z), w(w) {}
-        Vec4(const Vec3&amp; v, float w = 1.f) : x(v.x), y(v.y), z(v.z), w(w) {}
-        Vec4(const glm::vec4&amp; v) : x(v.x), y(v.y), z(v.z), w(v.w) {}
-
-        operator glm::vec4() const { return glm::vec4(x, y, z, w)</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>}
-
-        Vec4 operator-() const { return Vec4(-x, -y, -z, -w)</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>Vec4(float x = 0.f, float y = 0.f, float z = 0.f, float w = 1.f) : x(x), y(y), z(z), w(w) { }</code></td><td>Constructs a Vec4. Parameters: float x, float y, float z, float w.</td></tr>
+<tr><td><code>Vec4(const Vec3&amp; v, float w = 1.f) : x(v.x), y(v.y), z(v.z), w(w) { }</code></td><td>Constructs a Vec4. Parameters: const Vec3&amp; v, float w.</td></tr>
+<tr><td><code>Vec4(const glm::vec4&amp; v) : x(v.x), y(v.y), z(v.z), w(v.w) { }</code></td><td>Constructs a Vec4. Parameters: const glm::vec4&amp; v.</td></tr>
         </tbody>
       </table>
 
@@ -159,10 +154,10 @@ Vec4 instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>}
-        bool operator==(const Vec4&amp;t) const {return (x == t.x &amp;&amp; y == t.y &amp;&amp; z == t.z &amp;&amp; w == t.w)</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}
-        bool operator!=(const Vec4&amp;t) const {return (x != t.x || y != t.y || z != t.z || w != t.w)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>operator glm::vec4() const { }</code></td><td>Returns operator glm::. Parameters: none.</td></tr>
+<tr><td><code>Vec4 operator-() const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>bool operator==(const Vec4&amp;t) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
+<tr><td><code>bool operator!=(const Vec4&amp;t) const { }</code></td><td>Performs the operation. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -172,8 +167,7 @@ Vec4 instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>float x, y, z, w</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>float x, y, z, w</code></td><td>Data member of type float x, y, z,.</td></tr>
         </tbody>
       </table>
 

@@ -143,8 +143,8 @@ RenderWindow instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>RenderWindow(std::string title, DisplayMode mode = DisplayMode::New())</code></td><td>Constructs the object.</td></tr>
-<tr><td><code>~RenderWindow()</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>RenderWindow(std::string title, DisplayMode mode = DisplayMode::New())</code></td><td>Constructs a RenderWindow. Parameters: std::string title, DisplayMode mode.</td></tr>
+<tr><td><code>~RenderWindow()</code></td><td>Constructs a RenderWindow. Parameters: none.</td></tr>
         </tbody>
       </table>
 
@@ -153,25 +153,25 @@ RenderWindow instance;</code></pre>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>bool isCloseRequested()</code></td><td>Returns whether the condition is met.</td></tr>
-<tr><td><code>void close()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void dispose()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void swap()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>bool setWindowSize(int width, int height)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>int  getWindowWidth()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>int  getWindowHeight()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>bool setFullScreen(bool fullscreen)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>bool isFullScreen()</code></td><td>Returns whether the condition is met.</td></tr>
-<tr><td><code>void setWindowName(std::string windowName)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>void toggleFullscreen()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void setResizable(bool resize)</code></td><td>Sets the requested value.</td></tr>
-<tr><td><code>bool getResizable()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>void process()</code></td><td>Performs the operation described by the name.</td></tr>
-<tr><td><code>void addWindowEventHandler(std::function&lt;void(SDL_Event&amp;)&gt; fn)</code></td><td>Adds an item to the collection.</td></tr>
-<tr><td><code>std::string getWindowName()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>DisplayMode&amp; getDisplayMode()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>SDL_Event&amp; getEvent()</code></td><td>Returns the requested value.</td></tr>
-<tr><td><code>SDL_Window* getWindowPtr()</code></td><td>Returns the requested value.</td></tr>
+<tr><td><code>bool isCloseRequested()</code></td><td>Returns bool. Parameters: none.</td></tr>
+<tr><td><code>void close()</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>void dispose()</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>void swap()</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>bool setWindowSize(int width, int height)</code></td><td>Sets the requested value. Parameters: int width, int height.</td></tr>
+<tr><td><code>int  getWindowWidth()</code></td><td>Returns int. Parameters: none.</td></tr>
+<tr><td><code>int  getWindowHeight()</code></td><td>Returns int. Parameters: none.</td></tr>
+<tr><td><code>bool setFullScreen(bool fullscreen)</code></td><td>Sets the requested value. Parameters: bool fullscreen.</td></tr>
+<tr><td><code>bool isFullScreen()</code></td><td>Returns bool. Parameters: none.</td></tr>
+<tr><td><code>void setWindowName(std::string windowName)</code></td><td>Sets the requested value. Parameters: std::string windowName.</td></tr>
+<tr><td><code>void toggleFullscreen()</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>void setResizable(bool resize)</code></td><td>Sets the requested value. Parameters: bool resize.</td></tr>
+<tr><td><code>bool getResizable()</code></td><td>Returns bool. Parameters: none.</td></tr>
+<tr><td><code>void process()</code></td><td>Returns void. Parameters: none.</td></tr>
+<tr><td><code>void addWindowEventHandler(std::function&lt;void(SDL_Event&amp;)&gt; fn)</code></td><td>Returns void. Parameters: std::function&lt;void(SDL_Event&amp;)&gt; fn.</td></tr>
+<tr><td><code>std::string getWindowName()</code></td><td>Returns std::string. Parameters: none.</td></tr>
+<tr><td><code>DisplayMode&amp; getDisplayMode()</code></td><td>Returns DisplayMode&amp;. Parameters: none.</td></tr>
+<tr><td><code>SDL_Event&amp; getEvent()</code></td><td>Returns SDL_Event&amp;. Parameters: none.</td></tr>
+<tr><td><code>SDL_Window* getWindowPtr()</code></td><td>Returns SDL_Window*. Parameters: none.</td></tr>
         </tbody>
       </table>
 
