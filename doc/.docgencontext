@@ -1,0 +1,24 @@
+You are regenerating the local docs site in ./doc for RenderingThing.
+
+Goals:
+- Keep Microsoft Learn-style layout and styling already present in doc/style.css and doc/app.js.
+- All resources must remain local (no CDN).
+- Use per-class reference pages under doc/reference/ with a left nav listing every class.
+- Exclude any files under src/STB/ and src/debug_helpers/ and exclude STBTrueTypeFont.*.
+- Each class page must include sections in this order:
+  1) Title, summary, header path
+  2) Usage example with code block + copy button
+  3) Member tables (Member Types, Constructors/Destructors, Member Functions, Static Functions, Public Data)
+  4) Public API code block
+  5) Full Class Layout code block
+- Member tables should list signatures + short descriptions.
+- Maintain the Settings panel behavior (theme, accent color list from Color.h; close on outside click; use Bootstrap Icons locally).
+- Highlight cards on the Overview page should link to relevant reference pages.
+- Border radius max is 5px app-wide.
+
+Suggested workflow:
+- Parse headers in src/*.h, excluding STB and debug_helpers.
+- Extract class/struct blocks and public sections.
+- Generate doc/reference/index.html and per-class pages.
+- Update top-level pages to include new reference links.
+- Do not change overall styling unless requested.

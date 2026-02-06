@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RenderingThing Docs - FirstPersonController</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body data-page="ref-firstpersoncontroller">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">RT</div>
+      <div>RenderingThing Docs</div>
+      <span class="badge">Local</span>
+    </div>
+    <div class="search">
+      <input type="search" placeholder="Search docs (local)" />
+    </div>
+    <button class="nav-toggle" aria-label="Toggle navigation">Menu</button>
+  </header>
+
+  <div class="layout">
+    <nav class="sidenav">
+
+      <h3>Documentation</h3>
+      <ul>
+        <li><a href="../index.html" data-page-link="overview">Overview</a></li>
+        <li><a href="../getting-started.html" data-page-link="getting-started">Getting Started</a></li>
+        <li><a href="../samples.html" data-page-link="samples">Samples</a></li>
+        <li><a href="../architecture.html" data-page-link="architecture">Architecture</a></li>
+        <li><a href="../graphics.html" data-page-link="graphics">Graphics</a></li>
+        <li><a href="index.html" data-page-link="reference">Reference</a></li>
+      </ul>
+      <h3>Reference</h3>
+      <ul>
+<li><a href="asset.html" data-page-link="ref-asset">Asset</a></li>
+<li><a href="assetmanager.html" data-page-link="ref-assetmanager">AssetManager</a></li>
+<li><a href="bufferedimage.html" data-page-link="ref-bufferedimage">BufferedImage</a></li>
+<li><a href="camera.html" data-page-link="ref-camera">Camera</a></li>
+<li><a href="camerasettings.html" data-page-link="ref-camerasettings">CameraSettings</a></li>
+<li><a href="color.html" data-page-link="ref-color">Color</a></li>
+<li><a href="colormaterial.html" data-page-link="ref-colormaterial">ColorMaterial</a></li>
+<li><a href="cubemap.html" data-page-link="ref-cubemap">CubeMap</a></li>
+<li><a href="cubemapslot.html" data-page-link="ref-cubemapslot">CubeMapSlot</a></li>
+<li><a href="cubematerialdefinition.html" data-page-link="ref-cubematerialdefinition">CubeMaterialDefinition</a></li>
+<li><a href="depthguard.html" data-page-link="ref-depthguard">DepthGuard</a></li>
+<li><a href="display.html" data-page-link="ref-display">Display</a></li>
+<li><a href="displaymode.html" data-page-link="ref-displaymode">DisplayMode</a></li>
+<li><a href="file.html" data-page-link="ref-file">File</a></li>
+<li><a href="fileblob.html" data-page-link="ref-fileblob">FileBlob</a></li>
+<li><a href="filereader.html" data-page-link="ref-filereader">FileReader</a></li>
+<li><a href="filewriter.html" data-page-link="ref-filewriter">FileWriter</a></li>
+<li><a href="firstpersoncontroller.html" data-page-link="ref-firstpersoncontroller">FirstPersonController</a></li>
+<li><a href="flatcolormaterial.html" data-page-link="ref-flatcolormaterial">FlatColorMaterial</a></li>
+<li><a href="flatimagematerial.html" data-page-link="ref-flatimagematerial">FlatImageMaterial</a></li>
+<li><a href="font.html" data-page-link="ref-font">Font</a></li>
+<li><a href="fontcharacter.html" data-page-link="ref-fontcharacter">FontCharacter</a></li>
+<li><a href="framebuffer.html" data-page-link="ref-framebuffer">FrameBuffer</a></li>
+<li><a href="framebufferchain.html" data-page-link="ref-framebufferchain">FrameBufferChain</a></li>
+<li><a href="freetypefont.html" data-page-link="ref-freetypefont">FreeTypeFont</a></li>
+<li><a href="glversioninfo.html" data-page-link="ref-glversioninfo">GLVersionInfo</a></li>
+<li><a href="graphics2d.html" data-page-link="ref-graphics2d">Graphics2D</a></li>
+<li><a href="graphicscontext.html" data-page-link="ref-graphicscontext">GraphicsContext</a></li>
+<li><a href="grayscaleeffect.html" data-page-link="ref-grayscaleeffect">GrayscaleEffect</a></li>
+<li><a href="idrawable.html" data-page-link="ref-idrawable">IDrawable</a></li>
+<li><a href="ieventhandler.html" data-page-link="ref-ieventhandler">IEventHandler</a></li>
+<li><a href="image.html" data-page-link="ref-image">Image</a></li>
+<li><a href="imagematerial.html" data-page-link="ref-imagematerial">ImageMaterial</a></li>
+<li><a href="imaterialproperty.html" data-page-link="ref-imaterialproperty">IMaterialProperty</a></li>
+<li><a href="inputinformation.html" data-page-link="ref-inputinformation">InputInformation</a></li>
+<li><a href="inputmanager.html" data-page-link="ref-inputmanager">InputManager</a></li>
+<li><a href="light.html" data-page-link="ref-light">Light</a></li>
+<li><a href="lightmanager.html" data-page-link="ref-lightmanager">LightManager</a></li>
+<li><a href="lighttype.html" data-page-link="ref-lighttype">LightType</a></li>
+<li><a href="lightuniformuploader.html" data-page-link="ref-lightuniformuploader">LightUniformUploader</a></li>
+<li><a href="lineending.html" data-page-link="ref-lineending">LineEnding</a></li>
+<li><a href="litcolormaterial.html" data-page-link="ref-litcolormaterial">LitColorMaterial</a></li>
+<li><a href="litimagematerial.html" data-page-link="ref-litimagematerial">LitImageMaterial</a></li>
+<li><a href="logbot.html" data-page-link="ref-logbot">Logbot</a></li>
+<li><a href="logtype.html" data-page-link="ref-logtype">LogType</a></li>
+<li><a href="mat4.html" data-page-link="ref-mat4">Mat4</a></li>
+<li><a href="material.html" data-page-link="ref-material">Material</a></li>
+<li><a href="materialproperty.html" data-page-link="ref-materialproperty">MaterialProperty</a></li>
+<li><a href="mesh.html" data-page-link="ref-mesh">Mesh</a></li>
+<li><a href="model.html" data-page-link="ref-model">Model</a></li>
+<li><a href="modelpart.html" data-page-link="ref-modelpart">ModelPart</a></li>
+<li><a href="modelpartfactory.html" data-page-link="ref-modelpartfactory">ModelPartFactory</a></li>
+<li><a href="modelpartprefabs.html" data-page-link="ref-modelpartprefabs">ModelPartPrefabs</a></li>
+<li><a href="modelprefabs.html" data-page-link="ref-modelprefabs">ModelPrefabs</a></li>
+<li><a href="mouselockmode.html" data-page-link="ref-mouselockmode">MouseLockMode</a></li>
+<li><a href="nullable.html" data-page-link="ref-nullable">Nullable</a></li>
+<li><a href="objdata.html" data-page-link="ref-objdata">OBJData</a></li>
+<li><a href="objloader.html" data-page-link="ref-objloader">OBJLoader</a></li>
+<li><a href="pbrmaterial.html" data-page-link="ref-pbrmaterial">PBRMaterial</a></li>
+<li><a href="postprocessingeffect.html" data-page-link="ref-postprocessingeffect">PostProcessingEffect</a></li>
+<li><a href="quat.html" data-page-link="ref-quat">Quat</a></li>
+<li><a href="random.html" data-page-link="ref-random">Random</a></li>
+<li><a href="rect.html" data-page-link="ref-rect">Rect</a></li>
+<li><a href="renderwindow.html" data-page-link="ref-renderwindow">RenderWindow</a></li>
+<li><a href="screen.html" data-page-link="ref-screen">Screen</a></li>
+<li><a href="shaderbundle.html" data-page-link="ref-shaderbundle">ShaderBundle</a></li>
+<li><a href="shadercache.html" data-page-link="ref-shadercache">ShaderCache</a></li>
+<li><a href="shaderprogram.html" data-page-link="ref-shaderprogram">ShaderProgram</a></li>
+<li><a href="shadowlightdata.html" data-page-link="ref-shadowlightdata">ShadowLightData</a></li>
+<li><a href="shadowmap2d.html" data-page-link="ref-shadowmap2d">ShadowMap2D</a></li>
+<li><a href="shadowmapcube.html" data-page-link="ref-shadowmapcube">ShadowMapCube</a></li>
+<li><a href="shadowrenderer.html" data-page-link="ref-shadowrenderer">ShadowRenderer</a></li>
+<li><a href="shadowtype.html" data-page-link="ref-shadowtype">ShadowType</a></li>
+<li><a href="skybox.html" data-page-link="ref-skybox">SkyBox</a></li>
+<li><a href="skybox6face.html" data-page-link="ref-skybox6face">SkyBox6Face</a></li>
+<li><a href="skyboxloader.html" data-page-link="ref-skyboxloader">SkyBoxLoader</a></li>
+<li><a href="skyboxmaterial.html" data-page-link="ref-skyboxmaterial">SkyboxMaterial</a></li>
+<li><a href="stringutils.html" data-page-link="ref-stringutils">StringUtils</a></li>
+<li><a href="textcachekey.html" data-page-link="ref-textcachekey">TextCacheKey</a></li>
+<li><a href="texture.html" data-page-link="ref-texture">Texture</a></li>
+<li><a href="textureslot.html" data-page-link="ref-textureslot">TextureSlot</a></li>
+<li><a href="transform.html" data-page-link="ref-transform">Transform</a></li>
+<li><a href="tripplebuffer.html" data-page-link="ref-tripplebuffer">TrippleBuffer</a></li>
+<li><a href="uniform.html" data-page-link="ref-uniform">Uniform</a></li>
+<li><a href="valuecontainer.html" data-page-link="ref-valuecontainer">ValueContainer</a></li>
+<li><a href="vec2.html" data-page-link="ref-vec2">Vec2</a></li>
+<li><a href="vec3.html" data-page-link="ref-vec3">Vec3</a></li>
+<li><a href="vec4.html" data-page-link="ref-vec4">Vec4</a></li>
+<li><a href="vertex.html" data-page-link="ref-vertex">Vertex</a></li>
+<li><a href="vertexindex.html" data-page-link="ref-vertexindex">VertexIndex</a></li>
+      </ul>
+    </nav>
+
+    <main class="content">
+      <h1>FirstPersonController</h1>
+      <p class="muted">A First Person Controller that implements IEventHandler. Uses std::enable_shared_from_this for safe registration with InputManager.</p>
+      <p><strong>Header:</strong> <code>src/FirstPersonController.h</code></p>
+
+      <h2>Usage</h2>
+      <p>Typical usage pattern (adjust to your pipeline):</p>
+      <pre><code class="language-cpp">#include &quot;FirstPersonController.h&quot;
+
+FirstPersonController instance;</code></pre>
+
+      
+      
+      <h2>Constructors / Destructors</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>FirstPersonController(std::shared_ptr&lt;Camera&gt; cam) 
+        : m_Camera(cam) {}
+
+    /**
+     * Registers this controller with the InputManager.
+     * Must be called after the shared_ptr for the controller is created.
+     */
+    void init(std::shared_ptr&lt;InputManager&gt; inputManager) {
+        if (inputManager) {
+            inputManager-&gt;addEventHandler(shared_from_this())</code></td><td>Constructs the object.</td></tr>
+        </tbody>
+      </table>
+
+      
+      <h2>Member Functions</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>}
+    }
+
+    /**
+     * Call this every frame in your main loop.
+     * @param dt Delta time (time elapsed since last frame)
+     * @param input Reference to your InputManager to check key states
+     */
+    void update(float dt, std::shared_ptr&lt;InputManager&gt; input) {
+        if (!m_Camera) return</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>auto transform = m_Camera-&gt;transform()</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>float velocity = ((input-&gt;isKeyDown(SDL_SCANCODE_LSHIFT)) ? ((m_MoveSpeed * m_fastScale) * dt) : (m_MoveSpeed * dt))</code></td><td>Returns whether the condition is met.</td></tr>
+<tr><td><code>if (input-&gt;isKeyDown(SDL_SCANCODE_W)) transform.position -= transform.forward() * velocity</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>if (input-&gt;isKeyDown(SDL_SCANCODE_S)) transform.position += transform.forward() * velocity</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>if (input-&gt;isKeyDown(SDL_SCANCODE_A)) transform.position -= transform.right() * velocity</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>if (input-&gt;isKeyDown(SDL_SCANCODE_D)) transform.position += transform.right() * velocity</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>if (input-&gt;isKeyDown(SDL_SCANCODE_SPACE))  transform.position += transform.up() * velocity</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>if (input-&gt;isKeyDown(SDL_SCANCODE_C)) transform.position -= transform.up() * velocity</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>if (input-&gt;isKeyDown(SDL_SCANCODE_LEFT))  m_Yaw += rotationSpeed</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>if (input-&gt;isKeyDown(SDL_SCANCODE_RIGHT)) m_Yaw -= rotationSpeed</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>if (input-&gt;isKeyDown(SDL_SCANCODE_UP))    m_Pitch += rotationSpeed</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>if (input-&gt;isKeyDown(SDL_SCANCODE_DOWN))  m_Pitch -= rotationSpeed</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>updateCameraRotation(transform)</code></td><td>Updates internal state.</td></tr>
+<tr><td><code>m_Camera-&gt;setTransform(transform)</code></td><td>Sets the requested value.</td></tr>
+<tr><td><code>}
+
+    
+
+    virtual bool onMouseMoved(int x, int y,InputManager&amp; manager) override {
+
+        if(manager.getMouseCaptureMode() != MouseLockMode::LOCKED) return false</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>float dx = (float)(x - lastX) * m_LookSensitivity</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>float dy = (float)(lastY - y) * m_LookSensitivity</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>m_Pitch = Math3D::Clamp(m_Pitch, -89.0f, 89.0f)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>*/
+
+        if (manager.getMouseCaptureMode() != MouseLockMode::LOCKED) return false</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>float dx = (float)x * m_LookSensitivity</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>float dy = (float)-y * m_LookSensitivity</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>m_Pitch = Math3D::Clamp(m_Pitch, -89.0f, 89.0f)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>}
+
+    
+    virtual bool onKeyUp(int k,InputManager&amp; m) override { 
+        if(k == SDL_SCANCODE_GRAVE &amp;&amp; (m.getMouseCaptureMode() == MouseLockMode::LOCKED || m.getMouseCaptureMode() == MouseLockMode::CAPTURED)){
+            m.setMouseCaptureMode(MouseLockMode::FREE)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>}
+    virtual bool onKeyDown(int k,InputManager&amp; m) override { return false</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>}
+    virtual bool onMousePressed(int b,InputManager&amp; m) override { 
+        if(b == SDL_BUTTON_LEFT &amp;&amp; m.getMouseCaptureMode() != MouseLockMode::LOCKED){
+            m.setMouseCaptureMode(MouseLockMode::LOCKED)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>}
+    virtual bool onMouseReleased(int b,InputManager&amp; m) override { return false</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>}
+    virtual bool onMouseScroll(float z,InputManager&amp; m) override { 
+        if(m.getMouseCaptureMode() == MouseLockMode::LOCKED) this-&gt;m_fastScale += z / 10.0f</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>if(this-&gt;m_fastScale &lt; 0) this-&gt;m_fastScale = 0.1</code></td><td>Performs the operation described by the name.</td></tr>
+        </tbody>
+      </table>
+
+      
+      
+      <h2>Public Data</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>float rotationSpeed = 100.0f * dt</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>/*
+        
+        static int lastX = x, lastY = y</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>lastX = x</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>lastY = y</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>m_Yaw   += dx</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>m_Pitch += dy</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>return true</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>m_Yaw   -= dx</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>m_Pitch += dy</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>return true</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>}
+        return false</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>}
+        return false</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>return false</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+        </tbody>
+      </table>
+
+
+      <h2>Public API</h2>
+      <pre><code class="language-cpp">FirstPersonController(std::shared_ptr&lt;Camera&gt; cam) 
+        : m_Camera(cam) {}
+
+    /**
+     * Registers this controller with the InputManager.
+     * Must be called after the shared_ptr for the controller is created.
+     */
+    void init(std::shared_ptr&lt;InputManager&gt; inputManager) {
+        if (inputManager) {
+            inputManager-&gt;addEventHandler(shared_from_this());
+        }
+    }
+
+    /**
+     * Call this every frame in your main loop.
+     * @param dt Delta time (time elapsed since last frame)
+     * @param input Reference to your InputManager to check key states
+     */
+    void update(float dt, std::shared_ptr&lt;InputManager&gt; input) {
+        if (!m_Camera) return;
+
+        auto transform = m_Camera-&gt;transform();
+        float velocity = ((input-&gt;isKeyDown(SDL_SCANCODE_LSHIFT)) ? ((m_MoveSpeed * m_fastScale) * dt) : (m_MoveSpeed * dt));
+
+        // --- Keyboard Movement ---
+        // Forward/Backward
+        if (input-&gt;isKeyDown(SDL_SCANCODE_W)) transform.position -= transform.forward() * velocity;
+        if (input-&gt;isKeyDown(SDL_SCANCODE_S)) transform.position += transform.forward() * velocity;
+        
+        // Strafe Left/Right
+        if (input-&gt;isKeyDown(SDL_SCANCODE_A)) transform.position -= transform.right() * velocity;
+        if (input-&gt;isKeyDown(SDL_SCANCODE_D)) transform.position += transform.right() * velocity;
+        
+        // Vertical (Fly)
+        if (input-&gt;isKeyDown(SDL_SCANCODE_SPACE))  transform.position += transform.up() * velocity;
+        if (input-&gt;isKeyDown(SDL_SCANCODE_C)) transform.position -= transform.up() * velocity;
+
+        // --- Arrow Key Rotation ---
+        float rotationSpeed = 100.0f * dt;
+        if (input-&gt;isKeyDown(SDL_SCANCODE_LEFT))  m_Yaw += rotationSpeed;
+        if (input-&gt;isKeyDown(SDL_SCANCODE_RIGHT)) m_Yaw -= rotationSpeed;
+        if (input-&gt;isKeyDown(SDL_SCANCODE_UP))    m_Pitch += rotationSpeed;
+        if (input-&gt;isKeyDown(SDL_SCANCODE_DOWN))  m_Pitch -= rotationSpeed;
+
+        // Apply final state to the camera&#x27;s internal Transform
+        updateCameraRotation(transform);
+        
+        // Note: You may need to add a method to Camera to set its private transform
+        // or make it public. Assuming a setter exists:
+        // m_Camera-&gt;setTransform(transform); 
+        m_Camera-&gt;setTransform(transform);
+    }
+
+    // --- IEventHandler Implementation ---
+
+    virtual bool onMouseMoved(int x, int y,InputManager&amp; manager) override {
+
+        if(manager.getMouseCaptureMode() != MouseLockMode::LOCKED) return false;
+
+        /*
+        // Simple Delta Calculation (Last position should be tracked by InputManager or static here)
+        static int lastX = x, lastY = y;
+        float dx = (float)(x - lastX) * m_LookSensitivity;
+        float dy = (float)(lastY - y) * m_LookSensitivity; // Y is inverted in screen space
+        lastX = x; lastY = y;
+
+        m_Yaw   += dx;
+        m_Pitch += dy;
+
+        // Clamp Pitch to prevent &quot;gymbal lock&quot; flipping
+        m_Pitch = Math3D::Clamp(m_Pitch, -89.0f, 89.0f);
+        return true;
+        */
+
+        if (manager.getMouseCaptureMode() != MouseLockMode::LOCKED) return false;
+
+        // When locked, x/y are already deltas
+        float dx = (float)x * m_LookSensitivity;
+        float dy = (float)-y * m_LookSensitivity;
+
+        m_Yaw   -= dx;
+        m_Pitch += dy;
+        m_Pitch = Math3D::Clamp(m_Pitch, -89.0f, 89.0f);
+        return true;
+
+    }
+
+    // Empty overrides for required pure virtuals
+    virtual bool onKeyUp(int k,InputManager&amp; m) override { 
+        if(k == SDL_SCANCODE_GRAVE &amp;&amp; (m.getMouseCaptureMode() == MouseLockMode::LOCKED || m.getMouseCaptureMode() == MouseLockMode::CAPTURED)){
+            m.setMouseCaptureMode(MouseLockMode::FREE);
+        }
+        return false;
+    }
+    virtual bool onKeyDown(int k,InputManager&amp; m) override { return false; }
+    virtual bool onMousePressed(int b,InputManager&amp; m) override { 
+        if(b == SDL_BUTTON_LEFT &amp;&amp; m.getMouseCaptureMode() != MouseLockMode::LOCKED){
+            m.setMouseCaptureMode(MouseLockMode::LOCKED); // lock the mouse if the player clicks the screen.
+        }
+        return false; 
+    }
+    virtual bool onMouseReleased(int b,InputManager&amp; m) override { return false; }
+    virtual bool onMouseScroll(float z,InputManager&amp; m) override { 
+        if(m.getMouseCaptureMode() == MouseLockMode::LOCKED) this-&gt;m_fastScale += z / 10.0f;
+        if(this-&gt;m_fastScale &lt; 0) this-&gt;m_fastScale = 0.1;
+        return false; 
+    }</code></pre>
+
+      <h2>Full Class Layout</h2>
+      <pre><code class="language-cpp">class FirstPersonController : public IEventHandler, public std::enable_shared_from_this&lt;FirstPersonController&gt; {
+private:
+    std::shared_ptr&lt;Camera&gt; m_Camera;
+    
+    // Internal orientation state
+    float m_Yaw   = -90.0f; 
+    float m_Pitch = 0.0f;
+
+    // Movement Settings
+    float m_MoveSpeed    = 10.0f;
+    float m_LookSensitivity = 0.1f;
+    float m_fastScale = 2.0f;
+
+
+public:
+    FirstPersonController(std::shared_ptr&lt;Camera&gt; cam) 
+        : m_Camera(cam) {}
+
+    /**
+     * Registers this controller with the InputManager.
+     * Must be called after the shared_ptr for the controller is created.
+     */
+    void init(std::shared_ptr&lt;InputManager&gt; inputManager) {
+        if (inputManager) {
+            inputManager-&gt;addEventHandler(shared_from_this());
+        }
+    }
+
+    /**
+     * Call this every frame in your main loop.
+     * @param dt Delta time (time elapsed since last frame)
+     * @param input Reference to your InputManager to check key states
+     */
+    void update(float dt, std::shared_ptr&lt;InputManager&gt; input) {
+        if (!m_Camera) return;
+
+        auto transform = m_Camera-&gt;transform();
+        float velocity = ((input-&gt;isKeyDown(SDL_SCANCODE_LSHIFT)) ? ((m_MoveSpeed * m_fastScale) * dt) : (m_MoveSpeed * dt));
+
+        // --- Keyboard Movement ---
+        // Forward/Backward
+        if (input-&gt;isKeyDown(SDL_SCANCODE_W)) transform.position -= transform.forward() * velocity;
+        if (input-&gt;isKeyDown(SDL_SCANCODE_S)) transform.position += transform.forward() * velocity;
+        
+        // Strafe Left/Right
+        if (input-&gt;isKeyDown(SDL_SCANCODE_A)) transform.position -= transform.right() * velocity;
+        if (input-&gt;isKeyDown(SDL_SCANCODE_D)) transform.position += transform.right() * velocity;
+        
+        // Vertical (Fly)
+        if (input-&gt;isKeyDown(SDL_SCANCODE_SPACE))  transform.position += transform.up() * velocity;
+        if (input-&gt;isKeyDown(SDL_SCANCODE_C)) transform.position -= transform.up() * velocity;
+
+        // --- Arrow Key Rotation ---
+        float rotationSpeed = 100.0f * dt;
+        if (input-&gt;isKeyDown(SDL_SCANCODE_LEFT))  m_Yaw += rotationSpeed;
+        if (input-&gt;isKeyDown(SDL_SCANCODE_RIGHT)) m_Yaw -= rotationSpeed;
+        if (input-&gt;isKeyDown(SDL_SCANCODE_UP))    m_Pitch += rotationSpeed;
+        if (input-&gt;isKeyDown(SDL_SCANCODE_DOWN))  m_Pitch -= rotationSpeed;
+
+        // Apply final state to the camera&#x27;s internal Transform
+        updateCameraRotation(transform);
+        
+        // Note: You may need to add a method to Camera to set its private transform
+        // or make it public. Assuming a setter exists:
+        // m_Camera-&gt;setTransform(transform); 
+        m_Camera-&gt;setTransform(transform);
+    }
+
+    // --- IEventHandler Implementation ---
+
+    virtual bool onMouseMoved(int x, int y,InputManager&amp; manager) override {
+
+        if(manager.getMouseCaptureMode() != MouseLockMode::LOCKED) return false;
+
+        /*
+        // Simple Delta Calculation (Last position should be tracked by InputManager or static here)
+        static int lastX = x, lastY = y;
+        float dx = (float)(x - lastX) * m_LookSensitivity;
+        float dy = (float)(lastY - y) * m_LookSensitivity; // Y is inverted in screen space
+        lastX = x; lastY = y;
+
+        m_Yaw   += dx;
+        m_Pitch += dy;
+
+        // Clamp Pitch to prevent &quot;gymbal lock&quot; flipping
+        m_Pitch = Math3D::Clamp(m_Pitch, -89.0f, 89.0f);
+        return true;
+        */
+
+        if (manager.getMouseCaptureMode() != MouseLockMode::LOCKED) return false;
+
+        // When locked, x/y are already deltas
+        float dx = (float)x * m_LookSensitivity;
+        float dy = (float)-y * m_LookSensitivity;
+
+        m_Yaw   -= dx;
+        m_Pitch += dy;
+        m_Pitch = Math3D::Clamp(m_Pitch, -89.0f, 89.0f);
+        return true;
+
+    }
+
+    // Empty overrides for required pure virtuals
+    virtual bool onKeyUp(int k,InputManager&amp; m) override { 
+        if(k == SDL_SCANCODE_GRAVE &amp;&amp; (m.getMouseCaptureMode() == MouseLockMode::LOCKED || m.getMouseCaptureMode() == MouseLockMode::CAPTURED)){
+            m.setMouseCaptureMode(MouseLockMode::FREE);
+        }
+        return false;
+    }
+    virtual bool onKeyDown(int k,InputManager&amp; m) override { return false; }
+    virtual bool onMousePressed(int b,InputManager&amp; m) override { 
+        if(b == SDL_BUTTON_LEFT &amp;&amp; m.getMouseCaptureMode() != MouseLockMode::LOCKED){
+            m.setMouseCaptureMode(MouseLockMode::LOCKED); // lock the mouse if the player clicks the screen.
+        }
+        return false; 
+    }
+    virtual bool onMouseReleased(int b,InputManager&amp; m) override { return false; }
+    virtual bool onMouseScroll(float z,InputManager&amp; m) override { 
+        if(m.getMouseCaptureMode() == MouseLockMode::LOCKED) this-&gt;m_fastScale += z / 10.0f;
+        if(this-&gt;m_fastScale &lt; 0) this-&gt;m_fastScale = 0.1;
+        return false; 
+    }
+
+private:
+    void updateCameraRotation(Math3D::Transform&amp; tx) {
+        // Construct a Quaternion from our Euler angles
+        // Note: Using YXZ or XYZ order depends on your Math.h convention
+        tx.rotation = Math3D::Quat::FromEuler(Math3D::Vec3(m_Pitch, m_Yaw, 0.0f));
+    }
+};</code></pre>
+    </main>
+
+    <aside class="toc" id="toc"></aside>
+  </div>
+
+  <footer class="footer">RenderingThing Docs - Local build</footer>
+  <script src="../app.js"></script>
+</body>
+</html>

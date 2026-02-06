@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RenderingThing Docs - FrameBuffer</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body data-page="ref-framebuffer">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">RT</div>
+      <div>RenderingThing Docs</div>
+      <span class="badge">Local</span>
+    </div>
+    <div class="search">
+      <input type="search" placeholder="Search docs (local)" />
+    </div>
+    <button class="nav-toggle" aria-label="Toggle navigation">Menu</button>
+  </header>
+
+  <div class="layout">
+    <nav class="sidenav">
+
+      <h3>Documentation</h3>
+      <ul>
+        <li><a href="../index.html" data-page-link="overview">Overview</a></li>
+        <li><a href="../getting-started.html" data-page-link="getting-started">Getting Started</a></li>
+        <li><a href="../samples.html" data-page-link="samples">Samples</a></li>
+        <li><a href="../architecture.html" data-page-link="architecture">Architecture</a></li>
+        <li><a href="../graphics.html" data-page-link="graphics">Graphics</a></li>
+        <li><a href="index.html" data-page-link="reference">Reference</a></li>
+      </ul>
+      <h3>Reference</h3>
+      <ul>
+<li><a href="asset.html" data-page-link="ref-asset">Asset</a></li>
+<li><a href="assetmanager.html" data-page-link="ref-assetmanager">AssetManager</a></li>
+<li><a href="bufferedimage.html" data-page-link="ref-bufferedimage">BufferedImage</a></li>
+<li><a href="camera.html" data-page-link="ref-camera">Camera</a></li>
+<li><a href="camerasettings.html" data-page-link="ref-camerasettings">CameraSettings</a></li>
+<li><a href="color.html" data-page-link="ref-color">Color</a></li>
+<li><a href="colormaterial.html" data-page-link="ref-colormaterial">ColorMaterial</a></li>
+<li><a href="cubemap.html" data-page-link="ref-cubemap">CubeMap</a></li>
+<li><a href="cubemapslot.html" data-page-link="ref-cubemapslot">CubeMapSlot</a></li>
+<li><a href="cubematerialdefinition.html" data-page-link="ref-cubematerialdefinition">CubeMaterialDefinition</a></li>
+<li><a href="depthguard.html" data-page-link="ref-depthguard">DepthGuard</a></li>
+<li><a href="display.html" data-page-link="ref-display">Display</a></li>
+<li><a href="displaymode.html" data-page-link="ref-displaymode">DisplayMode</a></li>
+<li><a href="file.html" data-page-link="ref-file">File</a></li>
+<li><a href="fileblob.html" data-page-link="ref-fileblob">FileBlob</a></li>
+<li><a href="filereader.html" data-page-link="ref-filereader">FileReader</a></li>
+<li><a href="filewriter.html" data-page-link="ref-filewriter">FileWriter</a></li>
+<li><a href="firstpersoncontroller.html" data-page-link="ref-firstpersoncontroller">FirstPersonController</a></li>
+<li><a href="flatcolormaterial.html" data-page-link="ref-flatcolormaterial">FlatColorMaterial</a></li>
+<li><a href="flatimagematerial.html" data-page-link="ref-flatimagematerial">FlatImageMaterial</a></li>
+<li><a href="font.html" data-page-link="ref-font">Font</a></li>
+<li><a href="fontcharacter.html" data-page-link="ref-fontcharacter">FontCharacter</a></li>
+<li><a href="framebuffer.html" data-page-link="ref-framebuffer">FrameBuffer</a></li>
+<li><a href="framebufferchain.html" data-page-link="ref-framebufferchain">FrameBufferChain</a></li>
+<li><a href="freetypefont.html" data-page-link="ref-freetypefont">FreeTypeFont</a></li>
+<li><a href="glversioninfo.html" data-page-link="ref-glversioninfo">GLVersionInfo</a></li>
+<li><a href="graphics2d.html" data-page-link="ref-graphics2d">Graphics2D</a></li>
+<li><a href="graphicscontext.html" data-page-link="ref-graphicscontext">GraphicsContext</a></li>
+<li><a href="grayscaleeffect.html" data-page-link="ref-grayscaleeffect">GrayscaleEffect</a></li>
+<li><a href="idrawable.html" data-page-link="ref-idrawable">IDrawable</a></li>
+<li><a href="ieventhandler.html" data-page-link="ref-ieventhandler">IEventHandler</a></li>
+<li><a href="image.html" data-page-link="ref-image">Image</a></li>
+<li><a href="imagematerial.html" data-page-link="ref-imagematerial">ImageMaterial</a></li>
+<li><a href="imaterialproperty.html" data-page-link="ref-imaterialproperty">IMaterialProperty</a></li>
+<li><a href="inputinformation.html" data-page-link="ref-inputinformation">InputInformation</a></li>
+<li><a href="inputmanager.html" data-page-link="ref-inputmanager">InputManager</a></li>
+<li><a href="light.html" data-page-link="ref-light">Light</a></li>
+<li><a href="lightmanager.html" data-page-link="ref-lightmanager">LightManager</a></li>
+<li><a href="lighttype.html" data-page-link="ref-lighttype">LightType</a></li>
+<li><a href="lightuniformuploader.html" data-page-link="ref-lightuniformuploader">LightUniformUploader</a></li>
+<li><a href="lineending.html" data-page-link="ref-lineending">LineEnding</a></li>
+<li><a href="litcolormaterial.html" data-page-link="ref-litcolormaterial">LitColorMaterial</a></li>
+<li><a href="litimagematerial.html" data-page-link="ref-litimagematerial">LitImageMaterial</a></li>
+<li><a href="logbot.html" data-page-link="ref-logbot">Logbot</a></li>
+<li><a href="logtype.html" data-page-link="ref-logtype">LogType</a></li>
+<li><a href="mat4.html" data-page-link="ref-mat4">Mat4</a></li>
+<li><a href="material.html" data-page-link="ref-material">Material</a></li>
+<li><a href="materialproperty.html" data-page-link="ref-materialproperty">MaterialProperty</a></li>
+<li><a href="mesh.html" data-page-link="ref-mesh">Mesh</a></li>
+<li><a href="model.html" data-page-link="ref-model">Model</a></li>
+<li><a href="modelpart.html" data-page-link="ref-modelpart">ModelPart</a></li>
+<li><a href="modelpartfactory.html" data-page-link="ref-modelpartfactory">ModelPartFactory</a></li>
+<li><a href="modelpartprefabs.html" data-page-link="ref-modelpartprefabs">ModelPartPrefabs</a></li>
+<li><a href="modelprefabs.html" data-page-link="ref-modelprefabs">ModelPrefabs</a></li>
+<li><a href="mouselockmode.html" data-page-link="ref-mouselockmode">MouseLockMode</a></li>
+<li><a href="nullable.html" data-page-link="ref-nullable">Nullable</a></li>
+<li><a href="objdata.html" data-page-link="ref-objdata">OBJData</a></li>
+<li><a href="objloader.html" data-page-link="ref-objloader">OBJLoader</a></li>
+<li><a href="pbrmaterial.html" data-page-link="ref-pbrmaterial">PBRMaterial</a></li>
+<li><a href="postprocessingeffect.html" data-page-link="ref-postprocessingeffect">PostProcessingEffect</a></li>
+<li><a href="quat.html" data-page-link="ref-quat">Quat</a></li>
+<li><a href="random.html" data-page-link="ref-random">Random</a></li>
+<li><a href="rect.html" data-page-link="ref-rect">Rect</a></li>
+<li><a href="renderwindow.html" data-page-link="ref-renderwindow">RenderWindow</a></li>
+<li><a href="screen.html" data-page-link="ref-screen">Screen</a></li>
+<li><a href="shaderbundle.html" data-page-link="ref-shaderbundle">ShaderBundle</a></li>
+<li><a href="shadercache.html" data-page-link="ref-shadercache">ShaderCache</a></li>
+<li><a href="shaderprogram.html" data-page-link="ref-shaderprogram">ShaderProgram</a></li>
+<li><a href="shadowlightdata.html" data-page-link="ref-shadowlightdata">ShadowLightData</a></li>
+<li><a href="shadowmap2d.html" data-page-link="ref-shadowmap2d">ShadowMap2D</a></li>
+<li><a href="shadowmapcube.html" data-page-link="ref-shadowmapcube">ShadowMapCube</a></li>
+<li><a href="shadowrenderer.html" data-page-link="ref-shadowrenderer">ShadowRenderer</a></li>
+<li><a href="shadowtype.html" data-page-link="ref-shadowtype">ShadowType</a></li>
+<li><a href="skybox.html" data-page-link="ref-skybox">SkyBox</a></li>
+<li><a href="skybox6face.html" data-page-link="ref-skybox6face">SkyBox6Face</a></li>
+<li><a href="skyboxloader.html" data-page-link="ref-skyboxloader">SkyBoxLoader</a></li>
+<li><a href="skyboxmaterial.html" data-page-link="ref-skyboxmaterial">SkyboxMaterial</a></li>
+<li><a href="stringutils.html" data-page-link="ref-stringutils">StringUtils</a></li>
+<li><a href="textcachekey.html" data-page-link="ref-textcachekey">TextCacheKey</a></li>
+<li><a href="texture.html" data-page-link="ref-texture">Texture</a></li>
+<li><a href="textureslot.html" data-page-link="ref-textureslot">TextureSlot</a></li>
+<li><a href="transform.html" data-page-link="ref-transform">Transform</a></li>
+<li><a href="tripplebuffer.html" data-page-link="ref-tripplebuffer">TrippleBuffer</a></li>
+<li><a href="uniform.html" data-page-link="ref-uniform">Uniform</a></li>
+<li><a href="valuecontainer.html" data-page-link="ref-valuecontainer">ValueContainer</a></li>
+<li><a href="vec2.html" data-page-link="ref-vec2">Vec2</a></li>
+<li><a href="vec3.html" data-page-link="ref-vec3">Vec3</a></li>
+<li><a href="vec4.html" data-page-link="ref-vec4">Vec4</a></li>
+<li><a href="vertex.html" data-page-link="ref-vertex">Vertex</a></li>
+<li><a href="vertexindex.html" data-page-link="ref-vertexindex">VertexIndex</a></li>
+      </ul>
+    </nav>
+
+    <main class="content">
+      <h1>FrameBuffer</h1>
+      <p class="muted">Declared in src/FrameBuffer.h.</p>
+      <p><strong>Header:</strong> <code>src/FrameBuffer.h</code></p>
+
+      <h2>Usage</h2>
+      <p>Typical usage pattern (adjust to your pipeline):</p>
+      <pre><code class="language-cpp">#include &quot;FrameBuffer.h&quot;
+
+auto instance = FrameBuffer::Create(/* args */);</code></pre>
+
+      
+      
+      <h2>Constructors / Destructors</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>public:
+        FrameBuffer(int width, int height) : width(width), height(height) {
+            glGenFramebuffers(1, &amp;fboID)</code></td><td>Constructs the object.</td></tr>
+<tr><td><code>}
+
+        ~FrameBuffer(){
+            glDeleteFramebuffers(1, &amp;fboID)</code></td><td>Constructs the object.</td></tr>
+        </tbody>
+      </table>
+
+      
+      <h2>Member Functions</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>depthTexture = std::make_shared&lt;Texture&gt;()</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>glGenTextures(1, &amp;tid)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>depthTexture-&gt;getID() = tid</code></td><td>Returns the requested value.</td></tr>
+<tr><td><code>if(depthTexture-&gt;getID() == 0) {
+                LogBot.Log(LOG_FATL, &quot;[FrameBuffer] CRITICAL: glGenTextures failed for Depth Texture!&quot;)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>}
+
+            glBindTexture(GL_TEXTURE_2D, depthTexture-&gt;getID())</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>bind()</code></td><td>Binds the resource for use.</td></tr>
+<tr><td><code>glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture-&gt;getID(), 0)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>glDrawBuffer(GL_NONE)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>glReadBuffer(GL_NONE)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>unbind()</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>}
+
+        void bind(){
+            glBindFramebuffer(GL_FRAMEBUFFER, fboID)</code></td><td>Binds the resource for use.</td></tr>
+<tr><td><code>glViewport(0,0,width, height)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>}
+
+        void unbind(){
+            glBindFramebuffer(GL_FRAMEBUFFER, 0)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>}
+
+        void resize(int width, int height){
+            this-&gt;width = width</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>if(depthTexture){
+                glBindTexture(GL_TEXTURE_2D, depthTexture-&gt;getID())</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>glBindTexture(GL_TEXTURE_2D, 0)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>}
+        }
+
+        void attachTexture(PTexture tex){
+
+            this-&gt;texturePtr = tex</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>bind()</code></td><td>Binds the resource for use.</td></tr>
+<tr><td><code>glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex-&gt;getID(), 0)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>glDrawBuffers(1, drawBuffers)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>glReadBuffer(GL_COLOR_ATTACHMENT0)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>if (status != GL_FRAMEBUFFER_COMPLETE) {
+                std::string error</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>switch (status) {
+                    case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:         error = &quot;Incomplete Attachment&quot;</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>}
+                LogBot.Log(LOG_ERRO, &quot;[FrameBuffer] FBO Error: %s (Code: %u)&quot;, error.c_str(), status)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>}
+
+            unbind()</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>}
+
+        bool validate(){
+            bind()</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>bool complete = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>unbind()</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>}
+
+        void clear(Color clearColor = Color::BLACK){
+            glClearColor(
+                clearColor.getRed(),
+                clearColor.getGreen(),
+                clearColor.getBlue(),
+                clearColor.getAlpha()
+            )</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>}
+
+        PTexture getTexture(){
+            return texturePtr</code></td><td>Returns the requested value.</td></tr>
+<tr><td><code>}
+
+        PTexture getDepthTexture(){
+            return depthTexture</code></td><td>Returns the requested value.</td></tr>
+        </tbody>
+      </table>
+
+      
+      <h2>Static Functions</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>}
+
+        static std::shared_ptr&lt;FrameBuffer&gt; Create(int width, int height){
+            auto fbuffer = std::make_shared&lt;FrameBuffer&gt;(width, height)</code></td><td>Creates a new instance or resource.</td></tr>
+        </tbody>
+      </table>
+
+      
+      <h2>Public Data</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>private:
+        FrameBufferObject fboID</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>int width, height</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>PTexture texturePtr</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>PTexture depthTexture</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>GLuint tid</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f }</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>this-&gt;height = height</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>GLenum drawBuffers[1] = {GL_COLOR_ATTACHMENT0}</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>break</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: error = &quot;Missing Attachment&quot;</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>break</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>case GL_FRAMEBUFFER_UNSUPPORTED:                   error = &quot;Unsupported Format&quot;</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>break</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>default:                                           error = &quot;Unknown Error&quot;</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>break</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>return complete</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>return fbuffer</code></td><td>Performs the operation described by the name.</td></tr>
+<tr><td><code>}</code></td><td>Performs the operation described by the name.</td></tr>
+        </tbody>
+      </table>
+
+
+      <h2>Public API</h2>
+      <pre><code class="language-cpp">struct FrameBuffer{
+    private:
+        FrameBufferObject fboID;
+        int width, height;
+
+        PTexture texturePtr;
+        PTexture depthTexture;
+    
+    public:
+        FrameBuffer(int width, int height) : width(width), height(height) {
+            glGenFramebuffers(1, &amp;fboID);
+            
+            // 1. Create the Depth Texture
+            // We do this manually here (or you could add a helper in Texture.h)
+            depthTexture = std::make_shared&lt;Texture&gt;();
+            // Note: We don&#x27;t set width/height on the Texture object here manually 
+            // unless your Texture class requires it.
+
+            GLuint tid;
+            glGenTextures(1, &amp;tid);
+            depthTexture-&gt;getID() = tid;
+
+            // DEBUG CHECK
+            if(depthTexture-&gt;getID() == 0) {
+                LogBot.Log(LOG_FATL, &quot;[FrameBuffer] CRITICAL: glGenTextures failed for Depth Texture!&quot;);
+            }
+
+            glBindTexture(GL_TEXTURE_2D, depthTexture-&gt;getID());
+
+            // GL_DEPTH_COMPONENT24 is standard for precision
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+            
+            // Essential Texture Parameters for Depth
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER); 
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+            
+            // Border color for depth (white = far away) prevents artifacts at screen edges
+            float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+            glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+            // 2. Attach Depth Texture to FBO
+            bind();
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture-&gt;getID(), 0);
+            
+            // Note: We are currently NOT complete because we have no Color buffer yet.
+            // Screen class attaches color later via attachTexture().
+            // If you want to use this for Shadow Mapping (Depth Only), you need to tell GL to draw no color:
+            // glDrawBuffer(GL_NONE); glReadBuffer(GL_NONE);
+
+            // Crucial: Tell OpenGL we aren&#x27;t drawing to color YET
+            glDrawBuffer(GL_NONE);
+            glReadBuffer(GL_NONE);
+            
+            unbind();
+        }
+
+        ~FrameBuffer(){
+            glDeleteFramebuffers(1, &amp;fboID);
+        }
+
+        void bind(){
+            glBindFramebuffer(GL_FRAMEBUFFER, fboID);
+            glViewport(0,0,width, height);
+        }
+
+        void unbind(){
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        }
+
+        void resize(int width, int height){
+            this-&gt;width = width;
+            this-&gt;height = height;
+
+            // Resize Depth Texture
+            if(depthTexture){
+                glBindTexture(GL_TEXTURE_2D, depthTexture-&gt;getID());
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+                glBindTexture(GL_TEXTURE_2D, 0);
+            }
+        }
+
+        void attachTexture(PTexture tex){
+
+            this-&gt;texturePtr = tex;
+
+            bind();
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex-&gt;getID(), 0);
+
+            GLenum drawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+            glDrawBuffers(1, drawBuffers);
+            glReadBuffer(GL_COLOR_ATTACHMENT0);
+
+            GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+            if (status != GL_FRAMEBUFFER_COMPLETE) {
+                std::string error;
+                switch (status) {
+                    case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:         error = &quot;Incomplete Attachment&quot;; break;
+                    case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: error = &quot;Missing Attachment&quot;; break;
+                    case GL_FRAMEBUFFER_UNSUPPORTED:                   error = &quot;Unsupported Format&quot;; break;
+                    default:                                           error = &quot;Unknown Error&quot;; break;
+                }
+                LogBot.Log(LOG_ERRO, &quot;[FrameBuffer] FBO Error: %s (Code: %u)&quot;, error.c_str(), status);
+            }
+
+            unbind();
+        }
+
+        bool validate(){
+            bind();
+            bool complete = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
+            unbind();
+            return complete;
+        }
+
+        void clear(Color clearColor = Color::BLACK){
+            glClearColor(
+                clearColor.getRed(),
+                clearColor.getGreen(),
+                clearColor.getBlue(),
+                clearColor.getAlpha()
+            );
+
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        }
+
+        static std::shared_ptr&lt;FrameBuffer&gt; Create(int width, int height){
+            auto fbuffer = std::make_shared&lt;FrameBuffer&gt;(width, height);
+            return fbuffer;
+        }
+
+        PTexture getTexture(){
+            return texturePtr;
+        }
+
+        PTexture getDepthTexture(){
+            return depthTexture;
+        }
+};</code></pre>
+
+      <h2>Full Class Layout</h2>
+      <pre><code class="language-cpp">struct FrameBuffer{
+    private:
+        FrameBufferObject fboID;
+        int width, height;
+
+        PTexture texturePtr;
+        PTexture depthTexture;
+    
+    public:
+        FrameBuffer(int width, int height) : width(width), height(height) {
+            glGenFramebuffers(1, &amp;fboID);
+            
+            // 1. Create the Depth Texture
+            // We do this manually here (or you could add a helper in Texture.h)
+            depthTexture = std::make_shared&lt;Texture&gt;();
+            // Note: We don&#x27;t set width/height on the Texture object here manually 
+            // unless your Texture class requires it.
+
+            GLuint tid;
+            glGenTextures(1, &amp;tid);
+            depthTexture-&gt;getID() = tid;
+
+            // DEBUG CHECK
+            if(depthTexture-&gt;getID() == 0) {
+                LogBot.Log(LOG_FATL, &quot;[FrameBuffer] CRITICAL: glGenTextures failed for Depth Texture!&quot;);
+            }
+
+            glBindTexture(GL_TEXTURE_2D, depthTexture-&gt;getID());
+
+            // GL_DEPTH_COMPONENT24 is standard for precision
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+            
+            // Essential Texture Parameters for Depth
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER); 
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+            
+            // Border color for depth (white = far away) prevents artifacts at screen edges
+            float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+            glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+            // 2. Attach Depth Texture to FBO
+            bind();
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture-&gt;getID(), 0);
+            
+            // Note: We are currently NOT complete because we have no Color buffer yet.
+            // Screen class attaches color later via attachTexture().
+            // If you want to use this for Shadow Mapping (Depth Only), you need to tell GL to draw no color:
+            // glDrawBuffer(GL_NONE); glReadBuffer(GL_NONE);
+
+            // Crucial: Tell OpenGL we aren&#x27;t drawing to color YET
+            glDrawBuffer(GL_NONE);
+            glReadBuffer(GL_NONE);
+            
+            unbind();
+        }
+
+        ~FrameBuffer(){
+            glDeleteFramebuffers(1, &amp;fboID);
+        }
+
+        void bind(){
+            glBindFramebuffer(GL_FRAMEBUFFER, fboID);
+            glViewport(0,0,width, height);
+        }
+
+        void unbind(){
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        }
+
+        void resize(int width, int height){
+            this-&gt;width = width;
+            this-&gt;height = height;
+
+            // Resize Depth Texture
+            if(depthTexture){
+                glBindTexture(GL_TEXTURE_2D, depthTexture-&gt;getID());
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+                glBindTexture(GL_TEXTURE_2D, 0);
+            }
+        }
+
+        void attachTexture(PTexture tex){
+
+            this-&gt;texturePtr = tex;
+
+            bind();
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex-&gt;getID(), 0);
+
+            GLenum drawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+            glDrawBuffers(1, drawBuffers);
+            glReadBuffer(GL_COLOR_ATTACHMENT0);
+
+            GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+            if (status != GL_FRAMEBUFFER_COMPLETE) {
+                std::string error;
+                switch (status) {
+                    case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:         error = &quot;Incomplete Attachment&quot;; break;
+                    case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: error = &quot;Missing Attachment&quot;; break;
+                    case GL_FRAMEBUFFER_UNSUPPORTED:                   error = &quot;Unsupported Format&quot;; break;
+                    default:                                           error = &quot;Unknown Error&quot;; break;
+                }
+                LogBot.Log(LOG_ERRO, &quot;[FrameBuffer] FBO Error: %s (Code: %u)&quot;, error.c_str(), status);
+            }
+
+            unbind();
+        }
+
+        bool validate(){
+            bind();
+            bool complete = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
+            unbind();
+            return complete;
+        }
+
+        void clear(Color clearColor = Color::BLACK){
+            glClearColor(
+                clearColor.getRed(),
+                clearColor.getGreen(),
+                clearColor.getBlue(),
+                clearColor.getAlpha()
+            );
+
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        }
+
+        static std::shared_ptr&lt;FrameBuffer&gt; Create(int width, int height){
+            auto fbuffer = std::make_shared&lt;FrameBuffer&gt;(width, height);
+            return fbuffer;
+        }
+
+        PTexture getTexture(){
+            return texturePtr;
+        }
+
+        PTexture getDepthTexture(){
+            return depthTexture;
+        }
+};</code></pre>
+    </main>
+
+    <aside class="toc" id="toc"></aside>
+  </div>
+
+  <footer class="footer">RenderingThing Docs - Local build</footer>
+  <script src="../app.js"></script>
+</body>
+</html>

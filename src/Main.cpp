@@ -71,8 +71,9 @@ int main(){
     try{
         DisplayMode mode = DisplayMode::New(1280,720);
         mode.resizable = true;
-        window = new RenderWindow("Modern OpenGL 4 + SDL3 Cube", mode);
+        window = new RenderWindow("Modern OpenGL 4 - Render Thingy", mode);
 
+        // Maybe add to Render Window, forward declare maybe?
         manager = std::make_shared<InputManager>(std::shared_ptr<RenderWindow>(window));
 
         window->addWindowEventHandler([&](SDL_Event& event){
@@ -134,6 +135,9 @@ void init(){
     ground = Model::Create();
     meshModel = Model::Create();
 
+    // 3D Screen Init 
+    mainScreen = std::make_unique<Screen>(window->getWindowWidth(), window->getWindowHeight());
+
     cam = Camera::CreatePerspective(
         45.0f, 
         Math3D::Vec2(window->getWindowWidth(), window->getWindowHeight()),
@@ -144,16 +148,19 @@ void init(){
     fpsC = std::make_shared<FirstPersonController>(cam);
     fpsC->init(manager);
 
-    mainScreen = std::make_unique<Screen>(window->getWindowWidth(), window->getWindowHeight());
     mainScreen->setCamera(cam);
     //mainScreen->addEffect(GrayscaleEffect::New()); //WORKS PERFECTLY.
 
+    // ================================================================
+
+    // 2D Screen Init
     uiScreen = std::make_unique<Screen>(window->getWindowWidth(), window->getWindowHeight());
     auto uiCam = Camera::CreateOrthogonal(Math3D::Rect(0,0,window->getWindowWidth(), window->getWindowHeight()), -100, 100);
     uiScreen->setCamera(uiCam,false);
     uiScreen->setClearColor(Color::CLEAR); // Render Through Screen
-
     g = std::make_shared<Graphics2D>(uiScreen);
+
+    // ================================================================
 
     PTexture textureImageTop = Texture::Load(AssetManager::Instance.getOrLoad("@assets/images/grass_top_col.png"));
     PTexture textureImageSides = Texture::Load(AssetManager::Instance.getOrLoad("@assets/images/grass_side.png"));
@@ -164,11 +171,7 @@ void init(){
     PMaterial SideMaterial = MaterialDefaults::FlatImageMaterial::Create(textureImageSides);
     PMaterial BottomMaterial = MaterialDefaults::FlatImageMaterial::Create(textureImageBottom);
     
-    p = textureImageSides;
-
     skybox = SkyBoxLoader::CreateSkyBox("@assets/images/skybox/default", "skybox_default");
-    
-    //skybox->setBackfaceCulling(false); // So we actually see it; Didnt Work....
 
     ground->addPart(ModelPartPrefabs::MakePlane(200,200,TopMaterial));
     ground->transform().setPosition(Math3D::Vec3(0,-5,0));
@@ -241,17 +244,9 @@ void init(){
     LightManager::GlobalLightManager.addLight(FillPoint);
     LightManager::GlobalLightManager.addLight(RimPoint);
 
-    if(lucille){
-        lucille->transform().setPosition(Math3D::Vec3(0, 0, -5.0f));
-    }
-
-    if(cubeModel){
-        cubeModel->transform().setPosition(Math3D::Vec3(-10.0f,0,-10.0f));
-    }
-
-    if(orb){
-        orb->transform().setPosition(Math3D::Vec3(-10.0f,0,30.0f));
-    }
+    if(lucille) lucille->transform().setPosition(Math3D::Vec3(0, 0, -5.0f));
+    if(cubeModel) cubeModel->transform().setPosition(Math3D::Vec3(-10.0f,0,-10.0f));
+    if(orb) orb->transform().setPosition(Math3D::Vec3(-10.0f,0,30.0f)); 
 }
 
 void run(){
@@ -293,14 +288,8 @@ void run(){
         orb->draw(cam);
     }
 
-    if(ground){
-        ground->draw(cam);
-    }
-
-    if(meshModel){
-        //meshModel->transform().rotateAxisAngle(Math3D::Vec3(1,1,1), 50 * deltaTime);
-        meshModel->draw(cam);
-    }
+    if(ground) ground->draw(cam);
+    if(meshModel){meshModel->draw(cam);}
 
     mainScreen->unbind();
 
@@ -320,8 +309,6 @@ void run(){
         currentFPS
     );
 
-    //font->drawText(info,Math3D::Vec2(30,30),uiScreen->getCamera(),Color::WHITE, false);
-
     Color c0 = Color::fromRGBA255(10,10,32,128);
     Graphics2D::SetBackgroundColor(*g, c0);
     Graphics2D::FillRect(*g, 0, 0, 600, 140);
@@ -330,10 +317,6 @@ void run(){
     Graphics2D::SetForegroundColor(*g, c1);
     Graphics2D::DrawString(*g,info,30,30);
 
-    //Graphics2D::SetForegroundColor(*g, Color::RED);
-    //Graphics2D::DrawLine(*g,30,200,100,200);
-    //Graphics2D::FillRect(*g,30,400,100,100);
-    //Graphics2D::DrawImage(*g,p,150,400,100,100);
     if(showDebugWidgets){
         Color c2 = Color::fromRGBA255(10,10,32,128);
         Graphics2D::SetBackgroundColor(*g, c2);
