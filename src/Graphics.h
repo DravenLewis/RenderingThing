@@ -110,11 +110,13 @@ namespace Graphics{
 
             out vec2 TexCoords;
 
+            uniform mat4 u_model;
+            uniform mat4 u_view;
+            uniform mat4 u_projection;
+
             void main() {
                 TexCoords = aTexCoords;
-                // We pass position directly. Since we use MakePlane rotated 90 deg, 
-                // it maps -1 to 1 perfectly to NDC.
-                gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0); 
+                gl_Position = u_projection * u_view * u_model * vec4(aPos, 1.0);
             }
         )";
 

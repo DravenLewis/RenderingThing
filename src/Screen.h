@@ -25,6 +25,9 @@ class Screen{
         std::vector<Graphics::PostProcessing::PPostProcessingEffect> effects;
 
         PCamera camera;
+        PCamera uiCamera;
+        int uiWidth = 0;
+        int uiHeight = 0;
         bool bound = false;
 
         void initScreenGeom();
@@ -38,6 +41,7 @@ class Screen{
 
         void processRenderPipeline();
         void drawToWindow(RenderWindow* window, bool clearWindow = true);
+        void drawToView(RenderWindow* window, bool clearWindow = true, float x = -1, float y = -1, float width = -1, float height = -1);
 
         void resize(int w, int h);
         int getWidth();

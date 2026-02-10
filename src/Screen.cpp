@@ -119,10 +119,14 @@ void Screen::processRenderPipeline(){
             Uniform<PTexture> u_tex(readSource->getTexture());
             screenShader->setUniform("screenTexture", u_tex);
 
+            static const Math3D::Mat4 IDENTITY;
+            screenShader->setUniform("u_model", Uniform<Math3D::Mat4>(IDENTITY));
+            screenShader->setUniform("u_view", Uniform<Math3D::Mat4>(IDENTITY));
+            screenShader->setUniform("u_projection", Uniform<Math3D::Mat4>(IDENTITY));
+
             glDisable(GL_BLEND); // Disable Blending.
 
             // Draw the Quad (The "Brush Stroke")
-            static const Math3D::Mat4 IDENTITY;
             screenQuad->draw(IDENTITY, IDENTITY, IDENTITY);
         }
 
@@ -162,11 +166,80 @@ void Screen::drawToWindow(RenderWindow* window, bool clearWindow){
             Uniform<PTexture> texUniform(buffer->getDisplayBuffer()->getTexture());
             screenShader->setUniform("screenTexture", texUniform);
 
+            static const Math3D::Mat4 IDENTITY;
+            screenShader->setUniform("u_model", Uniform<Math3D::Mat4>(IDENTITY));
+            screenShader->setUniform("u_view", Uniform<Math3D::Mat4>(IDENTITY));
+            screenShader->setUniform("u_projection", Uniform<Math3D::Mat4>(IDENTITY));
+
             screenQuad->draw(Math3D::Mat4(),Math3D::Mat4(),Math3D::Mat4());
         }
 
         //glEnable(GL_DEPTH_TEST);
     }
+}
+
+void Screen::drawToView(RenderWindow* window, bool clearWindow, float x, float y, float width, float height){
+    if(!window) return; // Window is nullptr
+
+    float xOffset = (x >= 0) ? x : 0;
+    float yOffset = (y >= 0) ? y : 0;
+    float w = (width > 0) ? width : window->getWindowWidth();
+    float h = (height > 0) ? height : window->getWindowHeight();
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0,0, window->getWindowWidth(),window->getWindowHeight());
+
+    if(clearWindow){
+        clear(this->getClearColor());
+    }
+
+    glDisable(GL_DEPTH_TEST); 
+    glDisable(GL_CULL_FACE);
+
+    if(clearWindow){
+        glDisable(GL_BLEND);
+    }else{
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+
+        if(screenShader && screenQuad){
+            screenShader->bind();
+
+            Uniform<PTexture> texUniform(buffer->getDisplayBuffer()->getTexture());
+            screenShader->setUniform("screenTexture", texUniform);
+
+        if(!uiCamera || uiWidth != window->getWindowWidth() || uiHeight != window->getWindowHeight()){
+            uiCamera = Camera::CreateOrthogonal(
+                Math3D::Rect(0, 0, window->getWindowWidth(), window->getWindowHeight()),
+                -1.0f,
+                1.0f
+            );
+            uiWidth = window->getWindowWidth();
+            uiHeight = window->getWindowHeight();
+        }
+
+        Math3D::Transform transform;
+
+        auto transPos = transform.position;
+        transPos.x = xOffset + (w * 0.5f);
+        transPos.y = yOffset + (h * 0.5f);
+        transform.setPosition(transPos);
+        
+        auto transScl = transform.scale;
+        transScl.x = w * 0.5f;
+        transScl.y = -h * 0.5f; // Flip Y to match screen-space orientation
+        transScl.z = 1.0f;
+        transform.setScale(transScl);
+
+        screenShader->setUniform("u_model", Uniform<Math3D::Mat4>(transform.toMat4()));
+        screenShader->setUniform("u_view", Uniform<Math3D::Mat4>(uiCamera->getViewMatrix()));
+        screenShader->setUniform("u_projection", Uniform<Math3D::Mat4>(uiCamera->getProjectionMatrix()));
+
+        screenQuad->draw(transform.toMat4(), uiCamera->getViewMatrix(), uiCamera->getProjectionMatrix());
+    }
+
 }
 
 void Screen::clear(Color c){

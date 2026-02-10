@@ -334,5 +334,6 @@ void run(){
 
     mainScreen->drawToWindow(window); 
     uiScreen->drawToWindow(window, false);
+    mainScreen->drawToView(window,false, 30, window->getWindowHeight() - 300, 600 ,300);
 }
 
