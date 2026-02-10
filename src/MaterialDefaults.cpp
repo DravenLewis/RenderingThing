@@ -6,6 +6,17 @@
 
 using namespace MaterialDefaults;
 
+namespace {
+    const std::vector<Light>& GetActiveLights(){
+        auto env = Screen::GetCurrentEnvironment();
+        if(env){
+            return env->getLightsForUpload();
+        }
+        static const std::vector<Light> EMPTY;
+        return EMPTY;
+    }
+}
+
 #pragma region ColorMaterial
 ColorMaterial::ColorMaterial(std::shared_ptr<ShaderProgram> program) : Material(program) {
     Color.onChange([this](Math3D::Vec4 oldValue,Math3D::Vec4 newValue) -> bool{
@@ -117,7 +128,7 @@ void LitColorMaterial::bind(){
 
     Material::bind();
     // Upload lights from global light manager
-    LightUniformUploader::UploadLights(this->getShader(), LightManager::GlobalLightManager.getAllLights());
+    LightUniformUploader::UploadLights(this->getShader(), GetActiveLights());
     ShadowRenderer::BindShadowSamplers(this->getShader());
 }
 
@@ -175,7 +186,7 @@ void LitImageMaterial::bind(){
 
     Material::bind();
     // Upload lights from global light manager
-    LightUniformUploader::UploadLights(this->getShader(), LightManager::GlobalLightManager.getAllLights());
+    LightUniformUploader::UploadLights(this->getShader(), GetActiveLights());
     ShadowRenderer::BindShadowSamplers(this->getShader());
 }
 
@@ -234,7 +245,7 @@ void FlatColorMaterial::bind(){
 
     Material::bind();
     // Important: Use global lights
-    LightUniformUploader::UploadLights(this->getShader(), LightManager::GlobalLightManager.getAllLights());
+    LightUniformUploader::UploadLights(this->getShader(), GetActiveLights());
     ShadowRenderer::BindShadowSamplers(this->getShader());
 }
 
@@ -294,7 +305,7 @@ void FlatImageMaterial::bind(){
     }
 
     Material::bind();
-    LightUniformUploader::UploadLights(this->getShader(), LightManager::GlobalLightManager.getAllLights());
+    LightUniformUploader::UploadLights(this->getShader(), GetActiveLights());
     ShadowRenderer::BindShadowSamplers(this->getShader());
 }
 

@@ -27,6 +27,8 @@
 #include "debug_helpers/FrameTimeGraph.h"
 #include "ShadowRenderer.h"
 
+#include "View.h"
+
 #include "PBRMaterial.h"
 #include "CubeMap.h"
 #include "SkyboxMaterial.h"
@@ -53,6 +55,7 @@ PModel ground;
 
 PScreen uiScreen;
 PScreen mainScreen;
+PView view;
 
 PTexture p;
 
@@ -96,8 +99,7 @@ int main(){
             } 
 
             if (event.type == SDL_EVENT_WINDOW_RESIZED){
-                if(mainScreen) mainScreen->resize(window->getWindowWidth(), window->getWindowHeight());
-                if(uiScreen) uiScreen->resize(window->getWindowWidth(), window->getWindowHeight());
+                if(view) view->resize(window->getWindowWidth(), window->getWindowHeight());
             }
         });
 
@@ -136,7 +138,8 @@ void init(){
     meshModel = Model::Create();
 
     // 3D Screen Init 
-    mainScreen = std::make_unique<Screen>(window->getWindowWidth(), window->getWindowHeight());
+    view = std::make_shared<View>(window->getWindowWidth(), window->getWindowHeight());
+    mainScreen = view->getMainScreen();
 
     cam = Camera::CreatePerspective(
         45.0f, 
@@ -154,7 +157,7 @@ void init(){
     // ================================================================
 
     // 2D Screen Init
-    uiScreen = std::make_unique<Screen>(window->getWindowWidth(), window->getWindowHeight());
+    uiScreen = view->getUIScreen();
     auto uiCam = Camera::CreateOrthogonal(Math3D::Rect(0,0,window->getWindowWidth(), window->getWindowHeight()), -100, 100);
     uiScreen->setCamera(uiCam,false);
     uiScreen->setClearColor(Color::CLEAR); // Render Through Screen
@@ -231,18 +234,23 @@ void init(){
     orb = OBJLoader::LoadFromAsset(AssetManager::Instance.getOrLoad("@assets/models/theorb/orb.obj"), MaterialDefaults::FlatImageMaterial::Create(textureUVDefault));
 
 
-    LightManager::GlobalLightManager.clearLights();
+    if(mainScreen && mainScreen->getEnvironment()){
+        auto env = mainScreen->getEnvironment();
+        env->setLightingEnabled(true);
+        env->setSkyBox(skybox);
+        env->getLightManager().clearLights();
 
-    // Key warm directional + a few points to make metals pop
-    auto SunLight = Light::CreateDirectionalLight(Math3D::Vec3(-0.3f, -1.0f, -0.2f), Color::fromRGBA255(255, 244, 214, 255), 1.2f);
-    auto KeyPoint = Light::CreatePointLight(Math3D::Vec3(4.5f, 6.0f, 2.0f), Color::fromRGBA255(255, 230, 180, 255), 6.5f, 18.0f, 2.0f);
-    auto FillPoint = Light::CreatePointLight(Math3D::Vec3(-6.0f, 3.0f, 6.0f), Color::fromRGBA255(120, 180, 255, 255), 3.0f, 20.0f, 2.0f);
-    auto RimPoint = Light::CreatePointLight(Math3D::Vec3(0.0f, 7.0f, -8.0f), Color::fromRGBA255(255, 255, 255, 255), 4.0f, 20.0f, 2.0f);
+        // Key warm directional + a few points to make metals pop
+        auto SunLight = Light::CreateDirectionalLight(Math3D::Vec3(-0.3f, -1.0f, -0.2f), Color::fromRGBA255(255, 244, 214, 255), 1.2f);
+        auto KeyPoint = Light::CreatePointLight(Math3D::Vec3(4.5f, 6.0f, 2.0f), Color::fromRGBA255(255, 230, 180, 255), 6.5f, 18.0f, 2.0f);
+        auto FillPoint = Light::CreatePointLight(Math3D::Vec3(-6.0f, 3.0f, 6.0f), Color::fromRGBA255(120, 180, 255, 255), 3.0f, 20.0f, 2.0f);
+        auto RimPoint = Light::CreatePointLight(Math3D::Vec3(0.0f, 7.0f, -8.0f), Color::fromRGBA255(255, 255, 255, 255), 4.0f, 20.0f, 2.0f);
 
-    LightManager::GlobalLightManager.addLight(SunLight);
-    LightManager::GlobalLightManager.addLight(KeyPoint);
-    LightManager::GlobalLightManager.addLight(FillPoint);
-    LightManager::GlobalLightManager.addLight(RimPoint);
+        env->getLightManager().addLight(SunLight);
+        env->getLightManager().addLight(KeyPoint);
+        env->getLightManager().addLight(FillPoint);
+        env->getLightManager().addLight(RimPoint);
+    }
 
     if(lucille) lucille->transform().setPosition(Math3D::Vec3(0, 0, -5.0f));
     if(cubeModel) cubeModel->transform().setPosition(Math3D::Vec3(-10.0f,0,-10.0f));
@@ -267,8 +275,11 @@ void run(){
 
     mainScreen->bind();
 
-    if(skybox && cam){
-        skybox->draw(cam);
+    if(mainScreen && cam){
+        auto env = mainScreen->getEnvironment();
+        if(env && env->getSkyBox()){
+            env->getSkyBox()->draw(cam);
+        }
     }
 
     if(lucille && cam){
@@ -332,8 +343,7 @@ void run(){
 
     g->end();
 
-    mainScreen->drawToWindow(window); 
-    uiScreen->drawToWindow(window, false);
-    mainScreen->drawToView(window,false, 30, window->getWindowHeight() - 300, 600 ,300);
+    view->drawToWindow(window); 
+    //mainScreen->drawToView(window,false, 30, window->getWindowHeight() - 300, 600 ,300);
 }
 

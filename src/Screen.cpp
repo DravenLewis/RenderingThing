@@ -3,9 +3,11 @@
 #include "ShadowRenderer.h"
 
 PCamera Screen::CurrentCamera = nullptr;
+PEnvironment Screen::CurrentEnvironment = nullptr;
 
 Screen::Screen(int width, int height){
     this->buffer = std::make_unique<TrippleBuffer>(width, height);
+    this->environment = std::make_shared<Environment>();
 
     initScreenShader();
     initScreenGeom();
@@ -282,6 +284,10 @@ void Screen::bind(bool clear){
 
     if(isBound()) return; // already bound this state is already set.
 
+    if(this->environment){
+        this->makeEnvironmentCurrent();
+    }
+
     auto back = buffer->getDrawBuffer();
     back->bind();
 
@@ -325,6 +331,13 @@ void Screen::setCamera(PCamera cam, bool makeCurrent) {
     }
 }
 
+void Screen::setEnvironment(PEnvironment env, bool makeCurrent) {
+    this->environment = env;
+    if(makeCurrent){
+        this->makeEnvironmentCurrent();
+    }
+}
+
 void Screen::MakeCameraCurrent(PCamera camera){
     Screen::CurrentCamera = camera;
 }
@@ -336,5 +349,19 @@ PCamera Screen::GetCurrentCamera(){
 void Screen::makeCameraCurrent(){
     if(this->camera){
         Screen::MakeCameraCurrent(this->camera);
+    }
+}
+
+void Screen::MakeEnvironmentCurrent(PEnvironment env){
+    Screen::CurrentEnvironment = env;
+}
+
+PEnvironment Screen::GetCurrentEnvironment(){
+    return Screen::CurrentEnvironment;
+}
+
+void Screen::makeEnvironmentCurrent(){
+    if(this->environment){
+        Screen::MakeEnvironmentCurrent(this->environment);
     }
 }

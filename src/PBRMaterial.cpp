@@ -13,6 +13,15 @@ namespace {
     constexpr int EMISSIVE_SLOT = 3;
     constexpr int OCCLUSION_SLOT = 4;
     constexpr int ENV_SLOT = 5;
+
+    const std::vector<Light>& GetActiveLights(){
+        auto env = Screen::GetCurrentEnvironment();
+        if(env){
+            return env->getLightsForUpload();
+        }
+        static const std::vector<Light> EMPTY;
+        return EMPTY;
+    }
 }
 
 PBRMaterial::PBRMaterial(std::shared_ptr<ShaderProgram> program) : Material(program) {
@@ -174,7 +183,7 @@ void PBRMaterial::bind(){
     }
 
     Material::bind();
-    LightUniformUploader::UploadLights(this->getShader(), LightManager::GlobalLightManager.getAllLights());
+    LightUniformUploader::UploadLights(this->getShader(), GetActiveLights());
     ShadowRenderer::BindShadowSamplers(this->getShader());
 }
 

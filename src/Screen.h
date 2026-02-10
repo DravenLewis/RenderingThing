@@ -13,6 +13,7 @@
 #include "RenderWindow.h"
 #include "Graphics.h"
 #include "Color.h"
+#include "Environment.h"
 
 
 class Screen{
@@ -25,6 +26,7 @@ class Screen{
         std::vector<Graphics::PostProcessing::PPostProcessingEffect> effects;
 
         PCamera camera;
+        PEnvironment environment;
         PCamera uiCamera;
         int uiWidth = 0;
         int uiHeight = 0;
@@ -34,6 +36,7 @@ class Screen{
         void initScreenShader();
 
         static PCamera CurrentCamera;
+        static PEnvironment CurrentEnvironment;
         Color clearColor = Color::BLACK;
     public:
         Screen(int width, int height);
@@ -60,8 +63,14 @@ class Screen{
         void setCamera(PCamera cam, bool makeCurrent = true);
         void makeCameraCurrent();
 
+        PEnvironment getEnvironment() const { return environment; }
+        void setEnvironment(PEnvironment env, bool makeCurrent = true);
+        void makeEnvironmentCurrent();
+
         static void MakeCameraCurrent(PCamera camera);
         static PCamera GetCurrentCamera();
+        static void MakeEnvironmentCurrent(PEnvironment env);
+        static PEnvironment GetCurrentEnvironment();
 
         void setClearColor(Color color) { this->clearColor = color;} 
         Color& getClearColor() { return this->clearColor; }

@@ -59,6 +59,15 @@ namespace {
     int getShadowMapSizeCube() {
         return 1024;
     }
+
+    const std::vector<Light>& getActiveLights(){
+        auto env = Screen::GetCurrentEnvironment();
+        if(env){
+            return env->getLightsForUpload();
+        }
+        static const std::vector<Light> EMPTY;
+        return EMPTY;
+    }
 }
 
 void ShadowRenderer::ensureShadowPrograms() {
@@ -276,7 +285,11 @@ void ShadowRenderer::BeginFrame(PCamera camera) {
     g_active2D = 0;
     g_activeCube = 0;
 
-    const auto& lights = LightManager::GlobalLightManager.getAllLights();
+    const auto& lights = getActiveLights();
+    if(lights.empty()){
+        g_enabled = false;
+        return;
+    }
     for(size_t i = 0; i < lights.size() && i < MAX_LIGHTS; ++i){
         const Light& light = lights[i];
         ShadowLightData data;
