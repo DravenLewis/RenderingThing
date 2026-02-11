@@ -1,6 +1,7 @@
 
 #include "Screen.h"
 #include "ShadowRenderer.h"
+#include "View.h"
 
 PCamera Screen::CurrentCamera = nullptr;
 PEnvironment Screen::CurrentEnvironment = nullptr;
@@ -180,13 +181,17 @@ void Screen::drawToWindow(RenderWindow* window, bool clearWindow){
     }
 }
 
-void Screen::drawToView(RenderWindow* window, bool clearWindow, float x, float y, float width, float height){
+void Screen::drawToView(PView view, bool clearWindow, float x, float y, float width, float height){
+    if(!view) return;
+    auto window = view->getWindow();
     if(!window) return; // Window is nullptr
 
-    float xOffset = (x >= 0) ? x : 0;
-    float yOffset = (y >= 0) ? y : 0;
-    float w = (width > 0) ? width : window->getWindowWidth();
-    float h = (height > 0) ? height : window->getWindowHeight();
+    bool useWindow = (x == -1.0f && y == -1.0f && width == -1.0f && height == -1.0f);
+
+    float xOffset = useWindow ? 0.0f : (x >= 0.0f ? x : 0.0f);
+    float yOffset = useWindow ? 0.0f : (y >= 0.0f ? y : 0.0f);
+    float w = useWindow ? window->getWindowWidth() : ((width > 0.0f) ? width : window->getWindowWidth());
+    float h = useWindow ? window->getWindowHeight() : ((height > 0.0f) ? height : window->getWindowHeight());
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0,0, window->getWindowWidth(),window->getWindowHeight());
@@ -206,8 +211,8 @@ void Screen::drawToView(RenderWindow* window, bool clearWindow, float x, float y
     }
 
 
-        if(screenShader && screenQuad){
-            screenShader->bind();
+    if(screenShader && screenQuad){
+        screenShader->bind();
 
             Uniform<PTexture> texUniform(buffer->getDisplayBuffer()->getTexture());
             screenShader->setUniform("screenTexture", texUniform);

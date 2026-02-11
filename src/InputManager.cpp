@@ -1,39 +1,41 @@
 #include "InputManager.h"
 
-InputManager::InputManager(std::shared_ptr<RenderWindow> window){
+InputManager::InputManager(std::shared_ptr<RenderWindow> window, bool attachHandlers){
     if(!window) return;
 
     this->windowPtr = window;
-    
-    this->windowPtr->addWindowEventHandler([&](SDL_Event& event){
-        if (event.type == SDL_EVENT_KEY_UP){
-            this->onKeyUp(event.key.scancode);
-        } 
 
-        if (event.type == SDL_EVENT_KEY_DOWN){
-            this->onKeyDown(event.key.scancode);
-        }
+    if(attachHandlers){
+        this->windowPtr->addWindowEventHandler([&](SDL_Event& event){
+            if (event.type == SDL_EVENT_KEY_UP){
+                this->onKeyUp(event.key.scancode);
+            } 
 
-        if (event.type == SDL_EVENT_MOUSE_BUTTON_UP){
-            this->onMouseReleased(event.button.button);
-        }
-
-        if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN){
-            this->onMousePressed(event.button.button);
-        }
-
-        if (event.type == SDL_EVENT_MOUSE_MOTION){
-            if(this->mouseCaptureMode == MouseLockMode::LOCKED){
-                this->onMouseMoved(event.motion.xrel,event.motion.yrel);
-            }else{
-                this->onMouseMoved(event.motion.x,event.motion.y);
+            if (event.type == SDL_EVENT_KEY_DOWN){
+                this->onKeyDown(event.key.scancode);
             }
-        }
 
-        if (event.type == SDL_EVENT_MOUSE_WHEEL){
-            this->onMouseScroll((event.wheel.y));
-        }
-    });
+            if (event.type == SDL_EVENT_MOUSE_BUTTON_UP){
+                this->onMouseReleased(event.button.button);
+            }
+
+            if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN){
+                this->onMousePressed(event.button.button);
+            }
+
+            if (event.type == SDL_EVENT_MOUSE_MOTION){
+                if(this->mouseCaptureMode == MouseLockMode::LOCKED){
+                    this->onMouseMoved(event.motion.xrel,event.motion.yrel);
+                }else{
+                    this->onMouseMoved(event.motion.x,event.motion.y);
+                }
+            }
+
+            if (event.type == SDL_EVENT_MOUSE_WHEEL){
+                this->onMouseScroll((event.wheel.y));
+            }
+        });
+    }
 
     this->inputInfo.keyMap.resize(InputInformation::KEYMAP_SIZE);
 }

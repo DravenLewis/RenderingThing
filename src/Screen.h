@@ -15,6 +15,8 @@
 #include "Color.h"
 #include "Environment.h"
 
+class View;
+typedef std::shared_ptr<View> PView;
 
 class Screen{
     private:
@@ -44,7 +46,7 @@ class Screen{
 
         void processRenderPipeline();
         void drawToWindow(RenderWindow* window, bool clearWindow = true);
-        void drawToView(RenderWindow* window, bool clearWindow = true, float x = -1, float y = -1, float width = -1, float height = -1);
+        void drawToView(PView view, bool clearWindow = true, float x = -1, float y = -1, float width = -1, float height = -1);
 
         void resize(int w, int h);
         int getWidth();

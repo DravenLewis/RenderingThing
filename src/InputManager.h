@@ -45,7 +45,7 @@ class InputManager{
         MouseLockMode mouseCaptureMode = MouseLockMode::FREE;
     public:
         InputManager() : windowPtr(nullptr) {};
-        InputManager(std::shared_ptr<RenderWindow> window);
+        InputManager(std::shared_ptr<RenderWindow> window, bool attachHandlers = true);
         ~InputManager();
 
 

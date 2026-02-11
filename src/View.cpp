@@ -1,12 +1,32 @@
 #include "View.h"
 
-View::View(int width, int height){
-    this->width = width;
-    this->height = height;
+View::View(){
+    this->window = nullptr;
+    this->width = 0;
+    this->height = 0;
+}
 
-    screens.reserve(2);
-    screens.push_back(std::make_shared<Screen>(width, height)); // 3D
-    screens.push_back(std::make_shared<Screen>(width, height)); // UI
+View::View(RenderWindow* window){
+    this->window = nullptr;
+    this->width = 0;
+    this->height = 0;
+    attachWindow(window);
+}
+
+void View::attachWindow(RenderWindow* window){
+    if(!window) return;
+
+    this->window = window;
+    this->width = window->getWindowWidth();
+    this->height = window->getWindowHeight();
+
+    if(screens.empty()){
+        screens.reserve(2);
+        screens.push_back(std::make_shared<Screen>(this->width, this->height)); // 3D
+        screens.push_back(std::make_shared<Screen>(this->width, this->height)); // UI
+    }else{
+        resize(this->width, this->height);
+    }
 }
 
 void View::resize(int w, int h){
@@ -39,24 +59,20 @@ void View::addScreen(PScreen screen){
     screens.push_back(screen);
 }
 
-void View::drawToWindow(RenderWindow* window, bool clearWindow){
+void View::drawToWindow(bool clearWindow, float x, float y, float w, float h){
     if(!window) return;
+
+    bool useWindow = (x == -1.0f && y == -1.0f && w == -1.0f && h == -1.0f);
+    auto self = shared_from_this();
 
     for(size_t i = 0; i < screens.size(); ++i){
         auto& screen = screens[i];
         if(!screen) continue;
         bool clear = (i == 0) ? clearWindow : false;
-        screen->drawToWindow(window, clear);
-    }
-}
-
-void View::drawToView(RenderWindow* window, float x, float y, float w, float h, bool clearWindow){
-    if(!window) return;
-
-    for(size_t i = 0; i < screens.size(); ++i){
-        auto& screen = screens[i];
-        if(!screen) continue;
-        bool clear = (i == 0) ? clearWindow : false;
-        screen->drawToView(window, clear, x, y, w, h);
+        if(useWindow){
+            screen->drawToWindow(window, clear);
+        }else{
+            screen->drawToView(self, clear, x, y, w, h);
+        }
     }
 }
