@@ -51,6 +51,7 @@ namespace {
     GLuint g_debugFbo = 0;
     GLuint g_debugColorTex = 0;
     int g_debugSize = 0;
+    int g_debugShadowsMode = 0; // 0=off,1=visibility,2=cascade index,3=proj bounds
 
     int getShadowMapSize2D(const Light& light) {
         return (light.type == LightType::DIRECTIONAL) ? 4096 : 2048;
@@ -271,12 +272,12 @@ void ShadowRenderer::computePointMatrices(const Light& light, std::vector<Math3D
 
 void ShadowRenderer::BeginFrame(PCamera camera) {
     g_enabled = (camera != nullptr && !camera->getSettings().isOrtho);
-    g_lightData.clear();
-    g_lightData.resize(MAX_LIGHTS);
-
     if(!g_enabled){
         return;
     }
+
+    g_lightData.clear();
+    g_lightData.resize(MAX_LIGHTS);
 
     ensureShadowPrograms();
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &g_savedFbo);
@@ -409,6 +410,11 @@ void ShadowRenderer::RenderShadows(const std::shared_ptr<Mesh>& mesh, const Math
         return;
     }
 
+    auto currentCam = Screen::GetCurrentCamera();
+    if(currentCam && currentCam->getSettings().isOrtho){
+        return;
+    }
+
     if(!material->castsShadows()){
         return;
     }
@@ -461,6 +467,12 @@ void ShadowRenderer::BindShadowSamplers(const std::shared_ptr<ShaderProgram>& pr
     }
 
     const GLuint programId = program->getID();
+    {
+        GLint locDebug = glGetUniformLocation(programId, "u_debugShadows");
+        if(locDebug != -1){
+            glUniform1i(locDebug, g_debugShadowsMode);
+        }
+    }
     if(g_shadowSamplerBound.find(programId) == g_shadowSamplerBound.end()){
         std::vector<int> units2D(MAX_SHADOW_MAPS_2D);
         for(int i = 0; i < MAX_SHADOW_MAPS_2D; ++i){
@@ -486,12 +498,21 @@ void ShadowRenderer::BindShadowSamplers(const std::shared_ptr<ShaderProgram>& pr
     for(int i = 0; i < g_active2D; ++i){
         glActiveTexture(GL_TEXTURE0 + SHADOW_TEX_UNIT_BASE_2D + static_cast<int>(i));
         glBindTexture(GL_TEXTURE_2D, g_shadow2D[i].map.getDepthTexture());
+        // Enforce compare mode in case other passes changed it.
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
     }
 
     for(int i = 0; i < g_activeCube; ++i){
         glActiveTexture(GL_TEXTURE0 + SHADOW_TEX_UNIT_BASE_CUBE + static_cast<int>(i));
         glBindTexture(GL_TEXTURE_CUBE_MAP, g_shadowCube[i].map.getDepthTexture());
+        // Enforce compare mode in case other passes changed it.
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
     }
+
+    // Restore default active texture unit to avoid surprising later binds.
+    glActiveTexture(GL_TEXTURE0);
 
     if(!g_shadowDebugProgram){
         g_shadowDebugProgram = std::make_shared<ShaderProgram>();
@@ -631,4 +652,20 @@ void ShadowRenderer::GetShadowDataForLight(size_t index, const Light& light, Sha
     outData.lightMatrices[1] = Math3D::Mat4(1.0f);
     outData.lightMatrices[2] = Math3D::Mat4(1.0f);
     outData.lightMatrices[3] = Math3D::Mat4(1.0f);
+}
+
+void ShadowRenderer::SetDebugShadows(bool enabled) {
+    g_debugShadowsMode = enabled ? 1 : 0;
+}
+
+bool ShadowRenderer::GetDebugShadows() {
+    return g_debugShadowsMode != 0;
+}
+
+void ShadowRenderer::CycleDebugShadows() {
+    g_debugShadowsMode = (g_debugShadowsMode + 1) % 4;
+}
+
+int ShadowRenderer::GetDebugShadowsMode() {
+    return g_debugShadowsMode;
 }

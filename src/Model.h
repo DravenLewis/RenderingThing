@@ -6,6 +6,7 @@
 #include "Math.h"
 #include "ModelPart.h"
 #include "Camera.h"
+#include "ShadowRenderer.h"
 
 #include <vector>
 #include <glad/glad.h>
@@ -62,6 +63,16 @@ struct Model : public IDrawable{
             glEnable(GL_CULL_FACE);
             glCullFace(GL_BACK);
         };
+
+        void drawShadows(const Math3D::Mat4& parent = Math3D::Mat4()){
+            Math3D::Mat4 global = parent * transform().toMat4();
+            for(auto part : modelParts){
+                if(part && part->mesh){
+                    Math3D::Mat4 worldMatrix = global * part->localTransform.toMat4();
+                    ShadowRenderer::RenderShadows(part->mesh, worldMatrix, part->material);
+                }
+            }
+        }
 
         void draw(PCamera cam, Nullable<Math3D::Transform> parentTransform = nullptr){
             if(!cam) return;

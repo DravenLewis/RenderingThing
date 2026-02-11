@@ -292,6 +292,9 @@ void Screen::bind(bool clear){
     if(this->environment){
         this->makeEnvironmentCurrent();
     }
+    if(this->camera){
+        this->makeCameraCurrent();
+    }
 
     auto back = buffer->getDrawBuffer();
     back->bind();
@@ -305,7 +308,7 @@ void Screen::bind(bool clear){
     glEnable(GL_DEPTH_TEST);
     this->bound = true;
 
-    if(this->camera){
+    if(this->camera && !this->camera->getSettings().isOrtho){
         ShadowRenderer::BeginFrame(this->camera);
     }
 }

@@ -34,6 +34,11 @@ class Scene : public View {
     protected:
         std::vector<PModel> models;
         std::shared_ptr<InputManager> inputManager;
+
+        void render3DPass();
+        void drawModels3D(PCamera cam);
+        void drawShadowsPass();
+        void drawSkybox(PCamera cam);
 };
 
 class Scene3D : public Scene {

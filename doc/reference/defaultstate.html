@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RenderingThing Docs - FileReader</title>
+  <title>RenderingThing Docs - DefaultState</title>
   <link rel="stylesheet" href="../style.css" />
 </head>
-<body data-page="ref-filereader">
+<body data-page="ref-defaultstate">
   <header class="topbar">
     <div class="brand">
       <div class="logo">RT</div>
@@ -134,38 +134,88 @@
     </nav>
 
     <main class="content">
-      <h1>FileReader</h1>
-      <p class="muted">Declared in src/File.h.</p>
-      <p><strong>Header:</strong> <code>src/File.h</code></p>
+      <h1>DefaultState</h1>
+      <p class="muted">Declared in src/DefaultState.h.</p>
+      <p><strong>Header:</strong> <code>src/DefaultState.h</code></p>
+
+      <p>Fallback Scene2D that renders a simple "No State Loaded" message.</p>
 
       <h2>Usage</h2>
       <p>Typical usage pattern (adjust to your pipeline):</p>
-      <pre><code class="language-cpp">#include &quot;File.h&quot;
+      <pre><code class="language-cpp">#include "DefaultState.h"
 
-FileReader instance;</code></pre>
+auto state = std::make_shared&lt;DefaultState&gt;(nullptr);
+engine.addState(state);</code></pre>
 
-      
-      
-      
-      
+      <h2>Member Types</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>None</code></td><td>No public member types.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Constructors / Destructors</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>explicit DefaultState(RenderWindow* window)</code></td><td>Constructs the default state.</td></tr>
+<tr><td><code>~DefaultState() override = default</code></td><td>Destroys the state.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Member Functions</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>void init() override</code></td><td>Initializes the default UI screen and camera.</td></tr>
+<tr><td><code>void render() override</code></td><td>Draws the background and status text.</td></tr>
+<tr><td><code>void dispose() override</code></td><td>Releases scene resources.</td></tr>
+        </tbody>
+      </table>
+
       <h2>Static Functions</h2>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>static FileBlob Read(File *file)</code></td><td>Returns FileBlob. Parameters: File *file.</td></tr>
+<tr><td><code>None</code></td><td>No public static functions.</td></tr>
         </tbody>
       </table>
 
-      
+      <h2>Public Data</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>None</code></td><td>No public data members.</td></tr>
+        </tbody>
+      </table>
 
       <h2>Public API</h2>
-      <pre><code class="language-cpp">static FileBlob Read(File *file);
+      <pre><code class="language-cpp">explicit DefaultState(RenderWindow* window);
+        ~DefaultState() override = default;
+
+        void init() override;
+        void render() override;
+        void dispose() override;
+
+    private:
+        PScreen uiScreen;
+        std::shared_ptr&lt;Graphics2D&gt; graphics2d;
 };</code></pre>
 
       <h2>Full Class Layout</h2>
-      <pre><code class="language-cpp">class FileReader{
+      <pre><code class="language-cpp">class DefaultState : public Scene2D {
     public:
-        static FileBlob Read(File *file);
+        explicit DefaultState(RenderWindow* window);
+        ~DefaultState() override = default;
+
+        void init() override;
+        void render() override;
+        void dispose() override;
+
+    private:
+        PScreen uiScreen;
+        std::shared_ptr&lt;Graphics2D&gt; graphics2d;
 };</code></pre>
     </main>
 

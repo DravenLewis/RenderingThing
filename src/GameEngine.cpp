@@ -93,6 +93,7 @@ void GameEngine::render(){
 
     if(activeScene){
         activeScene->render();
+        activeScene->drawToWindow();
     }
 } // Update as fast as possible.
 

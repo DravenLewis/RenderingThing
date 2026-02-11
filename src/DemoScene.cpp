@@ -40,6 +40,11 @@ namespace {
                     owner->toggleDebugWidgets();
                     return true;
                 }
+                
+                if(keyCode == SDL_SCANCODE_F9){
+                    owner->toggleDebugShadows();
+                    return true;
+                }
 
                 return false;
             }
@@ -167,6 +172,8 @@ void DemoScene::init(){
         env->getLightManager().addLight(RimPoint);
     }
 
+    ShadowRenderer::SetDebugShadows(showDebugShadows);
+
     if(lucille) lucille->transform().setPosition(Math3D::Vec3(0, 0, -5.0f));
     if(cubeModel) cubeModel->transform().setPosition(Math3D::Vec3(-10.0f,0,-10.0f));
     if(orb) orb->transform().setPosition(Math3D::Vec3(-10.0f,0,30.0f));
@@ -209,26 +216,7 @@ void DemoScene::render(){
     glClearColor(0,0,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if(mainScreen){
-        mainScreen->bind();
-
-        if(cam){
-            auto env = mainScreen->getEnvironment();
-            if(env && env->getSkyBox()){
-                env->getSkyBox()->draw(cam);
-            }
-        }
-
-        if(cam){
-            for(const auto& model : models){
-                if(model){
-                    model->draw(cam);
-                }
-            }
-        }
-
-        mainScreen->unbind();
-    }
+    render3DPass();
 
     if(graphics2d && uiScreen && cam){
         graphics2d->begin();
@@ -270,7 +258,7 @@ void DemoScene::render(){
         graphics2d->end();
     }
 
-    drawToWindow();
+    //drawToWindow();
     //drawToWindow(false, 30, window->getWindowHeight() - 300, 600, 300);
 }
 
@@ -283,4 +271,9 @@ void DemoScene::dispose(){
 
 void DemoScene::toggleDebugWidgets(){
     showDebugWidgets = !showDebugWidgets;
+}
+
+void DemoScene::toggleDebugShadows(){
+    ShadowRenderer::CycleDebugShadows();
+    showDebugShadows = ShadowRenderer::GetDebugShadows();
 }

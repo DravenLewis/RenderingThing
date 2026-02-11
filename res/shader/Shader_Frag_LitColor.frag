@@ -26,6 +26,7 @@ uniform vec4 u_color;
 uniform vec3 u_viewPos;
 uniform mat4 u_view;
 uniform int u_receiveShadows;
+uniform int u_debugShadows; // 0=off,1=visibility,2=cascade index,3=proj bounds
 
 layout(std140) uniform LightBlock {
     vec4 u_lightHeader;      // x=lightCount
@@ -189,6 +190,7 @@ void main() {
     
     // Calculate contribution from all lights
     vec3 totalLight = vec3(0.0);
+    float debugVisibility = 1.0;
     int lightCount = int(u_lightHeader.x + 0.5);
     for (int i = 0; i < lightCount && i < MAX_LIGHTS; i++) {
         Light light = u_lights[i];
@@ -200,29 +202,54 @@ void main() {
             int lType = int(light.meta.x + 0.5);
             int sType = int(light.meta.y + 0.5);
             int baseIndex = int(light.meta.z + 0.5);
+            int cascadeCount = 1;
+            int cascadeIndex = 0;
 
             if(lType == 0){
                 visibility = sampleShadowCube(sType, baseIndex, v_fragPos, light.position.xyz, light.params.y, bias);
             }else{
-                int cascadeCount = int(light.shadow.z + 0.5);
-                float viewDepth = length(u_viewPos - v_fragPos);
-                int cascadeIndex = 0;
+                cascadeCount = int(light.shadow.z + 0.5);
+                float viewDepth = -(u_view * vec4(v_fragPos, 1.0)).z;
                 if(cascadeCount > 1){
                     if(viewDepth > light.cascadeSplits.x) cascadeIndex = 1;
                     if(viewDepth > light.cascadeSplits.y) cascadeIndex = 2;
                     if(viewDepth > light.cascadeSplits.z) cascadeIndex = 3;
                     cascadeIndex = clamp(cascadeIndex, 0, cascadeCount - 1);
                 }
-                visibility = sampleShadow2D(sType, baseIndex + cascadeIndex, light.lightMatrices[cascadeIndex] * vec4(v_fragPos, 1.0), bias);
+                vec4 lightSpacePos = light.lightMatrices[cascadeIndex] * vec4(v_fragPos, 1.0);
+                if(u_debugShadows == 3){
+                    vec3 projCoords = lightSpacePos.xyz / lightSpacePos.w;
+                    projCoords = projCoords * 0.5 + 0.5;
+                    bool outBounds = (projCoords.x < 0.0 || projCoords.x > 1.0 ||
+                                      projCoords.y < 0.0 || projCoords.y > 1.0 ||
+                                      projCoords.z < 0.0 || projCoords.z > 1.0);
+                    FragColor = outBounds ? vec4(1.0, 0.0, 0.0, 1.0) : vec4(vec3(projCoords.z), 1.0);
+                    return;
+                }
+                visibility = sampleShadow2D(sType, baseIndex + cascadeIndex, lightSpacePos, bias);
             }
 
             visibility = mix(1.0, visibility, clamp(light.meta.w, 0.0, 1.0));
             lightContribution *= visibility;
+            debugVisibility = min(debugVisibility, visibility);
+            if(u_debugShadows == 2 && lType != 0){
+                float t = (cascadeCount > 1) ? (float(cascadeIndex) / float(max(cascadeCount - 1, 1))) : 0.0;
+                FragColor = vec4(vec3(t), 1.0);
+                return;
+            }
         }
 
         totalLight += lightContribution;
     }
     
     vec3 result = ambient + totalLight;
-    FragColor = vec4(result, u_color.a);
+    if(u_debugShadows == 1){
+        FragColor = vec4(vec3(debugVisibility), 1.0);
+    }else if(u_debugShadows == 2){
+        FragColor = vec4(1.0);
+    }else if(u_debugShadows == 3){
+        FragColor = vec4(1.0);
+    }else{
+        FragColor = vec4(result, u_color.a);
+    }
 }

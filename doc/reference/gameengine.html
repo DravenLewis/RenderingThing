@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RenderingThing Docs - FileReader</title>
+  <title>RenderingThing Docs - GameEngine</title>
   <link rel="stylesheet" href="../style.css" />
 </head>
-<body data-page="ref-filereader">
+<body data-page="ref-gameengine">
   <header class="topbar">
     <div class="brand">
       <div class="logo">RT</div>
@@ -134,38 +134,157 @@
     </nav>
 
     <main class="content">
-      <h1>FileReader</h1>
-      <p class="muted">Declared in src/File.h.</p>
-      <p><strong>Header:</strong> <code>src/File.h</code></p>
+      <h1>GameEngine</h1>
+      <p class="muted">Declared in src/GameEngine.h.</p>
+      <p><strong>Header:</strong> <code>src/GameEngine.h</code></p>
+
+      <p>Central engine host responsible for owning the render thread, window, input manager, and scene state transitions.</p>
 
       <h2>Usage</h2>
       <p>Typical usage pattern (adjust to your pipeline):</p>
-      <pre><code class="language-cpp">#include &quot;File.h&quot;
+      <pre><code class="language-cpp">#include "GameEngine.h"
 
-FileReader instance;</code></pre>
+int main(){
+    GameEngine engine(DisplayMode::New(1280,720), "My Game");
+    int stateId = engine.addState(std::make_shared&lt;DefaultState&gt;(nullptr));
+    engine.enterState(stateId);
+    engine.start();
+    return 0;
+}</code></pre>
 
-      
-      
-      
-      
+      <h2>Member Types</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>None</code></td><td>No public member types.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Constructors / Destructors</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>GameEngine(DisplayMode displayMode = DisplayMode::New(), const std::string&amp; windowTitle = "[Untitled Game Engine Game]")</code></td><td>Constructs a GameEngine with an optional display mode and title.</td></tr>
+<tr><td><code>~GameEngine()</code></td><td>Shuts down the engine if it is running.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Member Functions</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>RenderWindow* window() const</code></td><td>Returns the current window pointer, or null if not initialized.</td></tr>
+<tr><td><code>InputManager* input() const</code></td><td>Returns the input manager pointer, or null if not initialized.</td></tr>
+<tr><td><code>int addState(PScene scene)</code></td><td>Adds a scene state and returns its ID. Parameters: PScene scene.</td></tr>
+<tr><td><code>bool enterState(int id)</code></td><td>Requests a state transition to the given ID. Returns false if vetoed or missing.</td></tr>
+<tr><td><code>void start()</code></td><td>Starts the engine and launches the render thread.</td></tr>
+<tr><td><code>void exit(int code = 0)</code></td><td>Signals the engine to stop and joins the render thread.</td></tr>
+        </tbody>
+      </table>
+
       <h2>Static Functions</h2>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>static FileBlob Read(File *file)</code></td><td>Returns FileBlob. Parameters: File *file.</td></tr>
+<tr><td><code>None</code></td><td>No public static functions.</td></tr>
         </tbody>
       </table>
 
-      
+      <h2>Public Data</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>static GameEngine* Engine</code></td><td>Points to the most recently constructed engine instance.</td></tr>
+        </tbody>
+      </table>
 
       <h2>Public API</h2>
-      <pre><code class="language-cpp">static FileBlob Read(File *file);
+      <pre><code class="language-cpp">GameEngine(DisplayMode displayMode = DisplayMode::New(), const std::string&amp; windowTitle = "[Untitled Game Engine Game]") :
+            windowDisplayMode(displayMode),
+            windowInitialTitle(windowTitle)
+        {
+            GameEngine::Engine = this;
+        };
+
+        ~GameEngine(){
+            if(GameEngine::Engine == this) GameEngine::Engine = nullptr;
+            if(running){
+                exit(0);
+            }
+        }
+
+        RenderWindow* window() const { return this-&gt;windowPtr.get(); }
+        InputManager* input() const {return this-&gt;inputManager.get(); }
+
+        int addState(PScene scene);
+        bool enterState(int id);
+
+        void start();
+        void exit(int code = 0);
+
+        static GameEngine* Engine;
 };</code></pre>
 
       <h2>Full Class Layout</h2>
-      <pre><code class="language-cpp">class FileReader{
+      <pre><code class="language-cpp">class GameEngine{
+    private:
+        std::shared_ptr&lt;RenderWindow&gt; windowPtr;
+        std::shared_ptr&lt;InputManager&gt; inputManager;
+        DisplayMode windowDisplayMode;
+        std::string windowInitialTitle;
+
+        std::thread mainRenderThread;
+        std::atomic&lt;bool&gt; running{false};
+        std::atomic&lt;bool&gt; renderReady{false};
+
+        std::mutex sceneMutex;
+        std::condition_variable initCv;
+        std::mutex initMutex;
+
+        struct StateEntry{
+            PScene scene;
+            bool initialized = false;
+        };
+
+        std::unordered_map&lt;int, StateEntry&gt; states;
+        int nextStateId = 1;
+        int activeStateId = -1;
+        std::atomic&lt;int&gt; pendingStateId{-1};
+
+        PScene activeScene;
+
+        void init(); // Initialize The Engine
+        void run();
+        void tick(float deltaTime); // Update the Engine (Delta Time Interval using nano time)
+        void render(); // Update as fast as possible.
+        void processEvents(SDL_Event&amp; event); // Handle all events
+        void dispose(); // Clean up the engine;
     public:
-        static FileBlob Read(File *file);
+
+        GameEngine(DisplayMode displayMode = DisplayMode::New(), const std::string&amp; windowTitle = "[Untitled Game Engine Game]") :
+            windowDisplayMode(displayMode),
+            windowInitialTitle(windowTitle)
+        {
+            GameEngine::Engine = this;
+        };
+
+        ~GameEngine(){
+            if(GameEngine::Engine == this) GameEngine::Engine = nullptr;
+            if(running){
+                exit(0);
+            }
+        }
+
+        RenderWindow* window() const { return this-&gt;windowPtr.get(); }
+        InputManager* input() const {return this-&gt;inputManager.get(); }
+
+        int addState(PScene scene);
+        bool enterState(int id);
+
+        void start();
+        void exit(int code = 0);
+
+        static GameEngine* Engine;
 };</code></pre>
     </main>
 

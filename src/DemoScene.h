@@ -25,6 +25,7 @@ class DemoScene : public Scene3D {
         void setInputManager(std::shared_ptr<InputManager> manager) override;
 
         void toggleDebugWidgets();
+        void toggleDebugShadows();
 
     private:
         PModel ground;
@@ -45,6 +46,7 @@ class DemoScene : public Scene3D {
         float lastDeltaTime = 0.0f;
         float frameTimeSpike = 0.0f;
         bool showDebugWidgets = false;
+        bool showDebugShadows = false;
 
         FrameTimeGraph frameTimeGraph;
 

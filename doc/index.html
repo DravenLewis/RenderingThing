@@ -43,6 +43,8 @@
 <li><a href="reference/cubemap.html" data-page-link="ref-cubemap">CubeMap</a></li>
 <li><a href="reference/cubemapslot.html" data-page-link="ref-cubemapslot">CubeMapSlot</a></li>
 <li><a href="reference/cubematerialdefinition.html" data-page-link="ref-cubematerialdefinition">CubeMaterialDefinition</a></li>
+<li><a href="reference/defaultstate.html" data-page-link="ref-defaultstate">DefaultState</a></li>
+<li><a href="reference/demoscene.html" data-page-link="ref-demoscene">DemoScene</a></li>
 <li><a href="reference/depthguard.html" data-page-link="ref-depthguard">DepthGuard</a></li>
 <li><a href="reference/display.html" data-page-link="ref-display">Display</a></li>
 <li><a href="reference/displaymode.html" data-page-link="ref-displaymode">DisplayMode</a></li>
@@ -58,6 +60,7 @@
 <li><a href="reference/framebuffer.html" data-page-link="ref-framebuffer">FrameBuffer</a></li>
 <li><a href="reference/framebufferchain.html" data-page-link="ref-framebufferchain">FrameBufferChain</a></li>
 <li><a href="reference/freetypefont.html" data-page-link="ref-freetypefont">FreeTypeFont</a></li>
+<li><a href="reference/gameengine.html" data-page-link="ref-gameengine">GameEngine</a></li>
 <li><a href="reference/glversioninfo.html" data-page-link="ref-glversioninfo">GLVersionInfo</a></li>
 <li><a href="reference/graphics2d.html" data-page-link="ref-graphics2d">Graphics2D</a></li>
 <li><a href="reference/graphicscontext.html" data-page-link="ref-graphicscontext">GraphicsContext</a></li>
@@ -97,6 +100,9 @@
 <li><a href="reference/random.html" data-page-link="ref-random">Random</a></li>
 <li><a href="reference/rect.html" data-page-link="ref-rect">Rect</a></li>
 <li><a href="reference/renderwindow.html" data-page-link="ref-renderwindow">RenderWindow</a></li>
+<li><a href="reference/scene.html" data-page-link="ref-scene">Scene</a></li>
+<li><a href="reference/scene2d.html" data-page-link="ref-scene2d">Scene2D</a></li>
+<li><a href="reference/scene3d.html" data-page-link="ref-scene3d">Scene3D</a></li>
 <li><a href="reference/screen.html" data-page-link="ref-screen">Screen</a></li>
 <li><a href="reference/shaderbundle.html" data-page-link="ref-shaderbundle">ShaderBundle</a></li>
 <li><a href="reference/shadercache.html" data-page-link="ref-shadercache">ShaderCache</a></li>
@@ -123,13 +129,14 @@
 <li><a href="reference/vec4.html" data-page-link="ref-vec4">Vec4</a></li>
 <li><a href="reference/vertex.html" data-page-link="ref-vertex">Vertex</a></li>
 <li><a href="reference/vertexindex.html" data-page-link="ref-vertexindex">VertexIndex</a></li>
+<li><a href="reference/view.html" data-page-link="ref-view">View</a></li>
       </ul>
     </nav>
 
     <main class="content">
 
       <h1>RenderingThing Documentation</h1>
-      <p>Welcome to the local docs for RenderingThing, a modern OpenGL 4 renderer with a clean SDL3 windowing layer, a modular render pipeline, and a lightweight asset workflow built around <code>@assets</code> paths.</p>
+      <p>Welcome to the local docs for RenderingThing, a modern OpenGL 4 renderer with a clean SDL3 windowing layer, a modular render pipeline, and a state-driven scene system built for threading and ECS growth.</p>
 
       <div class="callout">
         This site is fully local and self-contained. All styling and code highlighting are provided by <code>style.css</code> and <code>app.js</code> in this folder.
@@ -137,43 +144,43 @@
 
       <h2>Highlights</h2>
       <div class="grid">
+        <a class="card-link" href="reference/gameengine.html">
+          <div class="card">
+          <h3>Threaded GameEngine</h3>
+          <p><code>GameEngine</code> owns the render thread, window, input manager, and state transitions.</p>
+          </div>
+        </a>
+        <a class="card-link" href="reference/scene.html">
+          <div class="card">
+          <h3>Scene States</h3>
+          <p><code>Scene</code>, <code>Scene3D</code>, and <code>Scene2D</code> define update and render flows.</p>
+          </div>
+        </a>
+        <a class="card-link" href="reference/defaultstate.html">
+          <div class="card">
+          <h3>DefaultState Fallback</h3>
+          <p><code>DefaultState</code> renders a safe fallback when no state is loaded.</p>
+          </div>
+        </a>
         <a class="card-link" href="reference/renderwindow.html">
           <div class="card">
           <h3>SDL3 + OpenGL 4 Core</h3>
           <p><code>RenderWindow</code> wraps SDL3 with a configurable display mode, fullscreen support, and input event hooks.</p>
           </div>
         </a>
-        <a class="card-link" href="reference/screen.html">
-          <div class="card">
-          <h3>Screen-Based Pipeline</h3>
-          <p><code>Screen</code> owns a framebuffer and post effects, then composites to the window.</p>
-          </div>
-        </a>
-        <a class="card-link" href="reference/pbrmaterial.html">
-          <div class="card">
-          <h3>PBR + Lighting</h3>
-          <p><code>PBRMaterial</code>, <code>Light</code>, and <code>ShadowRenderer</code> handle physically based shading and shadow maps.</p>
-          </div>
-        </a>
-        <a class="card-link" href="reference/graphics2d.html">
-          <div class="card">
-          <h3>2D Overlay</h3>
-          <p><code>Graphics2D</code> and <code>FreeTypeFont</code> support HUDs and debug overlays.</p>
-          </div>
-        </a>
       </div>
 
       <h2>Quick Example</h2>
-      <p>The main loop sets up the window, initializes content, and renders each frame.</p>
-      <pre><code class="language-cpp">DisplayMode mode = DisplayMode::New(1280, 720);
-mode.resizable = true;
-window = new RenderWindow("Modern OpenGL 4 - Render Thingy", mode);
+      <p>Start the engine, register a scene state, and enter it.</p>
+      <pre><code class="language-cpp">#include "GameEngine.h"
+#include "DemoScene.h"
 
-init();
-while (!window->isCloseRequested()) {
-    window->process();
-    run();
-    window->swap();
+int main(){
+    GameEngine engine(DisplayMode::New(1280, 720), "Modern OpenGL 4 - Render Thingy");
+    int demoId = engine.addState(std::make_shared&lt;DemoScene&gt;(nullptr));
+    engine.enterState(demoId);
+    engine.start();
+    return 0;
 }
 </code></pre>
 
@@ -193,3 +200,4 @@ while (!window->isCloseRequested()) {
   <script src="app.js"></script>
 </body>
 </html>
+

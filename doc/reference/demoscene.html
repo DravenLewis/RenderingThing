@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RenderingThing Docs - FileReader</title>
+  <title>RenderingThing Docs - DemoScene</title>
   <link rel="stylesheet" href="../style.css" />
 </head>
-<body data-page="ref-filereader">
+<body data-page="ref-demoscene">
   <header class="topbar">
     <div class="brand">
       <div class="logo">RT</div>
@@ -134,38 +134,139 @@
     </nav>
 
     <main class="content">
-      <h1>FileReader</h1>
-      <p class="muted">Declared in src/File.h.</p>
-      <p><strong>Header:</strong> <code>src/File.h</code></p>
+      <h1>DemoScene</h1>
+      <p class="muted">Declared in src/DemoScene.h.</p>
+      <p><strong>Header:</strong> <code>src/DemoScene.h</code></p>
+
+      <p>Sample Scene3D that mirrors the previous main loop demo setup.</p>
 
       <h2>Usage</h2>
       <p>Typical usage pattern (adjust to your pipeline):</p>
-      <pre><code class="language-cpp">#include &quot;File.h&quot;
+      <pre><code class="language-cpp">#include "DemoScene.h"
 
-FileReader instance;</code></pre>
+auto demo = std::make_shared&lt;DemoScene&gt;(nullptr);
+engine.addState(demo);</code></pre>
 
-      
-      
-      
-      
+      <h2>Member Types</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>None</code></td><td>No public member types.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Constructors / Destructors</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>explicit DemoScene(RenderWindow* window)</code></td><td>Constructs the demo scene.</td></tr>
+<tr><td><code>~DemoScene() override = default</code></td><td>Destroys the scene.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Member Functions</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>void init() override</code></td><td>Initializes models, materials, and cameras.</td></tr>
+<tr><td><code>void update(float deltaTime) override</code></td><td>Updates animation and input. Parameters: float deltaTime.</td></tr>
+<tr><td><code>void render() override</code></td><td>Renders the 3D scene and UI.</td></tr>
+<tr><td><code>void dispose() override</code></td><td>Releases scene resources.</td></tr>
+<tr><td><code>void setInputManager(std::shared_ptr&lt;InputManager&gt; manager) override</code></td><td>Registers input handlers for the demo scene.</td></tr>
+<tr><td><code>void toggleDebugWidgets()</code></td><td>Toggles debug overlay rendering.</td></tr>
+        </tbody>
+      </table>
+
       <h2>Static Functions</h2>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>static FileBlob Read(File *file)</code></td><td>Returns FileBlob. Parameters: File *file.</td></tr>
+<tr><td><code>None</code></td><td>No public static functions.</td></tr>
         </tbody>
       </table>
 
-      
+      <h2>Public Data</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>None</code></td><td>No public data members.</td></tr>
+        </tbody>
+      </table>
 
       <h2>Public API</h2>
-      <pre><code class="language-cpp">static FileBlob Read(File *file);
+      <pre><code class="language-cpp">explicit DemoScene(RenderWindow* window);
+        ~DemoScene() override = default;
+
+        void init() override;
+        void update(float deltaTime) override;
+        void render() override;
+        void dispose() override;
+        void setInputManager(std::shared_ptr&lt;InputManager&gt; manager) override;
+
+        void toggleDebugWidgets();
+
+    private:
+        PModel ground;
+        PModel meshModel;
+        PModel cubeModel;
+        PModel lucille;
+        PModel orb;
+        PSkyBox skybox;
+
+        PCamera cam;
+        PScreen uiScreen;
+        PScreen mainScreen;
+
+        std::shared_ptr&lt;FirstPersonController&gt; fpsController;
+        std::shared_ptr&lt;Graphics2D&gt; graphics2d;
+
+        float totalTime = 0.0f;
+        float lastDeltaTime = 0.0f;
+        float frameTimeSpike = 0.0f;
+        bool showDebugWidgets = false;
+
+        FrameTimeGraph frameTimeGraph;
+
+        std::shared_ptr&lt;IEventHandler&gt; sceneInputHandler;
 };</code></pre>
 
       <h2>Full Class Layout</h2>
-      <pre><code class="language-cpp">class FileReader{
+      <pre><code class="language-cpp">class DemoScene : public Scene3D {
     public:
-        static FileBlob Read(File *file);
+        explicit DemoScene(RenderWindow* window);
+        ~DemoScene() override = default;
+
+        void init() override;
+        void update(float deltaTime) override;
+        void render() override;
+        void dispose() override;
+        void setInputManager(std::shared_ptr&lt;InputManager&gt; manager) override;
+
+        void toggleDebugWidgets();
+
+    private:
+        PModel ground;
+        PModel meshModel;
+        PModel cubeModel;
+        PModel lucille;
+        PModel orb;
+        PSkyBox skybox;
+
+        PCamera cam;
+        PScreen uiScreen;
+        PScreen mainScreen;
+
+        std::shared_ptr&lt;FirstPersonController&gt; fpsController;
+        std::shared_ptr&lt;Graphics2D&gt; graphics2d;
+
+        float totalTime = 0.0f;
+        float lastDeltaTime = 0.0f;
+        float frameTimeSpike = 0.0f;
+        bool showDebugWidgets = false;
+
+        FrameTimeGraph frameTimeGraph;
+
+        std::shared_ptr&lt;IEventHandler&gt; sceneInputHandler;
 };</code></pre>
     </main>
 

@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RenderingThing Docs - FileReader</title>
+  <title>RenderingThing Docs - Scene3D</title>
   <link rel="stylesheet" href="../style.css" />
 </head>
-<body data-page="ref-filereader">
+<body data-page="ref-scene3d">
   <header class="topbar">
     <div class="brand">
       <div class="logo">RT</div>
@@ -134,38 +134,73 @@
     </nav>
 
     <main class="content">
-      <h1>FileReader</h1>
-      <p class="muted">Declared in src/File.h.</p>
-      <p><strong>Header:</strong> <code>src/File.h</code></p>
+      <h1>Scene3D</h1>
+      <p class="muted">Declared in src/Scene.h.</p>
+      <p><strong>Header:</strong> <code>src/Scene.h</code></p>
+
+      <p>3D scene specialization that inherits the full Scene API.</p>
 
       <h2>Usage</h2>
       <p>Typical usage pattern (adjust to your pipeline):</p>
-      <pre><code class="language-cpp">#include &quot;File.h&quot;
+      <pre><code class="language-cpp">#include "Scene.h"
 
-FileReader instance;</code></pre>
+class WorldScene : public Scene3D {
+public:
+    using Scene3D::Scene;
+    void render() override;
+};</code></pre>
 
-      
-      
-      
-      
+      <h2>Member Types</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>None</code></td><td>No public member types on Scene3D.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Constructors / Destructors</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>Scene3D(RenderWindow* window = nullptr)</code></td><td>Inherits Scene constructors.</td></tr>
+<tr><td><code>~Scene3D() override = default</code></td><td>Destroys the scene.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Member Functions</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>Inherited</code></td><td>Uses the full Scene API.</td></tr>
+        </tbody>
+      </table>
+
       <h2>Static Functions</h2>
       <table class="ref-table">
         <thead><tr><th>Member</th><th>Description</th></tr></thead>
         <tbody>
-<tr><td><code>static FileBlob Read(File *file)</code></td><td>Returns FileBlob. Parameters: File *file.</td></tr>
+<tr><td><code>None</code></td><td>No public static functions.</td></tr>
         </tbody>
       </table>
 
-      
+      <h2>Public Data</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>None</code></td><td>No public data members.</td></tr>
+        </tbody>
+      </table>
 
       <h2>Public API</h2>
-      <pre><code class="language-cpp">static FileBlob Read(File *file);
+      <pre><code class="language-cpp">using Scene::Scene;
+        ~Scene3D() override = default;
 };</code></pre>
 
       <h2>Full Class Layout</h2>
-      <pre><code class="language-cpp">class FileReader{
+      <pre><code class="language-cpp">class Scene3D : public Scene {
     public:
-        static FileBlob Read(File *file);
+        using Scene::Scene;
+        ~Scene3D() override = default;
 };</code></pre>
     </main>
 

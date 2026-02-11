@@ -38,6 +38,10 @@ public:
     static void GetShadowDataForLight(size_t index, const Light& light, ShadowLightData& outData);
     static bool IsEnabled();
     static std::shared_ptr<Texture> GetDepthBuffer();
+    static void SetDebugShadows(bool enabled);
+    static bool GetDebugShadows();
+    static void CycleDebugShadows();
+    static int GetDebugShadowsMode();
 
 private:
     static void ensureShadowPrograms();

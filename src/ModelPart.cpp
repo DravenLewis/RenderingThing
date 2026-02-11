@@ -9,8 +9,6 @@ void ModelPart::draw(const Math3D::Mat4& parent, const Math3D::Mat4& view, const
 
     Math3D::Mat4 worldMatrix = parent * localTransform.toMat4();
 
-    ShadowRenderer::RenderShadows(mesh, worldMatrix, material);
-
     if(material){
         material->set<Math3D::Mat4>("u_model", worldMatrix);
         // Can become a UBO eventually.
