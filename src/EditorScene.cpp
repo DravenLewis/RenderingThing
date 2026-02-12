@@ -188,6 +188,7 @@ void EditorScene::update(float deltaTime){
             bool mouseInViewport = isMouseInViewport();
             bool lmb = inputManager->isLMBDown();
             bool lmbPressed = lmb && !prevLmb;
+            bool lmbReleased = !lmb && prevLmb;
             prevLmb = lmb;
 
             if(!rmb){
@@ -246,7 +247,51 @@ void EditorScene::update(float deltaTime){
                 editorCameraTransform->local = editorCamera->transform();
             }
 
-            if(playState != PlayState::Play && lmbPressed && mouseInViewport && !allowControl){
+            if(!allowControl && playState == PlayState::Edit){
+                bool wDown = inputManager->isKeyDown(SDL_SCANCODE_W);
+                bool eDown = inputManager->isKeyDown(SDL_SCANCODE_E);
+                bool rDown = inputManager->isKeyDown(SDL_SCANCODE_R);
+
+                if(wDown && !prevKeyW){
+                    transformWidget.setMode(TransformWidget::Mode::Translate);
+                }
+                if(eDown && !prevKeyE){
+                    transformWidget.setMode(TransformWidget::Mode::Rotate);
+                }
+                if(rDown && !prevKeyR){
+                    transformWidget.setMode(TransformWidget::Mode::Scale);
+                }
+
+                prevKeyW = wDown;
+                prevKeyE = eDown;
+                prevKeyR = rDown;
+            }
+
+            bool widgetConsumed = false;
+            if(playState == PlayState::Edit && editorCamera && targetScene && targetScene->getECS()){
+                auto* entity = findEntityById(selectedEntityId);
+                if(entity){
+                    auto* components = targetScene->getECS()->getComponentManager();
+                    if(auto* transformComp = components->getECSComponent<TransformComponent>(entity)){
+                        TransformWidget::Viewport viewport{viewportRect.x, viewportRect.y, viewportRect.w, viewportRect.h, viewportRect.valid};
+                        Math3D::Vec3 worldPos = targetScene->getWorldPosition(entity);
+                        widgetConsumed = transformWidget.update(
+                            this,
+                            inputManager.get(),
+                            editorCamera,
+                            viewport,
+                            worldPos,
+                            transformComp->local,
+                            mouseInViewport && !allowControl,
+                            lmbPressed,
+                            lmb,
+                            lmbReleased
+                        );
+                    }
+                }
+            }
+
+            if(playState != PlayState::Play && lmbPressed && mouseInViewport && !allowControl && !widgetConsumed){
                 if(editorCamera){
                     Math3D::Vec2 mouse = inputManager->getMousePosition();
                     std::string picked = pickEntityIdAtScreen(mouse.x, mouse.y, editorCamera);
@@ -351,6 +396,29 @@ void EditorScene::drawToolbar(float width, float height){
     ImGui::SameLine();
     ImGui::TextUnformatted(playState == PlayState::Edit ? "Edit Mode" : (playState == PlayState::Play ? "Play Mode" : "Paused"));
 
+    ImGui::SameLine();
+    ImGui::TextUnformatted("|");
+    ImGui::SameLine();
+    auto modeButton = [&](const char* label, TransformWidget::Mode mode){
+        bool active = (transformWidget.getMode() == mode);
+        if(active){
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.3f, 0.45f, 0.6f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.35f, 0.5f, 0.68f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.28f, 0.4f, 0.55f, 1.0f));
+        }
+        if(ImGui::Button(label)){
+            transformWidget.setMode(mode);
+        }
+        if(active){
+            ImGui::PopStyleColor(3);
+        }
+        ImGui::SameLine();
+    };
+    modeButton("All", TransformWidget::Mode::Combined);
+    modeButton("Move [W]", TransformWidget::Mode::Translate);
+    modeButton("Rotate [E]", TransformWidget::Mode::Rotate);
+    modeButton("Scale [R]", TransformWidget::Mode::Scale);
+
     if(playClicked){
         if(playState == PlayState::Edit){
             storeSelectionForPlay();
@@ -390,6 +458,7 @@ void EditorScene::selectEntity(const std::string& id){
         return;
     }
     selectedEntityId = id;
+    transformWidget.reset();
     if(targetScene){
         targetScene->setSelectedEntityId(id);
     }
@@ -607,6 +676,19 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
     viewportRect.w = size.x;
     viewportRect.h = size.y;
     viewportRect.valid = (size.x > 1.0f && size.y > 1.0f);
+
+    if(playState == PlayState::Edit && targetScene && editorCamera && viewportRect.valid){
+        auto* entity = findEntityById(selectedEntityId);
+        if(entity && targetScene->getECS()){
+            auto* components = targetScene->getECS()->getComponentManager();
+            if(auto* transformComp = components->getECSComponent<TransformComponent>(entity)){
+                TransformWidget::Viewport viewport{viewportRect.x, viewportRect.y, viewportRect.w, viewportRect.h, viewportRect.valid};
+                Math3D::Vec3 worldPos = targetScene->getWorldPosition(entity);
+                ImDrawList* drawList = ImGui::GetWindowDrawList();
+                transformWidget.draw(drawList, this, editorCamera, viewport, worldPos, transformComp->local, viewportHovered);
+            }
+        }
+    }
 
     ImGui::TextUnformatted("Viewport");
     ImGui::End();

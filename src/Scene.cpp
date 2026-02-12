@@ -62,6 +62,10 @@ NeoECS::GameObject* Scene::createLightGameObject(const std::string& name, const 
     auto* root = createECSGameObject(name, parent);
     if(!root) return nullptr;
 
+    if(!syncDirection && light.type != LightType::POINT){
+        syncDirection = true;
+    }
+
     root->addComponent<TransformComponent>();
     if(auto* transform = root->getComponent<TransformComponent>()){
         if(syncTransform){
@@ -124,7 +128,8 @@ void Scene::updateECS(float deltaTime){
 
         auto* renderer = componentManager->getECSComponent<MeshRendererComponent>(entity);
         auto* lightComponent = componentManager->getECSComponent<LightComponent>(entity);
-        const bool needsWorld = (renderer && renderer->visible) || (lightComponent && lightComponent->syncTransform);
+        const bool needsWorld = (renderer && renderer->visible) ||
+                                (lightComponent && (lightComponent->syncTransform || lightComponent->syncDirection));
 
         Math3D::Mat4 world(1.0f);
         if(needsWorld){
@@ -163,11 +168,12 @@ void Scene::updateECS(float deltaTime){
             Light light = lightComponent->light;
             if(lightComponent->syncTransform){
                 light.position = world.getPosition();
-                if(lightComponent->syncDirection){
-                    Math3D::Vec3 forward = Math3D::Transform::transformPoint(world, Math3D::Vec3(0,0,1)) - light.position;
-                    if(forward.length() > 0.0001f){
-                        light.direction = forward.normalize();
-                    }
+            }
+            if(lightComponent->syncDirection){
+                Math3D::Vec3 origin = world.getPosition();
+                Math3D::Vec3 forward = Math3D::Transform::transformPoint(world, Math3D::Vec3(0,0,1)) - origin;
+                if(forward.length() > 0.0001f){
+                    light.direction = forward.normalize();
                 }
             }
             snapshot.lights.push_back(light);

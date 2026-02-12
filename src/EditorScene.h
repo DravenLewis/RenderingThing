@@ -12,6 +12,7 @@
 #include <imgui.h>
 #include "neoecs.hpp"
 #include "ECSComponents.h"
+#include "Widgets/TransformWidget.h"
 
 class EditorScene : public Scene {
     public:
@@ -90,6 +91,10 @@ class EditorScene : public Scene {
         std::string logBuffer;
         std::vector<std::string> logLines;
         std::vector<ImVec4> logColors;
+        TransformWidget transformWidget;
+        bool prevKeyW = false;
+        bool prevKeyE = false;
+        bool prevKeyR = false;
 
         void ensureTargetInitialized();
         void drawToolbar(float width, float height);
