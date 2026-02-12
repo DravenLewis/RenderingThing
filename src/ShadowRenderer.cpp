@@ -126,9 +126,10 @@ void ShadowRenderer::ensureShadowPrograms() {
 }
 
     Math3D::Mat4 ShadowRenderer::computeDirectionalMatrix(const Light& light, PCamera camera) {
-        Math3D::Vec3 camPos = camera->transform().position;
-        float defaultRange = Math3D::Min(camera->getSettings().farPlane, 200.0f);
-        float range = Math3D::Max(10.0f, (light.range > 0.0f) ? light.range : defaultRange);
+    Math3D::Vec3 camPos = camera->transform().position;
+    float defaultRange = Math3D::Min(camera->getSettings().farPlane, 200.0f);
+    float shadowRange = (light.shadowRange > 0.0f) ? light.shadowRange : light.range;
+    float range = Math3D::Max(10.0f, (shadowRange > 0.0f) ? shadowRange : defaultRange);
         Math3D::Vec3 lightDir = Math3D::Vec3(glm::normalize(glm::vec3(light.direction.x, light.direction.y, light.direction.z)));
         Math3D::Vec3 lightPos = camPos - lightDir * range;
 
@@ -165,7 +166,8 @@ static void computeDirectionalCascades(
     if(!camera || cascadeCount <= 0) return;
 
     float nearPlane = camera->getSettings().nearPlane;
-    float farPlane = Math3D::Min(camera->getSettings().farPlane, (light.range > 0.0f) ? light.range : camera->getSettings().farPlane);
+    float shadowRange = (light.shadowRange > 0.0f) ? light.shadowRange : light.range;
+    float farPlane = Math3D::Min(camera->getSettings().farPlane, (shadowRange > 0.0f) ? shadowRange : camera->getSettings().farPlane);
     float lambda = 0.5f;
 
     std::vector<float> splits;
@@ -243,7 +245,8 @@ static void computeDirectionalCascades(
 
 Math3D::Mat4 ShadowRenderer::computeSpotMatrix(const Light& light) {
     float fov = Math3D::Clamp(light.spotAngle * 2.0f, 10.0f, 170.0f);
-    glm::mat4 proj = glm::perspective(glm::radians(fov), 1.0f, 0.1f, Math3D::Max(1.0f, light.range));
+    float farPlane = (light.shadowRange > 0.0f) ? light.shadowRange : light.range;
+    glm::mat4 proj = glm::perspective(glm::radians(fov), 1.0f, 0.1f, Math3D::Max(1.0f, farPlane));
     glm::vec3 pos(light.position.x, light.position.y, light.position.z);
     glm::vec3 dir = glm::normalize(glm::vec3(light.direction.x, light.direction.y, light.direction.z));
     glm::vec3 up(0,1,0);
@@ -259,7 +262,8 @@ void ShadowRenderer::computePointMatrices(const Light& light, std::vector<Math3D
     outMatrices.reserve(6);
     glm::vec3 pos(light.position.x, light.position.y, light.position.z);
     float nearPlane = 0.1f;
-    float farPlane = Math3D::Max(1.0f, light.range);
+    float farPlane = (light.shadowRange > 0.0f) ? light.shadowRange : light.range;
+    farPlane = Math3D::Max(1.0f, farPlane);
     glm::mat4 proj = glm::perspective(glm::radians(90.0f), 1.0f, nearPlane, farPlane);
 
     outMatrices.push_back(Math3D::Mat4(proj * glm::lookAt(pos, pos + glm::vec3( 1, 0, 0), glm::vec3(0,-1, 0))));
@@ -352,7 +356,8 @@ void ShadowRenderer::BeginFrame(PCamera camera) {
                     slot.matrix = computeSpotMatrix(light);
                     data.shadowMapIndex = g_active2D;
                     data.cascadeCount = 1;
-                    data.cascadeSplits = Math3D::Vec4(light.range, light.range, light.range, light.range);
+                    float shadowRange = (light.shadowRange > 0.0f) ? light.shadowRange : light.range;
+                    data.cascadeSplits = Math3D::Vec4(shadowRange, shadowRange, shadowRange, shadowRange);
                     data.lightMatrices[0] = slot.matrix;
                     g_active2D++;
                 }
@@ -368,7 +373,8 @@ void ShadowRenderer::BeginFrame(PCamera camera) {
                     ShadowSlotCube& slot = g_shadowCube[g_activeCube];
                     slot.lightIndex = static_cast<int>(i);
                     slot.lightPos = light.position;
-                    slot.farPlane = Math3D::Max(1.0f, light.range);
+                    slot.farPlane = (light.shadowRange > 0.0f) ? light.shadowRange : light.range;
+                    slot.farPlane = Math3D::Max(1.0f, slot.farPlane);
                     computePointMatrices(light, slot.matrices);
                     data.shadowMapIndex = g_activeCube;
                     data.cascadeCount = 1;

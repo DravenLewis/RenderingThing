@@ -34,7 +34,11 @@ struct InputInformation{
     bool mouse_middle_button = false;
     bool mouse_right_button = false;
     float wheel = 0;
+    float wheelDelta = 0;
     Math3D::Vec2 mouseAxis = Math3D::Vec2(0,0);
+
+    
+    float _wheelLast = wheel;
 };
 
 class InputManager{
@@ -74,8 +78,10 @@ class InputManager{
         bool isMMBDown() const { return this->inputInfo.mouse_middle_button;}
         bool isRMBDown() const { return this->inputInfo.mouse_right_button;}
         float getScrollWheel() const {return this->inputInfo.wheel;}
+        float getscrollDelta() const {return this->inputInfo.wheelDelta;}
         Math3D::Vec2 getMouseAxisDelta() const {return this->inputInfo.mouseAxis;}
         Math3D::Vec2 consumeMouseAxisDelta();
+        float consumeScrollDelta();
         MouseLockMode getMouseCaptureMode() const {return this->mouseCaptureMode;}
 
 };

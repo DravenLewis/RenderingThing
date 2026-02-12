@@ -215,9 +215,7 @@ void Scene::render3DPass(){
 
     auto cam = screen->getCamera();
     if(cam){
-        if(!ShadowRenderer::IsEnabled()){
-            ShadowRenderer::BeginFrame(cam);
-        }
+        ShadowRenderer::BeginFrame(cam);
 
         auto shadowStart = std::chrono::steady_clock::now();
         drawShadowsPass();

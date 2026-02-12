@@ -2,6 +2,7 @@
 
 #include <imgui.h>
 #include <algorithm>
+#include <cmath>
 #include <limits>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -10,9 +11,11 @@
 #include "ImGuiLayer.h"
 #include "Logbot.h"
 #include "RenderWindow.h"
+#include "Asset.h"
 #include "Logbot.h"
 #include <glad/glad.h>
 #include <SDL3/SDL.h>
+#include "neoecs.hpp"
 
 namespace {
     constexpr float kToolbarHeight = 32.0f;
@@ -58,6 +61,20 @@ namespace {
             EditorScene* owner = nullptr;
             std::function<bool()> shouldBlock;
     };
+
+    bool screenPointInViewport(const Math3D::Vec3& screenPos, const TransformWidget::Viewport& viewport){
+        if(screenPos.z < 0.0f || screenPos.z > 1.0f){
+            return false;
+        }
+        if(screenPos.x < viewport.x || screenPos.x > (viewport.x + viewport.w)){
+            return false;
+        }
+        if(screenPos.y < viewport.y || screenPos.y > (viewport.y + viewport.h)){
+            return false;
+        }
+        return true;
+    }
+
 }
 
 EditorScene::EditorScene(RenderWindow* window, PScene targetScene)
@@ -226,19 +243,43 @@ void EditorScene::update(float deltaTime){
                 auto transform = editorCamera->transform();
                 transform.rotation = Math3D::Quat::FromEuler(Math3D::Vec3(editorPitch, editorYaw, 0.0f));
 
-                float velocity = editorMoveSpeed * deltaTime;
+                float moveSpeed = editorMoveSpeed;
                 if(inputManager->isKeyDown(SDL_SCANCODE_LSHIFT)){
-                    velocity *= editorFastScale;
+                    moveSpeed *= editorFastScale;
                 }
 
-                if(inputManager->isKeyDown(SDL_SCANCODE_W)) transform.position -= transform.forward() * velocity;
-                if(inputManager->isKeyDown(SDL_SCANCODE_S)) transform.position += transform.forward() * velocity;
-                if(inputManager->isKeyDown(SDL_SCANCODE_A)) transform.position -= transform.right() * velocity;
-                if(inputManager->isKeyDown(SDL_SCANCODE_D)) transform.position += transform.right() * velocity;
-                //if(inputManager->isKeyDown(SDL_SCANCODE_E)) transform.position += transform.up() * velocity;
-                //if(inputManager->isKeyDown(SDL_SCANCODE_Q)) transform.position -= transform.up() * velocity;
-                if(inputManager->isKeyDown(SDL_SCANCODE_LCTRL)) transform.position -= transform.up() * velocity;
-                if(inputManager->isKeyDown(SDL_SCANCODE_SPACE)) transform.position += transform.up() * velocity;
+                Math3D::Vec3 moveDir = Math3D::Vec3::zero();
+                if(inputManager->isKeyDown(SDL_SCANCODE_W)) moveDir -= transform.forward();
+                if(inputManager->isKeyDown(SDL_SCANCODE_S)) moveDir += transform.forward();
+                if(inputManager->isKeyDown(SDL_SCANCODE_A)) moveDir -= transform.right();
+                if(inputManager->isKeyDown(SDL_SCANCODE_D)) moveDir += transform.right();
+                if(inputManager->isKeyDown(SDL_SCANCODE_LCTRL)) moveDir -= transform.up();
+                if(inputManager->isKeyDown(SDL_SCANCODE_SPACE)) moveDir += transform.up();
+
+                if(moveDir.length() > Math3D::EPSILON){
+                    moveDir = moveDir.normalize();
+                }
+
+                Math3D::Vec3 desiredMoveVelocity = moveDir * moveSpeed;
+                float moveAlpha = 1.0f - std::exp(-editorMoveSmoothing * deltaTime);
+                editorMoveVelocity = Math3D::Lerp(editorMoveVelocity, desiredMoveVelocity, moveAlpha);
+                transform.position += editorMoveVelocity * deltaTime;
+
+                float scrollDelta = inputManager->consumeScrollDelta();
+                if(!Math3D::AreClose(scrollDelta, 0.0f)){
+                    float zoomImpulse = editorZoomImpulse;
+                    if(inputManager->isKeyDown(SDL_SCANCODE_LSHIFT)){
+                        zoomImpulse *= editorFastScale;
+                    }
+                    editorZoomVelocity += scrollDelta * zoomImpulse;
+                }
+
+                if(!Math3D::AreClose(editorZoomVelocity, 0.0f)){
+                    transform.position -= transform.forward() * (editorZoomVelocity * deltaTime);
+                }
+
+                float zoomAlpha = 1.0f - std::exp(-editorZoomDamping * deltaTime);
+                editorZoomVelocity = Math3D::Lerp(editorZoomVelocity, 0.0f, zoomAlpha);
 
                 editorCamera->setTransform(transform);
             }
@@ -273,8 +314,11 @@ void EditorScene::update(float deltaTime){
                 if(entity){
                     auto* components = targetScene->getECS()->getComponentManager();
                     if(auto* transformComp = components->getECSComponent<TransformComponent>(entity)){
+                        Math3D::Mat4 world = buildWorldMatrix(entity, components);
+                        Math3D::Vec3 worldPos = world.getPosition();
+                        Math3D::Transform worldTx = Math3D::Transform::fromMat4(world);
+                        Math3D::Vec3 worldForward = worldTx.forward();
                         TransformWidget::Viewport viewport{viewportRect.x, viewportRect.y, viewportRect.w, viewportRect.h, viewportRect.valid};
-                        Math3D::Vec3 worldPos = targetScene->getWorldPosition(entity);
                         widgetConsumed = transformWidget.update(
                             this,
                             inputManager.get(),
@@ -287,6 +331,31 @@ void EditorScene::update(float deltaTime){
                             lmb,
                             lmbReleased
                         );
+                        if(auto* lightComp = components->getECSComponent<LightComponent>(entity)){
+                            if(!widgetConsumed){
+                                widgetConsumed = lightWidget.update(
+                                    this,
+                                    inputManager.get(),
+                                    editorCamera,
+                                    viewport,
+                                    worldPos,
+                                    worldForward,
+                                    lightComp->light,
+                                    lightComp->syncTransform,
+                                    lightComp->syncDirection,
+                                    mouseInViewport && !allowControl,
+                                    lmbPressed,
+                                    lmb,
+                                    lmbReleased
+                                );
+                                if(lightComp->light.type == LightType::POINT){
+                                    ensurePointLightBounds(entity, lightComp->light.range);
+                                    if(!lightComp->light.castsShadows){
+                                        lightComp->light.castsShadows = true;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -683,9 +752,20 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
             auto* components = targetScene->getECS()->getComponentManager();
             if(auto* transformComp = components->getECSComponent<TransformComponent>(entity)){
                 TransformWidget::Viewport viewport{viewportRect.x, viewportRect.y, viewportRect.w, viewportRect.h, viewportRect.valid};
-                Math3D::Vec3 worldPos = targetScene->getWorldPosition(entity);
+                Math3D::Mat4 world = buildWorldMatrix(entity, components);
+                Math3D::Vec3 worldPos = world.getPosition();
+                Math3D::Transform worldTx = Math3D::Transform::fromMat4(world);
+                Math3D::Vec3 worldForward = worldTx.forward();
                 ImDrawList* drawList = ImGui::GetWindowDrawList();
                 transformWidget.draw(drawList, this, editorCamera, viewport, worldPos, transformComp->local, viewportHovered);
+                ensureEditorIconsLoaded();
+                if(auto* cameraComp = components->getECSComponent<CameraComponent>(entity)){
+                    (void)cameraComp;
+                    drawBillboardIcon(drawList, worldPos, iconCamera, 64.0f, IM_COL32(255, 255, 255, 255));
+                }
+                if(auto* lightComp = components->getECSComponent<LightComponent>(entity)){
+                    lightWidget.draw(drawList, this, editorCamera, viewport, worldPos, worldForward, lightComp->light, lightComp->syncTransform, lightComp->syncDirection);
+                }
             }
         }
     }
@@ -739,13 +819,184 @@ void EditorScene::drawPropertiesPanel(float x, float y, float w, float h){
         if(auto* light = components->getECSComponent<LightComponent>(entity)){
             ImGui::Separator();
             ImGui::TextUnformatted("Light");
+            if(!selectedEntityId.empty() && migratedLightSyncTransform.find(selectedEntityId) == migratedLightSyncTransform.end()){
+                if(!light->syncTransform){
+                    light->syncTransform = true;
+                }
+                if(light->light.shadowRange <= 0.0f){
+                    light->light.shadowRange = 200.0f;
+                }
+                migratedLightSyncTransform.insert(selectedEntityId);
+            }
+            if(!selectedEntityId.empty() && migratedLightDefaults.find(selectedEntityId) == migratedLightDefaults.end()){
+                if(light->light.range <= 0.0f){
+                    light->light.range = 20.0f;
+                }
+                if(light->light.shadowRange <= 0.0f){
+                    light->light.shadowRange = 200.0f;
+                }
+                if(light->light.intensity <= 0.0f){
+                    light->light.intensity = 4.0f;
+                }
+                if(light->light.falloff <= 0.0f){
+                    light->light.falloff = 2.0f;
+                }
+                if(light->light.type == LightType::SPOT && light->light.spotAngle <= 0.0f){
+                    light->light.spotAngle = 45.0f;
+                }
+                migratedLightDefaults.insert(selectedEntityId);
+            }
+            const char* typeLabels[] = {"Point", "Directional", "Spot"};
+            int typeIndex = static_cast<int>(light->light.type);
+            if(ImGui::Combo("Type", &typeIndex, typeLabels, IM_ARRAYSIZE(typeLabels))){
+                LightType newType = static_cast<LightType>(typeIndex);
+                if(newType != light->light.type){
+                    LightType prevType = light->light.type;
+                    light->light.type = newType;
+                    light->syncDirection = (newType != LightType::POINT);
+                    light->syncTransform = true;
+                    if(newType == LightType::POINT){
+                        if(prevType == LightType::DIRECTIONAL || light->light.range <= 0.1f){
+                            light->light.range = 20.0f;
+                        }
+                        ensurePointLightBounds(entity, light->light.range);
+                        if(!light->light.castsShadows){
+                            light->light.castsShadows = true;
+                        }
+                        if(light->light.shadowRange <= 0.0f){
+                            light->light.shadowRange = 200.0f;
+                        }
+                    }else if(newType == LightType::DIRECTIONAL){
+                        if(light->light.direction.length() < Math3D::EPSILON){
+                            light->light.direction = Math3D::Vec3(0, -1, 0);
+                        }
+                        if(prevType != LightType::DIRECTIONAL){
+                            light->light.range = 20.0f;
+                            light->light.shadowRange = 200.0f;
+                        }
+                    }else if(newType == LightType::SPOT){
+                        if(light->light.direction.length() < Math3D::EPSILON){
+                            light->light.direction = Math3D::Vec3(0, -1, 0);
+                        }
+                        if(prevType == LightType::DIRECTIONAL || light->light.range <= 0.1f){
+                            light->light.range = 20.0f;
+                        }
+                        if(light->light.spotAngle <= 0.1f || prevType == LightType::DIRECTIONAL){
+                            light->light.spotAngle = 45.0f;
+                        }
+                        if(!light->light.castsShadows){
+                            light->light.castsShadows = true;
+                        }
+                        if(light->light.shadowRange <= 0.0f){
+                            light->light.shadowRange = 200.0f;
+                        }
+                    }
+                }
+            }
             ImGui::ColorEdit4("Color", &light->light.color.x);
             ImGui::DragFloat("Intensity", &light->light.intensity, 0.05f, 0.0f, 10.0f);
+            if(ImGui::Checkbox("Sync Transform", &light->syncTransform)){
+                if(light->syncTransform && light->light.type == LightType::POINT){
+                    ensurePointLightBounds(entity, light->light.range);
+                }
+            }
+            if(light->light.type == LightType::POINT){
+                float range = light->light.range;
+                if(ImGui::DragFloat("Range", &range, 0.1f, 0.1f, 1000.0f)){
+                    light->light.range = range;
+                    ensurePointLightBounds(entity, range);
+                }
+                ImGui::DragFloat("Falloff", &light->light.falloff, 0.05f, 0.1f, 10.0f);
+                ImGui::DragFloat("Shadow Range", &light->light.shadowRange, 0.1f, 0.0f, 2000.0f);
+            }else if(light->light.type == LightType::SPOT){
+                ImGui::DragFloat("Range", &light->light.range, 0.1f, 0.1f, 1000.0f);
+                ImGui::DragFloat("Spot Angle", &light->light.spotAngle, 0.25f, 1.0f, 170.0f);
+                ImGui::DragFloat("Falloff", &light->light.falloff, 0.05f, 0.1f, 10.0f);
+                ImGui::DragFloat("Shadow Range", &light->light.shadowRange, 0.1f, 0.0f, 2000.0f);
+            }else if(light->light.type == LightType::DIRECTIONAL){
+                ImGui::DragFloat("Shadow Range", &light->light.shadowRange, 0.5f, 10.0f, 2000.0f);
+            }
+            if(light->light.type != LightType::POINT){
+                ImGui::Checkbox("Sync Direction", &light->syncDirection);
+                bool dirEditable = !light->syncDirection;
+                if(!dirEditable){
+                    ImGui::BeginDisabled();
+                }
+                ImGui::DragFloat3("Direction", &light->light.direction.x, 0.02f, -1.0f, 1.0f);
+                if(!dirEditable){
+                    ImGui::EndDisabled();
+                }
+            }
             ImGui::Checkbox("Cast Shadows", &light->light.castsShadows);
+            const char* shadowLabels[] = {"Hard", "Standard", "Smooth"};
+            int shadowIndex = static_cast<int>(light->light.shadowType);
+            if(ImGui::Combo("Shadow Type", &shadowIndex, shadowLabels, IM_ARRAYSIZE(shadowLabels))){
+                light->light.shadowType = static_cast<ShadowType>(shadowIndex);
+            }
+            ImGui::DragFloat("Shadow Bias", &light->light.shadowBias, 0.0005f, 0.0f, 0.01f, "%.6f");
+            ImGui::DragFloat("Shadow Normal Bias", &light->light.shadowNormalBias, 0.0005f, 0.0f, 0.01f, "%.6f");
+            ImGui::DragFloat("Shadow Strength", &light->light.shadowStrength, 0.01f, 0.0f, 1.0f);
         }
     }
 
     ImGui::End();
+}
+
+void EditorScene::ensureEditorIconsLoaded(){
+    if(editorIconsLoaded){
+        return;
+    }
+    iconCamera = Texture::Load(AssetManager::Instance.getOrLoad("@assets/images/editor_icons/camera.png"));
+    iconLightPoint = Texture::Load(AssetManager::Instance.getOrLoad("@assets/images/editor_icons/light_point.png"));
+    iconLightSpot = Texture::Load(AssetManager::Instance.getOrLoad("@assets/images/editor_icons/light_spot.png"));
+    iconLightDirectional = Texture::Load(AssetManager::Instance.getOrLoad("@assets/images/editor_icons/light_directional.png"));
+    iconAudio = Texture::Load(AssetManager::Instance.getOrLoad("@assets/images/editor_icons/audio.png"));
+    LightWidget::Icons icons;
+    icons.point = iconLightPoint;
+    icons.spot = iconLightSpot;
+    icons.directional = iconLightDirectional;
+    lightWidget.setIcons(icons);
+    editorIconsLoaded = true;
+}
+
+void EditorScene::drawBillboardIcon(ImDrawList* drawList,
+                                    const Math3D::Vec3& worldPos,
+                                    PTexture texture,
+                                    float sizePx,
+                                    ImU32 tint) const{
+    if(!drawList || !texture || !editorCamera || !viewportRect.valid){
+        return;
+    }
+    TransformWidget::Viewport viewport{viewportRect.x, viewportRect.y, viewportRect.w, viewportRect.h, viewportRect.valid};
+    Math3D::Vec3 screen = worldToScreen(editorCamera, worldPos, viewport.x, viewport.y, viewport.w, viewport.h);
+    if(!screenPointInViewport(screen, viewport)){
+        return;
+    }
+    float half = sizePx * 0.5f;
+    ImVec2 pmin(screen.x - half, screen.y - half);
+    ImVec2 pmax(screen.x + half, screen.y + half);
+    ImTextureID texId = (ImTextureID)(intptr_t)texture->getID();
+    drawList->AddImage(texId, pmin, pmax, ImVec2(0, 0), ImVec2(1, 1), tint);
+}
+
+void EditorScene::ensurePointLightBounds(NeoECS::ECSEntity* entity, float radius){
+    if(!entity || !targetScene || !targetScene->getECS()){
+        return;
+    }
+    auto* manager = targetScene->getECS()->getComponentManager();
+    if(auto* bounds = manager->getECSComponent<BoundsComponent>(entity)){
+        bounds->type = BoundsType::Sphere;
+        bounds->radius = radius;
+    }else{
+        auto* ctx = targetScene->getECS()->getContext();
+        std::unique_ptr<NeoECS::GameObject> wrapper(NeoECS::GameObject::CreateFromECSEntity(ctx, entity));
+        if(wrapper && wrapper->addComponent<BoundsComponent>()){
+            if(auto* newBounds = manager->getECSComponent<BoundsComponent>(entity)){
+                newBounds->type = BoundsType::Sphere;
+                newBounds->radius = radius;
+            }
+        }
+    }
 }
 
 void EditorScene::drawAssetsPanel(float x, float y, float w, float h){

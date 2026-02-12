@@ -147,7 +147,9 @@ void InputManager::onMouseMoved(int x, int y){
 
 void InputManager::onMouseScroll(float dz){
 
-    this->inputInfo.wheel = dz;
+    // SDL provides a delta per event; accumulate so multiple events per frame stack.
+    this->inputInfo.wheel += dz;
+    this->inputInfo.wheelDelta += dz;
 
     // Dispach Event.
     for(auto it = handlers.begin(); it != handlers.end();){
@@ -198,5 +200,11 @@ void InputManager::setMouseCaptureMode(MouseLockMode mode){
 Math3D::Vec2 InputManager::consumeMouseAxisDelta(){
     Math3D::Vec2 delta = this->inputInfo.mouseAxis;
     this->inputInfo.mouseAxis = Math3D::Vec2(0,0);
+    return delta;
+}
+
+float InputManager::consumeScrollDelta(){
+    float delta = this->inputInfo.wheelDelta;
+    this->inputInfo.wheelDelta = 0.0f;
     return delta;
 }

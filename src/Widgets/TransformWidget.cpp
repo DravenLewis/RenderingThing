@@ -96,6 +96,26 @@ namespace {
             out.push_back(point);
         }
     }
+
+    bool isGizmoOnScreen(View* view,
+                         PCamera camera,
+                         const TransformWidget::Viewport& viewport,
+                         const Math3D::Vec3& worldPos){
+        if(!view || !camera || !viewport.valid){
+            return false;
+        }
+        Math3D::Vec3 screen = view->worldToScreen(camera, worldPos, viewport.x, viewport.y, viewport.w, viewport.h);
+        if(screen.z < 0.0f || screen.z > 1.0f){
+            return false;
+        }
+        if(screen.x < viewport.x || screen.x > (viewport.x + viewport.w)){
+            return false;
+        }
+        if(screen.y < viewport.y || screen.y > (viewport.y + viewport.h)){
+            return false;
+        }
+        return true;
+    }
 }
 
 TransformWidget::TransformWidget() = default;
@@ -274,6 +294,11 @@ bool TransformWidget::update(View* view,
     gizmoSize = computeGizmoSize(camera, worldPos);
 
     if(!dragging && allowInput){
+        if(!isGizmoOnScreen(view, camera, viewport, worldPos)){
+            hoverAxis = Axis::None;
+            hoverHandle = Handle::None;
+            return false;
+        }
         HoverResult hover = pickHandleFromMouse(view, input, camera, viewport, worldPos, transform);
         hoverHandle = hover.handle;
         hoverAxis = hover.axis;
@@ -387,6 +412,9 @@ void TransformWidget::draw(ImDrawList* drawList,
                            const Math3D::Transform& transform,
                            bool viewportHovered) const{
     if(!drawList || !view || !camera || !viewport.valid){
+        return;
+    }
+    if(!isGizmoOnScreen(view, camera, viewport, worldPos)){
         return;
     }
 

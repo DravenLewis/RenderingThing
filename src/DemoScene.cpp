@@ -198,7 +198,13 @@ void DemoScene::init(){
         }
     }
 
-    createLightGameObject("SunLight", SunLight, nullptr, false, false);
+    auto lSun = createLightGameObject("SunLight", SunLight, nullptr, false, false);
+    if(lSun){
+        auto sunTransform = lSun->getComponent<TransformComponent>();
+        if(sunTransform) 
+            sunTransform->local.rotateAxisAngle(Math3D::Vec3(1,0,0),90); // face down.
+    }
+
     createLightGameObject("KeyLight", KeyPoint, nullptr, true, false);
     createLightGameObject("FillLight", FillPoint, nullptr, true, false);
     createLightGameObject("RimLight", RimPoint, nullptr, true, false);

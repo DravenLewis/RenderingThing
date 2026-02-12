@@ -41,7 +41,7 @@ namespace Math3D{
         return glm::abs(a - b) <= eps;
     }
 
-
+    
 
     template<typename T>
     inline T Min(const T& lvalue, const T& rvalue){

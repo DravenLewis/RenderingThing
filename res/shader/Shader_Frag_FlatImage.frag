@@ -117,8 +117,10 @@ vec3 calculateLight(Light light, vec3 norm, vec3 viewDir, vec3 fragPos, vec4 tex
         float distance = length(light.position.xyz - fragPos);
         float attenuation = 0.0;
         if (distance < light.params.y) {
-            attenuation = 1.0 / pow(max(distance, 0.1), light.params.z);
-            attenuation = clamp(attenuation, 0.0, 1.0);
+            float range = max(light.params.y, 0.001);
+            float d = clamp(distance / range, 0.0, 1.0);
+            float falloff = max(light.params.z, 0.001);
+            attenuation = pow(1.0 - d, falloff);
         }
         
         float diff = max(dot(norm, lightDir), 0.0);
@@ -150,8 +152,10 @@ vec3 calculateLight(Light light, vec3 norm, vec3 viewDir, vec3 fragPos, vec4 tex
         if (distance < light.params.y) {
             float theta = degrees(acos(dot(-lightDir, normalize(light.direction.xyz))));
             if (theta < light.params.w) {
-                attenuation = 1.0 / pow(max(distance, 0.1), light.params.z);
-                attenuation = clamp(attenuation, 0.0, 1.0);
+                float range = max(light.params.y, 0.001);
+                float d = clamp(distance / range, 0.0, 1.0);
+                float falloff = max(light.params.z, 0.001);
+                attenuation = pow(1.0 - d, falloff);
             }
         }
         float diff = max(dot(norm, lightDir), 0.0);

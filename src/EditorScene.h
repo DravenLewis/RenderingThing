@@ -5,6 +5,7 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <unordered_set>
 #include <vector>
 #include <atomic>
 
@@ -13,6 +14,8 @@
 #include "neoecs.hpp"
 #include "ECSComponents.h"
 #include "Widgets/TransformWidget.h"
+#include "Widgets/LightWidget.h"
+#include "Texture.h"
 
 class EditorScene : public Scene {
     public:
@@ -59,8 +62,14 @@ class EditorScene : public Scene {
         float editorYaw = -90.0f;
         float editorPitch = 0.0f;
         float editorMoveSpeed = 8.0f;
+        float editorZoomSpeed = 6.0f;
+        float editorMoveSmoothing = 12.0f;
+        float editorZoomImpulse = 8.0f;
+        float editorZoomDamping = 12.0f;
         float editorLookSensitivity = 0.1f;
         float editorFastScale = 2.0f;
+        Math3D::Vec3 editorMoveVelocity = Math3D::Vec3::zero();
+        float editorZoomVelocity = 0.0f;
         bool editorCameraActive = false;
         bool prevRmb = false;
         bool prevLmb = false;
@@ -95,6 +104,15 @@ class EditorScene : public Scene {
         bool prevKeyW = false;
         bool prevKeyE = false;
         bool prevKeyR = false;
+        LightWidget lightWidget;
+        std::unordered_set<std::string> migratedLightSyncTransform;
+        std::unordered_set<std::string> migratedLightDefaults;
+        bool editorIconsLoaded = false;
+        PTexture iconCamera;
+        PTexture iconLightPoint;
+        PTexture iconLightSpot;
+        PTexture iconLightDirectional;
+        PTexture iconAudio;
 
         void ensureTargetInitialized();
         void drawToolbar(float width, float height);
@@ -112,6 +130,14 @@ class EditorScene : public Scene {
         void performStop();
         void storeSelectionForPlay();
         void restoreSelectionAfterReset();
+        void ensureEditorIconsLoaded();
+        void drawBillboardIcon(ImDrawList* drawList,
+                               const Math3D::Vec3& worldPos,
+                               PTexture texture,
+                               float sizePx,
+                               ImU32 tint) const;
+        void ensurePointLightBounds(NeoECS::ECSEntity* entity, float radius);
+        bool computeSceneBounds(Math3D::Vec3& outCenter, float& outRadius) const;
 };
 
 #endif // EDITOR_SCENE_H
