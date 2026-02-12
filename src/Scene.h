@@ -1,6 +1,8 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include <array>
+#include <atomic>
 #include <memory>
 #include <vector>
 
@@ -34,10 +36,38 @@ class Scene : public View {
         NeoECS::GameObject* createModelGameObject(const std::string& name, const PModel& model, NeoECS::GameObject* parent = nullptr);
         NeoECS::GameObject* createLightGameObject(const std::string& name, const Light& light, NeoECS::GameObject* parent = nullptr, bool syncTransform = true, bool syncDirection = false);
 
+        struct DebugStats {
+            std::atomic<float> snapshotMs{0.0f};
+            std::atomic<float> shadowMs{0.0f};
+            std::atomic<float> drawMs{0.0f};
+            std::atomic<int> drawCount{0};
+            std::atomic<int> lightCount{0};
+        };
+
+        const DebugStats& getDebugStats() const { return debugStats; }
+
     protected:
+        Math3D::Mat4 buildWorldMatrix(NeoECS::ECSEntity* entity, NeoECS::ECSComponentManager* manager) const;
+
         std::shared_ptr<InputManager> inputManager;
         NeoECS::NeoECS* ecsInstance = nullptr;
         NeoECS::NeoAPI* ecsAPI = nullptr;
+
+        struct RenderItem {
+            std::shared_ptr<Mesh> mesh;
+            std::shared_ptr<Material> material;
+            Math3D::Mat4 model;
+            bool enableBackfaceCulling = true;
+        };
+
+        struct RenderSnapshot {
+            std::vector<RenderItem> drawItems;
+            std::vector<Light> lights;
+        };
+
+        std::array<RenderSnapshot, 2> renderSnapshots{};
+        std::atomic<int> renderSnapshotIndex{0};
+        DebugStats debugStats{};
 
         void updateSceneLights();
         void render3DPass();

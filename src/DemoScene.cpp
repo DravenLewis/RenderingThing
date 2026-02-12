@@ -271,6 +271,18 @@ void DemoScene::render(){
             Graphics2D::FillRect(*graphics2d, 0, uiScreen->getHeight() - 100, uiScreen->getWidth(), 100);
             Graphics2D::SetBackgroundColor(*graphics2d, Color::WHITE);
             frameTimeGraph.draw(*graphics2d, 0, uiScreen->getHeight() - 70, uiScreen->getWidth(), 60);
+
+            auto& stats = getDebugStats();
+            std::string perfInfo = StringUtils::Format(
+                "ECS Snapshot: %.2f ms | Shadow: %.2f ms | Draw: %.2f ms | DrawItems: %d | Lights: %d",
+                stats.snapshotMs.load(std::memory_order_relaxed),
+                stats.shadowMs.load(std::memory_order_relaxed),
+                stats.drawMs.load(std::memory_order_relaxed),
+                stats.drawCount.load(std::memory_order_relaxed),
+                stats.lightCount.load(std::memory_order_relaxed)
+            );
+            Graphics2D::SetForegroundColor(*graphics2d, Color::WHITE);
+            Graphics2D::DrawString(*graphics2d, perfInfo, 10, uiScreen->getHeight() - 96);
         }
         
         auto shadowTex = ShadowRenderer::GetDepthBuffer();
