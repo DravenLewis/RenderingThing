@@ -22,6 +22,17 @@ public:
     double totalIntervalSum = 0.0;  // Sum of all gaps between peaks
     int peakIntervalCount = 0;      // How many gaps we have measured
 
+    struct EcsInfo {
+        float snapshotMs = 0.0f;
+        float shadowMs = 0.0f;
+        float drawMs = 0.0f;
+        int drawCount = 0;
+        int lightCount = 0;
+        bool hasData = false;
+    };
+
+    EcsInfo ecsInfo{};
+
     FrameTimeGraph(){
         for(int i = 0; i < MAX_SAMPLES; i++){
             samples[i] = 0.0f;
@@ -54,6 +65,15 @@ public:
             // Mark this moment as the new "last seen peak"
             lastPeakTime = globalTime;
         }
+    }
+
+    void setEcsInfo(float snapshotMs, float shadowMs, float drawMs, int drawCount, int lightCount){
+        ecsInfo.snapshotMs = snapshotMs;
+        ecsInfo.shadowMs = shadowMs;
+        ecsInfo.drawMs = drawMs;
+        ecsInfo.drawCount = drawCount;
+        ecsInfo.lightCount = lightCount;
+        ecsInfo.hasData = true;
     }
 
     void draw(Graphics2D& g, float x, float y, float w, float h){
@@ -105,12 +125,26 @@ public:
             "[DT Monitor] %.2f ms | Max: %.2f | Avg. Peak Time: %.2f ms (%.2f Seconds)",
             samples[latestIdx],
             maxSeen,
-            avgPeakDistMs,
+            avgPeakDistMs, 
             avgPeakDistSec
         );
 
         Graphics2D::SetBackgroundColor(g, Color::WHITE);
         Graphics2D::DrawString(g, buffer, x, y - 14);
+
+        if(ecsInfo.hasData){
+            char ecsBuffer[256];
+            snprintf(ecsBuffer, sizeof(ecsBuffer),
+                "[ECS] Snapshot: %.2f ms | Shadow: %.2f ms | Draw: %.2f ms | DrawItems: %d | Lights: %d",
+                ecsInfo.snapshotMs,
+                ecsInfo.shadowMs,
+                ecsInfo.drawMs,
+                ecsInfo.drawCount,
+                ecsInfo.lightCount
+            );
+            Graphics2D::SetBackgroundColor(g, Color::WHITE);
+            Graphics2D::DrawString(g, ecsBuffer, x, y - 32);
+        }
     }
 };
 
