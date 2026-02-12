@@ -4,8 +4,10 @@
 #include "ShadowRenderer.h"
 #include "SkyBox.h"
 #include "ECSComponents.h"
+#include "Color.h"
 #include <chrono>
 #include <glad/glad.h>
+#include <glm/gtc/matrix_transform.hpp>
 
 Scene::Scene(RenderWindow* window) : View(window) {
     ecsInstance = NeoECS::NeoECS::newInstance();
@@ -129,6 +131,7 @@ void Scene::updateECS(float deltaTime){
                     item.material = part->material;
                     item.model = base * part->localTransform.toMat4();
                     item.enableBackfaceCulling = cull;
+                    item.entityId = entity->getNodeUniqueID();
                     snapshot.drawItems.push_back(std::move(item));
                 }
             }else if(renderer->mesh && renderer->material){
@@ -137,6 +140,7 @@ void Scene::updateECS(float deltaTime){
                 item.material = renderer->material;
                 item.model = base;
                 item.enableBackfaceCulling = cull;
+                item.entityId = entity->getNodeUniqueID();
                 snapshot.drawItems.push_back(std::move(item));
             }
         }
@@ -216,6 +220,10 @@ void Scene::render3DPass(){
 void Scene::drawModels3D(PCamera cam){
     if(!cam) return;
 
+    if(!outlineMaterial){
+        outlineMaterial = MaterialDefaults::ColorMaterial::Create(Color::fromRGBA32(0x3498dbFF));
+    }
+
     const int frontIndex = renderSnapshotIndex.load(std::memory_order_acquire);
     const auto& snapshot = renderSnapshots[frontIndex];
     for(const auto& item : snapshot.drawItems){
@@ -234,6 +242,23 @@ void Scene::drawModels3D(PCamera cam){
         item.material->bind();
         item.mesh->draw();
         item.material->unbind();
+
+        if(outlineEnabled && !selectedEntityId.empty() && item.entityId == selectedEntityId && outlineMaterial){
+            glEnable(GL_CULL_FACE);
+            glCullFace(GL_FRONT);
+
+            glm::mat4 outline = (glm::mat4)item.model;
+            outline = outline * glm::scale(glm::mat4(1.0f), glm::vec3(1.03f));
+            Math3D::Mat4 outlineModel(outline);
+
+            outlineMaterial->set<Math3D::Mat4>("u_model", outlineModel);
+            outlineMaterial->set<Math3D::Mat4>("u_view", cam->getViewMatrix());
+            outlineMaterial->set<Math3D::Mat4>("u_projection", cam->getProjectionMatrix());
+            outlineMaterial->bind();
+            item.mesh->draw();
+            outlineMaterial->unbind();
+            glCullFace(GL_BACK);
+        }
     }
 
     glEnable(GL_CULL_FACE);
@@ -257,4 +282,11 @@ void Scene::drawSkybox(PCamera cam){
     if(env && env->getSkyBox()){
         env->getSkyBox()->draw(cam);
     }
+}
+
+Math3D::Vec3 Scene::getWorldPosition(NeoECS::ECSEntity* entity) const{
+    if(!entity || !ecsInstance) return Math3D::Vec3();
+    auto* manager = ecsInstance->getComponentManager();
+    Math3D::Mat4 world = buildWorldMatrix(entity, manager);
+    return world.getPosition();
 }

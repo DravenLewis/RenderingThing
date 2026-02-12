@@ -4,6 +4,7 @@
 #include <array>
 #include <atomic>
 #include <memory>
+#include <string>
 #include <vector>
 
 #include "View.h"
@@ -11,6 +12,7 @@
 #include "Model.h"
 #include "Light.h"
 #include "neoecs.hpp"
+#include "MaterialDefaults.h"
 
 class Scene;
 typedef std::shared_ptr<Scene> PScene;
@@ -58,6 +60,7 @@ class Scene : public View {
             std::shared_ptr<Material> material;
             Math3D::Mat4 model;
             bool enableBackfaceCulling = true;
+            std::string entityId;
         };
 
         struct RenderSnapshot {
@@ -68,12 +71,22 @@ class Scene : public View {
         std::array<RenderSnapshot, 2> renderSnapshots{};
         std::atomic<int> renderSnapshotIndex{0};
         DebugStats debugStats{};
+        std::string selectedEntityId;
+        std::shared_ptr<MaterialDefaults::ColorMaterial> outlineMaterial;
+        bool outlineEnabled = false;
 
         void updateSceneLights();
         void render3DPass();
         void drawModels3D(PCamera cam);
         void drawShadowsPass();
         void drawSkybox(PCamera cam);
+
+    public:
+        void setSelectedEntityId(const std::string& id) { selectedEntityId = id; }
+        const std::string& getSelectedEntityId() const { return selectedEntityId; }
+        void setOutlineEnabled(bool enabled) { outlineEnabled = enabled; }
+        bool isOutlineEnabled() const { return outlineEnabled; }
+        Math3D::Vec3 getWorldPosition(NeoECS::ECSEntity* entity) const;
 };
 
 class Scene3D : public Scene {

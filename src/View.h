@@ -17,6 +17,7 @@ class View : public std::enable_shared_from_this<View> {
     public:
         View();
         View(RenderWindow* window);
+        virtual ~View() = default;
 
         void attachWindow(RenderWindow* window);
         bool hasWindow() const { return window != nullptr; }
@@ -33,7 +34,14 @@ class View : public std::enable_shared_from_this<View> {
         void addScreen(PScreen screen);
         size_t screenCount() const { return screens.size(); }
 
-        void drawToWindow(bool clearWindow = true, float x = -1, float y = -1, float w = -1, float h = -1);
+        virtual void drawToWindow(bool clearWindow = true, float x = -1, float y = -1, float w = -1, float h = -1);
+
+        Math3D::Vec3 screenToWorld(PCamera cam, float x, float y, float depth = 0.0f,
+                                   float viewportX = 0.0f, float viewportY = 0.0f,
+                                   float viewportW = -1.0f, float viewportH = -1.0f) const;
+        Math3D::Vec3 worldToScreen(PCamera cam, const Math3D::Vec3& world,
+                                   float viewportX = 0.0f, float viewportY = 0.0f,
+                                   float viewportW = -1.0f, float viewportH = -1.0f) const;
 };
 
 typedef std::shared_ptr<View> PView;

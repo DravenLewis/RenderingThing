@@ -195,6 +195,12 @@ namespace Math3D{
             return Quat(glm::slerp((glm::quat)start, (glm::quat)end, time));
         }
 
+        // Convert to Euler angles (Degrees)
+        Vec3 ToEuler() const {
+            glm::vec3 eulerRad = glm::eulerAngles((glm::quat)*this);
+            glm::vec3 eulerDeg = glm::degrees(eulerRad);
+            return Vec3(eulerDeg.x, eulerDeg.y, eulerDeg.z);
+        }
 
         operator glm::quat() const { return glm::quat(w, x, y, z); } // Note GLM constructor order w,x,y,z
 

@@ -5,6 +5,8 @@
 
 #include "DefaultState.h"
 #include "Logbot.h"
+#include "ImGuiLayer.h"
+#include "EditorScene.h"
 
 GameEngine* GameEngine::Engine = nullptr;
 
@@ -15,6 +17,8 @@ void GameEngine::init(){
     windowPtr->addWindowEventHandler([this](SDL_Event& event){
         processEvents(event);
     });
+
+    ImGuiLayer::Init(windowPtr.get());
 
     {
         std::lock_guard<std::mutex> lock(sceneMutex);
@@ -92,14 +96,25 @@ void GameEngine::render(){
         }
     }
 
+    ImGuiLayer::BeginFrame();
+
     if(activeScene){
         activeScene->render();
         activeScene->drawToWindow();
     }
+
+    ImGuiLayer::EndFrame();
 } // Update as fast as possible.
 
 void GameEngine::processEvents(SDL_Event& event){
     if(event.type == SDL_EVENT_QUIT){
+        if(activeScene){
+            if(auto editor = std::dynamic_pointer_cast<EditorScene>(activeScene)){
+                if(editor->handleQuitRequest()){
+                    return;
+                }
+            }
+        }
         if(windowPtr){
             windowPtr->close();
         }
@@ -122,6 +137,8 @@ void GameEngine::dispose(){
         activeScene->dispose();
         activeScene.reset();
     }
+
+    ImGuiLayer::Shutdown();
 
     if(windowPtr){
         windowPtr->dispose();

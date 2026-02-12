@@ -43,6 +43,9 @@ class InputManager{
         std::vector<std::weak_ptr<IEventHandler>> handlers;
         InputInformation inputInfo;
         MouseLockMode mouseCaptureMode = MouseLockMode::FREE;
+        bool hasLastMouse = false;
+        int lastMouseX = 0;
+        int lastMouseY = 0;
     public:
         InputManager() : windowPtr(nullptr) {};
         InputManager(std::shared_ptr<RenderWindow> window, bool attachHandlers = true);
@@ -72,6 +75,7 @@ class InputManager{
         bool isRMBDown() const { return this->inputInfo.mouse_right_button;}
         float getScrollWheel() const {return this->inputInfo.wheel;}
         Math3D::Vec2 getMouseAxisDelta() const {return this->inputInfo.mouseAxis;}
+        Math3D::Vec2 consumeMouseAxisDelta();
         MouseLockMode getMouseCaptureMode() const {return this->mouseCaptureMode;}
 
 };

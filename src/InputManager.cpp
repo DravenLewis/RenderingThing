@@ -120,6 +120,18 @@ void InputManager::onMouseMoved(int x, int y){
 
     this->inputInfo.mouseX = x;
     this->inputInfo.mouseY = y;
+    if(this->mouseCaptureMode == MouseLockMode::LOCKED){
+        this->inputInfo.mouseAxis = Math3D::Vec2((float)x, (float)y);
+    }else{
+        if(this->hasLastMouse){
+            this->inputInfo.mouseAxis = Math3D::Vec2((float)(x - this->lastMouseX), (float)(y - this->lastMouseY));
+        }else{
+            this->inputInfo.mouseAxis = Math3D::Vec2(0,0);
+            this->hasLastMouse = true;
+        }
+        this->lastMouseX = x;
+        this->lastMouseY = y;
+    }
 
  
     // Dispach Event.
@@ -159,6 +171,8 @@ void InputManager::setMouseCaptureMode(MouseLockMode mode){
 
     this->mouseCaptureMode = mode;
     SDL_Window* nativeWindowPtr = this->windowPtr->getWindowPtr();
+    this->hasLastMouse = false;
+    this->inputInfo.mouseAxis = Math3D::Vec2(0,0);
 
     switch(mode){
         case MouseLockMode::CAPTURED:
@@ -179,4 +193,10 @@ void InputManager::setMouseCaptureMode(MouseLockMode mode){
             break;
     }
 
+}
+
+Math3D::Vec2 InputManager::consumeMouseAxisDelta(){
+    Math3D::Vec2 delta = this->inputInfo.mouseAxis;
+    this->inputInfo.mouseAxis = Math3D::Vec2(0,0);
+    return delta;
 }

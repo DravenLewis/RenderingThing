@@ -123,6 +123,9 @@ public:
     virtual bool onKeyDown(int k,InputManager& m) override { return false; }
     virtual bool onMousePressed(int b,InputManager& m) override { 
         if(b == SDL_BUTTON_LEFT && m.getMouseCaptureMode() != MouseLockMode::LOCKED){
+
+            LogBot.Log(LOG_UNKN, "Captured click event! ");
+
             m.setMouseCaptureMode(MouseLockMode::LOCKED); // lock the mouse if the player clicks the screen.
         }
         return false; 

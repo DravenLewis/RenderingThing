@@ -1,5 +1,6 @@
 
 #include "RenderWindow.h"
+#include "ImGuiLayer.h"
 
 /* // 2. Set OpenGL Attributes (Version 4.1 Core)
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
@@ -175,6 +176,7 @@ void RenderWindow::setResizable(bool resize){
 
 void RenderWindow::process(){
     while (SDL_PollEvent(&event)) {
+        ImGuiLayer::ProcessEvent(event);
         if(event.type == SDL_EVENT_WINDOW_RESIZED){
             int w = event.window.data1;
             int h = event.window.data2;
@@ -199,4 +201,8 @@ void RenderWindow::addWindowEventHandler(std::function<void(SDL_Event&)> fn){
 
 SDL_Window* RenderWindow::getWindowPtr(){
     return this->windowPtr;
+}
+
+SDL_GLContext RenderWindow::getGLContext(){
+    return this->glContext;
 }

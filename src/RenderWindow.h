@@ -165,6 +165,7 @@ class RenderWindow{
         DisplayMode& getDisplayMode();
         SDL_Event& getEvent();
         SDL_Window* getWindowPtr();
+        SDL_GLContext getGLContext();
 
 };
 

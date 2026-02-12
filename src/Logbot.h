@@ -9,6 +9,7 @@
 #include <sstream>
 #include <mutex>
 #include <thread>
+#include <atomic>
 
 #include "StringUtils.h"
 
@@ -27,6 +28,8 @@ class Logbot {
 private:
     static thread_local int activeDepth;
     static std::mutex logMutex;
+    static std::string logHistory;
+    static std::atomic<uint64_t> logVersion;
     std::string lastFormattedValue;
     std::string loggingName;
 
@@ -61,6 +64,9 @@ private:
     void internalPrint(const std::string& msg ,bool override) {
         if (isTopLevelCall() || override) {
             std::lock_guard<std::mutex> lock(logMutex);
+            logHistory.append(msg);
+            logHistory.push_back('\n');
+            logVersion.fetch_add(1, std::memory_order_relaxed);
             std::cout << msg << std::endl;
         }
     }
@@ -121,11 +127,22 @@ public:
     static Logbot CreateInstance(std::string loggerName) {
         return Logbot(loggerName);
     }
+
+    static std::string GetLogHistory() {
+        std::lock_guard<std::mutex> lock(logMutex);
+        return logHistory;
+    }
+
+    static uint64_t GetLogVersion() {
+        return logVersion.load(std::memory_order_relaxed);
+    }
 };
 
 // Definitions for static members
 inline thread_local int Logbot::activeDepth = 0;
 inline std::mutex Logbot::logMutex;
+inline std::string Logbot::logHistory;
+inline std::atomic<uint64_t> Logbot::logVersion{0};
 inline Logbot LogBot("DefaultLogger");
 
 #endif // LOGBOT_H

@@ -1,4 +1,5 @@
 #include "View.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 View::View(){
     this->window = nullptr;
@@ -75,4 +76,41 @@ void View::drawToWindow(bool clearWindow, float x, float y, float w, float h){
             screen->drawToView(self, clear, x, y, w, h);
         }
     }
+}
+
+Math3D::Vec3 View::screenToWorld(PCamera cam, float x, float y, float depth,
+                                 float viewportX, float viewportY, float viewportW, float viewportH) const{
+    if(!window || !cam) return Math3D::Vec3();
+
+    float w = (viewportW > 0.0f) ? viewportW : (float)window->getWindowWidth();
+    float h = (viewportH > 0.0f) ? viewportH : (float)window->getWindowHeight();
+    float vx = viewportX;
+    float vy = (float)window->getWindowHeight() - (viewportY + h);
+
+    glm::vec4 viewport(vx, vy, w, h);
+    float glX = x;
+    float glY = (float)window->getWindowHeight() - y;
+
+    glm::mat4 view = (glm::mat4)cam->getViewMatrix();
+    glm::mat4 proj = (glm::mat4)cam->getProjectionMatrix();
+    glm::vec3 world = glm::unProject(glm::vec3(glX, glY, depth), view, proj, viewport);
+    return Math3D::Vec3(world);
+}
+
+Math3D::Vec3 View::worldToScreen(PCamera cam, const Math3D::Vec3& world,
+                                 float viewportX, float viewportY, float viewportW, float viewportH) const{
+    if(!window || !cam) return Math3D::Vec3();
+
+    float w = (viewportW > 0.0f) ? viewportW : (float)window->getWindowWidth();
+    float h = (viewportH > 0.0f) ? viewportH : (float)window->getWindowHeight();
+    float vx = viewportX;
+    float vy = (float)window->getWindowHeight() - (viewportY + h);
+
+    glm::vec4 viewport(vx, vy, w, h);
+    glm::mat4 view = (glm::mat4)cam->getViewMatrix();
+    glm::mat4 proj = (glm::mat4)cam->getProjectionMatrix();
+    glm::vec3 projected = glm::project((glm::vec3)world, view, proj, viewport);
+    float screenX = projected.x;
+    float screenY = (float)window->getWindowHeight() - projected.y;
+    return Math3D::Vec3(screenX, screenY, projected.z);
 }
