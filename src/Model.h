@@ -25,6 +25,10 @@ struct Model : public IDrawable{
             return *this;
         }
 
+        const std::vector<std::shared_ptr<ModelPart>>& getParts() const {
+            return modelParts;
+        }
+
         Math3D::Transform& transform(){
             return modelTransform;
         }

@@ -13,6 +13,10 @@
 #include "SkyBox.h"
 #include "debug_helpers/FrameTimeGraph.h"
 
+namespace NeoECS {
+    class GameObject;
+}
+
 class DemoScene : public Scene3D {
     public:
         explicit DemoScene(RenderWindow* window);
@@ -34,6 +38,12 @@ class DemoScene : public Scene3D {
         PModel lucille;
         PModel orb;
         PSkyBox skybox;
+
+        NeoECS::GameObject* groundObject = nullptr;
+        NeoECS::GameObject* meshObject = nullptr;
+        NeoECS::GameObject* cubeObject = nullptr;
+        NeoECS::GameObject* lucilleObject = nullptr;
+        NeoECS::GameObject* orbObject = nullptr;
 
         PCamera cam;
         PScreen uiScreen;

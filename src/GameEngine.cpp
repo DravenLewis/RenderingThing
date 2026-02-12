@@ -65,6 +65,7 @@ void GameEngine::init(){
 void GameEngine::tick(float deltaTime){
     std::lock_guard<std::mutex> lock(sceneMutex);
     if(activeScene){
+        activeScene->updateECS(deltaTime);
         activeScene->update(deltaTime);
     }
 } // Update the Engine (Delta Time Interval using nano time)

@@ -3,114 +3,97 @@
 #include "Screen.h"
 #include "ShadowRenderer.h"
 #include "SkyBox.h"
+#include "ECSComponents.h"
+#include <glad/glad.h>
 
-#include <algorithm>
+Scene::Scene(RenderWindow* window) : View(window) {
+    ecsInstance = NeoECS::NeoECS::newInstance();
+    if(ecsInstance){
+        ecsInstance->init();
+        ecsAPI = ecsInstance->getAPI();
+    }
+}
 
-Scene::Scene(RenderWindow* window) : View(window) {}
+NeoECS::GameObject* Scene::createECSGameObject(const std::string& name, NeoECS::GameObject* parent){
+    if(!ecsAPI) return nullptr;
+    return ecsAPI->CreateGameObjectAndInstantiate(name, parent);
+}
 
-void Scene::addSceneObject(const PSceneObject& object){
-    if(object){
-        sceneObjects.push_back(object);
-        if(std::dynamic_pointer_cast<LightSceneObject>(object)){
-            manageSceneLights = true;
+bool Scene::destroyECSGameObject(NeoECS::GameObject* object){
+    if(!ecsAPI || !object) return false;
+    return ecsAPI->DestroyGameObject(object);
+}
+
+NeoECS::GameObject* Scene::createModelGameObject(const std::string& name, const PModel& model, NeoECS::GameObject* parent){
+    auto* root = createECSGameObject(name, parent);
+    if(!root || !model) return root;
+
+    root->addComponent<TransformComponent>();
+    if(auto* transform = root->getComponent<TransformComponent>()){
+        transform->local = model->transform();
+    }
+
+    root->addComponent<MeshRendererComponent>();
+    if(auto* renderer = root->getComponent<MeshRendererComponent>()){
+        renderer->model = model;
+    }
+
+    return root;
+}
+
+NeoECS::GameObject* Scene::createLightGameObject(const std::string& name, const Light& light, NeoECS::GameObject* parent, bool syncTransform, bool syncDirection){
+    auto* root = createECSGameObject(name, parent);
+    if(!root) return nullptr;
+
+    root->addComponent<TransformComponent>();
+    if(auto* transform = root->getComponent<TransformComponent>()){
+        if(syncTransform){
+            transform->local.setPosition(light.position);
         }
     }
+
+    root->addComponent<LightComponent>();
+    if(auto* lightComponent = root->getComponent<LightComponent>()){
+        lightComponent->light = light;
+        lightComponent->syncTransform = syncTransform;
+        lightComponent->syncDirection = syncDirection;
+    }
+
+    return root;
 }
 
-void Scene::removeSceneObject(const PSceneObject& object){
-    if(!object) return;
-    sceneObjects.erase(
-        std::remove(sceneObjects.begin(), sceneObjects.end(), object),
-        sceneObjects.end()
-    );
-    if(manageSceneLights){
-        updateSceneLights();
+void Scene::dispose(){
+    if(ecsInstance){
+        NeoECS::NeoECS::disposeInstance(ecsInstance);
+        ecsInstance = nullptr;
+        ecsAPI = nullptr;
     }
 }
 
-void Scene::clearSceneObjects(){
-    sceneObjects.clear();
-    if(manageSceneLights){
-        updateSceneLights();
+void Scene::updateECS(float deltaTime){
+    if(ecsInstance){
+        ecsInstance->update(deltaTime);
     }
 }
 
-void Scene::addModel(const PModel& model){
-    if(!model) return;
-    addSceneObject(ModelSceneObject::Create(model));
-}
-
-void Scene::removeModel(const PModel& model){
-    if(!model) return;
-    sceneObjects.erase(
-        std::remove_if(
-            sceneObjects.begin(),
-            sceneObjects.end(),
-            [&model](const PSceneObject& object){
-                auto modelObject = std::dynamic_pointer_cast<ModelSceneObject>(object);
-                return modelObject && modelObject->getModel() == model;
-            }
-        ),
-        sceneObjects.end()
-    );
-}
-
-void Scene::removeModelObject(const PModelSceneObject& object){
-    if(!object) return;
-    removeSceneObject(object);
-}
-
-void Scene::clearModels(){
-    sceneObjects.erase(
-        std::remove_if(
-            sceneObjects.begin(),
-            sceneObjects.end(),
-            [](const PSceneObject& object){
-                return std::dynamic_pointer_cast<ModelSceneObject>(object) != nullptr;
-            }
-        ),
-        sceneObjects.end()
-    );
-}
-
-std::vector<PModel> Scene::getModels() const {
-    std::vector<PModel> result;
-    result.reserve(sceneObjects.size());
-    for(const auto& object : sceneObjects){
-        auto modelObject = std::dynamic_pointer_cast<ModelSceneObject>(object);
-        if(modelObject && modelObject->getModel()){
-            result.push_back(modelObject->getModel());
+namespace {
+    Math3D::Mat4 buildWorldMatrix(NeoECS::ECSEntity* entity, NeoECS::ECSComponentManager* componentManager){
+        Math3D::Mat4 world(1.0f);
+        std::vector<NeoECS::ECSEntity*> chain;
+        for(auto* current = entity; current != nullptr; current = current->getParent()){
+            chain.push_back(current);
         }
-    }
-    return result;
-}
-
-void Scene::addLight(const Light& light){
-    manageSceneLights = true;
-    addSceneObject(LightSceneObject::Create(light));
-}
-
-void Scene::removeLightObject(const PLightSceneObject& object){
-    manageSceneLights = true;
-    removeSceneObject(object);
-}
-
-void Scene::clearLights(){
-    manageSceneLights = true;
-    sceneObjects.erase(
-        std::remove_if(
-            sceneObjects.begin(),
-            sceneObjects.end(),
-            [](const PSceneObject& object){
-                return std::dynamic_pointer_cast<LightSceneObject>(object) != nullptr;
+        for(auto it = chain.rbegin(); it != chain.rend(); ++it){
+            auto* transform = componentManager->getECSComponent<TransformComponent>(*it);
+            if(transform){
+                world = world * transform->local.toMat4();
             }
-        ),
-        sceneObjects.end()
-    );
+        }
+        return world;
+    }
 }
 
 void Scene::updateSceneLights(){
-    if(!manageSceneLights) return;
     auto screen = getMainScreen();
     if(!screen) return;
 
@@ -119,10 +102,27 @@ void Scene::updateSceneLights(){
 
     auto& lightManager = env->getLightManager();
     lightManager.clearLights();
-    for(const auto& object : sceneObjects){
-        if(object){
-            object->addLights(lightManager);
+    if(!ecsInstance) return;
+
+    auto* componentManager = ecsInstance->getComponentManager();
+    auto& entities = ecsInstance->getEntityManager()->getEntities();
+    for(const auto& entityPtr : entities){
+        auto* entity = entityPtr.get();
+        auto* lightComponent = componentManager->getECSComponent<LightComponent>(entity);
+        if(!lightComponent) continue;
+
+        Light light = lightComponent->light;
+        if(lightComponent->syncTransform){
+            Math3D::Mat4 world = buildWorldMatrix(entity, componentManager);
+            light.position = world.getPosition();
+            if(lightComponent->syncDirection){
+                Math3D::Vec3 forward = Math3D::Transform::transformPoint(world, Math3D::Vec3(0,0,1)) - light.position;
+                if(forward.length() > 0.0001f){
+                    light.direction = forward.normalize();
+                }
+            }
         }
+        lightManager.addLight(light);
     }
 }
 
@@ -149,18 +149,78 @@ void Scene::render3DPass(){
 }
 
 void Scene::drawModels3D(PCamera cam){
-    if(!cam) return;
-    for(const auto& object : sceneObjects){
-        if(object){
-            object->draw(cam);
+    if(!cam || !ecsInstance) return;
+
+    auto* componentManager = ecsInstance->getComponentManager();
+    auto& entities = ecsInstance->getEntityManager()->getEntities();
+    for(const auto& entityPtr : entities){
+        auto* entity = entityPtr.get();
+        auto* renderer = componentManager->getECSComponent<MeshRendererComponent>(entity);
+        if(!renderer || !renderer->visible) continue;
+
+        Math3D::Mat4 world = buildWorldMatrix(entity, componentManager);
+        world = world * renderer->localOffset.toMat4();
+
+        bool enableCulling = renderer->enableBackfaceCulling;
+        if(renderer->model){
+            enableCulling = renderer->model->isBackfaceCullingEnabled();
         }
+        if(enableCulling){
+            glEnable(GL_CULL_FACE);
+            glCullFace(GL_BACK);
+        }else{
+            glDisable(GL_CULL_FACE);
+        }
+
+        if(renderer->model){
+            const auto& parts = renderer->model->getParts();
+            for(const auto& part : parts){
+                if(!part || !part->mesh || !part->material) continue;
+                Math3D::Mat4 partWorld = world * part->localTransform.toMat4();
+                part->material->set<Math3D::Mat4>("u_model", partWorld);
+                part->material->set<Math3D::Mat4>("u_view", cam->getViewMatrix());
+                part->material->set<Math3D::Mat4>("u_projection", cam->getProjectionMatrix());
+                part->material->bind();
+                part->mesh->draw();
+                part->material->unbind();
+            }
+        }else{
+            if(!renderer->mesh || !renderer->material) continue;
+            renderer->material->set<Math3D::Mat4>("u_model", world);
+            renderer->material->set<Math3D::Mat4>("u_view", cam->getViewMatrix());
+            renderer->material->set<Math3D::Mat4>("u_projection", cam->getProjectionMatrix());
+            renderer->material->bind();
+            renderer->mesh->draw();
+            renderer->material->unbind();
+        }
+
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
     }
 }
 
 void Scene::drawShadowsPass(){
-    for(const auto& object : sceneObjects){
-        if(object){
-            object->drawShadows();
+    if(!ecsInstance) return;
+
+    auto* componentManager = ecsInstance->getComponentManager();
+    auto& entities = ecsInstance->getEntityManager()->getEntities();
+    for(const auto& entityPtr : entities){
+        auto* entity = entityPtr.get();
+        auto* renderer = componentManager->getECSComponent<MeshRendererComponent>(entity);
+        if(!renderer || !renderer->visible) continue;
+
+        Math3D::Mat4 world = buildWorldMatrix(entity, componentManager);
+        world = world * renderer->localOffset.toMat4();
+        if(renderer->model){
+            const auto& parts = renderer->model->getParts();
+            for(const auto& part : parts){
+                if(!part || !part->mesh || !part->material) continue;
+                Math3D::Mat4 partWorld = world * part->localTransform.toMat4();
+                ShadowRenderer::RenderShadows(part->mesh, partWorld, part->material);
+            }
+        }else{
+            if(!renderer->mesh || !renderer->material) continue;
+            ShadowRenderer::RenderShadows(renderer->mesh, world, renderer->material);
         }
     }
 }

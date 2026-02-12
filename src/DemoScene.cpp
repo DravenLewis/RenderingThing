@@ -13,6 +13,7 @@
 #include "PBRMaterial.h"
 #include "CubeMap.h"
 #include "SkyboxMaterial.h"
+#include "ECSComponents.h"
 
 #include <glad/glad.h>
 #include <SDL3/SDL.h>
@@ -58,6 +59,11 @@ namespace {
         private:
             DemoScene* owner = nullptr;
     };
+
+    NeoECS::GameObject* spawnModelEntity(Scene* scene, const std::string& name, const PModel& model, NeoECS::GameObject* parent = nullptr) {
+        if(!scene) return nullptr;
+        return scene->createModelGameObject(name, model, parent);
+    }
 }
 
 DemoScene::DemoScene(RenderWindow* window) : Scene3D(window) {}
@@ -161,29 +167,39 @@ void DemoScene::init(){
         env->setSkyBox(skybox);
     }
 
-    clearLights();
-
     auto SunLight = Light::CreateDirectionalLight(Math3D::Vec3(-0.3f, -1.0f, -0.2f), Color::fromRGBA255(255, 244, 214, 255), 1.2f);
     auto KeyPoint = Light::CreatePointLight(Math3D::Vec3(4.5f, 6.0f, 2.0f), Color::fromRGBA255(255, 230, 180, 255), 6.5f, 18.0f, 2.0f);
     auto FillPoint = Light::CreatePointLight(Math3D::Vec3(-6.0f, 3.0f, 6.0f), Color::fromRGBA255(120, 180, 255, 255), 3.0f, 20.0f, 2.0f);
     auto RimPoint = Light::CreatePointLight(Math3D::Vec3(0.0f, 7.0f, -8.0f), Color::fromRGBA255(255, 255, 255, 255), 4.0f, 20.0f, 2.0f);
 
-    addLight(SunLight);
-    addLight(KeyPoint);
-    addLight(FillPoint);
-    addLight(RimPoint);
-
     ShadowRenderer::SetDebugShadows(showDebugShadows);
 
-    if(lucille) lucille->transform().setPosition(Math3D::Vec3(0, 0, -5.0f));
-    if(cubeModel) cubeModel->transform().setPosition(Math3D::Vec3(-10.0f,0,-10.0f));
-    if(orb) orb->transform().setPosition(Math3D::Vec3(-10.0f,0,30.0f));
+    groundObject = spawnModelEntity(this, "Ground", ground);
+    meshObject = spawnModelEntity(this, "MeshModel", meshModel);
+    cubeObject = spawnModelEntity(this, "CubeModel", cubeModel);
+    lucilleObject = spawnModelEntity(this, "Lucille", lucille);
+    orbObject = spawnModelEntity(this, "Orb", orb);
 
-    addModel(ground);
-    addModel(meshModel);
-    addModel(cubeModel);
-    addModel(lucille);
-    addModel(orb);
+    if(lucilleObject){
+        if(auto* transform = lucilleObject->getComponent<TransformComponent>()){
+            transform->local.setPosition(Math3D::Vec3(0, 0, -5.0f));
+        }
+    }
+    if(cubeObject){
+        if(auto* transform = cubeObject->getComponent<TransformComponent>()){
+            transform->local.setPosition(Math3D::Vec3(-10.0f,0,-10.0f));
+        }
+    }
+    if(orbObject){
+        if(auto* transform = orbObject->getComponent<TransformComponent>()){
+            transform->local.setPosition(Math3D::Vec3(-10.0f,0,30.0f));
+        }
+    }
+
+    createLightGameObject("SunLight", SunLight, nullptr, false, false);
+    createLightGameObject("KeyLight", KeyPoint, nullptr, true, false);
+    createLightGameObject("FillLight", FillPoint, nullptr, true, false);
+    createLightGameObject("RimLight", RimPoint, nullptr, true, false);
 }
 
 void DemoScene::update(float deltaTime){
@@ -197,16 +213,22 @@ void DemoScene::update(float deltaTime){
         fpsController->update(deltaTime, inputManager);
     }
 
-    if(lucille){
-        lucille->transform().rotateAxisAngle(Math3D::Vec3(1.0f, 1.0f, 1.0f), 50 * deltaTime);
+    if(lucilleObject){
+        if(auto* transform = lucilleObject->getComponent<TransformComponent>()){
+            transform->local.rotateAxisAngle(Math3D::Vec3(1.0f, 1.0f, 1.0f), 50 * deltaTime);
+        }
     }
 
-    if(cubeModel){
-        cubeModel->transform().rotateAxisAngle(Math3D::Vec3(1,1,1), 50 * deltaTime);
+    if(cubeObject){
+        if(auto* transform = cubeObject->getComponent<TransformComponent>()){
+            transform->local.rotateAxisAngle(Math3D::Vec3(1,1,1), 50 * deltaTime);
+        }
     }
 
-    if(orb){
-        orb->transform().rotateAxisAngle(Math3D::Vec3(1,1,1), 50 * deltaTime);
+    if(orbObject){
+        if(auto* transform = orbObject->getComponent<TransformComponent>()){
+            transform->local.rotateAxisAngle(Math3D::Vec3(1,1,1), 50 * deltaTime);
+        }
     }
 }
 
@@ -266,8 +288,8 @@ void DemoScene::render(){
 void DemoScene::dispose(){
     graphics2d.reset();
     fpsController.reset();
-    clearSceneObjects();
     sceneInputHandler.reset();
+    Scene3D::dispose();
 }
 
 void DemoScene::toggleDebugWidgets(){

@@ -5,8 +5,10 @@
 #include <vector>
 
 #include "View.h"
-#include "SceneObject.h"
 #include "InputManager.h"
+#include "Model.h"
+#include "Light.h"
+#include "neoecs.hpp"
 
 class Scene;
 typedef std::shared_ptr<Scene> PScene;
@@ -19,29 +21,23 @@ class Scene : public View {
         virtual void init() {}
         virtual void update(float deltaTime) {}
         virtual void render() {}
-        virtual void dispose() {}
+        virtual void dispose();
         virtual void setInputManager(std::shared_ptr<InputManager> manager) { inputManager = manager; }
         virtual bool switchState(PScene newState, PScene oldState) { return true; }
 
-        void addSceneObject(const PSceneObject& object);
-        void removeSceneObject(const PSceneObject& object);
-        void clearSceneObjects();
-        const std::vector<PSceneObject>& getSceneObjects() const { return sceneObjects; }
+        void updateECS(float deltaTime);
 
-        void addModel(const PModel& model);
-        void removeModel(const PModel& model);
-        void removeModelObject(const PModelSceneObject& object);
-        void clearModels();
-        std::vector<PModel> getModels() const;
-
-        void addLight(const Light& light);
-        void removeLightObject(const PLightSceneObject& object);
-        void clearLights();
+        NeoECS::NeoECS* getECS() const { return ecsInstance; }
+        NeoECS::NeoAPI* getECSAPI() const { return ecsAPI; }
+        NeoECS::GameObject* createECSGameObject(const std::string& name, NeoECS::GameObject* parent = nullptr);
+        bool destroyECSGameObject(NeoECS::GameObject* object);
+        NeoECS::GameObject* createModelGameObject(const std::string& name, const PModel& model, NeoECS::GameObject* parent = nullptr);
+        NeoECS::GameObject* createLightGameObject(const std::string& name, const Light& light, NeoECS::GameObject* parent = nullptr, bool syncTransform = true, bool syncDirection = false);
 
     protected:
-        std::vector<PSceneObject> sceneObjects;
         std::shared_ptr<InputManager> inputManager;
-        bool manageSceneLights = false;
+        NeoECS::NeoECS* ecsInstance = nullptr;
+        NeoECS::NeoAPI* ecsAPI = nullptr;
 
         void updateSceneLights();
         void render3DPass();
