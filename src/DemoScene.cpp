@@ -14,6 +14,7 @@
 #include "CubeMap.h"
 #include "SkyboxMaterial.h"
 #include "ECSComponents.h"
+#include "Logbot.h"
 
 #include <glad/glad.h>
 #include <SDL3/SDL.h>
@@ -32,8 +33,9 @@ namespace {
                     return true;
                 }
 
-                if(keyCode == SDL_SCANCODE_ESCAPE && window){
-                    window->close();
+                if(keyCode == SDL_SCANCODE_ESCAPE){
+                    LogBot.Log(LOG_WARN, "DemoSceneInputHandler ESC -> requestClose()");
+                    owner->requestClose();
                     return true;
                 }
 

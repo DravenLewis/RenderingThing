@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <atomic>
 
 #include "Scene.h"
 #include <imgui.h>
@@ -23,6 +24,8 @@ class EditorScene : public Scene {
         void drawToWindow(bool clearWindow = true, float x = -1, float y = -1, float w = -1, float h = -1) override;
         void dispose() override;
         void setInputManager(std::shared_ptr<InputManager> manager) override;
+        void requestClose() override;
+        bool consumeCloseRequest() override;
         bool handleQuitRequest();
 
     private:
@@ -69,6 +72,15 @@ class EditorScene : public Scene {
         NeoECS::GameObject* editorCameraObject = nullptr;
         TransformComponent* editorCameraTransform = nullptr;
         CameraComponent* editorCameraComponent = nullptr;
+        std::atomic<bool> resetRequested{false};
+        std::atomic<bool> resetCompleted{false};
+        struct ResetContext {
+            std::string selectedId;
+            bool hadSelection = false;
+            Math3D::Transform editorCameraTransform;
+            bool hadCamera = false;
+        };
+        ResetContext resetContext;
 
         std::filesystem::path assetRoot;
         std::filesystem::path assetDir;
@@ -92,6 +104,9 @@ class EditorScene : public Scene {
         void selectEntity(const std::string& id);
         std::string pickEntityIdAtScreen(float x, float y, PCamera cam);
         void focusOnEntity(const std::string& id);
+        void performStop();
+        void storeSelectionForPlay();
+        void restoreSelectionAfterReset();
 };
 
 #endif // EDITOR_SCENE_H

@@ -1,5 +1,6 @@
 
 #include "RenderWindow.h"
+#include "Logbot.h"
 #include "ImGuiLayer.h"
 
 /* // 2. Set OpenGL Attributes (Version 4.1 Core)
@@ -57,10 +58,14 @@ bool RenderWindow::initSDL(){
 }
 
 bool RenderWindow::isCloseRequested(){
+    if(this->doClose){
+        LogBot.Log(LOG_WARN, "RenderWindow::isCloseRequested() -> true");
+    }
     return this->doClose;
 }
 
 void RenderWindow::close(){
+    LogBot.Log(LOG_WARN, "RenderWindow::close() called.");
     this->doClose = true;
 };
 

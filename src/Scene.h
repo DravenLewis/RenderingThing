@@ -47,6 +47,8 @@ class Scene : public View {
         };
 
         const DebugStats& getDebugStats() const { return debugStats; }
+        virtual void requestClose();
+        virtual bool consumeCloseRequest();
 
     protected:
         Math3D::Mat4 buildWorldMatrix(NeoECS::ECSEntity* entity, NeoECS::ECSComponentManager* manager) const;
@@ -71,6 +73,7 @@ class Scene : public View {
         std::array<RenderSnapshot, 2> renderSnapshots{};
         std::atomic<int> renderSnapshotIndex{0};
         DebugStats debugStats{};
+        std::atomic<bool> closeRequested{false};
         std::string selectedEntityId;
         std::shared_ptr<MaterialDefaults::ColorMaterial> outlineMaterial;
         bool outlineEnabled = false;

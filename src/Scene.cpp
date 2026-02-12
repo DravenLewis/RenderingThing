@@ -2,6 +2,7 @@
 
 #include "Screen.h"
 #include "ShadowRenderer.h"
+#include "Logbot.h"
 #include "SkyBox.h"
 #include "ECSComponents.h"
 #include "Color.h"
@@ -15,6 +16,19 @@ Scene::Scene(RenderWindow* window) : View(window) {
         ecsInstance->init();
         ecsAPI = ecsInstance->getAPI();
     }
+}
+
+void Scene::requestClose(){
+    LogBot.Log(LOG_WARN, "Scene::requestClose() called.");
+    closeRequested.store(true, std::memory_order_relaxed);
+}
+
+bool Scene::consumeCloseRequest(){
+    bool requested = closeRequested.exchange(false, std::memory_order_relaxed);
+    if(requested){
+        LogBot.Log(LOG_WARN, "Scene::consumeCloseRequest() consumed request.");
+    }
+    return requested;
 }
 
 NeoECS::GameObject* Scene::createECSGameObject(const std::string& name, NeoECS::GameObject* parent){

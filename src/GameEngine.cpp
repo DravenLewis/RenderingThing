@@ -7,6 +7,7 @@
 #include "Logbot.h"
 #include "ImGuiLayer.h"
 #include "EditorScene.h"
+#include "CrashReporter.h"
 
 GameEngine* GameEngine::Engine = nullptr;
 
@@ -19,6 +20,7 @@ void GameEngine::init(){
     });
 
     ImGuiLayer::Init(windowPtr.get());
+    CrashReporter::Install();
 
     {
         std::lock_guard<std::mutex> lock(sceneMutex);
@@ -69,8 +71,24 @@ void GameEngine::init(){
 void GameEngine::tick(float deltaTime){
     std::lock_guard<std::mutex> lock(sceneMutex);
     if(activeScene){
-        activeScene->updateECS(deltaTime);
-        activeScene->update(deltaTime);
+        if(activeScene->consumeCloseRequest()){
+            LogBot.Log(LOG_WARN, "GameEngine::tick() close requested by active scene.");
+            if(windowPtr){
+                windowPtr->close();
+            }
+            running = false;
+            return;
+        }
+        if(!CrashReporter::IsCrashed()){
+            try{
+                activeScene->updateECS(deltaTime);
+                activeScene->update(deltaTime);
+            }catch(const std::exception& e){
+                CrashReporter::ReportCrash(e.what());
+            }catch(...){
+                CrashReporter::ReportCrash("Unknown exception in tick");
+            }
+        }
     }
 } // Update the Engine (Delta Time Interval using nano time)
 
@@ -98,27 +116,31 @@ void GameEngine::render(){
 
     ImGuiLayer::BeginFrame();
 
-    if(activeScene){
-        activeScene->render();
-        activeScene->drawToWindow();
+    if(activeScene && !CrashReporter::IsCrashed()){
+        try{
+            activeScene->render();
+            activeScene->drawToWindow();
+        }catch(const std::exception& e){
+            CrashReporter::ReportCrash(e.what());
+        }catch(...){
+            CrashReporter::ReportCrash("Unknown exception in render");
+        }
     }
 
+    CrashReporter::RenderImGui();
     ImGuiLayer::EndFrame();
 } // Update as fast as possible.
 
 void GameEngine::processEvents(SDL_Event& event){
-    if(event.type == SDL_EVENT_QUIT){
+    if(event.type == SDL_EVENT_QUIT || event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED){
+        LogBot.Log(LOG_WARN, "GameEngine::processEvents() close event type=%d", (int)event.type);
         if(activeScene){
+            activeScene->requestClose();
             if(auto editor = std::dynamic_pointer_cast<EditorScene>(activeScene)){
-                if(editor->handleQuitRequest()){
-                    return;
-                }
+                editor->handleQuitRequest();
+                return;
             }
         }
-        if(windowPtr){
-            windowPtr->close();
-        }
-        running = false;
         return;
     }
 
@@ -214,6 +236,7 @@ void GameEngine::run(){ // Render Thread.
         if(windowPtr){
             windowPtr->swap();
             if(windowPtr->isCloseRequested()){
+                LogBot.Log(LOG_WARN, "GameEngine::run() detected window close request.");
                 running = false;
             }
         }
@@ -254,6 +277,7 @@ void GameEngine::start(){ // Local Logic Thread.
 }
 
 void GameEngine::exit(int code){
+    LogBot.Log(LOG_WARN, "GameEngine::exit(%d) called.", code);
     running = false;
 
     if(mainRenderThread.joinable() && std::this_thread::get_id() != mainRenderThread.get_id()){

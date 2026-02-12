@@ -10,6 +10,7 @@
 #include "ImGuiLayer.h"
 #include "Logbot.h"
 #include "RenderWindow.h"
+#include "Logbot.h"
 #include <glad/glad.h>
 #include <SDL3/SDL.h>
 
@@ -161,6 +162,10 @@ void EditorScene::update(float deltaTime){
     ensureTargetInitialized();
     if(!targetScene) return;
 
+    if(resetCompleted.exchange(false)){
+        restoreSelectionAfterReset();
+    }
+
     if(playState == PlayState::Play){
         if(auto mainScreen = targetScene->getMainScreen()){
             if(targetCamera){
@@ -169,6 +174,10 @@ void EditorScene::update(float deltaTime){
         }
         bool mouseInViewport = isMouseInViewport();
         ImGuiLayer::SetInputEnabled(!mouseInViewport);
+        if(targetScene->consumeCloseRequest()){
+            handleQuitRequest();
+            return;
+        }
         targetScene->updateECS(deltaTime);
         targetScene->update(deltaTime);
     }else{
@@ -279,6 +288,11 @@ void EditorScene::update(float deltaTime){
 
 void EditorScene::render(){
     ensureTargetInitialized();
+    if(resetRequested.exchange(false)){
+        performStop();
+        resetCompleted.store(true);
+        return;
+    }
     if(targetScene){
         targetScene->render();
     }
@@ -339,6 +353,7 @@ void EditorScene::drawToolbar(float width, float height){
 
     if(playClicked){
         if(playState == PlayState::Edit){
+            storeSelectionForPlay();
             playState = PlayState::Play;
         }else if(playState == PlayState::Pause){
             playState = PlayState::Play;
@@ -355,16 +370,7 @@ void EditorScene::drawToolbar(float width, float height){
 
     if(stopClicked){
         if(playState != PlayState::Edit){
-            playState = PlayState::Edit;
-            if(targetFactory){
-                if(targetScene){
-                    targetScene->dispose();
-                }
-                targetScene = targetFactory(getWindow());
-                targetInitialized = false;
-                targetCamera.reset();
-                ensureTargetInitialized();
-            }
+            resetRequested.store(true);
         }
     }
 
@@ -491,19 +497,71 @@ std::string EditorScene::pickEntityIdAtScreen(float x, float y, PCamera cam){
 
 bool EditorScene::handleQuitRequest(){
     if(playState == PlayState::Play || playState == PlayState::Pause){
-        playState = PlayState::Edit;
-        if(targetFactory){
-            if(targetScene){
-                targetScene->dispose();
-            }
-            targetScene = targetFactory(getWindow());
-            targetInitialized = false;
-            targetCamera.reset();
-            ensureTargetInitialized();
-        }
+        LogBot.Log(LOG_WARN, "EditorScene::handleQuitRequest() -> Stop simulation");
+        resetRequested.store(true);
         return true;
     }
     return false;
+}
+
+void EditorScene::performStop(){
+    playState = PlayState::Edit;
+    if(targetFactory){
+        if(targetScene){
+            targetScene->dispose();
+        }
+        targetScene = targetFactory(getWindow());
+        targetInitialized = false;
+        targetCamera.reset();
+        ensureTargetInitialized();
+    }
+    LogBot.Log(LOG_WARN, "EditorScene::performStop() -> Done");
+}
+
+void EditorScene::storeSelectionForPlay(){
+    resetContext.hadSelection = !selectedEntityId.empty();
+    resetContext.selectedId = selectedEntityId;
+    if(resetContext.hadSelection){
+        selectEntity("");
+    }
+    if(editorCamera){
+        resetContext.hadCamera = true;
+        resetContext.editorCameraTransform = editorCamera->transform();
+    }
+}
+
+void EditorScene::restoreSelectionAfterReset(){
+    if(resetContext.hadSelection && !resetContext.selectedId.empty()){
+        selectEntity(resetContext.selectedId);
+    }else{
+        selectEntity("");
+    }
+    if(resetContext.hadCamera && editorCamera){
+        editorCamera->setTransform(resetContext.editorCameraTransform);
+        if(editorCameraTransform){
+            editorCameraTransform->local = resetContext.editorCameraTransform;
+        }
+    }
+    resetContext = ResetContext{};
+}
+
+void EditorScene::requestClose(){
+    if(handleQuitRequest()){
+        return;
+    }
+    Scene::requestClose();
+}
+
+bool EditorScene::consumeCloseRequest(){
+    if(targetScene && targetScene->consumeCloseRequest()){
+        LogBot.Log(LOG_WARN, "EditorScene::consumeCloseRequest() intercepted target close.");
+        handleQuitRequest();
+        // Swallow target close requests so the editor never quits.
+        closeRequested.store(false, std::memory_order_relaxed);
+        return false;
+    }
+    // Editor scene should only close itself if explicitly requested elsewhere.
+    return Scene::consumeCloseRequest();
 }
 
 void EditorScene::drawEcsPanel(float x, float y, float w, float h){
