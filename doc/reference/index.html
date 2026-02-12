@@ -20,7 +20,11 @@
   </header>
 
   <div class="layout">
+    
+    
+    
     <nav class="sidenav">
+
 
       <h3>Documentation</h3>
       <ul>
@@ -29,10 +33,21 @@
         <li><a href="../samples.html" data-page-link="samples">Samples</a></li>
         <li><a href="../architecture.html" data-page-link="architecture">Architecture</a></li>
         <li><a href="../graphics.html" data-page-link="graphics">Graphics</a></li>
-        <li><a href="index.html" data-page-link="reference">Reference</a></li>
+        <li><a href="../reference/index.html" data-page-link="reference">Reference</a></li>
       </ul>
-      <h3>Reference</h3>
+
+      <h3>Libraries</h3>
       <ul>
+        <li><a href="../neoecs/index.html" data-page-link="neoecs">NeoECS Overview</a></li>
+        <li><a href="../neoecs/events.html" data-page-link="neoecs-events">NeoECS Events</a></li>
+        <li><a href="../neoecs/api.html" data-page-link="neoecs-api">NeoECS API</a></li>
+        <li><a href="../neoecs/reference/index.html" data-page-link="neoecs-reference">NeoECS Reference</a></li>
+      </ul>
+
+      <h3>Reference</h3>
+      <details class="nav-group" open>
+        <summary>Engine Reference</summary>
+        <ul>
 <li><a href="asset.html" data-page-link="ref-asset">Asset</a></li>
 <li><a href="assetmanager.html" data-page-link="ref-assetmanager">AssetManager</a></li>
 <li><a href="bufferedimage.html" data-page-link="ref-bufferedimage">BufferedImage</a></li>
@@ -130,8 +145,44 @@
 <li><a href="vertex.html" data-page-link="ref-vertex">Vertex</a></li>
 <li><a href="vertexindex.html" data-page-link="ref-vertexindex">VertexIndex</a></li>
 <li><a href="view.html" data-page-link="ref-view">View</a></li>
-      </ul>
+        </ul>
+      </details>
+      <details class="nav-group" >
+        <summary>NeoECS Reference</summary>
+        <ul>
+<li><a href="../neoecs/reference/disposable.html" data-page-link="neoecs-ref-disposable">Disposable</a></li>
+<li><a href="../neoecs/reference/ecscomponent.html" data-page-link="neoecs-ref-ecscomponent">ECSComponent</a></li>
+<li><a href="../neoecs/reference/ecscomponentmanager.html" data-page-link="neoecs-ref-ecscomponentmanager">ECSComponentManager</a></li>
+<li><a href="../neoecs/reference/ecscontext.html" data-page-link="neoecs-ref-ecscontext">ECSContext</a></li>
+<li><a href="../neoecs/reference/ecscontextholder.html" data-page-link="neoecs-ref-ecscontextholder">ECSContextHolder</a></li>
+<li><a href="../neoecs/reference/ecsentity.html" data-page-link="neoecs-ref-ecsentity">ECSEntity</a></li>
+<li><a href="../neoecs/reference/ecsentitymanager.html" data-page-link="neoecs-ref-ecsentitymanager">ECSEntityManager</a></li>
+<li><a href="../neoecs/reference/ecssystem.html" data-page-link="neoecs-ref-ecssystem">ECSSystem</a></li>
+<li><a href="../neoecs/reference/ecssystemmanager.html" data-page-link="neoecs-ref-ecssystemmanager">ECSSystemManager</a></li>
+<li><a href="../neoecs/reference/gameobject.html" data-page-link="neoecs-ref-gameobject">GameObject</a></li>
+<li><a href="../neoecs/reference/neo_ecsentityaddedevent.html" data-page-link="neoecs-ref-neo_ecsentityaddedevent">Neo_ECSEntityAddedEvent</a></li>
+<li><a href="../neoecs/reference/neo_ecsentityremovedevent.html" data-page-link="neoecs-ref-neo_ecsentityremovedevent">Neo_ECSEntityRemovedEvent</a></li>
+<li><a href="../neoecs/reference/neo_ecsevent.html" data-page-link="neoecs-ref-neo_ecsevent">Neo_ECSEvent</a></li>
+<li><a href="../neoecs/reference/neo_ecsgameobjectchildrenchangedevent.html" data-page-link="neoecs-ref-neo_ecsgameobjectchildrenchangedevent">Neo_ECSGameObjectChildrenChangedEvent</a></li>
+<li><a href="../neoecs/reference/neo_ecsgameobjectcreatedevent.html" data-page-link="neoecs-ref-neo_ecsgameobjectcreatedevent">Neo_ECSGameObjectCreatedEvent</a></li>
+<li><a href="../neoecs/reference/neo_ecsgameobjectdestroyedevent.html" data-page-link="neoecs-ref-neo_ecsgameobjectdestroyedevent">Neo_ECSGameObjectDestroyedEvent</a></li>
+<li><a href="../neoecs/reference/neo_ecsgameobjectparentchangedevent.html" data-page-link="neoecs-ref-neo_ecsgameobjectparentchangedevent">Neo_ECSGameObjectParentChangedEvent</a></li>
+<li><a href="../neoecs/reference/neo_event.html" data-page-link="neoecs-ref-neo_event">Neo_Event</a></li>
+<li><a href="../neoecs/reference/neo_eventargs.html" data-page-link="neoecs-ref-neo_eventargs">Neo_EventArgs</a></li>
+<li><a href="../neoecs/reference/neo_eventlistener.html" data-page-link="neoecs-ref-neo_eventlistener">Neo_EventListener</a></li>
+<li><a href="../neoecs/reference/neo_eventmanager.html" data-page-link="neoecs-ref-neo_eventmanager">Neo_EventManager</a></li>
+<li><a href="../neoecs/reference/neoapi.html" data-page-link="neoecs-ref-neoapi">NeoAPI</a></li>
+<li><a href="../neoecs/reference/neoecs.html" data-page-link="neoecs-ref-neoecs">NeoECS</a></li>
+<li><a href="../neoecs/reference/neoecsexception.html" data-page-link="neoecs-ref-neoecsexception">NeoECSException</a></li>
+<li><a href="../neoecs/reference/objectattributes.html" data-page-link="neoecs-ref-objectattributes">ObjectAttributes</a></li>
+<li><a href="../neoecs/reference/reserved.html" data-page-link="neoecs-ref-reserved">Reserved</a></li>
+        </ul>
+      </details>
+
     </nav>
+
+
+
 
     <main class="content">
       <h1>Reference</h1>
@@ -248,3 +299,6 @@
   <script src="../app.js"></script>
 </body>
 </html>
+
+
+

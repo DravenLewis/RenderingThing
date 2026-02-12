@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RenderingThing Docs - NeoECS - Neo_EventArgs</title>
+  <link rel="stylesheet" href="../../style.css" />
+</head>
+<body data-page="neoecs-ref-neo_eventargs">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">RT</div>
+      <div>RenderingThing Docs</div>
+      <span class="badge">Local</span>
+    </div>
+    <div class="search">
+      <input type="search" placeholder="Search docs (local)" />
+    </div>
+    <button class="nav-toggle" aria-label="Toggle navigation">Menu</button>
+  </header>
+
+  <div class="layout">
+    
+    
+    
+    <nav class="sidenav">
+
+
+      <h3>Documentation</h3>
+      <ul>
+        <li><a href="../../index.html" data-page-link="overview">Overview</a></li>
+        <li><a href="../../getting-started.html" data-page-link="getting-started">Getting Started</a></li>
+        <li><a href="../../samples.html" data-page-link="samples">Samples</a></li>
+        <li><a href="../../architecture.html" data-page-link="architecture">Architecture</a></li>
+        <li><a href="../../graphics.html" data-page-link="graphics">Graphics</a></li>
+        <li><a href="../../reference/index.html" data-page-link="reference">Reference</a></li>
+      </ul>
+
+      <h3>Libraries</h3>
+      <ul>
+        <li><a href="../index.html" data-page-link="neoecs">NeoECS Overview</a></li>
+        <li><a href="../events.html" data-page-link="neoecs-events">NeoECS Events</a></li>
+        <li><a href="../api.html" data-page-link="neoecs-api">NeoECS API</a></li>
+        <li><a href="index.html" data-page-link="neoecs-reference">NeoECS Reference</a></li>
+      </ul>
+
+      <h3>Reference</h3>
+      <details class="nav-group" >
+        <summary>Engine Reference</summary>
+        <ul>
+<li><a href="../../reference/asset.html" data-page-link="ref-asset">Asset</a></li>
+<li><a href="../../reference/assetmanager.html" data-page-link="ref-assetmanager">AssetManager</a></li>
+<li><a href="../../reference/bufferedimage.html" data-page-link="ref-bufferedimage">BufferedImage</a></li>
+<li><a href="../../reference/camera.html" data-page-link="ref-camera">Camera</a></li>
+<li><a href="../../reference/camerasettings.html" data-page-link="ref-camerasettings">CameraSettings</a></li>
+<li><a href="../../reference/color.html" data-page-link="ref-color">Color</a></li>
+<li><a href="../../reference/colormaterial.html" data-page-link="ref-colormaterial">ColorMaterial</a></li>
+<li><a href="../../reference/cubemap.html" data-page-link="ref-cubemap">CubeMap</a></li>
+<li><a href="../../reference/cubemapslot.html" data-page-link="ref-cubemapslot">CubeMapSlot</a></li>
+<li><a href="../../reference/cubematerialdefinition.html" data-page-link="ref-cubematerialdefinition">CubeMaterialDefinition</a></li>
+<li><a href="../../reference/defaultstate.html" data-page-link="ref-defaultstate">DefaultState</a></li>
+<li><a href="../../reference/demoscene.html" data-page-link="ref-demoscene">DemoScene</a></li>
+<li><a href="../../reference/depthguard.html" data-page-link="ref-depthguard">DepthGuard</a></li>
+<li><a href="../../reference/display.html" data-page-link="ref-display">Display</a></li>
+<li><a href="../../reference/displaymode.html" data-page-link="ref-displaymode">DisplayMode</a></li>
+<li><a href="../../reference/file.html" data-page-link="ref-file">File</a></li>
+<li><a href="../../reference/fileblob.html" data-page-link="ref-fileblob">FileBlob</a></li>
+<li><a href="../../reference/filereader.html" data-page-link="ref-filereader">FileReader</a></li>
+<li><a href="../../reference/filewriter.html" data-page-link="ref-filewriter">FileWriter</a></li>
+<li><a href="../../reference/firstpersoncontroller.html" data-page-link="ref-firstpersoncontroller">FirstPersonController</a></li>
+<li><a href="../../reference/flatcolormaterial.html" data-page-link="ref-flatcolormaterial">FlatColorMaterial</a></li>
+<li><a href="../../reference/flatimagematerial.html" data-page-link="ref-flatimagematerial">FlatImageMaterial</a></li>
+<li><a href="../../reference/font.html" data-page-link="ref-font">Font</a></li>
+<li><a href="../../reference/fontcharacter.html" data-page-link="ref-fontcharacter">FontCharacter</a></li>
+<li><a href="../../reference/framebuffer.html" data-page-link="ref-framebuffer">FrameBuffer</a></li>
+<li><a href="../../reference/framebufferchain.html" data-page-link="ref-framebufferchain">FrameBufferChain</a></li>
+<li><a href="../../reference/freetypefont.html" data-page-link="ref-freetypefont">FreeTypeFont</a></li>
+<li><a href="../../reference/gameengine.html" data-page-link="ref-gameengine">GameEngine</a></li>
+<li><a href="../../reference/glversioninfo.html" data-page-link="ref-glversioninfo">GLVersionInfo</a></li>
+<li><a href="../../reference/graphics2d.html" data-page-link="ref-graphics2d">Graphics2D</a></li>
+<li><a href="../../reference/graphicscontext.html" data-page-link="ref-graphicscontext">GraphicsContext</a></li>
+<li><a href="../../reference/grayscaleeffect.html" data-page-link="ref-grayscaleeffect">GrayscaleEffect</a></li>
+<li><a href="../../reference/idrawable.html" data-page-link="ref-idrawable">IDrawable</a></li>
+<li><a href="../../reference/ieventhandler.html" data-page-link="ref-ieventhandler">IEventHandler</a></li>
+<li><a href="../../reference/image.html" data-page-link="ref-image">Image</a></li>
+<li><a href="../../reference/imagematerial.html" data-page-link="ref-imagematerial">ImageMaterial</a></li>
+<li><a href="../../reference/imaterialproperty.html" data-page-link="ref-imaterialproperty">IMaterialProperty</a></li>
+<li><a href="../../reference/inputinformation.html" data-page-link="ref-inputinformation">InputInformation</a></li>
+<li><a href="../../reference/inputmanager.html" data-page-link="ref-inputmanager">InputManager</a></li>
+<li><a href="../../reference/light.html" data-page-link="ref-light">Light</a></li>
+<li><a href="../../reference/lightmanager.html" data-page-link="ref-lightmanager">LightManager</a></li>
+<li><a href="../../reference/lighttype.html" data-page-link="ref-lighttype">LightType</a></li>
+<li><a href="../../reference/lightuniformuploader.html" data-page-link="ref-lightuniformuploader">LightUniformUploader</a></li>
+<li><a href="../../reference/lineending.html" data-page-link="ref-lineending">LineEnding</a></li>
+<li><a href="../../reference/litcolormaterial.html" data-page-link="ref-litcolormaterial">LitColorMaterial</a></li>
+<li><a href="../../reference/litimagematerial.html" data-page-link="ref-litimagematerial">LitImageMaterial</a></li>
+<li><a href="../../reference/logbot.html" data-page-link="ref-logbot">Logbot</a></li>
+<li><a href="../../reference/logtype.html" data-page-link="ref-logtype">LogType</a></li>
+<li><a href="../../reference/mat4.html" data-page-link="ref-mat4">Mat4</a></li>
+<li><a href="../../reference/material.html" data-page-link="ref-material">Material</a></li>
+<li><a href="../../reference/materialproperty.html" data-page-link="ref-materialproperty">MaterialProperty</a></li>
+<li><a href="../../reference/mesh.html" data-page-link="ref-mesh">Mesh</a></li>
+<li><a href="../../reference/model.html" data-page-link="ref-model">Model</a></li>
+<li><a href="../../reference/modelpart.html" data-page-link="ref-modelpart">ModelPart</a></li>
+<li><a href="../../reference/modelpartfactory.html" data-page-link="ref-modelpartfactory">ModelPartFactory</a></li>
+<li><a href="../../reference/modelpartprefabs.html" data-page-link="ref-modelpartprefabs">ModelPartPrefabs</a></li>
+<li><a href="../../reference/modelprefabs.html" data-page-link="ref-modelprefabs">ModelPrefabs</a></li>
+<li><a href="../../reference/mouselockmode.html" data-page-link="ref-mouselockmode">MouseLockMode</a></li>
+<li><a href="../../reference/nullable.html" data-page-link="ref-nullable">Nullable</a></li>
+<li><a href="../../reference/objdata.html" data-page-link="ref-objdata">OBJData</a></li>
+<li><a href="../../reference/objloader.html" data-page-link="ref-objloader">OBJLoader</a></li>
+<li><a href="../../reference/pbrmaterial.html" data-page-link="ref-pbrmaterial">PBRMaterial</a></li>
+<li><a href="../../reference/postprocessingeffect.html" data-page-link="ref-postprocessingeffect">PostProcessingEffect</a></li>
+<li><a href="../../reference/quat.html" data-page-link="ref-quat">Quat</a></li>
+<li><a href="../../reference/random.html" data-page-link="ref-random">Random</a></li>
+<li><a href="../../reference/rect.html" data-page-link="ref-rect">Rect</a></li>
+<li><a href="../../reference/renderwindow.html" data-page-link="ref-renderwindow">RenderWindow</a></li>
+<li><a href="../../reference/scene.html" data-page-link="ref-scene">Scene</a></li>
+<li><a href="../../reference/scene2d.html" data-page-link="ref-scene2d">Scene2D</a></li>
+<li><a href="../../reference/scene3d.html" data-page-link="ref-scene3d">Scene3D</a></li>
+<li><a href="../../reference/screen.html" data-page-link="ref-screen">Screen</a></li>
+<li><a href="../../reference/shaderbundle.html" data-page-link="ref-shaderbundle">ShaderBundle</a></li>
+<li><a href="../../reference/shadercache.html" data-page-link="ref-shadercache">ShaderCache</a></li>
+<li><a href="../../reference/shaderprogram.html" data-page-link="ref-shaderprogram">ShaderProgram</a></li>
+<li><a href="../../reference/shadowlightdata.html" data-page-link="ref-shadowlightdata">ShadowLightData</a></li>
+<li><a href="../../reference/shadowmap2d.html" data-page-link="ref-shadowmap2d">ShadowMap2D</a></li>
+<li><a href="../../reference/shadowmapcube.html" data-page-link="ref-shadowmapcube">ShadowMapCube</a></li>
+<li><a href="../../reference/shadowrenderer.html" data-page-link="ref-shadowrenderer">ShadowRenderer</a></li>
+<li><a href="../../reference/shadowtype.html" data-page-link="ref-shadowtype">ShadowType</a></li>
+<li><a href="../../reference/skybox.html" data-page-link="ref-skybox">SkyBox</a></li>
+<li><a href="../../reference/skybox6face.html" data-page-link="ref-skybox6face">SkyBox6Face</a></li>
+<li><a href="../../reference/skyboxloader.html" data-page-link="ref-skyboxloader">SkyBoxLoader</a></li>
+<li><a href="../../reference/skyboxmaterial.html" data-page-link="ref-skyboxmaterial">SkyboxMaterial</a></li>
+<li><a href="../../reference/stringutils.html" data-page-link="ref-stringutils">StringUtils</a></li>
+<li><a href="../../reference/textcachekey.html" data-page-link="ref-textcachekey">TextCacheKey</a></li>
+<li><a href="../../reference/texture.html" data-page-link="ref-texture">Texture</a></li>
+<li><a href="../../reference/textureslot.html" data-page-link="ref-textureslot">TextureSlot</a></li>
+<li><a href="../../reference/transform.html" data-page-link="ref-transform">Transform</a></li>
+<li><a href="../../reference/tripplebuffer.html" data-page-link="ref-tripplebuffer">TrippleBuffer</a></li>
+<li><a href="../../reference/uniform.html" data-page-link="ref-uniform">Uniform</a></li>
+<li><a href="../../reference/valuecontainer.html" data-page-link="ref-valuecontainer">ValueContainer</a></li>
+<li><a href="../../reference/vec2.html" data-page-link="ref-vec2">Vec2</a></li>
+<li><a href="../../reference/vec3.html" data-page-link="ref-vec3">Vec3</a></li>
+<li><a href="../../reference/vec4.html" data-page-link="ref-vec4">Vec4</a></li>
+<li><a href="../../reference/vertex.html" data-page-link="ref-vertex">Vertex</a></li>
+<li><a href="../../reference/vertexindex.html" data-page-link="ref-vertexindex">VertexIndex</a></li>
+<li><a href="../../reference/view.html" data-page-link="ref-view">View</a></li>
+        </ul>
+      </details>
+      <details class="nav-group" open>
+        <summary>NeoECS Reference</summary>
+        <ul>
+<li><a href="disposable.html" data-page-link="neoecs-ref-disposable">Disposable</a></li>
+<li><a href="ecscomponent.html" data-page-link="neoecs-ref-ecscomponent">ECSComponent</a></li>
+<li><a href="ecscomponentmanager.html" data-page-link="neoecs-ref-ecscomponentmanager">ECSComponentManager</a></li>
+<li><a href="ecscontext.html" data-page-link="neoecs-ref-ecscontext">ECSContext</a></li>
+<li><a href="ecscontextholder.html" data-page-link="neoecs-ref-ecscontextholder">ECSContextHolder</a></li>
+<li><a href="ecsentity.html" data-page-link="neoecs-ref-ecsentity">ECSEntity</a></li>
+<li><a href="ecsentitymanager.html" data-page-link="neoecs-ref-ecsentitymanager">ECSEntityManager</a></li>
+<li><a href="ecssystem.html" data-page-link="neoecs-ref-ecssystem">ECSSystem</a></li>
+<li><a href="ecssystemmanager.html" data-page-link="neoecs-ref-ecssystemmanager">ECSSystemManager</a></li>
+<li><a href="gameobject.html" data-page-link="neoecs-ref-gameobject">GameObject</a></li>
+<li><a href="neo_ecsentityaddedevent.html" data-page-link="neoecs-ref-neo_ecsentityaddedevent">Neo_ECSEntityAddedEvent</a></li>
+<li><a href="neo_ecsentityremovedevent.html" data-page-link="neoecs-ref-neo_ecsentityremovedevent">Neo_ECSEntityRemovedEvent</a></li>
+<li><a href="neo_ecsevent.html" data-page-link="neoecs-ref-neo_ecsevent">Neo_ECSEvent</a></li>
+<li><a href="neo_ecsgameobjectchildrenchangedevent.html" data-page-link="neoecs-ref-neo_ecsgameobjectchildrenchangedevent">Neo_ECSGameObjectChildrenChangedEvent</a></li>
+<li><a href="neo_ecsgameobjectcreatedevent.html" data-page-link="neoecs-ref-neo_ecsgameobjectcreatedevent">Neo_ECSGameObjectCreatedEvent</a></li>
+<li><a href="neo_ecsgameobjectdestroyedevent.html" data-page-link="neoecs-ref-neo_ecsgameobjectdestroyedevent">Neo_ECSGameObjectDestroyedEvent</a></li>
+<li><a href="neo_ecsgameobjectparentchangedevent.html" data-page-link="neoecs-ref-neo_ecsgameobjectparentchangedevent">Neo_ECSGameObjectParentChangedEvent</a></li>
+<li><a href="neo_event.html" data-page-link="neoecs-ref-neo_event">Neo_Event</a></li>
+<li><a href="neo_eventargs.html" data-page-link="neoecs-ref-neo_eventargs">Neo_EventArgs</a></li>
+<li><a href="neo_eventlistener.html" data-page-link="neoecs-ref-neo_eventlistener">Neo_EventListener</a></li>
+<li><a href="neo_eventmanager.html" data-page-link="neoecs-ref-neo_eventmanager">Neo_EventManager</a></li>
+<li><a href="neoapi.html" data-page-link="neoecs-ref-neoapi">NeoAPI</a></li>
+<li><a href="neoecs.html" data-page-link="neoecs-ref-neoecs">NeoECS</a></li>
+<li><a href="neoecsexception.html" data-page-link="neoecs-ref-neoecsexception">NeoECSException</a></li>
+<li><a href="objectattributes.html" data-page-link="neoecs-ref-objectattributes">ObjectAttributes</a></li>
+<li><a href="reserved.html" data-page-link="neoecs-ref-reserved">Reserved</a></li>
+        </ul>
+      </details>
+
+    </nav>
+
+
+
+
+    <main class="content">
+
+      <h1>Neo_EventArgs</h1>
+      <p>Arguments passed along with an event.</p>
+      <p class="muted">Declared in lib/neoecs/include/neoecs.hpp.</p>
+      <p><strong>Header:</strong> <code>lib/neoecs/include/neoecs.hpp</code></p>
+
+      <h2>Usage</h2>
+      <p>Typical usage pattern (adjust to your pipeline):</p>
+      <pre><code class="language-cpp">#include "neoecs.hpp"
+using namespace NeoECS;
+
+Neo_EventArgs args = Neo_EventArgs::empty();
+args.payload[&quot;name&quot;] = std::string(&quot;Player&quot;);
+</code></pre>
+
+      <h2>Member Types</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>None</code></td><td>No public members in this category.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Constructors / Destructors</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>None</code></td><td>No public members in this category.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Member Functions</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>None</code></td><td>No public members in this category.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Static Functions</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>static Neo_EventArgs empty();</code></td><td>Creates an empty argument set.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Public Data</h2>
+      <table class="ref-table">
+        <thead><tr><th>Member</th><th>Description</th></tr></thead>
+        <tbody>
+<tr><td><code>std::unordered_map&lt;std::string, std::any&gt; payload;</code></td><td>Arbitrary payload data.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Public API</h2>
+      <pre><code class="language-cpp">std::unordered_map&lt;std::string, std::any&gt; payload;
+        static Neo_EventArgs empty();
+</code></pre>
+
+      <h2>Full Class Layout</h2>
+      <pre><code class="language-cpp">struct Neo_EventArgs {
+    /// Arbitrary payload data.
+    std::unordered_map&lt;std::string, std::any&gt; payload;
+    /// Creates an empty argument set.
+    static Neo_EventArgs empty() { return Neo_EventArgs{}; }
+};
+</code></pre>
+
+    </main>
+
+    <aside class="toc" id="toc"></aside>
+  </div>
+
+  <footer class="footer">RenderingThing Docs - Local build</footer>
+  <script src="../../app.js"></script>
+</body>
+</html>
+
+
+
+

@@ -5,8 +5,7 @@
 #include <vector>
 
 #include "View.h"
-#include "Model.h"
-#include "Light.h"
+#include "SceneObject.h"
 #include "InputManager.h"
 
 class Scene;
@@ -24,17 +23,27 @@ class Scene : public View {
         virtual void setInputManager(std::shared_ptr<InputManager> manager) { inputManager = manager; }
         virtual bool switchState(PScene newState, PScene oldState) { return true; }
 
+        void addSceneObject(const PSceneObject& object);
+        void removeSceneObject(const PSceneObject& object);
+        void clearSceneObjects();
+        const std::vector<PSceneObject>& getSceneObjects() const { return sceneObjects; }
+
         void addModel(const PModel& model);
+        void removeModel(const PModel& model);
+        void removeModelObject(const PModelSceneObject& object);
         void clearModels();
-        const std::vector<PModel>& getModels() const { return models; }
+        std::vector<PModel> getModels() const;
 
         void addLight(const Light& light);
+        void removeLightObject(const PLightSceneObject& object);
         void clearLights();
 
     protected:
-        std::vector<PModel> models;
+        std::vector<PSceneObject> sceneObjects;
         std::shared_ptr<InputManager> inputManager;
+        bool manageSceneLights = false;
 
+        void updateSceneLights();
         void render3DPass();
         void drawModels3D(PCamera cam);
         void drawShadowsPass();

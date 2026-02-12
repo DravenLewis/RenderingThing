@@ -41,10 +41,10 @@ namespace {
                     return true;
                 }
                 
-                if(keyCode == SDL_SCANCODE_F9){
-                    owner->toggleDebugShadows();
-                    return true;
-                }
+                //if(keyCode == SDL_SCANCODE_F9){
+                //    owner->toggleDebugShadows();
+                //    return true;
+                //}
 
                 return false;
             }
@@ -159,18 +159,19 @@ void DemoScene::init(){
         auto env = mainScreen->getEnvironment();
         env->setLightingEnabled(true);
         env->setSkyBox(skybox);
-        env->getLightManager().clearLights();
-
-        auto SunLight = Light::CreateDirectionalLight(Math3D::Vec3(-0.3f, -1.0f, -0.2f), Color::fromRGBA255(255, 244, 214, 255), 1.2f);
-        auto KeyPoint = Light::CreatePointLight(Math3D::Vec3(4.5f, 6.0f, 2.0f), Color::fromRGBA255(255, 230, 180, 255), 6.5f, 18.0f, 2.0f);
-        auto FillPoint = Light::CreatePointLight(Math3D::Vec3(-6.0f, 3.0f, 6.0f), Color::fromRGBA255(120, 180, 255, 255), 3.0f, 20.0f, 2.0f);
-        auto RimPoint = Light::CreatePointLight(Math3D::Vec3(0.0f, 7.0f, -8.0f), Color::fromRGBA255(255, 255, 255, 255), 4.0f, 20.0f, 2.0f);
-
-        env->getLightManager().addLight(SunLight);
-        env->getLightManager().addLight(KeyPoint);
-        env->getLightManager().addLight(FillPoint);
-        env->getLightManager().addLight(RimPoint);
     }
+
+    clearLights();
+
+    auto SunLight = Light::CreateDirectionalLight(Math3D::Vec3(-0.3f, -1.0f, -0.2f), Color::fromRGBA255(255, 244, 214, 255), 1.2f);
+    auto KeyPoint = Light::CreatePointLight(Math3D::Vec3(4.5f, 6.0f, 2.0f), Color::fromRGBA255(255, 230, 180, 255), 6.5f, 18.0f, 2.0f);
+    auto FillPoint = Light::CreatePointLight(Math3D::Vec3(-6.0f, 3.0f, 6.0f), Color::fromRGBA255(120, 180, 255, 255), 3.0f, 20.0f, 2.0f);
+    auto RimPoint = Light::CreatePointLight(Math3D::Vec3(0.0f, 7.0f, -8.0f), Color::fromRGBA255(255, 255, 255, 255), 4.0f, 20.0f, 2.0f);
+
+    addLight(SunLight);
+    addLight(KeyPoint);
+    addLight(FillPoint);
+    addLight(RimPoint);
 
     ShadowRenderer::SetDebugShadows(showDebugShadows);
 
@@ -234,7 +235,7 @@ void DemoScene::render(){
             currentFPS
         );
 
-        Color c0 = Color::fromRGBA255(10,10,32,128);
+        Color c0 = Color::fromRGBA255(10,10,32,200);
         Graphics2D::SetBackgroundColor(*graphics2d, c0);
         Graphics2D::FillRect(*graphics2d, 0, 0, 600, 140);
 
@@ -243,7 +244,7 @@ void DemoScene::render(){
         Graphics2D::DrawString(*graphics2d,info,30,30);
 
         if(showDebugWidgets){
-            Color c2 = Color::fromRGBA255(10,10,32,128);
+            Color c2 = Color::fromRGBA255(10,10,32,200);
             Graphics2D::SetBackgroundColor(*graphics2d, c2);
             Graphics2D::FillRect(*graphics2d, 0, uiScreen->getHeight() - 100, uiScreen->getWidth(), 100);
             Graphics2D::SetBackgroundColor(*graphics2d, Color::WHITE);
@@ -265,7 +266,7 @@ void DemoScene::render(){
 void DemoScene::dispose(){
     graphics2d.reset();
     fpsController.reset();
-    models.clear();
+    clearSceneObjects();
     sceneInputHandler.reset();
 }
 

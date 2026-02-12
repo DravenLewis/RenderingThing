@@ -150,6 +150,46 @@ a:hover {
   box-shadow: var(--shadow);
 }
 
+.sidenav details.nav-group {
+  margin-bottom: 10px;
+}
+
+.sidenav details.nav-group summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 5px;
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sidenav details.nav-group summary::-webkit-details-marker {
+  display: none;
+}
+
+.sidenav details.nav-group summary::before {
+  content: "▸";
+  font-size: 12px;
+  transition: transform 0.2s ease;
+}
+
+.sidenav details.nav-group[open] summary {
+  color: var(--text);
+}
+
+.sidenav details.nav-group[open] summary::before {
+  transform: rotate(90deg);
+}
+
+.sidenav details.nav-group ul {
+  margin: 6px 0 0 6px;
+}
+
 .sidenav h3 {
   margin: 0 0 10px 0;
   font-size: 14px;
