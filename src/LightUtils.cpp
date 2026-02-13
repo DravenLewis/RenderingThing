@@ -7,6 +7,7 @@
 #include "Logbot.h"
 #include "ShadowRenderer.h"
 #include "Math.h"
+#include <cmath>
 
 namespace {
     constexpr GLuint LIGHT_UBO_BINDING = 0;
@@ -50,6 +51,7 @@ namespace {
     std::unordered_map<GLuint, int> g_lastLightCount;
     bool g_hasLastBlock = false;
     LightBlockUBO g_lastBlock;
+    uint64_t g_lightUploadFrame = 0;
 
     void ensureLightUboCreated() {
         if(g_lightUbo != 0){
@@ -99,6 +101,8 @@ void LightUniformUploader::UploadLights(std::shared_ptr<ShaderProgram> program, 
         return;
     }
 
+    g_lightUploadFrame++;
+
     ensureLightUboCreated();
     ensureProgramBoundToLightBlock(program->getID());
 
@@ -119,35 +123,103 @@ void LightUniformUploader::UploadLights(std::shared_ptr<ShaderProgram> program, 
         const Light& src = lights[i];
         LightUBO& dst = block.lights[i];
 
+        auto safeFloat = [](float v, float fallback){
+            return std::isfinite(v) ? v : fallback;
+        };
+        auto safeVec3 = [&](const Math3D::Vec3& v, const Math3D::Vec3& fallback){
+            if(!std::isfinite(v.x) || !std::isfinite(v.y) || !std::isfinite(v.z)){
+                return fallback;
+            }
+            return v;
+        };
+        auto safeVec4 = [&](const Math3D::Vec4& v, const Math3D::Vec4& fallback){
+            if(!std::isfinite(v.x) || !std::isfinite(v.y) || !std::isfinite(v.z) || !std::isfinite(v.w)){
+                return fallback;
+            }
+            return v;
+        };
+
+        Math3D::Vec3 safePos = safeVec3(src.position, Math3D::Vec3(0,0,0));
+        Math3D::Vec3 safeDir = safeVec3(src.direction, Math3D::Vec3(0,-1,0));
+        if(safeDir.length() < Math3D::EPSILON){
+            safeDir = Math3D::Vec3(0,-1,0);
+        }else{
+            safeDir = safeDir.normalize();
+        }
+        Math3D::Vec4 safeColor = safeVec4(src.color, Math3D::Vec4(1,1,1,1));
+
+        float safeIntensity = Math3D::Max(0.0f, safeFloat(src.intensity, 0.0f));
+        float safeRange = Math3D::Max(0.1f, safeFloat(src.range, 0.1f));
+        float safeFalloff = Math3D::Clamp(safeFloat(src.falloff, 2.0f), 0.1f, 3.0f);
+        float safeSpotAngle = Math3D::Clamp(safeFloat(src.spotAngle, 45.0f), 1.0f, 170.0f);
+        float safeShadowStrength = Math3D::Clamp(safeFloat(src.shadowStrength, 1.0f), 0.0f, 1.0f);
+
         ShadowLightData shadowData;
         ShadowRenderer::GetShadowDataForLight(i, src, shadowData);
+        bool shadowDataValid = std::isfinite(shadowData.shadowBias) &&
+                               std::isfinite(shadowData.shadowNormalBias);
+        for(int m = 0; m < 4 && shadowDataValid; ++m){
+            const float* matPtr = glm::value_ptr(shadowData.lightMatrices[m].data);
+            for(int k = 0; k < 16; ++k){
+                if(!std::isfinite(matPtr[k])){
+                    shadowDataValid = false;
+                    break;
+                }
+            }
+        }
+        if(!shadowDataValid){
+            shadowData.shadowMapIndex = -1;
+            shadowData.shadowStrength = 0.0f;
+        }
+        bool sanitized = (!std::isfinite(src.position.x) || !std::isfinite(src.position.y) || !std::isfinite(src.position.z)) ||
+                         (!std::isfinite(src.direction.x) || !std::isfinite(src.direction.y) || !std::isfinite(src.direction.z)) ||
+                         (!std::isfinite(src.color.x) || !std::isfinite(src.color.y) || !std::isfinite(src.color.z) || !std::isfinite(src.color.w)) ||
+                         !std::isfinite(src.intensity) || !std::isfinite(src.range) || !std::isfinite(src.falloff) || !std::isfinite(src.spotAngle) ||
+                         (safeIntensity != src.intensity) || (safeRange != src.range) || (safeFalloff != src.falloff) || (safeSpotAngle != src.spotAngle);
+        if(sanitized || !shadowDataValid){
+            LogBot.Log(LOG_WARN,
+                "[LightUBO] frame=%llu program=%u idx=%d type=%d casts=%d sanitized=%d shadowValid=%d "
+                "pos=(%.3f,%.3f,%.3f) dir=(%.3f,%.3f,%.3f) intensity=%.3f range=%.3f falloff=%.3f spot=%.3f shadowRange=%.3f mapIndex=%d strength=%.3f",
+                (unsigned long long)g_lightUploadFrame,
+                program->getID(),
+                i,
+                static_cast<int>(src.type),
+                src.castsShadows ? 1 : 0,
+                sanitized ? 1 : 0,
+                shadowDataValid ? 1 : 0,
+                src.position.x, src.position.y, src.position.z,
+                src.direction.x, src.direction.y, src.direction.z,
+                src.intensity, src.range, src.falloff, src.spotAngle, src.shadowRange,
+                shadowData.shadowMapIndex, shadowData.shadowStrength
+            );
+        }
 
         dst.meta[0] = static_cast<float>(static_cast<int>(src.type));
         dst.meta[1] = static_cast<float>(static_cast<int>(shadowData.shadowType));
         dst.meta[2] = static_cast<float>(shadowData.shadowMapIndex);
-        dst.meta[3] = shadowData.shadowStrength;
-        dst.position[0] = src.position.x;
-        dst.position[1] = src.position.y;
-        dst.position[2] = src.position.z;
+        dst.meta[3] = shadowDataValid ? safeShadowStrength : 0.0f;
+        dst.position[0] = safePos.x;
+        dst.position[1] = safePos.y;
+        dst.position[2] = safePos.z;
         dst.position[3] = 0.0f;
 
-        dst.direction[0] = src.direction.x;
-        dst.direction[1] = src.direction.y;
-        dst.direction[2] = src.direction.z;
+        dst.direction[0] = safeDir.x;
+        dst.direction[1] = safeDir.y;
+        dst.direction[2] = safeDir.z;
         dst.direction[3] = 0.0f;
 
-        dst.color[0] = src.color.x;
-        dst.color[1] = src.color.y;
-        dst.color[2] = src.color.z;
-        dst.color[3] = src.color.w;
+        dst.color[0] = safeColor.x;
+        dst.color[1] = safeColor.y;
+        dst.color[2] = safeColor.z;
+        dst.color[3] = safeColor.w;
 
-        dst.params[0] = src.intensity;
-        dst.params[1] = src.range;
-        dst.params[2] = src.falloff;
-        dst.params[3] = src.spotAngle;
+        dst.params[0] = safeIntensity;
+        dst.params[1] = safeRange;
+        dst.params[2] = safeFalloff;
+        dst.params[3] = safeSpotAngle;
 
-        dst.shadow[0] = shadowData.shadowBias;
-        dst.shadow[1] = shadowData.shadowNormalBias;
+        dst.shadow[0] = safeFloat(shadowData.shadowBias, 0.0025f);
+        dst.shadow[1] = safeFloat(shadowData.shadowNormalBias, 0.005f);
         dst.shadow[2] = static_cast<float>(shadowData.cascadeCount);
 
         dst.cascadeSplits[0] = shadowData.cascadeSplits.x;

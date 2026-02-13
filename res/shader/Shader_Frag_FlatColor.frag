@@ -1,6 +1,6 @@
 #version 410 core
 
-#define MAX_LIGHTS 8
+#define MAX_LIGHTS 16
 #define MAX_SHADOW_MAPS_2D 16
 #define MAX_SHADOW_MAPS_CUBE 2
 
@@ -35,6 +35,12 @@ layout(std140) uniform LightBlock {
 
 uniform sampler2DShadow u_shadowMaps2D[MAX_SHADOW_MAPS_2D];
 uniform samplerCubeShadow u_shadowMapsCube[MAX_SHADOW_MAPS_CUBE];
+
+vec3 safeNormalize(vec3 v){
+    float lenV = length(v);
+    return (lenV > 1e-5) ? (v / lenV) : vec3(0.0, -1.0, 0.0);
+}
+
 
 float sampleShadow2D(int shadowType, int mapIndex, vec4 lightSpacePos, float bias) {
     if(mapIndex < 0 || mapIndex >= MAX_SHADOW_MAPS_2D) return 1.0;
@@ -120,7 +126,7 @@ vec3 calculateLight(Light light, vec3 norm, vec3 fragPos) {
         if (distance < light.params.y) {
             float range = max(light.params.y, 0.001);
             float d = clamp(distance / range, 0.0, 1.0);
-            float falloff = max(light.params.z, 0.001);
+            float falloff = clamp(light.params.z, 0.001, 3.0);
             attenuation = pow(1.0 - d, falloff);
         } else {
             attenuation = 0.0;
@@ -131,11 +137,12 @@ vec3 calculateLight(Light light, vec3 norm, vec3 fragPos) {
         lightDir = normalize(light.position.xyz - fragPos);
         float distance = length(light.position.xyz - fragPos);
         if (distance < light.params.y) {
-            float theta = degrees(acos(dot(-lightDir, normalize(light.direction.xyz))));
+            float cosTheta = clamp(dot(-lightDir, safeNormalize(light.direction.xyz)), -1.0, 1.0);
+            float theta = degrees(acos(cosTheta));
             if (theta < light.params.w) {
                 float range = max(light.params.y, 0.001);
                 float d = clamp(distance / range, 0.0, 1.0);
-                float falloff = max(light.params.z, 0.001);
+                float falloff = clamp(light.params.z, 0.001, 3.0);
                 attenuation = pow(1.0 - d, falloff);
             } else {
                 attenuation = 0.0;
@@ -176,7 +183,7 @@ void main() {
         vec3 lightContribution = calculateLight(light, norm, v_fragPos);
 
         if(u_receiveShadows != 0 && light.meta.z >= 0.0){
-            float bias = light.shadow.x + light.shadow.y * (1.0 - max(dot(norm, normalize(light.direction.xyz)), 0.0));
+            float bias = light.shadow.x + light.shadow.y * (1.0 - max(dot(norm, safeNormalize(light.direction.xyz)), 0.0));
             float visibility = 1.0;
             int lType = int(light.meta.x + 0.5);
             int sType = int(light.meta.y + 0.5);
@@ -185,7 +192,7 @@ void main() {
             int cascadeIndex = 0;
 
             if(lType == 0){
-                visibility = sampleShadowCube(sType, baseIndex, v_fragPos, light.position.xyz, light.params.y, bias);
+                visibility = sampleShadowCube(sType, baseIndex, v_fragPos, light.position.xyz, max(light.cascadeSplits.x, 0.1), bias);
             }else{
                 cascadeCount = int(light.shadow.z + 0.5);
                 float viewDepth = -(u_view * vec4(v_fragPos, 1.0)).z;
@@ -237,3 +244,5 @@ void main() {
         FragColor = vec4(result, u_color.a);
     }
 }
+
+

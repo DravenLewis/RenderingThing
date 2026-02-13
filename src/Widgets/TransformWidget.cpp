@@ -8,6 +8,7 @@ namespace {
     constexpr float kPickThresholdPx = 8.0f;
     constexpr float kRotatePickThresholdPx = 10.0f;
     constexpr int kRingSegments = 48;
+    constexpr float kClipEpsilon = 1e-6f;
 
     ImU32 axisColor(TransformWidget::Axis axis, bool active){
         if(active){
@@ -97,24 +98,93 @@ namespace {
         }
     }
 
+    bool clipHomogeneousLine(glm::vec4& a, glm::vec4& b){
+        auto clipPlane = [&](float fa, float fb) -> bool {
+            if(fa < 0.0f && fb < 0.0f){
+                return false;
+            }
+            if(fa < 0.0f || fb < 0.0f){
+                float t = fa / (fa - fb);
+                glm::vec4 p = a + (b - a) * t;
+                if(fa < 0.0f){
+                    a = p;
+                }else{
+                    b = p;
+                }
+            }
+            return true;
+        };
+
+        if(!clipPlane(a.x + a.w, b.x + b.w)) return false; // left
+        if(!clipPlane(-a.x + a.w, -b.x + b.w)) return false; // right
+        if(!clipPlane(a.y + a.w, b.y + b.w)) return false; // bottom
+        if(!clipPlane(-a.y + a.w, -b.y + b.w)) return false; // top
+        if(!clipPlane(a.z + a.w, b.z + b.w)) return false; // near
+        if(!clipPlane(-a.z + a.w, -b.z + b.w)) return false; // far
+        return true;
+    }
+
+    bool projectWorldPoint(View* view,
+                           PCamera camera,
+                           const TransformWidget::Viewport& viewport,
+                           const Math3D::Vec3& worldPos,
+                           ImVec2& out){
+        if(!view || !camera || !viewport.valid || viewport.w <= 0.0f || viewport.h <= 0.0f){
+            return false;
+        }
+
+        glm::mat4 viewMat = (glm::mat4)camera->getViewMatrix();
+        glm::mat4 projMat = (glm::mat4)camera->getProjectionMatrix();
+        glm::vec4 clip = projMat * viewMat * glm::vec4(worldPos.x, worldPos.y, worldPos.z, 1.0f);
+        if(clip.x < -clip.w || clip.x > clip.w ||
+           clip.y < -clip.w || clip.y > clip.w ||
+           clip.z < -clip.w || clip.z > clip.w){
+            return false;
+        }
+        if(std::fabs(clip.w) < kClipEpsilon){
+            return false;
+        }
+        glm::vec3 ndc = glm::vec3(clip) / clip.w;
+        out.x = viewport.x + (ndc.x + 1.0f) * 0.5f * viewport.w;
+        out.y = viewport.y + (1.0f - (ndc.y + 1.0f) * 0.5f) * viewport.h;
+        return true;
+    }
+
+    bool clipWorldLineToScreen(View* view,
+                               PCamera camera,
+                               const TransformWidget::Viewport& viewport,
+                               const Math3D::Vec3& aWorld,
+                               const Math3D::Vec3& bWorld,
+                               ImVec2& outA,
+                               ImVec2& outB){
+        if(!view || !camera || !viewport.valid || viewport.w <= 0.0f || viewport.h <= 0.0f){
+            return false;
+        }
+        glm::mat4 viewMat = (glm::mat4)camera->getViewMatrix();
+        glm::mat4 projMat = (glm::mat4)camera->getProjectionMatrix();
+        glm::vec4 a = projMat * viewMat * glm::vec4(aWorld.x, aWorld.y, aWorld.z, 1.0f);
+        glm::vec4 b = projMat * viewMat * glm::vec4(bWorld.x, bWorld.y, bWorld.z, 1.0f);
+        if(!clipHomogeneousLine(a, b)){
+            return false;
+        }
+        if(std::fabs(a.w) < kClipEpsilon || std::fabs(b.w) < kClipEpsilon){
+            return false;
+        }
+        glm::vec3 ndcA = glm::vec3(a) / a.w;
+        glm::vec3 ndcB = glm::vec3(b) / b.w;
+        outA.x = viewport.x + (ndcA.x + 1.0f) * 0.5f * viewport.w;
+        outA.y = viewport.y + (1.0f - (ndcA.y + 1.0f) * 0.5f) * viewport.h;
+        outB.x = viewport.x + (ndcB.x + 1.0f) * 0.5f * viewport.w;
+        outB.y = viewport.y + (1.0f - (ndcB.y + 1.0f) * 0.5f) * viewport.h;
+        return true;
+    }
+
     bool isGizmoOnScreen(View* view,
                          PCamera camera,
                          const TransformWidget::Viewport& viewport,
                          const Math3D::Vec3& worldPos){
-        if(!view || !camera || !viewport.valid){
-            return false;
-        }
-        Math3D::Vec3 screen = view->worldToScreen(camera, worldPos, viewport.x, viewport.y, viewport.w, viewport.h);
-        if(screen.z < 0.0f || screen.z > 1.0f){
-            return false;
-        }
-        if(screen.x < viewport.x || screen.x > (viewport.x + viewport.w)){
-            return false;
-        }
-        if(screen.y < viewport.y || screen.y > (viewport.y + viewport.h)){
-            return false;
-        }
-        return true;
+        ImVec2 screen;
+        return projectWorldPoint(view, camera, viewport, worldPos, screen);
     }
 }
 
@@ -175,11 +245,11 @@ TransformWidget::HoverResult TransformWidget::pickHandleFromMouse(View* view,
     HoverResult best{};
     float bestDist = 1e9f;
 
-    Math3D::Vec3 centerScreen = view->worldToScreen(camera, worldPos, viewport.x, viewport.y, viewport.w, viewport.h);
-    ImVec2 centerPt(centerScreen.x, centerScreen.y);
+    ImVec2 centerPt(0,0);
+    const bool centerVisible = projectWorldPoint(view, camera, viewport, worldPos, centerPt);
     float centerDx = mousePt.x - centerPt.x;
     float centerDy = mousePt.y - centerPt.y;
-    float centerDist = std::sqrt(centerDx * centerDx + centerDy * centerDy);
+    float centerDist = centerVisible ? std::sqrt(centerDx * centerDx + centerDy * centerDy) : 1e9f;
 
     if(mode == Mode::Combined && centerDist <= centerPickRadius){
         best.handle = Handle::UniformScale;
@@ -200,16 +270,17 @@ TransformWidget::HoverResult TransformWidget::pickHandleFromMouse(View* view,
         for(Axis axis : {Axis::X, Axis::Y, Axis::Z}){
             Math3D::Vec3 axisWorld = axisWorldFromLocal(transform, axis).normalize();
             buildRingPoints(ringPoints, worldPos, axisWorld, gizmoSize);
-            ImVec2 prev;
             bool hasPrev = false;
+            Math3D::Vec3 prevWorld;
             for(const auto& wp : ringPoints){
-                Math3D::Vec3 sp = view->worldToScreen(camera, wp, viewport.x, viewport.y, viewport.w, viewport.h);
-                ImVec2 pt(sp.x, sp.y);
                 if(hasPrev){
-                    float dist = distancePointToSegment(mousePt, prev, pt);
-                    consider(Handle::Rotate, axis, dist, kRotatePickThresholdPx);
+                    ImVec2 a, b;
+                    if(clipWorldLineToScreen(view, camera, viewport, prevWorld, wp, a, b)){
+                        float dist = distancePointToSegment(mousePt, a, b);
+                        consider(Handle::Rotate, axis, dist, kRotatePickThresholdPx);
+                    }
                 }
-                prev = pt;
+                prevWorld = wp;
                 hasPrev = true;
             }
         }
@@ -226,17 +297,16 @@ TransformWidget::HoverResult TransformWidget::pickHandleFromMouse(View* view,
             Math3D::Vec3 axisWorld = axisWorldFromLocal(transform, axis).normalize();
             Math3D::Vec3 start = worldPos;
             Math3D::Vec3 end = worldPos + axisWorld * (gizmoSize * translateDotOffset);
-            Math3D::Vec3 startScreen = view->worldToScreen(camera, start, viewport.x, viewport.y, viewport.w, viewport.h);
-            Math3D::Vec3 endScreen = view->worldToScreen(camera, end, viewport.x, viewport.y, viewport.w, viewport.h);
-            ImVec2 a(startScreen.x, startScreen.y);
-            ImVec2 b(endScreen.x, endScreen.y);
-            float distLine = distancePointToSegment(mousePt, a, b);
-            consider(Handle::Translate, axis, distLine, kPickThresholdPx);
+            ImVec2 a, b;
+            if(clipWorldLineToScreen(view, camera, viewport, start, end, a, b)){
+                float distLine = distancePointToSegment(mousePt, a, b);
+                consider(Handle::Translate, axis, distLine, kPickThresholdPx);
 
-            float dx = mousePt.x - b.x;
-            float dy = mousePt.y - b.y;
-            float distDot = std::sqrt(dx * dx + dy * dy);
-            consider(Handle::Translate, axis, distDot, translateDotRadius + 3.0f);
+                float dx = mousePt.x - b.x;
+                float dy = mousePt.y - b.y;
+                float distDot = std::sqrt(dx * dx + dy * dy);
+                consider(Handle::Translate, axis, distDot, translateDotRadius + 3.0f);
+            }
         }
         if(mode == Mode::Translate && best.handle == Handle::Translate){
             return best;
@@ -250,19 +320,22 @@ TransformWidget::HoverResult TransformWidget::pickHandleFromMouse(View* view,
             }
             Math3D::Vec3 axisWorld = axisWorldFromLocal(transform, axis).normalize();
             Math3D::Vec3 end = worldPos + axisWorld * (gizmoSize * scaleSquareOffset);
-            Math3D::Vec3 endScreen = view->worldToScreen(camera, end, viewport.x, viewport.y, viewport.w, viewport.h);
-            ImVec2 b(endScreen.x, endScreen.y);
-            float dx = std::fabs(mousePt.x - b.x);
-            float dy = std::fabs(mousePt.y - b.y);
-            float distSquare = std::max(dx, dy);
-            consider(Handle::Scale, axis, distSquare, scaleSquareHalf + 3.0f);
+            ImVec2 b;
+            if(projectWorldPoint(view, camera, viewport, end, b)){
+                float dx = std::fabs(mousePt.x - b.x);
+                float dy = std::fabs(mousePt.y - b.y);
+                float distSquare = std::max(dx, dy);
+                consider(Handle::Scale, axis, distSquare, scaleSquareHalf + 3.0f);
+            }
         }
 
         if(mode == Mode::Combined){
-            float dx = std::fabs(mousePt.x - centerPt.x);
-            float dy = std::fabs(mousePt.y - centerPt.y);
-            float distSquare = std::max(dx, dy);
-            consider(Handle::UniformScale, Axis::None, distSquare, uniformSquareHalf + 4.0f);
+            if(centerVisible){
+                float dx = std::fabs(mousePt.x - centerPt.x);
+                float dy = std::fabs(mousePt.y - centerPt.y);
+                float distSquare = std::max(dx, dy);
+                consider(Handle::UniformScale, Axis::None, distSquare, uniformSquareHalf + 4.0f);
+            }
         }
         if(mode == Mode::Scale && best.handle == Handle::Scale){
             return best;
@@ -414,9 +487,6 @@ void TransformWidget::draw(ImDrawList* drawList,
     if(!drawList || !view || !camera || !viewport.valid){
         return;
     }
-    if(!isGizmoOnScreen(view, camera, viewport, worldPos)){
-        return;
-    }
 
     float size = computeGizmoSize(camera, worldPos);
 
@@ -429,16 +499,17 @@ void TransformWidget::draw(ImDrawList* drawList,
                              (axis == hoverAxis && hoverHandle == Handle::Rotate);
             ImU32 col = axisColor(axis, highlight);
 
-            ImVec2 prev;
             bool hasPrev = false;
+            Math3D::Vec3 prevWorld;
             for(const auto& wp : ringPoints){
-                Math3D::Vec3 sp = view->worldToScreen(camera, wp, viewport.x, viewport.y, viewport.w, viewport.h);
-                ImVec2 pt(sp.x, sp.y);
                 if(hasPrev){
                     float thickness = highlight ? lineThicknessActive : lineThickness;
-                    drawList->AddLine(prev, pt, col, thickness);
+                    ImVec2 a, b;
+                    if(clipWorldLineToScreen(view, camera, viewport, prevWorld, wp, a, b)){
+                        drawList->AddLine(a, b, col, thickness);
+                    }
                 }
-                prev = pt;
+                prevWorld = wp;
                 hasPrev = true;
             }
         }
@@ -452,50 +523,50 @@ void TransformWidget::draw(ImDrawList* drawList,
             Math3D::Vec3 axisWorld = axisWorldFromLocal(transform, axis).normalize();
             Math3D::Vec3 start = worldPos;
             Math3D::Vec3 endLine = worldPos + axisWorld * size;
-            Math3D::Vec3 startScreen = view->worldToScreen(camera, start, viewport.x, viewport.y, viewport.w, viewport.h);
-            Math3D::Vec3 endScreen = view->worldToScreen(camera, endLine, viewport.x, viewport.y, viewport.w, viewport.h);
-
-            ImVec2 a(startScreen.x, startScreen.y);
-            ImVec2 b(endScreen.x, endScreen.y);
-
             bool highlightLine = (axis == activeAxis && activeHandle == Handle::Translate) ||
                                  (axis == hoverAxis && hoverHandle == Handle::Translate);
             ImU32 colLine = axisColor(axis, highlightLine);
             float thickness = highlightLine ? lineThicknessActive : lineThickness;
-            drawList->AddLine(a, b, colLine, thickness);
+            ImVec2 a, b;
+            if(clipWorldLineToScreen(view, camera, viewport, start, endLine, a, b)){
+                drawList->AddLine(a, b, colLine, thickness);
+            }
 
             if(mode == Mode::Translate || mode == Mode::Combined){
                 Math3D::Vec3 endDot = worldPos + axisWorld * (size * translateDotOffset);
-                Math3D::Vec3 dotScreen = view->worldToScreen(camera, endDot, viewport.x, viewport.y, viewport.w, viewport.h);
-                ImVec2 d(dotScreen.x, dotScreen.y);
-                bool highlightDot = (axis == activeAxis && activeHandle == Handle::Translate) ||
-                                    (axis == hoverAxis && hoverHandle == Handle::Translate);
-                ImU32 colDot = axisColor(axis, highlightDot);
-                drawList->AddCircleFilled(d, translateDotRadius, colDot);
+                ImVec2 d;
+                if(projectWorldPoint(view, camera, viewport, endDot, d)){
+                    bool highlightDot = (axis == activeAxis && activeHandle == Handle::Translate) ||
+                                        (axis == hoverAxis && hoverHandle == Handle::Translate);
+                    ImU32 colDot = axisColor(axis, highlightDot);
+                    drawList->AddCircleFilled(d, translateDotRadius, colDot);
+                }
             }
 
             if(mode == Mode::Scale || mode == Mode::Combined){
                 Math3D::Vec3 endSquare = worldPos + axisWorld * (size * scaleSquareOffset);
-                Math3D::Vec3 squareScreen = view->worldToScreen(camera, endSquare, viewport.x, viewport.y, viewport.w, viewport.h);
-                ImVec2 s(squareScreen.x, squareScreen.y);
-                bool highlightSq = (axis == activeAxis && activeHandle == Handle::Scale) ||
-                                   (axis == hoverAxis && hoverHandle == Handle::Scale);
-                ImU32 colSq = axisColor(axis, highlightSq);
-                drawList->AddRectFilled(ImVec2(s.x - scaleSquareHalf, s.y - scaleSquareHalf),
-                                        ImVec2(s.x + scaleSquareHalf, s.y + scaleSquareHalf),
-                                        colSq);
+                ImVec2 s;
+                if(projectWorldPoint(view, camera, viewport, endSquare, s)){
+                    bool highlightSq = (axis == activeAxis && activeHandle == Handle::Scale) ||
+                                       (axis == hoverAxis && hoverHandle == Handle::Scale);
+                    ImU32 colSq = axisColor(axis, highlightSq);
+                    drawList->AddRectFilled(ImVec2(s.x - scaleSquareHalf, s.y - scaleSquareHalf),
+                                            ImVec2(s.x + scaleSquareHalf, s.y + scaleSquareHalf),
+                                            colSq);
+                }
             }
         }
     }
 
     if(mode == Mode::Combined){
-        Math3D::Vec3 centerScreen = view->worldToScreen(camera, worldPos, viewport.x, viewport.y, viewport.w, viewport.h);
-        ImVec2 c(centerScreen.x, centerScreen.y);
-        bool highlight = (activeHandle == Handle::UniformScale) || (hoverHandle == Handle::UniformScale);
-        ImU32 col = highlight ? IM_COL32(255, 214, 64, 255) : IM_COL32(220, 220, 220, 255);
-        drawList->AddRectFilled(ImVec2(c.x - uniformSquareHalf, c.y - uniformSquareHalf),
-                                ImVec2(c.x + uniformSquareHalf, c.y + uniformSquareHalf),
-                                col);
+        ImVec2 c;
+        if(projectWorldPoint(view, camera, viewport, worldPos, c)){
+            bool highlight = (activeHandle == Handle::UniformScale) || (hoverHandle == Handle::UniformScale);
+            ImU32 col = highlight ? IM_COL32(255, 214, 64, 255) : IM_COL32(220, 220, 220, 255);
+            drawList->AddRectFilled(ImVec2(c.x - uniformSquareHalf, c.y - uniformSquareHalf),
+                                    ImVec2(c.x + uniformSquareHalf, c.y + uniformSquareHalf),
+                                    col);
+        }
     }
 
 }

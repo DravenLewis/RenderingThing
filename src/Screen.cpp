@@ -308,9 +308,6 @@ void Screen::bind(bool clear){
     glEnable(GL_DEPTH_TEST);
     this->bound = true;
 
-    if(this->camera && !this->camera->getSettings().isOrtho){
-        ShadowRenderer::BeginFrame(this->camera);
-    }
 }
 
 void Screen::unbind(){

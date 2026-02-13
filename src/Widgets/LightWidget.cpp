@@ -9,6 +9,7 @@ namespace {
     constexpr float kHandleRadius = 6.0f;
     constexpr float kPickRadius = 10.0f;
     constexpr float kIconSizePx = 64.0f;
+    constexpr float kClipEpsilon = 1e-6f;
 
     float screenDistance(const ImVec2& a, const ImVec2& b){
         float dx = a.x - b.x;
@@ -42,6 +43,87 @@ namespace {
             out.push_back(point);
         }
     }
+
+    bool clipHomogeneousLine(glm::vec4& a, glm::vec4& b){
+        auto clipPlane = [&](float fa, float fb) -> bool {
+            if(fa < 0.0f && fb < 0.0f){
+                return false;
+            }
+            if(fa < 0.0f || fb < 0.0f){
+                float t = fa / (fa - fb);
+                glm::vec4 p = a + (b - a) * t;
+                if(fa < 0.0f){
+                    a = p;
+                }else{
+                    b = p;
+                }
+            }
+            return true;
+        };
+
+        if(!clipPlane(a.x + a.w, b.x + b.w)) return false;
+        if(!clipPlane(-a.x + a.w, -b.x + b.w)) return false;
+        if(!clipPlane(a.y + a.w, b.y + b.w)) return false;
+        if(!clipPlane(-a.y + a.w, -b.y + b.w)) return false;
+        if(!clipPlane(a.z + a.w, b.z + b.w)) return false;
+        if(!clipPlane(-a.z + a.w, -b.z + b.w)) return false;
+        return true;
+    }
+
+    bool projectWorldPoint(View* view,
+                           PCamera camera,
+                           const TransformWidget::Viewport& viewport,
+                           const Math3D::Vec3& worldPos,
+                           ImVec2& out){
+        if(!view || !camera || !viewport.valid || viewport.w <= 0.0f || viewport.h <= 0.0f){
+            return false;
+        }
+
+        glm::mat4 viewMat = (glm::mat4)camera->getViewMatrix();
+        glm::mat4 projMat = (glm::mat4)camera->getProjectionMatrix();
+        glm::vec4 clip = projMat * viewMat * glm::vec4(worldPos.x, worldPos.y, worldPos.z, 1.0f);
+        if(clip.x < -clip.w || clip.x > clip.w ||
+           clip.y < -clip.w || clip.y > clip.w ||
+           clip.z < -clip.w || clip.z > clip.w){
+            return false;
+        }
+        if(std::fabs(clip.w) < kClipEpsilon){
+            return false;
+        }
+        glm::vec3 ndc = glm::vec3(clip) / clip.w;
+        out.x = viewport.x + (ndc.x + 1.0f) * 0.5f * viewport.w;
+        out.y = viewport.y + (1.0f - (ndc.y + 1.0f) * 0.5f) * viewport.h;
+        return true;
+    }
+
+    bool clipWorldLineToScreen(View* view,
+                               PCamera camera,
+                               const TransformWidget::Viewport& viewport,
+                               const Math3D::Vec3& aWorld,
+                               const Math3D::Vec3& bWorld,
+                               ImVec2& outA,
+                               ImVec2& outB){
+        if(!view || !camera || !viewport.valid || viewport.w <= 0.0f || viewport.h <= 0.0f){
+            return false;
+        }
+        glm::mat4 viewMat = (glm::mat4)camera->getViewMatrix();
+        glm::mat4 projMat = (glm::mat4)camera->getProjectionMatrix();
+        glm::vec4 a = projMat * viewMat * glm::vec4(aWorld.x, aWorld.y, aWorld.z, 1.0f);
+        glm::vec4 b = projMat * viewMat * glm::vec4(bWorld.x, bWorld.y, bWorld.z, 1.0f);
+        if(!clipHomogeneousLine(a, b)){
+            return false;
+        }
+        if(std::fabs(a.w) < kClipEpsilon || std::fabs(b.w) < kClipEpsilon){
+            return false;
+        }
+        glm::vec3 ndcA = glm::vec3(a) / a.w;
+        glm::vec3 ndcB = glm::vec3(b) / b.w;
+        outA.x = viewport.x + (ndcA.x + 1.0f) * 0.5f * viewport.w;
+        outA.y = viewport.y + (1.0f - (ndcA.y + 1.0f) * 0.5f) * viewport.h;
+        outB.x = viewport.x + (ndcB.x + 1.0f) * 0.5f * viewport.w;
+        outB.y = viewport.y + (1.0f - (ndcB.y + 1.0f) * 0.5f) * viewport.h;
+        return true;
+    }
 }
 
 void LightWidget::reset(){
@@ -53,20 +135,8 @@ bool LightWidget::isOnScreen(View* view,
                              PCamera camera,
                              const TransformWidget::Viewport& viewport,
                              const Math3D::Vec3& worldPos) const{
-    if(!view || !camera || !viewport.valid){
-        return false;
-    }
-    Math3D::Vec3 screen = view->worldToScreen(camera, worldPos, viewport.x, viewport.y, viewport.w, viewport.h);
-    if(screen.z < 0.0f || screen.z > 1.0f){
-        return false;
-    }
-    if(screen.x < viewport.x || screen.x > (viewport.x + viewport.w)){
-        return false;
-    }
-    if(screen.y < viewport.y || screen.y > (viewport.y + viewport.h)){
-        return false;
-    }
-    return true;
+    ImVec2 screen;
+    return projectWorldPoint(view, camera, viewport, worldPos, screen);
 }
 
 void LightWidget::drawBillboard(ImDrawList* drawList,
@@ -80,8 +150,8 @@ void LightWidget::drawBillboard(ImDrawList* drawList,
     if(!drawList || !view || !camera || !texture){
         return;
     }
-    Math3D::Vec3 screen = view->worldToScreen(camera, worldPos, viewport.x, viewport.y, viewport.w, viewport.h);
-    if(!isOnScreen(view, camera, viewport, worldPos)){
+    ImVec2 screen;
+    if(!projectWorldPoint(view, camera, viewport, worldPos, screen)){
         return;
     }
     float half = sizePx * 0.5f;
@@ -123,19 +193,24 @@ bool LightWidget::update(View* view,
 
     if(light.type == LightType::POINT){
         float range = Math3D::Max(0.1f, light.range);
-        Math3D::Vec3 centerScreen = view->worldToScreen(camera, lightPos, viewport.x, viewport.y, viewport.w, viewport.h);
+        ImVec2 centerPt(0,0);
+        if(!projectWorldPoint(view, camera, viewport, lightPos, centerPt)){
+            centerPt = ImVec2(0,0);
+        }
         Math3D::Vec3 handleWorld = lightPos + camRight * range;
-        Math3D::Vec3 handleScreen = view->worldToScreen(camera, handleWorld, viewport.x, viewport.y, viewport.w, viewport.h);
-        ImVec2 centerPt(centerScreen.x, centerScreen.y);
-        handleScreenPos = ImVec2(handleScreen.x, handleScreen.y);
-        Math3D::Vec2 axis2(handleScreen.x - centerScreen.x, handleScreen.y - centerScreen.y);
+        ImVec2 handlePt(0,0);
+        const bool handleVisible = projectWorldPoint(view, camera, viewport, handleWorld, handlePt);
+        handleScreenPos = handlePt;
+        Math3D::Vec2 axis2(handlePt.x - centerPt.x, handlePt.y - centerPt.y);
         float axisLen = axis2.length();
         if(axisLen > Math3D::EPSILON){
             axisDir = Math3D::Vec2(axis2.x / axisLen, axis2.y / axisLen);
         }
-        Math3D::Vec3 unitScreen = view->worldToScreen(camera, lightPos + camRight, viewport.x, viewport.y, viewport.w, viewport.h);
-        axisPixelsPerUnit = Math3D::Vec2(unitScreen.x - centerScreen.x, unitScreen.y - centerScreen.y).length();
-        if(allowInput && isOnScreen(view, camera, viewport, lightPos)){
+        ImVec2 unitPt;
+        if(projectWorldPoint(view, camera, viewport, lightPos + camRight, unitPt)){
+            axisPixelsPerUnit = Math3D::Vec2(unitPt.x - centerPt.x, unitPt.y - centerPt.y).length();
+        }
+        if(allowInput && handleVisible && isOnScreen(view, camera, viewport, lightPos)){
             if(screenDistance(mousePt, handleScreenPos) <= kPickRadius){
                 hoverHandle = Handle::PointRadius;
             }
@@ -145,7 +220,9 @@ bool LightWidget::update(View* view,
         if(syncDirection){
             dir = worldForward;
         }
-        if(dir.length() > Math3D::EPSILON){
+        if(dir.length() < Math3D::EPSILON){
+            dir = Math3D::Vec3(0,-1,0);
+        }else{
             dir = dir.normalize();
         }
 
@@ -160,45 +237,65 @@ bool LightWidget::update(View* view,
         Math3D::Vec3 axisPoint = lightPos + dir * range;
 
         // Range handle at cone tip
-        Math3D::Vec3 axisScreen = view->worldToScreen(camera, axisPoint, viewport.x, viewport.y, viewport.w, viewport.h);
-        Math3D::Vec3 centerScreen = view->worldToScreen(camera, lightPos, viewport.x, viewport.y, viewport.w, viewport.h);
-        ImVec2 axisPt(axisScreen.x, axisScreen.y);
-        ImVec2 centerPt(centerScreen.x, centerScreen.y);
-        Math3D::Vec2 axisVec(axisScreen.x - centerScreen.x, axisScreen.y - centerScreen.y);
+        ImVec2 axisPt(0,0);
+        ImVec2 centerPt(0,0);
+        const bool axisVisible = projectWorldPoint(view, camera, viewport, axisPoint, axisPt);
+        const bool centerVisible = projectWorldPoint(view, camera, viewport, lightPos, centerPt);
+        Math3D::Vec2 axisVec(axisPt.x - centerPt.x, axisPt.y - centerPt.y);
         float axisLen = axisVec.length();
         Math3D::Vec2 axisDirRange(1,0);
         if(axisLen > Math3D::EPSILON){
             axisDirRange = Math3D::Vec2(axisVec.x / axisLen, axisVec.y / axisLen);
         }
-        Math3D::Vec3 unitScreen = view->worldToScreen(camera, lightPos + dir, viewport.x, viewport.y, viewport.w, viewport.h);
-        float rangePixelsPerUnit = Math3D::Vec2(unitScreen.x - centerScreen.x, unitScreen.y - centerScreen.y).length();
+        float rangePixelsPerUnit = 1.0f;
+        ImVec2 unitRangePt;
+        if(projectWorldPoint(view, camera, viewport, lightPos + dir, unitRangePt)){
+            rangePixelsPerUnit = Math3D::Vec2(unitRangePt.x - centerPt.x, unitRangePt.y - centerPt.y).length();
+        }
 
         // Angle handle on cone edge
         Math3D::Vec3 handleWorld = axisPoint + axisRight * radius;
-        Math3D::Vec3 handleScreen = view->worldToScreen(camera, handleWorld, viewport.x, viewport.y, viewport.w, viewport.h);
-        ImVec2 anglePt(handleScreen.x, handleScreen.y);
-        Math3D::Vec2 angleAxis(handleScreen.x - axisScreen.x, handleScreen.y - axisScreen.y);
+        ImVec2 anglePt(0,0);
+        const bool angleVisible = projectWorldPoint(view, camera, viewport, handleWorld, anglePt);
+        ImVec2 angleLeftPt(0,0);
+        const bool angleLeftVisible = projectWorldPoint(view, camera, viewport, axisPoint - axisRight * radius, angleLeftPt);
+        Math3D::Vec2 angleAxis(anglePt.x - axisPt.x, anglePt.y - axisPt.y);
         float angleLen = angleAxis.length();
         Math3D::Vec2 angleDir(1,0);
         if(angleLen > Math3D::EPSILON){
             angleDir = Math3D::Vec2(angleAxis.x / angleLen, angleAxis.y / angleLen);
         }
-        Math3D::Vec3 unitAngleScreen = view->worldToScreen(camera, axisPoint + axisRight, viewport.x, viewport.y, viewport.w, viewport.h);
-        float anglePixelsPerUnit = Math3D::Vec2(unitAngleScreen.x - axisScreen.x, unitAngleScreen.y - axisScreen.y).length();
+        Math3D::Vec2 angleAxisLeft(angleLeftPt.x - axisPt.x, angleLeftPt.y - axisPt.y);
+        float angleLeftLen = angleAxisLeft.length();
+        Math3D::Vec2 angleDirLeft(1,0);
+        if(angleLeftLen > Math3D::EPSILON){
+            angleDirLeft = Math3D::Vec2(angleAxisLeft.x / angleLeftLen, angleAxisLeft.y / angleLeftLen);
+        }
+        float anglePixelsPerUnit = 1.0f;
+        ImVec2 unitAnglePt;
+        if(projectWorldPoint(view, camera, viewport, axisPoint + axisRight, unitAnglePt)){
+            anglePixelsPerUnit = Math3D::Vec2(unitAnglePt.x - axisPt.x, unitAnglePt.y - axisPt.y).length();
+        }
 
-        if(allowInput && isOnScreen(view, camera, viewport, axisPoint)){
+        if(allowInput && axisVisible && centerVisible){
             float distRange = screenDistance(mousePt, axisPt);
             float distAngle = screenDistance(mousePt, anglePt);
-            if(distAngle <= kPickRadius && distAngle <= distRange){
-                hoverHandle = Handle::SpotAngle;
-                handleScreenPos = anglePt;
-                axisDir = angleDir;
-                axisPixelsPerUnit = anglePixelsPerUnit;
-            }else if(distRange <= kPickRadius){
+            float distAngleLeft = screenDistance(mousePt, angleLeftPt);
+            if(distRange <= kPickRadius){
                 hoverHandle = Handle::SpotRange;
                 handleScreenPos = axisPt;
                 axisDir = axisDirRange;
                 axisPixelsPerUnit = rangePixelsPerUnit;
+            }else if(angleVisible && distAngle <= kPickRadius && distAngle <= distAngleLeft){
+                hoverHandle = Handle::SpotAngle;
+                handleScreenPos = anglePt;
+                axisDir = angleDir;
+                axisPixelsPerUnit = anglePixelsPerUnit;
+            }else if(angleLeftVisible && distAngleLeft <= kPickRadius){
+                hoverHandle = Handle::SpotAngle;
+                handleScreenPos = angleLeftPt;
+                axisDir = angleDirLeft;
+                axisPixelsPerUnit = anglePixelsPerUnit;
             }
         }
     }
@@ -260,10 +357,6 @@ void LightWidget::draw(ImDrawList* drawList,
     }
 
     Math3D::Vec3 lightPos = syncTransform ? worldPos : light.position;
-    Math3D::Vec3 centerScreen = view->worldToScreen(camera, lightPos, viewport.x, viewport.y, viewport.w, viewport.h);
-    if(!isOnScreen(view, camera, viewport, lightPos)){
-        return;
-    }
 
     ImU32 color = kLightColor;
     ImU32 outline = kLightOutline;
@@ -274,48 +367,52 @@ void LightWidget::draw(ImDrawList* drawList,
         std::vector<Math3D::Vec3> ringPoints;
         for(const Math3D::Vec3& axis : {Math3D::Vec3(1,0,0), Math3D::Vec3(0,1,0), Math3D::Vec3(0,0,1)}){
             buildRingPoints(ringPoints, lightPos, axis, range);
-            ImVec2 prev;
             bool hasPrev = false;
+            Math3D::Vec3 prevWorld;
             for(const auto& wp : ringPoints){
-                Math3D::Vec3 sp = view->worldToScreen(camera, wp, viewport.x, viewport.y, viewport.w, viewport.h);
-                ImVec2 pt(sp.x, sp.y);
                 if(hasPrev){
-                    drawList->AddLine(prev, pt, outline, 2.0f);
+                    ImVec2 a, b;
+                    if(clipWorldLineToScreen(view, camera, viewport, prevWorld, wp, a, b)){
+                        drawList->AddLine(a, b, outline, 2.0f);
+                    }
                 }
-                prev = pt;
+                prevWorld = wp;
                 hasPrev = true;
             }
         }
         auto camTx = camera->transform();
         Math3D::Vec3 camRight = camTx.right().normalize();
         Math3D::Vec3 handleWorld = lightPos + camRight * range;
-        Math3D::Vec3 handleScreen = view->worldToScreen(camera, handleWorld, viewport.x, viewport.y, viewport.w, viewport.h);
-        ImVec2 handlePt(handleScreen.x, handleScreen.y);
-        drawList->AddCircleFilled(handlePt, kHandleRadius, color);
+        ImVec2 handlePt;
+        if(projectWorldPoint(view, camera, viewport, handleWorld, handlePt)){
+            drawList->AddCircleFilled(handlePt, kHandleRadius, color);
+        }
         drawBillboard(drawList, view, camera, viewport, lightPos, icons.point, kIconSizePx, iconTint);
     }else if(light.type == LightType::DIRECTIONAL){
         Math3D::Vec3 dir = syncDirection ? Math3D::Vec3(0,0,1) : light.direction;
         if(syncDirection){
             dir = worldForward;
         }
-        if(dir.length() > Math3D::EPSILON){
+        if(dir.length() < Math3D::EPSILON){
+            dir = Math3D::Vec3(0,-1,0);
+        }else{
             dir = dir.normalize();
         }
         float length = 2.0f;
         Math3D::Vec3 endWorld = lightPos + dir * length;
-        Math3D::Vec3 endScreen = view->worldToScreen(camera, endWorld, viewport.x, viewport.y, viewport.w, viewport.h);
-        ImVec2 startPt(centerScreen.x, centerScreen.y);
-        ImVec2 endPt(endScreen.x, endScreen.y);
-        drawList->AddLine(startPt, endPt, color, 2.5f);
-        ImVec2 dir2(endPt.x - startPt.x, endPt.y - startPt.y);
-        float len = std::sqrt(dir2.x * dir2.x + dir2.y * dir2.y);
-        if(len > 1.0f){
-            ImVec2 ndir(dir2.x / len, dir2.y / len);
-            ImVec2 left(-ndir.y, ndir.x);
-            ImVec2 tip = endPt;
-            ImVec2 p1(tip.x - ndir.x * 10.0f + left.x * 5.0f, tip.y - ndir.y * 10.0f + left.y * 5.0f);
-            ImVec2 p2(tip.x - ndir.x * 10.0f - left.x * 5.0f, tip.y - ndir.y * 10.0f - left.y * 5.0f);
-            drawList->AddTriangleFilled(tip, p1, p2, color);
+        ImVec2 startPt, endPt;
+        if(clipWorldLineToScreen(view, camera, viewport, lightPos, endWorld, startPt, endPt)){
+            drawList->AddLine(startPt, endPt, color, 2.5f);
+            ImVec2 dir2(endPt.x - startPt.x, endPt.y - startPt.y);
+            float len = std::sqrt(dir2.x * dir2.x + dir2.y * dir2.y);
+            if(len > 1.0f){
+                ImVec2 ndir(dir2.x / len, dir2.y / len);
+                ImVec2 left(-ndir.y, ndir.x);
+                ImVec2 tip = endPt;
+                ImVec2 p1(tip.x - ndir.x * 10.0f + left.x * 5.0f, tip.y - ndir.y * 10.0f + left.y * 5.0f);
+                ImVec2 p2(tip.x - ndir.x * 10.0f - left.x * 5.0f, tip.y - ndir.y * 10.0f - left.y * 5.0f);
+                drawList->AddTriangleFilled(tip, p1, p2, color);
+            }
         }
         drawBillboard(drawList, view, camera, viewport, lightPos, icons.directional, kIconSizePx, iconTint);
     }else if(light.type == LightType::SPOT){
@@ -323,7 +420,9 @@ void LightWidget::draw(ImDrawList* drawList,
         if(syncDirection){
             dir = worldForward;
         }
-        if(dir.length() > Math3D::EPSILON){
+        if(dir.length() < Math3D::EPSILON){
+            dir = Math3D::Vec3(0,-1,0);
+        }else{
             dir = dir.normalize();
         }
         Math3D::Vec3 axisUp(0,1,0);
@@ -337,21 +436,51 @@ void LightWidget::draw(ImDrawList* drawList,
         Math3D::Vec3 axisPoint = lightPos + dir * range;
         Math3D::Vec3 edgeRight = axisPoint + axisRight * radius;
         Math3D::Vec3 edgeLeft = axisPoint - axisRight * radius;
-        Math3D::Vec3 axisScreen = view->worldToScreen(camera, axisPoint, viewport.x, viewport.y, viewport.w, viewport.h);
-        Math3D::Vec3 rightScreen = view->worldToScreen(camera, edgeRight, viewport.x, viewport.y, viewport.w, viewport.h);
-        Math3D::Vec3 leftScreen = view->worldToScreen(camera, edgeLeft, viewport.x, viewport.y, viewport.w, viewport.h);
-        ImVec2 origin(centerScreen.x, centerScreen.y);
-        ImVec2 rightPt(rightScreen.x, rightScreen.y);
-        ImVec2 leftPt(leftScreen.x, leftScreen.y);
-        ImVec2 axisPt(axisScreen.x, axisScreen.y);
-        // Cone edges + center line to show length
-        drawList->AddLine(origin, rightPt, outline, 2.0f);
-        drawList->AddLine(origin, leftPt, outline, 2.0f);
-        drawList->AddLine(origin, axisPt, outline, 2.0f);
-        float radiusPx = screenDistance(axisPt, rightPt);
-        drawList->AddCircle(axisPt, radiusPx, outline, 32, 2.0f);
-        drawList->AddCircleFilled(rightPt, kHandleRadius, color);
-        drawList->AddCircleFilled(axisPt, kHandleRadius, color);
+        ImVec2 origin;
+        if(projectWorldPoint(view, camera, viewport, lightPos, origin)){
+            ImVec2 a, b;
+            if(clipWorldLineToScreen(view, camera, viewport, lightPos, axisPoint, a, b)){
+                drawList->AddLine(a, b, outline, 2.0f);
+            }
+            if(clipWorldLineToScreen(view, camera, viewport, lightPos, edgeRight, a, b)){
+                drawList->AddLine(a, b, outline, 2.0f);
+            }
+            if(clipWorldLineToScreen(view, camera, viewport, lightPos, edgeLeft, a, b)){
+                drawList->AddLine(a, b, outline, 2.0f);
+            }
+        }
+
+        // Ring at the cone end (projected, so it appears as an ellipse in screen space)
+        if(radius > 0.0001f){
+            std::vector<Math3D::Vec3> ringPoints;
+            buildRingPoints(ringPoints, axisPoint, dir, radius);
+            bool hasPrev = false;
+            Math3D::Vec3 prevWorld;
+            for(const auto& wp : ringPoints){
+                if(hasPrev){
+                    ImVec2 a, b;
+                    if(clipWorldLineToScreen(view, camera, viewport, prevWorld, wp, a, b)){
+                        drawList->AddLine(a, b, outline, 2.0f);
+                    }
+                }
+                prevWorld = wp;
+                hasPrev = true;
+            }
+        }
+
+        ImVec2 axisPt, rightPt, leftPt;
+        const bool axisVisible = projectWorldPoint(view, camera, viewport, axisPoint, axisPt);
+        const bool rightVisible = projectWorldPoint(view, camera, viewport, edgeRight, rightPt);
+        const bool leftVisible = projectWorldPoint(view, camera, viewport, edgeLeft, leftPt);
+        if(rightVisible){
+            drawList->AddCircleFilled(rightPt, kHandleRadius, color);
+        }
+        if(leftVisible){
+            drawList->AddCircleFilled(leftPt, kHandleRadius, color);
+        }
+        if(axisVisible){
+            drawList->AddCircleFilled(axisPt, kHandleRadius, color);
+        }
         drawBillboard(drawList, view, camera, viewport, lightPos, icons.spot, kIconSizePx, iconTint);
     }
 }

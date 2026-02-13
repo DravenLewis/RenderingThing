@@ -350,9 +350,6 @@ void EditorScene::update(float deltaTime){
                                 );
                                 if(lightComp->light.type == LightType::POINT){
                                     ensurePointLightBounds(entity, lightComp->light.range);
-                                    if(!lightComp->light.castsShadows){
-                                        lightComp->light.castsShadows = true;
-                                    }
                                 }
                             }
                         }
@@ -819,6 +816,37 @@ void EditorScene::drawPropertiesPanel(float x, float y, float w, float h){
         if(auto* light = components->getECSComponent<LightComponent>(entity)){
             ImGui::Separator();
             ImGui::TextUnformatted("Light");
+            auto getWorldLightBasis = [&](Math3D::Vec3& outPos, Math3D::Vec3& outForward) -> bool {
+                auto* tx = components->getECSComponent<TransformComponent>(entity);
+                if(!tx){
+                    return false;
+                }
+                Math3D::Mat4 world = buildWorldMatrix(entity, components);
+                outPos = world.getPosition();
+                Math3D::Vec3 forward = Math3D::Transform::transformPoint(world, Math3D::Vec3(0,0,1)) - outPos;
+                if(!std::isfinite(forward.x) || !std::isfinite(forward.y) || !std::isfinite(forward.z) ||
+                   forward.length() <= 0.0001f){
+                    outForward = Math3D::Vec3(0, -1, 0);
+                }else{
+                    outForward = forward.normalize();
+                }
+                return true;
+            };
+
+            auto syncLightFromTransform = [&]() {
+                Math3D::Vec3 worldPos;
+                Math3D::Vec3 worldForward;
+                if(!getWorldLightBasis(worldPos, worldForward)){
+                    return;
+                }
+                if(light->syncTransform){
+                    light->light.position = worldPos;
+                }
+                if(light->syncDirection && light->light.type != LightType::POINT){
+                    light->light.direction = worldForward;
+                }
+            };
+
             if(!selectedEntityId.empty() && migratedLightSyncTransform.find(selectedEntityId) == migratedLightSyncTransform.end()){
                 if(!light->syncTransform){
                     light->syncTransform = true;
@@ -846,23 +874,24 @@ void EditorScene::drawPropertiesPanel(float x, float y, float w, float h){
                 }
                 migratedLightDefaults.insert(selectedEntityId);
             }
+            syncLightFromTransform();
             const char* typeLabels[] = {"Point", "Directional", "Spot"};
             int typeIndex = static_cast<int>(light->light.type);
-            if(ImGui::Combo("Type", &typeIndex, typeLabels, IM_ARRAYSIZE(typeLabels))){
-                LightType newType = static_cast<LightType>(typeIndex);
-                if(newType != light->light.type){
-                    LightType prevType = light->light.type;
-                    light->light.type = newType;
-                    light->syncDirection = (newType != LightType::POINT);
-                    light->syncTransform = true;
-                    if(newType == LightType::POINT){
-                        if(prevType == LightType::DIRECTIONAL || light->light.range <= 0.1f){
-                            light->light.range = 20.0f;
+                if(ImGui::Combo("Type", &typeIndex, typeLabels, IM_ARRAYSIZE(typeLabels))){
+                    LightType newType = static_cast<LightType>(typeIndex);
+                    if(newType != light->light.type){
+                        LightType prevType = light->light.type;
+                        light->light.type = newType;
+                        light->syncDirection = (newType != LightType::POINT);
+                        light->syncTransform = true;
+                        if(!std::isfinite(light->light.direction.x) || !std::isfinite(light->light.direction.y) || !std::isfinite(light->light.direction.z)){
+                            light->light.direction = Math3D::Vec3(0,-1,0);
                         }
-                        ensurePointLightBounds(entity, light->light.range);
-                        if(!light->light.castsShadows){
-                            light->light.castsShadows = true;
-                        }
+                        if(newType == LightType::POINT){
+                            if(prevType == LightType::DIRECTIONAL || light->light.range <= 0.1f){
+                                light->light.range = 20.0f;
+                            }
+                            ensurePointLightBounds(entity, light->light.range);
                         if(light->light.shadowRange <= 0.0f){
                             light->light.shadowRange = 200.0f;
                         }
@@ -884,21 +913,28 @@ void EditorScene::drawPropertiesPanel(float x, float y, float w, float h){
                         if(light->light.spotAngle <= 0.1f || prevType == LightType::DIRECTIONAL){
                             light->light.spotAngle = 45.0f;
                         }
-                        if(!light->light.castsShadows){
-                            light->light.castsShadows = true;
-                        }
                         if(light->light.shadowRange <= 0.0f){
                             light->light.shadowRange = 200.0f;
                         }
                     }
+                    syncLightFromTransform();
                 }
             }
             ImGui::ColorEdit4("Color", &light->light.color.x);
             ImGui::DragFloat("Intensity", &light->light.intensity, 0.05f, 0.0f, 10.0f);
+            bool prevSyncTransform = light->syncTransform;
             if(ImGui::Checkbox("Sync Transform", &light->syncTransform)){
+                if(prevSyncTransform && !light->syncTransform){
+                    Math3D::Vec3 worldPos;
+                    Math3D::Vec3 worldForward;
+                    if(getWorldLightBasis(worldPos, worldForward)){
+                        light->light.position = worldPos;
+                    }
+                }
                 if(light->syncTransform && light->light.type == LightType::POINT){
                     ensurePointLightBounds(entity, light->light.range);
                 }
+                syncLightFromTransform();
             }
             if(light->light.type == LightType::POINT){
                 float range = light->light.range;
@@ -906,23 +942,40 @@ void EditorScene::drawPropertiesPanel(float x, float y, float w, float h){
                     light->light.range = range;
                     ensurePointLightBounds(entity, range);
                 }
-                ImGui::DragFloat("Falloff", &light->light.falloff, 0.05f, 0.1f, 10.0f);
+                ImGui::DragFloat("Falloff", &light->light.falloff, 0.05f, 0.1f, 3.0f);
                 ImGui::DragFloat("Shadow Range", &light->light.shadowRange, 0.1f, 0.0f, 2000.0f);
             }else if(light->light.type == LightType::SPOT){
                 ImGui::DragFloat("Range", &light->light.range, 0.1f, 0.1f, 1000.0f);
                 ImGui::DragFloat("Spot Angle", &light->light.spotAngle, 0.25f, 1.0f, 170.0f);
-                ImGui::DragFloat("Falloff", &light->light.falloff, 0.05f, 0.1f, 10.0f);
+                ImGui::DragFloat("Falloff", &light->light.falloff, 0.05f, 0.1f, 3.0f);
                 ImGui::DragFloat("Shadow Range", &light->light.shadowRange, 0.1f, 0.0f, 2000.0f);
             }else if(light->light.type == LightType::DIRECTIONAL){
                 ImGui::DragFloat("Shadow Range", &light->light.shadowRange, 0.5f, 10.0f, 2000.0f);
             }
             if(light->light.type != LightType::POINT){
-                ImGui::Checkbox("Sync Direction", &light->syncDirection);
+                bool prevSyncDirection = light->syncDirection;
+                if(ImGui::Checkbox("Sync Direction", &light->syncDirection)){
+                    Math3D::Vec3 worldPos;
+                    Math3D::Vec3 worldForward;
+                    if(getWorldLightBasis(worldPos, worldForward)){
+                        if(light->syncDirection){
+                            light->light.direction = worldForward;
+                        }else if(prevSyncDirection){
+                            light->light.direction = worldForward;
+                        }
+                    }
+                }
                 bool dirEditable = !light->syncDirection;
                 if(!dirEditable){
                     ImGui::BeginDisabled();
                 }
-                ImGui::DragFloat3("Direction", &light->light.direction.x, 0.02f, -1.0f, 1.0f);
+                if(ImGui::DragFloat3("Direction", &light->light.direction.x, 0.02f, -1.0f, 1.0f)){
+                    if(light->light.direction.length() < Math3D::EPSILON){
+                        light->light.direction = Math3D::Vec3(0,-1,0);
+                    }else{
+                        light->light.direction = light->light.direction.normalize();
+                    }
+                }
                 if(!dirEditable){
                     ImGui::EndDisabled();
                 }

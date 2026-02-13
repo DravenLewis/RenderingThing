@@ -10,8 +10,10 @@
 #include <mutex>
 #include <thread>
 #include <atomic>
+#include <fstream>
 
 #include "StringUtils.h"
+#include "File.h"
 
 struct LogType {
 private:
@@ -30,6 +32,9 @@ private:
     static std::mutex logMutex;
     static std::string logHistory;
     static std::atomic<uint64_t> logVersion;
+    static std::ofstream logFile;
+    static std::string logFilePath;
+    static std::atomic<bool> logFileReady;
     std::string lastFormattedValue;
     std::string loggingName;
 
@@ -64,10 +69,27 @@ private:
     void internalPrint(const std::string& msg ,bool override) {
         if (isTopLevelCall() || override) {
             std::lock_guard<std::mutex> lock(logMutex);
+            if(!logFileReady.load(std::memory_order_acquire)){
+                if(logFile.is_open()){
+                    logFile.close();
+                }
+                std::string baseDir = File::GetCWD();
+                if(!baseDir.empty()){
+                    logFilePath = baseDir + FILE_SEPARATOR + "latest.log";
+                    logFile.open(logFilePath, std::ios::out | std::ios::trunc);
+                    if(logFile.is_open()){
+                        logFileReady.store(true, std::memory_order_release);
+                    }
+                }
+            }
             logHistory.append(msg);
             logHistory.push_back('\n');
             logVersion.fetch_add(1, std::memory_order_relaxed);
             std::cout << msg << std::endl;
+            if(logFileReady.load(std::memory_order_acquire) && logFile.is_open()){
+                logFile << msg << std::endl;
+                logFile.flush();
+            }
         }
     }
 
@@ -143,6 +165,9 @@ inline thread_local int Logbot::activeDepth = 0;
 inline std::mutex Logbot::logMutex;
 inline std::string Logbot::logHistory;
 inline std::atomic<uint64_t> Logbot::logVersion{0};
+inline std::ofstream Logbot::logFile;
+inline std::string Logbot::logFilePath;
+inline std::atomic<bool> Logbot::logFileReady{false};
 inline Logbot LogBot("DefaultLogger");
 
 #endif // LOGBOT_H

@@ -17,3 +17,5 @@ void main(){
     float boostedDepth = pow(depth, 4); 
     FragColor = vec4(0.0,0.0,boostedDepth, 1.0);
 }
+
+

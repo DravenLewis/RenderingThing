@@ -169,10 +169,19 @@ void DemoScene::init(){
         env->setSkyBox(skybox);
     }
 
-    auto SunLight = Light::CreateDirectionalLight(Math3D::Vec3(-0.3f, -1.0f, -0.2f), Color::fromRGBA255(255, 244, 214, 255), 1.2f);
+    auto SunLight = Light::CreateDirectionalLight(Math3D::Vec3(-0.3f, -1.0f, -0.2f), Color::fromRGBA255(255, 208, 180, 255), 0.45f);
     auto KeyPoint = Light::CreatePointLight(Math3D::Vec3(4.5f, 6.0f, 2.0f), Color::fromRGBA255(255, 230, 180, 255), 6.5f, 18.0f, 2.0f);
     auto FillPoint = Light::CreatePointLight(Math3D::Vec3(-6.0f, 3.0f, 6.0f), Color::fromRGBA255(120, 180, 255, 255), 3.0f, 20.0f, 2.0f);
     auto RimPoint = Light::CreatePointLight(Math3D::Vec3(0.0f, 7.0f, -8.0f), Color::fromRGBA255(255, 255, 255, 255), 4.0f, 20.0f, 2.0f);
+
+    auto RedPoint = Light::CreatePointLight(Math3D::Vec3(-2.0f, 2.0f, -2.0f), Color::fromRGBA255(255, 60, 60, 255), 6.0f, 8.0f, 2.0f);
+    auto GreenPoint = Light::CreatePointLight(Math3D::Vec3(2.0f, 2.0f, -2.0f), Color::fromRGBA255(60, 255, 80, 255), 6.0f, 8.0f, 2.0f);
+    auto BluePoint = Light::CreatePointLight(Math3D::Vec3(-2.0f, 2.0f, 2.0f), Color::fromRGBA255(80, 140, 255, 255), 6.0f, 8.0f, 2.0f);
+    auto YellowPoint = Light::CreatePointLight(Math3D::Vec3(2.0f, 2.0f, 2.0f), Color::fromRGBA255(255, 255, 80, 255), 6.0f, 8.0f, 2.0f);
+    RedPoint.castsShadows = false;
+    GreenPoint.castsShadows = false;
+    BluePoint.castsShadows = false;
+    YellowPoint.castsShadows = false;
 
     ShadowRenderer::SetDebugShadows(showDebugShadows);
 
@@ -208,6 +217,10 @@ void DemoScene::init(){
     createLightGameObject("KeyLight", KeyPoint, nullptr, true, false);
     createLightGameObject("FillLight", FillPoint, nullptr, true, false);
     createLightGameObject("RimLight", RimPoint, nullptr, true, false);
+    createLightGameObject("TestRedLight", RedPoint, nullptr, true, false);
+    createLightGameObject("TestGreenLight", GreenPoint, nullptr, true, false);
+    createLightGameObject("TestBlueLight", BluePoint, nullptr, true, false);
+    createLightGameObject("TestYellowLight", YellowPoint, nullptr, true, false);
 }
 
 void DemoScene::update(float deltaTime){

@@ -42,6 +42,8 @@ public:
     static bool GetDebugShadows();
     static void CycleDebugShadows();
     static int GetDebugShadowsMode();
+    static void SetDebugLogging(bool enabled);
+    static bool GetDebugLogging();
 
 private:
     static void ensureShadowPrograms();

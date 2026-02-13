@@ -18,7 +18,7 @@ enum class ShadowType {
     Smooth
 };
 
-#define MAX_LIGHTS 8
+#define MAX_LIGHTS 16
 
 struct Light {
     LightType type;
@@ -66,7 +66,7 @@ struct Light {
         light.color = color;
         light.intensity = intensity;
         light.range = range;
-        light.falloff = falloff;
+        light.falloff = Math3D::Clamp(falloff, 0.1f, 3.0f);
         light.shadowRange = 200.0f;
         light.castsShadows = true;
         return light;
@@ -104,7 +104,7 @@ struct Light {
         light.color = color;
         light.intensity = intensity;
         light.range = range;
-        light.falloff = falloff;
+        light.falloff = Math3D::Clamp(falloff, 0.1f, 3.0f);
         light.spotAngle = spotAngle;
         light.shadowRange = 200.0f;
         light.castsShadows = true;

@@ -1,6 +1,8 @@
 #include "ShadowRenderer.h"
 
-#include <unordered_map>
+#include <algorithm>
+#include <limits>
+#include <string>
 
 #include "Light.h"
 #include "Material.h"
@@ -9,12 +11,12 @@
 #include "Screen.h"
 #include "Logbot.h"
 #include "ModelPart.h"
+#include <cmath>
 
 namespace {
     constexpr int MAX_SHADOW_MAPS_2D = 16;
     constexpr int MAX_SHADOW_MAPS_CUBE = 2;
     constexpr int SHADOW_TEX_UNIT_BASE_2D = 8;
-    constexpr int SHADOW_TEX_UNIT_BASE_CUBE = 12;
 
     struct ShadowSlot2D {
         ShadowMap2D map;
@@ -44,7 +46,6 @@ namespace {
     std::shared_ptr<ShaderProgram> g_shadow2DProgram;
     std::shared_ptr<ShaderProgram> g_shadowCubeProgram;
 
-    std::unordered_map<GLuint, bool> g_shadowSamplerBound;
     std::shared_ptr<Texture> g_debugDepthTexture;
     std::shared_ptr<ShaderProgram> g_shadowDebugProgram;
     std::shared_ptr<ModelPart> g_shadowDebugQuad;
@@ -52,13 +53,59 @@ namespace {
     GLuint g_debugColorTex = 0;
     int g_debugSize = 0;
     int g_debugShadowsMode = 0; // 0=off,1=visibility,2=cascade index,3=proj bounds
+    bool g_debugShadowLogging = false;
+    uint64_t g_shadowFrameId = 0;
+    GLuint g_fallbackShadowTex2D = 0;
+    GLuint g_fallbackShadowTexCube = 0;
+
+    struct LightDebugState {
+        int type = -1;
+        bool castsShadows = false;
+        Math3D::Vec3 position = Math3D::Vec3(0,0,0);
+        Math3D::Vec3 direction = Math3D::Vec3(0,-1,0);
+        float intensity = 0.0f;
+        float range = 0.0f;
+        float falloff = 0.0f;
+        float spotAngle = 0.0f;
+        float shadowRange = 0.0f;
+    };
+    std::vector<LightDebugState> g_lastLightDebug;
+
+    int getMaxShadowMapSize2D(){
+        static bool cached = false;
+        static int maxSize = 0;
+        if(!cached){
+            GLint maxTex = 0;
+            GLint maxViewport[2] = {0,0};
+            glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTex);
+            glGetIntegerv(GL_MAX_VIEWPORT_DIMS, maxViewport);
+            maxSize = Math3D::Max(1, Math3D::Min(maxTex, Math3D::Min(maxViewport[0], maxViewport[1])));
+            cached = true;
+        }
+        return maxSize;
+    }
+
+    int getMaxShadowMapSizeCube(){
+        static bool cached = false;
+        static int maxSize = 0;
+        if(!cached){
+            GLint maxTex = 0;
+            GLint maxViewport[2] = {0,0};
+            glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, &maxTex);
+            glGetIntegerv(GL_MAX_VIEWPORT_DIMS, maxViewport);
+            maxSize = Math3D::Max(1, Math3D::Min(maxTex, Math3D::Min(maxViewport[0], maxViewport[1])));
+            cached = true;
+        }
+        return maxSize;
+    }
 
     int getShadowMapSize2D(const Light& light) {
-        return (light.type == LightType::DIRECTIONAL) ? 4096 : 2048;
+        int target = (light.type == LightType::DIRECTIONAL) ? 4096 : 2048;
+        return Math3D::Min(target, getMaxShadowMapSize2D());
     }
 
     int getShadowMapSizeCube() {
-        return 1024;
+        return Math3D::Min(1024, getMaxShadowMapSizeCube());
     }
 
     const std::vector<Light>& getActiveLights(){
@@ -68,6 +115,168 @@ namespace {
         }
         static const std::vector<Light> EMPTY;
         return EMPTY;
+    }
+
+    float safeFloat(float v, float fallback){
+        return std::isfinite(v) ? v : fallback;
+    }
+
+    Math3D::Vec3 safeLightDir(const Math3D::Vec3& dir){
+        if(!std::isfinite(dir.x) || !std::isfinite(dir.y) || !std::isfinite(dir.z)){
+            return Math3D::Vec3(0,-1,0);
+        }
+        float len = dir.length();
+        if(!std::isfinite(len) || len < Math3D::EPSILON){
+            return Math3D::Vec3(0,-1,0);
+        }
+        return dir.normalize();
+    }
+
+    bool isValidLightDir(const Math3D::Vec3& dir){
+        if(!std::isfinite(dir.x) || !std::isfinite(dir.y) || !std::isfinite(dir.z)){
+            return false;
+        }
+        float len = dir.length();
+        return std::isfinite(len) && len >= Math3D::EPSILON;
+    }
+
+    struct ShadowCandidate {
+        size_t lightIndex = 0;
+        LightType type = LightType::POINT;
+        int slotCost = 1;
+        float normalizedDistance = 0.0f;
+        float distanceToCamera = 0.0f;
+    };
+
+    int getShadowTypePriority(LightType type){
+        switch(type){
+            case LightType::DIRECTIONAL: return 0;
+            case LightType::SPOT: return 1;
+            case LightType::POINT: return 2;
+            default: return 3;
+        }
+    }
+
+    float getDistanceToCamera(const Light& light, PCamera camera){
+        if(!camera){
+            return 0.0f;
+        }
+        return Math3D::Vec3::distance(camera->transform().position, light.position);
+    }
+
+    float getNormalizedDistance(const Light& light, float distanceToCamera){
+        float safeRange = Math3D::Max(1.0f, safeFloat(light.range, 1.0f));
+        return distanceToCamera / safeRange;
+    }
+
+    bool shadowCandidateLess(const ShadowCandidate& a, const ShadowCandidate& b){
+        int typePriorityA = getShadowTypePriority(a.type);
+        int typePriorityB = getShadowTypePriority(b.type);
+        if(typePriorityA != typePriorityB){
+            return typePriorityA < typePriorityB;
+        }
+        if(!Math3D::AreClose(a.normalizedDistance, b.normalizedDistance, 0.0001f)){
+            return a.normalizedDistance < b.normalizedDistance;
+        }
+        if(!Math3D::AreClose(a.distanceToCamera, b.distanceToCamera, 0.01f)){
+            return a.distanceToCamera < b.distanceToCamera;
+        }
+        return a.lightIndex < b.lightIndex;
+    }
+
+    void logLightState(const char* label, size_t index, const Light& light, const ShadowLightData& data){
+        if(!g_debugShadowLogging){
+            return;
+        }
+        LogBot.Log(LOG_INFO,
+            "[Shadow] %s idx=%zu type=%d casts=%d pos=(%.3f,%.3f,%.3f) dir=(%.3f,%.3f,%.3f) intensity=%.3f range=%.3f falloff=%.3f spot=%.3f shadowRange=%.3f mapIndex=%d strength=%.3f bias=%.6f normalBias=%.6f cascades=%d",
+            label,
+            index,
+            static_cast<int>(light.type),
+            light.castsShadows ? 1 : 0,
+            light.position.x, light.position.y, light.position.z,
+            light.direction.x, light.direction.y, light.direction.z,
+            light.intensity,
+            light.range,
+            light.falloff,
+            light.spotAngle,
+            light.shadowRange,
+            data.shadowMapIndex,
+            data.shadowStrength,
+            data.shadowBias,
+            data.shadowNormalBias,
+            data.cascadeCount
+        );
+    }
+
+    bool isFiniteMat(const Math3D::Mat4& m){
+        const float* ptr = glm::value_ptr(m.data);
+        for(int i = 0; i < 16; ++i){
+            if(!std::isfinite(ptr[i])){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    GLint getSamplerArrayLocation(GLuint programId, const char* baseName){
+        std::string indexedName = std::string(baseName) + "[0]";
+        GLint location = glGetUniformLocation(programId, indexedName.c_str());
+        if(location == -1){
+            location = glGetUniformLocation(programId, baseName);
+        }
+        return location;
+    }
+
+    int getMaxTextureUnits(){
+        GLint maxUnits = 0;
+        glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxUnits);
+        return Math3D::Max(0, static_cast<int>(maxUnits));
+    }
+
+    void ensureFallbackShadowTextures(){
+        if(g_fallbackShadowTex2D == 0){
+            glGenTextures(1, &g_fallbackShadowTex2D);
+            glBindTexture(GL_TEXTURE_2D, g_fallbackShadowTex2D);
+            float depthOne = 1.0f;
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, 1, 1, 0, GL_DEPTH_COMPONENT, GL_FLOAT, &depthOne);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+            const float border[] = {1.0f, 1.0f, 1.0f, 1.0f};
+            glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, border);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
+
+        if(g_fallbackShadowTexCube == 0){
+            glGenTextures(1, &g_fallbackShadowTexCube);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, g_fallbackShadowTexCube);
+            float depthOne = 1.0f;
+            for(int face = 0; face < 6; ++face){
+                glTexImage2D(
+                    GL_TEXTURE_CUBE_MAP_POSITIVE_X + face,
+                    0,
+                    GL_DEPTH_COMPONENT32F,
+                    1,
+                    1,
+                    0,
+                    GL_DEPTH_COMPONENT,
+                    GL_FLOAT,
+                    &depthOne
+                );
+            }
+            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+        }
     }
 }
 
@@ -125,12 +334,12 @@ void ShadowRenderer::ensureShadowPrograms() {
 
 }
 
-    Math3D::Mat4 ShadowRenderer::computeDirectionalMatrix(const Light& light, PCamera camera) {
+Math3D::Mat4 ShadowRenderer::computeDirectionalMatrix(const Light& light, PCamera camera) {
     Math3D::Vec3 camPos = camera->transform().position;
     float defaultRange = Math3D::Min(camera->getSettings().farPlane, 200.0f);
-    float shadowRange = (light.shadowRange > 0.0f) ? light.shadowRange : light.range;
+    float shadowRange = safeFloat(light.shadowRange, light.range);
     float range = Math3D::Max(10.0f, (shadowRange > 0.0f) ? shadowRange : defaultRange);
-        Math3D::Vec3 lightDir = Math3D::Vec3(glm::normalize(glm::vec3(light.direction.x, light.direction.y, light.direction.z)));
+        Math3D::Vec3 lightDir = safeLightDir(light.direction);
         Math3D::Vec3 lightPos = camPos - lightDir * range;
 
     glm::vec3 up(0,1,0);
@@ -151,7 +360,13 @@ void ShadowRenderer::ensureShadowPrograms() {
         0.1f, range * 2.0f
     );
 
-    return Math3D::Mat4(proj * view);
+    Math3D::Mat4 out(proj * view);
+    if(!isFiniteMat(out)){
+        LogBot.Log(LOG_ERRO, "[Shadow] computeDirectionalMatrix produced NaN/INF. dir=(%.3f,%.3f,%.3f) range=%.3f shadowRange=%.3f",
+            light.direction.x, light.direction.y, light.direction.z, light.range, light.shadowRange);
+        return Math3D::Mat4(1.0f);
+    }
+    return out;
 }
 
 static void computeDirectionalCascades(
@@ -166,7 +381,7 @@ static void computeDirectionalCascades(
     if(!camera || cascadeCount <= 0) return;
 
     float nearPlane = camera->getSettings().nearPlane;
-    float shadowRange = (light.shadowRange > 0.0f) ? light.shadowRange : light.range;
+    float shadowRange = safeFloat(light.shadowRange, light.range);
     float farPlane = Math3D::Min(camera->getSettings().farPlane, (shadowRange > 0.0f) ? shadowRange : camera->getSettings().farPlane);
     float lambda = 0.5f;
 
@@ -183,7 +398,7 @@ static void computeDirectionalCascades(
     glm::mat4 view = (glm::mat4)camera->getViewMatrix();
     glm::mat4 invView = glm::inverse(view);
 
-    Math3D::Vec3 lightDir = Math3D::Vec3(glm::normalize(glm::vec3(light.direction.x, light.direction.y, light.direction.z)));
+    Math3D::Vec3 lightDir = safeLightDir(light.direction);
     glm::vec3 up(0,1,0);
     if(std::abs(glm::dot(glm::vec3(lightDir.x, lightDir.y, lightDir.z), up)) > 0.99f){
         up = glm::vec3(0,0,1);
@@ -237,24 +452,41 @@ static void computeDirectionalCascades(
 
         glm::mat4 lightProj = glm::ortho(minV.x, maxV.x, minV.y, maxV.y, nearZ, farZ);
 
-        outMatrices.push_back(Math3D::Mat4(lightProj * lightView));
+        Math3D::Mat4 out(lightProj * lightView);
+        if(!isFiniteMat(out)){
+            LogBot.Log(LOG_ERRO, "[Shadow] computeDirectionalCascades produced NaN/INF (cascade %d). dir=(%.3f,%.3f,%.3f)",
+                i, light.direction.x, light.direction.y, light.direction.z);
+            out = Math3D::Mat4(1.0f);
+        }
+        outMatrices.push_back(out);
         outSplits.push_back(splitDist);
         prevSplit = splitDist;
     }
 }
 
 Math3D::Mat4 ShadowRenderer::computeSpotMatrix(const Light& light) {
-    float fov = Math3D::Clamp(light.spotAngle * 2.0f, 10.0f, 170.0f);
-    float farPlane = (light.shadowRange > 0.0f) ? light.shadowRange : light.range;
-    glm::mat4 proj = glm::perspective(glm::radians(fov), 1.0f, 0.1f, Math3D::Max(1.0f, farPlane));
+    float spotAngle = safeFloat(light.spotAngle, 45.0f);
+    float fov = Math3D::Clamp(spotAngle * 2.0f, 10.0f, 170.0f);
+    float shadowRange = safeFloat(light.shadowRange, light.range);
+    float range = safeFloat(light.range, 10.0f);
+    float farPlane = (shadowRange > 0.0f) ? shadowRange : range;
+    farPlane = Math3D::Max(1.0f, farPlane);
+    glm::mat4 proj = glm::perspective(glm::radians(fov), 1.0f, 0.1f, farPlane);
     glm::vec3 pos(light.position.x, light.position.y, light.position.z);
-    glm::vec3 dir = glm::normalize(glm::vec3(light.direction.x, light.direction.y, light.direction.z));
+    Math3D::Vec3 safeDir = safeLightDir(light.direction);
+    glm::vec3 dir(safeDir.x, safeDir.y, safeDir.z);
     glm::vec3 up(0,1,0);
     if(std::abs(glm::dot(dir, up)) > 0.99f){
         up = glm::vec3(0,0,1);
     }
     glm::mat4 view = glm::lookAt(pos, pos + dir, up);
-    return Math3D::Mat4(proj * view);
+    Math3D::Mat4 out(proj * view);
+    if(!isFiniteMat(out)){
+        LogBot.Log(LOG_ERRO, "[Shadow] computeSpotMatrix produced NaN/INF. dir=(%.3f,%.3f,%.3f) spot=%.3f range=%.3f shadowRange=%.3f",
+            light.direction.x, light.direction.y, light.direction.z, light.spotAngle, light.range, light.shadowRange);
+        return Math3D::Mat4(1.0f);
+    }
+    return out;
 }
 
 void ShadowRenderer::computePointMatrices(const Light& light, std::vector<Math3D::Mat4>& outMatrices) {
@@ -275,6 +507,7 @@ void ShadowRenderer::computePointMatrices(const Light& light, std::vector<Math3D
 }
 
 void ShadowRenderer::BeginFrame(PCamera camera) {
+    g_shadowFrameId++;
     g_enabled = (camera != nullptr && !camera->getSettings().isOrtho);
     if(!g_enabled){
         return;
@@ -295,6 +528,78 @@ void ShadowRenderer::BeginFrame(PCamera camera) {
         g_enabled = false;
         return;
     }
+
+    if(g_lastLightDebug.size() != lights.size()){
+        g_lastLightDebug.clear();
+        g_lastLightDebug.resize(lights.size());
+        if(g_debugShadowLogging){
+            LogBot.Log(LOG_INFO, "[Shadow] Frame %llu lights=%zu (reset debug snapshot)", (unsigned long long)g_shadowFrameId, lights.size());
+        }
+    }
+
+    std::vector<bool> allow2D(lights.size(), false);
+    std::vector<bool> allowCube(lights.size(), false);
+    std::vector<ShadowCandidate> candidates2D;
+    std::vector<ShadowCandidate> candidatesCube;
+
+    for(size_t i = 0; i < lights.size() && i < MAX_LIGHTS; ++i){
+        const Light& light = lights[i];
+        if(!light.castsShadows){
+            continue;
+        }
+
+        const float distanceToCamera = getDistanceToCamera(light, camera);
+        const float normalizedDistance = getNormalizedDistance(light, distanceToCamera);
+
+        if(light.type == LightType::DIRECTIONAL){
+            ShadowCandidate candidate;
+            candidate.lightIndex = i;
+            candidate.type = light.type;
+            candidate.slotCost = 4; // 4 cascades
+            candidate.normalizedDistance = 0.0f;
+            candidate.distanceToCamera = 0.0f;
+            candidates2D.push_back(candidate);
+        }else if(light.type == LightType::SPOT){
+            if(!isValidLightDir(light.direction)){
+                continue;
+            }
+            ShadowCandidate candidate;
+            candidate.lightIndex = i;
+            candidate.type = light.type;
+            candidate.slotCost = 1;
+            candidate.normalizedDistance = normalizedDistance;
+            candidate.distanceToCamera = distanceToCamera;
+            candidates2D.push_back(candidate);
+        }else if(light.type == LightType::POINT){
+            ShadowCandidate candidate;
+            candidate.lightIndex = i;
+            candidate.type = light.type;
+            candidate.slotCost = 1;
+            candidate.normalizedDistance = normalizedDistance;
+            candidate.distanceToCamera = distanceToCamera;
+            candidatesCube.push_back(candidate);
+        }
+    }
+
+    std::sort(candidates2D.begin(), candidates2D.end(), shadowCandidateLess);
+    std::sort(candidatesCube.begin(), candidatesCube.end(), shadowCandidateLess);
+
+    int remaining2DSlots = MAX_SHADOW_MAPS_2D;
+    for(const ShadowCandidate& candidate : candidates2D){
+        if(candidate.slotCost <= remaining2DSlots){
+            allow2D[candidate.lightIndex] = true;
+            remaining2DSlots -= candidate.slotCost;
+        }
+    }
+
+    int remainingCubeSlots = MAX_SHADOW_MAPS_CUBE;
+    for(const ShadowCandidate& candidate : candidatesCube){
+        if(candidate.slotCost <= remainingCubeSlots){
+            allowCube[candidate.lightIndex] = true;
+            remainingCubeSlots -= candidate.slotCost;
+        }
+    }
+
     for(size_t i = 0; i < lights.size() && i < MAX_LIGHTS; ++i){
         const Light& light = lights[i];
         ShadowLightData data;
@@ -302,48 +607,69 @@ void ShadowRenderer::BeginFrame(PCamera camera) {
         data.shadowStrength = light.shadowStrength;
         data.shadowBias = light.shadowBias;
         data.shadowNormalBias = light.shadowNormalBias;
+        data.shadowMapIndex = -1;
+        data.cascadeCount = 0;
 
         if(light.castsShadows){
             if(light.type == LightType::DIRECTIONAL){
-                int cascadeCount = 4;
-                std::vector<float> splits;
-                std::vector<Math3D::Mat4> matrices;
-                computeDirectionalCascades(light, camera, cascadeCount, splits, matrices);
+                if(i < allow2D.size() && allow2D[i]){
+                    int cascadeCount = 4;
+                    std::vector<float> splits;
+                    std::vector<Math3D::Mat4> matrices;
+                    computeDirectionalCascades(light, camera, cascadeCount, splits, matrices);
 
-                if(static_cast<int>(g_shadow2D.size()) < g_active2D + cascadeCount){
-                    while(static_cast<int>(g_shadow2D.size()) < g_active2D + cascadeCount){
-                        g_shadow2D.push_back(ShadowSlot2D{ShadowMap2D(getShadowMapSize2D(light))});
+                    if(g_active2D + cascadeCount <= MAX_SHADOW_MAPS_2D){
+                        if(static_cast<int>(g_shadow2D.size()) < g_active2D + cascadeCount){
+                            while(static_cast<int>(g_shadow2D.size()) < g_active2D + cascadeCount){
+                                g_shadow2D.push_back(ShadowSlot2D{ShadowMap2D(getShadowMapSize2D(light))});
+                            }
+                        }
+
+                        int mapSize = getShadowMapSize2D(light);
+                        bool hasValidMap = true;
+                        for(int c = 0; c < cascadeCount; ++c){
+                            ShadowSlot2D& slot = g_shadow2D[g_active2D];
+                            if(slot.map.getSize() != mapSize){
+                                slot.map.resize(mapSize);
+                            }
+                            if(slot.map.getDepthTexture() == 0 || slot.map.getSize() <= 0){
+                                hasValidMap = false;
+                                break;
+                            }
+                            slot.lightIndex = static_cast<int>(i);
+                            slot.matrix = (c < static_cast<int>(matrices.size())) ? matrices[c] : Math3D::Mat4(1.0f);
+                            if(c == 0){
+                                data.shadowMapIndex = g_active2D;
+                            }
+                            g_active2D++;
+                        }
+
+                        data.cascadeCount = cascadeCount;
+                        data.cascadeSplits = Math3D::Vec4(
+                            splits.size() > 0 ? splits[0] : 0.0f,
+                            splits.size() > 1 ? splits[1] : 0.0f,
+                            splits.size() > 2 ? splits[2] : 0.0f,
+                            splits.size() > 3 ? splits[3] : 0.0f
+                        );
+
+                        for(int c = 0; c < 4; ++c){
+                            data.lightMatrices[c] = (c < static_cast<int>(matrices.size())) ? matrices[c] : Math3D::Mat4(1.0f);
+                        }
+
+                        if(!hasValidMap){
+                            data.shadowMapIndex = -1;
+                            data.cascadeCount = 0;
+                        }
                     }
+                }else if(g_debugShadowLogging){
+                    LogBot.Log(LOG_INFO, "[Shadow] Directional skipped by budget idx=%zu", i);
                 }
-
-                int mapSize = getShadowMapSize2D(light);
-                for(int c = 0; c < cascadeCount && g_active2D < MAX_SHADOW_MAPS_2D; ++c){
-                    ShadowSlot2D& slot = g_shadow2D[g_active2D];
-                    if(slot.map.getSize() != mapSize){
-                        slot.map.resize(mapSize);
-                    }
-                    slot.lightIndex = static_cast<int>(i);
-                    slot.matrix = (c < static_cast<int>(matrices.size())) ? matrices[c] : Math3D::Mat4(1.0f);
-                    if(c == 0){
-                        data.shadowMapIndex = g_active2D;
-                    }
-                    g_active2D++;
-                }
-
-                data.cascadeCount = cascadeCount;
-                data.cascadeSplits = Math3D::Vec4(
-                    splits.size() > 0 ? splits[0] : 0.0f,
-                    splits.size() > 1 ? splits[1] : 0.0f,
-                    splits.size() > 2 ? splits[2] : 0.0f,
-                    splits.size() > 3 ? splits[3] : 0.0f
-                );
-
-                for(int c = 0; c < 4; ++c){
-                    data.lightMatrices[c] = (c < static_cast<int>(matrices.size())) ? matrices[c] : Math3D::Mat4(1.0f);
-                }
-
             }else if(light.type == LightType::SPOT){
-                if(g_active2D < MAX_SHADOW_MAPS_2D){
+                if(!(i < allow2D.size() && allow2D[i])){
+                    if(g_debugShadowLogging){
+                        LogBot.Log(LOG_INFO, "[Shadow] Spot skipped by budget idx=%zu", i);
+                    }
+                }else if(g_active2D < MAX_SHADOW_MAPS_2D && isValidLightDir(light.direction)){
                     int mapSize = getShadowMapSize2D(light);
                     if(static_cast<int>(g_shadow2D.size()) <= g_active2D){
                         g_shadow2D.push_back(ShadowSlot2D{ShadowMap2D(mapSize)});
@@ -354,15 +680,29 @@ void ShadowRenderer::BeginFrame(PCamera camera) {
                     ShadowSlot2D& slot = g_shadow2D[g_active2D];
                     slot.lightIndex = static_cast<int>(i);
                     slot.matrix = computeSpotMatrix(light);
-                    data.shadowMapIndex = g_active2D;
-                    data.cascadeCount = 1;
-                    float shadowRange = (light.shadowRange > 0.0f) ? light.shadowRange : light.range;
-                    data.cascadeSplits = Math3D::Vec4(shadowRange, shadowRange, shadowRange, shadowRange);
-                    data.lightMatrices[0] = slot.matrix;
-                    g_active2D++;
+                    if(slot.map.getDepthTexture() != 0 && slot.map.getSize() > 0){
+                        data.shadowMapIndex = g_active2D;
+                        data.cascadeCount = 1;
+                        float shadowRange = (light.shadowRange > 0.0f) ? light.shadowRange : light.range;
+                        data.cascadeSplits = Math3D::Vec4(shadowRange, shadowRange, shadowRange, shadowRange);
+                        data.lightMatrices[0] = slot.matrix;
+                        if(g_debugShadowLogging){
+                            LogBot.Log(LOG_INFO, "[Shadow] Spot alloc idx=%zu mapIndex=%d mapSize=%d", i, g_active2D, mapSize);
+                        }
+                        g_active2D++;
+                    }
+                }else if(!isValidLightDir(light.direction)){
+                    if(g_debugShadowLogging){
+                        LogBot.Log(LOG_WARN, "[Shadow] Spot skipped (invalid dir) idx=%zu dir=(%.3f,%.3f,%.3f)", i,
+                            light.direction.x, light.direction.y, light.direction.z);
+                    }
                 }
             }else if(light.type == LightType::POINT){
-                if(g_activeCube < MAX_SHADOW_MAPS_CUBE){
+                if(!(i < allowCube.size() && allowCube[i])){
+                    if(g_debugShadowLogging){
+                        LogBot.Log(LOG_INFO, "[Shadow] Point skipped by budget idx=%zu", i);
+                    }
+                }else if(g_activeCube < MAX_SHADOW_MAPS_CUBE){
                     int mapSize = getShadowMapSizeCube();
                     if(static_cast<int>(g_shadowCube.size()) <= g_activeCube){
                         g_shadowCube.push_back(ShadowSlotCube{ShadowMapCube(mapSize)});
@@ -376,35 +716,97 @@ void ShadowRenderer::BeginFrame(PCamera camera) {
                     slot.farPlane = (light.shadowRange > 0.0f) ? light.shadowRange : light.range;
                     slot.farPlane = Math3D::Max(1.0f, slot.farPlane);
                     computePointMatrices(light, slot.matrices);
-                    data.shadowMapIndex = g_activeCube;
-                    data.cascadeCount = 1;
-                    data.cascadeSplits = Math3D::Vec4(slot.farPlane, slot.farPlane, slot.farPlane, slot.farPlane);
-                    g_activeCube++;
+                    if(slot.map.getDepthTexture() != 0 && slot.map.getSize() > 0){
+                        data.shadowMapIndex = g_activeCube;
+                        data.cascadeCount = 1;
+                        data.cascadeSplits = Math3D::Vec4(slot.farPlane, slot.farPlane, slot.farPlane, slot.farPlane);
+                        g_activeCube++;
+                        if(g_debugShadowLogging){
+                            LogBot.Log(LOG_INFO, "[Shadow] Point alloc idx=%zu mapIndex=%d mapSize=%d", i, data.shadowMapIndex, mapSize);
+                        }
+                    }
                 }
             }
         }
 
         g_lightData[i] = data;
+
+        // Debug logging for state changes or invalid data.
+        LightDebugState snapshot;
+        snapshot.type = static_cast<int>(light.type);
+        snapshot.castsShadows = light.castsShadows;
+        snapshot.position = light.position;
+        snapshot.direction = light.direction;
+        snapshot.intensity = light.intensity;
+        snapshot.range = light.range;
+        snapshot.falloff = light.falloff;
+        snapshot.spotAngle = light.spotAngle;
+        snapshot.shadowRange = light.shadowRange;
+
+        bool changed = false;
+        if(i < g_lastLightDebug.size()){
+            const auto& prev = g_lastLightDebug[i];
+            changed = (prev.type != snapshot.type) ||
+                      (prev.castsShadows != snapshot.castsShadows) ||
+                      (Math3D::Vec3::distance(prev.position, snapshot.position) > 0.001f) ||
+                      (Math3D::Vec3::distance(prev.direction, snapshot.direction) > 0.001f) ||
+                      !Math3D::AreClose(prev.intensity, snapshot.intensity, 0.001f) ||
+                      !Math3D::AreClose(prev.range, snapshot.range, 0.001f) ||
+                      !Math3D::AreClose(prev.falloff, snapshot.falloff, 0.001f) ||
+                      !Math3D::AreClose(prev.spotAngle, snapshot.spotAngle, 0.001f) ||
+                      !Math3D::AreClose(prev.shadowRange, snapshot.shadowRange, 0.001f);
+        }
+
+        bool invalidDir = !isValidLightDir(light.direction) && light.type != LightType::POINT;
+        bool invalidRange = !std::isfinite(light.range) || light.range <= 0.0f;
+        bool invalidSpot = (light.type == LightType::SPOT) && (!std::isfinite(light.spotAngle) || light.spotAngle <= 0.0f);
+        if(changed || invalidDir || invalidRange || invalidSpot){
+            logLightState(changed ? "Change" : "Invalid", i, light, data);
+        }
+
+        if(i < g_lastLightDebug.size()){
+            g_lastLightDebug[i] = snapshot;
+        }
     }
 
     for(int i = 0; i < g_active2D; ++i){
         auto& slot = g_shadow2D[i];
+        if(slot.map.getDepthTexture() == 0 || slot.map.getSize() <= 0){
+            continue;
+        }
         slot.map.bind();
         glViewport(0, 0, slot.map.getSize(), slot.map.getSize());
         glClear(GL_DEPTH_BUFFER_BIT);
+        GLenum err = glGetError();
+        if(err != GL_NO_ERROR){
+            LogBot.Log(LOG_ERRO, "[Shadow] GL error after clearing 2D shadow map %d: 0x%X", i, err);
+        }
     }
 
     for(int i = 0; i < g_activeCube; ++i){
         auto& slot = g_shadowCube[i];
+        if(slot.map.getDepthTexture() == 0 || slot.map.getSize() <= 0){
+            continue;
+        }
         for(int face = 0; face < 6; ++face){
             slot.map.bindFace(GL_TEXTURE_CUBE_MAP_POSITIVE_X + face);
             glViewport(0, 0, slot.map.getSize(), slot.map.getSize());
             glClear(GL_DEPTH_BUFFER_BIT);
+            GLenum err = glGetError();
+            if(err != GL_NO_ERROR){
+                LogBot.Log(LOG_ERRO, "[Shadow] GL error after clearing cube shadow map %d face %d: 0x%X", i, face, err);
+            }
         }
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, g_savedFbo);
     glViewport(g_savedViewport[0], g_savedViewport[1], g_savedViewport[2], g_savedViewport[3]);
+    {
+        GLenum err = glGetError();
+        if(err != GL_NO_ERROR){
+            LogBot.Log(LOG_ERRO, "[Shadow] GL error after BeginFrame restore: 0x%X", err);
+        }
+    }
 }
 
 bool ShadowRenderer::IsEnabled() {
@@ -436,11 +838,18 @@ void ShadowRenderer::RenderShadows(const std::shared_ptr<Mesh>& mesh, const Math
         Uniform<Math3D::Mat4> u_model(model);
         for(int i = 0; i < g_active2D; ++i){
             const auto& slot = g_shadow2D[i];
+            if(slot.map.getDepthTexture() == 0 || slot.map.getSize() <= 0){
+                continue;
+            }
             slot.map.bind();
             glViewport(0, 0, slot.map.getSize(), slot.map.getSize());
             g_shadow2DProgram->setUniformFast("u_model", u_model);
             g_shadow2DProgram->setUniformFast("u_lightMatrix", Uniform<Math3D::Mat4>(slot.matrix));
             mesh->draw();
+            GLenum err = glGetError();
+            if(err != GL_NO_ERROR){
+                LogBot.Log(LOG_ERRO, "[Shadow] GL error during 2D shadow draw slot %d: 0x%X", i, err);
+            }
         }
     }
 
@@ -449,6 +858,9 @@ void ShadowRenderer::RenderShadows(const std::shared_ptr<Mesh>& mesh, const Math
         Uniform<Math3D::Mat4> u_model(model);
         for(int i = 0; i < g_activeCube; ++i){
             const auto& slot = g_shadowCube[i];
+            if(slot.map.getDepthTexture() == 0 || slot.map.getSize() <= 0){
+                continue;
+            }
             glUniform3f(glGetUniformLocation(g_shadowCubeProgram->getID(), "u_lightPos"), slot.lightPos.x, slot.lightPos.y, slot.lightPos.z);
             glUniform1f(glGetUniformLocation(g_shadowCubeProgram->getID(), "u_farPlane"), slot.farPlane);
             for(size_t face = 0; face < slot.matrices.size(); ++face){
@@ -457,6 +869,10 @@ void ShadowRenderer::RenderShadows(const std::shared_ptr<Mesh>& mesh, const Math
                 g_shadowCubeProgram->setUniformFast("u_model", u_model);
                 g_shadowCubeProgram->setUniformFast("u_lightMatrix", Uniform<Math3D::Mat4>(slot.matrices[face]));
                 mesh->draw();
+                GLenum err = glGetError();
+                if(err != GL_NO_ERROR){
+                    LogBot.Log(LOG_ERRO, "[Shadow] GL error during cube shadow draw slot %d face %zu: 0x%X", i, face, err);
+                }
             }
         }
     }
@@ -472,53 +888,114 @@ void ShadowRenderer::BindShadowSamplers(const std::shared_ptr<ShaderProgram>& pr
         return;
     }
 
+    program->bind();
     const GLuint programId = program->getID();
-    {
-        GLint locDebug = glGetUniformLocation(programId, "u_debugShadows");
-        if(locDebug != -1){
-            glUniform1i(locDebug, g_debugShadowsMode);
-        }
-    }
-    if(g_shadowSamplerBound.find(programId) == g_shadowSamplerBound.end()){
-        std::vector<int> units2D(MAX_SHADOW_MAPS_2D);
-        for(int i = 0; i < MAX_SHADOW_MAPS_2D; ++i){
-            units2D[i] = SHADOW_TEX_UNIT_BASE_2D + i;
-        }
-        GLint loc2D = glGetUniformLocation(programId, "u_shadowMaps2D");
-        if(loc2D != -1){
-            glUniform1iv(loc2D, MAX_SHADOW_MAPS_2D, units2D.data());
-        }
-
-        std::vector<int> unitsCube(MAX_SHADOW_MAPS_CUBE);
-        for(int i = 0; i < MAX_SHADOW_MAPS_CUBE; ++i){
-            unitsCube[i] = SHADOW_TEX_UNIT_BASE_CUBE + i;
-        }
-        GLint locCube = glGetUniformLocation(programId, "u_shadowMapsCube");
-        if(locCube != -1){
-            glUniform1iv(locCube, MAX_SHADOW_MAPS_CUBE, unitsCube.data());
-        }
-
-        g_shadowSamplerBound[programId] = true;
+    GLint locDebug = glGetUniformLocation(programId, "u_debugShadows");
+    if(locDebug != -1){
+        glUniform1i(locDebug, g_debugShadowsMode);
     }
 
-    for(int i = 0; i < g_active2D; ++i){
-        glActiveTexture(GL_TEXTURE0 + SHADOW_TEX_UNIT_BASE_2D + static_cast<int>(i));
-        glBindTexture(GL_TEXTURE_2D, g_shadow2D[i].map.getDepthTexture());
-        // Enforce compare mode in case other passes changed it.
+    GLint loc2D = getSamplerArrayLocation(programId, "u_shadowMaps2D");
+    GLint locCube = getSamplerArrayLocation(programId, "u_shadowMapsCube");
+    const int size2D = (loc2D != -1) ? MAX_SHADOW_MAPS_2D : 0;
+    const int sizeCube = (locCube != -1) ? MAX_SHADOW_MAPS_CUBE : 0;
+
+    if(size2D == 0 && sizeCube == 0){
+        glActiveTexture(GL_TEXTURE0);
+        return;
+    }
+
+    const int maxUnits = getMaxTextureUnits();
+    const int shadowUnitCount = Math3D::Max(0, maxUnits - SHADOW_TEX_UNIT_BASE_2D);
+    if((size2D > 0 || sizeCube > 0) && shadowUnitCount < 2){
+        glActiveTexture(GL_TEXTURE0);
+        return;
+    }
+
+    ensureFallbackShadowTextures();
+
+    const int fallback2DUnit = SHADOW_TEX_UNIT_BASE_2D;
+    const int fallbackCubeUnit = SHADOW_TEX_UNIT_BASE_2D + shadowUnitCount - 1;
+    const int realUnitsStart = SHADOW_TEX_UNIT_BASE_2D + 1;
+    const int realUnitsCount = Math3D::Max(0, shadowUnitCount - 2);
+
+    int want2D = Math3D::Min(g_active2D, size2D);
+    int wantCube = Math3D::Min(g_activeCube, sizeCube);
+    int real2D = Math3D::Min(want2D, realUnitsCount);
+    int remaining = realUnitsCount - real2D;
+    int realCube = Math3D::Min(wantCube, remaining);
+    if(wantCube > 0 && realCube == 0 && real2D > 0){
+        real2D--;
+        realCube = 1;
+    }
+
+    std::vector<int> units2D(static_cast<size_t>(size2D), fallback2DUnit);
+    for(int i = 0; i < real2D; ++i){
+        units2D[i] = realUnitsStart + i;
+    }
+
+    std::vector<int> unitsCube(static_cast<size_t>(sizeCube), fallbackCubeUnit);
+    const int cubeUnitsStart = realUnitsStart + real2D;
+    for(int i = 0; i < realCube; ++i){
+        unitsCube[i] = cubeUnitsStart + i;
+    }
+
+    if(loc2D != -1 && size2D > 0){
+        glUniform1iv(loc2D, size2D, units2D.data());
+    }
+    if(locCube != -1 && sizeCube > 0){
+        glUniform1iv(locCube, sizeCube, unitsCube.data());
+    }
+
+    if(size2D > 0){
+        glActiveTexture(GL_TEXTURE0 + fallback2DUnit);
+        glBindTexture(GL_TEXTURE_2D, g_fallbackShadowTex2D);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+    }
+    if(sizeCube > 0){
+        glActiveTexture(GL_TEXTURE0 + fallbackCubeUnit);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, g_fallbackShadowTexCube);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+    }
+
+    for(int i = 0; i < real2D; ++i){
+        GLuint texId = g_fallbackShadowTex2D;
+        if(i < static_cast<int>(g_shadow2D.size())){
+            GLuint mapTex = g_shadow2D[i].map.getDepthTexture();
+            if(mapTex != 0){
+                texId = mapTex;
+            }
+        }
+        glActiveTexture(GL_TEXTURE0 + units2D[i]);
+        glBindTexture(GL_TEXTURE_2D, texId);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
     }
 
-    for(int i = 0; i < g_activeCube; ++i){
-        glActiveTexture(GL_TEXTURE0 + SHADOW_TEX_UNIT_BASE_CUBE + static_cast<int>(i));
-        glBindTexture(GL_TEXTURE_CUBE_MAP, g_shadowCube[i].map.getDepthTexture());
-        // Enforce compare mode in case other passes changed it.
+    for(int i = 0; i < realCube; ++i){
+        GLuint texId = g_fallbackShadowTexCube;
+        if(i < static_cast<int>(g_shadowCube.size())){
+            GLuint mapTex = g_shadowCube[i].map.getDepthTexture();
+            if(mapTex != 0){
+                texId = mapTex;
+            }
+        }
+        glActiveTexture(GL_TEXTURE0 + unitsCube[i]);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, texId);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
     }
 
     // Restore default active texture unit to avoid surprising later binds.
     glActiveTexture(GL_TEXTURE0);
+    {
+        GLenum err = glGetError();
+        if(err != GL_NO_ERROR){
+            LogBot.Log(LOG_ERRO, "[Shadow] GL error during BindShadowSamplers: 0x%X", err);
+        }
+    }
 
     if(!g_shadowDebugProgram){
         g_shadowDebugProgram = std::make_shared<ShaderProgram>();
@@ -674,4 +1151,12 @@ void ShadowRenderer::CycleDebugShadows() {
 
 int ShadowRenderer::GetDebugShadowsMode() {
     return g_debugShadowsMode;
+}
+
+void ShadowRenderer::SetDebugLogging(bool enabled) {
+    g_debugShadowLogging = enabled;
+}
+
+bool ShadowRenderer::GetDebugLogging() {
+    return g_debugShadowLogging;
 }

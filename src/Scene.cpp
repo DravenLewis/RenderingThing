@@ -7,6 +7,7 @@
 #include "ECSComponents.h"
 #include "Color.h"
 #include <chrono>
+#include <cmath>
 #include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -168,13 +169,26 @@ void Scene::updateECS(float deltaTime){
             Light light = lightComponent->light;
             if(lightComponent->syncTransform){
                 light.position = world.getPosition();
+                lightComponent->light.position = light.position;
             }
             if(lightComponent->syncDirection){
                 Math3D::Vec3 origin = world.getPosition();
                 Math3D::Vec3 forward = Math3D::Transform::transformPoint(world, Math3D::Vec3(0,0,1)) - origin;
-                if(forward.length() > 0.0001f){
+                if(std::isfinite(forward.x) && std::isfinite(forward.y) && std::isfinite(forward.z) &&
+                   forward.length() > 0.0001f){
                     light.direction = forward.normalize();
+                    lightComponent->light.direction = light.direction;
                 }
+            }
+            if(light.type != LightType::POINT){
+                if(!std::isfinite(light.direction.x) || !std::isfinite(light.direction.y) || !std::isfinite(light.direction.z)){
+                    light.direction = Math3D::Vec3(0,-1,0);
+                }else if(light.direction.length() < Math3D::EPSILON){
+                    light.direction = Math3D::Vec3(0,-1,0);
+                }else{
+                    light.direction = light.direction.normalize();
+                }
+                lightComponent->light.direction = light.direction;
             }
             snapshot.lights.push_back(light);
         }
