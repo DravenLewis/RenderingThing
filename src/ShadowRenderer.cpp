@@ -14,7 +14,7 @@
 #include <cmath>
 
 namespace {
-    constexpr int MAX_SHADOW_MAPS_2D = 16;
+    constexpr int MAX_SHADOW_MAPS_2D = 24;
     constexpr int MAX_SHADOW_MAPS_CUBE = 2;
     constexpr int SHADOW_TEX_UNIT_BASE_2D = 8;
 

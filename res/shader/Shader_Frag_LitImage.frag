@@ -1,7 +1,7 @@
 #version 410 core
 
 #define MAX_LIGHTS 16
-#define MAX_SHADOW_MAPS_2D 16
+#define MAX_SHADOW_MAPS_2D 24
 #define MAX_SHADOW_MAPS_CUBE 2
 
 struct Light {
