@@ -310,7 +310,7 @@ void EditorScene::update(float deltaTime){
 
             bool widgetConsumed = false;
             if(playState == PlayState::Edit && editorCamera && targetScene && targetScene->getECS()){
-                auto* entity = findEntityById(selectedEntityId);
+                auto* entity = findEntityById(selectedEntityId); // Maybe refactor this later to allow light widgets to always draw on entities with light components.
                 if(entity){
                     auto* components = targetScene->getECS()->getComponentManager();
                     if(auto* transformComp = components->getECSComponent<TransformComponent>(entity)){
@@ -788,208 +788,38 @@ void EditorScene::drawPropertiesPanel(float x, float y, float w, float h){
     ImGui::Separator();
 
     if(targetScene && targetScene->getECS()){
-        auto* components = targetScene->getECS()->getComponentManager();
+        auto* componentMgr = targetScene->getECS()->getComponentManager();
+        auto componentsForEntity = componentMgr->getECSComponents(entity);
 
-        if(auto* transform = components->getECSComponent<TransformComponent>(entity)){
-            Math3D::Vec3 pos = transform->local.position;
-            Math3D::Vec3 rot = transform->local.rotation.ToEuler();
-            Math3D::Vec3 scale = transform->local.scale;
+        std::sort(componentsForEntity.begin(), componentsForEntity.end(), 
+        [](NeoECS::ECSComponent* a, NeoECS::ECSComponent* b) {
+            // If 'a' is Transform, it goes first (return true)
+            if (dynamic_cast<TransformComponent*>(a)) return true;
+            // If 'b' is Transform, it goes first (return false so 'a' is pushed back)
+            if (dynamic_cast<TransformComponent*>(b)) return false;
+            // Otherwise keep original order
+            return false; 
+        });
 
-            if(ImGui::DragFloat3("Position", &pos.x, 0.1f)){
-                transform->local.position = pos;
-            }
-            if(ImGui::DragFloat3("Rotation", &rot.x, 0.5f)){
-                transform->local.setRotation(rot);
-            }
-            if(ImGui::DragFloat3("Scale", &scale.x, 0.1f)){
-                transform->local.scale = scale;
-            }
+        for(auto component : componentsForEntity){
+            IEditorCompatibleComponent* editorComponentPtr = dynamic_cast<IEditorCompatibleComponent*>(component);
+            if(!editorComponentPtr) continue;
+
+            ImGui::PushID(component);
+            editorComponentPtr->drawPropertyWidget(targetScene->getECS(), targetScene);
+            ImGui::PopID();
         }
 
-        if(auto* renderer = components->getECSComponent<MeshRendererComponent>(entity)){
-            ImGui::Separator();
-            ImGui::TextUnformatted("Mesh Renderer");
-            ImGui::Checkbox("Visible", &renderer->visible);
-            ImGui::Checkbox("Backface Cull", &renderer->enableBackfaceCulling);
+        // --- The New Button ---
+        ImGui::Dummy(ImVec2(0.0f, 20.0f)); // 20px space before button
+        ImGui::Separator();
+        ImGui::Dummy(ImVec2(0.0f, 10.0f)); // 10px padding
+
+        if (ImGui::Button("Add Component", ImVec2(-FLT_MIN, 30.0f))) {
+             // Logic to open "Add Component" menu
         }
 
-        if(auto* light = components->getECSComponent<LightComponent>(entity)){
-            ImGui::Separator();
-            ImGui::TextUnformatted("Light");
-            auto getWorldLightBasis = [&](Math3D::Vec3& outPos, Math3D::Vec3& outForward) -> bool {
-                auto* tx = components->getECSComponent<TransformComponent>(entity);
-                if(!tx){
-                    return false;
-                }
-                Math3D::Mat4 world = buildWorldMatrix(entity, components);
-                outPos = world.getPosition();
-                Math3D::Vec3 forward = Math3D::Transform::transformPoint(world, Math3D::Vec3(0,0,1)) - outPos;
-                if(!std::isfinite(forward.x) || !std::isfinite(forward.y) || !std::isfinite(forward.z) ||
-                   forward.length() <= 0.0001f){
-                    outForward = Math3D::Vec3(0, -1, 0);
-                }else{
-                    outForward = forward.normalize();
-                }
-                return true;
-            };
-
-            auto syncLightFromTransform = [&]() {
-                Math3D::Vec3 worldPos;
-                Math3D::Vec3 worldForward;
-                if(!getWorldLightBasis(worldPos, worldForward)){
-                    return;
-                }
-                if(light->syncTransform){
-                    light->light.position = worldPos;
-                }
-                if(light->syncDirection && light->light.type != LightType::POINT){
-                    light->light.direction = worldForward;
-                }
-            };
-
-            if(!selectedEntityId.empty() && migratedLightSyncTransform.find(selectedEntityId) == migratedLightSyncTransform.end()){
-                if(!light->syncTransform){
-                    light->syncTransform = true;
-                }
-                if(light->light.shadowRange <= 0.0f){
-                    light->light.shadowRange = 200.0f;
-                }
-                migratedLightSyncTransform.insert(selectedEntityId);
-            }
-            if(!selectedEntityId.empty() && migratedLightDefaults.find(selectedEntityId) == migratedLightDefaults.end()){
-                if(light->light.range <= 0.0f){
-                    light->light.range = 20.0f;
-                }
-                if(light->light.shadowRange <= 0.0f){
-                    light->light.shadowRange = 200.0f;
-                }
-                if(light->light.intensity <= 0.0f){
-                    light->light.intensity = 4.0f;
-                }
-                if(light->light.falloff <= 0.0f){
-                    light->light.falloff = 2.0f;
-                }
-                if(light->light.type == LightType::SPOT && light->light.spotAngle <= 0.0f){
-                    light->light.spotAngle = 45.0f;
-                }
-                migratedLightDefaults.insert(selectedEntityId);
-            }
-            syncLightFromTransform();
-            const char* typeLabels[] = {"Point", "Directional", "Spot"};
-            int typeIndex = static_cast<int>(light->light.type);
-                if(ImGui::Combo("Type", &typeIndex, typeLabels, IM_ARRAYSIZE(typeLabels))){
-                    LightType newType = static_cast<LightType>(typeIndex);
-                    if(newType != light->light.type){
-                        LightType prevType = light->light.type;
-                        light->light.type = newType;
-                        light->syncDirection = (newType != LightType::POINT);
-                        light->syncTransform = true;
-                        if(!std::isfinite(light->light.direction.x) || !std::isfinite(light->light.direction.y) || !std::isfinite(light->light.direction.z)){
-                            light->light.direction = Math3D::Vec3(0,-1,0);
-                        }
-                        if(newType == LightType::POINT){
-                            if(prevType == LightType::DIRECTIONAL || light->light.range <= 0.1f){
-                                light->light.range = 20.0f;
-                            }
-                            ensurePointLightBounds(entity, light->light.range);
-                        if(light->light.shadowRange <= 0.0f){
-                            light->light.shadowRange = 200.0f;
-                        }
-                    }else if(newType == LightType::DIRECTIONAL){
-                        if(light->light.direction.length() < Math3D::EPSILON){
-                            light->light.direction = Math3D::Vec3(0, -1, 0);
-                        }
-                        if(prevType != LightType::DIRECTIONAL){
-                            light->light.range = 20.0f;
-                            light->light.shadowRange = 200.0f;
-                        }
-                    }else if(newType == LightType::SPOT){
-                        if(light->light.direction.length() < Math3D::EPSILON){
-                            light->light.direction = Math3D::Vec3(0, -1, 0);
-                        }
-                        if(prevType == LightType::DIRECTIONAL || light->light.range <= 0.1f){
-                            light->light.range = 20.0f;
-                        }
-                        if(light->light.spotAngle <= 0.1f || prevType == LightType::DIRECTIONAL){
-                            light->light.spotAngle = 45.0f;
-                        }
-                        if(light->light.shadowRange <= 0.0f){
-                            light->light.shadowRange = 200.0f;
-                        }
-                    }
-                    syncLightFromTransform();
-                }
-            }
-            ImGui::ColorEdit4("Color", &light->light.color.x);
-            ImGui::DragFloat("Intensity", &light->light.intensity, 0.05f, 0.0f, 10.0f);
-            bool prevSyncTransform = light->syncTransform;
-            if(ImGui::Checkbox("Sync Transform", &light->syncTransform)){
-                if(prevSyncTransform && !light->syncTransform){
-                    Math3D::Vec3 worldPos;
-                    Math3D::Vec3 worldForward;
-                    if(getWorldLightBasis(worldPos, worldForward)){
-                        light->light.position = worldPos;
-                    }
-                }
-                if(light->syncTransform && light->light.type == LightType::POINT){
-                    ensurePointLightBounds(entity, light->light.range);
-                }
-                syncLightFromTransform();
-            }
-            if(light->light.type == LightType::POINT){
-                float range = light->light.range;
-                if(ImGui::DragFloat("Range", &range, 0.1f, 0.1f, 1000.0f)){
-                    light->light.range = range;
-                    ensurePointLightBounds(entity, range);
-                }
-                ImGui::DragFloat("Falloff", &light->light.falloff, 0.05f, 0.1f, 3.0f);
-                ImGui::DragFloat("Shadow Range", &light->light.shadowRange, 0.1f, 0.0f, 2000.0f);
-            }else if(light->light.type == LightType::SPOT){
-                ImGui::DragFloat("Range", &light->light.range, 0.1f, 0.1f, 1000.0f);
-                ImGui::DragFloat("Spot Angle", &light->light.spotAngle, 0.25f, 1.0f, 170.0f);
-                ImGui::DragFloat("Falloff", &light->light.falloff, 0.05f, 0.1f, 3.0f);
-                ImGui::DragFloat("Shadow Range", &light->light.shadowRange, 0.1f, 0.0f, 2000.0f);
-            }else if(light->light.type == LightType::DIRECTIONAL){
-                ImGui::DragFloat("Shadow Range", &light->light.shadowRange, 0.5f, 10.0f, 2000.0f);
-            }
-            if(light->light.type != LightType::POINT){
-                bool prevSyncDirection = light->syncDirection;
-                if(ImGui::Checkbox("Sync Direction", &light->syncDirection)){
-                    Math3D::Vec3 worldPos;
-                    Math3D::Vec3 worldForward;
-                    if(getWorldLightBasis(worldPos, worldForward)){
-                        if(light->syncDirection){
-                            light->light.direction = worldForward;
-                        }else if(prevSyncDirection){
-                            light->light.direction = worldForward;
-                        }
-                    }
-                }
-                bool dirEditable = !light->syncDirection;
-                if(!dirEditable){
-                    ImGui::BeginDisabled();
-                }
-                if(ImGui::DragFloat3("Direction", &light->light.direction.x, 0.02f, -1.0f, 1.0f)){
-                    if(light->light.direction.length() < Math3D::EPSILON){
-                        light->light.direction = Math3D::Vec3(0,-1,0);
-                    }else{
-                        light->light.direction = light->light.direction.normalize();
-                    }
-                }
-                if(!dirEditable){
-                    ImGui::EndDisabled();
-                }
-            }
-            ImGui::Checkbox("Cast Shadows", &light->light.castsShadows);
-            const char* shadowLabels[] = {"Hard", "Standard", "Smooth"};
-            int shadowIndex = static_cast<int>(light->light.shadowType);
-            if(ImGui::Combo("Shadow Type", &shadowIndex, shadowLabels, IM_ARRAYSIZE(shadowLabels))){
-                light->light.shadowType = static_cast<ShadowType>(shadowIndex);
-            }
-            ImGui::DragFloat("Shadow Bias", &light->light.shadowBias, 0.0005f, 0.0f, 0.01f, "%.6f");
-            ImGui::DragFloat("Shadow Normal Bias", &light->light.shadowNormalBias, 0.0005f, 0.0f, 0.01f, "%.6f");
-            ImGui::DragFloat("Shadow Strength", &light->light.shadowStrength, 0.01f, 0.0f, 1.0f);
-        }
+        ImGui::Dummy(ImVec2(0.0f, 10.0f)); // 10px padding bottom
     }
 
     ImGui::End();

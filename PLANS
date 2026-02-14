@@ -1,0 +1,6 @@
+Improve Shadow Stability [ ]
+Introduce Deferred Rendering [ ]
+- Add Bloom
+- Add GI
+Introduce Script Component
+- Add Scripting Engine (Python / Lua)

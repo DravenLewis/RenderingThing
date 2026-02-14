@@ -8,26 +8,40 @@
 #include "Model.h"
 #include "Light.h"
 
-struct TransformComponent : public NeoECS::ECSComponent {
+#include "Scene.h"
+
+struct IEditorCompatibleComponent : public NeoECS::ECSComponent{
     using NeoECS::ECSComponent::ECSComponent;
-    Math3D::Transform local;
+
+    virtual void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) = 0;
 };
 
-struct MeshRendererComponent : public NeoECS::ECSComponent {
-    using NeoECS::ECSComponent::ECSComponent;
+struct TransformComponent : public IEditorCompatibleComponent {
+    using IEditorCompatibleComponent::IEditorCompatibleComponent;
+    Math3D::Transform local;
+
+    void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
+};
+
+struct MeshRendererComponent : public IEditorCompatibleComponent {
+    using IEditorCompatibleComponent::IEditorCompatibleComponent;
     std::shared_ptr<Mesh> mesh;
     std::shared_ptr<Material> material;
     PModel model;
     Math3D::Transform localOffset;
     bool visible = true;
     bool enableBackfaceCulling = true;
+
+    void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
 };
 
-struct LightComponent : public NeoECS::ECSComponent {
-    using NeoECS::ECSComponent::ECSComponent;
+struct LightComponent : public IEditorCompatibleComponent {
+    using IEditorCompatibleComponent::IEditorCompatibleComponent;
     Light light;
     bool syncTransform = true;
     bool syncDirection = true;
+
+    void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
 };
 
 enum class BoundsType {
@@ -36,17 +50,21 @@ enum class BoundsType {
     Capsule
 };
 
-struct BoundsComponent : public NeoECS::ECSComponent {
-    using NeoECS::ECSComponent::ECSComponent;
+struct BoundsComponent : public IEditorCompatibleComponent {
+    using IEditorCompatibleComponent::IEditorCompatibleComponent;
     BoundsType type = BoundsType::Sphere;
     Math3D::Vec3 size = Math3D::Vec3(1.0f, 1.0f, 1.0f); // Box extents (half-size)
     float radius = 0.5f; // Sphere/Capsule radius
     float height = 1.0f; // Capsule full height
+
+    void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
 };
 
-struct CameraComponent : public NeoECS::ECSComponent {
-    using NeoECS::ECSComponent::ECSComponent;
+struct CameraComponent : public IEditorCompatibleComponent {
+    using IEditorCompatibleComponent::IEditorCompatibleComponent;
     PCamera camera;
+
+    void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
 };
 
 #endif // ECSCOMPONENTS_H

@@ -89,6 +89,7 @@ class Scene : public View {
         const std::string& getSelectedEntityId() const { return selectedEntityId; }
         void setOutlineEnabled(bool enabled) { outlineEnabled = enabled; }
         bool isOutlineEnabled() const { return outlineEnabled; }
+        Math3D::Mat4 getWorldMatrix(NeoECS::ECSEntity* entity, NeoECS::ECSComponentManager* manager) const { return buildWorldMatrix(entity, manager); }
         Math3D::Vec3 getWorldPosition(NeoECS::ECSEntity* entity) const;
 };
 
