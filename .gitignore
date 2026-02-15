@@ -73,6 +73,10 @@ src.zip
 premake5.lua
 MakeFile
 build.bat
+*.zip
+*.plans
+.gitignore
+
 
 lib/
 bin/
