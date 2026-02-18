@@ -65,7 +65,6 @@ class Material{
 
         virtual void bind(){
             if(!programObjPtr || programObjPtr->getID() == 0){
-                glUseProgram(0);
                 return;
             }
             programObjPtr->bind();

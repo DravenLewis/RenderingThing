@@ -232,6 +232,8 @@ void Scene::updateECS(float deltaTime){
                     item.material = part->material;
                     item.model = base * part->localTransform.toMat4();
                     item.enableBackfaceCulling = cull;
+                    item.isTransparent = isMaterialTransparent(item.material);
+                    item.isDeferredCompatible = isDeferredCompatibleMaterial(item.material);
                     item.entityId = entity->getNodeUniqueID();
                     item.castsShadows = item.material->castsShadows();
                     if(hasOverrideBounds){
@@ -250,6 +252,8 @@ void Scene::updateECS(float deltaTime){
                 item.material = renderer->material;
                 item.model = base;
                 item.enableBackfaceCulling = cull;
+                item.isTransparent = isMaterialTransparent(item.material);
+                item.isDeferredCompatible = isDeferredCompatibleMaterial(item.material);
                 item.entityId = entity->getNodeUniqueID();
                 item.castsShadows = item.material->castsShadows();
                 if(hasOverrideBounds){
@@ -369,10 +373,12 @@ void Scene::ensureDeferredResources(PScreen screen){
         gBuffer = FrameBuffer::CreateGBuffer(w, h);
         gBufferWidth = w;
         gBufferHeight = h;
+        gBufferValidationDirty = true;
     }else if(gBufferWidth != w || gBufferHeight != h){
         gBuffer->resize(w, h);
         gBufferWidth = w;
         gBufferHeight = h;
+        gBufferValidationDirty = true;
     }
 
     if(!gBufferShader){
@@ -433,120 +439,134 @@ void Scene::drawDeferredGeometry(PCamera cam){
     glDepthMask(GL_TRUE);
 
     gBufferShader->bind();
-    gBufferShader->setUniformFast("u_view", Uniform<Math3D::Mat4>(cam->getViewMatrix()));
-    gBufferShader->setUniformFast("u_projection", Uniform<Math3D::Mat4>(cam->getProjectionMatrix()));
+    const Math3D::Mat4 viewMatrix = cam->getViewMatrix();
+    const Math3D::Mat4 projectionMatrix = cam->getProjectionMatrix();
+    gBufferShader->setUniformFast("u_view", Uniform<Math3D::Mat4>(viewMatrix));
+    gBufferShader->setUniformFast("u_projection", Uniform<Math3D::Mat4>(projectionMatrix));
 
     const int frontIndex = renderSnapshotIndex.load(std::memory_order_acquire);
     const auto& snapshot = renderSnapshots[frontIndex];
+    std::shared_ptr<Material> lastMaterial = nullptr;
+    bool cullStateKnown = false;
+    bool cullEnabled = true;
 
     for(const auto& item : snapshot.drawItems){
         if(!item.mesh || !item.material) continue;
-        if(isMaterialTransparent(item.material)) continue;
-        if(!isDeferredCompatibleMaterial(item.material)) continue;
+        if(item.isTransparent) continue;
+        if(!item.isDeferredCompatible) continue;
 
-        if(item.enableBackfaceCulling){
-            glEnable(GL_CULL_FACE);
-            glCullFace(GL_BACK);
-        }else{
-            glDisable(GL_CULL_FACE);
+        if(!cullStateKnown || cullEnabled != item.enableBackfaceCulling){
+            if(item.enableBackfaceCulling){
+                glEnable(GL_CULL_FACE);
+                glCullFace(GL_BACK);
+                cullEnabled = true;
+            }else{
+                glDisable(GL_CULL_FACE);
+                cullEnabled = false;
+            }
+            cullStateKnown = true;
         }
 
         gBufferShader->setUniformFast("u_model", Uniform<Math3D::Mat4>(item.model));
 
-        Math3D::Vec4 baseColor = Color::WHITE;
-        PTexture baseColorTex = nullptr;
-        int useBaseColorTex = 0;
-        float metallic = 0.0f;
-        float roughness = 1.0f;
-        PTexture metallicRoughnessTex = nullptr;
-        int useMetallicRoughnessTex = 0;
-        PTexture normalTex = nullptr;
-        int useNormalTex = 0;
-        float normalScale = 1.0f;
-        PTexture occlusionTex = nullptr;
-        int useOcclusionTex = 0;
-        float aoStrength = 1.0f;
-        Math3D::Vec2 uvScale(1.0f, 1.0f);
-        Math3D::Vec2 uvOffset(0.0f, 0.0f);
-        int useAlphaClip = 0;
-        float alphaCutoff = 0.5f;
-        int surfaceMode = 0; // 0=PBR, 1=LegacyLit, 2=LegacyUnlit
+        if(item.material != lastMaterial){
+            const auto& material = item.material;
+            Math3D::Vec4 baseColor = Color::WHITE;
+            PTexture baseColorTex = nullptr;
+            int useBaseColorTex = 0;
+            float metallic = 0.0f;
+            float roughness = 1.0f;
+            PTexture metallicRoughnessTex = nullptr;
+            int useMetallicRoughnessTex = 0;
+            PTexture normalTex = nullptr;
+            int useNormalTex = 0;
+            float normalScale = 1.0f;
+            PTexture occlusionTex = nullptr;
+            int useOcclusionTex = 0;
+            float aoStrength = 1.0f;
+            Math3D::Vec2 uvScale(1.0f, 1.0f);
+            Math3D::Vec2 uvOffset(0.0f, 0.0f);
+            int useAlphaClip = 0;
+            float alphaCutoff = 0.5f;
+            int surfaceMode = 0; // 0=PBR, 1=LegacyLit, 2=LegacyUnlit
 
-        if(auto pbr = Material::GetAs<PBRMaterial>(item.material)){
-            baseColor = pbr->BaseColor.get();
-            baseColorTex = pbr->BaseColorTex.get();
-            useBaseColorTex = baseColorTex ? 1 : 0;
-            metallic = pbr->Metallic.get();
-            roughness = pbr->Roughness.get();
-            metallicRoughnessTex = pbr->MetallicRoughnessTex.get();
-            useMetallicRoughnessTex = metallicRoughnessTex ? 1 : 0;
-            normalTex = pbr->NormalTex.get();
-            useNormalTex = normalTex ? 1 : 0;
-            normalScale = pbr->NormalScale.get();
-            occlusionTex = pbr->OcclusionTex.get();
-            useOcclusionTex = occlusionTex ? 1 : 0;
-            aoStrength = pbr->OcclusionStrength.get();
-            uvScale = pbr->UVScale.get();
-            uvOffset = pbr->UVOffset.get();
-            useAlphaClip = pbr->UseAlphaClip.get();
-            alphaCutoff = pbr->AlphaCutoff.get();
-            surfaceMode = 0;
-        }else if(auto litImage = Material::GetAs<MaterialDefaults::LitImageMaterial>(item.material)){
-            baseColor = litImage->Color.get();
-            baseColorTex = litImage->Tex.get();
-            useBaseColorTex = baseColorTex ? 1 : 0;
-            roughness = 0.85f;
-            surfaceMode = 1;
-        }else if(auto flatImage = Material::GetAs<MaterialDefaults::FlatImageMaterial>(item.material)){
-            baseColor = flatImage->Color.get();
-            baseColorTex = flatImage->Tex.get();
-            useBaseColorTex = baseColorTex ? 1 : 0;
-            roughness = 0.95f;
-            surfaceMode = 1;
-        }else if(auto imageMat = Material::GetAs<MaterialDefaults::ImageMaterial>(item.material)){
-            baseColor = imageMat->Color.get();
-            baseColorTex = imageMat->Tex.get();
-            useBaseColorTex = baseColorTex ? 1 : 0;
-            surfaceMode = 2;
-        }else if(auto litColor = Material::GetAs<MaterialDefaults::LitColorMaterial>(item.material)){
-            baseColor = litColor->Color.get();
-            roughness = 0.85f;
-            surfaceMode = 1;
-        }else if(auto flatColor = Material::GetAs<MaterialDefaults::FlatColorMaterial>(item.material)){
-            baseColor = flatColor->Color.get();
-            roughness = 0.95f;
-            surfaceMode = 1;
-        }else if(auto colorMat = Material::GetAs<MaterialDefaults::ColorMaterial>(item.material)){
-            baseColor = colorMat->Color.get();
-            surfaceMode = 2;
-        }else{
-            // Unknown material type fallback to the legacy lit path.
-            roughness = 0.9f;
-            surfaceMode = 1;
+            if(auto pbr = Material::GetAs<PBRMaterial>(material)){
+                baseColor = pbr->BaseColor.get();
+                baseColorTex = pbr->BaseColorTex.get();
+                useBaseColorTex = baseColorTex ? 1 : 0;
+                metallic = pbr->Metallic.get();
+                roughness = pbr->Roughness.get();
+                metallicRoughnessTex = pbr->MetallicRoughnessTex.get();
+                useMetallicRoughnessTex = metallicRoughnessTex ? 1 : 0;
+                normalTex = pbr->NormalTex.get();
+                useNormalTex = normalTex ? 1 : 0;
+                normalScale = pbr->NormalScale.get();
+                occlusionTex = pbr->OcclusionTex.get();
+                useOcclusionTex = occlusionTex ? 1 : 0;
+                aoStrength = pbr->OcclusionStrength.get();
+                uvScale = pbr->UVScale.get();
+                uvOffset = pbr->UVOffset.get();
+                useAlphaClip = pbr->UseAlphaClip.get();
+                alphaCutoff = pbr->AlphaCutoff.get();
+                surfaceMode = 0;
+            }else if(auto litImage = Material::GetAs<MaterialDefaults::LitImageMaterial>(material)){
+                baseColor = litImage->Color.get();
+                baseColorTex = litImage->Tex.get();
+                useBaseColorTex = baseColorTex ? 1 : 0;
+                roughness = 0.85f;
+                surfaceMode = 1;
+            }else if(auto flatImage = Material::GetAs<MaterialDefaults::FlatImageMaterial>(material)){
+                baseColor = flatImage->Color.get();
+                baseColorTex = flatImage->Tex.get();
+                useBaseColorTex = baseColorTex ? 1 : 0;
+                roughness = 0.95f;
+                surfaceMode = 1;
+            }else if(auto imageMat = Material::GetAs<MaterialDefaults::ImageMaterial>(material)){
+                baseColor = imageMat->Color.get();
+                baseColorTex = imageMat->Tex.get();
+                useBaseColorTex = baseColorTex ? 1 : 0;
+                surfaceMode = 2;
+            }else if(auto litColor = Material::GetAs<MaterialDefaults::LitColorMaterial>(material)){
+                baseColor = litColor->Color.get();
+                roughness = 0.85f;
+                surfaceMode = 1;
+            }else if(auto flatColor = Material::GetAs<MaterialDefaults::FlatColorMaterial>(material)){
+                baseColor = flatColor->Color.get();
+                roughness = 0.95f;
+                surfaceMode = 1;
+            }else if(auto colorMat = Material::GetAs<MaterialDefaults::ColorMaterial>(material)){
+                baseColor = colorMat->Color.get();
+                surfaceMode = 2;
+            }else{
+                // Unknown material type fallback to the legacy lit path.
+                roughness = 0.9f;
+                surfaceMode = 1;
+            }
+
+            gBufferShader->setUniformFast("u_baseColor", Uniform<Math3D::Vec4>(baseColor));
+            gBufferShader->setUniformFast("u_useBaseColorTex", Uniform<int>(useBaseColorTex));
+            gBufferShader->setUniformFast("u_baseColorTex", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(baseColorTex, 0)));
+
+            gBufferShader->setUniformFast("u_metallic", Uniform<float>(metallic));
+            gBufferShader->setUniformFast("u_roughness", Uniform<float>(roughness));
+            gBufferShader->setUniformFast("u_useMetallicRoughnessTex", Uniform<int>(useMetallicRoughnessTex));
+            gBufferShader->setUniformFast("u_metallicRoughnessTex", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(metallicRoughnessTex, 1)));
+
+            gBufferShader->setUniformFast("u_useNormalTex", Uniform<int>(useNormalTex));
+            gBufferShader->setUniformFast("u_normalScale", Uniform<float>(normalScale));
+            gBufferShader->setUniformFast("u_normalTex", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(normalTex, 2)));
+
+            gBufferShader->setUniformFast("u_useOcclusionTex", Uniform<int>(useOcclusionTex));
+            gBufferShader->setUniformFast("u_aoStrength", Uniform<float>(aoStrength));
+            gBufferShader->setUniformFast("u_occlusionTex", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(occlusionTex, 3)));
+
+            gBufferShader->setUniformFast("u_uvScale", Uniform<Math3D::Vec2>(uvScale));
+            gBufferShader->setUniformFast("u_uvOffset", Uniform<Math3D::Vec2>(uvOffset));
+            gBufferShader->setUniformFast("u_useAlphaClip", Uniform<int>(useAlphaClip));
+            gBufferShader->setUniformFast("u_alphaCutoff", Uniform<float>(alphaCutoff));
+            gBufferShader->setUniformFast("u_surfaceMode", Uniform<int>(surfaceMode));
+            lastMaterial = material;
         }
-
-        gBufferShader->setUniformFast("u_baseColor", Uniform<Math3D::Vec4>(baseColor));
-        gBufferShader->setUniformFast("u_useBaseColorTex", Uniform<int>(useBaseColorTex));
-        gBufferShader->setUniformFast("u_baseColorTex", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(baseColorTex, 0)));
-
-        gBufferShader->setUniformFast("u_metallic", Uniform<float>(metallic));
-        gBufferShader->setUniformFast("u_roughness", Uniform<float>(roughness));
-        gBufferShader->setUniformFast("u_useMetallicRoughnessTex", Uniform<int>(useMetallicRoughnessTex));
-        gBufferShader->setUniformFast("u_metallicRoughnessTex", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(metallicRoughnessTex, 1)));
-
-        gBufferShader->setUniformFast("u_useNormalTex", Uniform<int>(useNormalTex));
-        gBufferShader->setUniformFast("u_normalScale", Uniform<float>(normalScale));
-        gBufferShader->setUniformFast("u_normalTex", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(normalTex, 2)));
-
-        gBufferShader->setUniformFast("u_useOcclusionTex", Uniform<int>(useOcclusionTex));
-        gBufferShader->setUniformFast("u_aoStrength", Uniform<float>(aoStrength));
-        gBufferShader->setUniformFast("u_occlusionTex", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(occlusionTex, 3)));
-
-        gBufferShader->setUniformFast("u_uvScale", Uniform<Math3D::Vec2>(uvScale));
-        gBufferShader->setUniformFast("u_uvOffset", Uniform<Math3D::Vec2>(uvOffset));
-        gBufferShader->setUniformFast("u_useAlphaClip", Uniform<int>(useAlphaClip));
-        gBufferShader->setUniformFast("u_alphaCutoff", Uniform<float>(alphaCutoff));
-        gBufferShader->setUniformFast("u_surfaceMode", Uniform<int>(surfaceMode));
 
         item.mesh->draw();
     }
@@ -608,6 +628,8 @@ void Scene::drawOutlines(PCamera cam){
 
     const int frontIndex = renderSnapshotIndex.load(std::memory_order_acquire);
     const auto& snapshot = renderSnapshots[frontIndex];
+    const Math3D::Mat4 viewMatrix = cam->getViewMatrix();
+    const Math3D::Mat4 projectionMatrix = cam->getProjectionMatrix();
     for(const auto& item : snapshot.drawItems){
         if(!item.mesh || !item.material) continue;
         if(item.entityId != selectedEntityId) continue;
@@ -620,11 +642,10 @@ void Scene::drawOutlines(PCamera cam){
         Math3D::Mat4 outlineModel(outline);
 
         outlineMaterial->set<Math3D::Mat4>("u_model", outlineModel);
-        outlineMaterial->set<Math3D::Mat4>("u_view", cam->getViewMatrix());
-        outlineMaterial->set<Math3D::Mat4>("u_projection", cam->getProjectionMatrix());
+        outlineMaterial->set<Math3D::Mat4>("u_view", viewMatrix);
+        outlineMaterial->set<Math3D::Mat4>("u_projection", projectionMatrix);
         outlineMaterial->bind();
         item.mesh->draw();
-        outlineMaterial->unbind();
 
         glCullFace(GL_BACK);
     }
@@ -669,7 +690,12 @@ void Scene::renderDeferred(PScreen screen, PCamera cam){
         return;
     }
 
-    if(!gBuffer->validate()){
+    if(gBufferValidationDirty){
+        gBufferValidated = gBuffer->validate();
+        gBufferValidationDirty = false;
+    }
+
+    if(!gBufferValidated){
         if(!loggedInvalid){
             LogBot.Log(LOG_ERRO, "GBuffer framebuffer invalid; falling back to forward rendering.");
             loggedInvalid = true;
@@ -679,9 +705,15 @@ void Scene::renderDeferred(PScreen screen, PCamera cam){
         return;
     }
 
-    while(glGetError() != GL_NO_ERROR) {}
+    constexpr bool kDeferredGlErrorChecks = false;
+    if(kDeferredGlErrorChecks){
+        while(glGetError() != GL_NO_ERROR) {}
+    }
 
     auto checkGlError = [&](const char* stage){
+        if(!kDeferredGlErrorChecks){
+            return;
+        }
         GLenum err = glGetError();
         if(err != GL_NO_ERROR){
             LogBot.Log(LOG_ERRO, "[Deferred] GL error after %s: 0x%X", stage, err);
@@ -808,18 +840,21 @@ void Scene::drawModels3D(PCamera cam, RenderFilter filter, bool drawOutlines, bo
 
     const int frontIndex = renderSnapshotIndex.load(std::memory_order_acquire);
     const auto& snapshot = renderSnapshots[frontIndex];
+    const Math3D::Mat4 viewMatrix = cam->getViewMatrix();
+    const Math3D::Mat4 projectionMatrix = cam->getProjectionMatrix();
     const bool markDeferredIncompatible = (GameEngine::Engine &&
                                            GameEngine::Engine->getRenderStrategy() == EngineRenderStrategy::Deferred);
+    bool cullStateKnown = false;
+    bool cullEnabled = true;
     for(const auto& item : snapshot.drawItems){
         if(!item.mesh || !item.material) continue;
 
-        bool isTransparent = isMaterialTransparent(item.material);
-        if(filter == RenderFilter::Opaque && isTransparent) continue;
-        if(filter == RenderFilter::Transparent && !isTransparent) continue;
-        if(skipDeferredCompatible && isDeferredCompatibleMaterial(item.material)) continue;
+        if(filter == RenderFilter::Opaque && item.isTransparent) continue;
+        if(filter == RenderFilter::Transparent && !item.isTransparent) continue;
+        if(skipDeferredCompatible && item.isDeferredCompatible) continue;
 
         std::shared_ptr<Material> drawMaterial = item.material;
-        if(markDeferredIncompatible && !isDeferredCompatibleMaterial(item.material)){
+        if(markDeferredIncompatible && !item.isDeferredCompatible){
             if(!deferredIncompatibleMaterial){
                 deferredIncompatibleMaterial = MaterialDefaults::ColorMaterial::Create(Color::MAGENTA);
                 if(deferredIncompatibleMaterial){
@@ -832,19 +867,23 @@ void Scene::drawModels3D(PCamera cam, RenderFilter filter, bool drawOutlines, bo
             }
         }
 
-        if(item.enableBackfaceCulling){
-            glEnable(GL_CULL_FACE);
-            glCullFace(GL_BACK);
-        }else{
-            glDisable(GL_CULL_FACE);
+        if(!cullStateKnown || cullEnabled != item.enableBackfaceCulling){
+            if(item.enableBackfaceCulling){
+                glEnable(GL_CULL_FACE);
+                glCullFace(GL_BACK);
+                cullEnabled = true;
+            }else{
+                glDisable(GL_CULL_FACE);
+                cullEnabled = false;
+            }
+            cullStateKnown = true;
         }
 
         drawMaterial->set<Math3D::Mat4>("u_model", item.model);
-        drawMaterial->set<Math3D::Mat4>("u_view", cam->getViewMatrix());
-        drawMaterial->set<Math3D::Mat4>("u_projection", cam->getProjectionMatrix());
+        drawMaterial->set<Math3D::Mat4>("u_view", viewMatrix);
+        drawMaterial->set<Math3D::Mat4>("u_projection", projectionMatrix);
         drawMaterial->bind();
         item.mesh->draw();
-        drawMaterial->unbind();
 
         if(drawOutlines && outlineEnabled && !selectedEntityId.empty() && item.entityId == selectedEntityId && outlineMaterial){
             glEnable(GL_CULL_FACE);
@@ -855,12 +894,13 @@ void Scene::drawModels3D(PCamera cam, RenderFilter filter, bool drawOutlines, bo
             Math3D::Mat4 outlineModel(outline);
 
             outlineMaterial->set<Math3D::Mat4>("u_model", outlineModel);
-            outlineMaterial->set<Math3D::Mat4>("u_view", cam->getViewMatrix());
-            outlineMaterial->set<Math3D::Mat4>("u_projection", cam->getProjectionMatrix());
+            outlineMaterial->set<Math3D::Mat4>("u_view", viewMatrix);
+            outlineMaterial->set<Math3D::Mat4>("u_projection", projectionMatrix);
             outlineMaterial->bind();
             item.mesh->draw();
-            outlineMaterial->unbind();
             glCullFace(GL_BACK);
+            cullEnabled = true;
+            cullStateKnown = true;
         }
     }
 
@@ -871,9 +911,19 @@ void Scene::drawModels3D(PCamera cam, RenderFilter filter, bool drawOutlines, bo
 void Scene::drawShadowsPass(){
     const int frontIndex = renderSnapshotIndex.load(std::memory_order_acquire);
     const auto& snapshot = renderSnapshots[frontIndex];
+    std::vector<ShadowRenderer::ShadowDrawItem> drawItems;
+    drawItems.reserve(snapshot.drawItems.size());
     for(const auto& item : snapshot.drawItems){
-        if(!item.mesh || !item.material) continue;
-        ShadowRenderer::RenderShadows(item.mesh, item.model, item.material);
+        if(!item.mesh || !item.material || !item.castsShadows) continue;
+        ShadowRenderer::ShadowDrawItem drawItem;
+        drawItem.mesh = item.mesh;
+        drawItem.model = item.model;
+        drawItem.material = item.material;
+        drawItems.push_back(std::move(drawItem));
+    }
+
+    if(!drawItems.empty()){
+        ShadowRenderer::RenderShadowsBatch(drawItems);
     }
 }
 

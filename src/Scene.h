@@ -63,6 +63,8 @@ class Scene : public View {
             std::shared_ptr<Material> material;
             Math3D::Mat4 model;
             bool enableBackfaceCulling = true;
+            bool isTransparent = false;
+            bool isDeferredCompatible = false;
             std::string entityId;
             bool castsShadows = true;
             bool hasBounds = false;
@@ -89,6 +91,8 @@ class Scene : public View {
         std::shared_ptr<ModelPart> deferredQuad;
         int gBufferWidth = 0;
         int gBufferHeight = 0;
+        bool gBufferValidationDirty = true;
+        bool gBufferValidated = false;
         bool deferredDisabled = false;
 
         enum class RenderFilter{

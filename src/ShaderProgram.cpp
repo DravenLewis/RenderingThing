@@ -5,6 +5,10 @@
 
 #include "Logbot.h"
 
+namespace {
+    GLuint g_boundProgramCache = 0;
+}
+
 void ShaderProgram::setVertexShader(std::string glsl){
     ShaderBundle bundle = ShaderBundle::Create(glsl);
     bundle.type = ShaderType::VERTEX;
@@ -128,8 +132,9 @@ Shader ShaderProgram::GetCurrentShaderProgram(){
 };
 
 void ShaderProgram::bind(){
-    if(this->programHandle == 0 || ShaderProgram::GetCurrentShaderProgram() == this->programHandle) return;
+    if(this->programHandle == 0 || g_boundProgramCache == this->programHandle) return;
     glUseProgram(this->programHandle);
+    g_boundProgramCache = this->programHandle;
 }
         
 Shader ShaderProgram::getID(){
@@ -154,6 +159,10 @@ GLint ShaderProgram::getUniformLocationCached(const std::string& name){
 }
 
 void ShaderProgram::unbind(){
+    if(g_boundProgramCache == 0){
+        return;
+    }
     glUseProgram(0);
+    g_boundProgramCache = 0;
 }
 

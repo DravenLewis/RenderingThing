@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <vector>
+#include <cstdint>
 
 #include "Light.h"
 #include "Camera.h"
@@ -37,10 +38,18 @@ struct ShadowCasterBounds {
 
 class ShadowRenderer {
 public:
+    struct ShadowDrawItem {
+        std::shared_ptr<Mesh> mesh;
+        Math3D::Mat4 model;
+        std::shared_ptr<Material> material;
+    };
+
     static void BeginFrame(PCamera camera, const std::vector<ShadowCasterBounds>* casters = nullptr);
     static void RenderShadows(const std::shared_ptr<Mesh>& mesh, const Math3D::Mat4& model, const std::shared_ptr<Material>& material);
+    static void RenderShadowsBatch(const std::vector<ShadowDrawItem>& items);
     static void BindShadowSamplers(const std::shared_ptr<ShaderProgram>& program);
     static void GetShadowDataForLight(size_t index, const Light& light, ShadowLightData& outData);
+    static uint64_t GetFrameId();
     static bool IsEnabled();
     static std::shared_ptr<Texture> GetDepthBuffer();
     static void SetDebugShadows(bool enabled);

@@ -4,6 +4,7 @@
 #include <array>
 #include <limits>
 #include <string>
+#include <unordered_map>
 
 #include "Light.h"
 #include "Material.h"
@@ -58,6 +59,7 @@ namespace {
     uint64_t g_shadowFrameId = 0;
     GLuint g_fallbackShadowTex2D = 0;
     GLuint g_fallbackShadowTexCube = 0;
+    std::unordered_map<GLuint, uint64_t> g_shadowSamplersBoundFrame;
 
     struct LightDebugState {
         int type = -1;
@@ -71,6 +73,10 @@ namespace {
         float shadowRange = 0.0f;
     };
     std::vector<LightDebugState> g_lastLightDebug;
+
+    bool shouldCheckShadowGlErrors(){
+        return g_debugShadowLogging;
+    }
 
     int getMaxShadowMapSize2D(){
         static bool cached = false;
@@ -867,9 +873,11 @@ void ShadowRenderer::BeginFrame(PCamera camera, const std::vector<ShadowCasterBo
         slot.map.bind();
         glViewport(0, 0, slot.map.getSize(), slot.map.getSize());
         glClear(GL_DEPTH_BUFFER_BIT);
-        GLenum err = glGetError();
-        if(err != GL_NO_ERROR){
-            LogBot.Log(LOG_ERRO, "[Shadow] GL error after clearing 2D shadow map %d: 0x%X", i, err);
+        if(shouldCheckShadowGlErrors()){
+            GLenum err = glGetError();
+            if(err != GL_NO_ERROR){
+                LogBot.Log(LOG_ERRO, "[Shadow] GL error after clearing 2D shadow map %d: 0x%X", i, err);
+            }
         }
     }
 
@@ -882,16 +890,18 @@ void ShadowRenderer::BeginFrame(PCamera camera, const std::vector<ShadowCasterBo
             slot.map.bindFace(GL_TEXTURE_CUBE_MAP_POSITIVE_X + face);
             glViewport(0, 0, slot.map.getSize(), slot.map.getSize());
             glClear(GL_DEPTH_BUFFER_BIT);
-            GLenum err = glGetError();
-            if(err != GL_NO_ERROR){
-                LogBot.Log(LOG_ERRO, "[Shadow] GL error after clearing cube shadow map %d face %d: 0x%X", i, face, err);
+            if(shouldCheckShadowGlErrors()){
+                GLenum err = glGetError();
+                if(err != GL_NO_ERROR){
+                    LogBot.Log(LOG_ERRO, "[Shadow] GL error after clearing cube shadow map %d face %d: 0x%X", i, face, err);
+                }
             }
         }
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, g_savedFbo);
     glViewport(g_savedViewport[0], g_savedViewport[1], g_savedViewport[2], g_savedViewport[3]);
-    {
+    if(shouldCheckShadowGlErrors()){
         GLenum err = glGetError();
         if(err != GL_NO_ERROR){
             LogBot.Log(LOG_ERRO, "[Shadow] GL error after BeginFrame restore: 0x%X", err);
@@ -903,8 +913,27 @@ bool ShadowRenderer::IsEnabled() {
     return g_enabled;
 }
 
+uint64_t ShadowRenderer::GetFrameId() {
+    return g_shadowFrameId;
+}
+
 void ShadowRenderer::RenderShadows(const std::shared_ptr<Mesh>& mesh, const Math3D::Mat4& model, const std::shared_ptr<Material>& material) {
-    if(!g_enabled || g_inShadowPass || !mesh || !material){
+    if(!mesh || !material){
+        return;
+    }
+
+    std::vector<ShadowDrawItem> items;
+    items.reserve(1);
+    ShadowDrawItem item;
+    item.mesh = mesh;
+    item.model = model;
+    item.material = material;
+    items.push_back(std::move(item));
+    RenderShadowsBatch(items);
+}
+
+void ShadowRenderer::RenderShadowsBatch(const std::vector<ShadowDrawItem>& items) {
+    if(!g_enabled || g_inShadowPass || items.empty()){
         return;
     }
 
@@ -913,7 +942,20 @@ void ShadowRenderer::RenderShadows(const std::shared_ptr<Mesh>& mesh, const Math
         return;
     }
 
-    if(!material->castsShadows()){
+    if(g_active2D <= 0 && g_activeCube <= 0){
+        return;
+    }
+
+    std::vector<const ShadowDrawItem*> activeItems;
+    activeItems.reserve(items.size());
+    for(const auto& item : items){
+        if(!item.mesh || !item.material || !item.material->castsShadows()){
+            continue;
+        }
+        activeItems.push_back(&item);
+    }
+
+    if(activeItems.empty()){
         return;
     }
 
@@ -925,7 +967,6 @@ void ShadowRenderer::RenderShadows(const std::shared_ptr<Mesh>& mesh, const Math
 
     if(g_shadow2DProgram && g_shadow2DProgram->getID() != 0){
         g_shadow2DProgram->bind();
-        Uniform<Math3D::Mat4> u_model(model);
         for(int i = 0; i < g_active2D; ++i){
             const auto& slot = g_shadow2D[i];
             if(slot.map.getDepthTexture() == 0 || slot.map.getSize() <= 0){
@@ -933,35 +974,54 @@ void ShadowRenderer::RenderShadows(const std::shared_ptr<Mesh>& mesh, const Math
             }
             slot.map.bind();
             glViewport(0, 0, slot.map.getSize(), slot.map.getSize());
-            g_shadow2DProgram->setUniformFast("u_model", u_model);
             g_shadow2DProgram->setUniformFast("u_lightMatrix", Uniform<Math3D::Mat4>(slot.matrix));
-            mesh->draw();
-            GLenum err = glGetError();
-            if(err != GL_NO_ERROR){
-                LogBot.Log(LOG_ERRO, "[Shadow] GL error during 2D shadow draw slot %d: 0x%X", i, err);
+            for(const ShadowDrawItem* item : activeItems){
+                g_shadow2DProgram->setUniformFast("u_model", Uniform<Math3D::Mat4>(item->model));
+                item->mesh->draw();
+            }
+            if(shouldCheckShadowGlErrors()){
+                GLenum err = glGetError();
+                if(err != GL_NO_ERROR){
+                    LogBot.Log(LOG_ERRO, "[Shadow] GL error during 2D shadow draw slot %d: 0x%X", i, err);
+                }
             }
         }
     }
 
     if(g_shadowCubeProgram && g_shadowCubeProgram->getID() != 0){
         g_shadowCubeProgram->bind();
-        Uniform<Math3D::Mat4> u_model(model);
+        static GLuint s_cachedCubeProgram = 0;
+        static GLint s_lightPosLoc = -1;
+        static GLint s_farPlaneLoc = -1;
+        if(s_cachedCubeProgram != g_shadowCubeProgram->getID()){
+            s_cachedCubeProgram = g_shadowCubeProgram->getID();
+            s_lightPosLoc = glGetUniformLocation(s_cachedCubeProgram, "u_lightPos");
+            s_farPlaneLoc = glGetUniformLocation(s_cachedCubeProgram, "u_farPlane");
+        }
         for(int i = 0; i < g_activeCube; ++i){
             const auto& slot = g_shadowCube[i];
             if(slot.map.getDepthTexture() == 0 || slot.map.getSize() <= 0){
                 continue;
             }
-            glUniform3f(glGetUniformLocation(g_shadowCubeProgram->getID(), "u_lightPos"), slot.lightPos.x, slot.lightPos.y, slot.lightPos.z);
-            glUniform1f(glGetUniformLocation(g_shadowCubeProgram->getID(), "u_farPlane"), slot.farPlane);
+            if(s_lightPosLoc != -1){
+                glUniform3f(s_lightPosLoc, slot.lightPos.x, slot.lightPos.y, slot.lightPos.z);
+            }
+            if(s_farPlaneLoc != -1){
+                glUniform1f(s_farPlaneLoc, slot.farPlane);
+            }
             for(size_t face = 0; face < slot.matrices.size(); ++face){
                 slot.map.bindFace(GL_TEXTURE_CUBE_MAP_POSITIVE_X + static_cast<int>(face));
                 glViewport(0, 0, slot.map.getSize(), slot.map.getSize());
-                g_shadowCubeProgram->setUniformFast("u_model", u_model);
                 g_shadowCubeProgram->setUniformFast("u_lightMatrix", Uniform<Math3D::Mat4>(slot.matrices[face]));
-                mesh->draw();
-                GLenum err = glGetError();
-                if(err != GL_NO_ERROR){
-                    LogBot.Log(LOG_ERRO, "[Shadow] GL error during cube shadow draw slot %d face %zu: 0x%X", i, face, err);
+                for(const ShadowDrawItem* item : activeItems){
+                    g_shadowCubeProgram->setUniformFast("u_model", Uniform<Math3D::Mat4>(item->model));
+                    item->mesh->draw();
+                }
+                if(shouldCheckShadowGlErrors()){
+                    GLenum err = glGetError();
+                    if(err != GL_NO_ERROR){
+                        LogBot.Log(LOG_ERRO, "[Shadow] GL error during cube shadow draw slot %d face %zu: 0x%X", i, face, err);
+                    }
                 }
             }
         }
@@ -980,6 +1040,12 @@ void ShadowRenderer::BindShadowSamplers(const std::shared_ptr<ShaderProgram>& pr
 
     program->bind();
     const GLuint programId = program->getID();
+    const uint64_t samplerStamp = (g_shadowFrameId << 8) | static_cast<uint64_t>(g_debugShadowsMode & 0xFF);
+    auto stampIt = g_shadowSamplersBoundFrame.find(programId);
+    if(stampIt != g_shadowSamplersBoundFrame.end() && stampIt->second == samplerStamp){
+        return;
+    }
+
     GLint locDebug = glGetUniformLocation(programId, "u_debugShadows");
     if(locDebug != -1){
         glUniform1i(locDebug, g_debugShadowsMode);
@@ -1080,12 +1146,13 @@ void ShadowRenderer::BindShadowSamplers(const std::shared_ptr<ShaderProgram>& pr
 
     // Restore default active texture unit to avoid surprising later binds.
     glActiveTexture(GL_TEXTURE0);
-    {
+    if(shouldCheckShadowGlErrors()){
         GLenum err = glGetError();
         if(err != GL_NO_ERROR){
             LogBot.Log(LOG_ERRO, "[Shadow] GL error during BindShadowSamplers: 0x%X", err);
         }
     }
+    g_shadowSamplersBoundFrame[programId] = samplerStamp;
 
     ensureShadowDebugResources();
 }

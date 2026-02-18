@@ -52,6 +52,8 @@ namespace {
     bool g_hasLastBlock = false;
     LightBlockUBO g_lastBlock;
     uint64_t g_lightUploadFrame = 0;
+    uint64_t g_lastShadowFrameUploaded = 0;
+    const std::vector<Light>* g_lastLightsRef = nullptr;
 
     void ensureLightUboCreated() {
         if(g_lightUbo != 0){
@@ -105,6 +107,11 @@ void LightUniformUploader::UploadLights(std::shared_ptr<ShaderProgram> program, 
 
     ensureLightUboCreated();
     ensureProgramBoundToLightBlock(program->getID());
+
+    const uint64_t shadowFrame = ShadowRenderer::GetFrameId();
+    if(g_hasLastBlock && shadowFrame != 0 && g_lastShadowFrameUploaded == shadowFrame && g_lastLightsRef == &lights){
+        return;
+    }
 
     LightBlockUBO block;
     std::memset(&block, 0, sizeof(LightBlockUBO));
@@ -244,4 +251,7 @@ void LightUniformUploader::UploadLights(std::shared_ptr<ShaderProgram> program, 
         g_lastBlock = block;
         g_hasLastBlock = true;
     }
+
+    g_lastShadowFrameUploaded = shadowFrame;
+    g_lastLightsRef = &lights;
 }
