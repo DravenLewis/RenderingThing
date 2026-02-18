@@ -2,11 +2,13 @@
 #include "Mesh.h"
 
 #include <stdexcept> 
+#include <cfloat>
 
 
 void Mesh::upload(std::vector<Vertex> verts, std::vector<uint32_t> faces){
     this->faces = faces;
     this->verticies = verts;
+    computeLocalBounds();
 
     if(!_areBuffersBound()){
         _genBuffers();
@@ -77,6 +79,35 @@ bool Mesh::_areBuffersBound(){
     return (VBO != 0 && VAO != 0 && EBO != 0);
 }
 
+void Mesh::computeLocalBounds(){
+    if(verticies.empty()){
+        hasLocalBounds = false;
+        localBoundsMin = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+        localBoundsMax = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+        return;
+    }
+
+    float minX = FLT_MAX;
+    float minY = FLT_MAX;
+    float minZ = FLT_MAX;
+    float maxX = -FLT_MAX;
+    float maxY = -FLT_MAX;
+    float maxZ = -FLT_MAX;
+
+    for(const auto& vtx : verticies){
+        minX = std::min(minX, vtx.Position.x);
+        minY = std::min(minY, vtx.Position.y);
+        minZ = std::min(minZ, vtx.Position.z);
+        maxX = std::max(maxX, vtx.Position.x);
+        maxY = std::max(maxY, vtx.Position.y);
+        maxZ = std::max(maxZ, vtx.Position.z);
+    }
+
+    localBoundsMin = Math3D::Vec3(minX, minY, minZ);
+    localBoundsMax = Math3D::Vec3(maxX, maxY, maxZ);
+    hasLocalBounds = true;
+}
+
 std::vector<Math3D::Vec3> Mesh::getVerticiesVectorArray(){
     std::vector<Math3D::Vec3> list;
     for(int i = 0; i < this->verticies.size(); i++){
@@ -112,6 +143,15 @@ std::vector<float> Mesh::getRawVertexData(){
 void Mesh::setLocationAttributeOffset(int attribute, int dataSize, int dataOffset){
     glVertexAttribPointer(attribute, dataSize, GL_FLOAT, GL_FALSE, Vertex::VERTEX_DATA_WIDTH * sizeof(float), (void*) (dataOffset * sizeof(float)));
     glEnableVertexAttribArray(attribute);
+}
+
+bool Mesh::getLocalBounds(Math3D::Vec3& outMin, Math3D::Vec3& outMax) const{
+    if(!hasLocalBounds){
+        return false;
+    }
+    outMin = localBoundsMin;
+    outMax = localBoundsMax;
+    return true;
 }
 
 void Mesh::dispose(){

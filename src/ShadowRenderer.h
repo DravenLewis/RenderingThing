@@ -30,9 +30,14 @@ struct ShadowLightData {
     };
 };
 
+struct ShadowCasterBounds {
+    Math3D::Vec3 min;
+    Math3D::Vec3 max;
+};
+
 class ShadowRenderer {
 public:
-    static void BeginFrame(PCamera camera);
+    static void BeginFrame(PCamera camera, const std::vector<ShadowCasterBounds>* casters = nullptr);
     static void RenderShadows(const std::shared_ptr<Mesh>& mesh, const Math3D::Mat4& model, const std::shared_ptr<Material>& material);
     static void BindShadowSamplers(const std::shared_ptr<ShaderProgram>& program);
     static void GetShadowDataForLight(size_t index, const Light& light, ShadowLightData& outData);

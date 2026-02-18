@@ -8,8 +8,73 @@
 #include "Color.h"
 #include <chrono>
 #include <cmath>
+#include <cfloat>
 #include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
+
+namespace {
+    bool buildLocalBoundsFromComponent(const BoundsComponent* bounds, Math3D::Vec3& outMin, Math3D::Vec3& outMax){
+        if(!bounds){
+            return false;
+        }
+        switch(bounds->type){
+            case BoundsType::Box: {
+                Math3D::Vec3 e = bounds->size;
+                outMin = Math3D::Vec3(-e.x, -e.y, -e.z);
+                outMax = Math3D::Vec3( e.x,  e.y,  e.z);
+                return true;
+            }
+            case BoundsType::Sphere: {
+                float r = bounds->radius;
+                outMin = Math3D::Vec3(-r, -r, -r);
+                outMax = Math3D::Vec3( r,  r,  r);
+                return true;
+            }
+            case BoundsType::Capsule: {
+                float r = bounds->radius;
+                float half = bounds->height * 0.5f;
+                outMin = Math3D::Vec3(-r, -(r + half), -r);
+                outMax = Math3D::Vec3( r,  (r + half),  r);
+                return true;
+            }
+            default:
+                break;
+        }
+        return false;
+    }
+
+    void transformAabb(const Math3D::Mat4& model,
+                       const Math3D::Vec3& localMin,
+                       const Math3D::Vec3& localMax,
+                       Math3D::Vec3& outMin,
+                       Math3D::Vec3& outMax){
+        glm::vec3 corners[8] = {
+            glm::vec3(localMin.x, localMin.y, localMin.z),
+            glm::vec3(localMax.x, localMin.y, localMin.z),
+            glm::vec3(localMin.x, localMax.y, localMin.z),
+            glm::vec3(localMax.x, localMax.y, localMin.z),
+            glm::vec3(localMin.x, localMin.y, localMax.z),
+            glm::vec3(localMax.x, localMin.y, localMax.z),
+            glm::vec3(localMin.x, localMax.y, localMax.z),
+            glm::vec3(localMax.x, localMax.y, localMax.z)
+        };
+
+        glm::vec3 minV(FLT_MAX);
+        glm::vec3 maxV(-FLT_MAX);
+        glm::mat4 m = (glm::mat4)model;
+        for(const auto& c : corners){
+            glm::vec4 world = m * glm::vec4(c, 1.0f);
+            if(world.w != 0.0f){
+                world /= world.w;
+            }
+            glm::vec3 p(world);
+            minV = glm::min(minV, p);
+            maxV = glm::max(maxV, p);
+        }
+        outMin = Math3D::Vec3(minV);
+        outMax = Math3D::Vec3(maxV);
+    }
+}
 
 Scene::Scene(RenderWindow* window) : View(window) {
     ecsInstance = NeoECS::NeoECS::newInstance();
@@ -129,6 +194,7 @@ void Scene::updateECS(float deltaTime){
 
         auto* renderer = componentManager->getECSComponent<MeshRendererComponent>(entity);
         auto* lightComponent = componentManager->getECSComponent<LightComponent>(entity);
+        auto* boundsComp = componentManager->getECSComponent<BoundsComponent>(entity);
         const bool needsWorld = (renderer && renderer->visible) ||
                                 (lightComponent && (lightComponent->syncTransform || lightComponent->syncDirection));
 
@@ -141,6 +207,16 @@ void Scene::updateECS(float deltaTime){
             Math3D::Mat4 base = world * renderer->localOffset.toMat4();
             bool cull = renderer->enableBackfaceCulling;
 
+            bool hasOverrideBounds = false;
+            Math3D::Vec3 overrideMin;
+            Math3D::Vec3 overrideMax;
+            Math3D::Vec3 localMin;
+            Math3D::Vec3 localMax;
+            if(buildLocalBoundsFromComponent(boundsComp, localMin, localMax)){
+                transformAabb(base, localMin, localMax, overrideMin, overrideMax);
+                hasOverrideBounds = true;
+            }
+
             if(renderer->model){
                 cull = renderer->model->isBackfaceCullingEnabled();
                 const auto& parts = renderer->model->getParts();
@@ -152,6 +228,15 @@ void Scene::updateECS(float deltaTime){
                     item.model = base * part->localTransform.toMat4();
                     item.enableBackfaceCulling = cull;
                     item.entityId = entity->getNodeUniqueID();
+                    item.castsShadows = item.material->castsShadows();
+                    if(hasOverrideBounds){
+                        item.hasBounds = true;
+                        item.boundsMin = overrideMin;
+                        item.boundsMax = overrideMax;
+                    }else if(item.mesh->getLocalBounds(localMin, localMax)){
+                        transformAabb(item.model, localMin, localMax, item.boundsMin, item.boundsMax);
+                        item.hasBounds = true;
+                    }
                     snapshot.drawItems.push_back(std::move(item));
                 }
             }else if(renderer->mesh && renderer->material){
@@ -161,6 +246,15 @@ void Scene::updateECS(float deltaTime){
                 item.model = base;
                 item.enableBackfaceCulling = cull;
                 item.entityId = entity->getNodeUniqueID();
+                item.castsShadows = item.material->castsShadows();
+                if(hasOverrideBounds){
+                    item.hasBounds = true;
+                    item.boundsMin = overrideMin;
+                    item.boundsMax = overrideMax;
+                }else if(item.mesh->getLocalBounds(localMin, localMax)){
+                    transformAabb(item.model, localMin, localMax, item.boundsMin, item.boundsMax);
+                    item.hasBounds = true;
+                }
                 snapshot.drawItems.push_back(std::move(item));
             }
         }
@@ -229,7 +323,20 @@ void Scene::render3DPass(){
 
     auto cam = screen->getCamera();
     if(cam){
-        ShadowRenderer::BeginFrame(cam);
+        const int frontIndex = renderSnapshotIndex.load(std::memory_order_acquire);
+        const auto& snapshot = renderSnapshots[frontIndex];
+        std::vector<ShadowCasterBounds> casterBounds;
+        casterBounds.reserve(snapshot.drawItems.size());
+        for(const auto& item : snapshot.drawItems){
+            if(item.castsShadows && item.hasBounds){
+                ShadowCasterBounds bounds;
+                bounds.min = item.boundsMin;
+                bounds.max = item.boundsMax;
+                casterBounds.push_back(bounds);
+            }
+        }
+
+        ShadowRenderer::BeginFrame(cam, &casterBounds);
 
         auto shadowStart = std::chrono::steady_clock::now();
         drawShadowsPass();

@@ -63,6 +63,10 @@ class Scene : public View {
             Math3D::Mat4 model;
             bool enableBackfaceCulling = true;
             std::string entityId;
+            bool castsShadows = true;
+            bool hasBounds = false;
+            Math3D::Vec3 boundsMin = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+            Math3D::Vec3 boundsMax = Math3D::Vec3(0.0f, 0.0f, 0.0f);
         };
 
         struct RenderSnapshot {

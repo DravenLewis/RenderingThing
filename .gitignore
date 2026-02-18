@@ -76,6 +76,8 @@ build.bat
 *.zip
 *.plans
 .gitignore
+# Local Development Plans Document.
+PLANS.md 
 
 
 lib/

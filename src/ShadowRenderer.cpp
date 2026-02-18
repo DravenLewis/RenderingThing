@@ -1,6 +1,7 @@
 #include "ShadowRenderer.h"
 
 #include <algorithm>
+#include <array>
 #include <limits>
 #include <string>
 
@@ -147,6 +148,17 @@ namespace {
         float normalizedDistance = 0.0f;
         float distanceToCamera = 0.0f;
     };
+
+    void fillAabbCorners(const Math3D::Vec3& minV, const Math3D::Vec3& maxV, std::array<glm::vec3, 8>& outCorners){
+        outCorners[0] = glm::vec3(minV.x, minV.y, minV.z);
+        outCorners[1] = glm::vec3(maxV.x, minV.y, minV.z);
+        outCorners[2] = glm::vec3(minV.x, maxV.y, minV.z);
+        outCorners[3] = glm::vec3(maxV.x, maxV.y, minV.z);
+        outCorners[4] = glm::vec3(minV.x, minV.y, maxV.z);
+        outCorners[5] = glm::vec3(maxV.x, minV.y, maxV.z);
+        outCorners[6] = glm::vec3(minV.x, maxV.y, maxV.z);
+        outCorners[7] = glm::vec3(maxV.x, maxV.y, maxV.z);
+    }
 
     int getShadowTypePriority(LightType type){
         switch(type){
@@ -374,7 +386,8 @@ static void computeDirectionalCascades(
     PCamera camera,
     int cascadeCount,
     std::vector<float>& outSplits,
-    std::vector<Math3D::Mat4>& outMatrices
+    std::vector<Math3D::Mat4>& outMatrices,
+    const std::vector<ShadowCasterBounds>* casters
 ){
     outSplits.clear();
     outMatrices.clear();
@@ -403,6 +416,9 @@ static void computeDirectionalCascades(
     if(std::abs(glm::dot(glm::vec3(lightDir.x, lightDir.y, lightDir.z), up)) > 0.99f){
         up = glm::vec3(0,0,1);
     }
+
+    constexpr float kCascadeGuardBand = 0.05f;
+    constexpr float kCascadeCasterXYMarginFactor = 0.1f;
 
     float prevSplit = nearPlane;
     for(int i = 0; i < cascadeCount; ++i){
@@ -444,7 +460,39 @@ static void computeDirectionalCascades(
             maxV = glm::max(maxV, glm::vec3(ls));
         }
 
-        float zMult = 10.0f;
+        if(casters && !casters->empty()){
+            std::array<glm::vec3, 8> casterCorners{};
+            glm::vec3 extent = maxV - minV;
+            float marginX = extent.x * kCascadeCasterXYMarginFactor;
+            float marginY = extent.y * kCascadeCasterXYMarginFactor;
+            for(const auto& caster : *casters){
+                fillAabbCorners(caster.min, caster.max, casterCorners);
+
+                glm::vec3 casterMinLS(FLT_MAX);
+                glm::vec3 casterMaxLS(-FLT_MAX);
+                for(const auto& corner : casterCorners){
+                    glm::vec4 ls = lightView * glm::vec4(corner, 1.0f);
+                    casterMinLS = glm::min(casterMinLS, glm::vec3(ls));
+                    casterMaxLS = glm::max(casterMaxLS, glm::vec3(ls));
+                }
+
+                if(casterMaxLS.x < (minV.x - marginX) || casterMinLS.x > (maxV.x + marginX) ||
+                   casterMaxLS.y < (minV.y - marginY) || casterMinLS.y > (maxV.y + marginY)){
+                    continue;
+                }
+
+                minV = glm::min(minV, casterMinLS);
+                maxV = glm::max(maxV, casterMaxLS);
+            }
+        }
+
+        glm::vec3 extent = maxV - minV;
+        glm::vec3 padding = extent * kCascadeGuardBand;
+        minV -= padding;
+        maxV += padding;
+
+        float zSpan = maxV.z - minV.z;
+        float zMult = Math3D::Max(10.0f, zSpan * 0.2f);
         float nearZ = -maxV.z - zMult;
         float farZ = -minV.z + zMult;
         if(nearZ < 0.1f) nearZ = 0.1f;
@@ -506,7 +554,7 @@ void ShadowRenderer::computePointMatrices(const Light& light, std::vector<Math3D
     outMatrices.push_back(Math3D::Mat4(proj * glm::lookAt(pos, pos + glm::vec3( 0, 0,-1), glm::vec3(0,-1, 0))));
 }
 
-void ShadowRenderer::BeginFrame(PCamera camera) {
+void ShadowRenderer::BeginFrame(PCamera camera, const std::vector<ShadowCasterBounds>* casters) {
     g_shadowFrameId++;
     g_enabled = (camera != nullptr && !camera->getSettings().isOrtho);
     if(!g_enabled){
@@ -616,7 +664,7 @@ void ShadowRenderer::BeginFrame(PCamera camera) {
                     int cascadeCount = 4;
                     std::vector<float> splits;
                     std::vector<Math3D::Mat4> matrices;
-                    computeDirectionalCascades(light, camera, cascadeCount, splits, matrices);
+                    computeDirectionalCascades(light, camera, cascadeCount, splits, matrices, casters);
 
                     if(g_active2D + cascadeCount <= MAX_SHADOW_MAPS_2D){
                         if(static_cast<int>(g_shadow2D.size()) < g_active2D + cascadeCount){

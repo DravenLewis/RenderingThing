@@ -161,9 +161,13 @@ class Mesh : public IDrawable{
         VertexBufferObject VBO = 0;
         VertexArrayObject VAO = 0;
         ElementBufferObject EBO = 0;
+        Math3D::Vec3 localBoundsMin = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+        Math3D::Vec3 localBoundsMax = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+        bool hasLocalBounds = false;
 
         void _genBuffers();
         bool _areBuffersBound();
+        void computeLocalBounds();
 
     public:
         Mesh(){};
@@ -189,6 +193,7 @@ class Mesh : public IDrawable{
         void setLocationAttributeOffset(int attribute, int dataSize, int dataOffset);
 
         std::vector<Vertex>& getVertecies() {return this->verticies;}
+        bool getLocalBounds(Math3D::Vec3& outMin, Math3D::Vec3& outMax) const;
 
         static void Unbind();
 
