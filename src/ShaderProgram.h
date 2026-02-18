@@ -80,6 +80,7 @@ namespace GLUniformUpload {
 
     // TODO WE NEED A TEXTURE UNIFORM AS WELL.
     inline void upload(GLint loc,std::shared_ptr<Texture> tex, int slot = 0){
+        glActiveTexture(GL_TEXTURE0 + slot);
         if(tex){
             tex->bind(slot);
             glUniform1i(loc, slot);
@@ -87,11 +88,12 @@ namespace GLUniformUpload {
         }
 
         glBindTexture(GL_TEXTURE_2D, 0);
-        glUniform1i(loc, 0);
+        glUniform1i(loc, slot);
         return;
     }
 
     inline void upload(GLint loc, const TextureSlot& texSlot){
+        glActiveTexture(GL_TEXTURE0 + texSlot.slot);
         if(texSlot.texture){
             texSlot.texture->bind(texSlot.slot);
             glUniform1i(loc, texSlot.slot);
@@ -104,6 +106,7 @@ namespace GLUniformUpload {
     }
 
     inline void upload(GLint loc, const CubeMapSlot& mapSlot){
+        glActiveTexture(GL_TEXTURE0 + mapSlot.slot);
         if(mapSlot.cubemap){
             mapSlot.cubemap->bind(mapSlot.slot);
             glUniform1i(loc, mapSlot.slot);
@@ -131,7 +134,7 @@ enum ShaderType{
 
 struct ShaderBundle{
 
-    Shader shaderHandle;
+    Shader shaderHandle = 0;
     std::string shader_code;
     ShaderType type;
     bool valid = false;
@@ -143,7 +146,10 @@ struct ShaderBundle{
     }
 
     ~ShaderBundle(){
-        glDeleteShader(shaderHandle);
+        if(shaderHandle != 0){
+            glDeleteShader(shaderHandle);
+            shaderHandle = 0;
+        }
     }
 };
 

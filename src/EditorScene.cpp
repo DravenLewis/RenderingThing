@@ -12,17 +12,24 @@
 #include "Logbot.h"
 #include "RenderWindow.h"
 #include "Asset.h"
-#include "Logbot.h"
+#include "EditorAssetUI.h"
+#include "ShaderAsset.h"
+#include "MaterialAsset.h"
+#include "StringUtils.h"
 #include <glad/glad.h>
 #include <SDL3/SDL.h>
 #include "neoecs.hpp"
+#include <cstring>
 
 namespace {
     constexpr float kToolbarHeight = 32.0f;
-    constexpr float kLeftPanelWidth = 260.0f;
-    constexpr float kRightPanelWidth = 320.0f;
-    constexpr float kBottomPanelHeight = 220.0f;
     constexpr float kPanelGap = 4.0f;
+    constexpr float kSplitterThickness = 6.0f;
+    constexpr float kMinLeftPanelWidth = 180.0f;
+    constexpr float kMinRightPanelWidth = 220.0f;
+    constexpr float kMinCenterPanelWidth = 260.0f;
+    constexpr float kMinBottomPanelHeight = 140.0f;
+    constexpr float kMinTopPanelHeight = 180.0f;
 
     constexpr ImGuiWindowFlags kPanelFlags =
         ImGuiWindowFlags_NoMove |
@@ -415,14 +422,105 @@ void EditorScene::render(){
     drawToolbar(width, kToolbarHeight);
 
     const float panelsTop = kToolbarHeight + kPanelGap;
-    const float panelsHeight = height - kToolbarHeight - kBottomPanelHeight - (kPanelGap * 2.0f);
-    const float bottomTop = height - kBottomPanelHeight;
-    const float centerWidth = width - kLeftPanelWidth - kRightPanelWidth - (kPanelGap * 2.0f);
+    const float availableHeight = std::max(0.0f, height - panelsTop - kPanelGap);
+    const float availableWidth = std::max(0.0f, width - (kSplitterThickness * 2.0f));
 
-    drawEcsPanel(0.0f, panelsTop, kLeftPanelWidth, panelsHeight);
-    drawViewportPanel(kLeftPanelWidth + kPanelGap, panelsTop, centerWidth, panelsHeight);
-    drawPropertiesPanel(width - kRightPanelWidth, panelsTop, kRightPanelWidth, panelsHeight);
-    drawAssetsPanel(0.0f, bottomTop, width, kBottomPanelHeight);
+    float maxBottom = std::max(kMinBottomPanelHeight, availableHeight - kMinTopPanelHeight - kSplitterThickness);
+    bottomPanelHeight = std::clamp(bottomPanelHeight, kMinBottomPanelHeight, maxBottom);
+    float topPanelsHeight = availableHeight - bottomPanelHeight - kSplitterThickness;
+    if(topPanelsHeight < kMinTopPanelHeight){
+        topPanelsHeight = kMinTopPanelHeight;
+        bottomPanelHeight = std::max(kMinBottomPanelHeight, availableHeight - topPanelsHeight - kSplitterThickness);
+    }
+    if(bottomPanelHeight < kMinBottomPanelHeight){
+        bottomPanelHeight = kMinBottomPanelHeight;
+        topPanelsHeight = std::max(0.0f, availableHeight - bottomPanelHeight - kSplitterThickness);
+    }
+    if(availableHeight < (kMinTopPanelHeight + kMinBottomPanelHeight + kSplitterThickness)){
+        topPanelsHeight = std::max(80.0f, availableHeight * 0.6f);
+        bottomPanelHeight = std::max(60.0f, availableHeight - topPanelsHeight - kSplitterThickness);
+    }
+
+    float maxLeft = std::max(kMinLeftPanelWidth, availableWidth - kMinRightPanelWidth - kMinCenterPanelWidth);
+    leftPanelWidth = std::clamp(leftPanelWidth, kMinLeftPanelWidth, maxLeft);
+    float maxRight = std::max(kMinRightPanelWidth, availableWidth - leftPanelWidth - kMinCenterPanelWidth);
+    rightPanelWidth = std::clamp(rightPanelWidth, kMinRightPanelWidth, maxRight);
+
+    float centerWidth = availableWidth - leftPanelWidth - rightPanelWidth;
+    if(centerWidth < kMinCenterPanelWidth){
+        float deficit = kMinCenterPanelWidth - centerWidth;
+        float shrinkRight = std::min(deficit, std::max(0.0f, rightPanelWidth - kMinRightPanelWidth));
+        rightPanelWidth -= shrinkRight;
+        deficit -= shrinkRight;
+        float shrinkLeft = std::min(deficit, std::max(0.0f, leftPanelWidth - kMinLeftPanelWidth));
+        leftPanelWidth -= shrinkLeft;
+        centerWidth = availableWidth - leftPanelWidth - rightPanelWidth;
+    }
+    if(availableWidth < (kMinLeftPanelWidth + kMinRightPanelWidth + kMinCenterPanelWidth)){
+        leftPanelWidth = std::max(120.0f, availableWidth * 0.25f);
+        rightPanelWidth = std::max(140.0f, availableWidth * 0.30f);
+        centerWidth = std::max(80.0f, availableWidth - leftPanelWidth - rightPanelWidth);
+        float total = leftPanelWidth + rightPanelWidth + centerWidth;
+        if(total > availableWidth){
+            float overflow = total - availableWidth;
+            float trimRight = std::min(overflow, std::max(0.0f, rightPanelWidth - 80.0f));
+            rightPanelWidth -= trimRight;
+            overflow -= trimRight;
+            float trimLeft = std::min(overflow, std::max(0.0f, leftPanelWidth - 80.0f));
+            leftPanelWidth -= trimLeft;
+            overflow -= trimLeft;
+            centerWidth = std::max(80.0f, availableWidth - leftPanelWidth - rightPanelWidth);
+        }
+    }
+
+    const float leftSplitterX = leftPanelWidth;
+    const float viewportX = leftSplitterX + kSplitterThickness;
+    const float rightSplitterX = viewportX + centerWidth;
+    const float propertiesX = rightSplitterX + kSplitterThickness;
+    const float bottomTop = panelsTop + topPanelsHeight + kSplitterThickness;
+
+    drawEcsPanel(0.0f, panelsTop, leftPanelWidth, topPanelsHeight);
+    drawViewportPanel(viewportX, panelsTop, centerWidth, topPanelsHeight);
+    drawPropertiesPanel(propertiesX, panelsTop, rightPanelWidth, topPanelsHeight);
+    drawAssetsPanel(0.0f, bottomTop, width, bottomPanelHeight);
+
+    auto drawSplitter = [](const char* windowId, const ImVec2& pos, const ImVec2& size, ImGuiMouseCursor cursor, bool vertical, float& value, float deltaSign, float minValue, float maxValue){
+        ImGui::SetNextWindowPos(pos);
+        ImGui::SetNextWindowSize(size);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
+        ImGui::Begin(windowId, nullptr,
+            ImGuiWindowFlags_NoTitleBar |
+            ImGuiWindowFlags_NoResize |
+            ImGuiWindowFlags_NoMove |
+            ImGuiWindowFlags_NoScrollbar |
+            ImGuiWindowFlags_NoSavedSettings |
+            ImGuiWindowFlags_NoBackground |
+            ImGuiWindowFlags_NoBringToFrontOnFocus
+        );
+        ImGui::InvisibleButton("splitter_btn", size);
+        bool hovered = ImGui::IsItemHovered();
+        bool active = ImGui::IsItemActive();
+        if(hovered || active){
+            ImGui::SetMouseCursor(cursor);
+        }
+        if(active){
+            float delta = vertical ? ImGui::GetIO().MouseDelta.x : ImGui::GetIO().MouseDelta.y;
+            value = std::clamp(value + (delta * deltaSign), minValue, maxValue);
+        }
+        ImDrawList* drawList = ImGui::GetWindowDrawList();
+        ImU32 color = active ? IM_COL32(102, 160, 255, 255)
+                             : (hovered ? IM_COL32(84, 124, 188, 210) : IM_COL32(56, 68, 92, 180));
+        drawList->AddRectFilled(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), color, 1.0f);
+        ImGui::End();
+        ImGui::PopStyleColor();
+        ImGui::PopStyleVar(2);
+    };
+
+    drawSplitter("##LeftRightSplitter", ImVec2(leftSplitterX, panelsTop), ImVec2(kSplitterThickness, topPanelsHeight), ImGuiMouseCursor_ResizeEW, true, leftPanelWidth, +1.0f, kMinLeftPanelWidth, std::max(kMinLeftPanelWidth, availableWidth - kMinRightPanelWidth - kMinCenterPanelWidth));
+    drawSplitter("##RightPropsSplitter", ImVec2(rightSplitterX, panelsTop), ImVec2(kSplitterThickness, topPanelsHeight), ImGuiMouseCursor_ResizeEW, true, rightPanelWidth, -1.0f, kMinRightPanelWidth, std::max(kMinRightPanelWidth, availableWidth - leftPanelWidth - kMinCenterPanelWidth));
+    drawSplitter("##BottomSplitter", ImVec2(0.0f, panelsTop + topPanelsHeight), ImVec2(width, kSplitterThickness), ImGuiMouseCursor_ResizeNS, false, bottomPanelHeight, -1.0f, kMinBottomPanelHeight, std::max(kMinBottomPanelHeight, availableHeight - kMinTopPanelHeight - kSplitterThickness));
 }
 
 void EditorScene::drawToWindow(bool clearWindow, float, float, float, float){
@@ -524,10 +622,77 @@ void EditorScene::selectEntity(const std::string& id){
         return;
     }
     selectedEntityId = id;
+    if(!id.empty()){
+        selectedAssetPath.clear();
+    }
     transformWidget.reset();
     if(targetScene){
         targetScene->setSelectedEntityId(id);
     }
+}
+
+void EditorScene::beginAssetRename(const std::filesystem::path& path){
+    if(path.empty()){
+        return;
+    }
+    assetRenameActive = true;
+    assetRenamePath = path;
+    std::memset(assetRenameBuffer, 0, sizeof(assetRenameBuffer));
+    const std::string name = path.filename().string();
+    std::strncpy(assetRenameBuffer, name.c_str(), sizeof(assetRenameBuffer) - 1);
+    assetRenameBuffer[sizeof(assetRenameBuffer) - 1] = '\0';
+    assetRenameFocus = true;
+    selectedAssetPath = path;
+}
+
+void EditorScene::commitAssetRename(){
+    if(!assetRenameActive || assetRenamePath.empty()){
+        cancelAssetRename();
+        return;
+    }
+
+    std::string newName = StringUtils::Trim(assetRenameBuffer);
+    if(newName.empty()){
+        cancelAssetRename();
+        return;
+    }
+
+    std::filesystem::path oldPath = assetRenamePath;
+    std::filesystem::path newPath = oldPath.parent_path() / newName;
+    if(newPath == oldPath){
+        cancelAssetRename();
+        return;
+    }
+
+    std::error_code ec;
+    if(std::filesystem::exists(newPath, ec)){
+        LogBot.Log(LOG_WARN, "Rename cancelled: target already exists (%s).", newPath.string().c_str());
+        assetRenameFocus = true;
+        return;
+    }
+
+    std::filesystem::rename(oldPath, newPath, ec);
+    if(ec){
+        LogBot.Log(LOG_ERRO, "Rename failed (%s -> %s): %s", oldPath.string().c_str(), newPath.string().c_str(), ec.message().c_str());
+        assetRenameFocus = true;
+        return;
+    }
+
+    if(assetDir == oldPath){
+        assetDir = newPath;
+    }
+    if(selectedAssetPath == oldPath){
+        selectedAssetPath = newPath;
+    }
+
+    cancelAssetRename();
+}
+
+void EditorScene::cancelAssetRename(){
+    assetRenameActive = false;
+    assetRenamePath.clear();
+    assetRenameFocus = false;
+    std::memset(assetRenameBuffer, 0, sizeof(assetRenameBuffer));
 }
 
 void EditorScene::focusOnEntity(const std::string& id){
@@ -713,6 +878,9 @@ void EditorScene::drawEcsPanel(float x, float y, float w, float h){
     auto* entityManager = targetScene->getECS()->getEntityManager();
     const auto& entities = entityManager->getEntities();
 
+    ImGui::Checkbox("Show Hidden Part Icons", &showHiddenModelPartsInTree);
+    ImGui::Separator();
+
     if(entities.empty()){
         ImGui::TextUnformatted("No entities.");
         ImGui::End();
@@ -776,6 +944,30 @@ void EditorScene::drawPropertiesPanel(float x, float y, float w, float h){
     ImGui::SetNextWindowPos(ImVec2(x, y));
     ImGui::SetNextWindowSize(ImVec2(w, h));
     ImGui::Begin("Properties", nullptr, kPanelFlags);
+
+    filePreviewWidget.setAssetRoot(assetRoot);
+    if(!selectedAssetPath.empty()){
+        std::error_code ec;
+        bool exists = std::filesystem::exists(selectedAssetPath, ec);
+        if(!exists || ec){
+            selectedAssetPath.clear();
+        }else{
+            if(std::filesystem::is_regular_file(selectedAssetPath, ec)){
+                ImGui::TextUnformatted("Asset Preview");
+                ImGui::Separator();
+                filePreviewWidget.setFilePath(selectedAssetPath);
+                filePreviewWidget.draw();
+                ImGui::End();
+                return;
+            }
+            if(std::filesystem::is_directory(selectedAssetPath, ec)){
+                ImGui::Text("Directory: %s", selectedAssetPath.filename().string().c_str());
+                ImGui::TextDisabled("%s", selectedAssetPath.string().c_str());
+                ImGui::End();
+                return;
+            }
+        }
+    }
 
     auto* entity = findEntityById(selectedEntityId);
     if(!entity){
@@ -889,13 +1081,36 @@ void EditorScene::drawAssetsPanel(float x, float y, float w, float h){
 
     if(ImGui::BeginTabBar("BottomTabs")){
         if(ImGui::BeginTabItem("Assets")){
+            if(assetRenameActive){
+                std::error_code ec;
+                if(assetRenamePath.empty() || !std::filesystem::exists(assetRenamePath, ec)){
+                    cancelAssetRename();
+                }
+            }
+
             ImGui::Text("Directory: %s", assetDir.string().c_str());
             ImGui::Separator();
 
-            if(assetDir != assetRoot && ImGui::Button("Up")){
-                assetDir = assetDir.parent_path();
-            }
+            auto createFolderAndBeginRename = [&](){
+                std::string baseName = (newAssetName[0] != '\0') ? std::string(newAssetName) : std::string("New Folder");
+                std::filesystem::path folderPath = assetDir / baseName;
+                int suffix = 1;
+                while(std::filesystem::exists(folderPath)){
+                    folderPath = assetDir / (baseName + " " + std::to_string(suffix));
+                    suffix++;
+                }
 
+                std::error_code ec;
+                if(std::filesystem::create_directories(folderPath, ec)){
+                    beginAssetRename(folderPath);
+                    newAssetName[0] = '\0';
+                }else{
+                    LogBot.Log(LOG_ERRO, "Failed to create folder: %s", folderPath.string().c_str());
+                }
+            };
+
+            ImGui::SetNextItemWidth(120.0f);
+            ImGui::SliderFloat("Icon Size", &assetTileSize, 56.0f, 112.0f, "%.0f px");
             ImGui::SameLine();
             ImGui::InputText("New", newAssetName, sizeof(newAssetName));
             ImGui::SameLine();
@@ -909,35 +1124,251 @@ void EditorScene::drawAssetsPanel(float x, float y, float w, float h){
             }
 
             ImGui::SameLine();
+            if(ImGui::Button("New Folder")){
+                createFolderAndBeginRename();
+            }
+
+            ImGui::SameLine();
+            if(ImGui::Button("Rename") && !selectedAssetPath.empty()){
+                beginAssetRename(selectedAssetPath);
+            }
+
+            ImGui::SameLine();
             if(ImGui::Button("Delete") && !selectedAssetPath.empty()){
-                File file(selectedAssetPath.string());
-                file.deleteFile();
-                selectedAssetPath.clear();
+                pendingDeleteAssetPath = selectedAssetPath;
+                ImGui::OpenPopup("Confirm Delete Asset");
+            }
+
+            if(ImGui::BeginPopupModal("Confirm Delete Asset", nullptr, ImGuiWindowFlags_AlwaysAutoResize)){
+                if(pendingDeleteAssetPath.empty()){
+                    ImGui::TextUnformatted("No asset selected.");
+                }else{
+                    std::error_code ec;
+                    const bool isDir = std::filesystem::is_directory(pendingDeleteAssetPath, ec);
+                    ImGui::Text("Delete %s?", isDir ? "directory" : "file");
+                    ImGui::TextWrapped("%s", pendingDeleteAssetPath.string().c_str());
+                    ImGui::TextDisabled("This cannot be undone.");
+                }
+
+                if(ImGui::Button("Yes, Delete")){
+                    if(!pendingDeleteAssetPath.empty()){
+                        File file(pendingDeleteAssetPath.string());
+                        file.deleteFile();
+                        if(assetDir == pendingDeleteAssetPath){
+                            assetDir = assetDir.parent_path();
+                        }
+                        if(selectedAssetPath == pendingDeleteAssetPath){
+                            selectedAssetPath.clear();
+                        }
+                        if(assetRenameActive && assetRenamePath == pendingDeleteAssetPath){
+                            cancelAssetRename();
+                        }
+                    }
+                    pendingDeleteAssetPath.clear();
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::SameLine();
+                if(ImGui::Button("Cancel")){
+                    pendingDeleteAssetPath.clear();
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::EndPopup();
             }
 
             ImGui::Separator();
 
-            ImGui::BeginChild("AssetList", ImVec2(0.0f, 0.0f), true);
-            if(std::filesystem::exists(assetDir)){
-                for(const auto& entry : std::filesystem::directory_iterator(assetDir)){
-                    const auto& path = entry.path();
-                    std::string label = path.filename().string();
-                    if(entry.is_directory()){
-                        label += "/";
-                    }
-
-                    bool selected = (path == selectedAssetPath);
-                    if(ImGui::Selectable(label.c_str(), selected)){
-                        selectedAssetPath = path;
-                        if(entry.is_directory()){
-                            assetDir = path;
-                            selectedAssetPath.clear();
+            ImGui::BeginChild("AssetList", ImVec2(0.0f, 0.0f), false);
+                if(ImGui::BeginPopupContextWindow("AssetContextMenu", ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems)){
+                    if(ImGui::BeginMenu("New")){
+                        if(ImGui::MenuItem("Folder")){
+                            createFolderAndBeginRename();
                         }
+                        if(ImGui::MenuItem("File")){
+                            std::filesystem::path filePath = assetDir / ((newAssetName[0] != '\0') ? newAssetName : "NewFile.txt");
+                            File file(filePath.string());
+                            file.createFile();
                     }
+                    if(ImGui::BeginMenu("Asset")){
+                        if(ImGui::MenuItem("Shader Asset")){
+                            std::string desiredName = (newAssetName[0] != '\0') ? std::string(newAssetName) : "NewShader.shader.asset";
+                            if(desiredName.size() < 13 || desiredName.substr(desiredName.size() - 13) != ".shader.asset"){
+                                desiredName += ".shader.asset";
+                            }
+                            std::filesystem::path path = assetDir / desiredName;
+                            int suffix = 1;
+                            while(std::filesystem::exists(path)){
+                                std::string stem = desiredName.substr(0, desiredName.size() - 13);
+                                path = assetDir / (stem + "_" + std::to_string(suffix) + ".shader.asset");
+                                ++suffix;
+                            }
+
+                            ShaderAssetData data;
+                            data.cacheName = path.filename().string();
+                            data.vertexAssetRef = std::string(ASSET_DELIMITER) + "/shader/Shader_Vert_Lit.vert";
+                            data.fragmentAssetRef = std::string(ASSET_DELIMITER) + "/shader/Shader_Frag_PBR.frag";
+                            std::string error;
+                            if(ShaderAssetIO::SaveToAbsolutePath(path, data, &error)){
+                                selectedAssetPath = path;
+                            }else{
+                                LogBot.Log(LOG_ERRO, "Failed to create shader asset: %s", error.c_str());
+                            }
+                        }
+                        if(ImGui::MenuItem("Material Asset")){
+                            std::string desiredName = (newAssetName[0] != '\0') ? std::string(newAssetName) : "NewMaterial.material.asset";
+                            if(desiredName.size() < 15 || desiredName.substr(desiredName.size() - 15) != ".material.asset"){
+                                desiredName += ".material.asset";
+                            }
+                            std::filesystem::path path = assetDir / desiredName;
+                            int suffix = 1;
+                            while(std::filesystem::exists(path)){
+                                std::string stem = desiredName.substr(0, desiredName.size() - 15);
+                                path = assetDir / (stem + "_" + std::to_string(suffix) + ".material.asset");
+                                ++suffix;
+                            }
+
+                            MaterialAssetData data;
+                            data.name = path.filename().string();
+                            data.type = MaterialAssetType::PBR;
+                            data.shaderAssetRef = "";
+                            data.color = Color::WHITE;
+                            std::string error;
+                            if(MaterialAssetIO::SaveToAbsolutePath(path, data, &error)){
+                                selectedAssetPath = path;
+                            }else{
+                                LogBot.Log(LOG_ERRO, "Failed to create material asset: %s", error.c_str());
+                            }
+                        }
+                        ImGui::EndMenu();
+                        }
+                        ImGui::EndMenu();
+                    }
+                    if(!selectedAssetPath.empty() && ImGui::MenuItem("Rename")){
+                        beginAssetRename(selectedAssetPath);
+                    }
+                    if(!selectedAssetPath.empty() && ImGui::MenuItem("Delete")){
+                        pendingDeleteAssetPath = selectedAssetPath;
+                        ImGui::OpenPopup("Confirm Delete Asset");
+                    }
+                    ImGui::EndPopup();
+                }
+            if(std::filesystem::exists(assetDir)){
+                struct BrowserEntry{
+                    std::filesystem::path path;
+                    bool isDirectory = false;
+                    bool isUp = false;
+                };
+
+                std::vector<BrowserEntry> entries;
+                std::error_code ec;
+                if(assetDir != assetRoot){
+                    entries.push_back({assetDir.parent_path(), true, true});
+                }
+
+                for(const auto& entry : std::filesystem::directory_iterator(assetDir, std::filesystem::directory_options::skip_permission_denied, ec)){
+                    entries.push_back({entry.path(), entry.is_directory(), false});
+                }
+
+                std::sort(entries.begin(), entries.end(), [](const BrowserEntry& a, const BrowserEntry& b){
+                    if(a.isUp != b.isUp){
+                        return a.isUp;
+                    }
+                    bool aDir = a.isDirectory;
+                    bool bDir = b.isDirectory;
+                    if(aDir != bDir){
+                        return aDir > bDir;
+                    }
+                    std::string aLabel = a.isUp ? std::string("..") : a.path.filename().string();
+                    std::string bLabel = b.isUp ? std::string("..") : b.path.filename().string();
+                    return aLabel < bLabel;
+                });
+
+                float cellWidth = assetTileSize + 20.0f;
+                int columns = std::max(1, static_cast<int>(ImGui::GetContentRegionAvail().x / cellWidth));
+                ImGuiTableFlags tableFlags = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX;
+                if(ImGui::BeginTable("AssetGridTable", columns, tableFlags)){
+                    for(const auto& entry : entries){
+                        EditorAssetUI::AssetTransaction tx{};
+                        const auto& path = entry.path;
+                        if(entry.isUp){
+                            tx.absolutePath = path;
+                            tx.assetRef = std::string(ASSET_DELIMITER) + "/..";
+                            tx.extension.clear();
+                            tx.kind = EditorAssetUI::AssetKind::Directory;
+                            tx.isDirectory = true;
+                        }else if(!EditorAssetUI::BuildTransaction(path, assetRoot, tx)){
+                            continue;
+                        }
+
+                        ImGui::TableNextColumn();
+                        ImGui::PushID(path.string().c_str());
+
+                        bool selected = (path == selectedAssetPath);
+                        bool doubleClicked = false;
+                        bool clicked = EditorAssetUI::DrawAssetTile("asset_tile", tx, assetTileSize, selected, &doubleClicked);
+                        if(!entry.isUp){
+                            EditorAssetUI::BeginAssetDragSource(tx);
+                        }
+
+                        const bool renameThisEntry = assetRenameActive && !entry.isUp && (assetRenamePath == path);
+                        if(renameThisEntry){
+                            if(assetRenameFocus){
+                                ImGui::SetKeyboardFocusHere();
+                                assetRenameFocus = false;
+                            }
+                            bool submitted = ImGui::InputText("##AssetRename", assetRenameBuffer, sizeof(assetRenameBuffer), ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll);
+                            const bool deactivated = ImGui::IsItemDeactivated();
+                            const bool active = ImGui::IsItemActive();
+                            if(submitted || (deactivated && !active)){
+                                commitAssetRename();
+                            }
+                            if(active && ImGui::IsKeyPressed(ImGuiKey_Escape)){
+                                cancelAssetRename();
+                            }
+                        }else{
+                            std::string label = entry.isUp ? ".." : path.filename().string();
+                            if(label.size() > 22){
+                                label = label.substr(0, 19) + "...";
+                            }
+                            ImGui::TextWrapped("%s", label.c_str());
+                            bool labelClicked = ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left);
+                            bool labelDoubleClicked = ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left);
+                            clicked = clicked || labelClicked;
+                            doubleClicked = doubleClicked || labelDoubleClicked;
+                        }
+
+                        if(entry.isDirectory){
+                            if(doubleClicked){
+                                assetDir = path;
+                                selectedAssetPath.clear();
+                                if(assetRenameActive){
+                                    cancelAssetRename();
+                                }
+                            }else if(clicked){
+                                selectedAssetPath = path;
+                            }
+                        }else if(clicked){
+                            selectedAssetPath = path;
+                        }
+
+                        ImGui::PopID();
+                    }
+                    ImGui::EndTable();
                 }
             }else{
                 ImGui::TextUnformatted("Directory missing.");
             }
+
+            if(!selectedAssetPath.empty()){
+                EditorAssetUI::AssetTransaction selectedTx;
+                if(EditorAssetUI::BuildTransaction(selectedAssetPath, assetRoot, selectedTx)){
+                    ImGui::Separator();
+                    ImGui::Text("Selected: %s", selectedAssetPath.filename().string().c_str());
+                    ImGui::TextDisabled("%s", selectedTx.assetRef.c_str());
+                }else{
+                    selectedAssetPath.clear();
+                }
+            }
+
             ImGui::EndChild();
             ImGui::EndTabItem();
         }
@@ -1027,7 +1458,28 @@ NeoECS::ECSEntity* EditorScene::findEntityById(const std::string& id) const{
 void EditorScene::drawEntityTree(NeoECS::ECSEntity* entity){
     if(!entity) return;
 
-    const bool hasChildren = !entity->children().empty();
+    bool hasModelParts = false;
+    const MeshRendererComponent* renderer = nullptr;
+    if(targetScene && targetScene->getECS()){
+        auto* componentManager = targetScene->getECS()->getComponentManager();
+        renderer = componentManager->getECSComponent<MeshRendererComponent>(entity);
+        if(renderer && renderer->model){
+            const auto& parts = renderer->model->getParts();
+            for(const auto& part : parts){
+                if(!part){
+                    continue;
+                }
+                if(part->hideInEditorTree && !showHiddenModelPartsInTree){
+                    continue;
+                }
+                hasModelParts = true;
+                break;
+            }
+        }
+    }
+
+    const bool hasEntityChildren = !entity->children().empty();
+    const bool hasChildren = hasEntityChildren || hasModelParts;
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
     if(!hasChildren){
         flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
@@ -1042,8 +1494,36 @@ void EditorScene::drawEntityTree(NeoECS::ECSEntity* entity){
     }
 
     if(hasChildren && opened){
-        for(const auto& kv : entity->children()){
-            drawEntityTree(kv.second);
+        if(hasModelParts && renderer && renderer->model){
+            const auto& parts = renderer->model->getParts();
+            for(size_t i = 0; i < parts.size(); ++i){
+                const auto& part = parts[i];
+                if(!part){
+                    continue;
+                }
+                if(part->hideInEditorTree && !showHiddenModelPartsInTree){
+                    continue;
+                }
+                ImGuiTreeNodeFlags partFlags = ImGuiTreeNodeFlags_Leaf |
+                                              ImGuiTreeNodeFlags_NoTreePushOnOpen |
+                                              ImGuiTreeNodeFlags_SpanAvailWidth;
+                ImGui::PushID(static_cast<int>(i));
+                if(part->hideInEditorTree){
+                    const ImVec4 hiddenTint(0.62f, 0.62f, 0.62f, 1.0f);
+                    ImGui::PushStyleColor(ImGuiCol_Text, hiddenTint);
+                    ImGui::TreeNodeEx("part_leaf", partFlags, "[H] Part %zu", i);
+                    ImGui::PopStyleColor();
+                }else{
+                    ImGui::TreeNodeEx("part_leaf", partFlags, "Part %zu", i);
+                }
+                ImGui::PopID();
+            }
+        }
+
+        if(hasEntityChildren){
+            for(const auto& kv : entity->children()){
+                drawEntityTree(kv.second);
+            }
         }
         ImGui::TreePop();
     }

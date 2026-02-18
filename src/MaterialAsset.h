@@ -1,0 +1,67 @@
+#ifndef MATERIAL_ASSET_H
+#define MATERIAL_ASSET_H
+
+#include <filesystem>
+#include <memory>
+#include <string>
+
+#include "Color.h"
+#include "Math.h"
+#include "Material.h"
+
+enum class MaterialAssetType {
+    PBR = 0,
+    Color,
+    Image,
+    LitColor,
+    LitImage,
+    FlatColor,
+    FlatImage
+};
+
+struct MaterialAssetData {
+    std::string name;
+    MaterialAssetType type = MaterialAssetType::PBR;
+    std::string shaderAssetRef;
+
+    Math3D::Vec4 color = Color::WHITE;
+    Math3D::Vec2 uv = Math3D::Vec2(0.0f, 0.0f);
+    std::string textureRef;
+
+    float metallic = 0.0f;
+    float roughness = 1.0f;
+    float normalScale = 1.0f;
+    Math3D::Vec3 emissiveColor = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+    float emissiveStrength = 1.0f;
+    float occlusionStrength = 1.0f;
+    float envStrength = 1.0f;
+    int useEnvMap = 0;
+    Math3D::Vec2 uvScale = Math3D::Vec2(1.0f, 1.0f);
+    Math3D::Vec2 uvOffset = Math3D::Vec2(0.0f, 0.0f);
+    float alphaCutoff = 0.5f;
+    int useAlphaClip = 0;
+
+    std::string baseColorTexRef;
+    std::string metallicRoughnessTexRef;
+    std::string normalTexRef;
+    std::string emissiveTexRef;
+    std::string occlusionTexRef;
+
+    bool castsShadows = true;
+    bool receivesShadows = true;
+};
+
+namespace MaterialAssetIO {
+    bool IsMaterialAssetPath(const std::filesystem::path& path);
+    const char* TypeToString(MaterialAssetType type);
+    MaterialAssetType TypeFromString(const std::string& value);
+
+    bool LoadFromAbsolutePath(const std::filesystem::path& path, MaterialAssetData& outData, std::string* outError = nullptr);
+    bool LoadFromAssetRef(const std::string& assetRef, MaterialAssetData& outData, std::string* outError = nullptr);
+    bool SaveToAbsolutePath(const std::filesystem::path& path, const MaterialAssetData& data, std::string* outError = nullptr);
+    bool SaveToAssetRef(const std::string& assetRef, const MaterialAssetData& data, std::string* outError = nullptr);
+
+    std::shared_ptr<Material> InstantiateMaterial(const MaterialAssetData& data, std::string* outError = nullptr);
+}
+
+#endif // MATERIAL_ASSET_H

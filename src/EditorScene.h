@@ -15,6 +15,7 @@
 #include "ECSComponents.h"
 #include "Widgets/TransformWidget.h"
 #include "Widgets/LightWidget.h"
+#include "Widgets/FilePreviewWidget.h"
 #include "Texture.h"
 
 class EditorScene : public Scene {
@@ -96,10 +97,21 @@ class EditorScene : public Scene {
         std::filesystem::path assetDir;
         std::filesystem::path selectedAssetPath;
         char newAssetName[128] = {};
+        bool assetRenameActive = false;
+        std::filesystem::path assetRenamePath;
+        char assetRenameBuffer[256] = {};
+        bool assetRenameFocus = false;
+        std::filesystem::path pendingDeleteAssetPath;
+        float assetTileSize = 76.0f;
+        float leftPanelWidth = 260.0f;
+        float rightPanelWidth = 320.0f;
+        float bottomPanelHeight = 220.0f;
+        bool showHiddenModelPartsInTree = false;
         uint64_t lastLogVersion = 0;
         std::string logBuffer;
         std::vector<std::string> logLines;
         std::vector<ImVec4> logColors;
+        FilePreviewWidget filePreviewWidget;
         TransformWidget transformWidget;
         bool prevKeyW = false;
         bool prevKeyE = false;
@@ -120,6 +132,9 @@ class EditorScene : public Scene {
         void drawViewportPanel(float x, float y, float w, float h);
         void drawPropertiesPanel(float x, float y, float w, float h);
         void drawAssetsPanel(float x, float y, float w, float h);
+        void beginAssetRename(const std::filesystem::path& path);
+        void commitAssetRename();
+        void cancelAssetRename();
 
         NeoECS::ECSEntity* findEntityById(const std::string& id) const;
         void drawEntityTree(NeoECS::ECSEntity* entity);

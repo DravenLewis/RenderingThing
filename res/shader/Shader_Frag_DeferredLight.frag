@@ -16,62 +16,29 @@ struct Light {
     mat4 lightMatrices[4];   // directional cascades / spot uses [0]
 };
 
-in vec3 v_fragPos;
-in vec3 v_normal;
 in vec2 v_uv;
-in vec4 v_color;
-
 out vec4 FragColor;
 
-uniform vec4 u_baseColor;
-uniform sampler2D u_baseColorTex;
-uniform int u_useBaseColorTex;
-
-uniform float u_metallic;
-uniform float u_roughness;
-uniform sampler2D u_metallicRoughnessTex;
-uniform int u_useMetallicRoughnessTex;
-
-uniform sampler2D u_normalTex;
-uniform int u_useNormalTex;
-uniform float u_normalScale;
-
-uniform sampler2D u_emissiveTex;
-uniform int u_useEmissiveTex;
-uniform vec3 u_emissiveColor;
-uniform float u_emissiveStrength;
-
-uniform sampler2D u_occlusionTex;
-uniform int u_useOcclusionTex;
-uniform float u_aoStrength;
-
+uniform sampler2D gAlbedo;
+uniform sampler2D gNormal;
+uniform sampler2D gPosition;
+uniform vec3 u_viewPos;
+uniform mat4 u_cameraView;
 uniform samplerCube u_envMap;
 uniform int u_useEnvMap;
 uniform float u_envStrength;
-
-uniform vec2 u_uvScale;
-uniform vec2 u_uvOffset;
-
-uniform vec3 u_viewPos;
-uniform mat4 u_view;
-uniform int u_receiveShadows;
-uniform int u_debugShadows; // 0=off,1=visibility,2=cascade index,3=proj bounds
-uniform int u_useAlphaClip;
-uniform float u_alphaCutoff;
+uniform sampler2DShadow u_shadowMaps2D[MAX_SHADOW_MAPS_2D];
+uniform samplerCubeShadow u_shadowMapsCube[MAX_SHADOW_MAPS_CUBE];
 
 layout(std140) uniform LightBlock {
     vec4 u_lightHeader;      // x=lightCount
     Light u_lights[MAX_LIGHTS];
 };
 
-uniform sampler2DShadow u_shadowMaps2D[MAX_SHADOW_MAPS_2D];
-uniform samplerCubeShadow u_shadowMapsCube[MAX_SHADOW_MAPS_CUBE];
-
 vec3 safeNormalize(vec3 v){
     float lenV = length(v);
     return (lenV > 1e-5) ? (v / lenV) : vec3(0.0, -1.0, 0.0);
 }
-
 
 float sampleShadow2D(int shadowType, int mapIndex, vec4 lightSpacePos, float bias) {
     if(mapIndex < 0 || mapIndex >= MAX_SHADOW_MAPS_2D) return 1.0;
@@ -142,26 +109,6 @@ float sampleShadowCube(int shadowType, int mapIndex, vec3 fragPos, vec3 lightPos
     }
 }
 
-vec3 getNormal(vec2 uv){
-    vec3 N = safeNormalize(v_normal);
-    if(u_useNormalTex == 0){
-        return N;
-    }
-
-    vec3 mapN = texture(u_normalTex, uv).xyz * 2.0 - 1.0;
-    mapN.xy *= u_normalScale;
-
-    vec3 dp1 = dFdx(v_fragPos);
-    vec3 dp2 = dFdy(v_fragPos);
-    vec2 duv1 = dFdx(uv);
-    vec2 duv2 = dFdy(uv);
-
-    vec3 T = safeNormalize(dp1 * duv2.y - dp2 * duv1.y);
-    vec3 B = safeNormalize(-dp1 * duv2.x + dp2 * duv1.x);
-    mat3 TBN = mat3(T, B, N);
-    return safeNormalize(TBN * mapN);
-}
-
 float DistributionGGX(vec3 N, vec3 H, float roughness){
     float a = roughness * roughness;
     float a2 = a * a;
@@ -190,48 +137,127 @@ vec3 FresnelSchlick(float cosTheta, vec3 F0){
     return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
 
-void main() {
-    vec2 uv = v_uv * u_uvScale + u_uvOffset;
-    vec4 baseTex = (u_useBaseColorTex != 0) ? texture(u_baseColorTex, uv) : vec4(1.0);
-    vec4 baseColor = u_baseColor * baseTex * v_color;
+void main(){
+    vec4 albedoRough = texture(gAlbedo, v_uv);
+    vec4 normalMetal = texture(gNormal, v_uv);
+    vec4 positionAo = texture(gPosition, v_uv);
 
-    if(u_useAlphaClip != 0 && baseColor.a < u_alphaCutoff){
-        discard;
+    vec3 albedo = albedoRough.rgb;
+    float roughness = clamp(albedoRough.a, 0.04, 1.0);
+    float packedMode = normalMetal.a;
+    float ao = clamp(positionAo.a, 0.0, 1.0);
+
+    vec3 fragPos = positionAo.rgb;
+    vec3 N = safeNormalize(normalMetal.rgb);
+    vec3 V = safeNormalize(u_viewPos - fragPos);
+
+    bool legacyUnlit = (packedMode < -0.75);
+    bool legacyLit = (packedMode < 0.0 && !legacyUnlit);
+
+    if(legacyUnlit){
+        FragColor = vec4(albedo, 1.0);
+        return;
     }
 
-    float metallic = u_metallic;
-    float roughness = clamp(u_roughness, 0.04, 1.0);
-    if(u_useMetallicRoughnessTex != 0){
-        vec4 mr = texture(u_metallicRoughnessTex, uv);
-        roughness = clamp(roughness * mr.g, 0.04, 1.0);
-        metallic = clamp(metallic * mr.b, 0.0, 1.0);
+    if(legacyLit){
+        vec3 LoLegacy = vec3(0.0);
+        int lightCount = int(u_lightHeader.x + 0.5);
+        for(int i = 0; i < lightCount && i < MAX_LIGHTS; ++i){
+            Light light = u_lights[i];
+            int lightType = int(light.meta.x + 0.5);
+
+            vec3 L = vec3(0.0);
+            float attenuation = 1.0;
+
+            if(lightType == 0){
+                vec3 toLight = light.position.xyz - fragPos;
+                float distance = length(toLight);
+                L = safeNormalize(toLight);
+                if(distance < light.params.y){
+                    float range = max(light.params.y, 0.001);
+                    float d = clamp(distance / range, 0.0, 1.0);
+                    float falloff = clamp(light.params.z, 0.001, 3.0);
+                    attenuation = pow(1.0 - d, falloff);
+                }else{
+                    attenuation = 0.0;
+                }
+            }else if(lightType == 1){
+                L = safeNormalize(-light.direction.xyz);
+            }else if(lightType == 2){
+                vec3 toLight = light.position.xyz - fragPos;
+                float distance = length(toLight);
+                L = safeNormalize(toLight);
+                if(distance < light.params.y){
+                    float cosTheta = clamp(dot(-L, safeNormalize(light.direction.xyz)), -1.0, 1.0);
+                    float theta = degrees(acos(cosTheta));
+                    if(theta < light.params.w){
+                        float range = max(light.params.y, 0.001);
+                        float d = clamp(distance / range, 0.0, 1.0);
+                        float falloff = clamp(light.params.z, 0.001, 3.0);
+                        attenuation = pow(1.0 - d, falloff);
+                    }else{
+                        attenuation = 0.0;
+                    }
+                }else{
+                    attenuation = 0.0;
+                }
+            }
+
+            float visibility = 1.0;
+            if(light.meta.z >= 0.0){
+                float bias = light.shadow.x + light.shadow.y * (1.0 - max(dot(N, safeNormalize(light.direction.xyz)), 0.0));
+                int shadowType = int(light.meta.y + 0.5);
+                int baseIndex = int(light.meta.z + 0.5);
+                if(lightType == 0){
+                    visibility = sampleShadowCube(shadowType, baseIndex, fragPos, light.position.xyz, max(light.cascadeSplits.x, 0.1), bias);
+                }else{
+                    int cascadeCount = int(light.shadow.z + 0.5);
+                    int cascadeIndex = 0;
+                    float viewDepth = -(u_cameraView * vec4(fragPos, 1.0)).z;
+                    if(cascadeCount > 1){
+                        if(viewDepth > light.cascadeSplits.x) cascadeIndex = 1;
+                        if(viewDepth > light.cascadeSplits.y) cascadeIndex = 2;
+                        if(viewDepth > light.cascadeSplits.z) cascadeIndex = 3;
+                        cascadeIndex = clamp(cascadeIndex, 0, cascadeCount - 1);
+                    }
+                    vec4 lightSpacePos = light.lightMatrices[cascadeIndex] * vec4(fragPos, 1.0);
+                    visibility = sampleShadow2D(shadowType, baseIndex + cascadeIndex, lightSpacePos, bias);
+                }
+                visibility = mix(1.0, visibility, clamp(light.meta.w, 0.0, 1.0));
+            }
+
+            float NdotL = max(dot(N, L), 0.0);
+            if(NdotL <= 0.0){
+                continue;
+            }
+
+            vec3 diffuse = NdotL * light.color.rgb * albedo * attenuation * visibility;
+            vec3 reflectDir = reflect(-L, N);
+            float spec = pow(max(dot(V, reflectDir), 0.0), 32.0);
+            vec3 specular = 0.2 * spec * light.color.rgb * attenuation * visibility;
+
+            LoLegacy += (diffuse + specular) * light.params.x;
+        }
+
+        vec3 colorLegacy = vec3(0.3) * albedo + LoLegacy;
+        FragColor = vec4(colorLegacy, 1.0);
+        return;
     }
 
-    float ao = 1.0;
-    if(u_useOcclusionTex != 0){
-        float occl = texture(u_occlusionTex, uv).r;
-        ao = mix(1.0, occl, clamp(u_aoStrength, 0.0, 1.0));
-    }
-
-    vec3 N = getNormal(uv);
-    vec3 V = safeNormalize(u_viewPos - v_fragPos);
-
-    vec3 albedo = baseColor.rgb;
+    float metallic = clamp(packedMode, 0.0, 1.0);
     vec3 F0 = mix(vec3(0.04), albedo, metallic);
 
     vec3 Lo = vec3(0.0);
-    float debugVisibility = 1.0;
     int lightCount = int(u_lightHeader.x + 0.5);
-    for (int i = 0; i < lightCount && i < MAX_LIGHTS; i++) {
+    for(int i = 0; i < lightCount && i < MAX_LIGHTS; ++i){
         Light light = u_lights[i];
         int lightType = int(light.meta.x + 0.5);
 
         vec3 L = vec3(0.0);
         float attenuation = 1.0;
-        float spotFactor = 1.0;
 
-        if (lightType == 0) {
-            vec3 toLight = light.position.xyz - v_fragPos;
+        if(lightType == 0){
+            vec3 toLight = light.position.xyz - fragPos;
             float distance = length(toLight);
             L = safeNormalize(toLight);
             if(distance < light.params.y){
@@ -242,10 +268,10 @@ void main() {
             }else{
                 attenuation = 0.0;
             }
-        } else if (lightType == 1) {
+        }else if(lightType == 1){
             L = safeNormalize(-light.direction.xyz);
-        } else if (lightType == 2) {
-            vec3 toLight = light.position.xyz - v_fragPos;
+        }else if(lightType == 2){
+            vec3 toLight = light.position.xyz - fragPos;
             float distance = length(toLight);
             L = safeNormalize(toLight);
             if(distance < light.params.y){
@@ -262,6 +288,29 @@ void main() {
             }else{
                 attenuation = 0.0;
             }
+        }
+
+        float visibility = 1.0;
+        if(light.meta.z >= 0.0){
+            float bias = light.shadow.x + light.shadow.y * (1.0 - max(dot(N, safeNormalize(light.direction.xyz)), 0.0));
+            int shadowType = int(light.meta.y + 0.5);
+            int baseIndex = int(light.meta.z + 0.5);
+            if(lightType == 0){
+                visibility = sampleShadowCube(shadowType, baseIndex, fragPos, light.position.xyz, max(light.cascadeSplits.x, 0.1), bias);
+            }else{
+                int cascadeCount = int(light.shadow.z + 0.5);
+                int cascadeIndex = 0;
+                float viewDepth = -(u_cameraView * vec4(fragPos, 1.0)).z;
+                if(cascadeCount > 1){
+                    if(viewDepth > light.cascadeSplits.x) cascadeIndex = 1;
+                    if(viewDepth > light.cascadeSplits.y) cascadeIndex = 2;
+                    if(viewDepth > light.cascadeSplits.z) cascadeIndex = 3;
+                    cascadeIndex = clamp(cascadeIndex, 0, cascadeCount - 1);
+                }
+                vec4 lightSpacePos = light.lightMatrices[cascadeIndex] * vec4(fragPos, 1.0);
+                visibility = sampleShadow2D(shadowType, baseIndex + cascadeIndex, lightSpacePos, bias);
+            }
+            visibility = mix(1.0, visibility, clamp(light.meta.w, 0.0, 1.0));
         }
 
         vec3 H = safeNormalize(V + L);
@@ -281,56 +330,12 @@ void main() {
         vec3 kS = F;
         vec3 kD = (vec3(1.0) - kS) * (1.0 - metallic);
 
-        vec3 radiance = light.color.rgb * light.params.x * attenuation * spotFactor;
+        vec3 radiance = light.color.rgb * light.params.x * attenuation * visibility;
         vec3 lightContribution = (kD * albedo / PI + specular) * radiance * NdotL;
-
-        if(u_receiveShadows != 0 && light.meta.z >= 0.0){
-            float bias = light.shadow.x + light.shadow.y * (1.0 - max(dot(N, safeNormalize(light.direction.xyz)), 0.0));
-            float visibility = 1.0;
-            int lType = int(light.meta.x + 0.5);
-            int sType = int(light.meta.y + 0.5);
-            int baseIndex = int(light.meta.z + 0.5);
-            int cascadeCount = 1;
-            int cascadeIndex = 0;
-
-            if(lType == 0){
-                visibility = sampleShadowCube(sType, baseIndex, v_fragPos, light.position.xyz, max(light.cascadeSplits.x, 0.1), bias);
-            }else{
-                cascadeCount = int(light.shadow.z + 0.5);
-                float viewDepth = -(u_view * vec4(v_fragPos, 1.0)).z;
-                if(cascadeCount > 1){
-                    if(viewDepth > light.cascadeSplits.x) cascadeIndex = 1;
-                    if(viewDepth > light.cascadeSplits.y) cascadeIndex = 2;
-                    if(viewDepth > light.cascadeSplits.z) cascadeIndex = 3;
-                    cascadeIndex = clamp(cascadeIndex, 0, cascadeCount - 1);
-                }
-                vec4 lightSpacePos = light.lightMatrices[cascadeIndex] * vec4(v_fragPos, 1.0);
-                if(u_debugShadows == 3){
-                    vec3 projCoords = lightSpacePos.xyz / lightSpacePos.w;
-                    projCoords = projCoords * 0.5 + 0.5;
-                    bool outBounds = (projCoords.x < 0.0 || projCoords.x > 1.0 ||
-                                      projCoords.y < 0.0 || projCoords.y > 1.0 ||
-                                      projCoords.z < 0.0 || projCoords.z > 1.0);
-                    FragColor = outBounds ? vec4(1.0, 0.0, 0.0, 1.0) : vec4(vec3(projCoords.z), 1.0);
-                    return;
-                }
-                visibility = sampleShadow2D(sType, baseIndex + cascadeIndex, lightSpacePos, bias);
-            }
-
-            visibility = mix(1.0, visibility, clamp(light.meta.w, 0.0, 1.0));
-            lightContribution *= visibility;
-            debugVisibility = min(debugVisibility, visibility);
-            if(u_debugShadows == 2 && lType != 0){
-                float t = (cascadeCount > 1) ? (float(cascadeIndex) / float(max(cascadeCount - 1, 1))) : 0.0;
-                FragColor = vec4(vec3(t), 1.0);
-                return;
-            }
-        }
-
         Lo += lightContribution;
     }
 
-    vec3 ambient = vec3(0.03) * albedo * ao;
+    vec3 ambient = vec3(0.10) * albedo * ao;
     vec3 envSpec = vec3(0.0);
     if(u_useEnvMap != 0){
         vec3 R = reflect(-V, N);
@@ -339,21 +344,7 @@ void main() {
         vec3 envSample = texture(u_envMap, R).rgb;
         envSpec = envSample * Fenv * u_envStrength * (1.0 - roughness);
     }
-    vec3 emissive = u_emissiveColor * u_emissiveStrength;
-    if(u_useEmissiveTex != 0){
-        emissive *= texture(u_emissiveTex, uv).rgb;
-    }
 
-    vec3 color = ambient + Lo + envSpec + emissive;
-    if(u_debugShadows == 1){
-        FragColor = vec4(vec3(debugVisibility), 1.0);
-    }else if(u_debugShadows == 2){
-        FragColor = vec4(1.0);
-    }else if(u_debugShadows == 3){
-        FragColor = vec4(1.0);
-    }else{
-        FragColor = vec4(color, baseColor.a);
-    }
+    vec3 color = ambient + Lo + envSpec;
+    FragColor = vec4(color, 1.0);
 }
-
-

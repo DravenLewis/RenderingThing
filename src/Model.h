@@ -58,7 +58,7 @@ struct Model : public IDrawable{
             }
 
             for(auto part : modelParts){
-                if(part){
+                if(part && part->visible){
                     part->draw(global, view, projection);
                 }
             }
@@ -71,7 +71,7 @@ struct Model : public IDrawable{
         void drawShadows(const Math3D::Mat4& parent = Math3D::Mat4()){
             Math3D::Mat4 global = parent * transform().toMat4();
             for(auto part : modelParts){
-                if(part && part->mesh){
+                if(part && part->visible && part->mesh){
                     Math3D::Mat4 worldMatrix = global * part->localTransform.toMat4();
                     ShadowRenderer::RenderShadows(part->mesh, worldMatrix, part->material);
                 }

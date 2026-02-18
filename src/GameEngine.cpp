@@ -8,6 +8,7 @@
 #include "ImGuiLayer.h"
 #include "EditorScene.h"
 #include "CrashReporter.h"
+#include "Texture.h"
 
 GameEngine* GameEngine::Engine = nullptr;
 
@@ -94,6 +95,7 @@ void GameEngine::tick(float deltaTime){
 
 void GameEngine::render(){
     std::lock_guard<std::mutex> lock(sceneMutex);
+    Texture::FlushPendingDeletes();
     int pendingId = pendingStateId.exchange(-1);
     if(pendingId != -1 && pendingId != activeStateId){
         auto it = states.find(pendingId);

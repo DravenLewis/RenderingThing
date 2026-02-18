@@ -13,6 +13,9 @@ struct ModelPart : public IDrawable{
     std::shared_ptr<Mesh> mesh;
     std::shared_ptr<Material> material;
     Math3D::Transform localTransform = Math3D::Transform();
+    bool visible = true;
+    // Model parts are hidden in the ECS tree by default to keep entity trees compact.
+    bool hideInEditorTree = true;
     
     void draw(const Math3D::Mat4& parent, const Math3D::Mat4& view, const Math3D::Mat4& proj);
 };

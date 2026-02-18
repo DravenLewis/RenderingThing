@@ -60,6 +60,7 @@ class Screen{
 
 
         PTexture getDisplayTexture();
+        PFrameBuffer getDrawBuffer() const;
 
         PCamera getCamera() const { return camera; }
         void setCamera(PCamera cam, bool makeCurrent = true);

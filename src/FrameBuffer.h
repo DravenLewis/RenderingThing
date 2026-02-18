@@ -20,6 +20,15 @@ struct FrameBuffer{
 
         PTexture texturePtr;
         PTexture depthTexture;
+
+        struct GBufferAttachment{
+            PTexture texture;
+            GLenum internalFormat = GL_RGBA8;
+            GLenum format = GL_RGBA;
+            GLenum type = GL_UNSIGNED_BYTE;
+        };
+
+        std::vector<GBufferAttachment> gbufferAttachments;
     
     public:
         FrameBuffer(int width, int height) : width(width), height(height) {
@@ -94,6 +103,25 @@ struct FrameBuffer{
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
                 glBindTexture(GL_TEXTURE_2D, 0);
             }
+
+            if(!gbufferAttachments.empty()){
+                for(auto& attachment : gbufferAttachments){
+                    if(!attachment.texture) continue;
+                    glBindTexture(GL_TEXTURE_2D, attachment.texture->getID());
+                    glTexImage2D(
+                        GL_TEXTURE_2D,
+                        0,
+                        attachment.internalFormat,
+                        width,
+                        height,
+                        0,
+                        attachment.format,
+                        attachment.type,
+                        NULL
+                    );
+                }
+                glBindTexture(GL_TEXTURE_2D, 0);
+            }
         }
 
         void attachTexture(PTexture tex){
@@ -145,6 +173,78 @@ struct FrameBuffer{
             return fbuffer;
         }
 
+        static std::shared_ptr<FrameBuffer> CreateGBuffer(int width, int height){
+            auto fbuffer = std::make_shared<FrameBuffer>(width, height);
+
+            fbuffer->gbufferAttachments.clear();
+            fbuffer->gbufferAttachments.reserve(3);
+
+            auto createAttachment = [&](GLenum internalFormat, GLenum format, GLenum type) -> PTexture {
+                GLuint texId = 0;
+                glGenTextures(1, &texId);
+                glBindTexture(GL_TEXTURE_2D, texId);
+                glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, NULL);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                glBindTexture(GL_TEXTURE_2D, 0);
+                return Texture::CreateFromExisting(texId, width, height, true);
+            };
+
+            fbuffer->bind();
+
+            {
+                GBufferAttachment albedo;
+                albedo.internalFormat = GL_RGBA8;
+                albedo.format = GL_RGBA;
+                albedo.type = GL_UNSIGNED_BYTE;
+                albedo.texture = createAttachment(albedo.internalFormat, albedo.format, albedo.type);
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, albedo.texture->getID(), 0);
+                fbuffer->gbufferAttachments.push_back(albedo);
+            }
+
+            {
+                GBufferAttachment normal;
+                normal.internalFormat = GL_RGBA16F;
+                normal.format = GL_RGBA;
+                normal.type = GL_FLOAT;
+                normal.texture = createAttachment(normal.internalFormat, normal.format, normal.type);
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, normal.texture->getID(), 0);
+                fbuffer->gbufferAttachments.push_back(normal);
+            }
+
+            {
+                GBufferAttachment position;
+                position.internalFormat = GL_RGBA16F;
+                position.format = GL_RGBA;
+                position.type = GL_FLOAT;
+                position.texture = createAttachment(position.internalFormat, position.format, position.type);
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, position.texture->getID(), 0);
+                fbuffer->gbufferAttachments.push_back(position);
+            }
+
+            GLenum drawBuffers[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+            glDrawBuffers(3, drawBuffers);
+            glReadBuffer(GL_COLOR_ATTACHMENT0);
+
+            GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+            if(status != GL_FRAMEBUFFER_COMPLETE){
+                std::string error;
+                switch(status){
+                    case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:         error = "Incomplete Attachment"; break;
+                    case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: error = "Missing Attachment"; break;
+                    case GL_FRAMEBUFFER_UNSUPPORTED:                   error = "Unsupported Format"; break;
+                    default:                                           error = "Unknown Error"; break;
+                }
+                LogBot.Log(LOG_ERRO, "[FrameBuffer] GBuffer Error: %s (Code: %u)", error.c_str(), status);
+            }
+
+            fbuffer->unbind();
+
+            return fbuffer;
+        }
+
         PTexture getTexture(){
             return texturePtr;
         }
@@ -152,6 +252,21 @@ struct FrameBuffer{
         PTexture getDepthTexture(){
             return depthTexture;
         }
+
+        PTexture getGBufferTexture(size_t index) const{
+            if(index >= gbufferAttachments.size()){
+                return nullptr;
+            }
+            return gbufferAttachments[index].texture;
+        }
+
+        size_t getGBufferCount() const{
+            return gbufferAttachments.size();
+        }
+
+        FrameBufferObject getID() const { return fboID; }
+        int getWidth() const { return width; }
+        int getHeight() const { return height; }
 };
 
 struct FrameBufferChain{

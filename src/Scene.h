@@ -16,6 +16,7 @@
 
 class Scene;
 typedef std::shared_ptr<Scene> PScene;
+class ShaderProgram;
 
 class Scene : public View {
     public:
@@ -80,13 +81,35 @@ class Scene : public View {
         std::atomic<bool> closeRequested{false};
         std::string selectedEntityId;
         std::shared_ptr<MaterialDefaults::ColorMaterial> outlineMaterial;
+        std::shared_ptr<MaterialDefaults::ColorMaterial> deferredIncompatibleMaterial;
         bool outlineEnabled = false;
+        PFrameBuffer gBuffer;
+        std::shared_ptr<ShaderProgram> gBufferShader;
+        std::shared_ptr<ShaderProgram> deferredLightShader;
+        std::shared_ptr<ModelPart> deferredQuad;
+        int gBufferWidth = 0;
+        int gBufferHeight = 0;
+        bool deferredDisabled = false;
+
+        enum class RenderFilter{
+            All,
+            Opaque,
+            Transparent
+        };
+
+        bool isMaterialTransparent(const std::shared_ptr<Material>& material) const;
+        bool isDeferredCompatibleMaterial(const std::shared_ptr<Material>& material) const;
+        void ensureDeferredResources(PScreen screen);
+        void drawDeferredGeometry(PCamera cam);
+        void drawDeferredLighting(PScreen screen, PCamera cam);
+        void renderDeferred(PScreen screen, PCamera cam);
+        void drawOutlines(PCamera cam);
 
         void updateSceneLights();
         void render3DPass();
-        void drawModels3D(PCamera cam);
+        void drawModels3D(PCamera cam, RenderFilter filter = RenderFilter::All, bool drawOutlines = true, bool skipDeferredCompatible = false);
         void drawShadowsPass();
-        void drawSkybox(PCamera cam);
+        void drawSkybox(PCamera cam, bool depthTested = false);
 
     public:
         void setSelectedEntityId(const std::string& id) { selectedEntityId = id; }

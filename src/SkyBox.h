@@ -26,7 +26,7 @@ class SkyBox{
         SkyBox() = delete;
     public:
         SkyBox(const SkyBox6Face& faceAssetDef);
-        void draw(PCamera cam);
+        void draw(PCamera cam, bool depthTested = false);
         PCubeMap getCubeMap() const { return skyboxCubeMap; }
 
 };

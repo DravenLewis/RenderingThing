@@ -4,6 +4,10 @@
 
 #include <iostream>
 #include <cstring>
+#include <mutex>
+#include <vector>
+
+#include <SDL3/SDL.h>
 
 #include "Graphics.h"
 
@@ -15,6 +19,11 @@
 // ==========================================================================
 
 Logbot textureLogger = Logbot::CreateInstance("Texture");
+
+namespace {
+    std::mutex g_pendingTextureDeleteMutex;
+    std::vector<GLuint> g_pendingTextureDeletes;
+}
 
 Texture::Texture(std::shared_ptr<Graphics::Image::Image> imagePtr, GLenum imageHint) :
     textureID(0), width(0), height(0), cpuImage(imagePtr){
@@ -65,9 +74,17 @@ void Texture::unbind() const {
 
 void Texture::dispose(){
     if(textureID != 0 && ownsTexture){
-        textureLogger.Log(LOG_INFO, "Deleting Texture ID: %u", textureID);
-        glDeleteTextures(1, &textureID);
+        const GLuint idToDelete = textureID;
         textureID = 0;
+
+        if(SDL_GL_GetCurrentContext() != nullptr){
+            textureLogger.Log(LOG_INFO, "Deleting Texture ID: %u", idToDelete);
+            glDeleteTextures(1, &idToDelete);
+        }else{
+            std::lock_guard<std::mutex> lock(g_pendingTextureDeleteMutex);
+            g_pendingTextureDeletes.push_back(idToDelete);
+            textureLogger.Log(LOG_WARN, "Queued Texture ID for deferred delete (no GL context): %u", idToDelete);
+        }
     }
 }
 
@@ -183,4 +200,21 @@ std::shared_ptr<Texture> Texture::CreateFromExisting(GLuint id, int width, int h
     tex->height = height;
     tex->ownsTexture = owns;
     return tex;
+}
+
+void Texture::FlushPendingDeletes(){
+    if(SDL_GL_GetCurrentContext() == nullptr){
+        return;
+    }
+
+    std::vector<GLuint> toDelete;
+    {
+        std::lock_guard<std::mutex> lock(g_pendingTextureDeleteMutex);
+        if(g_pendingTextureDeletes.empty()){
+            return;
+        }
+        toDelete.swap(g_pendingTextureDeletes);
+    }
+
+    glDeleteTextures(static_cast<GLsizei>(toDelete.size()), toDelete.data());
 }

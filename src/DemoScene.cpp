@@ -120,37 +120,58 @@ void DemoScene::init(){
     PTexture textureImageBottom = Texture::Load(AssetManager::Instance.getOrLoad("@assets/images/dirt.png"));
     PTexture textureUVDefault = Texture::Load(AssetManager::Instance.getOrLoad("@assets/images/uv.png"));
 
-    PMaterial TopMaterial = MaterialDefaults::FlatImageMaterial::Create(textureImageTop);
-    PMaterial SideMaterial = MaterialDefaults::FlatImageMaterial::Create(textureImageSides);
-    PMaterial BottomMaterial = MaterialDefaults::FlatImageMaterial::Create(textureImageBottom);
-    
     skybox = SkyBoxLoader::CreateSkyBox("@assets/images/skybox/default", "skybox_default");
 
-    ground->addPart(ModelPartPrefabs::MakePlane(200,200,TopMaterial));
+    auto makePbrTextured = [&](const PTexture& tex, float metallic, float roughness, float envStrength) -> std::shared_ptr<PBRMaterial> {
+        auto mat = PBRMaterial::Create(Color::WHITE);
+        if(!mat){
+            return nullptr;
+        }
+        mat->BaseColorTex = tex;
+        mat->Metallic = metallic;
+        mat->Roughness = roughness;
+        mat->OcclusionStrength = 1.0f;
+        if(skybox && skybox->getCubeMap()){
+            mat->EnvMap = skybox->getCubeMap();
+            mat->UseEnvMap = 1;
+        }else{
+            mat->UseEnvMap = 0;
+        }
+        mat->EnvStrength = envStrength;
+        return mat;
+    };
+
+    auto groundPBR = makePbrTextured(textureImageTop, 0.0f, 0.95f, 0.08f);
+    auto topPBR = makePbrTextured(textureImageTop, 0.0f, 0.90f, 0.10f);
+    auto sidePBR = makePbrTextured(textureImageSides, 0.0f, 0.95f, 0.08f);
+    auto bottomPBR = makePbrTextured(textureImageBottom, 0.0f, 0.98f, 0.04f);
+    auto uvPBR = makePbrTextured(textureUVDefault, 0.0f, 0.70f, 0.25f);
+
+    ground->addPart(ModelPartPrefabs::MakePlane(200,200,groundPBR));
     ground->transform().setPosition(Math3D::Vec3(0,-5,0));
 
     int segSize = 256;
-    meshModel->addPart(ModelPartPrefabs::MakeCirclePlane(2,segSize,BottomMaterial));
-    auto part = ModelPartPrefabs::MakeCirclePlane(2,segSize,BottomMaterial);
+    meshModel->addPart(ModelPartPrefabs::MakeCirclePlane(2,segSize,bottomPBR));
+    auto part = ModelPartPrefabs::MakeCirclePlane(2,segSize,bottomPBR);
     part->localTransform.setPosition(Math3D::Vec3(0,-0.005f,0));
     part->localTransform.setRotation(180.0f,0.0f,0.0f);
     meshModel->addPart(part);
     meshModel->transform().setPosition(Math3D::Vec3(15,5,15));
 
     auto cubeMaterialInformation = ModelPrefabs::CubeMaterialDefinition::Create();
-    cubeMaterialInformation->matTop = TopMaterial;
-    cubeMaterialInformation->matBottom = BottomMaterial;
-    cubeMaterialInformation->matLeft = SideMaterial;
-    cubeMaterialInformation->matRight = SideMaterial;
-    cubeMaterialInformation->matFront = SideMaterial;
-    cubeMaterialInformation->matBack = SideMaterial;
+    cubeMaterialInformation->matTop = topPBR;
+    cubeMaterialInformation->matBottom = bottomPBR;
+    cubeMaterialInformation->matLeft = sidePBR;
+    cubeMaterialInformation->matRight = sidePBR;
+    cubeMaterialInformation->matFront = sidePBR;
+    cubeMaterialInformation->matBack = sidePBR;
 
     cubeModel = ModelPrefabs::MakeCube(1.0f,cubeMaterialInformation);
 
     auto mat = PBRMaterial::Create(Color::WHITE);
-    mat->BaseColor = Color(1.0f,1.00f,0.34f);
-    mat->Metallic = 1.0f;
-    mat->Roughness = 0.01f;
+    mat->BaseColor = Color::fromRGB24(0xD4AF37);
+    mat->Metallic = 0.95f;
+    mat->Roughness = 0.08f;
     mat->EmissiveStrength = 0;
     mat->OcclusionStrength = 1.0f;
     mat->NormalTex = Texture::Load(AssetManager::Instance.getOrLoad("@assets/images/golden_material/DirtyGold01_Normal.png"));
@@ -158,10 +179,10 @@ void DemoScene::init(){
     if(skybox){
         mat->EnvMap = skybox->getCubeMap();
     }
-    mat->EnvStrength = 0.7f;
+    mat->EnvStrength = 0.55f;
     
     lucille = OBJLoader::LoadFromAsset(AssetManager::Instance.getOrLoad("@assets/models/lucille/lucille.obj"),mat);
-    orb = OBJLoader::LoadFromAsset(AssetManager::Instance.getOrLoad("@assets/models/theorb/orb.obj"), MaterialDefaults::FlatImageMaterial::Create(textureUVDefault));
+    orb = OBJLoader::LoadFromAsset(AssetManager::Instance.getOrLoad("@assets/models/theorb/orb.obj"), uvPBR);
 
     if(mainScreen && mainScreen->getEnvironment()){
         auto env = mainScreen->getEnvironment();
@@ -169,7 +190,7 @@ void DemoScene::init(){
         env->setSkyBox(skybox);
     }
 
-    auto SunLight = Light::CreateDirectionalLight(Math3D::Vec3(-0.3f, -1.0f, -0.2f), Color::fromRGBA255(255, 208, 180, 255), 0.45f);
+    auto SunLight = Light::CreateDirectionalLight(Math3D::Vec3(-0.3f, -1.0f, -0.2f), Color::fromRGBA255(255, 208, 180, 255), 0.70f);
     auto KeyPoint = Light::CreatePointLight(Math3D::Vec3(4.5f, 6.0f, 2.0f), Color::fromRGBA255(255, 230, 180, 255), 6.5f, 18.0f, 2.0f);
     auto FillPoint = Light::CreatePointLight(Math3D::Vec3(-6.0f, 3.0f, 6.0f), Color::fromRGBA255(120, 180, 255, 255), 3.0f, 20.0f, 2.0f);
     auto RimPoint = Light::CreatePointLight(Math3D::Vec3(0.0f, 7.0f, -8.0f), Color::fromRGBA255(255, 255, 255, 255), 4.0f, 20.0f, 2.0f);

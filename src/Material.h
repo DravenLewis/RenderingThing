@@ -64,7 +64,10 @@ class Material{
         }
 
         virtual void bind(){
-            if(!programObjPtr) return;
+            if(!programObjPtr || programObjPtr->getID() == 0){
+                glUseProgram(0);
+                return;
+            }
             programObjPtr->bind();
 
             // Re-apply shadow receive flag each bind to avoid stale uniform state.
@@ -76,11 +79,22 @@ class Material{
         };
 
         void unbind(){
-            programObjPtr->unbind();
+            if(programObjPtr){
+                programObjPtr->unbind();
+            }
         }
 
         std::shared_ptr<ShaderProgram> getShader(){
             return this->programObjPtr;
+        }
+
+        void setShader(std::shared_ptr<ShaderProgram> program){
+            programObjPtr = program;
+            if(programObjPtr && programObjPtr->getID() == 0){
+                if(programObjPtr->compile() == 0){
+                    LogBot.Log(LOG_ERRO, "Failed to Compile Shader / Shader Program: \n\n%s", programObjPtr->getLog().c_str());
+                }
+            }
         }
 
         void setCastsShadows(bool value){ castsShadowsFlag = value; }

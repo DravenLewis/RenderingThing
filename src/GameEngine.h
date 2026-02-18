@@ -16,6 +16,11 @@
 #include "Scene.h"
 
 
+enum class EngineRenderStrategy{
+    Forward = 0,
+    Deferred = 1
+};
+
 class GameEngine{
     private:
         std::shared_ptr<RenderWindow> windowPtr;
@@ -42,6 +47,7 @@ class GameEngine{
         std::atomic<int> pendingStateId{-1};
 
         PScene activeScene;
+        EngineRenderStrategy renderStrategy = EngineRenderStrategy::Forward;
 
         void init(); // Initialize The Engine
         void run();
@@ -67,6 +73,9 @@ class GameEngine{
 
         RenderWindow* window() const { return this->windowPtr.get(); }
         InputManager* input() const {return this->inputManager.get(); }
+
+        void setRenderStrategy(EngineRenderStrategy strategy) { renderStrategy = strategy; }
+        EngineRenderStrategy getRenderStrategy() const { return renderStrategy; }
 
         int addState(PScene scene);
         bool enterState(int id);

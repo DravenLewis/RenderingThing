@@ -290,6 +290,48 @@ namespace {
             glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
         }
     }
+
+    void ensureShadowDebugResources(){
+        if(!g_shadowDebugProgram){
+            g_shadowDebugProgram = std::make_shared<ShaderProgram>();
+            g_shadowDebugProgram->setVertexShader(R"(
+                #version 410 core
+                layout (location = 0) in vec3 aPos;
+                layout (location = 3) in vec2 aTexCoord;
+                out vec2 v_uv;
+                void main() {
+                    v_uv = aTexCoord;
+                    gl_Position = vec4(aPos.xy, 0.0, 1.0);
+                }
+            )");
+            g_shadowDebugProgram->setFragmentShader(R"(
+                #version 410 core
+                in vec2 v_uv;
+                out vec4 FragColor;
+                uniform sampler2D u_depthTex;
+                void main() {
+                    float d = texture(u_depthTex, v_uv).r;
+                    FragColor = vec4(vec3(d), 1.0);
+                }
+            )");
+            g_shadowDebugProgram->compile();
+            if(g_shadowDebugProgram->getID() == 0){
+                LogBot.Log(LOG_ERRO, "Shadow debug shader failed to compile/link: \n%s", g_shadowDebugProgram->getLog().c_str());
+            }
+        }
+
+        if(!g_shadowDebugQuad){
+            auto factory = ModelPartFactory::Create(nullptr);
+            int v1, v2, v3, v4;
+            factory
+                .addVertex(Vertex::Build(Math3D::Vec3(-1.0f, -1.0f, 0.0f)).UV(0,0), &v1)
+                .addVertex(Vertex::Build(Math3D::Vec3( 1.0f, -1.0f, 0.0f)).UV(1,0), &v2)
+                .addVertex(Vertex::Build(Math3D::Vec3( 1.0f,  1.0f, 0.0f)).UV(1,1), &v3)
+                .addVertex(Vertex::Build(Math3D::Vec3(-1.0f,  1.0f, 0.0f)).UV(0,1), &v4)
+                .defineFace(v1, v2, v3, v4);
+            g_shadowDebugQuad = factory.assemble();
+        }
+    }
 }
 
 void ShadowRenderer::ensureShadowPrograms() {
@@ -1045,45 +1087,7 @@ void ShadowRenderer::BindShadowSamplers(const std::shared_ptr<ShaderProgram>& pr
         }
     }
 
-    if(!g_shadowDebugProgram){
-        g_shadowDebugProgram = std::make_shared<ShaderProgram>();
-        g_shadowDebugProgram->setVertexShader(R"(
-            #version 410 core
-            layout (location = 0) in vec3 aPos;
-            layout (location = 3) in vec2 aTexCoord;
-            out vec2 v_uv;
-            void main() {
-                v_uv = aTexCoord;
-                gl_Position = vec4(aPos.xy, 0.0, 1.0);
-            }
-        )");
-        g_shadowDebugProgram->setFragmentShader(R"(
-            #version 410 core
-            in vec2 v_uv;
-            out vec4 FragColor;
-            uniform sampler2D u_depthTex;
-            void main() {
-                float d = texture(u_depthTex, v_uv).r;
-                FragColor = vec4(vec3(d), 1.0);
-            }
-        )");
-        g_shadowDebugProgram->compile();
-        if(g_shadowDebugProgram->getID() == 0){
-            LogBot.Log(LOG_ERRO, "Shadow debug shader failed to compile/link: \n%s", g_shadowDebugProgram->getLog().c_str());
-        }
-    }
-
-    if(!g_shadowDebugQuad){
-        auto factory = ModelPartFactory::Create(nullptr);
-        int v1, v2, v3, v4;
-        factory
-            .addVertex(Vertex::Build(Math3D::Vec3(-1.0f, -1.0f, 0.0f)).UV(0,0), &v1)
-            .addVertex(Vertex::Build(Math3D::Vec3( 1.0f, -1.0f, 0.0f)).UV(1,0), &v2)
-            .addVertex(Vertex::Build(Math3D::Vec3( 1.0f,  1.0f, 0.0f)).UV(1,1), &v3)
-            .addVertex(Vertex::Build(Math3D::Vec3(-1.0f,  1.0f, 0.0f)).UV(0,1), &v4)
-            .defineFace(v1, v2, v3, v4);
-        g_shadowDebugQuad = factory.assemble();
-    }
+    ensureShadowDebugResources();
 }
 
 std::shared_ptr<Texture> ShadowRenderer::GetDepthBuffer() {
@@ -1092,6 +1096,10 @@ std::shared_ptr<Texture> ShadowRenderer::GetDepthBuffer() {
     }
 
     ensureShadowPrograms();
+    ensureShadowDebugResources();
+    if(!g_shadowDebugProgram || g_shadowDebugProgram->getID() == 0){
+        return nullptr;
+    }
 
     const auto& slot = g_shadow2D[0];
     GLuint id = slot.map.getDepthTexture();

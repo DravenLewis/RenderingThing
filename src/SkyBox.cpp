@@ -29,7 +29,7 @@ SkyBox::SkyBox(const SkyBox6Face& faceAssetDef){
     }
 };
 
-void SkyBox::draw(PCamera cam){
+void SkyBox::draw(PCamera cam, bool depthTested){
     if(!this->skyboxModel || !cam){
         return;
     }
@@ -49,7 +49,7 @@ void SkyBox::draw(PCamera cam){
         glDepthMask(GL_FALSE);
         glDisable(GL_CULL_FACE);
         glDisable(GL_BLEND);
-        glDepthFunc(GL_ALWAYS);
+        glDepthFunc(depthTested ? GL_LEQUAL : GL_ALWAYS);
         this->skyboxModel->draw(cam);
         glDepthFunc(prevDepthFunc);
         if(cullEnabled) glEnable(GL_CULL_FACE); else glDisable(GL_CULL_FACE);

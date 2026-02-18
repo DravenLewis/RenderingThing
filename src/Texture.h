@@ -44,6 +44,7 @@ class Texture{
         static std::shared_ptr<Texture> CreateEmpty(int width, int height);
         static std::shared_ptr<Texture> CreateFromAlphaBuffer(int width, int height, const unsigned char* alphaData);
         static std::shared_ptr<Texture> CreateFromExisting(GLuint id, int width, int height, bool owns = false);
+        static void FlushPendingDeletes();
 
         static void Unload(std::shared_ptr<Texture>& tex){
             if(tex){

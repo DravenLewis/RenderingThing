@@ -22,6 +22,26 @@ namespace {
         static const std::vector<Light> EMPTY;
         return EMPTY;
     }
+
+    std::shared_ptr<ShaderProgram> compileShaderProgramSafe(const char* cacheName, const char* vertexAssetRef, const char* fragmentAssetRef){
+        auto vertexShader = AssetManager::Instance.getOrLoad(vertexAssetRef);
+        auto fragmentShader = AssetManager::Instance.getOrLoad(fragmentAssetRef);
+        if(!vertexShader || !fragmentShader){
+            LogBot.Log(
+                LOG_ERRO,
+                "[PBRMaterial] Missing shader asset(s) for '%s' (vert='%s', frag='%s').",
+                cacheName ? cacheName : "<unnamed>",
+                vertexAssetRef ? vertexAssetRef : "<null>",
+                fragmentAssetRef ? fragmentAssetRef : "<null>"
+            );
+            return nullptr;
+        }
+        return ShaderCacheManager::INSTANCE.getOrCompile(
+            cacheName ? cacheName : "PBRMaterialShader",
+            vertexShader->asString(),
+            fragmentShader->asString()
+        );
+    }
 }
 
 PBRMaterial::PBRMaterial(std::shared_ptr<ShaderProgram> program) : Material(program) {
@@ -188,23 +208,31 @@ void PBRMaterial::bind(){
 }
 
 std::shared_ptr<PBRMaterial> PBRMaterial::Create(Math3D::Vec4 baseColor){
-    std::shared_ptr<Asset> vertexShader = (AssetManager::Instance.getOrLoad("@assets/shader/Shader_Vert_Lit.vert"));
-    std::shared_ptr<Asset> fragmentShader = (AssetManager::Instance.getOrLoad("@assets/shader/Shader_Frag_PBR.frag"));
-
-    auto program = ShaderCacheManager::INSTANCE.getOrCompile("PBRMaterialLit_v2", vertexShader->asString(), fragmentShader->asString());
+    auto program = compileShaderProgramSafe(
+        "PBRMaterialLit_v2",
+        "@assets/shader/Shader_Vert_Lit.vert",
+        "@assets/shader/Shader_Frag_PBR.frag"
+    );
     if(!program || program->getID() == 0){
         if(program){
             LogBot.Log(LOG_ERRO, "Failed to link PBRMaterialLit: \n%s", program->getLog().c_str());
         }
 
         // Fallback to lit color shader so the mesh still renders
-        std::shared_ptr<Asset> fallbackFrag = (AssetManager::Instance.getOrLoad("@assets/shader/Shader_Frag_LitColor.frag"));
-        program = ShaderCacheManager::INSTANCE.getOrCompile("PBRMaterialLit_fallback", vertexShader->asString(), fallbackFrag->asString());
+        program = compileShaderProgramSafe(
+            "PBRMaterialLit_fallback",
+            "@assets/shader/Shader_Vert_Lit.vert",
+            "@assets/shader/Shader_Frag_LitColor.frag"
+        );
         if(program && program->getID() == 0){
             LogBot.Log(LOG_ERRO, "Failed to link PBRMaterialLit_fallback: \n%s", program->getLog().c_str());
         }else{
             LogBot.Log(LOG_WARN, "PBR shader failed. Using fallback lit shader for PBRMaterial.");
         }
+    }
+
+    if(!program){
+        program = std::make_shared<ShaderProgram>();
     }
 
     auto material = std::make_shared<PBRMaterial>(program);

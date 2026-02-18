@@ -258,6 +258,11 @@ PTexture Screen::getDisplayTexture(){
     return this->buffer->getDisplayBuffer()->getTexture();
 }
 
+PFrameBuffer Screen::getDrawBuffer() const{
+    if(!buffer) return nullptr;
+    return buffer->getDrawBuffer();
+}
+
 void Screen::resize(int w, int h){
 
     if(buffer){

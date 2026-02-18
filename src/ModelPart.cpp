@@ -5,7 +5,7 @@
 #include "ShadowRenderer.h"
 
 void ModelPart::draw(const Math3D::Mat4& parent, const Math3D::Mat4& view, const Math3D::Mat4& proj){
-    if(!mesh) return;
+    if(!visible || !mesh) return;
 
     Math3D::Mat4 worldMatrix = parent * localTransform.toMat4();
 

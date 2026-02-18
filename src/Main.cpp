@@ -7,6 +7,7 @@ int main(){
     DisplayMode mode = DisplayMode::New(1280,720);
     mode.resizable = true;
     GameEngine engine(mode, "Modern OpenGL 4 - Render Engine - Editor");
+    engine.setRenderStrategy(EngineRenderStrategy::Deferred);
 
     auto demoFactory = [](RenderWindow* window) -> PScene {
         return std::make_shared<DemoScene>(window);

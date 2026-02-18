@@ -6,6 +6,11 @@
 #include "SkyBox.h"
 #include "ECSComponents.h"
 #include "Color.h"
+#include "GameEngine.h"
+#include "PBRMaterial.h"
+#include "LightUtils.h"
+#include "ShaderProgram.h"
+#include "Asset.h"
 #include <chrono>
 #include <cmath>
 #include <cfloat>
@@ -221,7 +226,7 @@ void Scene::updateECS(float deltaTime){
                 cull = renderer->model->isBackfaceCullingEnabled();
                 const auto& parts = renderer->model->getParts();
                 for(const auto& part : parts){
-                    if(!part || !part->mesh || !part->material) continue;
+                    if(!part || !part->visible || !part->mesh || !part->material) continue;
                     RenderItem item;
                     item.mesh = part->mesh;
                     item.material = part->material;
@@ -313,6 +318,440 @@ void Scene::updateSceneLights(){
     }
 }
 
+bool Scene::isMaterialTransparent(const std::shared_ptr<Material>& material) const{
+    if(!material) return false;
+
+    if(auto pbr = Material::GetAs<PBRMaterial>(material)){
+        if(pbr->UseAlphaClip.get() != 0){
+            return false;
+        }
+        return pbr->BaseColor.get().w < 0.999f;
+    }
+
+    if(auto litColor = Material::GetAs<MaterialDefaults::LitColorMaterial>(material)){
+        return litColor->Color.get().w < 0.999f;
+    }
+    if(auto litImage = Material::GetAs<MaterialDefaults::LitImageMaterial>(material)){
+        return litImage->Color.get().w < 0.999f;
+    }
+    if(auto flatColor = Material::GetAs<MaterialDefaults::FlatColorMaterial>(material)){
+        return flatColor->Color.get().w < 0.999f;
+    }
+    if(auto flatImage = Material::GetAs<MaterialDefaults::FlatImageMaterial>(material)){
+        return flatImage->Color.get().w < 0.999f;
+    }
+    if(auto colorMat = Material::GetAs<MaterialDefaults::ColorMaterial>(material)){
+        return colorMat->Color.get().w < 0.999f;
+    }
+    if(auto imageMat = Material::GetAs<MaterialDefaults::ImageMaterial>(material)){
+        return imageMat->Color.get().w < 0.999f;
+    }
+
+    return false;
+}
+
+bool Scene::isDeferredCompatibleMaterial(const std::shared_ptr<Material>& material) const{
+    if(!material){
+        return false;
+    }
+
+    // Deferred path currently supports PBR data end-to-end.
+    // All other material families are rendered by forward fallback.
+    return (Material::GetAs<PBRMaterial>(material) != nullptr);
+}
+
+void Scene::ensureDeferredResources(PScreen screen){
+    if(!screen) return;
+
+    int w = screen->getWidth();
+    int h = screen->getHeight();
+    if(!gBuffer){
+        gBuffer = FrameBuffer::CreateGBuffer(w, h);
+        gBufferWidth = w;
+        gBufferHeight = h;
+    }else if(gBufferWidth != w || gBufferHeight != h){
+        gBuffer->resize(w, h);
+        gBufferWidth = w;
+        gBufferHeight = h;
+    }
+
+    if(!gBufferShader){
+        auto vertexShader = AssetManager::Instance.getOrLoad("@assets/shader/Shader_Vert_Lit.vert");
+        auto fragmentShader = AssetManager::Instance.getOrLoad("@assets/shader/Shader_Frag_GBuffer.frag");
+        if(vertexShader && fragmentShader){
+            gBufferShader = ShaderCacheManager::INSTANCE.getOrCompile("GBufferPass_v1", vertexShader->asString(), fragmentShader->asString());
+            if(gBufferShader && gBufferShader->getID() == 0){
+                LogBot.Log(LOG_ERRO, "Failed to link GBufferPass shader: \n%s", gBufferShader->getLog().c_str());
+            }
+        }else{
+            LogBot.Log(LOG_ERRO, "GBufferPass shader assets missing.");
+        }
+    }
+
+    if(!deferredLightShader){
+        auto vertexShader = AssetManager::Instance.getOrLoad("@assets/shader/Shader_Vert_Default.vert");
+        auto fragmentShader = AssetManager::Instance.getOrLoad("@assets/shader/Shader_Frag_DeferredLight.frag");
+        if(vertexShader && fragmentShader){
+            deferredLightShader = ShaderCacheManager::INSTANCE.getOrCompile("DeferredLightPass_v1", vertexShader->asString(), fragmentShader->asString());
+            if(deferredLightShader && deferredLightShader->getID() == 0){
+                LogBot.Log(LOG_ERRO, "Failed to link DeferredLightPass shader: \n%s", deferredLightShader->getLog().c_str());
+            }
+        }else{
+            LogBot.Log(LOG_ERRO, "DeferredLightPass shader assets missing.");
+        }
+    }
+
+    if(!deferredQuad){
+        try{
+            auto factory = ModelPartFactory::Create(nullptr); 
+            int v1, v2, v3, v4;
+
+            factory
+                .addVertex(Vertex::Build(Math3D::Vec3(-1.0f, -1.0f, 0.0f)).UV(0, 0), &v1)
+                .addVertex(Vertex::Build(Math3D::Vec3( 1.0f, -1.0f, 0.0f)).UV(1, 0), &v2)
+                .addVertex(Vertex::Build(Math3D::Vec3( 1.0f,  1.0f, 0.0f)).UV(1, 1), &v3)
+                .addVertex(Vertex::Build(Math3D::Vec3(-1.0f,  1.0f, 0.0f)).UV(0, 1), &v4)
+                .defineFace(v1, v2, v3, v4);
+
+            deferredQuad = factory.assemble();
+        }catch(const std::exception& e){
+            LogBot.Log(LOG_ERRO, "Deferred quad creation failed: %s", e.what());
+        }catch(...){
+            LogBot.Log(LOG_ERRO, "Deferred quad creation failed: unknown exception");
+        }
+    }
+}
+
+void Scene::drawDeferredGeometry(PCamera cam){
+    if(!cam || !gBuffer || !gBufferShader || gBufferShader->getID() == 0) return;
+
+    gBuffer->bind();
+    gBuffer->clear(Color::CLEAR);
+
+    glDisable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+
+    gBufferShader->bind();
+    gBufferShader->setUniformFast("u_view", Uniform<Math3D::Mat4>(cam->getViewMatrix()));
+    gBufferShader->setUniformFast("u_projection", Uniform<Math3D::Mat4>(cam->getProjectionMatrix()));
+
+    const int frontIndex = renderSnapshotIndex.load(std::memory_order_acquire);
+    const auto& snapshot = renderSnapshots[frontIndex];
+
+    for(const auto& item : snapshot.drawItems){
+        if(!item.mesh || !item.material) continue;
+        if(isMaterialTransparent(item.material)) continue;
+        if(!isDeferredCompatibleMaterial(item.material)) continue;
+
+        if(item.enableBackfaceCulling){
+            glEnable(GL_CULL_FACE);
+            glCullFace(GL_BACK);
+        }else{
+            glDisable(GL_CULL_FACE);
+        }
+
+        gBufferShader->setUniformFast("u_model", Uniform<Math3D::Mat4>(item.model));
+
+        Math3D::Vec4 baseColor = Color::WHITE;
+        PTexture baseColorTex = nullptr;
+        int useBaseColorTex = 0;
+        float metallic = 0.0f;
+        float roughness = 1.0f;
+        PTexture metallicRoughnessTex = nullptr;
+        int useMetallicRoughnessTex = 0;
+        PTexture normalTex = nullptr;
+        int useNormalTex = 0;
+        float normalScale = 1.0f;
+        PTexture occlusionTex = nullptr;
+        int useOcclusionTex = 0;
+        float aoStrength = 1.0f;
+        Math3D::Vec2 uvScale(1.0f, 1.0f);
+        Math3D::Vec2 uvOffset(0.0f, 0.0f);
+        int useAlphaClip = 0;
+        float alphaCutoff = 0.5f;
+        int surfaceMode = 0; // 0=PBR, 1=LegacyLit, 2=LegacyUnlit
+
+        if(auto pbr = Material::GetAs<PBRMaterial>(item.material)){
+            baseColor = pbr->BaseColor.get();
+            baseColorTex = pbr->BaseColorTex.get();
+            useBaseColorTex = baseColorTex ? 1 : 0;
+            metallic = pbr->Metallic.get();
+            roughness = pbr->Roughness.get();
+            metallicRoughnessTex = pbr->MetallicRoughnessTex.get();
+            useMetallicRoughnessTex = metallicRoughnessTex ? 1 : 0;
+            normalTex = pbr->NormalTex.get();
+            useNormalTex = normalTex ? 1 : 0;
+            normalScale = pbr->NormalScale.get();
+            occlusionTex = pbr->OcclusionTex.get();
+            useOcclusionTex = occlusionTex ? 1 : 0;
+            aoStrength = pbr->OcclusionStrength.get();
+            uvScale = pbr->UVScale.get();
+            uvOffset = pbr->UVOffset.get();
+            useAlphaClip = pbr->UseAlphaClip.get();
+            alphaCutoff = pbr->AlphaCutoff.get();
+            surfaceMode = 0;
+        }else if(auto litImage = Material::GetAs<MaterialDefaults::LitImageMaterial>(item.material)){
+            baseColor = litImage->Color.get();
+            baseColorTex = litImage->Tex.get();
+            useBaseColorTex = baseColorTex ? 1 : 0;
+            roughness = 0.85f;
+            surfaceMode = 1;
+        }else if(auto flatImage = Material::GetAs<MaterialDefaults::FlatImageMaterial>(item.material)){
+            baseColor = flatImage->Color.get();
+            baseColorTex = flatImage->Tex.get();
+            useBaseColorTex = baseColorTex ? 1 : 0;
+            roughness = 0.95f;
+            surfaceMode = 1;
+        }else if(auto imageMat = Material::GetAs<MaterialDefaults::ImageMaterial>(item.material)){
+            baseColor = imageMat->Color.get();
+            baseColorTex = imageMat->Tex.get();
+            useBaseColorTex = baseColorTex ? 1 : 0;
+            surfaceMode = 2;
+        }else if(auto litColor = Material::GetAs<MaterialDefaults::LitColorMaterial>(item.material)){
+            baseColor = litColor->Color.get();
+            roughness = 0.85f;
+            surfaceMode = 1;
+        }else if(auto flatColor = Material::GetAs<MaterialDefaults::FlatColorMaterial>(item.material)){
+            baseColor = flatColor->Color.get();
+            roughness = 0.95f;
+            surfaceMode = 1;
+        }else if(auto colorMat = Material::GetAs<MaterialDefaults::ColorMaterial>(item.material)){
+            baseColor = colorMat->Color.get();
+            surfaceMode = 2;
+        }else{
+            // Unknown material type fallback to the legacy lit path.
+            roughness = 0.9f;
+            surfaceMode = 1;
+        }
+
+        gBufferShader->setUniformFast("u_baseColor", Uniform<Math3D::Vec4>(baseColor));
+        gBufferShader->setUniformFast("u_useBaseColorTex", Uniform<int>(useBaseColorTex));
+        gBufferShader->setUniformFast("u_baseColorTex", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(baseColorTex, 0)));
+
+        gBufferShader->setUniformFast("u_metallic", Uniform<float>(metallic));
+        gBufferShader->setUniformFast("u_roughness", Uniform<float>(roughness));
+        gBufferShader->setUniformFast("u_useMetallicRoughnessTex", Uniform<int>(useMetallicRoughnessTex));
+        gBufferShader->setUniformFast("u_metallicRoughnessTex", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(metallicRoughnessTex, 1)));
+
+        gBufferShader->setUniformFast("u_useNormalTex", Uniform<int>(useNormalTex));
+        gBufferShader->setUniformFast("u_normalScale", Uniform<float>(normalScale));
+        gBufferShader->setUniformFast("u_normalTex", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(normalTex, 2)));
+
+        gBufferShader->setUniformFast("u_useOcclusionTex", Uniform<int>(useOcclusionTex));
+        gBufferShader->setUniformFast("u_aoStrength", Uniform<float>(aoStrength));
+        gBufferShader->setUniformFast("u_occlusionTex", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(occlusionTex, 3)));
+
+        gBufferShader->setUniformFast("u_uvScale", Uniform<Math3D::Vec2>(uvScale));
+        gBufferShader->setUniformFast("u_uvOffset", Uniform<Math3D::Vec2>(uvOffset));
+        gBufferShader->setUniformFast("u_useAlphaClip", Uniform<int>(useAlphaClip));
+        gBufferShader->setUniformFast("u_alphaCutoff", Uniform<float>(alphaCutoff));
+        gBufferShader->setUniformFast("u_surfaceMode", Uniform<int>(surfaceMode));
+
+        item.mesh->draw();
+    }
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+
+    gBufferShader->unbind();
+    gBuffer->unbind();
+}
+
+void Scene::drawDeferredLighting(PScreen screen, PCamera cam){
+    if(!screen || !cam || !gBuffer || !deferredLightShader || deferredLightShader->getID() == 0 || !deferredQuad) return;
+
+    auto drawBuffer = screen->getDrawBuffer();
+    if(!drawBuffer) return;
+
+    drawBuffer->bind();
+    drawBuffer->clear(screen->getClearColor());
+
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_BLEND);
+    glDisable(GL_CULL_FACE);
+    glDepthMask(GL_FALSE);
+
+    deferredLightShader->bind();
+
+    deferredLightShader->setUniformFast("u_viewPos", Uniform<Math3D::Vec3>(cam->transform().position));
+    deferredLightShader->setUniformFast("u_cameraView", Uniform<Math3D::Mat4>(cam->getViewMatrix()));
+    deferredLightShader->setUniformFast("gAlbedo", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(gBuffer->getGBufferTexture(0), 0)));
+    deferredLightShader->setUniformFast("gNormal", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(gBuffer->getGBufferTexture(1), 1)));
+    deferredLightShader->setUniformFast("gPosition", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(gBuffer->getGBufferTexture(2), 2)));
+
+    auto env = screen->getEnvironment();
+    PCubeMap envMap = (env && env->getSkyBox()) ? env->getSkyBox()->getCubeMap() : nullptr;
+    deferredLightShader->setUniformFast("u_useEnvMap", Uniform<int>(envMap ? 1 : 0));
+    deferredLightShader->setUniformFast("u_envStrength", Uniform<float>(0.55f));
+    deferredLightShader->setUniformFast("u_envMap", Uniform<GLUniformUpload::CubeMapSlot>(GLUniformUpload::CubeMapSlot(envMap, 5)));
+    static const std::vector<Light> EMPTY_LIGHTS;
+    const std::vector<Light>& lights = env ? env->getLightsForUpload() : EMPTY_LIGHTS;
+    LightUniformUploader::UploadLights(deferredLightShader, lights);
+    ShadowRenderer::BindShadowSamplers(deferredLightShader);
+
+    static const Math3D::Mat4 IDENTITY;
+    deferredLightShader->setUniformFast("u_model", Uniform<Math3D::Mat4>(IDENTITY));
+    deferredLightShader->setUniformFast("u_view", Uniform<Math3D::Mat4>(IDENTITY));
+    deferredLightShader->setUniformFast("u_projection", Uniform<Math3D::Mat4>(IDENTITY));
+
+    deferredQuad->draw(IDENTITY, IDENTITY, IDENTITY);
+}
+
+void Scene::drawOutlines(PCamera cam){
+    if(!cam) return;
+    if(!outlineEnabled || selectedEntityId.empty()) return;
+
+    if(!outlineMaterial){
+        outlineMaterial = MaterialDefaults::ColorMaterial::Create(Color::fromRGBA32(0x3498dbFF));
+    }
+
+    const int frontIndex = renderSnapshotIndex.load(std::memory_order_acquire);
+    const auto& snapshot = renderSnapshots[frontIndex];
+    for(const auto& item : snapshot.drawItems){
+        if(!item.mesh || !item.material) continue;
+        if(item.entityId != selectedEntityId) continue;
+
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT);
+
+        glm::mat4 outline = (glm::mat4)item.model;
+        outline = outline * glm::scale(glm::mat4(1.0f), glm::vec3(1.03f));
+        Math3D::Mat4 outlineModel(outline);
+
+        outlineMaterial->set<Math3D::Mat4>("u_model", outlineModel);
+        outlineMaterial->set<Math3D::Mat4>("u_view", cam->getViewMatrix());
+        outlineMaterial->set<Math3D::Mat4>("u_projection", cam->getProjectionMatrix());
+        outlineMaterial->bind();
+        item.mesh->draw();
+        outlineMaterial->unbind();
+
+        glCullFace(GL_BACK);
+    }
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+}
+
+void Scene::renderDeferred(PScreen screen, PCamera cam){
+    if(deferredDisabled){
+        drawSkybox(cam);
+        drawModels3D(cam);
+        return;
+    }
+
+    ensureDeferredResources(screen);
+    static bool loggedInvalid = false;
+    bool invalid = false;
+    if(!gBuffer || gBuffer->getGBufferCount() < 3){
+        invalid = true;
+    }else if(!gBuffer->getGBufferTexture(0) || !gBuffer->getGBufferTexture(1) || !gBuffer->getGBufferTexture(2)){
+        invalid = true;
+    }
+
+    if(!gBufferShader || gBufferShader->getID() == 0){
+        invalid = true;
+    }
+    if(!deferredLightShader || deferredLightShader->getID() == 0){
+        invalid = true;
+    }
+    if(!deferredQuad){
+        invalid = true;
+    }
+
+    if(invalid){
+        if(!loggedInvalid){
+            LogBot.Log(LOG_ERRO, "Deferred rendering unavailable; falling back to forward rendering.");
+            loggedInvalid = true;
+        }
+        drawSkybox(cam);
+        drawModels3D(cam);
+        return;
+    }
+
+    if(!gBuffer->validate()){
+        if(!loggedInvalid){
+            LogBot.Log(LOG_ERRO, "GBuffer framebuffer invalid; falling back to forward rendering.");
+            loggedInvalid = true;
+        }
+        drawSkybox(cam);
+        drawModels3D(cam);
+        return;
+    }
+
+    while(glGetError() != GL_NO_ERROR) {}
+
+    auto checkGlError = [&](const char* stage){
+        GLenum err = glGetError();
+        if(err != GL_NO_ERROR){
+            LogBot.Log(LOG_ERRO, "[Deferred] GL error after %s: 0x%X", stage, err);
+            deferredDisabled = true;
+        }
+    };
+
+    drawDeferredGeometry(cam);
+    checkGlError("geometry pass");
+    if(deferredDisabled){
+        drawSkybox(cam);
+        drawModels3D(cam);
+        return;
+    }
+
+    drawDeferredLighting(screen, cam);
+    checkGlError("lighting pass");
+    if(deferredDisabled){
+        drawSkybox(cam);
+        drawModels3D(cam);
+        return;
+    }
+
+    auto drawBuffer = screen ? screen->getDrawBuffer() : nullptr;
+    if(drawBuffer){
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer->getID());
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, drawBuffer->getID());
+        glBlitFramebuffer(
+            0, 0, gBufferWidth, gBufferHeight,
+            0, 0, drawBuffer->getWidth(), drawBuffer->getHeight(),
+            GL_DEPTH_BUFFER_BIT, GL_NEAREST
+        );
+        glBindFramebuffer(GL_FRAMEBUFFER, drawBuffer->getID());
+    }
+    checkGlError("depth blit");
+    if(deferredDisabled){
+        drawSkybox(cam);
+        drawModels3D(cam);
+        return;
+    }
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+
+    // Fallback opaque pass for non-deferred materials (existing forward shaders).
+    glDisable(GL_BLEND);
+    drawModels3D(cam, RenderFilter::Opaque, false, true);
+    checkGlError("forward fallback opaque pass");
+    if(deferredDisabled){
+        drawSkybox(cam);
+        drawModels3D(cam);
+        return;
+    }
+
+    drawSkybox(cam, true);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    drawModels3D(cam, RenderFilter::Transparent, false);
+    glDisable(GL_BLEND);
+    checkGlError("transparent pass");
+    if(deferredDisabled){
+        drawSkybox(cam);
+        drawModels3D(cam);
+        return;
+    }
+
+    drawOutlines(cam);
+}
+
 void Scene::render3DPass(){
     auto screen = getMainScreen();
     if(!screen) return;
@@ -344,10 +783,14 @@ void Scene::render3DPass(){
         std::chrono::duration<float, std::milli> shadowMs = shadowEnd - shadowStart;
         debugStats.shadowMs.store(shadowMs.count(), std::memory_order_relaxed);
 
-        drawSkybox(cam);
-
+        bool useDeferred = (GameEngine::Engine && GameEngine::Engine->getRenderStrategy() == EngineRenderStrategy::Deferred);
         auto drawStart = std::chrono::steady_clock::now();
-        drawModels3D(cam);
+        if(useDeferred){
+            renderDeferred(screen, cam);
+        }else{
+            drawSkybox(cam);
+            drawModels3D(cam);
+        }
         auto drawEnd = std::chrono::steady_clock::now();
         std::chrono::duration<float, std::milli> drawMs = drawEnd - drawStart;
         debugStats.drawMs.store(drawMs.count(), std::memory_order_relaxed);
@@ -356,7 +799,7 @@ void Scene::render3DPass(){
     screen->unbind();
 }
 
-void Scene::drawModels3D(PCamera cam){
+void Scene::drawModels3D(PCamera cam, RenderFilter filter, bool drawOutlines, bool skipDeferredCompatible){
     if(!cam) return;
 
     if(!outlineMaterial){
@@ -365,8 +808,29 @@ void Scene::drawModels3D(PCamera cam){
 
     const int frontIndex = renderSnapshotIndex.load(std::memory_order_acquire);
     const auto& snapshot = renderSnapshots[frontIndex];
+    const bool markDeferredIncompatible = (GameEngine::Engine &&
+                                           GameEngine::Engine->getRenderStrategy() == EngineRenderStrategy::Deferred);
     for(const auto& item : snapshot.drawItems){
         if(!item.mesh || !item.material) continue;
+
+        bool isTransparent = isMaterialTransparent(item.material);
+        if(filter == RenderFilter::Opaque && isTransparent) continue;
+        if(filter == RenderFilter::Transparent && !isTransparent) continue;
+        if(skipDeferredCompatible && isDeferredCompatibleMaterial(item.material)) continue;
+
+        std::shared_ptr<Material> drawMaterial = item.material;
+        if(markDeferredIncompatible && !isDeferredCompatibleMaterial(item.material)){
+            if(!deferredIncompatibleMaterial){
+                deferredIncompatibleMaterial = MaterialDefaults::ColorMaterial::Create(Color::MAGENTA);
+                if(deferredIncompatibleMaterial){
+                    deferredIncompatibleMaterial->setCastsShadows(false);
+                    deferredIncompatibleMaterial->setReceivesShadows(false);
+                }
+            }
+            if(deferredIncompatibleMaterial){
+                drawMaterial = deferredIncompatibleMaterial;
+            }
+        }
 
         if(item.enableBackfaceCulling){
             glEnable(GL_CULL_FACE);
@@ -375,14 +839,14 @@ void Scene::drawModels3D(PCamera cam){
             glDisable(GL_CULL_FACE);
         }
 
-        item.material->set<Math3D::Mat4>("u_model", item.model);
-        item.material->set<Math3D::Mat4>("u_view", cam->getViewMatrix());
-        item.material->set<Math3D::Mat4>("u_projection", cam->getProjectionMatrix());
-        item.material->bind();
+        drawMaterial->set<Math3D::Mat4>("u_model", item.model);
+        drawMaterial->set<Math3D::Mat4>("u_view", cam->getViewMatrix());
+        drawMaterial->set<Math3D::Mat4>("u_projection", cam->getProjectionMatrix());
+        drawMaterial->bind();
         item.mesh->draw();
-        item.material->unbind();
+        drawMaterial->unbind();
 
-        if(outlineEnabled && !selectedEntityId.empty() && item.entityId == selectedEntityId && outlineMaterial){
+        if(drawOutlines && outlineEnabled && !selectedEntityId.empty() && item.entityId == selectedEntityId && outlineMaterial){
             glEnable(GL_CULL_FACE);
             glCullFace(GL_FRONT);
 
@@ -413,13 +877,13 @@ void Scene::drawShadowsPass(){
     }
 }
 
-void Scene::drawSkybox(PCamera cam){
+void Scene::drawSkybox(PCamera cam, bool depthTested){
     if(!cam) return;
     auto screen = getMainScreen();
     if(!screen) return;
     auto env = screen->getEnvironment();
     if(env && env->getSkyBox()){
-        env->getSkyBox()->draw(cam);
+        env->getSkyBox()->draw(cam, depthTested);
     }
 }
 

@@ -15,6 +15,28 @@ namespace {
         static const std::vector<Light> EMPTY;
         return EMPTY;
     }
+
+    std::shared_ptr<ShaderProgram> compileMaterialProgram(const char* cacheName, const char* vertexAssetRef, const char* fragmentAssetRef){
+        auto vertexShader = AssetManager::Instance.getOrLoad(vertexAssetRef);
+        auto fragmentShader = AssetManager::Instance.getOrLoad(fragmentAssetRef);
+
+        if(!vertexShader || !fragmentShader){
+            LogBot.Log(
+                LOG_ERRO,
+                "[MaterialDefaults] Missing shader asset(s) for '%s' (vert='%s', frag='%s').",
+                cacheName ? cacheName : "<unnamed>",
+                vertexAssetRef ? vertexAssetRef : "<null>",
+                fragmentAssetRef ? fragmentAssetRef : "<null>"
+            );
+            return nullptr;
+        }
+
+        return ShaderCacheManager::INSTANCE.getOrCompile(
+            cacheName ? cacheName : "MaterialProgram",
+            vertexShader->asString(),
+            fragmentShader->asString()
+        );
+    }
 }
 
 #pragma region ColorMaterial
@@ -29,10 +51,14 @@ ColorMaterial::ColorMaterial(std::shared_ptr<ShaderProgram> program) : Material(
 };
 
 std::shared_ptr<ColorMaterial> ColorMaterial::Create(Math3D::Vec4 color){
-    std::shared_ptr<Asset> vertexShader = (AssetManager::Instance.getOrLoad("@assets/shader/Shader_Vert_Default.vert"));
-    std::shared_ptr<Asset> fragmentShader = (AssetManager::Instance.getOrLoad("@assets/shader/Shader_Frag_ColorShader.frag"));
- 
-    auto program = ShaderCacheManager::INSTANCE.getOrCompile("ColorShaderUnlit", vertexShader->asString(), fragmentShader->asString()); //std::make_shared<ShaderProgram>();
+    auto program = compileMaterialProgram(
+        "ColorShaderUnlit",
+        "@assets/shader/Shader_Vert_Default.vert",
+        "@assets/shader/Shader_Frag_ColorShader.frag"
+    );
+    if(!program){
+        program = std::make_shared<ShaderProgram>();
+    }
     if(program && program->getID() == 0){
         LogBot.Log(LOG_ERRO, "Failed to link ColorShaderUnlit: \n%s", program->getLog().c_str());
     }
@@ -80,10 +106,14 @@ std::shared_ptr<ImageMaterial> ImageMaterial::Create(PTexture tex, Math3D::Vec4 
         return nullptr;
     }
 
-    std::shared_ptr<Asset> vertexShader = (AssetManager::Instance.getOrLoad("@assets/shader/Shader_Vert_Default.vert"));
-    std::shared_ptr<Asset> fragmentShader = (AssetManager::Instance.getOrLoad("@assets/shader/Shader_Frag_ImageShader.frag"));
- 
-    auto program = ShaderCacheManager::INSTANCE.getOrCompile("ImageShaderUnlit", vertexShader->asString(), fragmentShader->asString()); //std::make_shared<ShaderProgram>();
+    auto program = compileMaterialProgram(
+        "ImageShaderUnlit",
+        "@assets/shader/Shader_Vert_Default.vert",
+        "@assets/shader/Shader_Frag_ImageShader.frag"
+    );
+    if(!program){
+        program = std::make_shared<ShaderProgram>();
+    }
     if(program && program->getID() == 0){
         LogBot.Log(LOG_ERRO, "Failed to link ImageShaderUnlit: \n%s", program->getLog().c_str());
     }
@@ -133,10 +163,14 @@ void LitColorMaterial::bind(){
 }
 
 std::shared_ptr<LitColorMaterial> LitColorMaterial::Create(Math3D::Vec4 color){
-    std::shared_ptr<Asset> vertexShader = (AssetManager::Instance.getOrLoad("@assets/shader/Shader_Vert_Lit.vert"));
-    std::shared_ptr<Asset> fragmentShader = (AssetManager::Instance.getOrLoad("@assets/shader/Shader_Frag_LitColor.frag"));
- 
-    auto program = ShaderCacheManager::INSTANCE.getOrCompile("ColorMaterialLit_UBO", vertexShader->asString(), fragmentShader->asString());//std::make_shared<ShaderProgram>();
+    auto program = compileMaterialProgram(
+        "ColorMaterialLit_UBO",
+        "@assets/shader/Shader_Vert_Lit.vert",
+        "@assets/shader/Shader_Frag_LitColor.frag"
+    );
+    if(!program){
+        program = std::make_shared<ShaderProgram>();
+    }
     if(program && program->getID() == 0){
         LogBot.Log(LOG_ERRO, "Failed to link ColorMaterialLit_UBO: \n%s", program->getLog().c_str());
     }
@@ -197,10 +231,14 @@ std::shared_ptr<LitImageMaterial> LitImageMaterial::Create(PTexture tex, Math3D:
         return nullptr;
     }
 
-    std::shared_ptr<Asset> vertexShader = (AssetManager::Instance.getOrLoad("@assets/shader/Shader_Vert_Lit.vert"));
-    std::shared_ptr<Asset> fragmentShader = (AssetManager::Instance.getOrLoad("@assets/shader/Shader_Frag_LitImage.frag"));
- 
-    auto program = ShaderCacheManager::INSTANCE.getOrCompile("ImageShaderLit_UBO", vertexShader->asString(), fragmentShader->asString()); //std::make_shared<ShaderProgram>();
+    auto program = compileMaterialProgram(
+        "ImageShaderLit_UBO",
+        "@assets/shader/Shader_Vert_Lit.vert",
+        "@assets/shader/Shader_Frag_LitImage.frag"
+    );
+    if(!program){
+        program = std::make_shared<ShaderProgram>();
+    }
     if(program && program->getID() == 0){
         LogBot.Log(LOG_ERRO, "Failed to link ImageShaderLit_UBO: \n%s", program->getLog().c_str());
     }
@@ -250,12 +288,14 @@ void FlatColorMaterial::bind(){
 }
 
 std::shared_ptr<FlatColorMaterial> FlatColorMaterial::Create(Math3D::Vec4 color) {
-    // Use the standard Lit Vertex shader
-    std::shared_ptr<Asset> vertexShader = (AssetManager::Instance.getOrLoad("@assets/shader/Shader_Vert_Lit.vert"));
-    // Use our new Flat Fragment shader
-    std::shared_ptr<Asset> fragmentShader = (AssetManager::Instance.getOrLoad("@assets/shader/Shader_Frag_FlatColor.frag"));
-
-    auto program = ShaderCacheManager::INSTANCE.getOrCompile("ColorShaderLitFlat_UBO", vertexShader->asString(), fragmentShader->asString());//std::make_shared<ShaderProgram>();
+    auto program = compileMaterialProgram(
+        "ColorShaderLitFlat_UBO",
+        "@assets/shader/Shader_Vert_Lit.vert",
+        "@assets/shader/Shader_Frag_FlatColor.frag"
+    );
+    if(!program){
+        program = std::make_shared<ShaderProgram>();
+    }
     if(program && program->getID() == 0){
         LogBot.Log(LOG_ERRO, "Failed to link ColorShaderLitFlat_UBO: \n%s", program->getLog().c_str());
     }
@@ -316,12 +356,14 @@ std::shared_ptr<FlatImageMaterial> FlatImageMaterial::Create(std::shared_ptr<Tex
         return nullptr;
     }
 
-    // Re-use standard Lit Vertex shader
-    std::shared_ptr<Asset> vertexShader = (AssetManager::Instance.getOrLoad("@assets/shader/Shader_Vert_Lit.vert"));
-    // Use new Flat Image Fragment shader
-    std::shared_ptr<Asset> fragmentShader = (AssetManager::Instance.getOrLoad("@assets/shader/Shader_Frag_FlatImage.frag"));
-
-    auto program = ShaderCacheManager::INSTANCE.getOrCompile("ImageShaderLitFlat_UBO", vertexShader->asString(), fragmentShader->asString()); //std::make_shared<ShaderProgram>();
+    auto program = compileMaterialProgram(
+        "ImageShaderLitFlat_UBO",
+        "@assets/shader/Shader_Vert_Lit.vert",
+        "@assets/shader/Shader_Frag_FlatImage.frag"
+    );
+    if(!program){
+        program = std::make_shared<ShaderProgram>();
+    }
     if(program && program->getID() == 0){
         LogBot.Log(LOG_ERRO, "Failed to link ImageShaderLitFlat_UBO: \n%s", program->getLog().c_str());
     }
