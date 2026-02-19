@@ -56,6 +56,7 @@ class EditorScene : public Scene {
         std::function<PScene(RenderWindow*)> targetFactory;
         bool targetInitialized = false;
         PlayState playState = PlayState::Edit;
+        bool maximizeOnPlay = false;
         bool inputBlockerRegistered = false;
 
         ViewportRect viewportRect;

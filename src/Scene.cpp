@@ -967,7 +967,7 @@ void Scene::drawModels3D(PCamera cam, RenderFilter filter, bool drawOutlines, bo
             glCullFace(GL_FRONT);
 
             glm::mat4 outline = (glm::mat4)item.model;
-            outline = outline * glm::scale(glm::mat4(1.0f), glm::vec3(1.03f));
+            outline = outline * glm::scale(glm::mat4(1.0f), glm::vec3(1.0125f));
             Math3D::Mat4 outlineModel(outline);
 
             outlineMaterial->set<Math3D::Mat4>("u_model", outlineModel);

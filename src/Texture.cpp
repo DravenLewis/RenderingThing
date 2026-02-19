@@ -40,8 +40,15 @@ Texture::Texture(std::shared_ptr<Graphics::Image::Image> imagePtr, GLenum imageH
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_2D, textureID);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    const bool preferNearest = (width <= 64 && height <= 64);
+    if(preferNearest){
+        // Preserve crisp texels for small pixel-art style textures.
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    }else{
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    }
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
@@ -55,6 +62,7 @@ Texture::Texture(std::shared_ptr<Graphics::Image::Image> imagePtr, GLenum imageH
         GL_UNSIGNED_BYTE, 
         cpuImage->pixelData.data()
     );
+    glGenerateMipmap(GL_TEXTURE_2D);
 
     unbind();
 }
@@ -151,6 +159,7 @@ std::shared_ptr<Texture> Texture::CreateEmpty(int width, int height){
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
+    // Render targets should stay nearest to avoid unintended blur in post/deferred passes.
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);

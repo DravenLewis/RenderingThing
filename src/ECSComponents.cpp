@@ -14,6 +14,7 @@
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
+#include <cctype>
 #include <filesystem>
 #include <functional>
 #include <string>
@@ -648,6 +649,113 @@ namespace {
     }
 }
 
+std::string BuildScriptDisplayNameFromPath(const std::string& scriptPath){
+    std::string rawName = std::filesystem::path(scriptPath).stem().string();
+    if(rawName.empty()){
+        rawName = scriptPath;
+    }
+    if(rawName.empty()){
+        return "Script";
+    }
+
+    std::string spaced;
+    spaced.reserve(rawName.size() * 2);
+    auto isSep = [](char c) -> bool {
+        return c == '_' || c == '-' || c == '.' || c == ' ';
+    };
+
+    for(size_t i = 0; i < rawName.size(); ++i){
+        unsigned char c = static_cast<unsigned char>(rawName[i]);
+        if(isSep(static_cast<char>(c))){
+            if(!spaced.empty() && spaced.back() != ' '){
+                spaced.push_back(' ');
+            }
+            continue;
+        }
+
+        bool insertSpace = false;
+        if(!spaced.empty() && spaced.back() != ' ' && i > 0){
+            unsigned char prev = static_cast<unsigned char>(rawName[i - 1]);
+            bool prevLower = std::islower(prev) != 0;
+            bool prevUpper = std::isupper(prev) != 0;
+            bool prevDigit = std::isdigit(prev) != 0;
+            bool currUpper = std::isupper(c) != 0;
+            bool currDigit = std::isdigit(c) != 0;
+            bool nextLower = false;
+            if(i + 1 < rawName.size()){
+                nextLower = std::islower(static_cast<unsigned char>(rawName[i + 1])) != 0;
+            }
+
+            if((currUpper && prevLower) ||
+               (currUpper && prevUpper && nextLower) ||
+               (currDigit && !prevDigit) ||
+               (!currDigit && prevDigit)){
+                insertSpace = true;
+            }
+        }
+
+        if(insertSpace){
+            spaced.push_back(' ');
+        }
+        spaced.push_back(static_cast<char>(c));
+    }
+
+    std::string clean;
+    clean.reserve(spaced.size());
+    bool lastWasSpace = true;
+    for(char c : spaced){
+        if(c == ' '){
+            if(!lastWasSpace){
+                clean.push_back(' ');
+                lastWasSpace = true;
+            }
+            continue;
+        }
+        clean.push_back(c);
+        lastWasSpace = false;
+    }
+    if(!clean.empty() && clean.back() == ' '){
+        clean.pop_back();
+    }
+    if(clean.empty()){
+        return "Script";
+    }
+
+    // Title-case non-acronym words while preserving all-caps acronyms like FPS.
+    std::string out;
+    out.reserve(clean.size());
+    size_t cursor = 0;
+    while(cursor < clean.size()){
+        size_t end = clean.find(' ', cursor);
+        if(end == std::string::npos){
+            end = clean.size();
+        }
+        std::string token = clean.substr(cursor, end - cursor);
+        if(!token.empty()){
+            bool hasUpper = false;
+            bool hasLower = false;
+            for(char ch : token){
+                unsigned char uch = static_cast<unsigned char>(ch);
+                hasUpper = hasUpper || (std::isupper(uch) != 0);
+                hasLower = hasLower || (std::islower(uch) != 0);
+            }
+            if(hasLower || !hasUpper){
+                token[0] = static_cast<char>(std::toupper(static_cast<unsigned char>(token[0])));
+                for(size_t i = 1; i < token.size(); ++i){
+                    token[i] = static_cast<char>(std::tolower(static_cast<unsigned char>(token[i])));
+                }
+            }
+            if(!out.empty()){
+                out.push_back(' ');
+            }
+            out += token;
+        }
+        cursor = end + 1;
+    }
+
+    return out.empty() ? std::string("Script") : out;
+}
+
 void TransformComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     if(ImGui::CollapsingHeader("Transform Component", ImGuiTreeNodeFlags_DefaultOpen)){
 
@@ -868,6 +976,12 @@ void LightComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
                 }
             }
         };
+        auto defaultShadowRangeForType = [&]() -> float {
+            if(self->light.type == LightType::DIRECTIONAL){
+                return 200.0f;
+            }
+            return Math3D::Max(self->light.range, 1.0f);
+        };
 
         const std::string entityId = entity->getNodeUniqueID();
         if(!entityId.empty()){
@@ -877,7 +991,7 @@ void LightComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
                     self->syncTransform = true;
                 }
                 if(self->light.shadowRange <= 0.0f){
-                    self->light.shadowRange = 200.0f;
+                    self->light.shadowRange = defaultShadowRangeForType();
                 }
                 migratedLightSyncTransform.insert(key);
             }
@@ -886,7 +1000,7 @@ void LightComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
                     self->light.range = 20.0f;
                 }
                 if(self->light.shadowRange <= 0.0f){
-                    self->light.shadowRange = 200.0f;
+                    self->light.shadowRange = defaultShadowRangeForType();
                 }
                 if(self->light.intensity <= 0.0f){
                     self->light.intensity = 4.0f;
@@ -919,7 +1033,7 @@ void LightComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
                     }
                     ensurePointLightBounds(entity, self->light.range);
                     if(self->light.shadowRange <= 0.0f){
-                        self->light.shadowRange = 200.0f;
+                        self->light.shadowRange = defaultShadowRangeForType();
                     }
                 }else if(newType == LightType::DIRECTIONAL){
                     if(self->light.direction.length() < Math3D::EPSILON){
@@ -940,7 +1054,7 @@ void LightComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
                         self->light.spotAngle = 45.0f;
                     }
                     if(self->light.shadowRange <= 0.0f){
-                        self->light.shadowRange = 200.0f;
+                        self->light.shadowRange = defaultShadowRangeForType();
                     }
                 }
             }
@@ -1132,7 +1246,6 @@ void CameraComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
 }
 
 Graphics::PostProcessing::PPostProcessingEffect SSAOComponent::getEffectForCamera(const CameraSettings& settings){
-    (void)settings;
     if(!enabled){
         return nullptr;
     }
@@ -1142,9 +1255,11 @@ Graphics::PostProcessing::PPostProcessingEffect SSAOComponent::getEffectForCamer
     runtimeEffect->radiusPx = Math3D::Max(0.25f, radiusPx);
     runtimeEffect->depthRadius = Math3D::Max(0.00001f, depthRadius);
     runtimeEffect->bias = Math3D::Max(0.0f, bias);
-    runtimeEffect->intensity = Math3D::Max(0.0f, intensity);
-    runtimeEffect->giBoost = Math3D::Max(0.0f, giBoost);
+    runtimeEffect->intensity = Math3D::Clamp(intensity, 0.0f, 2.0f);
+    runtimeEffect->giBoost = Math3D::Clamp(giBoost, 0.0f, 0.6f);
     runtimeEffect->sampleCount = Math3D::Clamp(sampleCount, 1, 16);
+    runtimeEffect->nearPlane = Math3D::Max(0.001f, settings.nearPlane);
+    runtimeEffect->farPlane = Math3D::Max(runtimeEffect->nearPlane + 0.001f, settings.farPlane);
     return runtimeEffect;
 }
 
@@ -1164,8 +1279,8 @@ void SSAOComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     ImGui::SliderFloat("Radius (Px)", &radiusPx, 0.25f, 12.0f, "%.2f");
     ImGui::SliderFloat("Depth Radius", &depthRadius, 0.00001f, 0.2f, "%.5f");
     ImGui::SliderFloat("Bias", &bias, 0.0f, 0.05f, "%.4f");
-    ImGui::SliderFloat("AO Strength", &intensity, 0.0f, 3.0f, "%.2f");
-    ImGui::SliderFloat("GI Boost", &giBoost, 0.0f, 1.2f, "%.2f");
+    ImGui::SliderFloat("AO Strength", &intensity, 0.0f, 2.0f, "%.2f");
+    ImGui::SliderFloat("GI Boost", &giBoost, 0.0f, 0.6f, "%.2f");
     ImGui::SliderInt("Samples", &sampleCount, 1, 16);
 }
 
@@ -1234,5 +1349,65 @@ void AntiAliasingComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene sc
     int item = static_cast<int>(preset);
     if(ImGui::Combo("Preset", &item, options, IM_ARRAYSIZE(options))){
         preset = static_cast<AntiAliasingPreset>(item);
+    }
+}
+
+bool ScriptComponent::hasScriptAsset(const std::string& scriptAssetRef) const{
+    if(scriptAssetRef.empty()){
+        return false;
+    }
+    const std::string needle = StringUtils::ToLowerCase(StringUtils::ReplaceAll(scriptAssetRef, "\\", "/"));
+    for(const auto& existing : scriptAssetRefs){
+        const std::string current = StringUtils::ToLowerCase(StringUtils::ReplaceAll(existing, "\\", "/"));
+        if(current == needle){
+            return true;
+        }
+    }
+    return false;
+}
+
+bool ScriptComponent::addScriptAsset(const std::string& scriptAssetRef){
+    if(scriptAssetRef.empty()){
+        return false;
+    }
+    std::string normalized = StringUtils::ReplaceAll(scriptAssetRef, "\\", "/");
+    if(hasScriptAsset(normalized)){
+        return false;
+    }
+    scriptAssetRefs.push_back(normalized);
+    std::sort(scriptAssetRefs.begin(), scriptAssetRefs.end());
+    return true;
+}
+
+void ScriptComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
+    (void)ecsPtr;
+    (void)scene;
+    if(!ImGui::CollapsingHeader("Script Component", ImGuiTreeNodeFlags_DefaultOpen)){
+        return;
+    }
+
+    if(scriptAssetRefs.empty()){
+        ImGui::TextDisabled("No scripts assigned.");
+        return;
+    }
+
+    int removeIndex = -1;
+    for(size_t i = 0; i < scriptAssetRefs.size(); ++i){
+        const std::string& path = scriptAssetRefs[i];
+        const std::string displayName = BuildScriptDisplayNameFromPath(path);
+
+        ImGui::PushID(static_cast<int>(i));
+        ImGui::TextUnformatted(displayName.c_str());
+        ImGui::SameLine();
+        if(ImGui::SmallButton("Remove")){
+            removeIndex = static_cast<int>(i);
+        }
+        ImGui::TextDisabled("%s", path.c_str());
+        ImGui::Separator();
+        ImGui::PopID();
+    }
+
+    if(removeIndex >= 0 && removeIndex < static_cast<int>(scriptAssetRefs.size())){
+        scriptAssetRefs.erase(scriptAssetRefs.begin() + removeIndex);
     }
 }

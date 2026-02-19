@@ -115,7 +115,56 @@ std::vector<Vertex> OBJLoader::ConstructVertices(const OBJData& data) {
     return vertices;
 }
 
-std::shared_ptr<Model> OBJLoader::LoadFromAsset(PAsset asset, PMaterial material) {
+std::vector<Math3D::Vec3> OBJLoader::BuildSmoothNormals(const OBJData& data){
+    std::vector<Math3D::Vec3> smoothNormals(data.positions.size(), Math3D::Vec3(0.0f, 0.0f, 0.0f));
+    if(data.positions.empty()){
+        return smoothNormals;
+    }
+
+    auto accumulateTriangleNormal = [&](int i0, int i1, int i2){
+        if(i0 < 0 || i1 < 0 || i2 < 0) return;
+        if(i0 >= static_cast<int>(data.positions.size()) ||
+           i1 >= static_cast<int>(data.positions.size()) ||
+           i2 >= static_cast<int>(data.positions.size())){
+            return;
+        }
+
+        const glm::vec3 p0 = (glm::vec3)data.positions[i0];
+        const glm::vec3 p1 = (glm::vec3)data.positions[i1];
+        const glm::vec3 p2 = (glm::vec3)data.positions[i2];
+        const glm::vec3 faceNormal = glm::cross(p1 - p0, p2 - p0);
+        if(glm::dot(faceNormal, faceNormal) <= 1e-12f){
+            return;
+        }
+
+        const Math3D::Vec3 n(faceNormal);
+        smoothNormals[i0] += n;
+        smoothNormals[i1] += n;
+        smoothNormals[i2] += n;
+    };
+
+    for(const auto& face : data.faces){
+        if(face.size() < 3){
+            continue;
+        }
+        const int base = face[0].posIdx;
+        for(size_t i = 1; i + 1 < face.size(); ++i){
+            accumulateTriangleNormal(base, face[i].posIdx, face[i + 1].posIdx);
+        }
+    }
+
+    for(auto& n : smoothNormals){
+        if(n.length() > 1e-6f){
+            n = n.normalize();
+        }else{
+            n = Math3D::Vec3(0.0f, 1.0f, 0.0f);
+        }
+    }
+
+    return smoothNormals;
+}
+
+std::shared_ptr<Model> OBJLoader::LoadFromAsset(PAsset asset, PMaterial material, bool forceSmoothNormals) {
 
     if (!asset) {
         LogBot.Log(LOG_ERRO,"OBJLoader::LoadFromAsset - Asset is null");
@@ -164,6 +213,11 @@ std::shared_ptr<Model> OBJLoader::LoadFromAsset(PAsset asset, PMaterial material
 
     //LogBot.LogBasic("Got Here 9");
 
+    std::vector<Math3D::Vec3> smoothNormals;
+    if(forceSmoothNormals){
+        smoothNormals = BuildSmoothNormals(data);
+    }
+
     // Create model with single part
     auto factory = ModelPartFactory::Create(material);
 
@@ -190,7 +244,9 @@ std::shared_ptr<Model> OBJLoader::LoadFromAsset(PAsset asset, PMaterial material
                 vtx.Position = data.positions[vidx.posIdx];
 
                 // Get normal from OBJ if available
-                if (vidx.normIdx >= 0 && vidx.normIdx < static_cast<int>(data.normals.size())) {
+                if(forceSmoothNormals && vidx.posIdx >= 0 && vidx.posIdx < static_cast<int>(smoothNormals.size())){
+                    vtx.Normal = smoothNormals[vidx.posIdx];
+                }else if (vidx.normIdx >= 0 && vidx.normIdx < static_cast<int>(data.normals.size())) {
                     vtx.Normal = data.normals[vidx.normIdx];
                 } else {
                     vtx.Normal = Math3D::Vec3(0, 1, 0);

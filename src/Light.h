@@ -45,11 +45,11 @@ struct Light {
           range(20.0f),
           falloff(2.0f),
           spotAngle(45.0f),
-          shadowRange(200.0f),
+          shadowRange(20.0f),
           castsShadows(false),
           shadowType(ShadowType::Smooth),
-          shadowBias(0.001f),
-          shadowNormalBias(0.002f),
+          shadowBias(0.0025f),
+          shadowNormalBias(0.005f),
           shadowStrength(1.0f)
     {}
     
@@ -67,7 +67,7 @@ struct Light {
         light.intensity = intensity;
         light.range = range;
         light.falloff = Math3D::Clamp(falloff, 0.1f, 3.0f);
-        light.shadowRange = 200.0f;
+        light.shadowRange = range;
         light.castsShadows = true;
         return light;
     }
@@ -106,7 +106,7 @@ struct Light {
         light.range = range;
         light.falloff = Math3D::Clamp(falloff, 0.1f, 3.0f);
         light.spotAngle = spotAngle;
-        light.shadowRange = 200.0f;
+        light.shadowRange = range;
         light.castsShadows = true;
         return light;
     }

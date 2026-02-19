@@ -19,6 +19,8 @@
 #include <cstring>
 
 namespace {
+    constexpr bool kEnableRaytraceShaderStage = false;
+
     void copyBuffer(char* dst, size_t dstSize, const std::string& src){
         if(!dst || dstSize == 0){
             return;
@@ -124,9 +126,8 @@ void FilePreviewWidget::reloadFromDisk(bool force){
             return;
         }
 
+        bundledShaderData = data;
         copyBuffer(cacheName, sizeof(cacheName), data.cacheName);
-        copyBuffer(vertexAsset, sizeof(vertexAsset), data.vertexAssetRef);
-        copyBuffer(fragmentAsset, sizeof(fragmentAsset), data.fragmentAssetRef);
         return;
     }
 
@@ -183,17 +184,59 @@ void FilePreviewWidget::draw(){
 void FilePreviewWidget::drawShaderAssetEditor(){
     bool changed = false;
     changed |= ImGui::InputText("Cache Name", cacheName, sizeof(cacheName));
-    changed |= EditorAssetUI::DrawAssetDropInput("Vertex Shader", vertexAsset, sizeof(vertexAsset), EditorAssetUI::AssetKind::ShaderVertex);
-    changed |= EditorAssetUI::DrawAssetDropInput("Fragment Shader", fragmentAsset, sizeof(fragmentAsset), EditorAssetUI::AssetKind::ShaderFragment);
+    changed |= EditorAssetUI::DrawAssetDropInput(
+        "Vertex Shader",
+        bundledShaderData.vertexAssetRef,
+        {EditorAssetUI::AssetKind::ShaderVertex, EditorAssetUI::AssetKind::ShaderGeneric}
+    );
+    changed |= EditorAssetUI::DrawAssetDropInput(
+        "Fragment Shader",
+        bundledShaderData.fragmentAssetRef,
+        {EditorAssetUI::AssetKind::ShaderFragment, EditorAssetUI::AssetKind::ShaderGeneric}
+    );
+    changed |= EditorAssetUI::DrawAssetDropInput(
+        "Geometry Shader",
+        bundledShaderData.geometryAssetRef,
+        {EditorAssetUI::AssetKind::ShaderGrometry, EditorAssetUI::AssetKind::ShaderGeneric}
+    );
+    changed |= EditorAssetUI::DrawAssetDropInput(
+        "Tesselation Shader",
+        bundledShaderData.tesselationAssetRef,
+        {EditorAssetUI::AssetKind::ShaderTesselation, EditorAssetUI::AssetKind::ShaderGeneric}
+    );
+    changed |= EditorAssetUI::DrawAssetDropInput(
+        "Compute Shader",
+        bundledShaderData.computeAssetRef,
+        {EditorAssetUI::AssetKind::ShaderCompute, EditorAssetUI::AssetKind::ShaderGeneric}
+    );
+    changed |= EditorAssetUI::DrawAssetDropInput(
+        "Task Shader",
+        bundledShaderData.taskAssetRef,
+        {EditorAssetUI::AssetKind::ShaderTask, EditorAssetUI::AssetKind::ShaderGeneric}
+    );
+
+    if(kEnableRaytraceShaderStage){
+        changed |= EditorAssetUI::DrawAssetDropInput(
+            "Raytrace Shader",
+            bundledShaderData.rtAssetRef,
+            {EditorAssetUI::AssetKind::ShaderRaytrace, EditorAssetUI::AssetKind::ShaderGeneric}
+        );
+    }else{
+        ImGui::BeginDisabled();
+        EditorAssetUI::DrawAssetDropInput(
+            "Raytrace Shader (Disabled)",
+            bundledShaderData.rtAssetRef,
+            {EditorAssetUI::AssetKind::ShaderRaytrace, EditorAssetUI::AssetKind::ShaderGeneric},
+            true
+        );
+        ImGui::EndDisabled();
+    }
 
     if(changed){
-        ShaderAssetData data;
-        data.cacheName = cacheName;
-        data.vertexAssetRef = vertexAsset;
-        data.fragmentAssetRef = fragmentAsset;
+        bundledShaderData.cacheName = cacheName;
 
         std::string error;
-        if(ShaderAssetIO::SaveToAbsolutePath(filePath, data, &error)){
+        if(ShaderAssetIO::SaveToAbsolutePath(filePath, bundledShaderData, &error)){
             statusIsError = false;
             statusMessage = "Saved.";
             std::error_code ec;

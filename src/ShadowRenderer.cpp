@@ -19,6 +19,9 @@ namespace {
     constexpr int MAX_SHADOW_MAPS_2D = 24;
     constexpr int MAX_SHADOW_MAPS_CUBE = 2;
     constexpr int SHADOW_TEX_UNIT_BASE_2D = 8;
+    constexpr int SHADOW_MAP_SIZE_DIRECTIONAL = 4096;
+    constexpr int SHADOW_MAP_SIZE_SPOT = 3072;
+    constexpr int SHADOW_MAP_SIZE_CUBE = 2048;
 
     struct ShadowSlot2D {
         ShadowMap2D map;
@@ -107,12 +110,12 @@ namespace {
     }
 
     int getShadowMapSize2D(const Light& light) {
-        int target = (light.type == LightType::DIRECTIONAL) ? 4096 : 2048;
+        int target = (light.type == LightType::DIRECTIONAL) ? SHADOW_MAP_SIZE_DIRECTIONAL : SHADOW_MAP_SIZE_SPOT;
         return Math3D::Min(target, getMaxShadowMapSize2D());
     }
 
     int getShadowMapSizeCube() {
-        return Math3D::Min(1024, getMaxShadowMapSizeCube());
+        return Math3D::Min(SHADOW_MAP_SIZE_CUBE, getMaxShadowMapSizeCube());
     }
 
     const std::vector<Light>& getActiveLights(){
@@ -444,7 +447,8 @@ static void computeDirectionalCascades(
     float nearPlane = camera->getSettings().nearPlane;
     float shadowRange = safeFloat(light.shadowRange, light.range);
     float farPlane = Math3D::Min(camera->getSettings().farPlane, (shadowRange > 0.0f) ? shadowRange : camera->getSettings().farPlane);
-    float lambda = 0.5f;
+    // Favor logarithmic splits to keep higher density in near cascades.
+    float lambda = 0.85f;
 
     std::vector<float> splits;
     splits.reserve(cascadeCount);
@@ -465,7 +469,7 @@ static void computeDirectionalCascades(
         up = glm::vec3(0,0,1);
     }
 
-    constexpr float kCascadeGuardBand = 0.05f;
+    constexpr float kCascadeGuardBand = 0.02f;
     constexpr float kCascadeCasterXYMarginFactor = 0.1f;
 
     float prevSplit = nearPlane;
@@ -529,8 +533,10 @@ static void computeDirectionalCascades(
                     continue;
                 }
 
-                minV = glm::min(minV, casterMinLS);
-                maxV = glm::max(maxV, casterMaxLS);
+                // Only expand depth. Expanding XY by large casters (e.g. big ground planes)
+                // destroys texel density and makes directional shadows look low resolution.
+                minV.z = std::min(minV.z, casterMinLS.z);
+                maxV.z = std::max(maxV.z, casterMaxLS.z);
             }
         }
 
@@ -539,11 +545,27 @@ static void computeDirectionalCascades(
         minV -= padding;
         maxV += padding;
 
+        // Stabilize directional cascades by snapping XY center to shadow texel units.
+        extent = maxV - minV;
+        float halfSize = 0.5f * std::max(extent.x, extent.y);
+        halfSize = std::max(halfSize, 0.001f);
+        glm::vec2 centerXY(0.5f * (minV.x + maxV.x), 0.5f * (minV.y + maxV.y));
+        int shadowMapSize = Math3D::Max(1, getShadowMapSize2D(light));
+        float texelWorldSize = (halfSize * 2.0f) / static_cast<float>(shadowMapSize);
+        if(texelWorldSize > 1e-6f){
+            centerXY = glm::floor((centerXY / texelWorldSize) + glm::vec2(0.5f)) * texelWorldSize;
+        }
+        minV.x = centerXY.x - halfSize;
+        maxV.x = centerXY.x + halfSize;
+        minV.y = centerXY.y - halfSize;
+        maxV.y = centerXY.y + halfSize;
+
         float zSpan = maxV.z - minV.z;
-        float zMult = Math3D::Max(10.0f, zSpan * 0.2f);
+        // Keep depth padding modest to preserve precision and reduce shadow acne.
+        float zMult = Math3D::Max(0.75f, zSpan * 0.05f);
         float nearZ = -maxV.z - zMult;
         float farZ = -minV.z + zMult;
-        if(nearZ < 0.1f) nearZ = 0.1f;
+        if(nearZ < 0.05f) nearZ = 0.05f;
         if(farZ < nearZ + 0.1f) farZ = nearZ + 0.1f;
 
         glm::mat4 lightProj = glm::ortho(minV.x, maxV.x, minV.y, maxV.y, nearZ, farZ);
@@ -964,6 +986,9 @@ void ShadowRenderer::RenderShadowsBatch(const std::vector<ShadowDrawItem>& items
     glDepthMask(GL_TRUE);
     glDisable(GL_BLEND);
     glDisable(GL_CULL_FACE);
+    // Add slope-scaled depth bias during shadow map rendering to reduce self-shadow acne.
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonOffset(1.75f, 4.0f);
 
     if(g_shadow2DProgram && g_shadow2DProgram->getID() != 0){
         g_shadow2DProgram->bind();
@@ -974,6 +999,7 @@ void ShadowRenderer::RenderShadowsBatch(const std::vector<ShadowDrawItem>& items
             }
             slot.map.bind();
             glViewport(0, 0, slot.map.getSize(), slot.map.getSize());
+            glClear(GL_DEPTH_BUFFER_BIT);
             g_shadow2DProgram->setUniformFast("u_lightMatrix", Uniform<Math3D::Mat4>(slot.matrix));
             for(const ShadowDrawItem* item : activeItems){
                 g_shadow2DProgram->setUniformFast("u_model", Uniform<Math3D::Mat4>(item->model));
@@ -1012,6 +1038,7 @@ void ShadowRenderer::RenderShadowsBatch(const std::vector<ShadowDrawItem>& items
             for(size_t face = 0; face < slot.matrices.size(); ++face){
                 slot.map.bindFace(GL_TEXTURE_CUBE_MAP_POSITIVE_X + static_cast<int>(face));
                 glViewport(0, 0, slot.map.getSize(), slot.map.getSize());
+                glClear(GL_DEPTH_BUFFER_BIT);
                 g_shadowCubeProgram->setUniformFast("u_lightMatrix", Uniform<Math3D::Mat4>(slot.matrices[face]));
                 for(const ShadowDrawItem* item : activeItems){
                     g_shadowCubeProgram->setUniformFast("u_model", Uniform<Math3D::Mat4>(item->model));
@@ -1029,6 +1056,8 @@ void ShadowRenderer::RenderShadowsBatch(const std::vector<ShadowDrawItem>& items
 
     glBindFramebuffer(GL_FRAMEBUFFER, g_savedFbo);
     glViewport(g_savedViewport[0], g_savedViewport[1], g_savedViewport[2], g_savedViewport[3]);
+    glDisable(GL_POLYGON_OFFSET_FILL);
+    glPolygonOffset(0.0f, 0.0f);
     glEnable(GL_CULL_FACE);
     g_inShadowPass = false;
 }

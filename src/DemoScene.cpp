@@ -132,23 +132,23 @@ void DemoScene::init(){
         }
         if(ssao){
             ssao->enabled = true;
-            ssao->radiusPx = 3.5f;
-            ssao->depthRadius = 0.02f;
+            ssao->radiusPx = 2.5f;
+            ssao->depthRadius = 0.015f;
             ssao->bias = 0.0008f;
-            ssao->intensity = 1.0f;
-            ssao->giBoost = 0.10f;
-            ssao->sampleCount = 8;
+            ssao->intensity = 0.75f;
+            ssao->giBoost = 0.05f;
+            ssao->sampleCount = 6;
         }
         if(dof){
-            dof->enabled = false;
-            dof->focusDistance = 10.0f;
-            dof->focusRange = 5.0f;
-            dof->blurStrength = 0.7f;
-            dof->maxBlurPx = 7.0f;
-            dof->sampleCount = 6;
+            dof->enabled = true;
+            dof->focusDistance = 14.0f;
+            dof->focusRange = 10.0f;
+            dof->blurStrength = 0.35f;
+            dof->maxBlurPx = 4.0f;
+            dof->sampleCount = 5;
         }
         if(aa){
-            aa->preset = AntiAliasingPreset::FXAA_Medium;
+            aa->preset = AntiAliasingPreset::FXAA_High;
         }
     }
 
@@ -206,7 +206,10 @@ void DemoScene::init(){
     auto topPBR = makePbrTextured(textureImageTop, 0.0f, 0.90f, 0.10f);
     auto sidePBR = makePbrTextured(textureImageSides, 0.0f, 0.95f, 0.08f);
     auto bottomPBR = makePbrTextured(textureImageBottom, 0.0f, 0.98f, 0.04f);
-    auto uvPBR = makePbrTextured(textureUVDefault, 0.0f, 0.70f, 0.25f);
+    auto uvPBR = makePbrTextured(textureUVDefault, 0.05f, 0.45f, 0.55f);
+    if(uvPBR){
+        uvPBR->OcclusionStrength = 0.65f;
+    }
 
     ground->addPart(ModelPartPrefabs::MakePlane(200,200,groundPBR));
     ground->transform().setPosition(Math3D::Vec3(0,-5,0));
@@ -243,7 +246,7 @@ void DemoScene::init(){
     mat->EnvStrength = 0.55f;
     
     lucille = OBJLoader::LoadFromAsset(AssetManager::Instance.getOrLoad("@assets/models/lucille/lucille.obj"),mat);
-    orb = OBJLoader::LoadFromAsset(AssetManager::Instance.getOrLoad("@assets/models/theorb/orb.obj"), uvPBR);
+    orb = OBJLoader::LoadFromAsset(AssetManager::Instance.getOrLoad("@assets/models/theorb/orb.obj"), uvPBR, true);
 
     if(mainScreen && mainScreen->getEnvironment()){
         auto env = mainScreen->getEnvironment();
@@ -252,6 +255,9 @@ void DemoScene::init(){
     }
 
     auto SunLight = Light::CreateDirectionalLight(Math3D::Vec3(-0.3f, -1.0f, -0.2f), Color::fromRGBA255(255, 208, 180, 255), 0.70f);
+    SunLight.shadowRange = 90.0f;
+    SunLight.shadowBias = 0.0035f;
+    SunLight.shadowNormalBias = 0.015f;
     auto KeyPoint = Light::CreatePointLight(Math3D::Vec3(4.5f, 6.0f, 2.0f), Color::fromRGBA255(255, 230, 180, 255), 6.5f, 18.0f, 2.0f);
     auto FillPoint = Light::CreatePointLight(Math3D::Vec3(-6.0f, 3.0f, 6.0f), Color::fromRGBA255(120, 180, 255, 255), 3.0f, 20.0f, 2.0f);
     auto RimPoint = Light::CreatePointLight(Math3D::Vec3(0.0f, 7.0f, -8.0f), Color::fromRGBA255(255, 255, 255, 255), 4.0f, 20.0f, 2.0f);

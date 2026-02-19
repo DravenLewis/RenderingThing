@@ -10,6 +10,12 @@
 #include "ScreenEffects.h"
 
 #include "Scene.h"
+#include <string>
+#include <vector>
+
+// Converts a script path/asset-ref into an inspector-friendly name.
+// Example: "@assets/scripts/FPSController.lua" -> "FPS Controller"
+std::string BuildScriptDisplayNameFromPath(const std::string& scriptPath);
 
 struct IEditorCompatibleComponent : public NeoECS::ECSComponent{
     using NeoECS::ECSComponent::ECSComponent;
@@ -103,6 +109,15 @@ struct AntiAliasingComponent : public IEditorCompatibleComponent {
     std::shared_ptr<FXAAEffect> runtimeEffect;
 
     Graphics::PostProcessing::PPostProcessingEffect getEffectForCamera(const CameraSettings& settings);
+    void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
+};
+
+struct ScriptComponent : public IEditorCompatibleComponent {
+    using IEditorCompatibleComponent::IEditorCompatibleComponent;
+    std::vector<std::string> scriptAssetRefs;
+
+    bool addScriptAsset(const std::string& scriptAssetRef);
+    bool hasScriptAsset(const std::string& scriptAssetRef) const;
     void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
 };
 

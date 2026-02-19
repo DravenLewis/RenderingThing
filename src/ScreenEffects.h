@@ -108,6 +108,8 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
             uniform float u_intensity;
             uniform float u_giBoost;
             uniform int u_sampleCount;
+            uniform float u_nearPlane;
+            uniform float u_farPlane;
 
             const vec2 kPoisson[16] = vec2[](
                 vec2(-0.94201624, -0.39906216),
@@ -128,30 +130,63 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
                 vec2( 0.14383161, -0.14100790)
             );
 
+            float linearizeDepth(float depth){
+                float z = depth * 2.0 - 1.0;
+                return (2.0 * u_nearPlane * u_farPlane) / max((u_farPlane + u_nearPlane) - (z * (u_farPlane - u_nearPlane)), 0.0001);
+            }
+
             void main() {
                 vec4 base = texture(screenTexture, TexCoords);
-                float centerDepth = texture(depthTexture, TexCoords).r;
+                float centerDepthRaw = texture(depthTexture, TexCoords).r;
+                if(centerDepthRaw >= 0.99999){
+                    FragColor = base;
+                    return;
+                }
+                float centerDepth = linearizeDepth(centerDepthRaw);
 
                 float radiusPx = max(u_radiusPx, 0.25);
                 float depthRadius = max(u_depthRadius, 0.00005);
                 int count = clamp(u_sampleCount, 1, 16);
 
+                // Scale thresholds with distance and local depth slope for temporal stability.
+                float depthScale = clamp(centerDepth * 0.08, 1.0, 32.0);
+                float adaptiveDepthRadius = depthRadius * depthScale;
+                float depthSlope = abs(dFdx(centerDepth)) + abs(dFdy(centerDepth));
+                float baseBias = max(u_bias * depthScale, adaptiveDepthRadius * 0.08);
+
                 float occ = 0.0;
+                float weightSum = 0.0;
                 for(int i = 0; i < count; ++i){
-                    vec2 uv = TexCoords + (kPoisson[i] * radiusPx * u_texelSize);
-                    float sampleDepth = texture(depthTexture, uv).r;
-                    // Occlusion only when nearby sample is closer than the center pixel.
+                    vec2 pixelOffset = kPoisson[i] * radiusPx;
+                    vec2 uv = TexCoords + (pixelOffset * u_texelSize);
+                    if(uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0){
+                        continue;
+                    }
+                    float sampleDepthRaw = texture(depthTexture, uv).r;
+                    if(sampleDepthRaw >= 0.99999){
+                        continue;
+                    }
+                    float sampleDepth = linearizeDepth(sampleDepthRaw);
+
                     float depthDelta = centerDepth - sampleDepth;
-                    float sampleOcc = step(u_bias, depthDelta);
-                    float rangeWeight = 1.0 - smoothstep(0.0, depthRadius, abs(depthDelta));
+                    float slopeAllowance = depthSlope * length(pixelOffset);
+                    float adjustedDelta = depthDelta - (baseBias + slopeAllowance);
+                    if(adjustedDelta <= 0.0){
+                        continue;
+                    }
+                    float sampleOcc = smoothstep(0.0, adaptiveDepthRadius, adjustedDelta);
+                    float rangeWeight = 1.0 - smoothstep(0.0, adaptiveDepthRadius * 2.0, adjustedDelta);
                     occ += sampleOcc * rangeWeight;
+                    weightSum += rangeWeight;
                 }
 
-                occ /= float(count);
+                occ /= max(weightSum, 0.0001);
                 // Keep a floor so SSAO cannot collapse the whole frame into near-black.
-                float ao = clamp(1.0 - (occ * u_intensity), 0.2, 1.0);
+                float ao = clamp(1.0 - (occ * u_intensity), 0.45, 1.0);
 
-                vec3 giBounce = base.rgb * (1.0 - ao) * u_giBoost;
+                float giFactor = (1.0 - ao);
+                giFactor = giFactor * giFactor * u_giBoost;
+                vec3 giBounce = base.rgb * giFactor;
                 vec3 finalColor = (base.rgb * ao) + giBounce;
                 FragColor = vec4(finalColor, base.a);
             }
@@ -182,6 +217,8 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
         float intensity = 1.0f;
         float giBoost = 0.12f;
         int sampleCount = 8;
+        float nearPlane = 0.1f;
+        float farPlane = 1000.0f;
 
         SSAOEffect() {
             shader = std::make_shared<ShaderProgram>();
@@ -211,6 +248,8 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
             shader->setUniformFast("u_intensity", Uniform<float>(intensity));
             shader->setUniformFast("u_giBoost", Uniform<float>(giBoost));
             shader->setUniformFast("u_sampleCount", Uniform<int>(sampleCount));
+            shader->setUniformFast("u_nearPlane", Uniform<float>(nearPlane));
+            shader->setUniformFast("u_farPlane", Uniform<float>(farPlane));
 
             static const Math3D::Mat4 IDENTITY;
             shader->setUniformFast("u_model", Uniform<Math3D::Mat4>(IDENTITY));
@@ -251,7 +290,7 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
                 return (2.0 * u_nearPlane * u_farPlane) / max((u_farPlane + u_nearPlane) - (z * (u_farPlane - u_nearPlane)), 0.0001);
             }
 
-            vec3 gatherBlur(vec2 uv, float radiusPx, int sampleCount){
+            vec3 gatherBlur(vec2 uv, float radiusPx, int sampleCount, float centerLinearDepth){
                 vec2 dirs[8] = vec2[](
                     vec2( 1.0,  0.0),
                     vec2(-1.0,  0.0),
@@ -266,12 +305,18 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
                 vec3 accum = texture(screenTexture, uv).rgb;
                 float weight = 1.0;
                 int loops = clamp(sampleCount, 1, 8);
+                float depthTolerance = max(u_focusRange * 0.35, 0.25);
                 for(int i = 0; i < loops; ++i){
                     vec2 offset = dirs[i] * radiusPx * u_texelSize;
-                    accum += texture(screenTexture, uv + offset).rgb;
-                    weight += 1.0;
+                    vec2 sampleUv = uv + offset;
+                    vec3 sampleColor = texture(screenTexture, sampleUv).rgb;
+                    float sampleLinearDepth = linearizeDepth(texture(depthTexture, sampleUv).r);
+                    float depthDelta = abs(sampleLinearDepth - centerLinearDepth);
+                    float depthWeight = 1.0 - smoothstep(0.0, depthTolerance, depthDelta);
+                    accum += sampleColor * depthWeight;
+                    weight += depthWeight;
                 }
-                return accum / weight;
+                return accum / max(weight, 0.0001);
             }
 
             void main() {
@@ -282,9 +327,10 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
                 float focusRange = max(u_focusRange, 0.001);
                 float coc = clamp(abs(linearDepth - u_focusDistance) / focusRange, 0.0, 1.0);
                 coc = clamp(coc * u_blurStrength, 0.0, 1.0);
+                coc = coc * coc;
 
                 float blurRadius = coc * max(u_maxBlurPx, 0.0);
-                vec3 blurred = gatherBlur(TexCoords, blurRadius, u_sampleCount);
+                vec3 blurred = gatherBlur(TexCoords, blurRadius, u_sampleCount, linearDepth);
                 vec3 color = mix(base.rgb, blurred, coc);
                 FragColor = vec4(color, base.a);
             }

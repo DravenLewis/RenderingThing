@@ -79,34 +79,120 @@ float sampleShadowCube(int shadowType, int mapIndex, vec3 fragPos, vec3 lightPos
     float currentDepth = length(toLight);
     float depth = currentDepth / farPlane;
     vec3 dir = normalize(toLight);
+    float cubeTexel = 1.0 / float(max(textureSize(u_shadowMapsCube[mapIndex], 0).x, 1));
 
     if(shadowType == 0){
         return texture(u_shadowMapsCube[mapIndex], vec4(dir, depth - bias));
     }else if(shadowType == 1){
         float shadow = 0.0;
+        float sampleRadius = cubeTexel * 1.5;
         vec3 offsets[4] = vec3[4](
-            vec3( 0.01, 0.01, 0.01),
-            vec3(-0.01, 0.01,-0.01),
-            vec3( 0.01,-0.01, 0.01),
-            vec3(-0.01,-0.01,-0.01)
+            vec3( 1.0, 1.0, 1.0),
+            vec3(-1.0, 1.0,-1.0),
+            vec3( 1.0,-1.0, 1.0),
+            vec3(-1.0,-1.0,-1.0)
         );
         for(int i = 0; i < 4; ++i){
-            shadow += texture(u_shadowMapsCube[mapIndex], vec4(normalize(dir + offsets[i]), depth - bias));
+            shadow += texture(u_shadowMapsCube[mapIndex], vec4(normalize(dir + offsets[i] * sampleRadius), depth - bias));
         }
         return shadow * 0.25;
     }else{
         float shadow = 0.0;
+        float sampleRadius = cubeTexel * 2.5;
         vec3 offsets[8] = vec3[8](
-            vec3( 0.01, 0.01, 0.01), vec3(-0.01, 0.01, 0.01),
-            vec3( 0.01,-0.01, 0.01), vec3(-0.01,-0.01, 0.01),
-            vec3( 0.01, 0.01,-0.01), vec3(-0.01, 0.01,-0.01),
-            vec3( 0.01,-0.01,-0.01), vec3(-0.01,-0.01,-0.01)
+            vec3( 1.0, 1.0, 1.0), vec3(-1.0, 1.0, 1.0),
+            vec3( 1.0,-1.0, 1.0), vec3(-1.0,-1.0, 1.0),
+            vec3( 1.0, 1.0,-1.0), vec3(-1.0, 1.0,-1.0),
+            vec3( 1.0,-1.0,-1.0), vec3(-1.0,-1.0,-1.0)
         );
         for(int i = 0; i < 8; ++i){
-            shadow += texture(u_shadowMapsCube[mapIndex], vec4(normalize(dir + offsets[i]), depth - bias));
+            shadow += texture(u_shadowMapsCube[mapIndex], vec4(normalize(dir + offsets[i] * sampleRadius), depth - bias));
         }
         return shadow * 0.125;
     }
+}
+
+float computeShadowBias(Light light, vec3 normal, vec3 fragPos){
+    int lightType = int(light.meta.x + 0.5);
+    vec3 biasDir = (lightType == 1)
+        ? safeNormalize(-light.direction.xyz)
+        : safeNormalize(light.position.xyz - fragPos);
+    float NdotL = max(dot(normal, biasDir), 0.0);
+    return light.shadow.x + light.shadow.y * (1.0 - NdotL);
+}
+
+float sampleShadowForLight(Light light, vec3 normal, vec3 fragPos){
+    if(light.meta.z < 0.0){
+        return 1.0;
+    }
+
+    int lightType = int(light.meta.x + 0.5);
+    int shadowType = int(light.meta.y + 0.5);
+    int baseIndex = int(light.meta.z + 0.5);
+    vec3 biasDir = (lightType == 1)
+        ? safeNormalize(-light.direction.xyz)
+        : safeNormalize(light.position.xyz - fragPos);
+    float NdotL = max(dot(normal, biasDir), 0.0);
+    float slope = 1.0 - NdotL;
+
+    float bias = max(light.shadow.x, 0.0002) * (1.0 + slope * 2.0);
+    bias = max(bias, computeShadowBias(light, normal, fragPos) * 0.85);
+
+    float normalOffset = max(light.shadow.y, 0.0) * (0.35 + slope * 1.65);
+    vec3 receiverPos = fragPos + normal * normalOffset;
+
+    if(lightType == 0){
+        return sampleShadowCube(
+            shadowType,
+            baseIndex,
+            receiverPos,
+            light.position.xyz,
+            max(light.cascadeSplits.x, 0.1),
+            bias
+        );
+    }
+
+    int cascadeCount = clamp(int(light.shadow.z + 0.5), 1, 4);
+    int cascadeIndex = 0;
+    float viewDepth = -(u_cameraView * vec4(receiverPos, 1.0)).z;
+    if(cascadeCount > 1){
+        if(viewDepth > light.cascadeSplits.x) cascadeIndex = 1;
+        if(viewDepth > light.cascadeSplits.y) cascadeIndex = 2;
+        if(viewDepth > light.cascadeSplits.z) cascadeIndex = 3;
+        cascadeIndex = clamp(cascadeIndex, 0, cascadeCount - 1);
+    }
+
+    if(lightType == 1){
+        receiverPos += normal * max(light.shadow.y, 0.0) * 0.75;
+        viewDepth = -(u_cameraView * vec4(receiverPos, 1.0)).z;
+        cascadeIndex = 0;
+        if(cascadeCount > 1){
+            if(viewDepth > light.cascadeSplits.x) cascadeIndex = 1;
+            if(viewDepth > light.cascadeSplits.y) cascadeIndex = 2;
+            if(viewDepth > light.cascadeSplits.z) cascadeIndex = 3;
+            cascadeIndex = clamp(cascadeIndex, 0, cascadeCount - 1);
+        }
+
+        float cascadeScale = 1.0 + float(cascadeIndex) * 0.35;
+        bias *= cascadeScale;
+        bias = max(bias, 0.0045 + float(cascadeIndex) * 0.0012);
+    }
+
+    vec4 lightSpacePos = light.lightMatrices[cascadeIndex] * vec4(receiverPos, 1.0);
+    float visibility = sampleShadow2D(shadowType, baseIndex + cascadeIndex, lightSpacePos, bias);
+
+    if(lightType == 1 && cascadeCount > 1 && cascadeIndex < (cascadeCount - 1)){
+        float splitDist = light.cascadeSplits[cascadeIndex];
+        float blendRange = max(splitDist * 0.10, 3.0);
+        float blendT = clamp((viewDepth - (splitDist - blendRange)) / blendRange, 0.0, 1.0);
+        if(blendT > 0.0){
+            vec4 nextLightSpacePos = light.lightMatrices[cascadeIndex + 1] * vec4(receiverPos, 1.0);
+            float nextVisibility = sampleShadow2D(shadowType, baseIndex + cascadeIndex + 1, nextLightSpacePos, bias);
+            visibility = mix(visibility, nextVisibility, blendT);
+        }
+    }
+
+    return visibility;
 }
 
 float DistributionGGX(vec3 N, vec3 H, float roughness){
@@ -205,24 +291,7 @@ void main(){
 
             float visibility = 1.0;
             if(light.meta.z >= 0.0){
-                float bias = light.shadow.x + light.shadow.y * (1.0 - max(dot(N, safeNormalize(light.direction.xyz)), 0.0));
-                int shadowType = int(light.meta.y + 0.5);
-                int baseIndex = int(light.meta.z + 0.5);
-                if(lightType == 0){
-                    visibility = sampleShadowCube(shadowType, baseIndex, fragPos, light.position.xyz, max(light.cascadeSplits.x, 0.1), bias);
-                }else{
-                    int cascadeCount = int(light.shadow.z + 0.5);
-                    int cascadeIndex = 0;
-                    float viewDepth = -(u_cameraView * vec4(fragPos, 1.0)).z;
-                    if(cascadeCount > 1){
-                        if(viewDepth > light.cascadeSplits.x) cascadeIndex = 1;
-                        if(viewDepth > light.cascadeSplits.y) cascadeIndex = 2;
-                        if(viewDepth > light.cascadeSplits.z) cascadeIndex = 3;
-                        cascadeIndex = clamp(cascadeIndex, 0, cascadeCount - 1);
-                    }
-                    vec4 lightSpacePos = light.lightMatrices[cascadeIndex] * vec4(fragPos, 1.0);
-                    visibility = sampleShadow2D(shadowType, baseIndex + cascadeIndex, lightSpacePos, bias);
-                }
+                visibility = sampleShadowForLight(light, N, fragPos);
                 visibility = mix(1.0, visibility, clamp(light.meta.w, 0.0, 1.0));
             }
 
@@ -292,24 +361,7 @@ void main(){
 
         float visibility = 1.0;
         if(light.meta.z >= 0.0){
-            float bias = light.shadow.x + light.shadow.y * (1.0 - max(dot(N, safeNormalize(light.direction.xyz)), 0.0));
-            int shadowType = int(light.meta.y + 0.5);
-            int baseIndex = int(light.meta.z + 0.5);
-            if(lightType == 0){
-                visibility = sampleShadowCube(shadowType, baseIndex, fragPos, light.position.xyz, max(light.cascadeSplits.x, 0.1), bias);
-            }else{
-                int cascadeCount = int(light.shadow.z + 0.5);
-                int cascadeIndex = 0;
-                float viewDepth = -(u_cameraView * vec4(fragPos, 1.0)).z;
-                if(cascadeCount > 1){
-                    if(viewDepth > light.cascadeSplits.x) cascadeIndex = 1;
-                    if(viewDepth > light.cascadeSplits.y) cascadeIndex = 2;
-                    if(viewDepth > light.cascadeSplits.z) cascadeIndex = 3;
-                    cascadeIndex = clamp(cascadeIndex, 0, cascadeCount - 1);
-                }
-                vec4 lightSpacePos = light.lightMatrices[cascadeIndex] * vec4(fragPos, 1.0);
-                visibility = sampleShadow2D(shadowType, baseIndex + cascadeIndex, lightSpacePos, bias);
-            }
+            visibility = sampleShadowForLight(light, N, fragPos);
             visibility = mix(1.0, visibility, clamp(light.meta.w, 0.0, 1.0));
         }
 

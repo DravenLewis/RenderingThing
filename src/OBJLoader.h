@@ -28,6 +28,7 @@ private:
 
     static OBJData ParseOBJData(const std::string& content);
     static std::vector<Vertex> ConstructVertices(const OBJData& data);
+    static std::vector<Math3D::Vec3> BuildSmoothNormals(const OBJData& data);
     
 public:
     OBJLoader() = delete;
@@ -35,7 +36,8 @@ public:
     // Load OBJ from an asset
     static std::shared_ptr<Model> LoadFromAsset(
         PAsset asset,
-        PMaterial material = MaterialDefaults::LitColorMaterial::Create(Color::WHITE)
+        PMaterial material = MaterialDefaults::LitColorMaterial::Create(Color::WHITE),
+        bool forceSmoothNormals = false
     );
 };
 

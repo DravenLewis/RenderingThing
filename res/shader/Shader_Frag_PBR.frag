@@ -112,34 +112,46 @@ float sampleShadowCube(int shadowType, int mapIndex, vec3 fragPos, vec3 lightPos
     float currentDepth = length(toLight);
     float depth = currentDepth / farPlane;
     vec3 dir = normalize(toLight);
+    float cubeTexel = 1.0 / float(max(textureSize(u_shadowMapsCube[mapIndex], 0).x, 1));
 
     if(shadowType == 0){
         return texture(u_shadowMapsCube[mapIndex], vec4(dir, depth - bias));
     }else if(shadowType == 1){
         float shadow = 0.0;
+        float sampleRadius = cubeTexel * 1.5;
         vec3 offsets[4] = vec3[4](
-            vec3( 0.01, 0.01, 0.01),
-            vec3(-0.01, 0.01,-0.01),
-            vec3( 0.01,-0.01, 0.01),
-            vec3(-0.01,-0.01,-0.01)
+            vec3( 1.0, 1.0, 1.0),
+            vec3(-1.0, 1.0,-1.0),
+            vec3( 1.0,-1.0, 1.0),
+            vec3(-1.0,-1.0,-1.0)
         );
         for(int i = 0; i < 4; ++i){
-            shadow += texture(u_shadowMapsCube[mapIndex], vec4(normalize(dir + offsets[i]), depth - bias));
+            shadow += texture(u_shadowMapsCube[mapIndex], vec4(normalize(dir + offsets[i] * sampleRadius), depth - bias));
         }
         return shadow * 0.25;
     }else{
         float shadow = 0.0;
+        float sampleRadius = cubeTexel * 2.5;
         vec3 offsets[8] = vec3[8](
-            vec3( 0.01, 0.01, 0.01), vec3(-0.01, 0.01, 0.01),
-            vec3( 0.01,-0.01, 0.01), vec3(-0.01,-0.01, 0.01),
-            vec3( 0.01, 0.01,-0.01), vec3(-0.01, 0.01,-0.01),
-            vec3( 0.01,-0.01,-0.01), vec3(-0.01,-0.01,-0.01)
+            vec3( 1.0, 1.0, 1.0), vec3(-1.0, 1.0, 1.0),
+            vec3( 1.0,-1.0, 1.0), vec3(-1.0,-1.0, 1.0),
+            vec3( 1.0, 1.0,-1.0), vec3(-1.0, 1.0,-1.0),
+            vec3( 1.0,-1.0,-1.0), vec3(-1.0,-1.0,-1.0)
         );
         for(int i = 0; i < 8; ++i){
-            shadow += texture(u_shadowMapsCube[mapIndex], vec4(normalize(dir + offsets[i]), depth - bias));
+            shadow += texture(u_shadowMapsCube[mapIndex], vec4(normalize(dir + offsets[i] * sampleRadius), depth - bias));
         }
         return shadow * 0.125;
     }
+}
+
+float computeShadowBias(Light light, vec3 normal, vec3 fragPos){
+    int lightType = int(light.meta.x + 0.5);
+    vec3 biasDir = (lightType == 1)
+        ? safeNormalize(-light.direction.xyz)
+        : safeNormalize(light.position.xyz - fragPos);
+    float NdotL = max(dot(normal, biasDir), 0.0);
+    return light.shadow.x + light.shadow.y * (1.0 - NdotL);
 }
 
 vec3 getNormal(vec2 uv){
@@ -285,7 +297,7 @@ void main() {
         vec3 lightContribution = (kD * albedo / PI + specular) * radiance * NdotL;
 
         if(u_receiveShadows != 0 && light.meta.z >= 0.0){
-            float bias = light.shadow.x + light.shadow.y * (1.0 - max(dot(N, safeNormalize(light.direction.xyz)), 0.0));
+            float bias = computeShadowBias(light, N, v_fragPos);
             float visibility = 1.0;
             int lType = int(light.meta.x + 0.5);
             int sType = int(light.meta.y + 0.5);

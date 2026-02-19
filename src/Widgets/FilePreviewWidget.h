@@ -6,6 +6,7 @@
 #include <string>
 
 #include "MaterialAsset.h"
+#include "ShaderAsset.h"
 
 struct FrameBuffer;
 class Texture;
@@ -38,8 +39,9 @@ class FilePreviewWidget {
         bool statusIsError = false;
         std::string statusMessage;
         char cacheName[128] = {};
-        char vertexAsset[256] = {};
-        char fragmentAsset[256] = {};
+
+        ShaderAssetData bundledShaderData;
+
         MaterialAssetData materialData;
         char materialName[128] = {};
         char materialShaderAsset[256] = {};

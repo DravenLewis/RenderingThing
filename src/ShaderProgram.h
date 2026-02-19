@@ -123,7 +123,7 @@ namespace GLUniformUpload {
 typedef unsigned int Shader, Program, Buffer, Array;
 
 enum ShaderType{
-    FRAGMENT,
+    FRAGMENT = 0,
     VERTEX,
     GEOMETRY,
     TESSELATION,
@@ -336,6 +336,7 @@ struct ShaderCache{
 namespace ShaderCacheManager{
     inline static ShaderCache INSTANCE = ShaderCache();
 }
+
 
 
 #endif // SHADER_PROGRAM_H
