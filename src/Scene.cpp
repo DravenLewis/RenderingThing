@@ -89,6 +89,17 @@ Scene::Scene(RenderWindow* window) : View(window) {
     }
 }
 
+void Scene::setPreferredCamera(PCamera cam, bool applyToScreen){
+    preferredCamera = cam;
+    if(!applyToScreen){
+        return;
+    }
+    auto screen = getMainScreen();
+    if(screen && cam){
+        screen->setCamera(cam);
+    }
+}
+
 void Scene::requestClose(){
     LogBot.Log(LOG_WARN, "Scene::requestClose() called.");
     closeRequested.store(true, std::memory_order_relaxed);
@@ -155,6 +166,7 @@ NeoECS::GameObject* Scene::createLightGameObject(const std::string& name, const 
 }
 
 void Scene::dispose(){
+    preferredCamera.reset();
     if(ecsInstance){
         NeoECS::NeoECS::disposeInstance(ecsInstance);
         ecsInstance = nullptr;
@@ -183,6 +195,13 @@ void Scene::updateECS(float deltaTime){
 
     auto snapshotStart = std::chrono::steady_clock::now();
 
+    auto mainScreen = getMainScreen();
+    PCamera activeCamera = mainScreen ? mainScreen->getCamera() : nullptr;
+    if(!activeCamera && preferredCamera && mainScreen){
+        mainScreen->setCamera(preferredCamera);
+        activeCamera = preferredCamera;
+    }
+
     const int backIndex = 1 - renderSnapshotIndex.load(std::memory_order_acquire);
     auto& snapshot = renderSnapshots[backIndex];
     snapshot.drawItems.clear();
@@ -192,16 +211,20 @@ void Scene::updateECS(float deltaTime){
     auto& entities = ecsInstance->getEntityManager()->getEntities();
     snapshot.drawItems.reserve(entities.size());
     snapshot.lights.reserve(entities.size());
+    NeoECS::ECSEntity* activeCameraEntity = nullptr;
 
     for(const auto& entityPtr : entities){
         auto* entity = entityPtr.get();
         if(!entity) continue;
 
+        auto* transform = componentManager->getECSComponent<TransformComponent>(entity);
         auto* renderer = componentManager->getECSComponent<MeshRendererComponent>(entity);
         auto* lightComponent = componentManager->getECSComponent<LightComponent>(entity);
         auto* boundsComp = componentManager->getECSComponent<BoundsComponent>(entity);
+        auto* cameraComponent = componentManager->getECSComponent<CameraComponent>(entity);
         const bool needsWorld = (renderer && renderer->visible) ||
-                                (lightComponent && (lightComponent->syncTransform || lightComponent->syncDirection));
+                                (lightComponent && (lightComponent->syncTransform || lightComponent->syncDirection)) ||
+                                (cameraComponent && cameraComponent->camera && transform);
 
         Math3D::Mat4 world(1.0f);
         if(needsWorld){
@@ -295,7 +318,21 @@ void Scene::updateECS(float deltaTime){
             }
             snapshot.lights.push_back(light);
         }
+
+        if(cameraComponent && cameraComponent->camera){
+            if(!preferredCamera){
+                preferredCamera = cameraComponent->camera;
+            }
+            if(transform){
+                cameraComponent->camera->setTransform(Math3D::Transform::fromMat4(world));
+            }
+            if(activeCamera && cameraComponent->camera == activeCamera){
+                activeCameraEntity = entity;
+            }
+        }
     }
+
+    updateActiveCameraEffects(activeCameraEntity, componentManager);
 
     renderSnapshotIndex.store(backIndex, std::memory_order_release);
 
@@ -304,6 +341,46 @@ void Scene::updateECS(float deltaTime){
     debugStats.snapshotMs.store(snapshotMs.count(), std::memory_order_relaxed);
     debugStats.drawCount.store(static_cast<int>(snapshot.drawItems.size()), std::memory_order_relaxed);
     debugStats.lightCount.store(static_cast<int>(snapshot.lights.size()), std::memory_order_relaxed);
+}
+
+void Scene::updateActiveCameraEffects(NeoECS::ECSEntity* activeCameraEntity, NeoECS::ECSComponentManager* manager){
+    auto screen = getMainScreen();
+    if(!screen){
+        return;
+    }
+
+    screen->clearEffects();
+    if(!activeCameraEntity || !manager){
+        return;
+    }
+
+    auto* camComponent = manager->getECSComponent<CameraComponent>(activeCameraEntity);
+    if(!camComponent || !camComponent->camera){
+        return;
+    }
+
+    const CameraSettings& settings = camComponent->camera->getSettings();
+
+    if(auto* ssao = manager->getECSComponent<SSAOComponent>(activeCameraEntity)){
+        auto effect = ssao->getEffectForCamera(settings);
+        if(effect){
+            screen->addEffect(effect);
+        }
+    }
+
+    if(auto* dof = manager->getECSComponent<DepthOfFieldComponent>(activeCameraEntity)){
+        auto effect = dof->getEffectForCamera(settings);
+        if(effect){
+            screen->addEffect(effect);
+        }
+    }
+
+    if(auto* aa = manager->getECSComponent<AntiAliasingComponent>(activeCameraEntity)){
+        auto effect = aa->getEffectForCamera(settings);
+        if(effect){
+            screen->addEffect(effect);
+        }
+    }
 }
 
 void Scene::updateSceneLights(){

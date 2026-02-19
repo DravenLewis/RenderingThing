@@ -94,6 +94,7 @@ class Scene : public View {
         bool gBufferValidationDirty = true;
         bool gBufferValidated = false;
         bool deferredDisabled = false;
+        PCamera preferredCamera;
 
         enum class RenderFilter{
             All,
@@ -104,6 +105,7 @@ class Scene : public View {
         bool isMaterialTransparent(const std::shared_ptr<Material>& material) const;
         bool isDeferredCompatibleMaterial(const std::shared_ptr<Material>& material) const;
         void ensureDeferredResources(PScreen screen);
+        void updateActiveCameraEffects(NeoECS::ECSEntity* activeCameraEntity, NeoECS::ECSComponentManager* manager);
         void drawDeferredGeometry(PCamera cam);
         void drawDeferredLighting(PScreen screen, PCamera cam);
         void renderDeferred(PScreen screen, PCamera cam);
@@ -120,6 +122,8 @@ class Scene : public View {
         const std::string& getSelectedEntityId() const { return selectedEntityId; }
         void setOutlineEnabled(bool enabled) { outlineEnabled = enabled; }
         bool isOutlineEnabled() const { return outlineEnabled; }
+        void setPreferredCamera(PCamera cam, bool applyToScreen = true);
+        PCamera getPreferredCamera() const { return preferredCamera; }
         Math3D::Mat4 getWorldMatrix(NeoECS::ECSEntity* entity, NeoECS::ECSComponentManager* manager) const { return buildWorldMatrix(entity, manager); }
         Math3D::Vec3 getWorldPosition(NeoECS::ECSEntity* entity) const;
 };

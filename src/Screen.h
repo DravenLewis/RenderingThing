@@ -60,6 +60,7 @@ class Screen{
 
 
         PTexture getDisplayTexture();
+        PFrameBuffer getDisplayBuffer() const;
         PFrameBuffer getDrawBuffer() const;
 
         PCamera getCamera() const { return camera; }

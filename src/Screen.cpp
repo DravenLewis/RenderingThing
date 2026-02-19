@@ -87,6 +87,26 @@ void Screen::processRenderPipeline(){
 
         auto originalDepth = buffer->getDrawBuffer()->getDepthTexture();
 
+        // Fail-safe: pre-fill target with source image.
+        // If an effect early-outs (compile/runtime issue), the pass still preserves the frame.
+        if(screenShader && screenQuad && readSource && writeTarget){
+            writeTarget->bind();
+            glDisable(GL_DEPTH_TEST);
+            glDisable(GL_BLEND);
+
+            screenShader->bind();
+            Uniform<PTexture> passthroughTex(readSource->getTexture());
+            screenShader->setUniform("screenTexture", passthroughTex);
+
+            static const Math3D::Mat4 IDENTITY;
+            screenShader->setUniform("u_model", Uniform<Math3D::Mat4>(IDENTITY));
+            screenShader->setUniform("u_view", Uniform<Math3D::Mat4>(IDENTITY));
+            screenShader->setUniform("u_projection", Uniform<Math3D::Mat4>(IDENTITY));
+            screenQuad->draw(IDENTITY, IDENTITY, IDENTITY);
+
+            writeTarget->unbind();
+        }
+
         // Apply the effect: Read from Source -> Write to Target
         effect->apply(readSource->getTexture(), originalDepth, writeTarget, screenQuad);
 
@@ -256,6 +276,11 @@ void Screen::clear(Color c){
 
 PTexture Screen::getDisplayTexture(){
     return this->buffer->getDisplayBuffer()->getTexture();
+}
+
+PFrameBuffer Screen::getDisplayBuffer() const{
+    if(!buffer) return nullptr;
+    return buffer->getDisplayBuffer();
 }
 
 PFrameBuffer Screen::getDrawBuffer() const{

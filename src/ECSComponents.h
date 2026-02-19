@@ -7,6 +7,7 @@
 #include "Material.h"
 #include "Model.h"
 #include "Light.h"
+#include "ScreenEffects.h"
 
 #include "Scene.h"
 
@@ -64,6 +65,44 @@ struct CameraComponent : public IEditorCompatibleComponent {
     using IEditorCompatibleComponent::IEditorCompatibleComponent;
     PCamera camera;
 
+    void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
+};
+
+struct SSAOComponent : public IEditorCompatibleComponent {
+    using IEditorCompatibleComponent::IEditorCompatibleComponent;
+    bool enabled = true;
+    float radiusPx = 3.0f;
+    float depthRadius = 0.025f;
+    float bias = 0.001f;
+    float intensity = 1.0f;
+    float giBoost = 0.12f;
+    int sampleCount = 8;
+    std::shared_ptr<SSAOEffect> runtimeEffect;
+
+    Graphics::PostProcessing::PPostProcessingEffect getEffectForCamera(const CameraSettings& settings);
+    void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
+};
+
+struct DepthOfFieldComponent : public IEditorCompatibleComponent {
+    using IEditorCompatibleComponent::IEditorCompatibleComponent;
+    bool enabled = false;
+    float focusDistance = 8.0f;
+    float focusRange = 4.0f;
+    float blurStrength = 0.65f;
+    float maxBlurPx = 7.0f;
+    int sampleCount = 6;
+    std::shared_ptr<DepthOfFieldEffect> runtimeEffect;
+
+    Graphics::PostProcessing::PPostProcessingEffect getEffectForCamera(const CameraSettings& settings);
+    void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
+};
+
+struct AntiAliasingComponent : public IEditorCompatibleComponent {
+    using IEditorCompatibleComponent::IEditorCompatibleComponent;
+    AntiAliasingPreset preset = AntiAliasingPreset::FXAA_Medium;
+    std::shared_ptr<FXAAEffect> runtimeEffect;
+
+    Graphics::PostProcessing::PPostProcessingEffect getEffectForCamera(const CameraSettings& settings);
     void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
 };
 

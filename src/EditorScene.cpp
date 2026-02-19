@@ -1,5 +1,9 @@
 #include "EditorScene.h"
 
+// EditorScene is an editor host/wrapper scene: it renders and edits a contained target scene.
+// The editor viewport navigation camera is owned by EditorScene; target-scene cameras are
+// preview/edit targets and can be designated as the target scene's runtime current camera.
+
 #include <imgui.h>
 #include <algorithm>
 #include <cmath>
@@ -20,6 +24,7 @@
 #include <SDL3/SDL.h>
 #include "neoecs.hpp"
 #include <cstring>
+#include <cctype>
 
 namespace {
     constexpr float kToolbarHeight = 32.0f;
@@ -117,7 +122,10 @@ void EditorScene::ensureTargetInitialized(){
 
     auto mainScreen = targetScene->getMainScreen();
     if(mainScreen && !targetCamera){
-        targetCamera = mainScreen->getCamera();
+        targetCamera = targetScene->getPreferredCamera();
+        if(!targetCamera){
+            targetCamera = mainScreen->getCamera();
+        }
     }
 
     if(!editorCameraObject){
@@ -143,6 +151,7 @@ void EditorScene::ensureTargetInitialized(){
 
         if(editorCameraComponent){
             editorCamera = editorCameraComponent->camera;
+            viewportCamera = editorCamera;
         }
 
         if(boundsComp){
@@ -186,14 +195,21 @@ void EditorScene::update(float deltaTime){
     ensureTargetInitialized();
     if(!targetScene) return;
 
+    if(auto preferred = targetScene->getPreferredCamera()){
+        if(preferred != targetCamera){
+            targetCamera = preferred;
+        }
+    }
+
     if(resetCompleted.exchange(false)){
         restoreSelectionAfterReset();
     }
 
     if(playState == PlayState::Play){
+        viewportCamera = targetCamera ? targetCamera : editorCamera;
         if(auto mainScreen = targetScene->getMainScreen()){
-            if(targetCamera){
-                mainScreen->setCamera(targetCamera);
+            if(viewportCamera){
+                mainScreen->setCamera(viewportCamera);
             }
         }
         bool mouseInViewport = isMouseInViewport();
@@ -210,6 +226,18 @@ void EditorScene::update(float deltaTime){
             bool rmbPressed = rmb && !prevRmb;
             prevRmb = rmb;
             bool mouseInViewport = isMouseInViewport();
+            bool mouseOverPreviewWindow = false;
+            if(playState == PlayState::Edit && previewCamera && viewportRect.valid){
+                Math3D::Vec2 mousePos = inputManager->getMousePosition();
+                float previewAbsX = viewportRect.x + previewWindowLocalPos.x;
+                float previewAbsY = viewportRect.y + previewWindowLocalPos.y;
+                float previewW = previewWindowSize.x;
+                float previewH = previewWindowSize.y;
+                mouseOverPreviewWindow =
+                    (mousePos.x >= previewAbsX && mousePos.x <= (previewAbsX + previewW) &&
+                     mousePos.y >= previewAbsY && mousePos.y <= (previewAbsY + previewH));
+            }
+            bool mouseInViewportInteractive = mouseInViewport && !mouseOverPreviewWindow;
             bool lmb = inputManager->isLMBDown();
             bool lmbPressed = lmb && !prevLmb;
             bool lmbReleased = !lmb && prevLmb;
@@ -217,13 +245,15 @@ void EditorScene::update(float deltaTime){
 
             if(!rmb){
                 editorCameraActive = false;
-            }else if(rmbPressed && mouseInViewport){
+            }else if(rmbPressed && mouseInViewportInteractive){
                 editorCameraActive = true;
             }
 
             bool allowControl = editorCameraActive && rmb;
             inputManager->setMouseCaptureMode(allowControl ? MouseLockMode::LOCKED : MouseLockMode::FREE);
             ImGuiLayer::SetInputEnabled(!allowControl);
+
+            viewportCamera = editorCamera;
 
             if(!allowControl){
                 inputManager->consumeMouseAxisDelta();
@@ -316,7 +346,7 @@ void EditorScene::update(float deltaTime){
             }
 
             bool widgetConsumed = false;
-            if(playState == PlayState::Edit && editorCamera && targetScene && targetScene->getECS()){
+            if(playState == PlayState::Edit && viewportCamera && targetScene && targetScene->getECS()){
                 auto* entity = findEntityById(selectedEntityId); // Maybe refactor this later to allow light widgets to always draw on entities with light components.
                 if(entity){
                     auto* components = targetScene->getECS()->getComponentManager();
@@ -329,11 +359,11 @@ void EditorScene::update(float deltaTime){
                         widgetConsumed = transformWidget.update(
                             this,
                             inputManager.get(),
-                            editorCamera,
+                            viewportCamera,
                             viewport,
                             worldPos,
                             transformComp->local,
-                            mouseInViewport && !allowControl,
+                            mouseInViewportInteractive && !allowControl,
                             lmbPressed,
                             lmb,
                             lmbReleased
@@ -343,14 +373,14 @@ void EditorScene::update(float deltaTime){
                                 widgetConsumed = lightWidget.update(
                                     this,
                                     inputManager.get(),
-                                    editorCamera,
+                                    viewportCamera,
                                     viewport,
                                     worldPos,
                                     worldForward,
                                     lightComp->light,
                                     lightComp->syncTransform,
                                     lightComp->syncDirection,
-                                    mouseInViewport && !allowControl,
+                                    mouseInViewportInteractive && !allowControl,
                                     lmbPressed,
                                     lmb,
                                     lmbReleased
@@ -360,14 +390,31 @@ void EditorScene::update(float deltaTime){
                                 }
                             }
                         }
+                        if(auto* cameraComp = components->getECSComponent<CameraComponent>(entity)){
+                            if(!widgetConsumed && cameraComp->camera){
+                                widgetConsumed = cameraWidget.update(
+                                    this,
+                                    inputManager.get(),
+                                    viewportCamera,
+                                    viewport,
+                                    worldPos,
+                                    worldForward,
+                                    cameraComp->camera->getSettings(),
+                                    mouseInViewportInteractive && !allowControl,
+                                    lmbPressed,
+                                    lmb,
+                                    lmbReleased
+                                );
+                            }
+                        }
                     }
                 }
             }
 
-            if(playState != PlayState::Play && lmbPressed && mouseInViewport && !allowControl && !widgetConsumed){
-                if(editorCamera){
+            if(playState != PlayState::Play && lmbPressed && mouseInViewportInteractive && !allowControl && !widgetConsumed){
+                if(viewportCamera){
                     Math3D::Vec2 mouse = inputManager->getMousePosition();
-                    std::string picked = pickEntityIdAtScreen(mouse.x, mouse.y, editorCamera);
+                    std::string picked = pickEntityIdAtScreen(mouse.x, mouse.y, viewportCamera);
                     if(!picked.empty()){
                         selectEntity(picked);
                     }else{
@@ -375,28 +422,34 @@ void EditorScene::update(float deltaTime){
                     }
                 }
             }
+        }else{
+            viewportCamera = editorCamera;
         }
 
-        if(editorCamera && focusActive){
-            auto transform = editorCamera->transform();
-            Math3D::Vec3 desired = focusTarget - (focusForward * focusDistance);
-            Math3D::Vec3 pos = transform.position;
-            float t = Math3D::Clamp(deltaTime * focusSpeed, 0.0f, 1.0f);
-            pos = pos + (desired - pos) * t;
-            transform.setPosition(pos);
-            editorCamera->setTransform(transform);
-            if(editorCameraTransform){
-                editorCameraTransform->local = transform;
+        if(focusActive){
+            if(viewportCamera && editorCamera && viewportCamera == editorCamera){
+                auto transform = editorCamera->transform();
+                Math3D::Vec3 desired = focusTarget - (focusForward * focusDistance);
+                Math3D::Vec3 pos = transform.position;
+                float t = Math3D::Clamp(deltaTime * focusSpeed, 0.0f, 1.0f);
+                pos = pos + (desired - pos) * t;
+                transform.setPosition(pos);
+                editorCamera->setTransform(transform);
+                if(editorCameraTransform){
+                    editorCameraTransform->local = transform;
+                }
+            }else{
+                focusActive = false;
             }
         }
 
-        if(editorCamera && viewportRect.valid){
-            editorCamera->resize(viewportRect.w, viewportRect.h);
+        if(viewportCamera && viewportRect.valid){
+            viewportCamera->resize(viewportRect.w, viewportRect.h);
         }
 
         if(auto mainScreen = targetScene->getMainScreen()){
-            if(editorCamera){
-                mainScreen->setCamera(editorCamera);
+            if(viewportCamera){
+                mainScreen->setCamera(viewportCamera);
             }
         }
 
@@ -412,7 +465,110 @@ void EditorScene::render(){
         return;
     }
     if(targetScene){
-        targetScene->render();
+        if(playState == PlayState::Edit){
+            previewCamera = resolveSelectedTargetCamera();
+            auto mainScreen = targetScene->getMainScreen();
+            NeoECS::ECSEntity* previewEntity = findEntityById(selectedEntityId);
+
+            auto applyCameraEffects = [&](NeoECS::ECSEntity* cameraEntity){
+                if(!mainScreen){
+                    return;
+                }
+                mainScreen->clearEffects();
+                if(!cameraEntity || !targetScene || !targetScene->getECS()){
+                    return;
+                }
+                auto* components = targetScene->getECS()->getComponentManager();
+                auto* camComponent = components->getECSComponent<CameraComponent>(cameraEntity);
+                if(!camComponent || !camComponent->camera){
+                    return;
+                }
+                const CameraSettings& settings = camComponent->camera->getSettings();
+                if(auto* ssao = components->getECSComponent<SSAOComponent>(cameraEntity)){
+                    if(auto effect = ssao->getEffectForCamera(settings)){
+                        mainScreen->addEffect(effect);
+                    }
+                }
+                if(auto* dof = components->getECSComponent<DepthOfFieldComponent>(cameraEntity)){
+                    if(auto effect = dof->getEffectForCamera(settings)){
+                        mainScreen->addEffect(effect);
+                    }
+                }
+                if(auto* aa = components->getECSComponent<AntiAliasingComponent>(cameraEntity)){
+                    if(auto effect = aa->getEffectForCamera(settings)){
+                        mainScreen->addEffect(effect);
+                    }
+                }
+            };
+
+            // Render the selected target-scene camera into a small preview texture first.
+            if(mainScreen && previewCamera && previewEntity){
+                applyCameraEffects(previewEntity);
+                mainScreen->setCamera(previewCamera);
+                targetScene->render();
+                auto sourceBuffer = mainScreen->getDisplayBuffer();
+                if(sourceBuffer){
+                    int srcW = sourceBuffer->getWidth();
+                    int srcH = sourceBuffer->getHeight();
+                    if(srcW > 0 && srcH > 0){
+                        bool needsResize = !previewCaptureBuffer ||
+                                           !previewTexture ||
+                                           previewCaptureBuffer->getWidth() != srcW ||
+                                           previewCaptureBuffer->getHeight() != srcH ||
+                                           previewTexture->getWidth() != srcW ||
+                                           previewTexture->getHeight() != srcH;
+                        if(needsResize){
+                            previewCaptureBuffer = FrameBuffer::Create(srcW, srcH);
+                            previewTexture = Texture::CreateEmpty(srcW, srcH);
+                            if(previewCaptureBuffer && previewTexture){
+                                previewCaptureBuffer->attachTexture(previewTexture);
+                            }
+                        }
+
+                        if(previewCaptureBuffer && previewTexture){
+                            GLint prevReadFbo = 0;
+                            GLint prevDrawFbo = 0;
+                            glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &prevReadFbo);
+                            glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &prevDrawFbo);
+
+                            glBindFramebuffer(GL_READ_FRAMEBUFFER, sourceBuffer->getID());
+                            glReadBuffer(GL_COLOR_ATTACHMENT0);
+                            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, previewCaptureBuffer->getID());
+                            glDrawBuffer(GL_COLOR_ATTACHMENT0);
+                            glBlitFramebuffer(
+                                0, 0, srcW, srcH,
+                                0, 0, srcW, srcH,
+                                GL_COLOR_BUFFER_BIT,
+                                GL_NEAREST
+                            );
+
+                            glBindFramebuffer(GL_READ_FRAMEBUFFER, (GLuint)prevReadFbo);
+                            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, (GLuint)prevDrawFbo);
+                        }else{
+                            previewTexture.reset();
+                        }
+                    }else{
+                        previewTexture.reset();
+                    }
+                }else{
+                    previewTexture.reset();
+                }
+            }else{
+                previewTexture.reset();
+            }
+
+            // Keep the editor viewport render driven by the editor camera in edit mode.
+            PCamera mainEditCamera = viewportCamera ? viewportCamera : editorCamera;
+            if(mainScreen && mainEditCamera){
+                mainScreen->clearEffects();
+                mainScreen->setCamera(mainEditCamera);
+            }
+            targetScene->render();
+        }else{
+            previewTexture.reset();
+            previewCamera.reset();
+            targetScene->render();
+        }
     }
 
     ImGuiIO& io = ImGui::GetIO();
@@ -626,6 +782,7 @@ void EditorScene::selectEntity(const std::string& id){
         selectedAssetPath.clear();
     }
     transformWidget.reset();
+    cameraWidget.reset();
     if(targetScene){
         targetScene->setSelectedEntityId(id);
     }
@@ -696,7 +853,8 @@ void EditorScene::cancelAssetRename(){
 }
 
 void EditorScene::focusOnEntity(const std::string& id){
-    if(id.empty() || !targetScene || !editorCamera) return;
+    PCamera focusCamera = viewportCamera ? viewportCamera : editorCamera;
+    if(id.empty() || !targetScene || !focusCamera) return;
 
     auto* ecs = targetScene->getECS();
     if(!ecs) return;
@@ -727,11 +885,11 @@ void EditorScene::focusOnEntity(const std::string& id){
         radius = std::max(0.5f, scale);
     }
 
-    float fov = editorCamera->getSettings().fov;
+    float fov = focusCamera->getSettings().fov;
     float distance = radius / std::tan(glm::radians(fov * 0.5f));
     distance *= 1.5f;
 
-    auto transform = editorCamera->transform();
+    auto transform = focusCamera->transform();
     focusTarget = target;
     focusForward = transform.forward() * -1.0f;
     focusDistance = distance;
@@ -758,8 +916,11 @@ std::string EditorScene::pickEntityIdAtScreen(float x, float y, PCamera cam){
         if(!entity) continue;
         auto* transform = componentManager->getECSComponent<TransformComponent>(entity);
         auto* renderer = componentManager->getECSComponent<MeshRendererComponent>(entity);
+        auto* cameraComp = componentManager->getECSComponent<CameraComponent>(entity);
+        auto* lightComp = componentManager->getECSComponent<LightComponent>(entity);
         auto* bounds = componentManager->getECSComponent<BoundsComponent>(entity);
-        if(!transform || !renderer) continue;
+        if(!transform) continue;
+        if(!renderer && !cameraComp && !lightComp && !bounds) continue;
 
         Math3D::Vec3 pos = targetScene->getWorldPosition(entity);
         Math3D::Vec3 toPoint = pos - nearPoint;
@@ -911,27 +1072,190 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
     viewportRect.h = size.y;
     viewportRect.valid = (size.x > 1.0f && size.y > 1.0f);
 
-    if(playState == PlayState::Edit && targetScene && editorCamera && viewportRect.valid){
+    if(playState == PlayState::Edit && targetScene && viewportCamera && viewportRect.valid && targetScene->getECS()){
+        auto* ecs = targetScene->getECS();
+        auto* components = ecs->getComponentManager();
+        TransformWidget::Viewport viewport{viewportRect.x, viewportRect.y, viewportRect.w, viewportRect.h, viewportRect.valid};
+        ImDrawList* drawList = ImGui::GetWindowDrawList();
+        ensureEditorIconsLoaded();
+        auto lightColorTint = [](const Math3D::Vec4& c) -> ImU32 {
+            int r = (int)Math3D::Clamp(c.x * 255.0f, 0.0f, 255.0f);
+            int g = (int)Math3D::Clamp(c.y * 255.0f, 0.0f, 255.0f);
+            int b = (int)Math3D::Clamp(c.z * 255.0f, 0.0f, 255.0f);
+            int a = (int)Math3D::Clamp(c.w * 255.0f, 0.0f, 255.0f);
+            return IM_COL32(r, g, b, a);
+        };
+
+        // Always render helper icons for invisible scene objects while editing.
+        const auto& entities = ecs->getEntityManager()->getEntities();
+        for(const auto& entityPtr : entities){
+            auto* entity = entityPtr.get();
+            if(!entity){
+                continue;
+            }
+            auto* transformComp = components->getECSComponent<TransformComponent>(entity);
+            if(!transformComp){
+                continue;
+            }
+            auto* rendererComp = components->getECSComponent<MeshRendererComponent>(entity);
+            auto* cameraComp = components->getECSComponent<CameraComponent>(entity);
+            auto* lightComp = components->getECSComponent<LightComponent>(entity);
+            bool isSelected = (entity->getNodeUniqueID() == selectedEntityId);
+            Math3D::Vec3 worldPos = buildWorldMatrix(entity, components).getPosition();
+
+            if(cameraComp && cameraComp->camera && !isSelected){
+                drawBillboardIcon(drawList, worldPos, iconCamera, 56.0f, IM_COL32(255, 255, 255, 255));
+            }
+
+            if(lightComp && !isSelected){
+                PTexture icon = iconLightPoint;
+                if(lightComp->light.type == LightType::SPOT){
+                    icon = iconLightSpot;
+                }else if(lightComp->light.type == LightType::DIRECTIONAL){
+                    icon = iconLightDirectional;
+                }
+                if(icon){
+                    drawBillboardIcon(drawList, worldPos, icon, 56.0f, lightColorTint(lightComp->light.color));
+                }
+            }
+
+            // Best-effort audio marker: if an entity is an editor-only helper with audio-style naming,
+            // show the audio billboard in the editor viewport.
+            if(iconAudio && !isSelected && !rendererComp && !cameraComp && !lightComp){
+                std::string lowerName = entity->getName();
+                std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(), [](unsigned char c){
+                    return (char)std::tolower(c);
+                });
+                if(lowerName.find("audio") != std::string::npos ||
+                   lowerName.find("sound") != std::string::npos ||
+                   lowerName.find("speaker") != std::string::npos){
+                    drawBillboardIcon(drawList, worldPos, iconAudio, 56.0f, IM_COL32(255, 255, 255, 255));
+                }
+            }
+        }
+
         auto* entity = findEntityById(selectedEntityId);
-        if(entity && targetScene->getECS()){
-            auto* components = targetScene->getECS()->getComponentManager();
+        if(entity){
             if(auto* transformComp = components->getECSComponent<TransformComponent>(entity)){
-                TransformWidget::Viewport viewport{viewportRect.x, viewportRect.y, viewportRect.w, viewportRect.h, viewportRect.valid};
                 Math3D::Mat4 world = buildWorldMatrix(entity, components);
                 Math3D::Vec3 worldPos = world.getPosition();
                 Math3D::Transform worldTx = Math3D::Transform::fromMat4(world);
                 Math3D::Vec3 worldForward = worldTx.forward();
-                ImDrawList* drawList = ImGui::GetWindowDrawList();
-                transformWidget.draw(drawList, this, editorCamera, viewport, worldPos, transformComp->local, viewportHovered);
-                ensureEditorIconsLoaded();
+
+                transformWidget.draw(drawList, this, viewportCamera, viewport, worldPos, transformComp->local, viewportHovered);
                 if(auto* cameraComp = components->getECSComponent<CameraComponent>(entity)){
-                    (void)cameraComp;
-                    drawBillboardIcon(drawList, worldPos, iconCamera, 64.0f, IM_COL32(255, 255, 255, 255));
+                    if(cameraComp->camera){
+                        cameraWidget.draw(
+                            drawList,
+                            this,
+                            viewportCamera,
+                            viewport,
+                            worldPos,
+                            worldForward,
+                            cameraComp->camera->getSettings()
+                        );
+                    }
                 }
                 if(auto* lightComp = components->getECSComponent<LightComponent>(entity)){
-                    lightWidget.draw(drawList, this, editorCamera, viewport, worldPos, worldForward, lightComp->light, lightComp->syncTransform, lightComp->syncDirection);
+                    lightWidget.draw(drawList, this, viewportCamera, viewport, worldPos, worldForward, lightComp->light, lightComp->syncTransform, lightComp->syncDirection);
                 }
             }
+        }
+
+        if(previewTexture && previewTexture->getID() != 0){
+            const float minPreviewW = 220.0f;
+            const float minPreviewH = 160.0f;
+            const float margin = 10.0f;
+            float maxPreviewW = std::max(minPreviewW, viewportRect.w - (margin * 2.0f));
+            float maxPreviewH = std::max(minPreviewH, viewportRect.h - (margin * 2.0f));
+
+            if(!previewWindowInitialized){
+                float defaultW = std::clamp(viewportRect.w * 0.32f, minPreviewW, std::min(380.0f, maxPreviewW));
+                float defaultH = std::clamp((defaultW * (9.0f / 16.0f)) + 44.0f, minPreviewH, maxPreviewH);
+                previewWindowSize = Math3D::Vec2(defaultW, defaultH);
+                previewWindowLocalPos = Math3D::Vec2(viewportRect.w - defaultW - margin, 28.0f);
+                previewWindowInitialized = true;
+            }
+
+            previewWindowSize.x = std::clamp(previewWindowSize.x, minPreviewW, maxPreviewW);
+            previewWindowSize.y = std::clamp(previewWindowSize.y, minPreviewH, maxPreviewH);
+
+            if(previewWindowPinned){
+                previewWindowLocalPos.x = viewportRect.w - previewWindowSize.x - margin;
+                previewWindowLocalPos.y = 28.0f;
+            }
+
+            float maxLocalX = std::max(0.0f, viewportRect.w - previewWindowSize.x);
+            float maxLocalY = std::max(0.0f, viewportRect.h - previewWindowSize.y);
+            previewWindowLocalPos.x = std::clamp(previewWindowLocalPos.x, 0.0f, maxLocalX);
+            previewWindowLocalPos.y = std::clamp(previewWindowLocalPos.y, 0.0f, maxLocalY);
+
+            ImVec2 windowPos(viewportRect.x + previewWindowLocalPos.x, viewportRect.y + previewWindowLocalPos.y);
+            ImVec2 windowSize(previewWindowSize.x, previewWindowSize.y);
+
+            ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always);
+            ImGui::SetNextWindowSize(windowSize, ImGuiCond_Always);
+            ImGui::SetNextWindowSizeConstraints(
+                ImVec2(minPreviewW, minPreviewH),
+                ImVec2(maxPreviewW, maxPreviewH)
+            );
+
+            ImGuiWindowFlags previewFlags =
+                ImGuiWindowFlags_NoCollapse |
+                ImGuiWindowFlags_NoSavedSettings |
+                ImGuiWindowFlags_NoScrollbar |
+                ImGuiWindowFlags_NoScrollWithMouse;
+            if(previewWindowPinned){
+                previewFlags |= ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize;
+            }
+
+            ImVec2 appliedPos = windowPos;
+            ImVec2 appliedSize = windowSize;
+            ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.03f, 0.05f, 0.08f, 0.92f));
+            if(ImGui::Begin("Preview##ViewportPreviewWindow", nullptr, previewFlags)){
+                bool pinned = previewWindowPinned;
+                if(ImGui::Checkbox("Pin", &pinned)){
+                    previewWindowPinned = pinned;
+                }
+                ImGui::Separator();
+
+                ImVec2 avail = ImGui::GetContentRegionAvail();
+                if(avail.x > 1.0f && avail.y > 1.0f){
+                    float texW = (float)previewTexture->getWidth();
+                    float texH = (float)previewTexture->getHeight();
+                    if(texW <= 0.0f || texH <= 0.0f){
+                        texW = 16.0f;
+                        texH = 9.0f;
+                    }
+                    float texAspect = texW / texH;
+                    float availAspect = avail.x / std::max(avail.y, 1.0f);
+                    ImVec2 imageSize = avail;
+                    if(availAspect > texAspect){
+                        imageSize.x = avail.y * texAspect;
+                    }else{
+                        imageSize.y = avail.x / texAspect;
+                    }
+
+                    ImVec2 centered = ImGui::GetCursorPos();
+                    if(avail.x > imageSize.x){
+                        centered.x += (avail.x - imageSize.x) * 0.5f;
+                    }
+                    if(avail.y > imageSize.y){
+                        centered.y += (avail.y - imageSize.y) * 0.5f;
+                    }
+                    ImGui::SetCursorPos(centered);
+
+                    ImTextureID previewTexId = (ImTextureID)(intptr_t)previewTexture->getID();
+                    ImGui::Image(previewTexId, imageSize, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
+                }
+            }
+            appliedPos = ImGui::GetWindowPos();
+            appliedSize = ImGui::GetWindowSize();
+            ImGui::End();
+            ImGui::PopStyleColor();
+
+            previewWindowLocalPos = Math3D::Vec2(appliedPos.x - viewportRect.x, appliedPos.y - viewportRect.y);
+            previewWindowSize = Math3D::Vec2(appliedSize.x, appliedSize.y);
         }
     }
 
@@ -1026,6 +1350,7 @@ void EditorScene::ensureEditorIconsLoaded(){
     iconLightSpot = Texture::Load(AssetManager::Instance.getOrLoad("@assets/images/editor_icons/light_spot.png"));
     iconLightDirectional = Texture::Load(AssetManager::Instance.getOrLoad("@assets/images/editor_icons/light_directional.png"));
     iconAudio = Texture::Load(AssetManager::Instance.getOrLoad("@assets/images/editor_icons/audio.png"));
+    cameraWidget.setIcon(iconCamera);
     LightWidget::Icons icons;
     icons.point = iconLightPoint;
     icons.spot = iconLightSpot;
@@ -1039,11 +1364,11 @@ void EditorScene::drawBillboardIcon(ImDrawList* drawList,
                                     PTexture texture,
                                     float sizePx,
                                     ImU32 tint) const{
-    if(!drawList || !texture || !editorCamera || !viewportRect.valid){
+    if(!drawList || !texture || !viewportCamera || !viewportRect.valid){
         return;
     }
     TransformWidget::Viewport viewport{viewportRect.x, viewportRect.y, viewportRect.w, viewportRect.h, viewportRect.valid};
-    Math3D::Vec3 screen = worldToScreen(editorCamera, worldPos, viewport.x, viewport.y, viewport.w, viewport.h);
+    Math3D::Vec3 screen = worldToScreen(viewportCamera, worldPos, viewport.x, viewport.y, viewport.w, viewport.h);
     if(!screenPointInViewport(screen, viewport)){
         return;
     }
@@ -1453,6 +1778,22 @@ NeoECS::ECSEntity* EditorScene::findEntityById(const std::string& id) const{
         }
     }
     return nullptr;
+}
+
+PCamera EditorScene::resolveSelectedTargetCamera() const{
+    if(!targetScene || !targetScene->getECS()){
+        return nullptr;
+    }
+    auto* entity = findEntityById(selectedEntityId);
+    if(!entity){
+        return nullptr;
+    }
+    auto* components = targetScene->getECS()->getComponentManager();
+    auto* cameraComp = components->getECSComponent<CameraComponent>(entity);
+    if(!cameraComp || !cameraComp->camera){
+        return nullptr;
+    }
+    return cameraComp->camera;
 }
 
 void EditorScene::drawEntityTree(NeoECS::ECSEntity* entity){

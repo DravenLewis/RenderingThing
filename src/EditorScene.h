@@ -15,9 +15,13 @@
 #include "ECSComponents.h"
 #include "Widgets/TransformWidget.h"
 #include "Widgets/LightWidget.h"
+#include "Widgets/CameraWidget.h"
 #include "Widgets/FilePreviewWidget.h"
 #include "Texture.h"
 
+// EditorScene is a wrapper/editor-host scene that contains and edits another scene instance.
+// It must keep its own editor camera for viewport navigation, while target-scene cameras are
+// edited/previewed and can be marked current for the target scene's runtime/play camera.
 class EditorScene : public Scene {
     public:
         explicit EditorScene(RenderWindow* window, PScene targetScene);
@@ -60,6 +64,7 @@ class EditorScene : public Scene {
 
         PCamera editorCamera;
         PCamera targetCamera;
+        PCamera viewportCamera;
         float editorYaw = -90.0f;
         float editorPitch = 0.0f;
         float editorMoveSpeed = 8.0f;
@@ -117,6 +122,7 @@ class EditorScene : public Scene {
         bool prevKeyE = false;
         bool prevKeyR = false;
         LightWidget lightWidget;
+        CameraWidget cameraWidget;
         std::unordered_set<std::string> migratedLightSyncTransform;
         std::unordered_set<std::string> migratedLightDefaults;
         bool editorIconsLoaded = false;
@@ -125,6 +131,13 @@ class EditorScene : public Scene {
         PTexture iconLightSpot;
         PTexture iconLightDirectional;
         PTexture iconAudio;
+        PFrameBuffer previewCaptureBuffer;
+        PTexture previewTexture;
+        PCamera previewCamera;
+        bool previewWindowPinned = true;
+        bool previewWindowInitialized = false;
+        Math3D::Vec2 previewWindowLocalPos = Math3D::Vec2(0.0f, 0.0f);
+        Math3D::Vec2 previewWindowSize = Math3D::Vec2(280.0f, 210.0f);
 
         void ensureTargetInitialized();
         void drawToolbar(float width, float height);
@@ -137,6 +150,7 @@ class EditorScene : public Scene {
         void cancelAssetRename();
 
         NeoECS::ECSEntity* findEntityById(const std::string& id) const;
+        PCamera resolveSelectedTargetCamera() const;
         void drawEntityTree(NeoECS::ECSEntity* entity);
         bool isMouseInViewport() const;
         void selectEntity(const std::string& id);

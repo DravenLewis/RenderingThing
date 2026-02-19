@@ -16,6 +16,8 @@
 namespace NeoECS {
     class GameObject;
 }
+struct CameraComponent;
+struct TransformComponent;
 
 class DemoScene : public Scene3D {
     public:
@@ -44,6 +46,9 @@ class DemoScene : public Scene3D {
         NeoECS::GameObject* cubeObject = nullptr;
         NeoECS::GameObject* lucilleObject = nullptr;
         NeoECS::GameObject* orbObject = nullptr;
+        NeoECS::GameObject* demoCameraObject = nullptr;
+        CameraComponent* demoCameraComponent = nullptr;
+        TransformComponent* demoCameraTransform = nullptr;
 
         PCamera cam;
         PScreen uiScreen;

@@ -92,20 +92,81 @@ void DemoScene::init(){
     mainScreen = getMainScreen();
     uiScreen = getUIScreen();
 
-    cam = Camera::CreatePerspective(
-        45.0f, 
-        Math3D::Vec2(window->getWindowWidth(), window->getWindowHeight()),
-        0.1f,
-        1000.0f
-    );
+    demoCameraObject = createECSGameObject("DemoCamera");
+    if(demoCameraObject){
+        demoCameraObject->addComponent<TransformComponent>();
+        demoCameraObject->addComponent<CameraComponent>();
+        demoCameraObject->addComponent<BoundsComponent>();
+        demoCameraObject->addComponent<SSAOComponent>();
+        demoCameraObject->addComponent<DepthOfFieldComponent>();
+        demoCameraObject->addComponent<AntiAliasingComponent>();
 
-    fpsController = std::make_shared<FirstPersonController>(cam);
-    if(inputManager){
-        fpsController->init(inputManager);
+        demoCameraTransform = demoCameraObject->getComponent<TransformComponent>();
+        demoCameraComponent = demoCameraObject->getComponent<CameraComponent>();
+        auto* bounds = demoCameraObject->getComponent<BoundsComponent>();
+        auto* ssao = demoCameraObject->getComponent<SSAOComponent>();
+        auto* dof = demoCameraObject->getComponent<DepthOfFieldComponent>();
+        auto* aa = demoCameraObject->getComponent<AntiAliasingComponent>();
+
+        if(demoCameraTransform){
+            demoCameraTransform->local.setPosition(Math3D::Vec3(0.0f, 1.5f, 8.0f));
+            demoCameraTransform->local.setRotation(Math3D::Vec3(0.0f, -180.0f, 0.0f));
+        }
+
+        if(demoCameraComponent){
+            demoCameraComponent->camera = Camera::CreatePerspective(
+                45.0f,
+                Math3D::Vec2(window->getWindowWidth(), window->getWindowHeight()),
+                0.1f,
+                1000.0f
+            );
+            cam = demoCameraComponent->camera;
+            if(demoCameraTransform && cam){
+                cam->setTransform(demoCameraTransform->local);
+            }
+        }
+
+        if(bounds){
+            bounds->type = BoundsType::Sphere;
+            bounds->radius = 0.4f;
+        }
+        if(ssao){
+            ssao->enabled = true;
+            ssao->radiusPx = 3.5f;
+            ssao->depthRadius = 0.02f;
+            ssao->bias = 0.0008f;
+            ssao->intensity = 1.0f;
+            ssao->giBoost = 0.10f;
+            ssao->sampleCount = 8;
+        }
+        if(dof){
+            dof->enabled = false;
+            dof->focusDistance = 10.0f;
+            dof->focusRange = 5.0f;
+            dof->blurStrength = 0.7f;
+            dof->maxBlurPx = 7.0f;
+            dof->sampleCount = 6;
+        }
+        if(aa){
+            aa->preset = AntiAliasingPreset::FXAA_Medium;
+        }
     }
 
-    if(mainScreen){
-        mainScreen->setCamera(cam);
+    if(cam){
+        setPreferredCamera(cam);
+    }else if(mainScreen){
+        cam = Camera::CreatePerspective(
+            45.0f,
+            Math3D::Vec2(window->getWindowWidth(), window->getWindowHeight()),
+            0.1f,
+            1000.0f
+        );
+        setPreferredCamera(cam);
+    }
+
+    fpsController = std::make_shared<FirstPersonController>(cam);
+    if(inputManager && fpsController){
+        fpsController->init(inputManager);
     }
 
     if(uiScreen){
@@ -255,6 +316,10 @@ void DemoScene::update(float deltaTime){
         fpsController->update(deltaTime, inputManager);
     }
 
+    if(demoCameraTransform && cam){
+        demoCameraTransform->local = cam->transform();
+    }
+
     if(lucilleObject){
         if(auto* transform = lucilleObject->getComponent<TransformComponent>()){
             transform->local.rotateAxisAngle(Math3D::Vec3(1.0f, 1.0f, 1.0f), 50 * deltaTime);
@@ -336,6 +401,9 @@ void DemoScene::render(){
 }
 
 void DemoScene::dispose(){
+    demoCameraObject = nullptr;
+    demoCameraComponent = nullptr;
+    demoCameraTransform = nullptr;
     graphics2d.reset();
     fpsController.reset();
     sceneInputHandler.reset();

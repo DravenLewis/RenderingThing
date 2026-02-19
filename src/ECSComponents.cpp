@@ -1060,4 +1060,179 @@ void BoundsComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
         }
     }
 };
-void CameraComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){};
+void CameraComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
+    (void)ecsPtr;
+    if(!ImGui::CollapsingHeader("Camera Component", ImGuiTreeNodeFlags_DefaultOpen)){
+        return;
+    }
+
+    if(!camera){
+        if(ImGui::Button("Create Perspective Camera")){
+            float width = 1280.0f;
+            float height = 720.0f;
+            if(scene && scene->getWindow()){
+                width = (float)scene->getWindow()->getWindowWidth();
+                height = (float)scene->getWindow()->getWindowHeight();
+            }
+            camera = Camera::CreatePerspective(45.0f, Math3D::Vec2(width, height), 0.1f, 1000.0f);
+            if(scene){
+                scene->setPreferredCamera(camera, false);
+            }
+        }
+        return;
+    }
+
+    auto* mainScreen = scene ? scene->getMainScreen().get() : nullptr;
+    PCamera preferred = scene ? scene->getPreferredCamera() : nullptr;
+    bool isCurrent = preferred && (preferred == camera);
+    if(!scene && mainScreen){
+        isCurrent = (mainScreen->getCamera() == camera);
+    }
+
+    bool makeCurrent = isCurrent;
+    if(ImGui::Checkbox("Current Camera", &makeCurrent) && makeCurrent){
+        if(scene){
+            scene->setPreferredCamera(camera, false);
+        }else if(mainScreen){
+            mainScreen->setCamera(camera);
+        }
+    }
+
+    CameraSettings& settings = camera->getSettings();
+    bool isOrtho = settings.isOrtho;
+    if(ImGui::Checkbox("Orthographic", &isOrtho)){
+        settings.isOrtho = isOrtho;
+    }
+
+    float nearPlane = settings.nearPlane;
+    float farPlane = settings.farPlane;
+    if(ImGui::DragFloat("Near Plane", &nearPlane, 0.01f, 0.001f, 5000.0f, "%.3f")){
+        settings.nearPlane = Math3D::Clamp(nearPlane, 0.001f, settings.farPlane - 0.001f);
+    }
+    if(ImGui::DragFloat("Far Plane", &farPlane, 0.1f, 0.01f, 100000.0f, "%.2f")){
+        settings.farPlane = Math3D::Max(farPlane, settings.nearPlane + 0.001f);
+    }
+
+    if(settings.isOrtho){
+        float rectPos[2] = { settings.viewPlane.position.x, settings.viewPlane.position.y };
+        float rectSize[2] = { settings.viewPlane.size.x, settings.viewPlane.size.y };
+        if(ImGui::DragFloat2("View Position", rectPos, 0.5f)){
+            settings.viewPlane.position = Math3D::Vec2(rectPos[0], rectPos[1]);
+        }
+        if(ImGui::DragFloat2("View Size", rectSize, 0.5f, 1.0f, 20000.0f)){
+            settings.viewPlane.size = Math3D::Vec2(Math3D::Max(rectSize[0], 1.0f), Math3D::Max(rectSize[1], 1.0f));
+        }
+    }else{
+        float fov = settings.fov;
+        if(ImGui::SliderFloat("FOV", &fov, 10.0f, 130.0f, "%.1f deg")){
+            settings.fov = fov;
+        }
+        ImGui::TextDisabled("Aspect: %.3f", settings.aspect);
+    }
+}
+
+Graphics::PostProcessing::PPostProcessingEffect SSAOComponent::getEffectForCamera(const CameraSettings& settings){
+    (void)settings;
+    if(!enabled){
+        return nullptr;
+    }
+    if(!runtimeEffect){
+        runtimeEffect = SSAOEffect::New();
+    }
+    runtimeEffect->radiusPx = Math3D::Max(0.25f, radiusPx);
+    runtimeEffect->depthRadius = Math3D::Max(0.00001f, depthRadius);
+    runtimeEffect->bias = Math3D::Max(0.0f, bias);
+    runtimeEffect->intensity = Math3D::Max(0.0f, intensity);
+    runtimeEffect->giBoost = Math3D::Max(0.0f, giBoost);
+    runtimeEffect->sampleCount = Math3D::Clamp(sampleCount, 1, 16);
+    return runtimeEffect;
+}
+
+void SSAOComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
+    (void)ecsPtr;
+    (void)scene;
+    if(!ImGui::CollapsingHeader("SSAO / GI Effect", ImGuiTreeNodeFlags_DefaultOpen)){
+        return;
+    }
+
+    ImGui::Checkbox("Enabled", &enabled);
+    if(!enabled){
+        ImGui::TextDisabled("Effect disabled.");
+        return;
+    }
+
+    ImGui::SliderFloat("Radius (Px)", &radiusPx, 0.25f, 12.0f, "%.2f");
+    ImGui::SliderFloat("Depth Radius", &depthRadius, 0.00001f, 0.2f, "%.5f");
+    ImGui::SliderFloat("Bias", &bias, 0.0f, 0.05f, "%.4f");
+    ImGui::SliderFloat("AO Strength", &intensity, 0.0f, 3.0f, "%.2f");
+    ImGui::SliderFloat("GI Boost", &giBoost, 0.0f, 1.2f, "%.2f");
+    ImGui::SliderInt("Samples", &sampleCount, 1, 16);
+}
+
+Graphics::PostProcessing::PPostProcessingEffect DepthOfFieldComponent::getEffectForCamera(const CameraSettings& settings){
+    if(!enabled){
+        return nullptr;
+    }
+    if(!runtimeEffect){
+        runtimeEffect = DepthOfFieldEffect::New();
+    }
+    runtimeEffect->focusDistance = Math3D::Max(0.01f, focusDistance);
+    runtimeEffect->focusRange = Math3D::Max(0.001f, focusRange);
+    runtimeEffect->blurStrength = Math3D::Clamp(blurStrength, 0.0f, 1.5f);
+    runtimeEffect->maxBlurPx = Math3D::Clamp(maxBlurPx, 0.0f, 16.0f);
+    runtimeEffect->sampleCount = Math3D::Clamp(sampleCount, 1, 8);
+    runtimeEffect->nearPlane = Math3D::Max(0.001f, settings.nearPlane);
+    runtimeEffect->farPlane = Math3D::Max(runtimeEffect->nearPlane + 0.001f, settings.farPlane);
+    return runtimeEffect;
+}
+
+void DepthOfFieldComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
+    (void)ecsPtr;
+    (void)scene;
+    if(!ImGui::CollapsingHeader("Depth Of Field Effect", ImGuiTreeNodeFlags_DefaultOpen)){
+        return;
+    }
+
+    ImGui::Checkbox("Enabled", &enabled);
+    if(!enabled){
+        ImGui::TextDisabled("Effect disabled.");
+        return;
+    }
+
+    ImGui::DragFloat("Focus Distance", &focusDistance, 0.1f, 0.01f, 10000.0f, "%.2f");
+    ImGui::DragFloat("Focus Range", &focusRange, 0.05f, 0.001f, 10000.0f, "%.3f");
+    ImGui::SliderFloat("Blur Strength", &blurStrength, 0.0f, 1.5f, "%.2f");
+    ImGui::SliderFloat("Max Blur (Px)", &maxBlurPx, 0.0f, 16.0f, "%.1f");
+    ImGui::SliderInt("Samples", &sampleCount, 1, 8);
+}
+
+Graphics::PostProcessing::PPostProcessingEffect AntiAliasingComponent::getEffectForCamera(const CameraSettings& settings){
+    (void)settings;
+    if(preset == AntiAliasingPreset::Off){
+        return nullptr;
+    }
+    if(!runtimeEffect){
+        runtimeEffect = FXAAEffect::New();
+    }
+    runtimeEffect->preset = preset;
+    return runtimeEffect;
+}
+
+void AntiAliasingComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
+    (void)ecsPtr;
+    (void)scene;
+    if(!ImGui::CollapsingHeader("Anti-Aliasing Effect", ImGuiTreeNodeFlags_DefaultOpen)){
+        return;
+    }
+
+    const char* options[] = {
+        "Off",
+        "FXAA - Low",
+        "FXAA - Medium",
+        "FXAA - High"
+    };
+    int item = static_cast<int>(preset);
+    if(ImGui::Combo("Preset", &item, options, IM_ARRAYSIZE(options))){
+        preset = static_cast<AntiAliasingPreset>(item);
+    }
+}
