@@ -9,6 +9,7 @@
 
 #include <memory>
 #include <map>
+#include <filesystem>
 
 
 #define ASSET_DELIMITER "@assets"
@@ -43,31 +44,74 @@ class Asset{
 class AssetManager{
     private:
         std::map<std::string, std::shared_ptr<Asset>> assetMap;
+        std::string makeAssetKey(const std::string& name){
+            if(name.empty()){
+                return std::string();
+            }
+
+            std::string interpreted = name;
+            size_t pos = interpreted.find(ASSET_DELIMITER);
+            if(pos != std::string::npos){
+                std::string cwd = File::GetCWD();
+                interpreted = StringUtils::ReplaceAll(interpreted.c_str(), ASSET_DELIMITER, StringUtils::Format("%s\\res", cwd.c_str()));
+            }
+            interpreted = StringUtils::ReplaceAll(interpreted.c_str(), "/", "\\");
+
+            std::error_code ec;
+            std::filesystem::path normalizedPath = std::filesystem::weakly_canonical(std::filesystem::path(interpreted), ec);
+            if(ec){
+                normalizedPath = std::filesystem::path(interpreted).lexically_normal();
+            }
+
+            std::string key = normalizedPath.generic_string();
+            #ifdef _WIN32
+                key = StringUtils::ToLowerCase(key);
+            #endif
+            return key;
+        }
     public:
         void manageAsset(std::shared_ptr<Asset> assetPtr){
             if(!assetPtr) return;
-            std::string name = assetPtr->getFileHandle()->getFileName();
-            this->assetMap[name] = assetPtr;
+            std::string name = assetPtr->getFileHandle()->getPath();
+            std::string key = makeAssetKey(name);
+            if(key.empty()){
+                return;
+            }
+            this->assetMap[key] = assetPtr;
         }
 
         void unmanageAsset(const std::string& name){
-            if(assetMap[name]){
-                std::shared_ptr<Asset> asset = assetMap[name];  
-                assetMap.erase(name);
+            std::string key = makeAssetKey(name);
+            if(key.empty()){
+                return;
+            }
+            auto it = assetMap.find(key);
+            if(it != assetMap.end()){
+                assetMap.erase(it);
             }
         }
 
         bool hasAsset(const std::string& name){
-            return assetMap.find(name) != assetMap.end();
+            std::string key = makeAssetKey(name);
+            if(key.empty()){
+                return false;
+            }
+            auto it = assetMap.find(key);
+            return it != assetMap.end() && static_cast<bool>(it->second);
         }
 
         std::shared_ptr<Asset> getOrLoad(const std::string& name){
-            std::string fileName = StringUtils::Replace(name,"\\", "/");
-            auto namePath = StringUtils::Split(fileName, "/");
-            fileName = namePath.back();
+            std::string key = makeAssetKey(name);
+            if(key.empty()){
+                return nullptr;
+            }
 
-            if(hasAsset(fileName)){
-                return assetMap[fileName];
+            auto cached = assetMap.find(key);
+            if(cached != assetMap.end()){
+                if(cached->second){
+                    return cached->second;
+                }
+                assetMap.erase(cached);
             }
 
             auto assetPtr = std::make_shared<Asset>(name);

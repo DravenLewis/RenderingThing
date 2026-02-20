@@ -42,6 +42,25 @@ namespace {
         outPath = std::filesystem::path(assetRef);
         return true;
     }
+
+    std::string absolutePathToAssetRef(const std::filesystem::path& absolutePath){
+        std::error_code ec;
+        std::filesystem::path assetRoot = std::filesystem::weakly_canonical(std::filesystem::path(File::GetCWD()) / "res", ec);
+        if(ec){
+            assetRoot = (std::filesystem::path(File::GetCWD()) / "res").lexically_normal();
+        }
+
+        std::filesystem::path normalizedPath = std::filesystem::weakly_canonical(absolutePath, ec);
+        if(ec){
+            normalizedPath = absolutePath.lexically_normal();
+        }
+
+        std::filesystem::path rel = normalizedPath.lexically_relative(assetRoot);
+        if(!rel.empty() && !StringUtils::BeginsWith(rel.generic_string(), "..")){
+            return std::string(ASSET_DELIMITER) + "/" + rel.generic_string();
+        }
+        return normalizedPath.generic_string();
+    }
 }
 
 void WorkspacePanel::setAssetRoot(const std::filesystem::path& rootPath){
@@ -71,17 +90,62 @@ void WorkspacePanel::commitAssetRename(std::filesystem::path& selectedAssetPath)
         return;
     }
 
-    std::string newName = StringUtils::Trim(assetRenameBuffer);
-    if(newName.empty()){
+    std::string requestedName = StringUtils::Trim(assetRenameBuffer);
+    if(requestedName.empty()){
         cancelAssetRename();
         return;
     }
 
     std::filesystem::path oldPath = assetRenamePath;
-    std::filesystem::path newPath = oldPath.parent_path() / newName;
+    const bool oldPathIsMaterialObject = MaterialAssetIO::IsMaterialObjectPath(oldPath);
+    const bool oldPathIsMaterialAsset = MaterialAssetIO::IsMaterialAssetPath(oldPath);
+
+    std::string normalizedNewName = requestedName;
+    std::string normalizedNewNameLower = StringUtils::ToLowerCase(normalizedNewName);
+    auto ensureSuffix = [&](const std::string& suffix){
+        const std::string suffixLower = StringUtils::ToLowerCase(suffix);
+        if(!StringUtils::EndsWith(normalizedNewNameLower, suffixLower)){
+            normalizedNewName += suffix;
+            normalizedNewNameLower = StringUtils::ToLowerCase(normalizedNewName);
+        }
+    };
+
+    if(oldPathIsMaterialObject){
+        // Keep material object extension even if the user types only a base name.
+        ensureSuffix(".material");
+    }else if(oldPathIsMaterialAsset){
+        const bool hasKnownMaterialAssetSuffix =
+            StringUtils::EndsWith(normalizedNewNameLower, ".mat.asset") ||
+            StringUtils::EndsWith(normalizedNewNameLower, ".material.asset");
+        if(!hasKnownMaterialAssetSuffix){
+            const std::string oldFileNameLower = StringUtils::ToLowerCase(oldPath.filename().string());
+            if(StringUtils::EndsWith(oldFileNameLower, ".material.asset")){
+                ensureSuffix(".material.asset");
+            }else{
+                ensureSuffix(".mat.asset");
+            }
+        }
+    }
+
+    std::filesystem::path newPath = oldPath.parent_path() / normalizedNewName;
     if(newPath == oldPath){
         cancelAssetRename();
         return;
+    }
+
+    std::filesystem::path oldLinkedPath;
+    bool hasOldLinkedPath = false;
+    if(oldPathIsMaterialObject){
+        std::string oldLinkedAssetRef;
+        std::string linkResolveError;
+        if(MaterialAssetIO::ResolveMaterialAssetRef(oldPath.generic_string(), oldLinkedAssetRef, &linkResolveError)){
+            if(assetRefToAbsolutePath(oldLinkedAssetRef, oldLinkedPath)){
+                std::error_code linkedEc;
+                std::filesystem::path normalizedLinked = std::filesystem::weakly_canonical(oldLinkedPath, linkedEc);
+                oldLinkedPath = linkedEc ? oldLinkedPath.lexically_normal() : normalizedLinked;
+                hasOldLinkedPath = true;
+            }
+        }
     }
 
     std::error_code ec;
@@ -105,6 +169,92 @@ void WorkspacePanel::commitAssetRename(std::filesystem::path& selectedAssetPath)
         selectedAssetPath = newPath;
     }
 
+    if(oldPathIsMaterialObject){
+        std::filesystem::path resolvedLinkedPath = oldLinkedPath;
+        if(hasOldLinkedPath){
+            const std::string oldBaseName = oldPath.stem().string();
+            const std::string newBaseName = newPath.stem().string();
+            const std::string linkedFileNameLower = StringUtils::ToLowerCase(oldLinkedPath.filename().string());
+
+            std::string linkedSuffix;
+            if(linkedFileNameLower == StringUtils::ToLowerCase(oldBaseName + ".mat.asset")){
+                linkedSuffix = ".mat.asset";
+            }else if(linkedFileNameLower == StringUtils::ToLowerCase(oldBaseName + ".material.asset")){
+                linkedSuffix = ".material.asset";
+            }
+
+            if(!linkedSuffix.empty()){
+                std::filesystem::path desiredLinkedPath = oldLinkedPath.parent_path() / (newBaseName + linkedSuffix);
+                if(desiredLinkedPath != oldLinkedPath){
+                    std::error_code linkedRenameEc;
+                    if(std::filesystem::exists(desiredLinkedPath, linkedRenameEc)){
+                        LogBot.Log(LOG_WARN, "Linked material asset rename skipped: target exists (%s).", desiredLinkedPath.string().c_str());
+                    }else{
+                        linkedRenameEc.clear();
+                        std::filesystem::rename(oldLinkedPath, desiredLinkedPath, linkedRenameEc);
+                        if(linkedRenameEc){
+                            LogBot.Log(LOG_WARN,
+                                       "Linked material asset rename failed (%s -> %s): %s",
+                                       oldLinkedPath.string().c_str(),
+                                       desiredLinkedPath.string().c_str(),
+                                       linkedRenameEc.message().c_str());
+                        }else{
+                            resolvedLinkedPath = desiredLinkedPath;
+                            if(selectedAssetPath == oldLinkedPath){
+                                selectedAssetPath = desiredLinkedPath;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        MaterialObjectData objectData;
+        std::string objectError;
+        if(MaterialAssetIO::LoadMaterialObjectFromAbsolutePath(newPath, objectData, &objectError)){
+            objectData.name = newPath.stem().string();
+
+            if(!resolvedLinkedPath.empty()){
+                std::string linkedAssetRef;
+                std::string linkedRefError;
+                if(MaterialAssetIO::ResolveMaterialAssetRef(resolvedLinkedPath.generic_string(), linkedAssetRef, &linkedRefError)){
+                    objectData.materialAssetRef = linkedAssetRef;
+                }else{
+                    LogBot.Log(LOG_WARN,
+                               "Failed to update material reference after rename (%s): %s",
+                               resolvedLinkedPath.string().c_str(),
+                               linkedRefError.c_str());
+                }
+            }
+
+            if(!MaterialAssetIO::SaveMaterialObjectToAbsolutePath(newPath, objectData, &objectError)){
+                LogBot.Log(LOG_WARN, "Failed to update material object after rename (%s): %s", newPath.string().c_str(), objectError.c_str());
+            }
+        }else{
+            LogBot.Log(LOG_WARN, "Failed to reload renamed material object (%s): %s", newPath.string().c_str(), objectError.c_str());
+        }
+
+        if(!resolvedLinkedPath.empty()){
+            MaterialAssetData linkedData;
+            std::string linkedDataError;
+            if(MaterialAssetIO::LoadFromAbsolutePath(resolvedLinkedPath, linkedData, &linkedDataError)){
+                linkedData.linkParentRef = absolutePathToAssetRef(newPath);
+                if(!MaterialAssetIO::SaveToAbsolutePath(resolvedLinkedPath, linkedData, &linkedDataError)){
+                    LogBot.Log(LOG_WARN,
+                               "Failed to update material asset link parent after rename (%s): %s",
+                               resolvedLinkedPath.string().c_str(),
+                               linkedDataError.c_str());
+                }
+            }else{
+                LogBot.Log(LOG_WARN,
+                           "Failed to load linked material asset for parent update (%s): %s",
+                           resolvedLinkedPath.string().c_str(),
+                           linkedDataError.c_str());
+            }
+        }
+    }
+
+    EditorAssetUI::InvalidateAllThumbnails();
     cancelAssetRename();
 }
 
@@ -152,6 +302,7 @@ bool WorkspacePanel::createMaterialWithLinkedAsset(const std::filesystem::path& 
 
     MaterialAssetData data;
     data.name = materialAssetPath.filename().string();
+    data.linkParentRef = absolutePathToAssetRef(materialPath);
     data.type = MaterialAssetType::PBR;
     // Use default built-in PBR material shader path (no extra .shader.asset generation).
     data.shaderAssetRef = "";
@@ -275,6 +426,59 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
             outLinkedByParent[parentKey] = linkedPath;
 
             const std::string linkedKey = normalizedPathKey(linkedPath);
+            if(!linkedKey.empty()){
+                hiddenRelatedAssetKeys.insert(linkedKey);
+            }
+        }
+
+        // Support persisted child -> parent material links so existing assets stay grouped
+        // even if the .material file reference is stale.
+        for(const auto& entry : baseEntries){
+            if(entry.isUp || entry.isDirectory){
+                continue;
+            }
+            if(!MaterialAssetIO::IsMaterialAssetPath(entry.path)){
+                continue;
+            }
+
+            MaterialAssetData linkedMaterialData;
+            std::string linkedLoadError;
+            if(!MaterialAssetIO::LoadFromAbsolutePath(entry.path, linkedMaterialData, &linkedLoadError)){
+                continue;
+            }
+
+            const std::string parentRef = StringUtils::Trim(linkedMaterialData.linkParentRef);
+            if(parentRef.empty()){
+                continue;
+            }
+
+            std::filesystem::path parentPath;
+            if(!assetRefToAbsolutePath(parentRef, parentPath)){
+                continue;
+            }
+
+            std::error_code parentEc;
+            std::filesystem::path normalizedParentPath = std::filesystem::weakly_canonical(parentPath, parentEc);
+            if(parentEc){
+                normalizedParentPath = parentPath.lexically_normal();
+            }
+            if(!std::filesystem::exists(normalizedParentPath, parentEc) || std::filesystem::is_directory(normalizedParentPath, parentEc)){
+                continue;
+            }
+            if(!MaterialAssetIO::IsMaterialObjectPath(normalizedParentPath)){
+                continue;
+            }
+            if(normalizedPathKey(normalizedParentPath.parent_path()) != normalizedPathKey(assetDir)){
+                continue;
+            }
+
+            const std::string parentKey = normalizedPathKey(normalizedParentPath);
+            if(parentKey.empty()){
+                continue;
+            }
+
+            outLinkedByParent[parentKey] = entry.path;
+            const std::string linkedKey = normalizedPathKey(entry.path);
             if(!linkedKey.empty()){
                 hiddenRelatedAssetKeys.insert(linkedKey);
             }
@@ -886,6 +1090,12 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
             if(openAssetContextMenu){
                 ImGui::OpenPopup("AssetContextMenuMain");
             }else if(ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup) &&
+                     ImGui::IsMouseReleased(ImGuiMouseButton_Left) &&
+                     !ImGui::IsAnyItemHovered()){
+                selectedAssetPath.clear();
+                contextMenuHasTarget = false;
+                contextMenuTargetPath.clear();
+            }else if(ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup) &&
                      ImGui::IsMouseReleased(ImGuiMouseButton_Right) &&
                      !ImGui::IsAnyItemHovered()){
                 contextMenuHasTarget = false;
@@ -1084,6 +1294,12 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
 
             if(openPickerContextMenu){
                 ImGui::OpenPopup("AssetContextMenuPicker");
+            }else if(ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup) &&
+                     ImGui::IsMouseReleased(ImGuiMouseButton_Left) &&
+                     !ImGui::IsAnyItemHovered()){
+                selectedAssetPath.clear();
+                pickerContextMenuHasTarget = false;
+                pickerContextMenuTargetPath.clear();
             }else if(ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup) &&
                      ImGui::IsMouseReleased(ImGuiMouseButton_Right) &&
                      !ImGui::IsAnyItemHovered()){

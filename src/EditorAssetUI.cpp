@@ -323,12 +323,12 @@ namespace {
         }
         if(g_materialThumbnailCamera){
             g_materialThumbnailCamera->resize((float)size, (float)size);
-            g_materialThumbnailCamera->transform().setPosition(Math3D::Vec3(2.8f, 1.6f, 2.8f));
+            g_materialThumbnailCamera->transform().setPosition(Math3D::Vec3(2.35f, 1.25f, 2.35f));
             g_materialThumbnailCamera->transform().lookAt(Math3D::Vec3(0.0f, 0.0f, 0.0f));
         }
 
         if(!g_materialThumbnailSphere){
-            g_materialThumbnailSphere = ModelPartPrefabs::MakeSphere(0.9f, 28, 18);
+            g_materialThumbnailSphere = ModelPartPrefabs::MakeSphere(1.0f, 28, 18);
         }
 
         if(!g_materialThumbnailSkyBox){
@@ -388,7 +388,7 @@ namespace {
         glGetBooleanv(GL_DEPTH_WRITEMASK, &previousDepthMask);
 
         framebuffer->bind();
-        framebuffer->clear(Color::fromRGB24(0x263248));
+        framebuffer->clear(Color::CLEAR);
 
         glEnable(GL_DEPTH_TEST);
         glDepthMask(GL_TRUE);
@@ -410,6 +410,7 @@ namespace {
             }
         }
         g_materialThumbnailSphere->localTransform.setRotation(12.0f, 26.0f, 0.0f);
+        g_materialThumbnailSphere->localTransform.setScale(Math3D::Vec3(1.08f, 1.08f, 1.08f));
 
         const Math3D::Mat4 identity;
         glFrontFace(GL_CW);
@@ -726,9 +727,14 @@ bool DrawAssetTile(const char* id, const AssetTransaction& tx, float iconSize, b
     drawList->AddRectFilled(cursor, ImVec2(cursor.x + size.x, cursor.y + size.y), IM_COL32(18, 18, 24, 255), 6.0f);
     drawList->AddRect(cursor, ImVec2(cursor.x + size.x, cursor.y + size.y), frame, 6.0f, 0, 2.0f);
 
+    const bool hasThumbnailPreviewKind =
+        (tx.kind == AssetKind::Image ||
+         tx.kind == AssetKind::MaterialAsset ||
+         tx.kind == AssetKind::Material);
+    const float footerReserve = hasThumbnailPreviewKind ? 0.0f : 16.0f;
     float inset = 8.0f;
     ImVec2 innerMin(cursor.x + inset, cursor.y + inset);
-    ImVec2 innerMax(cursor.x + size.x - inset, cursor.y + size.y - inset - 16.0f);
+    ImVec2 innerMax(cursor.x + size.x - inset, cursor.y + size.y - inset - footerReserve);
     float innerWidth = Math3D::Max(0.0f, innerMax.x - innerMin.x);
     float innerHeight = Math3D::Max(0.0f, innerMax.y - innerMin.y);
     float squareSide = Math3D::Min(innerWidth, innerHeight);
@@ -748,7 +754,6 @@ bool DrawAssetTile(const char* id, const AssetTransaction& tx, float iconSize, b
     }else if(tx.kind == AssetKind::MaterialAsset || tx.kind == AssetKind::Material){
         std::shared_ptr<Texture> thumb = getMaterialThumbnail(tx);
         if(thumb && thumb->getID() != 0){
-            drawList->AddRectFilled(squareMin, squareMax, IM_COL32(20, 20, 20, 255), 4.0f);
             drawCenteredTextureInSquare(drawList, thumb, squareMin, squareSide, true);
             drewThumbnail = true;
         }

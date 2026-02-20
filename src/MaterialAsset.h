@@ -21,6 +21,7 @@ enum class MaterialAssetType {
 
 struct MaterialAssetData {
     std::string name;
+    std::string linkParentRef;
     MaterialAssetType type = MaterialAssetType::PBR;
     std::string shaderAssetRef;
 

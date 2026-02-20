@@ -316,7 +316,7 @@ namespace Math3D{
             rotation = rotation.normalize();
         }
 
-        // Set rotation from forward and up (construct a rotation where local +Z points to forward)
+        // Camera-oriented look-at helper (local -Z points toward target).
         void lookAt(const Vec3& target, const Vec3& worldUp = Vec3(0,1,0)) {
             Vec3 dir = target - position;
             // avoid degenerate case
@@ -334,14 +334,17 @@ namespace Math3D{
                     up = Vec3::cross(f, Vec3::forward()).normalize();
             }
 
-            Vec3 r = Vec3::cross(up,f).normalize(); // right
-            Vec3 u = Vec3::cross(f, r);                   // recomputed up (orthonormal)
+            // For camera-style transforms used with an inverse view matrix,
+            // local -Z should face the target (OpenGL convention).
+            Vec3 r = Vec3::cross(f, up).normalize(); // right
+            Vec3 u = Vec3::cross(r, f);              // recomputed up (orthonormal)
 
-            // Build rotation matrix where columns are (right, up, forward)
+            // Build rotation matrix where columns are (right, up, backward).
+            // Using -forward makes local -Z point at the target.
             glm::mat3 rotMat;
             rotMat[0] = (glm::vec3) r; // column 0
             rotMat[1] = (glm::vec3) u; // column 1
-            rotMat[2] = (glm::vec3) f; // column 2
+            rotMat[2] = (glm::vec3)(f * -1.0f); // column 2
 
             rotation = Quat::FromMat3(rotMat);
         }

@@ -539,6 +539,7 @@ void FilePreviewWidget::drawMaterialAssetEditor(){
             std::error_code ec;
             lastWriteTime = std::filesystem::last_write_time(filePath, ec);
             previewMaterialDirty = true;
+            EditorAssetUI::InvalidateMaterialThumbnail();
         }else{
             statusIsError = true;
             statusMessage = error;
@@ -624,6 +625,7 @@ void FilePreviewWidget::drawMaterialObjectEditor(){
             std::error_code ec;
             lastWriteTime = std::filesystem::last_write_time(filePath, ec);
             previewMaterialDirty = true;
+            EditorAssetUI::InvalidateMaterialThumbnail();
         }else{
             statusIsError = true;
             statusMessage = error;
@@ -938,7 +940,7 @@ void FilePreviewWidget::renderMaterialPreview(const std::shared_ptr<Material>& m
     glGetBooleanv(GL_DEPTH_WRITEMASK, &previousDepthMask);
 
     previewFrameBuffer->bind();
-    previewFrameBuffer->clear(Color::fromRGB24(0x263248));
+    previewFrameBuffer->clear(Color::CLEAR);
 
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
@@ -949,10 +951,6 @@ void FilePreviewWidget::renderMaterialPreview(const std::shared_ptr<Material>& m
 
     Screen::MakeCameraCurrent(previewCamera);
     Screen::MakeEnvironmentCurrent(previewEnvironment);
-
-    if(previewSkyBox){
-        previewSkyBox->draw(previewCamera, false);
-    }
 
     previewSphere->material = renderMaterial;
 

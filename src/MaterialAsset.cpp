@@ -58,6 +58,12 @@ namespace {
         if(ec){
             normalizedPath = path.lexically_normal();
         }
+        if(!std::filesystem::exists(normalizedPath, ec) || std::filesystem::is_directory(normalizedPath, ec)){
+            if(outError){
+                *outError = "Failed to load file: " + normalizedPath.generic_string();
+            }
+            return false;
+        }
 
         std::filesystem::path rel = normalizedPath.lexically_relative(assetRoot);
         if(!rel.empty() && !StringUtils::BeginsWith(rel.generic_string(), "..")){
@@ -272,6 +278,8 @@ namespace {
 
             if(key == "name"){
                 outData.name = value;
+            }else if(key == "@link-parent" || key == "link-parent" || key == "link_parent" || key == "linkparent"){
+                outData.linkParentRef = value;
             }else if(key == "type" || key == "material_type"){
                 outData.type = MaterialAssetIO::TypeFromString(value);
             }else if(key == "shader_asset" || key == "shader"){
@@ -436,6 +444,13 @@ bool LoadFromAssetRef(const std::string& assetRef, MaterialAssetData& outData, s
         }
         return false;
     }
+    std::error_code ec;
+    if(!std::filesystem::exists(resolvedPath, ec) || std::filesystem::is_directory(resolvedPath, ec)){
+        if(outError){
+            *outError = "Material asset does not exist: " + resolvedPath.generic_string();
+        }
+        return false;
+    }
 
     outData = MaterialAssetData{};
     std::string text;
@@ -470,6 +485,7 @@ bool SaveToAbsolutePath(const std::filesystem::path& path, const MaterialAssetDa
     }
 
     writer->putln(StringUtils::Format("name=%s", data.name.c_str()).c_str());
+    writer->putln(StringUtils::Format("@link-parent=%s", data.linkParentRef.c_str()).c_str());
     writer->putln(StringUtils::Format("type=%s", TypeToString(data.type)).c_str());
     writer->putln(StringUtils::Format("shader_asset=%s", data.shaderAssetRef.c_str()).c_str());
     writer->putln(StringUtils::Format("color=%s", vec4ToString(data.color).c_str()).c_str());
@@ -506,6 +522,7 @@ bool SaveToAbsolutePath(const std::filesystem::path& path, const MaterialAssetDa
         return false;
     }
     writer->close();
+    AssetManager::Instance.unmanageAsset(path.generic_string());
     return true;
 }
 
@@ -626,21 +643,59 @@ bool LoadMaterialObjectFromAbsolutePath(const std::filesystem::path& path, Mater
         return false;
     }
     parseMaterialObjectText(text, outData);
+    const std::string originalMaterialAssetRef = outData.materialAssetRef;
     if(outData.name.empty()){
         outData.name = path.stem().string();
     }
 
-    if(outData.materialAssetRef.empty()){
-        const std::filesystem::path parent = path.parent_path();
-        const std::string stem = path.stem().string();
-        const std::filesystem::path defaultMaterialAsset = parent / (stem + ".material.asset");
-        const std::filesystem::path legacyMaterialAsset = parent / (stem + ".mat.asset");
+    const std::filesystem::path parent = path.parent_path();
+    const std::string stem = path.stem().string();
+    const std::filesystem::path defaultMaterialAsset = parent / (stem + ".material.asset");
+    const std::filesystem::path legacyMaterialAsset = parent / (stem + ".mat.asset");
+
+    auto fallbackToSiblingAsset = [&](){
         std::error_code ec;
-        if(std::filesystem::exists(defaultMaterialAsset, ec)){
+        if(std::filesystem::exists(defaultMaterialAsset, ec) && !std::filesystem::is_directory(defaultMaterialAsset, ec)){
             outData.materialAssetRef = toAssetRefFromAbsolutePath(defaultMaterialAsset);
-        }else if(std::filesystem::exists(legacyMaterialAsset, ec)){
-            outData.materialAssetRef = toAssetRefFromAbsolutePath(legacyMaterialAsset);
+            return true;
         }
+        ec.clear();
+        if(std::filesystem::exists(legacyMaterialAsset, ec) && !std::filesystem::is_directory(legacyMaterialAsset, ec)){
+            outData.materialAssetRef = toAssetRefFromAbsolutePath(legacyMaterialAsset);
+            return true;
+        }
+        return false;
+    };
+
+    bool hasValidResolvedRef = false;
+    if(!outData.materialAssetRef.empty()){
+        std::string resolvedRef;
+        std::string resolveError;
+        if(MaterialAssetIO::ResolveMaterialAssetRef(outData.materialAssetRef, resolvedRef, &resolveError)){
+            std::filesystem::path resolvedPath;
+            std::error_code ec;
+            if(toAbsolutePathFromAssetRef(resolvedRef, resolvedPath) &&
+               std::filesystem::exists(resolvedPath, ec) &&
+               !std::filesystem::is_directory(resolvedPath, ec) &&
+               IsMaterialAssetPath(resolvedPath)){
+                hasValidResolvedRef = true;
+                outData.materialAssetRef = resolvedRef;
+            }
+        }
+    }
+
+    if(!hasValidResolvedRef){
+        if(!fallbackToSiblingAsset()){
+            if(outData.materialAssetRef.empty() && outError){
+                *outError = "Material object has no linked material asset: " + path.generic_string();
+            }
+            outData.materialAssetRef.clear();
+        }
+    }
+
+    // Heal legacy/broken material links on read so old projects migrate forward.
+    if(!outData.materialAssetRef.empty() && outData.materialAssetRef != originalMaterialAssetRef){
+        SaveMaterialObjectToAbsolutePath(path, outData, nullptr);
     }
 
     return true;
@@ -705,6 +760,20 @@ bool SaveMaterialObjectToAbsolutePath(const std::filesystem::path& path, const M
         return false;
     }
     writer->close();
+    AssetManager::Instance.unmanageAsset(path.generic_string());
+
+    if(!resolvedAssetRef.empty()){
+        MaterialAssetData linkedData;
+        std::string linkedError;
+        if(LoadFromAssetRef(resolvedAssetRef, linkedData, &linkedError)){
+            const std::string parentRef = toAssetRefFromAbsolutePath(path);
+            if(linkedData.linkParentRef != parentRef){
+                linkedData.linkParentRef = parentRef;
+                SaveToAssetRef(resolvedAssetRef, linkedData, nullptr);
+            }
+        }
+    }
+
     return true;
 }
 
@@ -739,6 +808,13 @@ bool ResolveMaterialAssetRef(const std::string& materialOrAssetRef, std::string&
         }
 
         if(IsMaterialAssetPath(absolutePath)){
+            std::error_code ec;
+            if(!std::filesystem::exists(absolutePath, ec) || std::filesystem::is_directory(absolutePath, ec)){
+                if(outError){
+                    *outError = "Material asset does not exist: " + absolutePath.generic_string();
+                }
+                return false;
+            }
             if(isAssetRef(currentRef)){
                 outAssetRef = currentRef;
             }else{
