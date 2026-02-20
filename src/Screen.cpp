@@ -70,11 +70,35 @@ void Screen::processRenderPipeline(){
 
     }*/
 
+    auto passthroughCopy = [&](const std::shared_ptr<FrameBuffer>& source, const std::shared_ptr<FrameBuffer>& destination) -> bool {
+        if(!source || !destination || !screenShader || !screenQuad){
+            return false;
+        }
+
+        destination->bind();
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_BLEND);
+
+        screenShader->bind();
+        Uniform<PTexture> passthroughTex(source->getTexture());
+        screenShader->setUniform("screenTexture", passthroughTex);
+
+        static const Math3D::Mat4 IDENTITY;
+        screenShader->setUniform("u_model", Uniform<Math3D::Mat4>(IDENTITY));
+        screenShader->setUniform("u_view", Uniform<Math3D::Mat4>(IDENTITY));
+        screenShader->setUniform("u_projection", Uniform<Math3D::Mat4>(IDENTITY));
+        screenQuad->draw(IDENTITY, IDENTITY, IDENTITY);
+
+        destination->unbind();
+        return true;
+    };
+
     // 1. Setup Initial Pointers
     // 'readSource' starts as the Back Buffer (where the 3D scene is)
     // 'writeTarget' starts as the Middle Buffer (our scratchpad)
     std::shared_ptr<FrameBuffer> readSource = buffer->getDrawBuffer(); 
     std::shared_ptr<FrameBuffer> writeTarget = buffer->getEditBuffer();
+    auto originalDepth = buffer->getDrawBuffer()->getDepthTexture();
 
     bool performedAnyEffects = false;
 
@@ -85,30 +109,12 @@ void Screen::processRenderPipeline(){
 
         performedAnyEffects = true;
 
-        auto originalDepth = buffer->getDrawBuffer()->getDepthTexture();
-
-        // Fail-safe: pre-fill target with source image.
-        // If an effect early-outs (compile/runtime issue), the pass still preserves the frame.
-        if(screenShader && screenQuad && readSource && writeTarget){
-            writeTarget->bind();
-            glDisable(GL_DEPTH_TEST);
-            glDisable(GL_BLEND);
-
-            screenShader->bind();
-            Uniform<PTexture> passthroughTex(readSource->getTexture());
-            screenShader->setUniform("screenTexture", passthroughTex);
-
-            static const Math3D::Mat4 IDENTITY;
-            screenShader->setUniform("u_model", Uniform<Math3D::Mat4>(IDENTITY));
-            screenShader->setUniform("u_view", Uniform<Math3D::Mat4>(IDENTITY));
-            screenShader->setUniform("u_projection", Uniform<Math3D::Mat4>(IDENTITY));
-            screenQuad->draw(IDENTITY, IDENTITY, IDENTITY);
-
-            writeTarget->unbind();
-        }
-
         // Apply the effect: Read from Source -> Write to Target
-        effect->apply(readSource->getTexture(), originalDepth, writeTarget, screenQuad);
+        // If it fails, preserve the frame with one passthrough copy.
+        bool applied = effect->apply(readSource->getTexture(), originalDepth, writeTarget, screenQuad);
+        if(!applied){
+            passthroughCopy(readSource, writeTarget);
+        }
 
         // Swap the pointers locally!
         // The 'Target' now holds the latest image, so it becomes the 'Source' for the next pass.
@@ -130,30 +136,11 @@ void Screen::processRenderPipeline(){
         
         auto finalDestination = buffer->getEditBuffer();
 
-        // Bind the definitive Middle buffer
-        finalDestination->bind();
-        finalDestination->clear(Color::CLEAR); // WAS BLACK
-        glDisable(GL_DEPTH_TEST);
-
-        if (screenShader && screenQuad) {
-            screenShader->bind();
-
-            // Read from wherever the valid data ended up
-            Uniform<PTexture> u_tex(readSource->getTexture());
-            screenShader->setUniform("screenTexture", u_tex);
-
-            static const Math3D::Mat4 IDENTITY;
-            screenShader->setUniform("u_model", Uniform<Math3D::Mat4>(IDENTITY));
-            screenShader->setUniform("u_view", Uniform<Math3D::Mat4>(IDENTITY));
-            screenShader->setUniform("u_projection", Uniform<Math3D::Mat4>(IDENTITY));
-
-            glDisable(GL_BLEND); // Disable Blending.
-
-            // Draw the Quad (The "Brush Stroke")
-            screenQuad->draw(IDENTITY, IDENTITY, IDENTITY);
+        if(!passthroughCopy(readSource, finalDestination)){
+            finalDestination->bind();
+            finalDestination->clear(Color::CLEAR);
+            finalDestination->unbind();
         }
-
-        finalDestination->unbind();
     }
 
     // 4. Rotate the TrippleBuffer

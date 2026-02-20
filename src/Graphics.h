@@ -85,7 +85,7 @@ namespace Graphics{
             public:
                 virtual ~PostProcessingEffect() = default;
 
-                virtual void apply(
+                virtual bool apply(
                     PTexture inputTex,
                     PTexture depthTex,
                     PFrameBuffer frameBuffer,

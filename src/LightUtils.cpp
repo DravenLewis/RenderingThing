@@ -11,6 +11,7 @@
 
 namespace {
     constexpr GLuint LIGHT_UBO_BINDING = 0;
+    constexpr bool LIGHT_UBO_VERBOSE_LOGGING = false;
 
     struct alignas(16) LightUBO {
         float meta[4] = {0.0f, 0.0f, -1.0f, 1.0f};     // x=type, y=shadowType, z=shadowMapIndex, w=shadowStrength
@@ -84,7 +85,7 @@ namespace {
         if(g_loggedPrograms.find(programId) == g_loggedPrograms.end()){
             if(blockIndex == GL_INVALID_INDEX){
                 LogBot.Log(LOG_ERRO, "LightBlock uniform block not found for program %u", programId);
-            }else{
+            }else if(LIGHT_UBO_VERBOSE_LOGGING){
                 GLint blockSize = 0;
                 GLint activeUniforms = 0;
                 glGetActiveUniformBlockiv(programId, blockIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &blockSize);
@@ -121,8 +122,10 @@ void LightUniformUploader::UploadLights(std::shared_ptr<ShaderProgram> program, 
 
     auto lastIt = g_lastLightCount.find(program->getID());
     if(lastIt == g_lastLightCount.end() || lastIt->second != lightCount){
-        int firstType = (lightCount > 0) ? static_cast<int>(lights[0].type) : -1;
-        LogBot.Log(LOG_INFO, "LightUBO upload: program %u count=%d firstType=%d", program->getID(), lightCount, firstType);
+        if(LIGHT_UBO_VERBOSE_LOGGING){
+            int firstType = (lightCount > 0) ? static_cast<int>(lights[0].type) : -1;
+            LogBot.Log(LOG_INFO, "LightUBO upload: program %u count=%d firstType=%d", program->getID(), lightCount, firstType);
+        }
         g_lastLightCount[program->getID()] = lightCount;
     }
 

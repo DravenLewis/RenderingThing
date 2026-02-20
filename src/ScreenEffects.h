@@ -58,13 +58,13 @@ class GrayscaleEffect : public Graphics::PostProcessing::PostProcessingEffect{
             shader->setFragmentShader(GRAYSCALE_SHADER);
         }
 
-        void apply(PTexture tex, PTexture depthTex, PFrameBuffer outFbo, std::shared_ptr<ModelPart> quad) override {
+        bool apply(PTexture tex, PTexture depthTex, PFrameBuffer outFbo, std::shared_ptr<ModelPart> quad) override {
             (void)depthTex;
             if(!tex || !outFbo || !quad){
-                return;
+                return false;
             }
             if(!ensureCompiled()){
-                return;
+                return false;
             }
 
             outFbo->bind();
@@ -82,6 +82,7 @@ class GrayscaleEffect : public Graphics::PostProcessing::PostProcessingEffect{
             quad->draw(IDENTITY, IDENTITY, IDENTITY);
 
             outFbo->unbind();
+            return true;
         }
 
         static Graphics::PostProcessing::PPostProcessingEffect New(){
@@ -138,7 +139,9 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
             void main() {
                 vec4 base = texture(screenTexture, TexCoords);
                 float centerDepthRaw = texture(depthTexture, TexCoords).r;
-                if(centerDepthRaw >= 0.99999){
+                // Treat near-far depth as background/sky and skip AO to avoid horizon halos.
+                const float kSkyDepthCutoff = 0.9995;
+                if(centerDepthRaw >= kSkyDepthCutoff){
                     FragColor = base;
                     return;
                 }
@@ -163,7 +166,7 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
                         continue;
                     }
                     float sampleDepthRaw = texture(depthTexture, uv).r;
-                    if(sampleDepthRaw >= 0.99999){
+                    if(sampleDepthRaw >= kSkyDepthCutoff){
                         continue;
                     }
                     float sampleDepth = linearizeDepth(sampleDepthRaw);
@@ -171,11 +174,9 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
                     float depthDelta = centerDepth - sampleDepth;
                     float slopeAllowance = depthSlope * length(pixelOffset);
                     float adjustedDelta = depthDelta - (baseBias + slopeAllowance);
-                    if(adjustedDelta <= 0.0){
-                        continue;
-                    }
                     float sampleOcc = smoothstep(0.0, adaptiveDepthRadius, adjustedDelta);
-                    float rangeWeight = 1.0 - smoothstep(0.0, adaptiveDepthRadius * 2.0, adjustedDelta);
+                    // Weight by raw geometric proximity so non-occluding neighbors still normalize.
+                    float rangeWeight = 1.0 - smoothstep(0.0, adaptiveDepthRadius * 2.0, abs(depthDelta));
                     occ += sampleOcc * rangeWeight;
                     weightSum += rangeWeight;
                 }
@@ -226,12 +227,12 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
             shader->setFragmentShader(SSAO_FRAG_SHADER);
         }
 
-        void apply(PTexture tex, PTexture depthTex, PFrameBuffer outFbo, std::shared_ptr<ModelPart> quad) override {
-            if(!outFbo || !quad || !tex){
-                return;
+        bool apply(PTexture tex, PTexture depthTex, PFrameBuffer outFbo, std::shared_ptr<ModelPart> quad) override {
+            if(!outFbo || !quad || !tex || !depthTex){
+                return false;
             }
             if(!ensureCompiled()){
-                return;
+                return false;
             }
 
             outFbo->bind();
@@ -247,7 +248,17 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
             shader->setUniformFast("u_bias", Uniform<float>(bias));
             shader->setUniformFast("u_intensity", Uniform<float>(intensity));
             shader->setUniformFast("u_giBoost", Uniform<float>(giBoost));
-            shader->setUniformFast("u_sampleCount", Uniform<int>(sampleCount));
+            int effectiveSamples = sampleCount;
+            const int pixelCount = outFbo->getWidth() * outFbo->getHeight();
+            if(pixelCount >= (2560 * 1440) && effectiveSamples > 5){
+                effectiveSamples = 5;
+            }else if(pixelCount >= (1920 * 1080) && effectiveSamples > 6){
+                effectiveSamples = 6;
+            }
+            if(effectiveSamples < 1){
+                effectiveSamples = 1;
+            }
+            shader->setUniformFast("u_sampleCount", Uniform<int>(effectiveSamples));
             shader->setUniformFast("u_nearPlane", Uniform<float>(nearPlane));
             shader->setUniformFast("u_farPlane", Uniform<float>(farPlane));
 
@@ -257,6 +268,7 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
             shader->setUniformFast("u_projection", Uniform<Math3D::Mat4>(IDENTITY));
             quad->draw(IDENTITY, IDENTITY, IDENTITY);
             outFbo->unbind();
+            return true;
         }
 
         static std::shared_ptr<SSAOEffect> New() {
@@ -369,12 +381,12 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
             shader->setFragmentShader(DOF_FRAG_SHADER);
         }
 
-        void apply(PTexture tex, PTexture depthTex, PFrameBuffer outFbo, std::shared_ptr<ModelPart> quad) override {
-            if(!outFbo || !quad || !tex){
-                return;
+        bool apply(PTexture tex, PTexture depthTex, PFrameBuffer outFbo, std::shared_ptr<ModelPart> quad) override {
+            if(!outFbo || !quad || !tex || !depthTex){
+                return false;
             }
             if(!ensureCompiled()){
-                return;
+                return false;
             }
 
             outFbo->bind();
@@ -389,7 +401,17 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
             shader->setUniformFast("u_focusRange", Uniform<float>(focusRange));
             shader->setUniformFast("u_blurStrength", Uniform<float>(blurStrength));
             shader->setUniformFast("u_maxBlurPx", Uniform<float>(maxBlurPx));
-            shader->setUniformFast("u_sampleCount", Uniform<int>(sampleCount));
+            int effectiveSamples = sampleCount;
+            const int pixelCount = outFbo->getWidth() * outFbo->getHeight();
+            if(pixelCount >= (2560 * 1440) && effectiveSamples > 4){
+                effectiveSamples = 4;
+            }else if(pixelCount >= (1920 * 1080) && effectiveSamples > 5){
+                effectiveSamples = 5;
+            }
+            if(effectiveSamples < 1){
+                effectiveSamples = 1;
+            }
+            shader->setUniformFast("u_sampleCount", Uniform<int>(effectiveSamples));
             shader->setUniformFast("u_nearPlane", Uniform<float>(nearPlane));
             shader->setUniformFast("u_farPlane", Uniform<float>(farPlane));
 
@@ -399,6 +421,7 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
             shader->setUniformFast("u_projection", Uniform<Math3D::Mat4>(IDENTITY));
             quad->draw(IDENTITY, IDENTITY, IDENTITY);
             outFbo->unbind();
+            return true;
         }
 
         static std::shared_ptr<DepthOfFieldEffect> New() {
@@ -501,12 +524,12 @@ class FXAAEffect : public Graphics::PostProcessing::PostProcessingEffect {
             shader->setFragmentShader(FXAA_FRAG_SHADER);
         }
 
-        void apply(PTexture tex, PTexture, PFrameBuffer outFbo, std::shared_ptr<ModelPart> quad) override {
+        bool apply(PTexture tex, PTexture, PFrameBuffer outFbo, std::shared_ptr<ModelPart> quad) override {
             if(!outFbo || !quad || !tex || preset == AntiAliasingPreset::Off){
-                return;
+                return false;
             }
             if(!ensureCompiled()){
-                return;
+                return false;
             }
 
             float subpix = 0.75f;
@@ -550,6 +573,7 @@ class FXAAEffect : public Graphics::PostProcessing::PostProcessingEffect {
             shader->setUniformFast("u_projection", Uniform<Math3D::Mat4>(IDENTITY));
             quad->draw(IDENTITY, IDENTITY, IDENTITY);
             outFbo->unbind();
+            return true;
         }
 
         static std::shared_ptr<FXAAEffect> New() {

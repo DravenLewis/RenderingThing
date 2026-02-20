@@ -10,6 +10,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cstring>
 #include <filesystem>
 
 namespace {
@@ -92,7 +93,9 @@ void MaterialRegistry::rebuildEntries(){
         }
 
         const std::filesystem::path& path = fileEntry.path();
-        if(!MaterialAssetIO::IsMaterialAssetPath(path)){
+        const bool isMaterialObject = MaterialAssetIO::IsMaterialObjectPath(path);
+        const bool isMaterialAsset = MaterialAssetIO::IsMaterialAssetPath(path);
+        if(!isMaterialObject && !isMaterialAsset){
             continue;
         }
 
@@ -101,10 +104,35 @@ void MaterialRegistry::rebuildEntries(){
             continue;
         }
 
+        if(isMaterialAsset){
+            std::string lower = StringUtils::ToLowerCase(path.filename().string());
+            std::string baseName = path.filename().string();
+            if(StringUtils::EndsWith(lower, ".material.asset")){
+                baseName = baseName.substr(0, baseName.size() - std::strlen(".material.asset"));
+            }else if(StringUtils::EndsWith(lower, ".mat.asset")){
+                baseName = baseName.substr(0, baseName.size() - std::strlen(".mat.asset"));
+            }
+
+            const std::filesystem::path siblingObject = path.parent_path() / (baseName + ".material");
+            std::error_code siblingEc;
+            if(std::filesystem::exists(siblingObject, siblingEc)){
+                continue;
+            }
+        }else if(isMaterialObject){
+            MaterialObjectData objectData;
+            std::string objectError;
+            if(!MaterialAssetIO::LoadMaterialObjectFromAbsolutePath(path, objectData, &objectError)){
+                continue;
+            }
+            if(objectData.materialAssetRef.empty()){
+                continue;
+            }
+        }
+
         MaterialRegistryEntry entry;
         entry.assetRef = std::string(ASSET_DELIMITER) + "/" + rel.generic_string();
-        entry.id = "Asset/" + entry.assetRef;
-        entry.displayName = "Asset/" + rel.generic_string();
+        entry.id = (isMaterialObject ? "Material/" : "Asset/") + entry.assetRef;
+        entry.displayName = (isMaterialObject ? "Material/" : "Asset/") + rel.generic_string();
         entry.isBuiltIn = false;
         entries.push_back(entry);
     }
@@ -153,15 +181,8 @@ std::shared_ptr<Material> MaterialRegistry::CreateById(const std::string& id, st
         if(entry.assetRef.empty()){
             break;
         }
-        MaterialAssetData data;
         std::string error;
-        if(!MaterialAssetIO::LoadFromAssetRef(entry.assetRef, data, &error)){
-            if(outError){
-                *outError = error;
-            }
-            return nullptr;
-        }
-        auto material = MaterialAssetIO::InstantiateMaterial(data, &error);
+        auto material = MaterialAssetIO::InstantiateMaterialFromRef(entry.assetRef, nullptr, &error);
         if(!material && outError){
             *outError = error;
         }

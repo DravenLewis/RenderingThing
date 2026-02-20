@@ -6,6 +6,8 @@
 #include "FrameBuffer.h"
 #include "MaterialDefaults.h"
 #include "ModelPartPrefabs.h"
+#include "Model.h"
+#include "OBJLoader.h"
 #include "PBRMaterial.h"
 #include "Screen.h"
 #include "ShaderAsset.h"
@@ -15,11 +17,60 @@
 #include "imgui.h"
 
 #include <array>
+#include <cmath>
 #include <cstdint>
 #include <cstring>
 
 namespace {
     constexpr bool kEnableRaytraceShaderStage = false;
+    constexpr float kMaterialPreviewMinDistance = 2.2f;
+    std::shared_ptr<Material> g_previewFallbackMaterial;
+
+    std::shared_ptr<Material> buildPreviewFallbackMaterial(){
+        auto isRenderable = [](const std::shared_ptr<Material>& mat) -> bool{
+            return mat && mat->getShader() && mat->getShader()->getID() != 0;
+        };
+
+        std::shared_ptr<Material> fallback = MaterialDefaults::ColorMaterial::Create(Color::WHITE);
+        if(isRenderable(fallback)){
+            return fallback;
+        }
+
+        fallback = MaterialDefaults::LitColorMaterial::Create(Color::WHITE);
+        if(isRenderable(fallback)){
+            return fallback;
+        }
+
+        fallback = PBRMaterial::Create(Color::WHITE);
+        if(isRenderable(fallback)){
+            return fallback;
+        }
+
+        return nullptr;
+    }
+
+    std::shared_ptr<Material> getRenderablePreviewMaterial(const std::shared_ptr<Material>& candidate){
+        if(candidate){
+            auto shader = candidate->getShader();
+            if(shader && shader->getID() != 0){
+                return candidate;
+            }
+        }
+
+        if(!g_previewFallbackMaterial ||
+           !g_previewFallbackMaterial->getShader() ||
+           g_previewFallbackMaterial->getShader()->getID() == 0){
+            g_previewFallbackMaterial = buildPreviewFallbackMaterial();
+        }
+
+        if(g_previewFallbackMaterial &&
+           g_previewFallbackMaterial->getShader() &&
+           g_previewFallbackMaterial->getShader()->getID() != 0){
+            return g_previewFallbackMaterial;
+        }
+
+        return nullptr;
+    }
 
     void copyBuffer(char* dst, size_t dstSize, const std::string& src){
         if(!dst || dstSize == 0){
@@ -79,6 +130,76 @@ namespace {
         ImGui::Button("Missing", ImVec2(44.0f, 44.0f));
         ImGui::EndDisabled();
     }
+
+    bool isModelPath(const std::filesystem::path& path){
+        const std::string ext = StringUtils::ToLowerCase(path.extension().string());
+        return (ext == ".obj" || ext == ".fbx" || ext == ".gltf" || ext == ".glb");
+    }
+
+    bool computeModelBounds(const std::shared_ptr<Model>& model, Math3D::Vec3& outCenter, float& outRadius){
+        if(!model){
+            return false;
+        }
+
+        bool hasBounds = false;
+        Math3D::Vec3 minV(0.0f, 0.0f, 0.0f);
+        Math3D::Vec3 maxV(0.0f, 0.0f, 0.0f);
+        const auto& parts = model->getParts();
+        for(const auto& part : parts){
+            if(!part || !part->mesh){
+                continue;
+            }
+
+            Math3D::Vec3 localMin;
+            Math3D::Vec3 localMax;
+            if(!part->mesh->getLocalBounds(localMin, localMax)){
+                continue;
+            }
+
+            const Math3D::Mat4 partMat = part->localTransform.toMat4();
+            const Math3D::Vec3 corners[8] = {
+                Math3D::Vec3(localMin.x, localMin.y, localMin.z),
+                Math3D::Vec3(localMin.x, localMin.y, localMax.z),
+                Math3D::Vec3(localMin.x, localMax.y, localMin.z),
+                Math3D::Vec3(localMin.x, localMax.y, localMax.z),
+                Math3D::Vec3(localMax.x, localMin.y, localMin.z),
+                Math3D::Vec3(localMax.x, localMin.y, localMax.z),
+                Math3D::Vec3(localMax.x, localMax.y, localMin.z),
+                Math3D::Vec3(localMax.x, localMax.y, localMax.z)
+            };
+
+            for(const Math3D::Vec3& corner : corners){
+                Math3D::Vec3 transformed = Math3D::Transform::transformPoint(partMat, corner);
+                if(!hasBounds){
+                    minV = transformed;
+                    maxV = transformed;
+                    hasBounds = true;
+                    continue;
+                }
+                minV.x = Math3D::Min(minV.x, transformed.x);
+                minV.y = Math3D::Min(minV.y, transformed.y);
+                minV.z = Math3D::Min(minV.z, transformed.z);
+                maxV.x = Math3D::Max(maxV.x, transformed.x);
+                maxV.y = Math3D::Max(maxV.y, transformed.y);
+                maxV.z = Math3D::Max(maxV.z, transformed.z);
+            }
+        }
+
+        if(!hasBounds){
+            return false;
+        }
+
+        outCenter = Math3D::Vec3(
+            (minV.x + maxV.x) * 0.5f,
+            (minV.y + maxV.y) * 0.5f,
+            (minV.z + maxV.z) * 0.5f
+        );
+        outRadius = (maxV - minV).length() * 0.5f;
+        if(outRadius <= Math3D::EPSILON){
+            outRadius = 1.0f;
+        }
+        return true;
+    }
 }
 
 void FilePreviewWidget::setAssetRoot(const std::filesystem::path& rootPath){
@@ -94,7 +215,12 @@ void FilePreviewWidget::setFilePath(const std::filesystem::path& path){
     statusMessage.clear();
     statusIsError = false;
     previewMaterial.reset();
+    previewModel.reset();
     previewMaterialDirty = true;
+    previewModelDirty = true;
+    previewOrbitYaw = 45.0f;
+    previewOrbitPitch = 22.5f;
+    previewOrbitDistance = 4.25f;
     reloadFromDisk(true);
 }
 
@@ -111,6 +237,8 @@ void FilePreviewWidget::reloadFromDisk(bool force){
     statusIsError = false;
     isShaderAssetFile = ShaderAssetIO::IsShaderAssetPath(filePath);
     isMaterialAssetFile = MaterialAssetIO::IsMaterialAssetPath(filePath);
+    isMaterialObjectFile = MaterialAssetIO::IsMaterialObjectPath(filePath);
+    isModelFile = isModelPath(filePath);
 
     std::error_code ec;
     if(std::filesystem::exists(filePath, ec)){
@@ -142,11 +270,31 @@ void FilePreviewWidget::reloadFromDisk(bool force){
         copyBuffer(materialShaderAsset, sizeof(materialShaderAsset), materialData.shaderAssetRef);
         copyBuffer(materialTexture, sizeof(materialTexture), materialData.textureRef);
         copyBuffer(materialBaseColorTex, sizeof(materialBaseColorTex), materialData.baseColorTexRef);
+        copyBuffer(materialRoughnessTex, sizeof(materialRoughnessTex), materialData.roughnessTexRef);
         copyBuffer(materialMetalRoughTex, sizeof(materialMetalRoughTex), materialData.metallicRoughnessTexRef);
         copyBuffer(materialNormalTex, sizeof(materialNormalTex), materialData.normalTexRef);
+        copyBuffer(materialHeightTex, sizeof(materialHeightTex), materialData.heightTexRef);
         copyBuffer(materialEmissiveTex, sizeof(materialEmissiveTex), materialData.emissiveTexRef);
         copyBuffer(materialOcclusionTex, sizeof(materialOcclusionTex), materialData.occlusionTexRef);
         previewMaterialDirty = true;
+        return;
+    }
+
+    if(isMaterialObjectFile){
+        std::string error;
+        if(!MaterialAssetIO::LoadMaterialObjectFromAbsolutePath(filePath, materialObjectData, &error)){
+            statusIsError = true;
+            statusMessage = error;
+            return;
+        }
+        copyBuffer(materialObjectName, sizeof(materialObjectName), materialObjectData.name);
+        copyBuffer(materialObjectAssetRef, sizeof(materialObjectAssetRef), materialObjectData.materialAssetRef);
+        previewMaterialDirty = true;
+        return;
+    }
+
+    if(isModelFile){
+        previewModelDirty = true;
         return;
     }
 }
@@ -176,6 +324,14 @@ void FilePreviewWidget::draw(){
     }
     if(isMaterialAssetFile){
         drawMaterialAssetEditor();
+        return;
+    }
+    if(isMaterialObjectFile){
+        drawMaterialObjectEditor();
+        return;
+    }
+    if(isModelFile){
+        drawModelFilePreview();
         return;
     }
     drawGenericInfo();
@@ -290,7 +446,9 @@ void FilePreviewWidget::drawMaterialAssetEditor(){
     auto drawTextureField = [&](const char* label, char* pathBuffer, size_t bufferSize){
         bool localChanged = false;
         localChanged |= EditorAssetUI::DrawAssetDropInput(label, pathBuffer, bufferSize, EditorAssetUI::AssetKind::Image);
+        ImGui::PushID(label);
         drawTexturePreviewSmall(pathBuffer);
+        ImGui::PopID();
         ImGui::Spacing();
         return localChanged;
     };
@@ -305,6 +463,7 @@ void FilePreviewWidget::drawMaterialAssetEditor(){
             changed |= ImGui::SliderFloat("Metallic", &materialData.metallic, 0.0f, 1.0f);
             changed |= ImGui::SliderFloat("Roughness", &materialData.roughness, 0.0f, 1.0f);
             changed |= ImGui::DragFloat("Normal Scale", &materialData.normalScale, 0.01f, 0.0f, 8.0f);
+            changed |= ImGui::DragFloat("Height Scale", &materialData.heightScale, 0.001f, 0.0f, 1.0f);
             changed |= ImGui::DragFloat("Emissive Strength", &materialData.emissiveStrength, 0.01f, 0.0f, 32.0f);
             changed |= ImGui::SliderFloat("AO Strength", &materialData.occlusionStrength, 0.0f, 4.0f);
             changed |= ImGui::DragFloat("Env Strength", &materialData.envStrength, 0.01f, 0.0f, 8.0f);
@@ -325,8 +484,10 @@ void FilePreviewWidget::drawMaterialAssetEditor(){
             }
 
             changed |= drawTextureField("Base Color Tex", materialBaseColorTex, sizeof(materialBaseColorTex));
+            changed |= drawTextureField("Roughness Tex", materialRoughnessTex, sizeof(materialRoughnessTex));
             changed |= drawTextureField("Metal/Rough Tex", materialMetalRoughTex, sizeof(materialMetalRoughTex));
             changed |= drawTextureField("Normal Tex", materialNormalTex, sizeof(materialNormalTex));
+            changed |= drawTextureField("Height Tex", materialHeightTex, sizeof(materialHeightTex));
             changed |= drawTextureField("Emissive Tex", materialEmissiveTex, sizeof(materialEmissiveTex));
             changed |= drawTextureField("Occlusion Tex", materialOcclusionTex, sizeof(materialOcclusionTex));
             break;
@@ -364,8 +525,10 @@ void FilePreviewWidget::drawMaterialAssetEditor(){
         materialData.shaderAssetRef = materialShaderAsset;
         materialData.textureRef = materialTexture;
         materialData.baseColorTexRef = materialBaseColorTex;
+        materialData.roughnessTexRef = materialRoughnessTex;
         materialData.metallicRoughnessTexRef = materialMetalRoughTex;
         materialData.normalTexRef = materialNormalTex;
+        materialData.heightTexRef = materialHeightTex;
         materialData.emissiveTexRef = materialEmissiveTex;
         materialData.occlusionTexRef = materialOcclusionTex;
 
@@ -383,6 +546,7 @@ void FilePreviewWidget::drawMaterialAssetEditor(){
     }
 
     ensureMaterialPreviewResources(previewSize);
+    bool materialNeedsRender = false;
     if(previewMaterialDirty || !previewMaterial){
         std::string error;
         previewMaterial = MaterialAssetIO::InstantiateMaterial(materialData, &error);
@@ -401,21 +565,33 @@ void FilePreviewWidget::drawMaterialAssetEditor(){
                     }
                 }
             }
+            materialNeedsRender = true;
         }
         previewMaterialDirty = false;
     }
 
-    if(ImGui::TreeNodeEx("Preview", ImGuiTreeNodeFlags_DefaultOpen)){
+    if(!previewTexture || previewTexture->getID() == 0){
+        materialNeedsRender = true;
+    }
+    if(materialNeedsRender){
         renderMaterialPreview(previewMaterial);
+    }
+
+    bool previewInteractionChanged = false;
+    if(ImGui::TreeNodeEx("Preview", ImGuiTreeNodeFlags_DefaultOpen)){
         if(previewTexture && previewTexture->getID() != 0){
             ImTextureID texId = (ImTextureID)(intptr_t)previewTexture->getID();
             ImGui::Image(texId, ImVec2((float)previewSize, (float)previewSize), ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
+            previewInteractionChanged = handlePreviewOrbitInput() || previewInteractionChanged;
         }else{
             ImGui::BeginDisabled();
             ImGui::Button("Preview Unavailable", ImVec2((float)previewSize, (float)previewSize));
             ImGui::EndDisabled();
         }
         ImGui::TreePop();
+    }
+    if(previewInteractionChanged){
+        renderMaterialPreview(previewMaterial);
     }
 
     if(statusMessage.empty()){
@@ -424,6 +600,166 @@ void FilePreviewWidget::drawMaterialAssetEditor(){
         ImGui::TextColored(ImVec4(1.0f, 0.35f, 0.35f, 1.0f), "%s", statusMessage.c_str());
     }else{
         ImGui::TextColored(ImVec4(0.45f, 0.85f, 0.45f, 1.0f), "%s", statusMessage.c_str());
+    }
+}
+
+void FilePreviewWidget::drawMaterialObjectEditor(){
+    bool changed = false;
+    changed |= ImGui::InputText("Material Name", materialObjectName, sizeof(materialObjectName));
+    changed |= EditorAssetUI::DrawAssetDropInput(
+        "Material Asset",
+        materialObjectAssetRef,
+        sizeof(materialObjectAssetRef),
+        EditorAssetUI::AssetKind::Material
+    );
+
+    if(changed){
+        materialObjectData.name = materialObjectName;
+        materialObjectData.materialAssetRef = materialObjectAssetRef;
+
+        std::string error;
+        if(MaterialAssetIO::SaveMaterialObjectToAbsolutePath(filePath, materialObjectData, &error)){
+            statusIsError = false;
+            statusMessage = "Saved.";
+            std::error_code ec;
+            lastWriteTime = std::filesystem::last_write_time(filePath, ec);
+            previewMaterialDirty = true;
+        }else{
+            statusIsError = true;
+            statusMessage = error;
+        }
+    }
+
+    std::string resolvedAssetRef;
+    std::string resolveError;
+    bool hasResolvedAsset = MaterialAssetIO::ResolveMaterialAssetRef(materialObjectAssetRef, resolvedAssetRef, &resolveError);
+    if(hasResolvedAsset){
+        ImGui::TextDisabled("Resolved: %s", resolvedAssetRef.c_str());
+    }else{
+        ImGui::TextDisabled("Resolved: <none>");
+    }
+
+    ensureMaterialPreviewResources(previewSize);
+    bool materialNeedsRender = false;
+    if(previewMaterialDirty || !previewMaterial){
+        std::string error;
+        previewMaterial = MaterialAssetIO::InstantiateMaterialFromRef(materialObjectAssetRef, &resolvedAssetRef, &error);
+        if(!previewMaterial){
+            if(materialObjectAssetRef[0] != '\0'){
+                if(error.empty()){
+                    error = "Failed to instantiate material object preview.";
+                }
+                statusIsError = true;
+                statusMessage = error;
+            }
+        }else{
+            if(auto pbr = Material::GetAs<PBRMaterial>(previewMaterial)){
+                if(previewSkyBox && previewSkyBox->getCubeMap()){
+                    pbr->EnvMap = previewSkyBox->getCubeMap();
+                    if(pbr->UseEnvMap.get() == 0){
+                        pbr->UseEnvMap = 1;
+                    }
+                }
+            }
+            materialNeedsRender = true;
+        }
+        previewMaterialDirty = false;
+    }
+
+    if(!previewTexture || previewTexture->getID() == 0){
+        materialNeedsRender = true;
+    }
+    if(materialNeedsRender){
+        renderMaterialPreview(previewMaterial);
+    }
+
+    bool previewInteractionChanged = false;
+    if(ImGui::TreeNodeEx("Preview", ImGuiTreeNodeFlags_DefaultOpen)){
+        if(previewTexture && previewTexture->getID() != 0){
+            ImTextureID texId = (ImTextureID)(intptr_t)previewTexture->getID();
+            ImGui::Image(texId, ImVec2((float)previewSize, (float)previewSize), ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
+            previewInteractionChanged = handlePreviewOrbitInput() || previewInteractionChanged;
+        }else{
+            ImGui::BeginDisabled();
+            ImGui::Button("Preview Unavailable", ImVec2((float)previewSize, (float)previewSize));
+            ImGui::EndDisabled();
+        }
+        ImGui::TreePop();
+    }
+    if(previewInteractionChanged){
+        renderMaterialPreview(previewMaterial);
+    }
+
+    if(statusMessage.empty()){
+        ImGui::TextDisabled("Edits save automatically.");
+    }else if(statusIsError){
+        ImGui::TextColored(ImVec4(1.0f, 0.35f, 0.35f, 1.0f), "%s", statusMessage.c_str());
+    }else{
+        ImGui::TextColored(ImVec4(0.45f, 0.85f, 0.45f, 1.0f), "%s", statusMessage.c_str());
+    }
+}
+
+void FilePreviewWidget::drawModelFilePreview(){
+    const std::string ext = StringUtils::ToLowerCase(filePath.extension().string());
+    bool needsRender = false;
+
+    if(previewModelDirty){
+        previewModel.reset();
+        statusMessage.clear();
+        statusIsError = false;
+
+        if(ext == ".obj"){
+            std::string assetRef = toAssetRef(filePath, assetRoot);
+            auto asset = AssetManager::Instance.getOrLoad(assetRef);
+            if(!asset){
+                asset = std::make_shared<Asset>(filePath.string());
+                if(asset && !asset->load()){
+                    asset.reset();
+                }
+            }
+
+            auto baseMat = MaterialDefaults::LitColorMaterial::Create(Color::WHITE);
+            previewModel = OBJLoader::LoadFromAsset(asset, baseMat, true);
+            if(!previewModel){
+                statusIsError = true;
+                statusMessage = "Failed to load OBJ preview.";
+            }
+        }else{
+            statusMessage = "Preview currently supports .obj models.";
+        }
+
+        previewModelDirty = false;
+        needsRender = true;
+    }
+
+    ensureMaterialPreviewResources(previewSize);
+    if(previewModel && (!previewTexture || previewTexture->getID() == 0)){
+        needsRender = true;
+    }
+    if(previewModel && needsRender){
+        renderModelPreview(previewModel);
+    }
+
+    bool previewInteractionChanged = false;
+    if(previewTexture && previewTexture->getID() != 0 && previewModel){
+        ImTextureID texId = (ImTextureID)(intptr_t)previewTexture->getID();
+        ImGui::Image(texId, ImVec2((float)previewSize, (float)previewSize), ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
+        previewInteractionChanged = handlePreviewOrbitInput() || previewInteractionChanged;
+    }else{
+        ImGui::BeginDisabled();
+        ImGui::Button("Preview Unavailable", ImVec2((float)previewSize, (float)previewSize));
+        ImGui::EndDisabled();
+    }
+    if(previewInteractionChanged && previewModel){
+        renderModelPreview(previewModel);
+    }
+
+    if(statusMessage.empty()){
+        ImGui::TextDisabled("Model preview rendered from source mesh.");
+    }else if(statusIsError){
+        ImGui::TextColored(ImVec4(1.0f, 0.35f, 0.35f, 1.0f), "%s", statusMessage.c_str());
+    }else{
+        ImGui::TextDisabled("%s", statusMessage.c_str());
     }
 }
 
@@ -476,17 +812,11 @@ void FilePreviewWidget::ensureMaterialPreviewResources(int size){
     }
     if(previewCamera){
         previewCamera->resize((float)previewSize, (float)previewSize);
-        previewCamera->transform().setPosition(Math3D::Vec3(2.1f, 1.4f, 2.1f));
-        previewCamera->transform().lookAt(Math3D::Vec3(0.0f, 0.0f, 0.0f));
+        updatePreviewCameraFromOrbit();
     }
 
-    if(!previewCube){
-        previewCube = ModelPartPrefabs::MakeBox(
-            0.65f,
-            0.65f,
-            0.65f,
-            MaterialDefaults::ColorMaterial::Create(Color::WHITE)
-        );
+    if(!previewSphere){
+        previewSphere = ModelPartPrefabs::MakeSphere(0.9f, 36, 24);
     }
 
     if(!previewSkyBox){
@@ -533,8 +863,134 @@ void FilePreviewWidget::ensureMaterialPreviewResources(int size){
     }
 }
 
+void FilePreviewWidget::updatePreviewCameraFromOrbit(){
+    if(!previewCamera){
+        return;
+    }
+
+    previewOrbitDistance = Math3D::Clamp(previewOrbitDistance, kMaterialPreviewMinDistance, 12.0f);
+
+    const float yawRad = previewOrbitYaw * ((float)Math3D::PI / 180.0f);
+    const float pitchRad = previewOrbitPitch * ((float)Math3D::PI / 180.0f);
+    const float cosPitch = std::cos(pitchRad);
+
+    const Math3D::Vec3 camPos(
+        previewOrbitDistance * cosPitch * std::cos(yawRad),
+        previewOrbitDistance * std::sin(pitchRad),
+        previewOrbitDistance * cosPitch * std::sin(yawRad)
+    );
+    previewCamera->transform().setPosition(camPos);
+    previewCamera->transform().lookAt(Math3D::Vec3(0.0f, 0.0f, 0.0f));
+}
+
+bool FilePreviewWidget::handlePreviewOrbitInput(){
+    if(!previewCamera || !ImGui::IsItemHovered(ImGuiHoveredFlags_RectOnly)){
+        return false;
+    }
+
+    bool changed = false;
+    const ImGuiIO& io = ImGui::GetIO();
+    if(ImGui::IsMouseDragging(ImGuiMouseButton_Left, 0.0f)){
+        if(io.MouseDelta.x != 0.0f || io.MouseDelta.y != 0.0f){
+            previewOrbitYaw += io.MouseDelta.x * 0.35f;
+            previewOrbitPitch = Math3D::Clamp(previewOrbitPitch - io.MouseDelta.y * 0.35f, -80.0f, 80.0f);
+            changed = true;
+        }
+    }
+
+    if(io.MouseWheel != 0.0f){
+        previewOrbitDistance = Math3D::Clamp(previewOrbitDistance - io.MouseWheel * 0.25f, kMaterialPreviewMinDistance, 12.0f);
+        changed = true;
+    }
+
+    if(changed){
+        updatePreviewCameraFromOrbit();
+    }
+    return changed;
+}
+
 void FilePreviewWidget::renderMaterialPreview(const std::shared_ptr<Material>& material){
-    if(!previewFrameBuffer || !previewTexture || !previewCube || !previewCamera){
+    if(!previewFrameBuffer || !previewTexture || !previewSphere || !previewCamera){
+        return;
+    }
+
+    auto renderMaterial = getRenderablePreviewMaterial(material);
+    if(!renderMaterial){
+        renderMaterial = getRenderablePreviewMaterial(previewSphere->material);
+    }
+    if(!renderMaterial){
+        return;
+    }
+
+    auto previousCamera = Screen::GetCurrentCamera();
+    auto previousEnvironment = Screen::GetCurrentEnvironment();
+
+    GLint previousFramebuffer = 0;
+    GLint previousViewport[4] = {0, 0, 0, 0};
+    GLint previousFrontFace = GL_CCW;
+    GLboolean wasDepthTest = glIsEnabled(GL_DEPTH_TEST);
+    GLboolean wasCullFace = glIsEnabled(GL_CULL_FACE);
+    GLboolean wasBlend = glIsEnabled(GL_BLEND);
+    GLboolean previousDepthMask = GL_TRUE;
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFramebuffer);
+    glGetIntegerv(GL_VIEWPORT, previousViewport);
+    glGetIntegerv(GL_FRONT_FACE, &previousFrontFace);
+    glGetBooleanv(GL_DEPTH_WRITEMASK, &previousDepthMask);
+
+    previewFrameBuffer->bind();
+    previewFrameBuffer->clear(Color::fromRGB24(0x263248));
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CW);
+    glDisable(GL_BLEND);
+
+    Screen::MakeCameraCurrent(previewCamera);
+    Screen::MakeEnvironmentCurrent(previewEnvironment);
+
+    if(previewSkyBox){
+        previewSkyBox->draw(previewCamera, false);
+    }
+
+    previewSphere->material = renderMaterial;
+
+    if(previewSphere->material){
+        if(auto pbr = Material::GetAs<PBRMaterial>(previewSphere->material)){
+            if(previewSkyBox && previewSkyBox->getCubeMap()){
+                pbr->EnvMap = previewSkyBox->getCubeMap();
+            }
+        }
+    }
+
+    previewSphere->localTransform.setRotation(12.0f, 26.0f, 0.0f);
+
+    const Math3D::Mat4 identity;
+    glFrontFace(GL_CW);
+    previewSphere->draw(identity, previewCamera->getViewMatrix(), previewCamera->getProjectionMatrix());
+    glFrontFace(GL_CCW);
+    previewSphere->draw(identity, previewCamera->getViewMatrix(), previewCamera->getProjectionMatrix());
+
+    previewFrameBuffer->unbind();
+
+    if(previousFramebuffer != 0){
+        glBindFramebuffer(GL_FRAMEBUFFER, (GLuint)previousFramebuffer);
+    }
+    glViewport(previousViewport[0], previousViewport[1], previousViewport[2], previousViewport[3]);
+
+    if(wasDepthTest) glEnable(GL_DEPTH_TEST); else glDisable(GL_DEPTH_TEST);
+    if(wasCullFace) glEnable(GL_CULL_FACE); else glDisable(GL_CULL_FACE);
+    if(wasBlend) glEnable(GL_BLEND); else glDisable(GL_BLEND);
+    glDepthMask(previousDepthMask);
+    glFrontFace((GLenum)previousFrontFace);
+
+    Screen::MakeCameraCurrent(previousCamera);
+    Screen::MakeEnvironmentCurrent(previousEnvironment);
+}
+
+void FilePreviewWidget::renderModelPreview(const std::shared_ptr<Model>& model){
+    if(!previewFrameBuffer || !previewTexture || !previewCamera || !model){
         return;
     }
 
@@ -552,7 +1008,7 @@ void FilePreviewWidget::renderMaterialPreview(const std::shared_ptr<Material>& m
     glGetBooleanv(GL_DEPTH_WRITEMASK, &previousDepthMask);
 
     previewFrameBuffer->bind();
-    previewFrameBuffer->clear(Color::fromRGB24(0x263248));
+    previewFrameBuffer->clear(Color::fromRGB24(0x1f2735));
 
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
@@ -567,24 +1023,19 @@ void FilePreviewWidget::renderMaterialPreview(const std::shared_ptr<Material>& m
         previewSkyBox->draw(previewCamera, false);
     }
 
-    if(material){
-        previewCube->material = material;
-    }else if(!previewCube->material){
-        previewCube->material = MaterialDefaults::ColorMaterial::Create(Color::MAGENTA);
+    model->setBackfaceCulling(true);
+    Math3D::Vec3 center(0.0f, 0.0f, 0.0f);
+    float radius = 1.0f;
+    if(computeModelBounds(model, center, radius)){
+        const float fitScale = 1.1f / Math3D::Max(radius, 0.0001f);
+        model->transform().setPosition(Math3D::Vec3(-center.x * fitScale, -center.y * fitScale, -center.z * fitScale));
+        model->transform().setScale(Math3D::Vec3(fitScale, fitScale, fitScale));
+        model->transform().setRotation(0.0f, 24.0f, 0.0f);
+    }else{
+        model->transform().reset();
     }
 
-    if(previewCube->material){
-        if(auto pbr = Material::GetAs<PBRMaterial>(previewCube->material)){
-            if(previewSkyBox && previewSkyBox->getCubeMap()){
-                pbr->EnvMap = previewSkyBox->getCubeMap();
-            }
-        }
-    }
-
-    previewCube->localTransform.setRotation(18.0f, (float)ImGui::GetTime() * 24.0f, 0.0f);
-
-    const Math3D::Mat4 identity;
-    previewCube->draw(identity, previewCamera->getViewMatrix(), previewCamera->getProjectionMatrix());
+    model->draw(previewCamera);
 
     previewFrameBuffer->unbind();
 

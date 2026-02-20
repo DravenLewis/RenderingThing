@@ -19,9 +19,9 @@ namespace {
     constexpr int MAX_SHADOW_MAPS_2D = 24;
     constexpr int MAX_SHADOW_MAPS_CUBE = 2;
     constexpr int SHADOW_TEX_UNIT_BASE_2D = 8;
-    constexpr int SHADOW_MAP_SIZE_DIRECTIONAL = 4096;
-    constexpr int SHADOW_MAP_SIZE_SPOT = 3072;
-    constexpr int SHADOW_MAP_SIZE_CUBE = 2048;
+    constexpr int SHADOW_MAP_SIZE_DIRECTIONAL = 2048;
+    constexpr int SHADOW_MAP_SIZE_SPOT = 1536;
+    constexpr int SHADOW_MAP_SIZE_CUBE = 1024;
 
     struct ShadowSlot2D {
         ShadowMap2D map;

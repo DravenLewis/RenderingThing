@@ -520,6 +520,7 @@ void Scene::drawDeferredGeometry(PCamera cam){
     const Math3D::Mat4 projectionMatrix = cam->getProjectionMatrix();
     gBufferShader->setUniformFast("u_view", Uniform<Math3D::Mat4>(viewMatrix));
     gBufferShader->setUniformFast("u_projection", Uniform<Math3D::Mat4>(projectionMatrix));
+    gBufferShader->setUniformFast("u_viewPos", Uniform<Math3D::Vec3>(cam->transform().position));
 
     const int frontIndex = renderSnapshotIndex.load(std::memory_order_acquire);
     const auto& snapshot = renderSnapshots[frontIndex];
@@ -553,11 +554,16 @@ void Scene::drawDeferredGeometry(PCamera cam){
             int useBaseColorTex = 0;
             float metallic = 0.0f;
             float roughness = 1.0f;
+            PTexture roughnessTex = nullptr;
+            int useRoughnessTex = 0;
             PTexture metallicRoughnessTex = nullptr;
             int useMetallicRoughnessTex = 0;
             PTexture normalTex = nullptr;
             int useNormalTex = 0;
             float normalScale = 1.0f;
+            PTexture heightTex = nullptr;
+            int useHeightTex = 0;
+            float heightScale = 0.05f;
             PTexture occlusionTex = nullptr;
             int useOcclusionTex = 0;
             float aoStrength = 1.0f;
@@ -573,11 +579,16 @@ void Scene::drawDeferredGeometry(PCamera cam){
                 useBaseColorTex = baseColorTex ? 1 : 0;
                 metallic = pbr->Metallic.get();
                 roughness = pbr->Roughness.get();
+                roughnessTex = pbr->RoughnessTex.get();
+                useRoughnessTex = roughnessTex ? 1 : 0;
                 metallicRoughnessTex = pbr->MetallicRoughnessTex.get();
                 useMetallicRoughnessTex = metallicRoughnessTex ? 1 : 0;
                 normalTex = pbr->NormalTex.get();
                 useNormalTex = normalTex ? 1 : 0;
                 normalScale = pbr->NormalScale.get();
+                heightTex = pbr->HeightTex.get();
+                useHeightTex = heightTex ? 1 : 0;
+                heightScale = pbr->HeightScale.get();
                 occlusionTex = pbr->OcclusionTex.get();
                 useOcclusionTex = occlusionTex ? 1 : 0;
                 aoStrength = pbr->OcclusionStrength.get();
@@ -626,12 +637,17 @@ void Scene::drawDeferredGeometry(PCamera cam){
 
             gBufferShader->setUniformFast("u_metallic", Uniform<float>(metallic));
             gBufferShader->setUniformFast("u_roughness", Uniform<float>(roughness));
+            gBufferShader->setUniformFast("u_useRoughnessTex", Uniform<int>(useRoughnessTex));
+            gBufferShader->setUniformFast("u_roughnessTex", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(roughnessTex, 5)));
             gBufferShader->setUniformFast("u_useMetallicRoughnessTex", Uniform<int>(useMetallicRoughnessTex));
             gBufferShader->setUniformFast("u_metallicRoughnessTex", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(metallicRoughnessTex, 1)));
 
             gBufferShader->setUniformFast("u_useNormalTex", Uniform<int>(useNormalTex));
             gBufferShader->setUniformFast("u_normalScale", Uniform<float>(normalScale));
             gBufferShader->setUniformFast("u_normalTex", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(normalTex, 2)));
+            gBufferShader->setUniformFast("u_useHeightTex", Uniform<int>(useHeightTex));
+            gBufferShader->setUniformFast("u_heightScale", Uniform<float>(heightScale));
+            gBufferShader->setUniformFast("u_heightTex", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(heightTex, 4)));
 
             gBufferShader->setUniformFast("u_useOcclusionTex", Uniform<int>(useOcclusionTex));
             gBufferShader->setUniformFast("u_aoStrength", Uniform<float>(aoStrength));

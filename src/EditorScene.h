@@ -16,7 +16,9 @@
 #include "Widgets/TransformWidget.h"
 #include "Widgets/LightWidget.h"
 #include "Widgets/CameraWidget.h"
-#include "Widgets/FilePreviewWidget.h"
+#include "Widgets/ECSViewPanel.h"
+#include "Widgets/PropertiesPanel.h"
+#include "Widgets/WorkspacePanel.h"
 #include "Texture.h"
 
 // EditorScene is a wrapper/editor-host scene that contains and edits another scene instance.
@@ -100,24 +102,13 @@ class EditorScene : public Scene {
         ResetContext resetContext;
 
         std::filesystem::path assetRoot;
-        std::filesystem::path assetDir;
         std::filesystem::path selectedAssetPath;
-        char newAssetName[128] = {};
-        bool assetRenameActive = false;
-        std::filesystem::path assetRenamePath;
-        char assetRenameBuffer[256] = {};
-        bool assetRenameFocus = false;
-        std::filesystem::path pendingDeleteAssetPath;
-        float assetTileSize = 76.0f;
         float leftPanelWidth = 260.0f;
         float rightPanelWidth = 320.0f;
         float bottomPanelHeight = 220.0f;
-        bool showHiddenModelPartsInTree = false;
-        uint64_t lastLogVersion = 0;
-        std::string logBuffer;
-        std::vector<std::string> logLines;
-        std::vector<ImVec4> logColors;
-        FilePreviewWidget filePreviewWidget;
+        ECSViewPanel ecsViewPanel;
+        PropertiesPanel propertiesPanel;
+        WorkspacePanel workspacePanel;
         TransformWidget transformWidget;
         bool prevKeyW = false;
         bool prevKeyE = false;
@@ -146,13 +137,9 @@ class EditorScene : public Scene {
         void drawViewportPanel(float x, float y, float w, float h);
         void drawPropertiesPanel(float x, float y, float w, float h);
         void drawAssetsPanel(float x, float y, float w, float h);
-        void beginAssetRename(const std::filesystem::path& path);
-        void commitAssetRename();
-        void cancelAssetRename();
 
         NeoECS::ECSEntity* findEntityById(const std::string& id) const;
         PCamera resolveSelectedTargetCamera() const;
-        void drawEntityTree(NeoECS::ECSEntity* entity);
         bool isMouseInViewport() const;
         void selectEntity(const std::string& id);
         std::string pickEntityIdAtScreen(float x, float y, PCamera cam);

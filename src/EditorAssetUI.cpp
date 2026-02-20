@@ -1,11 +1,24 @@
 #include "EditorAssetUI.h"
 #include "Asset.h"
+#include "Environment.h"
+#include "File.h"
+#include "FrameBuffer.h"
+#include "Logbot.h"
+#include "MaterialAsset.h"
+#include "MaterialDefaults.h"
+#include "ModelPartPrefabs.h"
+#include "PBRMaterial.h"
+#include "Screen.h"
+#include "SkyBox.h"
+#include "StringUtils.h"
+#include "Texture.h"
 
 #include "imgui.h"
 
 #include <algorithm>
 #include <cctype>
 #include <cstring>
+#include <unordered_map>
 #include <vector>
 
 namespace {
@@ -18,6 +31,77 @@ namespace {
         char absolutePath[kMaxPathChars] = {};
         char assetRef[kMaxPathChars] = {};
     };
+
+    struct ThumbnailCacheEntry {
+        std::shared_ptr<Texture> texture;
+        std::filesystem::file_time_type writeTime{};
+        bool hasWriteTime = false;
+    };
+
+    std::unordered_map<std::string, ThumbnailCacheEntry> g_imageThumbnailCache;
+
+    struct MaterialThumbnailCacheEntry {
+        std::shared_ptr<FrameBuffer> framebuffer;
+        std::shared_ptr<Texture> texture;
+        std::filesystem::file_time_type sourceWriteTime{};
+        std::filesystem::file_time_type objectWriteTime{};
+        bool hasSourceWriteTime = false;
+        bool hasObjectWriteTime = false;
+    };
+
+    std::unordered_map<std::string, MaterialThumbnailCacheEntry> g_materialThumbnailCache;
+    std::shared_ptr<ModelPart> g_materialThumbnailSphere;
+    std::shared_ptr<Camera> g_materialThumbnailCamera;
+    std::shared_ptr<Environment> g_materialThumbnailEnvironment;
+    std::shared_ptr<SkyBox> g_materialThumbnailSkyBox;
+    std::shared_ptr<Material> g_materialThumbnailFallbackMaterial;
+    int g_materialThumbnailSize = 0;
+
+    std::shared_ptr<Material> buildThumbnailFallbackMaterial(){
+        auto isRenderable = [](const std::shared_ptr<Material>& mat) -> bool{
+            return mat && mat->getShader() && mat->getShader()->getID() != 0;
+        };
+
+        std::shared_ptr<Material> fallback = MaterialDefaults::ColorMaterial::Create(Color::WHITE);
+        if(isRenderable(fallback)){
+            return fallback;
+        }
+
+        fallback = MaterialDefaults::LitColorMaterial::Create(Color::WHITE);
+        if(isRenderable(fallback)){
+            return fallback;
+        }
+
+        fallback = PBRMaterial::Create(Color::WHITE);
+        if(isRenderable(fallback)){
+            return fallback;
+        }
+
+        return nullptr;
+    }
+
+    std::shared_ptr<Material> getRenderableThumbnailMaterial(const std::shared_ptr<Material>& candidate){
+        if(candidate){
+            auto shader = candidate->getShader();
+            if(shader && shader->getID() != 0){
+                return candidate;
+            }
+        }
+
+        if(!g_materialThumbnailFallbackMaterial ||
+           !g_materialThumbnailFallbackMaterial->getShader() ||
+           g_materialThumbnailFallbackMaterial->getShader()->getID() == 0){
+            g_materialThumbnailFallbackMaterial = buildThumbnailFallbackMaterial();
+        }
+
+        if(g_materialThumbnailFallbackMaterial &&
+           g_materialThumbnailFallbackMaterial->getShader() &&
+           g_materialThumbnailFallbackMaterial->getShader()->getID() != 0){
+            return g_materialThumbnailFallbackMaterial;
+        }
+
+        return nullptr;
+    }
 
     std::string toLower(std::string value){
         std::transform(value.begin(), value.end(), value.begin(), [](unsigned char c){
@@ -49,6 +133,7 @@ namespace {
             case AssetKind::ShaderGeneric:  return "SHD";
             case AssetKind::ShaderAsset:    return "SAS";
             case AssetKind::MaterialAsset:  return "MAT";
+            case AssetKind::Material:       return "MTL";
             case AssetKind::Font:           return "FNT";
             case AssetKind::Text:           return "TXT";
             case AssetKind::Any:
@@ -73,6 +158,7 @@ namespace {
             case AssetKind::ShaderGeneric:  return IM_COL32(166, 96, 242, 255);
             case AssetKind::ShaderAsset:    return IM_COL32(237, 132, 255, 255);
             case AssetKind::MaterialAsset:  return IM_COL32(90, 201, 155, 255);
+            case AssetKind::Material:       return IM_COL32(62, 168, 212, 255);
             case AssetKind::Font:           return IM_COL32(104, 212, 219, 255);
             case AssetKind::Text:           return IM_COL32(152, 152, 152, 255);
             case AssetKind::Any:
@@ -134,7 +220,342 @@ namespace {
         if(requested == AssetKind::MaterialAsset){
             return offered == AssetKind::MaterialAsset;
         }
+        if(requested == AssetKind::Material){
+            return offered == AssetKind::Material || offered == AssetKind::MaterialAsset;
+        }
         return false;
+    }
+
+    std::shared_ptr<Texture> getImageThumbnail(const EditorAssetUI::AssetTransaction& tx){
+        try{
+            if(tx.kind != EditorAssetUI::AssetKind::Image || tx.assetRef.empty()){
+                return nullptr;
+            }
+
+            std::error_code ec;
+            bool hasWriteTime = false;
+            std::filesystem::file_time_type writeTime{};
+            if(!tx.absolutePath.empty() && std::filesystem::exists(tx.absolutePath, ec)){
+                writeTime = std::filesystem::last_write_time(tx.absolutePath, ec);
+                hasWriteTime = !ec;
+            }
+
+            auto cachedIt = g_imageThumbnailCache.find(tx.assetRef);
+            if(cachedIt != g_imageThumbnailCache.end()){
+                const ThumbnailCacheEntry& cached = cachedIt->second;
+                if(cached.texture){
+                    bool cacheValid = false;
+                    if(!hasWriteTime && !cached.hasWriteTime){
+                        cacheValid = true;
+                    }else if(hasWriteTime && cached.hasWriteTime && cached.writeTime == writeTime){
+                        cacheValid = true;
+                    }
+                    if(cacheValid){
+                        return cached.texture;
+                    }
+                }
+            }
+
+            auto asset = AssetManager::Instance.getOrLoad(tx.assetRef);
+            if(!asset){
+                return nullptr;
+            }
+            auto texture = Texture::Load(asset);
+            if(!texture || texture->getID() == 0){
+                return nullptr;
+            }
+
+            ThumbnailCacheEntry entry;
+            entry.texture = texture;
+            entry.writeTime = writeTime;
+            entry.hasWriteTime = hasWriteTime;
+            g_imageThumbnailCache[tx.assetRef] = entry;
+            return texture;
+        }catch(const std::exception& e){
+            LogBot.Log(LOG_ERRO, "Image thumbnail failed for '%s': %s", tx.assetRef.c_str(), e.what());
+        }catch(...){
+            LogBot.Log(LOG_ERRO, "Image thumbnail failed for '%s': unknown exception", tx.assetRef.c_str());
+        }
+        return nullptr;
+    }
+
+    bool assetRefToAbsolutePath(const std::string& assetRef, std::filesystem::path& outPath){
+        if(assetRef.empty()){
+            return false;
+        }
+        if(StringUtils::BeginsWith(assetRef, ASSET_DELIMITER)){
+            std::string rel = assetRef.substr(std::strlen(ASSET_DELIMITER));
+            if(!rel.empty() && (rel[0] == '/' || rel[0] == '\\')){
+                rel.erase(rel.begin());
+            }
+            outPath = std::filesystem::path(File::GetCWD()) / "res" / rel;
+            return true;
+        }
+        outPath = std::filesystem::path(assetRef);
+        return true;
+    }
+
+    bool tryGetWriteTime(const std::filesystem::path& path, std::filesystem::file_time_type& outWriteTime){
+        std::error_code ec;
+        if(path.empty() || !std::filesystem::exists(path, ec)){
+            return false;
+        }
+        outWriteTime = std::filesystem::last_write_time(path, ec);
+        return !ec;
+    }
+
+    void ensureMaterialThumbnailResources(int size){
+        if(size < 32){
+            size = 32;
+        }
+        if(g_materialThumbnailSize != size){
+            g_materialThumbnailSize = size;
+            g_materialThumbnailCamera.reset();
+        }
+
+        if(!g_materialThumbnailCamera){
+            g_materialThumbnailCamera = Camera::CreatePerspective(
+                45.0f,
+                Math3D::Vec2((float)size, (float)size),
+                0.1f,
+                64.0f
+            );
+        }
+        if(g_materialThumbnailCamera){
+            g_materialThumbnailCamera->resize((float)size, (float)size);
+            g_materialThumbnailCamera->transform().setPosition(Math3D::Vec3(2.8f, 1.6f, 2.8f));
+            g_materialThumbnailCamera->transform().lookAt(Math3D::Vec3(0.0f, 0.0f, 0.0f));
+        }
+
+        if(!g_materialThumbnailSphere){
+            g_materialThumbnailSphere = ModelPartPrefabs::MakeSphere(0.9f, 28, 18);
+        }
+
+        if(!g_materialThumbnailSkyBox){
+            g_materialThumbnailSkyBox = SkyBoxLoader::CreateSkyBox("@assets/images/skybox/default", "skybox_default");
+        }
+
+        if(!g_materialThumbnailEnvironment){
+            g_materialThumbnailEnvironment = std::make_shared<Environment>();
+            g_materialThumbnailEnvironment->setLightingEnabled(true);
+            auto& lights = g_materialThumbnailEnvironment->getLightManager();
+            lights.clearLights();
+
+            Light sun = Light::CreateDirectionalLight(
+                Math3D::Vec3(-0.3f, -1.0f, -0.2f),
+                Color::fromRGBA255(255, 208, 180, 255),
+                0.70f
+            );
+            sun.castsShadows = false;
+            lights.addLight(sun);
+
+            Light key = Light::CreatePointLight(
+                Math3D::Vec3(2.5f, 2.0f, 1.5f),
+                Color::fromRGBA255(255, 230, 180, 255),
+                4.0f,
+                12.0f,
+                2.0f
+            );
+            key.castsShadows = false;
+            lights.addLight(key);
+        }
+
+        if(g_materialThumbnailEnvironment){
+            g_materialThumbnailEnvironment->setSkyBox(g_materialThumbnailSkyBox);
+        }
+    }
+
+    void renderMaterialThumbnail(const std::shared_ptr<Material>& material,
+                                 const std::shared_ptr<FrameBuffer>& framebuffer){
+        auto renderMaterial = getRenderableThumbnailMaterial(material);
+        if(!renderMaterial || !framebuffer || !g_materialThumbnailSphere || !g_materialThumbnailCamera){
+            return;
+        }
+
+        auto previousCamera = Screen::GetCurrentCamera();
+        auto previousEnvironment = Screen::GetCurrentEnvironment();
+
+        GLint previousFramebuffer = 0;
+        GLint previousViewport[4] = {0, 0, 0, 0};
+        GLint previousFrontFace = GL_CCW;
+        GLboolean wasDepthTest = glIsEnabled(GL_DEPTH_TEST);
+        GLboolean wasCullFace = glIsEnabled(GL_CULL_FACE);
+        GLboolean wasBlend = glIsEnabled(GL_BLEND);
+        GLboolean previousDepthMask = GL_TRUE;
+        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFramebuffer);
+        glGetIntegerv(GL_VIEWPORT, previousViewport);
+        glGetIntegerv(GL_FRONT_FACE, &previousFrontFace);
+        glGetBooleanv(GL_DEPTH_WRITEMASK, &previousDepthMask);
+
+        framebuffer->bind();
+        framebuffer->clear(Color::fromRGB24(0x263248));
+
+        glEnable(GL_DEPTH_TEST);
+        glDepthMask(GL_TRUE);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glFrontFace(GL_CW);
+        glDisable(GL_BLEND);
+
+        Screen::MakeCameraCurrent(g_materialThumbnailCamera);
+        Screen::MakeEnvironmentCurrent(g_materialThumbnailEnvironment);
+
+        g_materialThumbnailSphere->material = renderMaterial;
+        if(auto pbr = Material::GetAs<PBRMaterial>(g_materialThumbnailSphere->material)){
+            if(g_materialThumbnailSkyBox && g_materialThumbnailSkyBox->getCubeMap()){
+                pbr->EnvMap = g_materialThumbnailSkyBox->getCubeMap();
+                if(pbr->UseEnvMap.get() == 0){
+                    pbr->UseEnvMap = 1;
+                }
+            }
+        }
+        g_materialThumbnailSphere->localTransform.setRotation(12.0f, 26.0f, 0.0f);
+
+        const Math3D::Mat4 identity;
+        glFrontFace(GL_CW);
+        g_materialThumbnailSphere->draw(identity, g_materialThumbnailCamera->getViewMatrix(), g_materialThumbnailCamera->getProjectionMatrix());
+        glFrontFace(GL_CCW);
+        g_materialThumbnailSphere->draw(identity, g_materialThumbnailCamera->getViewMatrix(), g_materialThumbnailCamera->getProjectionMatrix());
+
+        framebuffer->unbind();
+
+        if(previousFramebuffer != 0){
+            glBindFramebuffer(GL_FRAMEBUFFER, (GLuint)previousFramebuffer);
+        }
+        glViewport(previousViewport[0], previousViewport[1], previousViewport[2], previousViewport[3]);
+
+        if(wasDepthTest) glEnable(GL_DEPTH_TEST); else glDisable(GL_DEPTH_TEST);
+        if(wasCullFace) glEnable(GL_CULL_FACE); else glDisable(GL_CULL_FACE);
+        if(wasBlend) glEnable(GL_BLEND); else glDisable(GL_BLEND);
+        glDepthMask(previousDepthMask);
+        glFrontFace((GLenum)previousFrontFace);
+
+        Screen::MakeCameraCurrent(previousCamera);
+        Screen::MakeEnvironmentCurrent(previousEnvironment);
+    }
+
+    std::shared_ptr<Texture> getMaterialThumbnail(const EditorAssetUI::AssetTransaction& tx){
+        try{
+            using EditorAssetUI::AssetKind;
+            if(tx.kind != AssetKind::MaterialAsset && tx.kind != AssetKind::Material){
+                return nullptr;
+            }
+            if(tx.assetRef.empty()){
+                return nullptr;
+            }
+
+            std::filesystem::file_time_type objectWriteTime{};
+            std::filesystem::file_time_type sourceWriteTime{};
+            bool hasObjectWriteTime = false;
+            bool hasSourceWriteTime = false;
+
+            if(!tx.absolutePath.empty()){
+                hasObjectWriteTime = tryGetWriteTime(tx.absolutePath, objectWriteTime);
+            }
+
+            std::string resolvedAssetRef;
+            std::string error;
+            if(!MaterialAssetIO::ResolveMaterialAssetRef(tx.assetRef, resolvedAssetRef, &error)){
+                return nullptr;
+            }
+
+            std::filesystem::path sourcePath;
+            if(assetRefToAbsolutePath(resolvedAssetRef, sourcePath)){
+                hasSourceWriteTime = tryGetWriteTime(sourcePath, sourceWriteTime);
+            }
+
+            auto it = g_materialThumbnailCache.find(tx.assetRef);
+            if(it != g_materialThumbnailCache.end()){
+                const MaterialThumbnailCacheEntry& cached = it->second;
+                bool sourceMatches = (hasSourceWriteTime == cached.hasSourceWriteTime) &&
+                                     (!hasSourceWriteTime || cached.sourceWriteTime == sourceWriteTime);
+                bool objectMatches = (hasObjectWriteTime == cached.hasObjectWriteTime) &&
+                                     (!hasObjectWriteTime || cached.objectWriteTime == objectWriteTime);
+                if(cached.texture && sourceMatches && objectMatches){
+                    return cached.texture;
+                }
+            }
+
+            auto material = MaterialAssetIO::InstantiateMaterialFromRef(tx.assetRef, nullptr, &error);
+            material = getRenderableThumbnailMaterial(material);
+            if(!material){
+                return nullptr;
+            }
+
+            constexpr int kThumbSize = 96;
+            ensureMaterialThumbnailResources(kThumbSize);
+            MaterialThumbnailCacheEntry& entry = g_materialThumbnailCache[tx.assetRef];
+            const bool needsResize =
+                !entry.framebuffer ||
+                !entry.texture ||
+                entry.framebuffer->getWidth() != kThumbSize ||
+                entry.framebuffer->getHeight() != kThumbSize;
+            if(needsResize){
+                entry.framebuffer = FrameBuffer::Create(kThumbSize, kThumbSize);
+                entry.texture = Texture::CreateEmpty(kThumbSize, kThumbSize);
+                if(entry.framebuffer && entry.texture){
+                    entry.framebuffer->attachTexture(entry.texture);
+                }
+            }
+
+            if(!entry.framebuffer || !entry.texture){
+                return nullptr;
+            }
+
+            renderMaterialThumbnail(material, entry.framebuffer);
+            entry.hasObjectWriteTime = hasObjectWriteTime;
+            entry.objectWriteTime = objectWriteTime;
+            entry.hasSourceWriteTime = hasSourceWriteTime;
+            entry.sourceWriteTime = sourceWriteTime;
+            return entry.texture;
+        }catch(const std::exception& e){
+            LogBot.Log(LOG_ERRO, "Material thumbnail failed for '%s': %s", tx.assetRef.c_str(), e.what());
+        }catch(...){
+            LogBot.Log(LOG_ERRO, "Material thumbnail failed for '%s': unknown exception", tx.assetRef.c_str());
+        }
+        return nullptr;
+    }
+
+    void drawCenteredTextureInSquare(ImDrawList* drawList,
+                                     const std::shared_ptr<Texture>& texture,
+                                     const ImVec2& minPos,
+                                     float sideLength,
+                                     bool flipY){
+        if(!drawList || !texture || texture->getID() == 0 || sideLength <= 0.0f){
+            return;
+        }
+
+        float texWidth = (float)texture->getWidth();
+        float texHeight = (float)texture->getHeight();
+        if(texWidth <= 0.0f || texHeight <= 0.0f){
+            ImVec2 uvMin(0.0f, flipY ? 1.0f : 0.0f);
+            ImVec2 uvMax(1.0f, flipY ? 0.0f : 1.0f);
+            drawList->AddImage(
+                (ImTextureID)(intptr_t)texture->getID(),
+                minPos,
+                ImVec2(minPos.x + sideLength, minPos.y + sideLength),
+                uvMin,
+                uvMax
+            );
+            return;
+        }
+
+        float maxDim = Math3D::Max(texWidth, texHeight);
+        if(maxDim <= 0.0f){
+            return;
+        }
+
+        float drawWidth = sideLength * (texWidth / maxDim);
+        float drawHeight = sideLength * (texHeight / maxDim);
+        ImVec2 drawMin(
+            minPos.x + ((sideLength - drawWidth) * 0.5f),
+            minPos.y + ((sideLength - drawHeight) * 0.5f)
+        );
+        ImVec2 drawMax(drawMin.x + drawWidth, drawMin.y + drawHeight);
+
+        ImVec2 uvMin(0.0f, flipY ? 1.0f : 0.0f);
+        ImVec2 uvMax(1.0f, flipY ? 0.0f : 1.0f);
+        drawList->AddImage((ImTextureID)(intptr_t)texture->getID(), drawMin, drawMax, uvMin, uvMax);
     }
 
     std::string requestedKindsTooltip(const EditorAssetUI::AssetKind* requestedKinds, size_t requestedKindCount){
@@ -165,6 +586,12 @@ AssetKind ClassifyPath(const std::filesystem::path& path, bool isDirectory){
     }
     if(endsWith(pathLower, ".material.asset")){
         return AssetKind::MaterialAsset;
+    }
+    if(endsWith(pathLower, ".mat.asset")){
+        return AssetKind::MaterialAsset;
+    }
+    if(endsWith(pathLower, ".material")){
+        return AssetKind::Material;
     }
 
     std::string ext = toLower(path.extension().string());
@@ -262,6 +689,19 @@ bool BuildTransaction(const std::filesystem::path& absolutePath, const std::file
     return true;
 }
 
+void InvalidateAllThumbnails(){
+    g_imageThumbnailCache.clear();
+    g_materialThumbnailCache.clear();
+}
+
+void InvalidateMaterialThumbnail(const std::string& assetRef){
+    if(assetRef.empty()){
+        g_materialThumbnailCache.clear();
+        return;
+    }
+    g_materialThumbnailCache.erase(assetRef);
+}
+
 bool DrawAssetTile(const char* id, const AssetTransaction& tx, float iconSize, bool selected, bool* outDoubleClicked){
     if(outDoubleClicked){
         *outDoubleClicked = false;
@@ -289,15 +729,42 @@ bool DrawAssetTile(const char* id, const AssetTransaction& tx, float iconSize, b
     float inset = 8.0f;
     ImVec2 innerMin(cursor.x + inset, cursor.y + inset);
     ImVec2 innerMax(cursor.x + size.x - inset, cursor.y + size.y - inset - 16.0f);
-    drawList->AddRectFilled(innerMin, innerMax, base, 4.0f);
-
-    const char* glyph = kindGlyph(tx.kind);
-    ImVec2 textSz = ImGui::CalcTextSize(glyph);
-    ImVec2 textPos(
-        innerMin.x + (innerMax.x - innerMin.x - textSz.x) * 0.5f,
-        innerMin.y + (innerMax.y - innerMin.y - textSz.y) * 0.5f
+    float innerWidth = Math3D::Max(0.0f, innerMax.x - innerMin.x);
+    float innerHeight = Math3D::Max(0.0f, innerMax.y - innerMin.y);
+    float squareSide = Math3D::Min(innerWidth, innerHeight);
+    ImVec2 squareMin(
+        innerMin.x + ((innerWidth - squareSide) * 0.5f),
+        innerMin.y + ((innerHeight - squareSide) * 0.5f)
     );
-    drawList->AddText(textPos, IM_COL32(255, 255, 255, 255), glyph);
+    ImVec2 squareMax(squareMin.x + squareSide, squareMin.y + squareSide);
+    bool drewThumbnail = false;
+    if(tx.kind == AssetKind::Image){
+        std::shared_ptr<Texture> thumb = getImageThumbnail(tx);
+        if(thumb && thumb->getID() != 0){
+            drawList->AddRectFilled(squareMin, squareMax, IM_COL32(20, 20, 20, 255), 4.0f);
+            drawCenteredTextureInSquare(drawList, thumb, squareMin, squareSide, false);
+            drewThumbnail = true;
+        }
+    }else if(tx.kind == AssetKind::MaterialAsset || tx.kind == AssetKind::Material){
+        std::shared_ptr<Texture> thumb = getMaterialThumbnail(tx);
+        if(thumb && thumb->getID() != 0){
+            drawList->AddRectFilled(squareMin, squareMax, IM_COL32(20, 20, 20, 255), 4.0f);
+            drawCenteredTextureInSquare(drawList, thumb, squareMin, squareSide, true);
+            drewThumbnail = true;
+        }
+    }
+
+    if(!drewThumbnail){
+        drawList->AddRectFilled(innerMin, innerMax, base, 4.0f);
+
+        const char* glyph = kindGlyph(tx.kind);
+        ImVec2 textSz = ImGui::CalcTextSize(glyph);
+        ImVec2 textPos(
+            innerMin.x + (innerMax.x - innerMin.x - textSz.x) * 0.5f,
+            innerMin.y + (innerMax.y - innerMin.y - textSz.y) * 0.5f
+        );
+        drawList->AddText(textPos, IM_COL32(255, 255, 255, 255), glyph);
+    }
 
     if(hovered){
         ImGui::BeginTooltip();

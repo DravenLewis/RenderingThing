@@ -20,6 +20,10 @@ namespace {
         return StringUtils::ToLowerCase(value);
     }
 
+    std::filesystem::path getAssetRootPath(){
+        return std::filesystem::path(File::GetCWD()) / "res";
+    }
+
     std::string makeAssetRefFromRelative(const std::string& relative){
         if(relative.empty()){
             return std::string(ASSET_DELIMITER);
@@ -49,7 +53,7 @@ namespace {
 
     bool readTextPath(const std::filesystem::path& path, std::string& outText, std::string* outError){
         std::error_code ec;
-        const std::filesystem::path assetRoot = std::filesystem::weakly_canonical(std::filesystem::path(File::GetCWD()) / "res", ec);
+        const std::filesystem::path assetRoot = std::filesystem::weakly_canonical(getAssetRootPath(), ec);
         std::filesystem::path normalizedPath = std::filesystem::weakly_canonical(path, ec);
         if(ec){
             normalizedPath = path.lexically_normal();
@@ -84,6 +88,55 @@ namespace {
             return readTextAsset(refOrPath, outText, outError);
         }
         return readTextPath(std::filesystem::path(refOrPath), outText, outError);
+    }
+
+    bool isMaterialAssetPathInternal(const std::filesystem::path& path){
+        const std::string lower = toLowerCopy(path.generic_string());
+        return StringUtils::EndsWith(lower, ".material.asset") || StringUtils::EndsWith(lower, ".mat.asset");
+    }
+
+    bool isMaterialObjectPathInternal(const std::filesystem::path& path){
+        const std::string lower = toLowerCopy(path.generic_string());
+        if(StringUtils::EndsWith(lower, ".material.asset")){
+            return false;
+        }
+        return StringUtils::EndsWith(lower, ".material");
+    }
+
+    bool toAbsolutePathFromAssetRef(const std::string& assetRef, std::filesystem::path& outPath){
+        if(assetRef.empty()){
+            return false;
+        }
+        if(isAssetRef(assetRef)){
+            std::string rel = assetRef.substr(std::strlen(ASSET_DELIMITER));
+            if(!rel.empty() && (rel[0] == '/' || rel[0] == '\\')){
+                rel.erase(rel.begin());
+            }
+            outPath = getAssetRootPath() / rel;
+            return true;
+        }
+        outPath = std::filesystem::path(assetRef);
+        return true;
+    }
+
+    std::string toAssetRefFromAbsolutePath(const std::filesystem::path& absolutePath){
+        std::error_code ec;
+        std::filesystem::path assetRoot = std::filesystem::weakly_canonical(getAssetRootPath(), ec);
+        if(ec){
+            assetRoot = getAssetRootPath().lexically_normal();
+        }
+        std::filesystem::path absolute = std::filesystem::weakly_canonical(absolutePath, ec);
+        if(ec){
+            absolute = absolutePath.lexically_normal();
+        }
+        std::filesystem::path rel = absolute.lexically_relative(assetRoot);
+        if(rel.empty()){
+            return absolute.generic_string();
+        }
+        if(StringUtils::BeginsWith(rel.generic_string(), "..")){
+            return absolute.generic_string();
+        }
+        return std::string(ASSET_DELIMITER) + "/" + rel.generic_string();
     }
 
     Math3D::Vec2 parseVec2(const std::string& value, const Math3D::Vec2& fallback){
@@ -235,6 +288,8 @@ namespace {
                 outData.roughness = parseFloat(value, outData.roughness);
             }else if(key == "normal_scale"){
                 outData.normalScale = parseFloat(value, outData.normalScale);
+            }else if(key == "height_scale"){
+                outData.heightScale = parseFloat(value, outData.heightScale);
             }else if(key == "emissive_color"){
                 outData.emissiveColor = parseVec3(value, outData.emissiveColor);
             }else if(key == "emissive_strength"){
@@ -255,10 +310,14 @@ namespace {
                 outData.useAlphaClip = parseInt(value, outData.useAlphaClip);
             }else if(key == "base_color_tex"){
                 outData.baseColorTexRef = value;
+            }else if(key == "roughness_tex"){
+                outData.roughnessTexRef = value;
             }else if(key == "metallic_roughness_tex"){
                 outData.metallicRoughnessTexRef = value;
             }else if(key == "normal_tex"){
                 outData.normalTexRef = value;
+            }else if(key == "height_tex"){
+                outData.heightTexRef = value;
             }else if(key == "emissive_tex"){
                 outData.emissiveTexRef = value;
             }else if(key == "occlusion_tex"){
@@ -271,12 +330,47 @@ namespace {
         }
         return true;
     }
+
+    bool parseMaterialObjectText(const std::string& text, MaterialObjectData& outData){
+        std::istringstream stream(text);
+        std::string line;
+        while(std::getline(stream, line)){
+            std::string trimmed = trimCopy(line);
+            if(trimmed.empty()){
+                continue;
+            }
+            if(StringUtils::BeginsWith(trimmed, "#") || StringUtils::BeginsWith(trimmed, "//") || StringUtils::BeginsWith(trimmed, ";")){
+                continue;
+            }
+            size_t eq = trimmed.find('=');
+            if(eq == std::string::npos){
+                continue;
+            }
+
+            std::string key = toLowerCopy(trimCopy(trimmed.substr(0, eq)));
+            std::string value = trimCopy(trimmed.substr(eq + 1));
+            if(key == "name"){
+                outData.name = value;
+            }else if(key == "material_asset" || key == "asset" || key == "source_asset" || key == "material_asset_ref"){
+                outData.materialAssetRef = value;
+            }
+        }
+        return true;
+    }
 }
 
 namespace MaterialAssetIO {
 
 bool IsMaterialAssetPath(const std::filesystem::path& path){
-    return StringUtils::EndsWith(toLowerCopy(path.generic_string()), ".material.asset");
+    return isMaterialAssetPathInternal(path);
+}
+
+bool IsMaterialObjectPath(const std::filesystem::path& path){
+    return isMaterialObjectPathInternal(path);
+}
+
+bool IsMaterialPath(const std::filesystem::path& path){
+    return IsMaterialAssetPath(path) || IsMaterialObjectPath(path);
 }
 
 const char* TypeToString(MaterialAssetType type){
@@ -304,27 +398,53 @@ MaterialAssetType TypeFromString(const std::string& value){
 }
 
 bool LoadFromAbsolutePath(const std::filesystem::path& path, MaterialAssetData& outData, std::string* outError){
+    std::string resolvedAssetRef;
+    if(!ResolveMaterialAssetRef(path.generic_string(), resolvedAssetRef, outError)){
+        return false;
+    }
+
+    std::filesystem::path resolvedPath;
+    if(!toAbsolutePathFromAssetRef(resolvedAssetRef, resolvedPath)){
+        if(outError){
+            *outError = "Invalid resolved material asset path: " + resolvedAssetRef;
+        }
+        return false;
+    }
+
     outData = MaterialAssetData{};
     std::string text;
-    if(!readTextPath(path, text, outError)){
+    if(!readTextPath(resolvedPath, text, outError)){
         return false;
     }
     parseMaterialAssetText(text, outData);
     if(outData.name.empty()){
-        outData.name = path.filename().string();
+        outData.name = resolvedPath.filename().string();
     }
     return true;
 }
 
 bool LoadFromAssetRef(const std::string& assetRef, MaterialAssetData& outData, std::string* outError){
+    std::string resolvedAssetRef;
+    if(!ResolveMaterialAssetRef(assetRef, resolvedAssetRef, outError)){
+        return false;
+    }
+
+    std::filesystem::path resolvedPath;
+    if(!toAbsolutePathFromAssetRef(resolvedAssetRef, resolvedPath)){
+        if(outError){
+            *outError = "Invalid resolved material asset path: " + resolvedAssetRef;
+        }
+        return false;
+    }
+
     outData = MaterialAssetData{};
     std::string text;
-    if(!readTextRefOrPath(assetRef, text, outError)){
+    if(!readTextRefOrPath(resolvedAssetRef, text, outError)){
         return false;
     }
     parseMaterialAssetText(text, outData);
     if(outData.name.empty()){
-        outData.name = std::filesystem::path(assetRef).filename().string();
+        outData.name = resolvedPath.filename().string();
     }
     return true;
 }
@@ -358,6 +478,7 @@ bool SaveToAbsolutePath(const std::filesystem::path& path, const MaterialAssetDa
     writer->putln(StringUtils::Format("metallic=%.6f", data.metallic).c_str());
     writer->putln(StringUtils::Format("roughness=%.6f", data.roughness).c_str());
     writer->putln(StringUtils::Format("normal_scale=%.6f", data.normalScale).c_str());
+    writer->putln(StringUtils::Format("height_scale=%.6f", data.heightScale).c_str());
     writer->putln(StringUtils::Format("emissive_color=%s", vec3ToString(data.emissiveColor).c_str()).c_str());
     writer->putln(StringUtils::Format("emissive_strength=%.6f", data.emissiveStrength).c_str());
     writer->putln(StringUtils::Format("occlusion_strength=%.6f", data.occlusionStrength).c_str());
@@ -368,8 +489,10 @@ bool SaveToAbsolutePath(const std::filesystem::path& path, const MaterialAssetDa
     writer->putln(StringUtils::Format("alpha_cutoff=%.6f", data.alphaCutoff).c_str());
     writer->putln(StringUtils::Format("use_alpha_clip=%d", data.useAlphaClip).c_str());
     writer->putln(StringUtils::Format("base_color_tex=%s", data.baseColorTexRef.c_str()).c_str());
+    writer->putln(StringUtils::Format("roughness_tex=%s", data.roughnessTexRef.c_str()).c_str());
     writer->putln(StringUtils::Format("metallic_roughness_tex=%s", data.metallicRoughnessTexRef.c_str()).c_str());
     writer->putln(StringUtils::Format("normal_tex=%s", data.normalTexRef.c_str()).c_str());
+    writer->putln(StringUtils::Format("height_tex=%s", data.heightTexRef.c_str()).c_str());
     writer->putln(StringUtils::Format("emissive_tex=%s", data.emissiveTexRef.c_str()).c_str());
     writer->putln(StringUtils::Format("occlusion_tex=%s", data.occlusionTexRef.c_str()).c_str());
     writer->putln(StringUtils::Format("casts_shadows=%d", data.castsShadows ? 1 : 0).c_str());
@@ -387,13 +510,12 @@ bool SaveToAbsolutePath(const std::filesystem::path& path, const MaterialAssetDa
 }
 
 bool SaveToAssetRef(const std::string& assetRef, const MaterialAssetData& data, std::string* outError){
-    std::filesystem::path path = assetRef;
-    if(isAssetRef(assetRef)){
-        std::string rel = assetRef.substr(std::strlen(ASSET_DELIMITER));
-        if(!rel.empty() && (rel[0] == '/' || rel[0] == '\\')){
-            rel.erase(rel.begin());
+    std::filesystem::path path;
+    if(!toAbsolutePathFromAssetRef(assetRef, path)){
+        if(outError){
+            *outError = "Invalid material asset path: " + assetRef;
         }
-        path = std::filesystem::path(File::GetCWD()) / "res" / rel;
+        return false;
     }
     return SaveToAbsolutePath(path, data, outError);
 }
@@ -439,6 +561,7 @@ std::shared_ptr<Material> InstantiateMaterial(const MaterialAssetData& data, std
                 pbr->Metallic = data.metallic;
                 pbr->Roughness = data.roughness;
                 pbr->NormalScale = data.normalScale;
+                pbr->HeightScale = data.heightScale;
                 pbr->EmissiveColor = data.emissiveColor;
                 pbr->EmissiveStrength = data.emissiveStrength;
                 pbr->OcclusionStrength = data.occlusionStrength;
@@ -449,8 +572,10 @@ std::shared_ptr<Material> InstantiateMaterial(const MaterialAssetData& data, std
                 pbr->AlphaCutoff = data.alphaCutoff;
                 pbr->UseAlphaClip = data.useAlphaClip;
                 pbr->BaseColorTex = loadTextureFromRef(data.baseColorTexRef);
+                pbr->RoughnessTex = loadTextureFromRef(data.roughnessTexRef);
                 pbr->MetallicRoughnessTex = loadTextureFromRef(data.metallicRoughnessTexRef);
                 pbr->NormalTex = loadTextureFromRef(data.normalTexRef);
+                pbr->HeightTex = loadTextureFromRef(data.heightTexRef);
                 pbr->EmissiveTex = loadTextureFromRef(data.emissiveTexRef);
                 pbr->OcclusionTex = loadTextureFromRef(data.occlusionTexRef);
             }
@@ -485,6 +610,185 @@ std::shared_ptr<Material> InstantiateMaterial(const MaterialAssetData& data, std
     }
 
     return material;
+}
+
+bool LoadMaterialObjectFromAbsolutePath(const std::filesystem::path& path, MaterialObjectData& outData, std::string* outError){
+    if(!IsMaterialObjectPath(path)){
+        if(outError){
+            *outError = "Not a material object path: " + path.generic_string();
+        }
+        return false;
+    }
+
+    outData = MaterialObjectData{};
+    std::string text;
+    if(!readTextPath(path, text, outError)){
+        return false;
+    }
+    parseMaterialObjectText(text, outData);
+    if(outData.name.empty()){
+        outData.name = path.stem().string();
+    }
+
+    if(outData.materialAssetRef.empty()){
+        const std::filesystem::path parent = path.parent_path();
+        const std::string stem = path.stem().string();
+        const std::filesystem::path defaultMaterialAsset = parent / (stem + ".material.asset");
+        const std::filesystem::path legacyMaterialAsset = parent / (stem + ".mat.asset");
+        std::error_code ec;
+        if(std::filesystem::exists(defaultMaterialAsset, ec)){
+            outData.materialAssetRef = toAssetRefFromAbsolutePath(defaultMaterialAsset);
+        }else if(std::filesystem::exists(legacyMaterialAsset, ec)){
+            outData.materialAssetRef = toAssetRefFromAbsolutePath(legacyMaterialAsset);
+        }
+    }
+
+    return true;
+}
+
+bool LoadMaterialObjectFromAssetRef(const std::string& assetRef, MaterialObjectData& outData, std::string* outError){
+    std::filesystem::path path;
+    if(!toAbsolutePathFromAssetRef(assetRef, path)){
+        if(outError){
+            *outError = "Invalid material object asset ref: " + assetRef;
+        }
+        return false;
+    }
+    return LoadMaterialObjectFromAbsolutePath(path, outData, outError);
+}
+
+bool SaveMaterialObjectToAbsolutePath(const std::filesystem::path& path, const MaterialObjectData& data, std::string* outError){
+    if(!IsMaterialObjectPath(path)){
+        if(outError){
+            *outError = "Material object files must use .material extension.";
+        }
+        return false;
+    }
+
+    std::filesystem::path parent = path.parent_path();
+    std::error_code ec;
+    if(!parent.empty() && !std::filesystem::exists(parent, ec)){
+        if(!std::filesystem::create_directories(parent, ec)){
+            if(outError){
+                *outError = "Failed to create directory: " + parent.generic_string();
+            }
+            return false;
+        }
+    }
+
+    std::string resolvedAssetRef = data.materialAssetRef;
+    if(!resolvedAssetRef.empty()){
+        std::string normalizedRef;
+        if(!ResolveMaterialAssetRef(resolvedAssetRef, normalizedRef, outError)){
+            return false;
+        }
+        resolvedAssetRef = normalizedRef;
+    }
+
+    auto writer = std::make_unique<FileWriter>(new File(path.string()));
+    if(!writer){
+        if(outError){
+            *outError = "Failed to open file for write: " + path.generic_string();
+        }
+        return false;
+    }
+
+    const std::string objectName = data.name.empty() ? path.stem().string() : data.name;
+    writer->putln(StringUtils::Format("name=%s", objectName.c_str()).c_str());
+    writer->putln(StringUtils::Format("material_asset=%s", resolvedAssetRef.c_str()).c_str());
+
+    if(!writer->flush()){
+        if(outError){
+            *outError = "Failed to write file: " + path.generic_string();
+        }
+        writer->close();
+        return false;
+    }
+    writer->close();
+    return true;
+}
+
+bool SaveMaterialObjectToAssetRef(const std::string& assetRef, const MaterialObjectData& data, std::string* outError){
+    std::filesystem::path path;
+    if(!toAbsolutePathFromAssetRef(assetRef, path)){
+        if(outError){
+            *outError = "Invalid material object asset ref: " + assetRef;
+        }
+        return false;
+    }
+    return SaveMaterialObjectToAbsolutePath(path, data, outError);
+}
+
+bool ResolveMaterialAssetRef(const std::string& materialOrAssetRef, std::string& outAssetRef, std::string* outError){
+    std::string currentRef = StringUtils::Trim(materialOrAssetRef);
+    if(currentRef.empty()){
+        if(outError){
+            *outError = "Material reference is empty.";
+        }
+        return false;
+    }
+
+    constexpr int kMaxResolveDepth = 8;
+    for(int depth = 0; depth < kMaxResolveDepth; ++depth){
+        std::filesystem::path absolutePath;
+        if(!toAbsolutePathFromAssetRef(currentRef, absolutePath)){
+            if(outError){
+                *outError = "Invalid material reference: " + currentRef;
+            }
+            return false;
+        }
+
+        if(IsMaterialAssetPath(absolutePath)){
+            if(isAssetRef(currentRef)){
+                outAssetRef = currentRef;
+            }else{
+                outAssetRef = toAssetRefFromAbsolutePath(absolutePath);
+            }
+            return true;
+        }
+
+        if(IsMaterialObjectPath(absolutePath)){
+            MaterialObjectData objectData;
+            if(!LoadMaterialObjectFromAbsolutePath(absolutePath, objectData, outError)){
+                return false;
+            }
+            if(objectData.materialAssetRef.empty()){
+                if(outError){
+                    *outError = "Material object has no linked material asset: " + absolutePath.generic_string();
+                }
+                return false;
+            }
+            currentRef = objectData.materialAssetRef;
+            continue;
+        }
+
+        if(outError){
+            *outError = "Unsupported material reference: " + currentRef;
+        }
+        return false;
+    }
+
+    if(outError){
+        *outError = "Material reference resolve depth exceeded.";
+    }
+    return false;
+}
+
+std::shared_ptr<Material> InstantiateMaterialFromRef(const std::string& materialOrAssetRef, std::string* outResolvedAssetRef, std::string* outError){
+    std::string resolvedAssetRef;
+    if(!ResolveMaterialAssetRef(materialOrAssetRef, resolvedAssetRef, outError)){
+        return nullptr;
+    }
+
+    MaterialAssetData data;
+    if(!LoadFromAssetRef(resolvedAssetRef, data, outError)){
+        return nullptr;
+    }
+
+    if(outResolvedAssetRef){
+        *outResolvedAssetRef = resolvedAssetRef;
+    }
+    return InstantiateMaterial(data, outError);
 }
 
 } // namespace MaterialAssetIO

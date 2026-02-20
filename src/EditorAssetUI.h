@@ -24,6 +24,7 @@ enum class AssetKind : int {
     ShaderGeneric,
     ShaderAsset,
     MaterialAsset,
+    Material,
     Font,
     Text,
     Unknown
@@ -41,6 +42,8 @@ AssetKind ClassifyPath(const std::filesystem::path& path, bool isDirectory);
 bool IsKindCompatible(AssetKind offered, AssetKind requested);
 bool IsKindCompatibleAny(AssetKind offered, const AssetKind* requestedKinds, size_t requestedKindCount);
 bool BuildTransaction(const std::filesystem::path& absolutePath, const std::filesystem::path& assetRoot, AssetTransaction& out);
+void InvalidateAllThumbnails();
+void InvalidateMaterialThumbnail(const std::string& assetRef = "");
 
 bool DrawAssetTile(const char* id, const AssetTransaction& tx, float iconSize, bool selected = false, bool* outDoubleClicked = nullptr);
 void BeginAssetDragSource(const AssetTransaction& tx);

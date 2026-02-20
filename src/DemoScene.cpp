@@ -88,6 +88,7 @@ void DemoScene::init(){
 
     ground = Model::Create();
     meshModel = Model::Create();
+    renderBox = Model::Create();
 
     mainScreen = getMainScreen();
     uiScreen = getUIScreen();
@@ -248,19 +249,40 @@ void DemoScene::init(){
     lucille = OBJLoader::LoadFromAsset(AssetManager::Instance.getOrLoad("@assets/models/lucille/lucille.obj"),mat);
     orb = OBJLoader::LoadFromAsset(AssetManager::Instance.getOrLoad("@assets/models/theorb/orb.obj"), uvPBR, true);
 
+    PTexture matSWBase = Texture::Load(AssetManager::Instance.getOrLoad("@assets/images/Materials/StoneWall03/MAT_SW_ALBEDO.png"));
+    PTexture matSWAo = Texture::Load(AssetManager::Instance.getOrLoad("@assets/images/Materials/StoneWall03/MAT_SW_AO.png"));
+    PTexture matSWHeight = Texture::Load(AssetManager::Instance.getOrLoad("@assets/images/Materials/StoneWall03/MAT_SW_HEIGHT.png"));
+    PTexture matSWNormal = Texture::Load(AssetManager::Instance.getOrLoad("@assets/images/Materials/StoneWall03/MAT_SW_NORMAL.png"));
+    PTexture matSWRough = Texture::Load(AssetManager::Instance.getOrLoad("@assets/images/Materials/StoneWall03/MAT_SW_ROUGHNESS.png"));
+
+    auto boxPbrMat = PBRMaterial::Create();
+    boxPbrMat->BaseColorTex = matSWBase;
+    boxPbrMat->OcclusionTex = matSWAo;
+    boxPbrMat->HeightTex = matSWHeight;
+    boxPbrMat->NormalTex = matSWNormal;
+    boxPbrMat->NormalScale = 1.0f;
+    boxPbrMat->RoughnessTex = matSWRough;
+
+    auto modelBoxModelPart = ModelPartPrefabs::MakeBox(1.0f, 1.0f, 1.0f, boxPbrMat);
+    renderBox->addPart(modelBoxModelPart);
+   
+
+
     if(mainScreen && mainScreen->getEnvironment()){
         auto env = mainScreen->getEnvironment();
         env->setLightingEnabled(true);
         env->setSkyBox(skybox);
     }
 
-    auto SunLight = Light::CreateDirectionalLight(Math3D::Vec3(-0.3f, -1.0f, -0.2f), Color::fromRGBA255(255, 208, 180, 255), 0.70f);
+    auto SunLight = Light::CreateDirectionalLight(Math3D::Vec3(-0.3f, -1.0f, -0.2f), Color::fromRGBA255(255, 208, 180, 255), 3.0f);
     SunLight.shadowRange = 90.0f;
     SunLight.shadowBias = 0.0035f;
     SunLight.shadowNormalBias = 0.015f;
     auto KeyPoint = Light::CreatePointLight(Math3D::Vec3(4.5f, 6.0f, 2.0f), Color::fromRGBA255(255, 230, 180, 255), 6.5f, 18.0f, 2.0f);
     auto FillPoint = Light::CreatePointLight(Math3D::Vec3(-6.0f, 3.0f, 6.0f), Color::fromRGBA255(120, 180, 255, 255), 3.0f, 20.0f, 2.0f);
+    FillPoint.castsShadows = false;
     auto RimPoint = Light::CreatePointLight(Math3D::Vec3(0.0f, 7.0f, -8.0f), Color::fromRGBA255(255, 255, 255, 255), 4.0f, 20.0f, 2.0f);
+    RimPoint.castsShadows = false;
 
     auto RedPoint = Light::CreatePointLight(Math3D::Vec3(-2.0f, 2.0f, -2.0f), Color::fromRGBA255(255, 60, 60, 255), 6.0f, 8.0f, 2.0f);
     auto GreenPoint = Light::CreatePointLight(Math3D::Vec3(2.0f, 2.0f, -2.0f), Color::fromRGBA255(60, 255, 80, 255), 6.0f, 8.0f, 2.0f);
@@ -278,6 +300,13 @@ void DemoScene::init(){
     cubeObject = spawnModelEntity(this, "CubeModel", cubeModel);
     lucilleObject = spawnModelEntity(this, "Lucille", lucille);
     orbObject = spawnModelEntity(this, "Orb", orb);
+    renderBoxGameObject = spawnModelEntity(this, "Render Cube", renderBox);
+
+    if(renderBoxGameObject){
+        if(auto* transform = renderBoxGameObject->getComponent<TransformComponent>()){
+            transform->local.setPosition(Math3D::Vec3(-7, -2, 10));
+        }
+    }
 
     if(lucilleObject){
         if(auto* transform = lucilleObject->getComponent<TransformComponent>()){

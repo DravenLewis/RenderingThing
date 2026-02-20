@@ -15,9 +15,12 @@ class PBRMaterial : public Material {
         ValueContainer<std::shared_ptr<Texture>> BaseColorTex;
         ValueContainer<float> Metallic;
         ValueContainer<float> Roughness;
+        ValueContainer<std::shared_ptr<Texture>> RoughnessTex;
         ValueContainer<std::shared_ptr<Texture>> MetallicRoughnessTex;
         ValueContainer<std::shared_ptr<Texture>> NormalTex;
         ValueContainer<float> NormalScale;
+        ValueContainer<std::shared_ptr<Texture>> HeightTex;
+        ValueContainer<float> HeightScale;
         ValueContainer<std::shared_ptr<Texture>> EmissiveTex;
         ValueContainer<Math3D::Vec3> EmissiveColor;
         ValueContainer<float> EmissiveStrength;

@@ -42,8 +42,10 @@ namespace {
 
     struct MaterialAssetFieldState{
         char baseColorTex[256] = "";
+        char roughnessTex[256] = "";
         char metallicRoughTex[256] = "";
         char normalTex[256] = "";
+        char heightTex[256] = "";
         char emissiveTex[256] = "";
         char occlusionTex[256] = "";
         char imageTex[256] = "";
@@ -230,6 +232,12 @@ namespace {
                 pbr->NormalScale = normalScale;
             }
 
+            float heightScale = pbr->HeightScale.get();
+            std::string heightScaleLabel = std::string("Height Scale##") + idSuffix;
+            if(ImGui::DragFloat(heightScaleLabel.c_str(), &heightScale, 0.001f, 0.0f, 1.0f)){
+                pbr->HeightScale = heightScale;
+            }
+
             Math3D::Vec3 emissiveColor = pbr->EmissiveColor.get();
             std::string emissiveColorLabel = std::string("Emissive Color##") + idSuffix;
             if(ImGui::ColorEdit3(emissiveColorLabel.c_str(), &emissiveColor.x)){
@@ -373,12 +381,12 @@ namespace {
             }
         }
 
-        std::string assetFieldLabel = std::string("Material Asset##") + idSuffix;
+        std::string assetFieldLabel = std::string("Material##") + idSuffix;
         bool dropped = false;
-        EditorAssetUI::DrawAssetDropInput(assetFieldLabel.c_str(), picker.materialAssetPath, sizeof(picker.materialAssetPath), EditorAssetUI::AssetKind::MaterialAsset, false, &dropped);
+        EditorAssetUI::DrawAssetDropInput(assetFieldLabel.c_str(), picker.materialAssetPath, sizeof(picker.materialAssetPath), EditorAssetUI::AssetKind::Material, false, &dropped);
 
-        std::string applyAssetLabel = std::string("Apply Material Asset##") + idSuffix;
-        std::string clearAssetLabel = std::string("Clear Material Asset##") + idSuffix;
+        std::string applyAssetLabel = std::string("Apply Material##") + idSuffix;
+        std::string clearAssetLabel = std::string("Clear Material##") + idSuffix;
         bool applyAsset = ImGui::Button(applyAssetLabel.c_str());
         if(ImGui::Button(clearAssetLabel.c_str())){
             picker.materialAssetPath[0] = '\0';
@@ -387,17 +395,12 @@ namespace {
         if(dropped || applyAsset){
             std::string assetRef = picker.materialAssetPath;
             if(!assetRef.empty()){
-                MaterialAssetData data;
                 std::string error;
-                if(!MaterialAssetIO::LoadFromAssetRef(assetRef, data, &error)){
-                    LogBot.Log(LOG_ERRO, "Failed to load material asset '%s': %s", assetRef.c_str(), error.c_str());
+                auto mat = MaterialAssetIO::InstantiateMaterialFromRef(assetRef, nullptr, &error);
+                if(!mat){
+                    LogBot.Log(LOG_ERRO, "Failed to instantiate material '%s': %s", assetRef.c_str(), error.c_str());
                 }else{
-                    auto mat = MaterialAssetIO::InstantiateMaterial(data, &error);
-                    if(!mat){
-                        LogBot.Log(LOG_ERRO, "Failed to instantiate material asset '%s': %s", assetRef.c_str(), error.c_str());
-                    }else{
-                        materialRef = mat;
-                    }
+                    materialRef = mat;
                 }
             }
         }
@@ -597,12 +600,18 @@ namespace {
                 drawTextureField("Base Color Tex", "pbr_base", fieldState.baseColorTex,
                     [&](const std::shared_ptr<Texture>& tex){ pbr->BaseColorTex = tex; },
                     [&](){ return pbr->BaseColorTex.get(); });
+                drawTextureField("Roughness Tex", "pbr_rough", fieldState.roughnessTex,
+                    [&](const std::shared_ptr<Texture>& tex){ pbr->RoughnessTex = tex; },
+                    [&](){ return pbr->RoughnessTex.get(); });
                 drawTextureField("Metal/Rough Tex", "pbr_mr", fieldState.metallicRoughTex,
                     [&](const std::shared_ptr<Texture>& tex){ pbr->MetallicRoughnessTex = tex; },
                     [&](){ return pbr->MetallicRoughnessTex.get(); });
                 drawTextureField("Normal Tex", "pbr_normal", fieldState.normalTex,
                     [&](const std::shared_ptr<Texture>& tex){ pbr->NormalTex = tex; },
                     [&](){ return pbr->NormalTex.get(); });
+                drawTextureField("Height Tex", "pbr_height", fieldState.heightTex,
+                    [&](const std::shared_ptr<Texture>& tex){ pbr->HeightTex = tex; },
+                    [&](){ return pbr->HeightTex.get(); });
                 drawTextureField("Emissive Tex", "pbr_emissive", fieldState.emissiveTex,
                     [&](const std::shared_ptr<Texture>& tex){ pbr->EmissiveTex = tex; },
                     [&](){ return pbr->EmissiveTex.get(); });

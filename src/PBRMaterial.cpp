@@ -13,6 +13,8 @@ namespace {
     constexpr int EMISSIVE_SLOT = 3;
     constexpr int OCCLUSION_SLOT = 4;
     constexpr int ENV_SLOT = 5;
+    constexpr int HEIGHT_SLOT = 6;
+    constexpr int ROUGHNESS_SLOT = 7;
 
     const std::vector<Light>& GetActiveLights(){
         auto env = Screen::GetCurrentEnvironment();
@@ -67,6 +69,12 @@ PBRMaterial::PBRMaterial(std::shared_ptr<ShaderProgram> program) : Material(prog
         return true;
     });
 
+    RoughnessTex.onChange([this](std::shared_ptr<Texture>, std::shared_ptr<Texture> newValue) -> bool{
+        set<GLUniformUpload::TextureSlot>("u_roughnessTex", GLUniformUpload::TextureSlot(newValue, ROUGHNESS_SLOT));
+        set<int>("u_useRoughnessTex", newValue ? 1 : 0);
+        return true;
+    });
+
     MetallicRoughnessTex.onChange([this](std::shared_ptr<Texture>, std::shared_ptr<Texture> newValue) -> bool{
         set<GLUniformUpload::TextureSlot>("u_metallicRoughnessTex", GLUniformUpload::TextureSlot(newValue, METAL_ROUGH_SLOT));
         set<int>("u_useMetallicRoughnessTex", newValue ? 1 : 0);
@@ -81,6 +89,17 @@ PBRMaterial::PBRMaterial(std::shared_ptr<ShaderProgram> program) : Material(prog
 
     NormalScale.onChange([this](float, float newValue) -> bool{
         set<float>("u_normalScale", newValue);
+        return true;
+    });
+
+    HeightTex.onChange([this](std::shared_ptr<Texture>, std::shared_ptr<Texture> newValue) -> bool{
+        set<GLUniformUpload::TextureSlot>("u_heightTex", GLUniformUpload::TextureSlot(newValue, HEIGHT_SLOT));
+        set<int>("u_useHeightTex", newValue ? 1 : 0);
+        return true;
+    });
+
+    HeightScale.onChange([this](float, float newValue) -> bool{
+        set<float>("u_heightScale", newValue);
         return true;
     });
 
@@ -156,6 +175,7 @@ PBRMaterial::PBRMaterial(std::shared_ptr<ShaderProgram> program) : Material(prog
     Metallic = 0.0f;
     Roughness = 1.0f;
     NormalScale = 1.0f;
+    HeightScale = 0.02f;
     EmissiveColor = Math3D::Vec3(0, 0, 0);
     EmissiveStrength = 1.0f;
     OcclusionStrength = 1.0f;
@@ -168,8 +188,10 @@ PBRMaterial::PBRMaterial(std::shared_ptr<ShaderProgram> program) : Material(prog
     ViewPos = Math3D::Vec3(0, 0, 0);
 
     BaseColorTex = nullptr;
+    RoughnessTex = nullptr;
     MetallicRoughnessTex = nullptr;
     NormalTex = nullptr;
+    HeightTex = nullptr;
     EmissiveTex = nullptr;
     OcclusionTex = nullptr;
     EnvMap = nullptr;
@@ -179,6 +201,7 @@ PBRMaterial::PBRMaterial(std::shared_ptr<ShaderProgram> program) : Material(prog
     set<float>("u_metallic", 0.0f);
     set<float>("u_roughness", 1.0f);
     set<float>("u_normalScale", 1.0f);
+    set<float>("u_heightScale", 0.02f);
     set<Math3D::Vec3>("u_emissiveColor", Math3D::Vec3(0, 0, 0));
     set<float>("u_emissiveStrength", 1.0f);
     set<float>("u_aoStrength", 1.0f);
@@ -188,8 +211,10 @@ PBRMaterial::PBRMaterial(std::shared_ptr<ShaderProgram> program) : Material(prog
     set<float>("u_alphaCutoff", 0.5f);
     set<int>("u_useAlphaClip", 0);
     set<int>("u_useBaseColorTex", 0);
+    set<int>("u_useRoughnessTex", 0);
     set<int>("u_useMetallicRoughnessTex", 0);
     set<int>("u_useNormalTex", 0);
+    set<int>("u_useHeightTex", 0);
     set<int>("u_useEmissiveTex", 0);
     set<int>("u_useOcclusionTex", 0);
     set<int>("u_useEnvMap", 0);

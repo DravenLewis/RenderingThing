@@ -37,19 +37,28 @@ std::string File::GetCWD(){
 }
 
 File::File(std::string pathName){
-    this->isVirtual = false;  // Initialize first
-    this->fileStream = std::fstream(pathName, std::ios::in);
-    if(!this->fileStream) this->isVirtual = true;
-    this->fileStream.close();
     this->filepath = pathName;
+    std::error_code ec;
+    this->isVirtual = !std::filesystem::exists(this->filepath, ec);
 }
 
 bool File::exists(){
-    return !this->isVirtual;
+    std::error_code ec;
+    const bool value = std::filesystem::exists(this->filepath, ec);
+    this->isVirtual = !value || static_cast<bool>(ec);
+    return value && !ec;
 }
 
 bool File::isDirectory(){
-    return std::filesystem::is_directory(this->filepath) || StringUtils::EndsWith(this->filepath,FILE_SEPARATOR);
+    std::error_code ec;
+    if(std::filesystem::is_directory(this->filepath, ec)){
+        return !ec;
+    }
+
+    if(StringUtils::EndsWith(this->filepath, FILE_SEPARATOR)){
+        return true;
+    }
+    return StringUtils::EndsWith(this->filepath, "/");
 }
 
 std::string File::getFileName(){
@@ -102,34 +111,48 @@ bool File::createFile(){
 }
 
 bool File::deleteFile(){
-    if(exists()){
-        if(isDirectory()){
-            try{
-                unsigned long long count = std::filesystem::remove_all(this->filepath);
-                LogBot.Log(LOG_INFO, "Sucessfully removed directory and %s items.", count);
-                return true;
-            }catch(const std::filesystem::filesystem_error& e){
-                LogBot.Log(LOG_ERRO, "Failed to delete directory: %s", e.what());
-                return false;
-            }
-        }
+    std::error_code ec;
+    if(!std::filesystem::exists(this->filepath, ec)){
+        this->isVirtual = true;
+        LogBot.Log(LOG_WARN, "Cannot delete '%s': path does not exist.", this->filepath.c_str());
+        return false;
+    }
+    if(ec){
+        LogBot.Log(LOG_ERRO, "Failed to query path '%s': %s", this->filepath.c_str(), ec.message().c_str());
+        return false;
+    }
 
-        try{
-            bool success = std::filesystem::remove(this->filepath);
-            if(success){
-                LogBot.Log(LOG_INFO,"File '%s' created successfully.");
-                return true;
-            }else{
-                LogBot.Log(LOG_WARN,"File '%s' could not be created for an unknown reason, file may be open or virtual.");
-                return false;
-            }
-        }catch(std::filesystem::filesystem_error& e){
-            LogBot.Log(LOG_ERRO, "Failed to delete file: %s", e.what());
+    const bool directory = std::filesystem::is_directory(this->filepath, ec);
+    if(ec){
+        LogBot.Log(LOG_ERRO, "Failed to inspect path '%s': %s", this->filepath.c_str(), ec.message().c_str());
+        return false;
+    }
+
+    if(directory){
+        const uintmax_t removed = std::filesystem::remove_all(this->filepath, ec);
+        if(ec){
+            LogBot.Log(LOG_ERRO, "Failed to delete directory '%s': %s", this->filepath.c_str(), ec.message().c_str());
             return false;
         }
+
+        this->isVirtual = true;
+        LogBot.Log(LOG_INFO, "Deleted directory '%s' and %llu item(s).", this->filepath.c_str(), static_cast<unsigned long long>(removed));
+        return true;
     }
-    LogBot.Log(LOG_WARN,"Cant delete virtual file, ignoring.");
-    return false;
+
+    const bool removed = std::filesystem::remove(this->filepath, ec);
+    if(ec){
+        LogBot.Log(LOG_ERRO, "Failed to delete file '%s': %s", this->filepath.c_str(), ec.message().c_str());
+        return false;
+    }
+    if(!removed){
+        LogBot.Log(LOG_WARN, "Failed to delete file '%s': remove returned false.", this->filepath.c_str());
+        return false;
+    }
+
+    this->isVirtual = true;
+    LogBot.Log(LOG_INFO, "Deleted file '%s'.", this->filepath.c_str());
+    return true;
 }
 
 bool File::open(std::ios::openmode options){

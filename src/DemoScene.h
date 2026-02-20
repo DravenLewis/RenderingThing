@@ -38,6 +38,8 @@ class DemoScene : public Scene3D {
         PModel meshModel;
         PModel cubeModel;
         PModel lucille;
+        PModel renderBox;
+
         PModel orb;
         PSkyBox skybox;
 
@@ -47,6 +49,8 @@ class DemoScene : public Scene3D {
         NeoECS::GameObject* lucilleObject = nullptr;
         NeoECS::GameObject* orbObject = nullptr;
         NeoECS::GameObject* demoCameraObject = nullptr;
+        NeoECS::GameObject* renderBoxGameObject = nullptr;
+
         CameraComponent* demoCameraComponent = nullptr;
         TransformComponent* demoCameraTransform = nullptr;
 

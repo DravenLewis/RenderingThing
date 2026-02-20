@@ -308,7 +308,11 @@ struct ShaderCache{
         // Check if the file is in the cache;
         auto it = programCache.find(name);
         if(it != programCache.end()){
-            return it->second;
+            if(it->second && it->second->getID() != 0){
+                return it->second;
+            }
+            // Recover from failed cached programs (ID==0) by recompiling.
+            programCache.erase(it);
         }
 
         auto program = std::make_shared<ShaderProgram>();
