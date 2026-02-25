@@ -19,15 +19,20 @@ private:
         int normIdx = -1;
     };
 
+    struct FaceDefinition {
+        std::vector<VertexIndex> vertices;
+        std::string materialName;
+    };
+
     struct OBJData {
         std::vector<Math3D::Vec3> positions;
         std::vector<Math3D::Vec3> normals;
         std::vector<Math3D::Vec2> texCoords;
-        std::vector<std::vector<VertexIndex>> faces;  // Each face stores vertex indices
+        std::vector<FaceDefinition> faces;
+        std::vector<std::string> materialLibs;
     };
 
     static OBJData ParseOBJData(const std::string& content);
-    static std::vector<Vertex> ConstructVertices(const OBJData& data);
     static std::vector<Math3D::Vec3> BuildSmoothNormals(const OBJData& data);
     
 public:

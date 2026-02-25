@@ -4,8 +4,11 @@
 #include <filesystem>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "MaterialAsset.h"
+#include "ModelAsset.h"
+#include "MtlMaterialImporter.h"
 #include "ShaderAsset.h"
 
 struct FrameBuffer;
@@ -28,13 +31,19 @@ class FilePreviewWidget {
         void drawShaderAssetEditor();
         void drawMaterialAssetEditor();
         void drawMaterialObjectEditor();
+        void drawModelAssetEditor();
+        void drawMtlFilePreview();
         void drawModelFilePreview();
         void drawGenericInfo() const;
+        void drawErrorByteDumpIfNeeded();
+        void refreshErrorByteDump();
         void ensureMaterialPreviewResources(int size);
         void updatePreviewCameraFromOrbit();
         bool handlePreviewOrbitInput();
         void renderMaterialPreview(const std::shared_ptr<Material>& material);
         void renderModelPreview(const std::shared_ptr<Model>& model);
+        bool importSelectedMtlMaterial();
+        bool importCurrentModelAsAsset();
 
         std::filesystem::path assetRoot;
         std::filesystem::path filePath;
@@ -43,9 +52,14 @@ class FilePreviewWidget {
         bool isShaderAssetFile = false;
         bool isMaterialAssetFile = false;
         bool isMaterialObjectFile = false;
+        bool isModelAssetFile = false;
+        bool isMtlFile = false;
         bool isModelFile = false;
         bool statusIsError = false;
         std::string statusMessage;
+        std::string errorByteDump;
+        std::filesystem::path errorByteDumpPath;
+        std::filesystem::file_time_type errorByteDumpWriteTime{};
         char cacheName[128] = {};
 
         ShaderAssetData bundledShaderData;
@@ -64,6 +78,12 @@ class FilePreviewWidget {
         MaterialObjectData materialObjectData;
         char materialObjectName[128] = {};
         char materialObjectAssetRef[256] = {};
+        ModelAssetData modelAssetData;
+        char modelAssetName[128] = {};
+        char modelAssetSource[256] = {};
+        char modelAssetMaterialRef[256] = {};
+        std::vector<MtlMaterialDefinition> mtlMaterials;
+        int selectedMtlMaterialIndex = 0;
 
         std::shared_ptr<FrameBuffer> previewFrameBuffer;
         std::shared_ptr<Texture> previewTexture;
@@ -73,6 +93,7 @@ class FilePreviewWidget {
         std::shared_ptr<SkyBox> previewSkyBox;
         std::shared_ptr<Material> previewMaterial;
         std::shared_ptr<Model> previewModel;
+        bool materialAssetSavePending = false;
         bool previewMaterialDirty = true;
         bool previewModelDirty = true;
         int previewSize = 196;

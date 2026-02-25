@@ -243,7 +243,9 @@ void EditorScene::update(float deltaTime){
                     (mousePos.x >= previewAbsX && mousePos.x <= (previewAbsX + previewW) &&
                      mousePos.y >= previewAbsY && mousePos.y <= (previewAbsY + previewH));
             }
-            bool mouseInViewportInteractive = mouseInViewport && !mouseOverPreviewWindow;
+            ImGuiIO& io = ImGui::GetIO();
+            const bool uiOverlayCapturingMouse = io.WantCaptureMouse && !viewportHovered;
+            bool mouseInViewportInteractive = mouseInViewport && !mouseOverPreviewWindow && !uiOverlayCapturingMouse;
             bool lmb = inputManager->isLMBDown();
             bool lmbPressed = lmb && !prevLmb;
             bool lmbReleased = !lmb && prevLmb;

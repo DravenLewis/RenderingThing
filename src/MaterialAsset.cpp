@@ -1,6 +1,7 @@
 #include "MaterialAsset.h"
 
 #include "Asset.h"
+#include "AssetDescriptorUtils.h"
 #include "File.h"
 #include "MaterialDefaults.h"
 #include "PBRMaterial.h"
@@ -21,79 +22,27 @@ namespace {
     }
 
     std::filesystem::path getAssetRootPath(){
-        return std::filesystem::path(File::GetCWD()) / "res";
+        return AssetDescriptorUtils::GetAssetRootPath();
     }
 
     std::string makeAssetRefFromRelative(const std::string& relative){
-        if(relative.empty()){
-            return std::string(ASSET_DELIMITER);
-        }
-        return std::string(ASSET_DELIMITER) + "/" + relative;
+        return AssetDescriptorUtils::MakeAssetRefFromRelative(relative);
     }
 
     bool isAssetRef(const std::string& value){
-        return StringUtils::BeginsWith(value, ASSET_DELIMITER);
+        return AssetDescriptorUtils::IsAssetRef(value);
     }
 
     bool readTextAsset(const std::string& assetRef, std::string& outText, std::string* outError){
-        auto asset = AssetManager::Instance.getOrLoad(assetRef);
-        if(!asset){
-            if(outError){
-                *outError = "Failed to load asset: " + assetRef;
-            }
-            return false;
-        }
-        outText = asset->asString();
-        if(outText.empty()){
-            auto raw = asset->asRaw();
-            outText.assign(raw.begin(), raw.end());
-        }
-        return true;
+        return AssetDescriptorUtils::ReadTextAsset(assetRef, outText, outError);
     }
 
     bool readTextPath(const std::filesystem::path& path, std::string& outText, std::string* outError){
-        std::error_code ec;
-        const std::filesystem::path assetRoot = std::filesystem::weakly_canonical(getAssetRootPath(), ec);
-        std::filesystem::path normalizedPath = std::filesystem::weakly_canonical(path, ec);
-        if(ec){
-            normalizedPath = path.lexically_normal();
-        }
-        if(!std::filesystem::exists(normalizedPath, ec) || std::filesystem::is_directory(normalizedPath, ec)){
-            if(outError){
-                *outError = "Failed to load file: " + normalizedPath.generic_string();
-            }
-            return false;
-        }
-
-        std::filesystem::path rel = normalizedPath.lexically_relative(assetRoot);
-        if(!rel.empty() && !StringUtils::BeginsWith(rel.generic_string(), "..")){
-            return readTextAsset(makeAssetRefFromRelative(rel.generic_string()), outText, outError);
-        }
-
-        auto asset = std::make_shared<Asset>(path.string());
-        if(!asset || !asset->load()){
-            if(outError){
-                *outError = "Failed to load file: " + path.generic_string();
-            }
-            return false;
-        }
-        outText = asset->asString();
-        if(outText.empty()){
-            auto raw = asset->asRaw();
-            outText.assign(raw.begin(), raw.end());
-        }
-        return true;
+        return AssetDescriptorUtils::ReadTextPath(path, outText, outError);
     }
 
     bool readTextRefOrPath(const std::string& refOrPath, std::string& outText, std::string* outError){
-        if(refOrPath.empty()){
-            outText.clear();
-            return true;
-        }
-        if(isAssetRef(refOrPath)){
-            return readTextAsset(refOrPath, outText, outError);
-        }
-        return readTextPath(std::filesystem::path(refOrPath), outText, outError);
+        return AssetDescriptorUtils::ReadTextRefOrPath(refOrPath, outText, outError);
     }
 
     bool isMaterialAssetPathInternal(const std::filesystem::path& path){
@@ -110,39 +59,11 @@ namespace {
     }
 
     bool toAbsolutePathFromAssetRef(const std::string& assetRef, std::filesystem::path& outPath){
-        if(assetRef.empty()){
-            return false;
-        }
-        if(isAssetRef(assetRef)){
-            std::string rel = assetRef.substr(std::strlen(ASSET_DELIMITER));
-            if(!rel.empty() && (rel[0] == '/' || rel[0] == '\\')){
-                rel.erase(rel.begin());
-            }
-            outPath = getAssetRootPath() / rel;
-            return true;
-        }
-        outPath = std::filesystem::path(assetRef);
-        return true;
+        return AssetDescriptorUtils::AssetRefToAbsolutePath(assetRef, outPath);
     }
 
     std::string toAssetRefFromAbsolutePath(const std::filesystem::path& absolutePath){
-        std::error_code ec;
-        std::filesystem::path assetRoot = std::filesystem::weakly_canonical(getAssetRootPath(), ec);
-        if(ec){
-            assetRoot = getAssetRootPath().lexically_normal();
-        }
-        std::filesystem::path absolute = std::filesystem::weakly_canonical(absolutePath, ec);
-        if(ec){
-            absolute = absolutePath.lexically_normal();
-        }
-        std::filesystem::path rel = absolute.lexically_relative(assetRoot);
-        if(rel.empty()){
-            return absolute.generic_string();
-        }
-        if(StringUtils::BeginsWith(rel.generic_string(), "..")){
-            return absolute.generic_string();
-        }
-        return std::string(ASSET_DELIMITER) + "/" + rel.generic_string();
+        return AssetDescriptorUtils::AbsolutePathToAssetRef(absolutePath);
     }
 
     Math3D::Vec2 parseVec2(const std::string& value, const Math3D::Vec2& fallback){

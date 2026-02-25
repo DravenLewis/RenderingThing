@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <string>
+#include <vector>
 
 #include "Scene.h"
 #include "neoecs.hpp"
@@ -20,10 +21,31 @@ class ECSViewPanel {
         );
 
     private:
+        enum class PendingActionKind {
+            CreateEmpty,
+            CreateLight,
+            CreateCamera,
+            DeleteEntity,
+            ReparentToEntity,
+            ReparentToRoot
+        };
+
+        struct PendingAction {
+            PendingActionKind kind = PendingActionKind::CreateEmpty;
+            std::string entityId;
+            std::string targetEntityId;
+        };
+
         bool showHiddenModelPartsInTree = false;
+        std::vector<PendingAction> pendingActions;
 
         void drawEntityTree(
             NeoECS::ECSEntity* entity,
+            PScene targetScene,
+            const std::string& selectedEntityId,
+            const std::function<void(const std::string&)>& onSelectEntity
+        );
+        void applyPendingActions(
             PScene targetScene,
             const std::string& selectedEntityId,
             const std::function<void(const std::string&)>& onSelectEntity

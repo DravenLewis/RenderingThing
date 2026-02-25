@@ -19,6 +19,7 @@ enum class MaterialAssetType {
     FlatImage
 };
 
+// Descriptor wrappers around runtime materials (text metadata files, not Asset subclasses).
 struct MaterialAssetData {
     std::string name;
     std::string linkParentRef;
@@ -60,6 +61,7 @@ struct MaterialObjectData {
     std::string materialAssetRef;
 };
 
+// Legacy compatibility name. Prefer `MaterialDescriptorIO` in new code.
 namespace MaterialAssetIO {
     bool IsMaterialAssetPath(const std::filesystem::path& path);
     bool IsMaterialObjectPath(const std::filesystem::path& path);
@@ -80,5 +82,10 @@ namespace MaterialAssetIO {
     bool SaveMaterialObjectToAssetRef(const std::string& assetRef, const MaterialObjectData& data, std::string* outError = nullptr);
     std::shared_ptr<Material> InstantiateMaterialFromRef(const std::string& materialOrAssetRef, std::string* outResolvedAssetRef = nullptr, std::string* outError = nullptr);
 }
+
+// Clearer naming for new code (kept as aliases for backward compatibility).
+using MaterialDescriptorData = MaterialAssetData;
+using MaterialLinkDescriptorData = MaterialObjectData;
+namespace MaterialDescriptorIO = MaterialAssetIO;
 
 #endif // MATERIAL_ASSET_H

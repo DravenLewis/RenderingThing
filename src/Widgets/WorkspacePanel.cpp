@@ -4,6 +4,7 @@
 #include "File.h"
 #include "Logbot.h"
 #include "MaterialAsset.h"
+#include "ModelAsset.h"
 #include "ShaderAsset.h"
 #include "StringUtils.h"
 
@@ -372,7 +373,7 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
     };
 
     auto collectBrowserEntries = [&](std::vector<BrowserEntry>& outEntries,
-                                     std::unordered_map<std::string, std::filesystem::path>& outLinkedByParent){
+                                     std::unordered_map<std::string, std::vector<std::filesystem::path>>& outLinkedByParent){
         outEntries.clear();
         outLinkedByParent.clear();
 
@@ -403,6 +404,20 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
         });
 
         std::unordered_set<std::string> hiddenRelatedAssetKeys;
+        auto addLinkedChild = [&](const std::string& parentKey, const std::filesystem::path& childPath){
+            if(parentKey.empty()){
+                return;
+            }
+            auto& linkedChildren = outLinkedByParent[parentKey];
+            const std::string childKey = normalizedPathKey(childPath);
+            for(const auto& existing : linkedChildren){
+                if(normalizedPathKey(existing) == childKey){
+                    return;
+                }
+            }
+            linkedChildren.push_back(childPath);
+        };
+
         for(const auto& entry : baseEntries){
             if(entry.isUp || entry.isDirectory){
                 continue;
@@ -423,7 +438,7 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
             }
 
             const std::string parentKey = normalizedPathKey(entry.path);
-            outLinkedByParent[parentKey] = linkedPath;
+            addLinkedChild(parentKey, linkedPath);
 
             const std::string linkedKey = normalizedPathKey(linkedPath);
             if(!linkedKey.empty()){
@@ -465,7 +480,53 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
             if(!std::filesystem::exists(normalizedParentPath, parentEc) || std::filesystem::is_directory(normalizedParentPath, parentEc)){
                 continue;
             }
-            if(!MaterialAssetIO::IsMaterialObjectPath(normalizedParentPath)){
+            if(normalizedPathKey(normalizedParentPath.parent_path()) != normalizedPathKey(assetDir)){
+                continue;
+            }
+
+            const std::string parentKey = normalizedPathKey(normalizedParentPath);
+            if(parentKey.empty()){
+                continue;
+            }
+
+            addLinkedChild(parentKey, entry.path);
+            const std::string linkedKey = normalizedPathKey(entry.path);
+            if(!linkedKey.empty()){
+                hiddenRelatedAssetKeys.insert(linkedKey);
+            }
+        }
+
+        // Support persisted child -> parent model links for .model.asset wrappers.
+        for(const auto& entry : baseEntries){
+            if(entry.isUp || entry.isDirectory){
+                continue;
+            }
+            if(!ModelAssetIO::IsModelAssetPath(entry.path)){
+                continue;
+            }
+
+            ModelAssetData modelData;
+            std::string modelLoadError;
+            if(!ModelAssetIO::LoadFromAbsolutePath(entry.path, modelData, &modelLoadError)){
+                continue;
+            }
+
+            const std::string parentRef = StringUtils::Trim(modelData.linkParentRef);
+            if(parentRef.empty()){
+                continue;
+            }
+
+            std::filesystem::path parentPath;
+            if(!assetRefToAbsolutePath(parentRef, parentPath)){
+                continue;
+            }
+
+            std::error_code parentEc;
+            std::filesystem::path normalizedParentPath = std::filesystem::weakly_canonical(parentPath, parentEc);
+            if(parentEc){
+                normalizedParentPath = parentPath.lexically_normal();
+            }
+            if(!std::filesystem::exists(normalizedParentPath, parentEc) || std::filesystem::is_directory(normalizedParentPath, parentEc)){
                 continue;
             }
             if(normalizedPathKey(normalizedParentPath.parent_path()) != normalizedPathKey(assetDir)){
@@ -477,7 +538,7 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
                 continue;
             }
 
-            outLinkedByParent[parentKey] = entry.path;
+            addLinkedChild(parentKey, entry.path);
             const std::string linkedKey = normalizedPathKey(entry.path);
             if(!linkedKey.empty()){
                 hiddenRelatedAssetKeys.insert(linkedKey);
@@ -505,12 +566,19 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
                 continue;
             }
 
-            BrowserEntry relatedEntry;
-            relatedEntry.path = linkedIt->second;
-            relatedEntry.isRelated = true;
-            relatedEntry.forceDataIcon = true;
-            relatedEntry.parentKey = entryKey;
-            outEntries.push_back(relatedEntry);
+            std::vector<std::filesystem::path> linkedChildren = linkedIt->second;
+            std::sort(linkedChildren.begin(), linkedChildren.end(), [](const std::filesystem::path& a, const std::filesystem::path& b){
+                return a.filename().string() < b.filename().string();
+            });
+
+            for(const auto& linkedPath : linkedChildren){
+                BrowserEntry relatedEntry;
+                relatedEntry.path = linkedPath;
+                relatedEntry.isRelated = true;
+                relatedEntry.forceDataIcon = true;
+                relatedEntry.parentKey = entryKey;
+                outEntries.push_back(relatedEntry);
+            }
         }
     };
 
@@ -954,7 +1022,7 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
 
             if(std::filesystem::exists(assetDir)){
                 std::vector<BrowserEntry> entries;
-                std::unordered_map<std::string, std::filesystem::path> linkedByParent;
+                std::unordered_map<std::string, std::vector<std::filesystem::path>> linkedByParent;
                 collectBrowserEntries(entries, linkedByParent);
 
                 float cellWidth = assetTileSize + 20.0f;
@@ -1011,8 +1079,13 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
                                 if(expanded){
                                     expandedRelatedAssets.erase(pathKey);
                                     auto linkedIt = linkedByParent.find(pathKey);
-                                    if(linkedIt != linkedByParent.end() && selectedAssetPath == linkedIt->second){
-                                        selectedAssetPath = path;
+                                    if(linkedIt != linkedByParent.end()){
+                                        for(const auto& linkedPath : linkedIt->second){
+                                            if(selectedAssetPath == linkedPath){
+                                                selectedAssetPath = path;
+                                                break;
+                                            }
+                                        }
                                     }
                                 }else{
                                     expandedRelatedAssets.insert(pathKey);
@@ -1190,7 +1263,7 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
             bool openPickerContextMenu = false;
             if(std::filesystem::exists(assetDir)){
                 std::vector<BrowserEntry> entries;
-                std::unordered_map<std::string, std::filesystem::path> linkedByParent;
+                std::unordered_map<std::string, std::vector<std::filesystem::path>> linkedByParent;
                 collectBrowserEntries(entries, linkedByParent);
 
                 float cellWidth = pickerTileSize + 20.0f;
@@ -1244,8 +1317,13 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
                                 if(expanded){
                                     expandedRelatedAssets.erase(pathKey);
                                     auto linkedIt = linkedByParent.find(pathKey);
-                                    if(linkedIt != linkedByParent.end() && selectedAssetPath == linkedIt->second){
-                                        selectedAssetPath = path;
+                                    if(linkedIt != linkedByParent.end()){
+                                        for(const auto& linkedPath : linkedIt->second){
+                                            if(selectedAssetPath == linkedPath){
+                                                selectedAssetPath = path;
+                                                break;
+                                            }
+                                        }
                                     }
                                 }else{
                                     expandedRelatedAssets.insert(pathKey);

@@ -13,6 +13,7 @@ enum class AssetKind : int {
     Directory,
     Image,
     Model,
+    ModelAsset,
     ShaderVertex,
     ShaderFragment,
     ShaderGrometry,

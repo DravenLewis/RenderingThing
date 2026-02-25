@@ -1,6 +1,7 @@
 #include "ShaderAsset.h"
 
 #include "Asset.h"
+#include "AssetDescriptorUtils.h"
 #include "File.h"
 #include "ShaderProgram.h"
 #include "StringUtils.h"
@@ -14,68 +15,23 @@ namespace {
     }
 
     std::string makeAssetRefFromRelative(const std::string& relative){
-        if(relative.empty()){
-            return std::string(ASSET_DELIMITER);
-        }
-        return std::string(ASSET_DELIMITER) + "/" + relative;
+        return AssetDescriptorUtils::MakeAssetRefFromRelative(relative);
     }
 
     bool isAssetRef(const std::string& value){
-        return StringUtils::BeginsWith(value, ASSET_DELIMITER);
+        return AssetDescriptorUtils::IsAssetRef(value);
     }
 
     bool readTextAsset(const std::string& assetRef, std::string& outText, std::string* outError){
-        auto asset = AssetManager::Instance.getOrLoad(assetRef);
-        if(!asset){
-            if(outError){
-                *outError = "Failed to load asset: " + assetRef;
-            }
-            return false;
-        }
-
-        outText = asset->asString();
-        if(outText.empty() && !asset->asRaw().empty()){
-            outText.assign(asset->asRaw().begin(), asset->asRaw().end());
-        }
-        return true;
+        return AssetDescriptorUtils::ReadTextAsset(assetRef, outText, outError);
     }
 
     bool readTextPath(const std::filesystem::path& path, std::string& outText, std::string* outError){
-        std::error_code ec;
-        const std::filesystem::path assetRoot = std::filesystem::weakly_canonical(std::filesystem::path(File::GetCWD()) / "res", ec);
-        std::filesystem::path normalizedPath = std::filesystem::weakly_canonical(path, ec);
-        if(ec){
-            normalizedPath = path.lexically_normal();
-        }
-
-        std::filesystem::path rel = normalizedPath.lexically_relative(assetRoot);
-        if(!rel.empty() && !StringUtils::BeginsWith(rel.generic_string(), "..")){
-            return readTextAsset(makeAssetRefFromRelative(rel.generic_string()), outText, outError);
-        }
-
-        auto asset = std::make_shared<Asset>(path.string());
-        if(!asset || !asset->load()){
-            if(outError){
-                *outError = "Failed to load file: " + path.generic_string();
-            }
-            return false;
-        }
-        outText = asset->asString();
-        if(outText.empty() && !asset->asRaw().empty()){
-            outText.assign(asset->asRaw().begin(), asset->asRaw().end());
-        }
-        return true;
+        return AssetDescriptorUtils::ReadTextPath(path, outText, outError);
     }
 
     bool readTextRefOrPath(const std::string& refOrPath, std::string& outText, std::string* outError){
-        if(refOrPath.empty()){
-            outText.clear();
-            return true;
-        }
-        if(isAssetRef(refOrPath)){
-            return readTextAsset(refOrPath, outText, outError);
-        }
-        return readTextPath(std::filesystem::path(refOrPath), outText, outError);
+        return AssetDescriptorUtils::ReadTextRefOrPath(refOrPath, outText, outError);
     }
 
     std::string sanitizeCacheName(const std::string& value){
@@ -140,40 +96,15 @@ bool IsShaderAssetPath(const std::filesystem::path& path){
 }
 
 std::filesystem::path AssetRefToAbsolutePath(const std::string& assetRef){
-    const std::filesystem::path assetRoot = std::filesystem::path(File::GetCWD()) / "res";
-    if(assetRef.empty()){
+    std::filesystem::path resolvedPath;
+    if(!AssetDescriptorUtils::AssetRefToAbsolutePath(assetRef, resolvedPath)){
         return {};
     }
-    if(assetRef == ASSET_DELIMITER){
-        return assetRoot;
-    }
-    if(StringUtils::BeginsWith(assetRef, ASSET_DELIMITER)){
-        std::string rel = assetRef.substr(std::strlen(ASSET_DELIMITER));
-        if(!rel.empty() && (rel[0] == '/' || rel[0] == '\\')){
-            rel.erase(rel.begin());
-        }
-        return (assetRoot / rel).lexically_normal();
-    }
-
-    std::filesystem::path path(assetRef);
-    if(path.is_absolute()){
-        return path.lexically_normal();
-    }
-    return (assetRoot / path).lexically_normal();
+    return resolvedPath;
 }
 
 std::string AbsolutePathToAssetRef(const std::filesystem::path& absolutePath){
-    std::error_code ec;
-    const std::filesystem::path assetRoot = std::filesystem::weakly_canonical(std::filesystem::path(File::GetCWD()) / "res", ec);
-    std::filesystem::path normalized = std::filesystem::weakly_canonical(absolutePath, ec);
-    if(ec){
-        normalized = absolutePath.lexically_normal();
-    }
-    std::filesystem::path rel = normalized.lexically_relative(assetRoot);
-    if(rel.empty() || StringUtils::BeginsWith(rel.generic_string(), "..")){
-        return normalized.generic_string();
-    }
-    return makeAssetRefFromRelative(rel.generic_string());
+    return AssetDescriptorUtils::AbsolutePathToAssetRef(absolutePath);
 }
 
 bool LoadFromAbsolutePath(const std::filesystem::path& path, ShaderAssetData& outData, std::string* outError){

@@ -2,6 +2,7 @@
 #include "imgui.h"
 #include "GameEngine.h"
 #include "PBRMaterial.h"
+#include "ConstructedMaterial.h"
 #include "ModelPartPrefabs.h"
 #include "Asset.h"
 #include "ShaderProgram.h"
@@ -23,6 +24,22 @@
 #include <vector>
 
 namespace {
+    bool looksLikeColorField(const ConstructedMaterial::Field& field){
+        auto containsColorHint = [](const std::string& value) -> bool{
+            if(value.empty()){
+                return false;
+            }
+            const std::string lower = StringUtils::ToLowerCase(value);
+            return lower.find("color") != std::string::npos ||
+                   lower.find("albedo") != std::string::npos ||
+                   lower.find("tint") != std::string::npos;
+        };
+
+        return containsColorHint(field.key) ||
+               containsColorHint(field.displayName) ||
+               containsColorHint(field.uniformName);
+    }
+
     bool isDeferredCompatibleMaterial(const std::shared_ptr<Material>& material){
         if(!material){
             return false;
@@ -291,6 +308,80 @@ namespace {
             std::string envStrengthLabel = std::string("Env Strength##") + idSuffix;
             if(ImGui::DragFloat(envStrengthLabel.c_str(), &envStrength, 0.01f, 0.0f, 8.0f)){
                 pbr->EnvStrength = envStrength;
+            }
+        }else if(auto constructed = Material::GetAs<ConstructedMaterial>(material)){
+            auto& fields = constructed->fields();
+            if(fields.empty()){
+                ImGui::TextDisabled("No editable constructed fields.");
+            }
+
+            for(size_t i = 0; i < fields.size(); ++i){
+                auto& field = fields[i];
+                std::string fieldName = field.displayName;
+                if(fieldName.empty()){
+                    fieldName = field.key;
+                }
+                if(fieldName.empty()){
+                    fieldName = field.uniformName;
+                }
+                if(fieldName.empty()){
+                    fieldName = "Field " + std::to_string(i + 1);
+                }
+
+                const std::string fieldLabel = fieldName + "##" + idSuffix + "_constructed_" + std::to_string(i);
+                bool changedField = false;
+                switch(field.type){
+                    case ConstructedMaterial::FieldType::Float:{
+                        changedField |= ImGui::DragFloat(fieldLabel.c_str(), &field.floatValue, 0.01f);
+                        break;
+                    }
+                    case ConstructedMaterial::FieldType::Int:{
+                        changedField |= ImGui::DragInt(fieldLabel.c_str(), &field.intValue, 1.0f);
+                        break;
+                    }
+                    case ConstructedMaterial::FieldType::Bool:{
+                        changedField |= ImGui::Checkbox(fieldLabel.c_str(), &field.boolValue);
+                        break;
+                    }
+                    case ConstructedMaterial::FieldType::Vec2:{
+                        changedField |= ImGui::DragFloat2(fieldLabel.c_str(), &field.vec2Value.x, 0.01f);
+                        break;
+                    }
+                    case ConstructedMaterial::FieldType::Vec3:{
+                        if(looksLikeColorField(field)){
+                            changedField |= ImGui::ColorEdit3(fieldLabel.c_str(), &field.vec3Value.x);
+                        }else{
+                            changedField |= ImGui::DragFloat3(fieldLabel.c_str(), &field.vec3Value.x, 0.01f);
+                        }
+                        break;
+                    }
+                    case ConstructedMaterial::FieldType::Vec4:{
+                        if(looksLikeColorField(field)){
+                            changedField |= ImGui::ColorEdit4(fieldLabel.c_str(), &field.vec4Value.x);
+                        }else{
+                            changedField |= ImGui::DragFloat4(fieldLabel.c_str(), &field.vec4Value.x, 0.01f);
+                        }
+                        break;
+                    }
+                    case ConstructedMaterial::FieldType::Texture2D:{
+                        changedField |= EditorAssetUI::DrawAssetDropInput(fieldLabel.c_str(), field.textureAssetRef, {EditorAssetUI::AssetKind::Image});
+                        if(field.textureAssetRef.empty()){
+                            ImGui::TextDisabled("None");
+                        }else if(field.texturePtr && field.texturePtr->getID() != 0){
+                            ImGui::TextDisabled("Assigned");
+                        }else{
+                            ImGui::TextDisabled("Missing");
+                        }
+                        break;
+                    }
+                    default:
+                        break;
+                }
+
+                if(changedField){
+                    constructed->markFieldsDirty();
+                    constructed->applyField(i);
+                }
             }
         }else if(auto colorMat = Material::GetAs<MaterialDefaults::ColorMaterial>(material)){
             Math3D::Vec4 color = colorMat->Color.get();

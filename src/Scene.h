@@ -38,6 +38,10 @@ class Scene : public View {
         bool destroyECSGameObject(NeoECS::GameObject* object);
         NeoECS::GameObject* createModelGameObject(const std::string& name, const PModel& model, NeoECS::GameObject* parent = nullptr);
         NeoECS::GameObject* createLightGameObject(const std::string& name, const Light& light, NeoECS::GameObject* parent = nullptr, bool syncTransform = true, bool syncDirection = false);
+        NeoECS::GameObject* createCameraGameObject(const std::string& name, NeoECS::GameObject* parent = nullptr);
+        NeoECS::GameObject* getSceneRootGameObject() const { return sceneRootObject; }
+        NeoECS::ECSEntity* getSceneRootEntity() const;
+        bool isSceneRootEntity(NeoECS::ECSEntity* entity) const;
 
         struct DebugStats {
             std::atomic<float> snapshotMs{0.0f};
@@ -57,6 +61,7 @@ class Scene : public View {
         std::shared_ptr<InputManager> inputManager;
         NeoECS::NeoECS* ecsInstance = nullptr;
         NeoECS::NeoAPI* ecsAPI = nullptr;
+        NeoECS::GameObject* sceneRootObject = nullptr;
 
         struct RenderItem {
             std::shared_ptr<Mesh> mesh;

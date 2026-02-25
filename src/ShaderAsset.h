@@ -7,6 +7,7 @@
 
 class ShaderProgram;
 
+// Descriptor wrapper around shader program wiring (text metadata file, not Asset subclass).
 struct ShaderAssetData {
     std::string cacheName;
 
@@ -25,6 +26,7 @@ struct ShaderAssetData {
     }
 };
 
+// Legacy compatibility name. Prefer `ShaderDescriptorIO` in new code.
 namespace ShaderAssetIO {
     bool IsShaderAssetPath(const std::filesystem::path& path);
     std::filesystem::path AssetRefToAbsolutePath(const std::string& assetRef);
@@ -40,5 +42,9 @@ namespace ShaderAssetIO {
                                                   bool forceRecompile = true,
                                                   std::string* outError = nullptr);
 }
+
+// Clearer naming for new code (kept as aliases for backward compatibility).
+using ShaderDescriptorData = ShaderAssetData;
+namespace ShaderDescriptorIO = ShaderAssetIO;
 
 #endif // SHADER_ASSET_H

@@ -86,6 +86,12 @@ Scene::Scene(RenderWindow* window) : View(window) {
     if(ecsInstance){
         ecsInstance->init();
         ecsAPI = ecsInstance->getAPI();
+        if(ecsAPI){
+            sceneRootObject = ecsAPI->CreateGameObjectAndInstantiate("SceneNode", nullptr);
+            if(sceneRootObject){
+                sceneRootObject->setReparentChildrenOnDestroy(true);
+            }
+        }
     }
 }
 
@@ -115,11 +121,21 @@ bool Scene::consumeCloseRequest(){
 
 NeoECS::GameObject* Scene::createECSGameObject(const std::string& name, NeoECS::GameObject* parent){
     if(!ecsAPI) return nullptr;
-    return ecsAPI->CreateGameObjectAndInstantiate(name, parent);
+    NeoECS::GameObject* targetParent = parent;
+    if(!targetParent){
+        targetParent = sceneRootObject;
+    }
+    return ecsAPI->CreateGameObjectAndInstantiate(name, targetParent);
 }
 
 bool Scene::destroyECSGameObject(NeoECS::GameObject* object){
     if(!ecsAPI || !object) return false;
+    if(sceneRootObject &&
+       object->gameobject() &&
+       sceneRootObject->gameobject() &&
+       object->gameobject() == sceneRootObject->gameobject()){
+        return false;
+    }
     return ecsAPI->DestroyGameObject(object);
 }
 
@@ -165,8 +181,50 @@ NeoECS::GameObject* Scene::createLightGameObject(const std::string& name, const 
     return root;
 }
 
+NeoECS::GameObject* Scene::createCameraGameObject(const std::string& name, NeoECS::GameObject* parent){
+    auto* root = createECSGameObject(name, parent);
+    if(!root){
+        return nullptr;
+    }
+
+    root->addComponent<TransformComponent>();
+    root->addComponent<CameraComponent>();
+    root->addComponent<BoundsComponent>();
+
+    if(auto* cameraComp = root->getComponent<CameraComponent>()){
+        if(!cameraComp->camera){
+            float width = 1280.0f;
+            float height = 720.0f;
+            if(getWindow()){
+                width = static_cast<float>(getWindow()->getWindowWidth());
+                height = static_cast<float>(getWindow()->getWindowHeight());
+            }
+            cameraComp->camera = Camera::CreatePerspective(45.0f, Math3D::Vec2(width, height), 0.1f, 1000.0f);
+        }
+    }
+
+    if(auto* bounds = root->getComponent<BoundsComponent>()){
+        bounds->type = BoundsType::Sphere;
+        bounds->radius = 0.5f;
+    }
+
+    return root;
+}
+
+NeoECS::ECSEntity* Scene::getSceneRootEntity() const{
+    if(!sceneRootObject){
+        return nullptr;
+    }
+    return sceneRootObject->gameobject();
+}
+
+bool Scene::isSceneRootEntity(NeoECS::ECSEntity* entity) const{
+    return entity && sceneRootObject && (entity == sceneRootObject->gameobject());
+}
+
 void Scene::dispose(){
     preferredCamera.reset();
+    sceneRootObject = nullptr;
     if(ecsInstance){
         NeoECS::NeoECS::disposeInstance(ecsInstance);
         ecsInstance = nullptr;

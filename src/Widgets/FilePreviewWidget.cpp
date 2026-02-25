@@ -2,12 +2,14 @@
 
 #include "EditorAssetUI.h"
 #include "Asset.h"
+#include "AssetDescriptorUtils.h"
+#include "ConstructedMaterial.h"
 #include "Environment.h"
 #include "FrameBuffer.h"
 #include "MaterialDefaults.h"
+#include "MtlMaterialImporter.h"
 #include "ModelPartPrefabs.h"
 #include "Model.h"
-#include "OBJLoader.h"
 #include "PBRMaterial.h"
 #include "Screen.h"
 #include "ShaderAsset.h"
@@ -20,11 +22,22 @@
 #include <cmath>
 #include <cstdint>
 #include <cstring>
+#include <fstream>
+#include <iomanip>
+#include <sstream>
+#include <unordered_map>
+#include <vector>
 
 namespace {
     constexpr bool kEnableRaytraceShaderStage = false;
     constexpr float kMaterialPreviewMinDistance = 2.2f;
     std::shared_ptr<Material> g_previewFallbackMaterial;
+    struct TexturePreviewCacheEntry{
+        std::shared_ptr<Texture> texture;
+        std::filesystem::file_time_type writeTime{};
+        bool hasWriteTime = false;
+    };
+    std::unordered_map<std::string, TexturePreviewCacheEntry> g_texturePreviewCache;
 
     std::shared_ptr<Material> buildPreviewFallbackMaterial(){
         auto isRenderable = [](const std::shared_ptr<Material>& mat) -> bool{
@@ -104,11 +117,47 @@ namespace {
         if(assetRef.empty()){
             return nullptr;
         }
+
+        std::filesystem::path absolutePath;
+        if(!AssetDescriptorUtils::AssetRefToAbsolutePath(assetRef, absolutePath)){
+            absolutePath = std::filesystem::path(assetRef);
+        }
+
+        std::error_code ec;
+        bool hasWriteTime = false;
+        std::filesystem::file_time_type writeTime{};
+        if(std::filesystem::exists(absolutePath, ec) && !std::filesystem::is_directory(absolutePath, ec)){
+            writeTime = std::filesystem::last_write_time(absolutePath, ec);
+            hasWriteTime = !ec;
+        }
+
+        auto cachedIt = g_texturePreviewCache.find(assetRef);
+        if(cachedIt != g_texturePreviewCache.end()){
+            const TexturePreviewCacheEntry& cached = cachedIt->second;
+            const bool cacheValid =
+                cached.texture &&
+                (cached.hasWriteTime == hasWriteTime) &&
+                (!hasWriteTime || cached.writeTime == writeTime);
+            if(cacheValid){
+                return cached.texture;
+            }
+        }
+
         auto asset = AssetManager::Instance.getOrLoad(assetRef);
         if(!asset){
             return nullptr;
         }
-        return Texture::Load(asset);
+        auto tex = Texture::Load(asset);
+        if(!tex){
+            return nullptr;
+        }
+
+        TexturePreviewCacheEntry entry;
+        entry.texture = tex;
+        entry.writeTime = writeTime;
+        entry.hasWriteTime = hasWriteTime;
+        g_texturePreviewCache[assetRef] = entry;
+        return tex;
     }
 
     void drawTexturePreviewSmall(const std::string& assetRef){
@@ -134,6 +183,72 @@ namespace {
     bool isModelPath(const std::filesystem::path& path){
         const std::string ext = StringUtils::ToLowerCase(path.extension().string());
         return (ext == ".obj" || ext == ".fbx" || ext == ".gltf" || ext == ".glb");
+    }
+
+    bool isMtlPath(const std::filesystem::path& path){
+        return StringUtils::ToLowerCase(path.extension().string()) == ".mtl";
+    }
+
+    std::string buildRawByteDump(const std::filesystem::path& path){
+        std::ifstream file(path, std::ios::binary);
+        if(!file.is_open()){
+            return "Unable to open file for raw-byte dump.";
+        }
+
+        std::vector<unsigned char> bytes;
+        file.seekg(0, std::ios::end);
+        const std::streamoff size = file.tellg();
+        file.seekg(0, std::ios::beg);
+        if(size > 0){
+            bytes.resize(static_cast<size_t>(size));
+            file.read(reinterpret_cast<char*>(bytes.data()), size);
+        }
+
+        const size_t maxBytes = 4096;
+        const size_t shownBytes = std::min(bytes.size(), maxBytes);
+        const bool truncated = bytes.size() > maxBytes;
+
+        std::ostringstream oss;
+        oss << "Length: " << bytes.size() << " bytes";
+        if(truncated){
+            oss << " (showing first " << maxBytes << ")";
+        }
+        oss << "\n\n";
+
+        if(bytes.empty()){
+            oss << "<empty>";
+            return oss.str();
+        }
+
+        for(size_t offset = 0; offset < shownBytes; offset += 16){
+            oss << std::uppercase << std::hex << std::setfill('0') << std::setw(6) << offset << ": ";
+            for(size_t i = 0; i < 16; ++i){
+                const size_t index = offset + i;
+                if(index < shownBytes){
+                    oss << std::setw(2) << static_cast<unsigned int>(bytes[index]) << ' ';
+                }else{
+                    oss << "   ";
+                }
+            }
+
+            oss << " |";
+            for(size_t i = 0; i < 16; ++i){
+                const size_t index = offset + i;
+                if(index < shownBytes){
+                    const unsigned char c = bytes[index];
+                    if(c >= 32 && c <= 126){
+                        oss << static_cast<char>(c);
+                    }else{
+                        oss << '.';
+                    }
+                }else{
+                    oss << ' ';
+                }
+            }
+            oss << "|\n";
+        }
+
+        return oss.str();
     }
 
     bool computeModelBounds(const std::shared_ptr<Model>& model, Math3D::Vec3& outCenter, float& outRadius){
@@ -216,8 +331,14 @@ void FilePreviewWidget::setFilePath(const std::filesystem::path& path){
     statusIsError = false;
     previewMaterial.reset();
     previewModel.reset();
+    materialAssetSavePending = false;
     previewMaterialDirty = true;
     previewModelDirty = true;
+    mtlMaterials.clear();
+    selectedMtlMaterialIndex = 0;
+    std::memset(modelAssetName, 0, sizeof(modelAssetName));
+    std::memset(modelAssetSource, 0, sizeof(modelAssetSource));
+    std::memset(modelAssetMaterialRef, 0, sizeof(modelAssetMaterialRef));
     previewOrbitYaw = 45.0f;
     previewOrbitPitch = 22.5f;
     previewOrbitDistance = 4.25f;
@@ -238,6 +359,8 @@ void FilePreviewWidget::reloadFromDisk(bool force){
     isShaderAssetFile = ShaderAssetIO::IsShaderAssetPath(filePath);
     isMaterialAssetFile = MaterialAssetIO::IsMaterialAssetPath(filePath);
     isMaterialObjectFile = MaterialAssetIO::IsMaterialObjectPath(filePath);
+    isModelAssetFile = ModelAssetIO::IsModelAssetPath(filePath);
+    isMtlFile = isMtlPath(filePath);
     isModelFile = isModelPath(filePath);
 
     std::error_code ec;
@@ -276,6 +399,7 @@ void FilePreviewWidget::reloadFromDisk(bool force){
         copyBuffer(materialHeightTex, sizeof(materialHeightTex), materialData.heightTexRef);
         copyBuffer(materialEmissiveTex, sizeof(materialEmissiveTex), materialData.emissiveTexRef);
         copyBuffer(materialOcclusionTex, sizeof(materialOcclusionTex), materialData.occlusionTexRef);
+        materialAssetSavePending = false;
         previewMaterialDirty = true;
         return;
     }
@@ -289,6 +413,43 @@ void FilePreviewWidget::reloadFromDisk(bool force){
         }
         copyBuffer(materialObjectName, sizeof(materialObjectName), materialObjectData.name);
         copyBuffer(materialObjectAssetRef, sizeof(materialObjectAssetRef), materialObjectData.materialAssetRef);
+        previewMaterialDirty = true;
+        return;
+    }
+
+    if(isModelAssetFile){
+        std::string error;
+        if(!ModelAssetIO::LoadFromAbsolutePath(filePath, modelAssetData, &error)){
+            statusIsError = true;
+            statusMessage = error;
+            return;
+        }
+        copyBuffer(modelAssetName, sizeof(modelAssetName), modelAssetData.name);
+        copyBuffer(modelAssetSource, sizeof(modelAssetSource), modelAssetData.sourceModelRef);
+        copyBuffer(modelAssetMaterialRef, sizeof(modelAssetMaterialRef), modelAssetData.defaultMaterialRef);
+        previewModelDirty = true;
+        return;
+    }
+
+    if(isMtlFile){
+        std::string error;
+        if(!MtlMaterialImporter::LoadFromAbsolutePath(filePath, mtlMaterials, &error)){
+            statusIsError = true;
+            statusMessage = error;
+            mtlMaterials.clear();
+            selectedMtlMaterialIndex = 0;
+            return;
+        }
+        if(mtlMaterials.empty()){
+            statusMessage = "No materials found in .mtl file.";
+            selectedMtlMaterialIndex = 0;
+        }else if(selectedMtlMaterialIndex >= static_cast<int>(mtlMaterials.size())){
+            selectedMtlMaterialIndex = 0;
+        }
+        if(!error.empty()){
+            statusIsError = false;
+            statusMessage = error;
+        }
         previewMaterialDirty = true;
         return;
     }
@@ -320,21 +481,36 @@ void FilePreviewWidget::draw(){
 
     if(isShaderAssetFile){
         drawShaderAssetEditor();
+        drawErrorByteDumpIfNeeded();
         return;
     }
     if(isMaterialAssetFile){
         drawMaterialAssetEditor();
+        drawErrorByteDumpIfNeeded();
         return;
     }
     if(isMaterialObjectFile){
         drawMaterialObjectEditor();
+        drawErrorByteDumpIfNeeded();
+        return;
+    }
+    if(isModelAssetFile){
+        drawModelAssetEditor();
+        drawErrorByteDumpIfNeeded();
+        return;
+    }
+    if(isMtlFile){
+        drawMtlFilePreview();
+        drawErrorByteDumpIfNeeded();
         return;
     }
     if(isModelFile){
         drawModelFilePreview();
+        drawErrorByteDumpIfNeeded();
         return;
     }
     drawGenericInfo();
+    drawErrorByteDumpIfNeeded();
 }
 
 void FilePreviewWidget::drawShaderAssetEditor(){
@@ -400,10 +576,13 @@ void FilePreviewWidget::drawShaderAssetEditor(){
         }else{
             statusIsError = true;
             statusMessage = error;
+            materialAssetSavePending = false;
         }
     }
 
-    if(statusMessage.empty()){
+    if(materialAssetSavePending){
+        ImGui::TextDisabled("Release control to apply changes.");
+    }else if(statusMessage.empty()){
         ImGui::TextDisabled("Edits save automatically.");
     }else if(statusIsError){
         ImGui::TextColored(ImVec4(1.0f, 0.35f, 0.35f, 1.0f), "%s", statusMessage.c_str());
@@ -531,13 +710,18 @@ void FilePreviewWidget::drawMaterialAssetEditor(){
         materialData.heightTexRef = materialHeightTex;
         materialData.emissiveTexRef = materialEmissiveTex;
         materialData.occlusionTexRef = materialOcclusionTex;
+        materialAssetSavePending = true;
+    }
 
+    const bool commitEditsNow = materialAssetSavePending && !ImGui::IsAnyItemActive();
+    if(commitEditsNow){
         std::string error;
         if(MaterialAssetIO::SaveToAbsolutePath(filePath, materialData, &error)){
             statusIsError = false;
             statusMessage = "Saved.";
             std::error_code ec;
             lastWriteTime = std::filesystem::last_write_time(filePath, ec);
+            materialAssetSavePending = false;
             previewMaterialDirty = true;
             EditorAssetUI::InvalidateMaterialThumbnail();
         }else{
@@ -701,9 +885,336 @@ void FilePreviewWidget::drawMaterialObjectEditor(){
     }
 }
 
+void FilePreviewWidget::drawModelAssetEditor(){
+    bool changed = false;
+    changed |= ImGui::InputText("Model Name", modelAssetName, sizeof(modelAssetName));
+    changed |= EditorAssetUI::DrawAssetDropInput(
+        "Source Model",
+        modelAssetSource,
+        sizeof(modelAssetSource),
+        EditorAssetUI::AssetKind::Model
+    );
+    changed |= EditorAssetUI::DrawAssetDropInput(
+        "Default Material",
+        modelAssetMaterialRef,
+        sizeof(modelAssetMaterialRef),
+        EditorAssetUI::AssetKind::Material
+    );
+
+    bool forceSmoothNormals = (modelAssetData.forceSmoothNormals != 0);
+    if(ImGui::Checkbox("Force Smooth Normals", &forceSmoothNormals)){
+        modelAssetData.forceSmoothNormals = forceSmoothNormals ? 1 : 0;
+        changed = true;
+    }
+
+    if(ImGui::Button("Reload Source")){
+        previewModelDirty = true;
+    }
+
+    if(changed){
+        modelAssetData.name = modelAssetName;
+        modelAssetData.sourceModelRef = modelAssetSource;
+        modelAssetData.defaultMaterialRef = modelAssetMaterialRef;
+
+        std::string error;
+        if(ModelAssetIO::SaveToAbsolutePath(filePath, modelAssetData, &error)){
+            statusIsError = false;
+            statusMessage = "Saved.";
+            std::error_code ec;
+            lastWriteTime = std::filesystem::last_write_time(filePath, ec);
+            previewModelDirty = true;
+            EditorAssetUI::InvalidateAllThumbnails();
+        }else{
+            statusIsError = true;
+            statusMessage = error;
+        }
+    }
+
+    bool needsRender = false;
+    if(previewModelDirty){
+        previewModel.reset();
+        std::string error;
+        previewModel = ModelAssetIO::InstantiateModel(modelAssetData, &error);
+        if(!previewModel){
+            if(!modelAssetData.sourceModelRef.empty()){
+                statusIsError = true;
+                statusMessage = error.empty() ? "Failed to load model from descriptor." : error;
+            }
+        }else{
+            needsRender = true;
+        }
+        previewModelDirty = false;
+    }
+
+    ensureMaterialPreviewResources(previewSize);
+    if(previewModel && (!previewTexture || previewTexture->getID() == 0)){
+        needsRender = true;
+    }
+    if(previewModel && needsRender){
+        renderModelPreview(previewModel);
+    }
+
+    bool previewInteractionChanged = false;
+    if(previewTexture && previewTexture->getID() != 0 && previewModel){
+        ImTextureID texId = (ImTextureID)(intptr_t)previewTexture->getID();
+        ImGui::Image(texId, ImVec2((float)previewSize, (float)previewSize), ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
+        previewInteractionChanged = handlePreviewOrbitInput() || previewInteractionChanged;
+    }else{
+        ImGui::BeginDisabled();
+        ImGui::Button("Preview Unavailable", ImVec2((float)previewSize, (float)previewSize));
+        ImGui::EndDisabled();
+    }
+    if(previewInteractionChanged && previewModel){
+        renderModelPreview(previewModel);
+    }
+
+    if(statusMessage.empty()){
+        ImGui::TextDisabled("Descriptor edits save automatically.");
+    }else if(statusIsError){
+        ImGui::TextColored(ImVec4(1.0f, 0.35f, 0.35f, 1.0f), "%s", statusMessage.c_str());
+    }else{
+        ImGui::TextColored(ImVec4(0.45f, 0.85f, 0.45f, 1.0f), "%s", statusMessage.c_str());
+    }
+}
+
+bool FilePreviewWidget::importSelectedMtlMaterial(){
+    if(!isMtlFile || mtlMaterials.empty()){
+        statusIsError = true;
+        statusMessage = "No .mtl material selected for import.";
+        return false;
+    }
+    if(selectedMtlMaterialIndex < 0 || selectedMtlMaterialIndex >= static_cast<int>(mtlMaterials.size())){
+        statusIsError = true;
+        statusMessage = "Invalid .mtl material selection.";
+        return false;
+    }
+
+    const MtlMaterialDefinition& selectedDef = mtlMaterials[(size_t)selectedMtlMaterialIndex];
+    std::string baseName = MtlMaterialImporter::SanitizeMaterialName(selectedDef.name);
+    if(baseName.empty()){
+        baseName = "ImportedMaterial";
+    }
+
+    const std::filesystem::path parentDir = filePath.parent_path();
+    std::filesystem::path materialPath;
+    std::filesystem::path materialAssetPath;
+    int suffixIndex = 0;
+    for(;;){
+        const std::string suffix = (suffixIndex <= 0) ? "" : ("_" + std::to_string(suffixIndex));
+        const std::string candidateBaseName = baseName + suffix;
+        materialPath = parentDir / (candidateBaseName + ".material");
+        materialAssetPath = parentDir / (candidateBaseName + ".mat.asset");
+        if(!std::filesystem::exists(materialPath) && !std::filesystem::exists(materialAssetPath)){
+            break;
+        }
+        suffixIndex++;
+    }
+
+    MaterialAssetData data;
+    std::string error;
+    if(!MtlMaterialImporter::BuildMaterialAssetData(selectedDef, data, &error)){
+        statusIsError = true;
+        statusMessage = error.empty() ? "Failed to convert .mtl material." : error;
+        return false;
+    }
+
+    data.name = materialAssetPath.filename().string();
+    data.linkParentRef = toAssetRef(materialPath, assetRoot);
+    if(!MaterialAssetIO::SaveToAbsolutePath(materialAssetPath, data, &error)){
+        statusIsError = true;
+        statusMessage = error;
+        return false;
+    }
+
+    std::string materialAssetRef;
+    if(!MaterialAssetIO::ResolveMaterialAssetRef(materialAssetPath.generic_string(), materialAssetRef, &error)){
+        statusIsError = true;
+        statusMessage = error;
+        return false;
+    }
+
+    MaterialObjectData objectData;
+    objectData.name = materialPath.stem().string();
+    objectData.materialAssetRef = materialAssetRef;
+    if(!MaterialAssetIO::SaveMaterialObjectToAbsolutePath(materialPath, objectData, &error)){
+        statusIsError = true;
+        statusMessage = error;
+        return false;
+    }
+
+    EditorAssetUI::InvalidateAllThumbnails();
+    statusIsError = false;
+    statusMessage = "Imported material: " + materialPath.filename().string();
+    return true;
+}
+
+bool FilePreviewWidget::importCurrentModelAsAsset(){
+    if(!isModelFile){
+        statusIsError = true;
+        statusMessage = "No source model selected for import.";
+        return false;
+    }
+
+    const std::string sourceAssetRef = toAssetRef(filePath, assetRoot);
+    if(sourceAssetRef.empty()){
+        statusIsError = true;
+        statusMessage = "Failed to resolve source model asset ref.";
+        return false;
+    }
+
+    std::string baseName = StringUtils::Trim(filePath.stem().string());
+    if(baseName.empty()){
+        baseName = "ImportedModel";
+    }
+
+    const std::filesystem::path parentDir = filePath.parent_path();
+    std::filesystem::path modelAssetPath;
+    int suffixIndex = 0;
+    for(;;){
+        const std::string suffix = (suffixIndex <= 0) ? "" : ("_" + std::to_string(suffixIndex));
+        const std::string candidateBaseName = baseName + suffix;
+        modelAssetPath = parentDir / (candidateBaseName + ".model.asset");
+        if(!std::filesystem::exists(modelAssetPath)){
+            break;
+        }
+        suffixIndex++;
+    }
+
+    ModelAssetData data;
+    data.name = modelAssetPath.filename().string();
+    data.linkParentRef = sourceAssetRef;
+    data.sourceModelRef = sourceAssetRef;
+    data.defaultMaterialRef.clear();
+    data.forceSmoothNormals = (StringUtils::ToLowerCase(filePath.extension().string()) == ".obj") ? 1 : 0;
+
+    std::string error;
+    if(!ModelAssetIO::SaveToAbsolutePath(modelAssetPath, data, &error)){
+        statusIsError = true;
+        statusMessage = error.empty() ? "Failed to save model asset." : error;
+        return false;
+    }
+
+    EditorAssetUI::InvalidateAllThumbnails();
+    statusIsError = false;
+    statusMessage = "Imported model asset: " + modelAssetPath.filename().string();
+    return true;
+}
+
+void FilePreviewWidget::drawMtlFilePreview(){
+    if(mtlMaterials.empty()){
+        if(statusMessage.empty()){
+            ImGui::TextDisabled("No materials found in .mtl file.");
+        }else if(statusIsError){
+            ImGui::TextColored(ImVec4(1.0f, 0.35f, 0.35f, 1.0f), "%s", statusMessage.c_str());
+        }else{
+            ImGui::TextDisabled("%s", statusMessage.c_str());
+        }
+        return;
+    }
+
+    if(selectedMtlMaterialIndex < 0 || selectedMtlMaterialIndex >= static_cast<int>(mtlMaterials.size())){
+        selectedMtlMaterialIndex = 0;
+        previewMaterialDirty = true;
+    }
+
+    const char* comboPreview = mtlMaterials[(size_t)selectedMtlMaterialIndex].name.c_str();
+    if(ImGui::BeginCombo("MTL Material", comboPreview)){
+        for(int i = 0; i < static_cast<int>(mtlMaterials.size()); ++i){
+            const bool selected = (i == selectedMtlMaterialIndex);
+            const std::string& itemName = mtlMaterials[(size_t)i].name;
+            const char* displayName = itemName.empty() ? "<unnamed>" : itemName.c_str();
+            if(ImGui::Selectable(displayName, selected)){
+                selectedMtlMaterialIndex = i;
+                previewMaterialDirty = true;
+            }
+            if(selected){
+                ImGui::SetItemDefaultFocus();
+            }
+        }
+        ImGui::EndCombo();
+    }
+
+    if(ImGui::Button("Import Material")){
+        importSelectedMtlMaterial();
+    }
+    ImGui::SameLine();
+    if(ImGui::Button("Reload .mtl")){
+        hasLoadedData = false;
+        reloadFromDisk(true);
+        previewMaterialDirty = true;
+    }
+
+    bool materialNeedsRender = false;
+    ensureMaterialPreviewResources(previewSize);
+    if(previewMaterialDirty || !previewMaterial){
+        std::string error;
+        auto constructed = MtlMaterialImporter::BuildConstructedMaterial(
+            mtlMaterials[(size_t)selectedMtlMaterialIndex],
+            toAssetRef(filePath, assetRoot),
+            &error
+        );
+        previewMaterial = std::static_pointer_cast<Material>(constructed);
+        if(!previewMaterial){
+            statusIsError = true;
+            statusMessage = error.empty() ? "Failed to build constructed preview material." : error;
+        }else{
+            if(auto pbr = Material::GetAs<PBRMaterial>(previewMaterial)){
+                if(previewSkyBox && previewSkyBox->getCubeMap()){
+                    pbr->EnvMap = previewSkyBox->getCubeMap();
+                    if(pbr->UseEnvMap.get() == 0){
+                        pbr->UseEnvMap = 1;
+                    }
+                }
+            }
+            materialNeedsRender = true;
+        }
+        previewMaterialDirty = false;
+    }
+
+    if(!previewTexture || previewTexture->getID() == 0){
+        materialNeedsRender = true;
+    }
+    if(materialNeedsRender){
+        renderMaterialPreview(previewMaterial);
+    }
+
+    bool previewInteractionChanged = false;
+    if(ImGui::TreeNodeEx("Preview", ImGuiTreeNodeFlags_DefaultOpen)){
+        if(previewTexture && previewTexture->getID() != 0){
+            ImTextureID texId = (ImTextureID)(intptr_t)previewTexture->getID();
+            ImGui::Image(texId, ImVec2((float)previewSize, (float)previewSize), ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
+            previewInteractionChanged = handlePreviewOrbitInput() || previewInteractionChanged;
+        }else{
+            ImGui::BeginDisabled();
+            ImGui::Button("Preview Unavailable", ImVec2((float)previewSize, (float)previewSize));
+            ImGui::EndDisabled();
+        }
+        ImGui::TreePop();
+    }
+    if(previewInteractionChanged){
+        renderMaterialPreview(previewMaterial);
+    }
+
+    if(statusMessage.empty()){
+        ImGui::TextDisabled("Preview generated from .mtl. Use Import Material to save reusable assets.");
+    }else if(statusIsError){
+        ImGui::TextColored(ImVec4(1.0f, 0.35f, 0.35f, 1.0f), "%s", statusMessage.c_str());
+    }else{
+        ImGui::TextColored(ImVec4(0.45f, 0.85f, 0.45f, 1.0f), "%s", statusMessage.c_str());
+    }
+}
+
 void FilePreviewWidget::drawModelFilePreview(){
     const std::string ext = StringUtils::ToLowerCase(filePath.extension().string());
     bool needsRender = false;
+
+    if(ImGui::Button("Import Model")){
+        importCurrentModelAsAsset();
+    }
+    ImGui::SameLine();
+    if(ImGui::Button("Reload Model")){
+        previewModelDirty = true;
+    }
 
     if(previewModelDirty){
         previewModel.reset();
@@ -711,20 +1222,14 @@ void FilePreviewWidget::drawModelFilePreview(){
         statusIsError = false;
 
         if(ext == ".obj"){
-            std::string assetRef = toAssetRef(filePath, assetRoot);
-            auto asset = AssetManager::Instance.getOrLoad(assetRef);
-            if(!asset){
-                asset = std::make_shared<Asset>(filePath.string());
-                if(asset && !asset->load()){
-                    asset.reset();
-                }
-            }
-
-            auto baseMat = MaterialDefaults::LitColorMaterial::Create(Color::WHITE);
-            previewModel = OBJLoader::LoadFromAsset(asset, baseMat, true);
+            ModelAssetData previewData;
+            previewData.sourceModelRef = toAssetRef(filePath, assetRoot);
+            previewData.forceSmoothNormals = 1;
+            std::string previewError;
+            previewModel = ModelAssetIO::InstantiateModel(previewData, &previewError);
             if(!previewModel){
                 statusIsError = true;
-                statusMessage = "Failed to load OBJ preview.";
+                statusMessage = previewError.empty() ? "Failed to load OBJ preview." : previewError;
             }
         }else{
             statusMessage = "Preview currently supports .obj models.";
@@ -781,6 +1286,55 @@ void FilePreviewWidget::drawGenericInfo() const{
         ImGui::Text("Size: %llu bytes", static_cast<unsigned long long>(fileSize));
     }
     ImGui::TextDisabled("No preview widget for this file type.");
+}
+
+void FilePreviewWidget::refreshErrorByteDump(){
+    if(!statusIsError || filePath.empty()){
+        errorByteDump.clear();
+        errorByteDumpPath.clear();
+        return;
+    }
+
+    std::error_code ec;
+    if(!std::filesystem::exists(filePath, ec) || std::filesystem::is_directory(filePath, ec)){
+        errorByteDump = "File does not exist or is a directory.";
+        errorByteDumpPath = filePath;
+        return;
+    }
+
+    std::filesystem::file_time_type writeTime = std::filesystem::last_write_time(filePath, ec);
+    if(errorByteDumpPath == filePath && !ec && writeTime == errorByteDumpWriteTime && !errorByteDump.empty()){
+        return;
+    }
+
+    errorByteDumpPath = filePath;
+    if(!ec){
+        errorByteDumpWriteTime = writeTime;
+    }
+    errorByteDump = buildRawByteDump(filePath);
+}
+
+void FilePreviewWidget::drawErrorByteDumpIfNeeded(){
+    if(!statusIsError){
+        return;
+    }
+
+    refreshErrorByteDump();
+    if(errorByteDump.empty()){
+        return;
+    }
+
+    ImGui::Spacing();
+    ImGui::TextUnformatted("Raw Byte Data");
+    ImGui::BeginDisabled();
+    ImGui::InputTextMultiline(
+        "##RawByteDump",
+        const_cast<char*>(errorByteDump.c_str()),
+        errorByteDump.size() + 1,
+        ImVec2(-1.0f, 180.0f),
+        ImGuiInputTextFlags_ReadOnly
+    );
+    ImGui::EndDisabled();
 }
 
 void FilePreviewWidget::ensureMaterialPreviewResources(int size){
