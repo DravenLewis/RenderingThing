@@ -48,6 +48,7 @@ class FilePreviewWidget {
         std::filesystem::path assetRoot;
         std::filesystem::path filePath;
         std::filesystem::file_time_type lastWriteTime{};
+        int lastExternalWriteTimeValidationFrame = -100000;
         bool hasLoadedData = false;
         bool isShaderAssetFile = false;
         bool isMaterialAssetFile = false;

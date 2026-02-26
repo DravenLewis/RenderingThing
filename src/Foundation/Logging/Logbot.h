@@ -31,12 +31,17 @@ private:
     static thread_local int activeDepth;
     static std::mutex logMutex;
     static std::string logHistory;
+    static std::string lastLogLine;
     static std::atomic<uint64_t> logVersion;
     static std::ofstream logFile;
     static std::string logFilePath;
     static std::atomic<bool> logFileReady;
+    static size_t logLinesSinceFlush;
     std::string lastFormattedValue;
     std::string loggingName;
+    static constexpr size_t kMaxInMemoryLogBytes = 512 * 1024;
+    static constexpr size_t kTrimTargetLogBytes = 384 * 1024;
+    static constexpr size_t kLogFileFlushLineInterval = 32;
 
     // RAII Guard to handle depth logic automatically
     struct DepthGuard {
@@ -84,11 +89,28 @@ private:
             }
             logHistory.append(msg);
             logHistory.push_back('\n');
+            lastLogLine = msg;
+            if(logHistory.size() > kMaxInMemoryLogBytes){
+                size_t removeCount = logHistory.size() - kTrimTargetLogBytes;
+                size_t cut = logHistory.find('\n', removeCount);
+                if(cut == std::string::npos){
+                    logHistory.erase(0, removeCount);
+                }else{
+                    logHistory.erase(0, cut + 1);
+                }
+            }
             logVersion.fetch_add(1, std::memory_order_relaxed);
             std::cout << msg << std::endl;
             if(logFileReady.load(std::memory_order_acquire) && logFile.is_open()){
                 logFile << msg << std::endl;
-                logFile.flush();
+                ++logLinesSinceFlush;
+                const bool urgentFlush =
+                    msg.find("[ERROR]") != std::string::npos ||
+                    msg.find("[FATAL ERROR]") != std::string::npos;
+                if(urgentFlush || logLinesSinceFlush >= kLogFileFlushLineInterval){
+                    logFile.flush();
+                    logLinesSinceFlush = 0;
+                }
             }
         }
     }
@@ -155,6 +177,11 @@ public:
         return logHistory;
     }
 
+    static std::string GetLastLogLine() {
+        std::lock_guard<std::mutex> lock(logMutex);
+        return lastLogLine;
+    }
+
     static uint64_t GetLogVersion() {
         return logVersion.load(std::memory_order_relaxed);
     }
@@ -164,10 +191,12 @@ public:
 inline thread_local int Logbot::activeDepth = 0;
 inline std::mutex Logbot::logMutex;
 inline std::string Logbot::logHistory;
+inline std::string Logbot::lastLogLine;
 inline std::atomic<uint64_t> Logbot::logVersion{0};
 inline std::ofstream Logbot::logFile;
 inline std::string Logbot::logFilePath;
 inline std::atomic<bool> Logbot::logFileReady{false};
+inline size_t Logbot::logLinesSinceFlush = 0;
 inline Logbot LogBot("DefaultLogger");
 
 #endif // LOGBOT_H

@@ -64,6 +64,10 @@ class DemoScene : public Scene3D {
         float totalTime = 0.0f;
         float lastDeltaTime = 0.0f;
         float frameTimeSpike = 0.0f;
+        float fpsSampleAccumTime = 0.0f;
+        int fpsSampleAccumFrames = 0;
+        float displayedAverageFps = 0.0f;
+        float displayedAverageFrameMs = 0.0f;
         bool showDebugWidgets = false;
         bool showDebugShadows = false;
 

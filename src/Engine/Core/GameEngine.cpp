@@ -70,75 +70,169 @@ void GameEngine::init(){
 } // Initialize The Engine
 
 void GameEngine::tick(float deltaTime){
-    std::lock_guard<std::mutex> lock(sceneMutex);
-    if(activeScene){
-        if(activeScene->consumeCloseRequest()){
-            LogBot.Log(LOG_WARN, "GameEngine::tick() close requested by active scene.");
-            if(windowPtr){
-                windowPtr->close();
-            }
-            running = false;
-            return;
+    using clock = std::chrono::steady_clock;
+    auto tickStart = clock::now();
+    float execWaitMs = 0.0f;
+
+    auto storeTickStats = [&](const clock::time_point& tickEnd){
+        const float totalMs = std::chrono::duration<float, std::milli>(tickEnd - tickStart).count();
+        const float workMs = (totalMs > execWaitMs) ? (totalMs - execWaitMs) : 0.0f;
+        runtimeDebugStats.updateMs.store(totalMs, std::memory_order_relaxed);
+        runtimeDebugStats.updateWaitMs.store(execWaitMs, std::memory_order_relaxed);
+        runtimeDebugStats.updateWorkMs.store(workMs, std::memory_order_relaxed);
+    };
+
+    PScene scene;
+    {
+        std::lock_guard<std::mutex> lock(sceneMutex);
+        scene = activeScene;
+    }
+
+    if(scene){
+        auto execWaitStart = clock::now();
+        std::unique_lock<std::mutex> execLock(sceneExecutionMutex);
+        auto execWaitEnd = clock::now();
+        execWaitMs = std::chrono::duration<float, std::milli>(execWaitEnd - execWaitStart).count();
+
+        bool sceneStillActive = false;
+        {
+            std::lock_guard<std::mutex> lock(sceneMutex);
+            sceneStillActive = (scene && activeScene == scene);
         }
-        if(!CrashReporter::IsCrashed()){
-            try{
-                activeScene->updateECS(deltaTime);
-                activeScene->update(deltaTime);
-            }catch(const std::exception& e){
-                CrashReporter::ReportCrash(e.what());
-            }catch(...){
-                CrashReporter::ReportCrash("Unknown exception in tick");
+
+        if(sceneStillActive){
+            if(scene->consumeCloseRequest()){
+                LogBot.Log(LOG_WARN, "GameEngine::tick() close requested by active scene.");
+                if(windowPtr){
+                    windowPtr->close();
+                }
+                running = false;
+                auto tickEnd = clock::now();
+                storeTickStats(tickEnd);
+                return;
+            }
+            if(!CrashReporter::IsCrashed()){
+                try{
+                    scene->updateECS(deltaTime);
+                    scene->update(deltaTime);
+                }catch(const std::exception& e){
+                    CrashReporter::ReportCrash(e.what());
+                }catch(...){
+                    CrashReporter::ReportCrash("Unknown exception in tick");
+                }
             }
         }
     }
+
+    auto tickEnd = clock::now();
+    storeTickStats(tickEnd);
 } // Update the Engine (Delta Time Interval using nano time)
 
 void GameEngine::render(){
-    std::lock_guard<std::mutex> lock(sceneMutex);
+    using clock = std::chrono::steady_clock;
+    auto renderStart = clock::now();
+    float execWaitMs = 0.0f;
+    float sceneRenderMs = 0.0f;
+    float sceneBlitMs = 0.0f;
+    float imguiSubmitMs = 0.0f;
+
+    auto storeRenderStats = [&](const clock::time_point& renderEnd){
+        const float totalMs = std::chrono::duration<float, std::milli>(renderEnd - renderStart).count();
+        const float workMs = (totalMs > execWaitMs) ? (totalMs - execWaitMs) : 0.0f;
+        runtimeDebugStats.renderMs.store(totalMs, std::memory_order_relaxed);
+        runtimeDebugStats.renderWaitMs.store(execWaitMs, std::memory_order_relaxed);
+        runtimeDebugStats.renderWorkMs.store(workMs, std::memory_order_relaxed);
+        runtimeDebugStats.renderSceneMs.store(sceneRenderMs, std::memory_order_relaxed);
+        runtimeDebugStats.renderBlitMs.store(sceneBlitMs, std::memory_order_relaxed);
+        runtimeDebugStats.renderImGuiMs.store(imguiSubmitMs, std::memory_order_relaxed);
+    };
+
     Texture::FlushPendingDeletes();
-    int pendingId = pendingStateId.exchange(-1);
-    if(pendingId != -1 && pendingId != activeStateId){
-        auto it = states.find(pendingId);
-        if(it != states.end() && it->second.scene){
-            if(activeScene){
-                activeScene->dispose();
-            }
 
-            activeStateId = pendingId;
-            activeScene = it->second.scene;
-            activeScene->attachWindow(windowPtr.get());
-            activeScene->setInputManager(inputManager);
+    {
+        auto execWaitStart = clock::now();
+        std::unique_lock<std::mutex> execLock(sceneExecutionMutex);
+        auto execWaitEnd = clock::now();
+        execWaitMs += std::chrono::duration<float, std::milli>(execWaitEnd - execWaitStart).count();
+        int pendingId = pendingStateId.exchange(-1);
 
-            if(!it->second.initialized){
-                activeScene->init();
-                it->second.initialized = true;
+        std::lock_guard<std::mutex> lock(sceneMutex);
+        if(pendingId != -1 && pendingId != activeStateId){
+            auto it = states.find(pendingId);
+            if(it != states.end() && it->second.scene){
+                if(activeScene){
+                    activeScene->dispose();
+                }
+
+                activeStateId = pendingId;
+                activeScene = it->second.scene;
+                activeScene->attachWindow(windowPtr.get());
+                activeScene->setInputManager(inputManager);
+
+                if(!it->second.initialized){
+                    activeScene->init();
+                    it->second.initialized = true;
+                }
             }
         }
     }
 
-    ImGuiLayer::BeginFrame();
-
-    if(activeScene && !CrashReporter::IsCrashed()){
-        try{
-            activeScene->render();
-            activeScene->drawToWindow();
-        }catch(const std::exception& e){
-            CrashReporter::ReportCrash(e.what());
-        }catch(...){
-            CrashReporter::ReportCrash("Unknown exception in render");
-        }
+    PScene scene;
+    {
+        std::lock_guard<std::mutex> lock(sceneMutex);
+        scene = activeScene;
     }
 
-    CrashReporter::RenderImGui();
-    ImGuiLayer::EndFrame();
+    {
+        // Keep scene updates and ImGui access serialized: EditorScene::update() also touches ImGui state.
+        auto execWaitStart = clock::now();
+        std::unique_lock<std::mutex> execLock(sceneExecutionMutex);
+        auto execWaitEnd = clock::now();
+        execWaitMs += std::chrono::duration<float, std::milli>(execWaitEnd - execWaitStart).count();
+
+        ImGuiLayer::BeginFrame();
+
+        if(scene && !CrashReporter::IsCrashed()){
+            try{
+                auto sceneRenderStart = clock::now();
+                scene->render();
+                auto sceneRenderEnd = clock::now();
+                sceneRenderMs += std::chrono::duration<float, std::milli>(sceneRenderEnd - sceneRenderStart).count();
+
+                auto sceneBlitStart = clock::now();
+                scene->drawToWindow();
+                auto sceneBlitEnd = clock::now();
+                sceneBlitMs += std::chrono::duration<float, std::milli>(sceneBlitEnd - sceneBlitStart).count();
+            }catch(const std::exception& e){
+                CrashReporter::ReportCrash(e.what());
+            }catch(...){
+                CrashReporter::ReportCrash("Unknown exception in render");
+            }
+        }
+
+        auto imguiSubmitStart = clock::now();
+        CrashReporter::RenderImGui();
+        ImGuiLayer::EndFrame();
+        auto imguiSubmitEnd = clock::now();
+        imguiSubmitMs += std::chrono::duration<float, std::milli>(imguiSubmitEnd - imguiSubmitStart).count();
+    }
+
+    auto renderEnd = clock::now();
+    storeRenderStats(renderEnd);
 } // Update as fast as possible.
 
 void GameEngine::processEvents(SDL_Event& event){
     if(event.type == SDL_EVENT_QUIT || event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED){
         LogBot.Log(LOG_WARN, "GameEngine::processEvents() close event type=%d", (int)event.type);
-        if(activeScene){
-            activeScene->requestClose();
-            if(auto editor = std::dynamic_pointer_cast<EditorScene>(activeScene)){
+        PScene scene;
+        {
+            std::lock_guard<std::mutex> lock(sceneMutex);
+            scene = activeScene;
+        }
+        if(scene){
+            std::lock_guard<std::mutex> execLock(sceneExecutionMutex);
+            scene->requestClose();
+            if(auto editor = std::dynamic_pointer_cast<EditorScene>(scene)){
                 editor->handleQuitRequest();
                 return;
             }
@@ -147,19 +241,27 @@ void GameEngine::processEvents(SDL_Event& event){
     }
 
     if(event.type == SDL_EVENT_WINDOW_RESIZED){
-        std::lock_guard<std::mutex> lock(sceneMutex);
-        if(activeScene && windowPtr){
-            activeScene->resize(windowPtr->getWindowWidth(), windowPtr->getWindowHeight());
+        PScene scene;
+        {
+            std::lock_guard<std::mutex> lock(sceneMutex);
+            scene = activeScene;
+        }
+        if(scene && windowPtr){
+            std::lock_guard<std::mutex> execLock(sceneExecutionMutex);
+            scene->resize(windowPtr->getWindowWidth(), windowPtr->getWindowHeight());
         }
         return;
     }
 } // Handle all events
 
 void GameEngine::dispose(){
-    std::lock_guard<std::mutex> lock(sceneMutex);
-    if(activeScene){
-        activeScene->dispose();
-        activeScene.reset();
+    std::lock_guard<std::mutex> execLock(sceneExecutionMutex);
+    {
+        std::lock_guard<std::mutex> lock(sceneMutex);
+        if(activeScene){
+            activeScene->dispose();
+            activeScene.reset();
+        }
     }
 
     ImGuiLayer::Shutdown();
@@ -188,6 +290,7 @@ int GameEngine::addState(PScene scene){
 }
 
 bool GameEngine::enterState(int id){
+    std::lock_guard<std::mutex> execLock(sceneExecutionMutex);
     std::lock_guard<std::mutex> lock(sceneMutex);
     auto it = states.find(id);
     if(it == states.end() || !it->second.scene) return false;
@@ -228,19 +331,52 @@ void GameEngine::run(){ // Render Thread.
     }
     initCv.notify_one();
 
+    using frameClock = std::chrono::steady_clock;
+    auto editorLastTick = frameClock::now();
+    bool editorTickClockPrimed = false;
+
     while(running){
         if(windowPtr){
             windowPtr->process();
         }
 
+        bool tickOnRenderThread = false;
+        {
+            std::lock_guard<std::mutex> lock(sceneMutex);
+            if(activeScene){
+                tickOnRenderThread = activeScene->shouldTickOnRenderThread();
+            }
+        }
+
+        if(tickOnRenderThread){
+            auto now = frameClock::now();
+            if(!editorTickClockPrimed){
+                editorLastTick = now;
+                editorTickClockPrimed = true;
+            }
+            float deltaTime = std::chrono::duration<float>(now - editorLastTick).count();
+            editorLastTick = now;
+            tick(deltaTime);
+        }else{
+            editorTickClockPrimed = false;
+        }
+
         render();
 
         if(windowPtr){
+            auto swapStart = std::chrono::steady_clock::now();
             windowPtr->swap();
+            auto swapEnd = std::chrono::steady_clock::now();
+            runtimeDebugStats.swapMs.store(
+                std::chrono::duration<float, std::milli>(swapEnd - swapStart).count(),
+                std::memory_order_relaxed
+            );
             if(windowPtr->isCloseRequested()){
                 LogBot.Log(LOG_WARN, "GameEngine::run() detected window close request.");
                 running = false;
             }
+        }else{
+            runtimeDebugStats.swapMs.store(0.0f, std::memory_order_relaxed);
         }
     }
 
@@ -269,7 +405,16 @@ void GameEngine::start(){ // Local Logic Thread.
         float deltaTime = std::chrono::duration<float>(now - last).count();
         last = now;
 
-        tick(deltaTime);
+        bool tickOnLogicThread = true;
+        {
+            std::lock_guard<std::mutex> lock(sceneMutex);
+            if(activeScene){
+                tickOnLogicThread = !activeScene->shouldTickOnRenderThread();
+            }
+        }
+        if(tickOnLogicThread){
+            tick(deltaTime);
+        }
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 

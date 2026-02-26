@@ -36,6 +36,8 @@ namespace {
         std::shared_ptr<Texture> texture;
         std::filesystem::file_time_type writeTime{};
         bool hasWriteTime = false;
+        int lastValidationFrame = -100000;
+        int lastUsedFrame = -100000;
     };
 
     std::unordered_map<std::string, ThumbnailCacheEntry> g_imageThumbnailCache;
@@ -47,6 +49,8 @@ namespace {
         std::filesystem::file_time_type objectWriteTime{};
         bool hasSourceWriteTime = false;
         bool hasObjectWriteTime = false;
+        int lastValidationFrame = -100000;
+        int lastUsedFrame = -100000;
     };
 
     std::unordered_map<std::string, MaterialThumbnailCacheEntry> g_materialThumbnailCache;
@@ -75,6 +79,50 @@ namespace {
     AssetPickerState g_assetPickerState;
 
     std::string requestedKindsTooltip(const EditorAssetUI::AssetKind* requestedKinds, size_t requestedKindCount);
+    constexpr int kThumbnailValidationIntervalFrames = 30;
+    constexpr int kThumbnailCachePruneIntervalFrames = 120;
+    constexpr int kThumbnailCacheIdleFrames = 600;
+    constexpr size_t kMaxImageThumbnailCacheEntries = 48;
+    constexpr size_t kMaxMaterialThumbnailCacheEntries = 96;
+    int g_lastThumbnailCachePruneFrame = -100000;
+
+    template <typename TEntry>
+    void pruneThumbnailCacheMap(std::unordered_map<std::string, TEntry>& cache, int frameNow, int idleFrames, size_t maxEntries){
+        if(cache.empty()){
+            return;
+        }
+
+        for(auto it = cache.begin(); it != cache.end();){
+            if((frameNow - it->second.lastUsedFrame) > idleFrames){
+                it = cache.erase(it);
+            }else{
+                ++it;
+            }
+        }
+
+        while(cache.size() > maxEntries){
+            auto oldestIt = cache.end();
+            for(auto it = cache.begin(); it != cache.end(); ++it){
+                if(oldestIt == cache.end() || it->second.lastUsedFrame < oldestIt->second.lastUsedFrame){
+                    oldestIt = it;
+                }
+            }
+            if(oldestIt == cache.end()){
+                break;
+            }
+            cache.erase(oldestIt);
+        }
+    }
+
+    void pruneThumbnailCaches(int frameNow){
+        if((frameNow - g_lastThumbnailCachePruneFrame) < kThumbnailCachePruneIntervalFrames){
+            return;
+        }
+        g_lastThumbnailCachePruneFrame = frameNow;
+
+        pruneThumbnailCacheMap(g_imageThumbnailCache, frameNow, kThumbnailCacheIdleFrames, kMaxImageThumbnailCacheEntries);
+        pruneThumbnailCacheMap(g_materialThumbnailCache, frameNow, kThumbnailCacheIdleFrames, kMaxMaterialThumbnailCacheEntries);
+    }
 
     std::shared_ptr<Material> buildThumbnailFallbackMaterial(){
         auto isRenderable = [](const std::shared_ptr<Material>& mat) -> bool{
@@ -259,18 +307,26 @@ namespace {
                 return nullptr;
             }
 
-            std::error_code ec;
-            bool hasWriteTime = false;
-            std::filesystem::file_time_type writeTime{};
-            if(!tx.absolutePath.empty() && std::filesystem::exists(tx.absolutePath, ec)){
-                writeTime = std::filesystem::last_write_time(tx.absolutePath, ec);
-                hasWriteTime = !ec;
-            }
+            const int frameNow = ImGui::GetFrameCount();
+            pruneThumbnailCaches(frameNow);
 
             auto cachedIt = g_imageThumbnailCache.find(tx.assetRef);
             if(cachedIt != g_imageThumbnailCache.end()){
-                const ThumbnailCacheEntry& cached = cachedIt->second;
+                ThumbnailCacheEntry& cached = cachedIt->second;
                 if(cached.texture){
+                    if((frameNow - cached.lastValidationFrame) < kThumbnailValidationIntervalFrames){
+                        cached.lastUsedFrame = frameNow;
+                        return cached.texture;
+                    }
+
+                    std::error_code ec;
+                    bool hasWriteTime = false;
+                    std::filesystem::file_time_type writeTime{};
+                    if(!tx.absolutePath.empty() && std::filesystem::exists(tx.absolutePath, ec)){
+                        writeTime = std::filesystem::last_write_time(tx.absolutePath, ec);
+                        hasWriteTime = !ec;
+                    }
+
                     bool cacheValid = false;
                     if(!hasWriteTime && !cached.hasWriteTime){
                         cacheValid = true;
@@ -278,6 +334,8 @@ namespace {
                         cacheValid = true;
                     }
                     if(cacheValid){
+                        cached.lastValidationFrame = frameNow;
+                        cached.lastUsedFrame = frameNow;
                         return cached.texture;
                     }
                 }
@@ -294,8 +352,19 @@ namespace {
 
             ThumbnailCacheEntry entry;
             entry.texture = texture;
-            entry.writeTime = writeTime;
-            entry.hasWriteTime = hasWriteTime;
+            {
+                std::error_code ec;
+                bool hasWriteTime = false;
+                std::filesystem::file_time_type writeTime{};
+                if(!tx.absolutePath.empty() && std::filesystem::exists(tx.absolutePath, ec)){
+                    writeTime = std::filesystem::last_write_time(tx.absolutePath, ec);
+                    hasWriteTime = !ec;
+                }
+                entry.writeTime = writeTime;
+                entry.hasWriteTime = hasWriteTime;
+            }
+            entry.lastValidationFrame = frameNow;
+            entry.lastUsedFrame = frameNow;
             g_imageThumbnailCache[tx.assetRef] = entry;
             return texture;
         }catch(const std::exception& e){
@@ -706,6 +775,18 @@ namespace {
                 return nullptr;
             }
 
+            const int frameNow = ImGui::GetFrameCount();
+            pruneThumbnailCaches(frameNow);
+
+            auto it = g_materialThumbnailCache.find(tx.assetRef);
+            if(it != g_materialThumbnailCache.end()){
+                MaterialThumbnailCacheEntry& cached = it->second;
+                if(cached.texture){
+                    cached.lastUsedFrame = frameNow;
+                    return cached.texture;
+                }
+            }
+
             std::filesystem::file_time_type objectWriteTime{};
             std::filesystem::file_time_type sourceWriteTime{};
             bool hasObjectWriteTime = false;
@@ -724,18 +805,6 @@ namespace {
             std::filesystem::path sourcePath;
             if(assetRefToAbsolutePath(resolvedAssetRef, sourcePath)){
                 hasSourceWriteTime = tryGetWriteTime(sourcePath, sourceWriteTime);
-            }
-
-            auto it = g_materialThumbnailCache.find(tx.assetRef);
-            if(it != g_materialThumbnailCache.end()){
-                const MaterialThumbnailCacheEntry& cached = it->second;
-                bool sourceMatches = (hasSourceWriteTime == cached.hasSourceWriteTime) &&
-                                     (!hasSourceWriteTime || cached.sourceWriteTime == sourceWriteTime);
-                bool objectMatches = (hasObjectWriteTime == cached.hasObjectWriteTime) &&
-                                     (!hasObjectWriteTime || cached.objectWriteTime == objectWriteTime);
-                if(cached.texture && sourceMatches && objectMatches){
-                    return cached.texture;
-                }
             }
 
             auto material = MaterialAssetIO::InstantiateMaterialFromRef(tx.assetRef, nullptr, &error);
@@ -769,6 +838,8 @@ namespace {
             entry.objectWriteTime = objectWriteTime;
             entry.hasSourceWriteTime = hasSourceWriteTime;
             entry.sourceWriteTime = sourceWriteTime;
+            entry.lastValidationFrame = frameNow;
+            entry.lastUsedFrame = frameNow;
             return entry.texture;
         }catch(const std::exception& e){
             LogBot.Log(LOG_ERRO, "Material thumbnail failed for '%s': %s", tx.assetRef.c_str(), e.what());
@@ -926,15 +997,11 @@ bool IsKindCompatibleAny(AssetKind offered, const AssetKind* requestedKinds, siz
 }
 
 bool BuildTransaction(const std::filesystem::path& absolutePath, const std::filesystem::path& assetRoot, AssetTransaction& out){
+    // Workspace/grid drawing calls this for visible entries every frame. Avoid
+    // weakly_canonical() here because it performs filesystem I/O on Windows.
+    std::filesystem::path normalized = absolutePath.lexically_normal();
+    std::filesystem::path normalizedRoot = assetRoot.lexically_normal();
     std::error_code ec;
-    std::filesystem::path normalized = std::filesystem::weakly_canonical(absolutePath, ec);
-    if(ec){
-        normalized = absolutePath.lexically_normal();
-    }
-    std::filesystem::path normalizedRoot = std::filesystem::weakly_canonical(assetRoot, ec);
-    if(ec){
-        normalizedRoot = assetRoot.lexically_normal();
-    }
 
     std::filesystem::path rel = normalized.lexically_relative(normalizedRoot);
     if(rel.empty() || rel.string().find("..") == 0){
@@ -957,6 +1024,7 @@ bool BuildTransaction(const std::filesystem::path& absolutePath, const std::file
 void InvalidateAllThumbnails(){
     g_imageThumbnailCache.clear();
     g_materialThumbnailCache.clear();
+    g_lastThumbnailCachePruneFrame = -100000;
 }
 
 void InvalidateMaterialThumbnail(const std::string& assetRef){

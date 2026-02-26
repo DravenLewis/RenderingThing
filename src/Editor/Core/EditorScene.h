@@ -37,6 +37,7 @@ class EditorScene : public Scene {
         void setInputManager(std::shared_ptr<InputManager> manager) override;
         void requestClose() override;
         bool consumeCloseRequest() override;
+        bool shouldTickOnRenderThread() const override { return true; }
         bool handleQuitRequest();
 
     private:
@@ -88,6 +89,7 @@ class EditorScene : public Scene {
         Math3D::Vec3 focusForward;
         float focusDistance = 5.0f;
         float focusSpeed = 6.0f;
+        bool playViewportMouseRectConstrained = false;
         NeoECS::GameObject* editorCameraObject = nullptr;
         TransformComponent* editorCameraTransform = nullptr;
         CameraComponent* editorCameraComponent = nullptr;
@@ -106,6 +108,9 @@ class EditorScene : public Scene {
         float leftPanelWidth = 260.0f;
         float rightPanelWidth = 320.0f;
         float bottomPanelHeight = 220.0f;
+        float playModePanelRefreshAccum = 0.0f;
+        float playModePanelRefreshInterval = 0.10f; // 10 Hz heavy panel refresh during play
+        bool playModeHeavyPanelsRefreshDue = true;
         ECSViewPanel ecsViewPanel;
         PropertiesPanel propertiesPanel;
         WorkspacePanel workspacePanel;
@@ -133,10 +138,10 @@ class EditorScene : public Scene {
 
         void ensureTargetInitialized();
         void drawToolbar(float width, float height);
-        void drawEcsPanel(float x, float y, float w, float h);
+        void drawEcsPanel(float x, float y, float w, float h, bool lightweight = false);
         void drawViewportPanel(float x, float y, float w, float h);
-        void drawPropertiesPanel(float x, float y, float w, float h);
-        void drawAssetsPanel(float x, float y, float w, float h);
+        void drawPropertiesPanel(float x, float y, float w, float h, bool lightweight = false);
+        void drawAssetsPanel(float x, float y, float w, float h, bool lightweight = false);
 
         NeoECS::ECSEntity* findEntityById(const std::string& id) const;
         PCamera resolveSelectedTargetCamera() const;

@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <vector>
+#include <atomic>
 
 #include "Rendering/Core/FrameBuffer.h"
 #include "Rendering/Textures/Texture.h"
@@ -33,6 +34,8 @@ class Screen{
         int uiWidth = 0;
         int uiHeight = 0;
         bool bound = false;
+        std::atomic<float> lastPostProcessMs{0.0f};
+        std::atomic<int> lastPostProcessEffectCount{0};
 
         void initScreenGeom();
         void initScreenShader();
@@ -80,6 +83,8 @@ class Screen{
         Color& getClearColor() { return this->clearColor; }
         void clear(Color c = Color::BLACK);
         bool isBound() const { return bound; }
+        float getLastPostProcessMs() const { return lastPostProcessMs.load(std::memory_order_relaxed); }
+        int getLastPostProcessEffectCount() const { return lastPostProcessEffectCount.load(std::memory_order_relaxed); }
 };
 
 typedef std::shared_ptr<Screen> PScreen;

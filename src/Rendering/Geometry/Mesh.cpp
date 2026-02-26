@@ -12,6 +12,18 @@ void Mesh::upload(std::vector<Vertex> verts, std::vector<uint32_t> faces){
 
     if(!_areBuffersBound()){
         _genBuffers();
+    }else{
+        this->bind();
+
+        std::vector<float> rawVerts = this->getRawVertexData();
+
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, rawVerts.size() * sizeof(float), rawVerts.data(), GL_STATIC_DRAW);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->faces.size() * sizeof(int), this->faces.data(), GL_STATIC_DRAW);
+
+        Mesh::Unbind();
     }
 
     if(!_areBuffersBound()){

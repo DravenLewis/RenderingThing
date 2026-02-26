@@ -36,8 +36,45 @@ namespace {
         std::shared_ptr<Texture> texture;
         std::filesystem::file_time_type writeTime{};
         bool hasWriteTime = false;
+        int lastValidationFrame = -100000;
+        int lastUsedFrame = -100000;
     };
     std::unordered_map<std::string, TexturePreviewCacheEntry> g_texturePreviewCache;
+    constexpr int kTexturePreviewCachePruneIntervalFrames = 120;
+    constexpr int kTexturePreviewCacheIdleFrames = 600;
+    constexpr size_t kMaxTexturePreviewCacheEntries = 48;
+    constexpr int kTexturePreviewCacheValidationIntervalFrames = 30;
+    constexpr int kFilePreviewWriteTimeValidationIntervalFrames = 15;
+    int g_texturePreviewCacheLastPruneFrame = -100000;
+
+    void pruneTexturePreviewCache(int frameNow){
+        if((frameNow - g_texturePreviewCacheLastPruneFrame) < kTexturePreviewCachePruneIntervalFrames){
+            return;
+        }
+        g_texturePreviewCacheLastPruneFrame = frameNow;
+
+        for(auto it = g_texturePreviewCache.begin(); it != g_texturePreviewCache.end();){
+            if((frameNow - it->second.lastUsedFrame) > kTexturePreviewCacheIdleFrames){
+                it = g_texturePreviewCache.erase(it);
+            }else{
+                ++it;
+            }
+        }
+
+        while(g_texturePreviewCache.size() > kMaxTexturePreviewCacheEntries){
+            auto oldestIt = g_texturePreviewCache.end();
+            for(auto it = g_texturePreviewCache.begin(); it != g_texturePreviewCache.end(); ++it){
+                if(oldestIt == g_texturePreviewCache.end() ||
+                   it->second.lastUsedFrame < oldestIt->second.lastUsedFrame){
+                    oldestIt = it;
+                }
+            }
+            if(oldestIt == g_texturePreviewCache.end()){
+                break;
+            }
+            g_texturePreviewCache.erase(oldestIt);
+        }
+    }
 
     std::shared_ptr<Material> buildPreviewFallbackMaterial(){
         auto isRenderable = [](const std::shared_ptr<Material>& mat) -> bool{
@@ -117,29 +154,40 @@ namespace {
         if(assetRef.empty()){
             return nullptr;
         }
-
-        std::filesystem::path absolutePath;
-        if(!AssetDescriptorUtils::AssetRefToAbsolutePath(assetRef, absolutePath)){
-            absolutePath = std::filesystem::path(assetRef);
-        }
-
-        std::error_code ec;
-        bool hasWriteTime = false;
-        std::filesystem::file_time_type writeTime{};
-        if(std::filesystem::exists(absolutePath, ec) && !std::filesystem::is_directory(absolutePath, ec)){
-            writeTime = std::filesystem::last_write_time(absolutePath, ec);
-            hasWriteTime = !ec;
-        }
+        const int frameNow = ImGui::GetFrameCount();
+        pruneTexturePreviewCache(frameNow);
 
         auto cachedIt = g_texturePreviewCache.find(assetRef);
         if(cachedIt != g_texturePreviewCache.end()){
-            const TexturePreviewCacheEntry& cached = cachedIt->second;
-            const bool cacheValid =
-                cached.texture &&
-                (cached.hasWriteTime == hasWriteTime) &&
-                (!hasWriteTime || cached.writeTime == writeTime);
-            if(cacheValid){
-                return cached.texture;
+            TexturePreviewCacheEntry& cached = cachedIt->second;
+            if(cached.texture){
+                cached.lastUsedFrame = frameNow;
+                const bool needsValidation =
+                    (frameNow - cached.lastValidationFrame) >= kTexturePreviewCacheValidationIntervalFrames;
+                if(!needsValidation){
+                    return cached.texture;
+                }
+
+                std::filesystem::path absolutePath;
+                if(!AssetDescriptorUtils::AssetRefToAbsolutePath(assetRef, absolutePath)){
+                    absolutePath = std::filesystem::path(assetRef);
+                }
+
+                std::error_code ec;
+                bool hasWriteTime = false;
+                std::filesystem::file_time_type writeTime{};
+                if(std::filesystem::exists(absolutePath, ec) && !std::filesystem::is_directory(absolutePath, ec)){
+                    writeTime = std::filesystem::last_write_time(absolutePath, ec);
+                    hasWriteTime = !ec;
+                }
+                cached.lastValidationFrame = frameNow;
+
+                const bool cacheValid =
+                    (cached.hasWriteTime == hasWriteTime) &&
+                    (!hasWriteTime || cached.writeTime == writeTime);
+                if(cacheValid){
+                    return cached.texture;
+                }
             }
         }
 
@@ -154,8 +202,19 @@ namespace {
 
         TexturePreviewCacheEntry entry;
         entry.texture = tex;
-        entry.writeTime = writeTime;
-        entry.hasWriteTime = hasWriteTime;
+        entry.lastValidationFrame = frameNow;
+        entry.lastUsedFrame = frameNow;
+
+        std::filesystem::path absolutePath;
+        if(!AssetDescriptorUtils::AssetRefToAbsolutePath(assetRef, absolutePath)){
+            absolutePath = std::filesystem::path(assetRef);
+        }
+        std::error_code ec;
+        if(std::filesystem::exists(absolutePath, ec) && !std::filesystem::is_directory(absolutePath, ec)){
+            entry.writeTime = std::filesystem::last_write_time(absolutePath, ec);
+            entry.hasWriteTime = !ec;
+        }
+
         g_texturePreviewCache[assetRef] = entry;
         return tex;
     }
@@ -326,6 +385,7 @@ void FilePreviewWidget::setFilePath(const std::filesystem::path& path){
         return;
     }
     filePath = path;
+    lastExternalWriteTimeValidationFrame = -100000;
     hasLoadedData = false;
     statusMessage.clear();
     statusIsError = false;
@@ -367,6 +427,7 @@ void FilePreviewWidget::reloadFromDisk(bool force){
     if(std::filesystem::exists(filePath, ec)){
         lastWriteTime = std::filesystem::last_write_time(filePath, ec);
     }
+    lastExternalWriteTimeValidationFrame = ImGui::GetFrameCount();
 
     if(isShaderAssetFile){
         ShaderAssetData data;
@@ -466,11 +527,17 @@ void FilePreviewWidget::draw(){
         return;
     }
 
-    std::error_code ec;
-    if(std::filesystem::exists(filePath, ec)){
-        const auto onDiskWriteTime = std::filesystem::last_write_time(filePath, ec);
-        if(!ec && hasLoadedData && onDiskWriteTime != lastWriteTime){
-            hasLoadedData = false;
+    const int frameNow = ImGui::GetFrameCount();
+    if(hasLoadedData &&
+       (frameNow - lastExternalWriteTimeValidationFrame) >= kFilePreviewWriteTimeValidationIntervalFrames){
+        lastExternalWriteTimeValidationFrame = frameNow;
+
+        std::error_code ec;
+        if(std::filesystem::exists(filePath, ec)){
+            const auto onDiskWriteTime = std::filesystem::last_write_time(filePath, ec);
+            if(!ec && onDiskWriteTime != lastWriteTime){
+                hasLoadedData = false;
+            }
         }
     }
     reloadFromDisk(false);

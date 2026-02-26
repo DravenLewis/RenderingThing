@@ -15,6 +15,7 @@
 #include "Rendering/Materials/SkyboxMaterial.h"
 #include "ECS/Core/ECSComponents.h"
 #include "Foundation/Logging/Logbot.h"
+#include "Engine/Core/GameEngine.h"
 
 #include <glad/glad.h>
 #include <SDL3/SDL.h>
@@ -133,15 +134,16 @@ void DemoScene::init(){
         }
         if(ssao){
             ssao->enabled = true;
-            ssao->radiusPx = 2.5f;
+            ssao->radiusPx = 2.0f;
             ssao->depthRadius = 0.015f;
             ssao->bias = 0.0008f;
-            ssao->intensity = 0.75f;
-            ssao->giBoost = 0.05f;
-            ssao->sampleCount = 6;
+            ssao->intensity = 0.6f;
+            ssao->giBoost = 0.03f;
+            ssao->sampleCount = 4;
         }
         if(dof){
-            dof->enabled = true;
+            // Editor-friendly default: DOF is one of the heaviest full-screen passes.
+            dof->enabled = false;
             dof->focusDistance = 14.0f;
             dof->focusRange = 10.0f;
             dof->blurStrength = 0.35f;
@@ -149,7 +151,7 @@ void DemoScene::init(){
             dof->sampleCount = 5;
         }
         if(aa){
-            aa->preset = AntiAliasingPreset::FXAA_High;
+            aa->preset = AntiAliasingPreset::FXAA_Medium;
         }
     }
 
@@ -345,7 +347,27 @@ void DemoScene::update(float deltaTime){
     totalTime += deltaTime;
 
     if(deltaTime > frameTimeSpike) frameTimeSpike = deltaTime;
-    if(showDebugWidgets) frameTimeGraph.push(deltaTime);
+    frameTimeGraph.setCaptureEnabled(showDebugWidgets);
+    if(showDebugWidgets){
+        frameTimeGraph.updateFromSources(deltaTime, getDebugStats(), GameEngine::Engine);
+    }
+
+    fpsSampleAccumTime += deltaTime;
+    fpsSampleAccumFrames += 1;
+    if(displayedAverageFps <= 0.0f && deltaTime > 0.0f){
+        displayedAverageFps = 1.0f / deltaTime;
+        displayedAverageFrameMs = deltaTime * 1000.0f;
+    }
+    if(fpsSampleAccumTime >= 0.5f && fpsSampleAccumFrames > 0){
+        displayedAverageFps = (fpsSampleAccumTime > 0.0f)
+            ? (static_cast<float>(fpsSampleAccumFrames) / fpsSampleAccumTime)
+            : 0.0f;
+        displayedAverageFrameMs = (fpsSampleAccumTime > 0.0f)
+            ? ((fpsSampleAccumTime * 1000.0f) / static_cast<float>(fpsSampleAccumFrames))
+            : 0.0f;
+        fpsSampleAccumTime = 0.0f;
+        fpsSampleAccumFrames = 0;
+    }
 
     if(fpsController && inputManager){
         fpsController->update(deltaTime, inputManager);
@@ -386,17 +408,16 @@ void DemoScene::render(){
     if(graphics2d && uiScreen && cam){
         graphics2d->begin();
 
-        float currentFPS = (lastDeltaTime > 0.0f) ? (1.0f / lastDeltaTime) : 0.0f;
-
         std::string info = StringUtils::Format(
-            "Current Player Pos: (X:%f, Y:%f, Z:%f)\nCurrent Camera View: (P:%f, Y:%f, R:%f)\nFPS: %f\nPress F11 for Fullscreen\nPress ESC to close.\nGRAVE(`) to Unlock Mouse.",
+            "Current Player Pos: (X:%f, Y:%f, Z:%f)\nCurrent Camera View: (P:%f, Y:%f, R:%f)\nFPS (0.5s avg): %.2f (%.2f ms)\nPress F11 for Fullscreen\nPress ESC to close.\nGRAVE(`) to Unlock Mouse.",
             cam->transform().position.x,
             cam->transform().position.y,
             cam->transform().position.z,
             cam->transform().rotation.x,
             cam->transform().rotation.y,
             cam->transform().rotation.z,
-            currentFPS
+            displayedAverageFps,
+            displayedAverageFrameMs
         );
 
         Color c0 = Color::fromRGBA255(10,10,32,200);
@@ -405,21 +426,13 @@ void DemoScene::render(){
 
         Color c1 = Color::WHITE;
         Graphics2D::SetForegroundColor(*graphics2d, c1);
-        Graphics2D::DrawString(*graphics2d,info,30,30);
+        Graphics2D::DrawString(*graphics2d, info, 30, 30, false);
 
         if(showDebugWidgets){
             Color c2 = Color::fromRGBA255(10,10,32,200);
             Graphics2D::SetBackgroundColor(*graphics2d, c2);
-            Graphics2D::FillRect(*graphics2d, 0, uiScreen->getHeight() - 130, uiScreen->getWidth(), 130);
+            Graphics2D::FillRect(*graphics2d, 0, uiScreen->getHeight() - 164, uiScreen->getWidth(), 164);
             Graphics2D::SetBackgroundColor(*graphics2d, Color::WHITE);
-            auto& stats = getDebugStats();
-            frameTimeGraph.setEcsInfo(
-                stats.snapshotMs.load(std::memory_order_relaxed),
-                stats.shadowMs.load(std::memory_order_relaxed),
-                stats.drawMs.load(std::memory_order_relaxed),
-                stats.drawCount.load(std::memory_order_relaxed),
-                stats.lightCount.load(std::memory_order_relaxed)
-            );
             frameTimeGraph.draw(*graphics2d, 0, uiScreen->getHeight() - 70, uiScreen->getWidth(), 60);
         }
         
@@ -447,6 +460,7 @@ void DemoScene::dispose(){
 
 void DemoScene::toggleDebugWidgets(){
     showDebugWidgets = !showDebugWidgets;
+    frameTimeGraph.setCaptureEnabled(showDebugWidgets);
 }
 
 void DemoScene::toggleDebugShadows(){

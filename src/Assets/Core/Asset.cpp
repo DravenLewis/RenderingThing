@@ -24,7 +24,7 @@ Asset::Asset(std::string path){
     }
     interpretedString = StringUtils::ReplaceAll(interpretedString.c_str(), "/", "\\");
 
-    assetLogger.LogBasic("Attempting to Load File: %s", interpretedString.c_str());
+    // Avoid noisy logging in this hot path; editor panels may request assets frequently.
     std::unique_ptr<File> fileHandle = std::unique_ptr<File>(new File(interpretedString));
     this->fileHandle = std::move(fileHandle); // take ownership of the pointer.
 }

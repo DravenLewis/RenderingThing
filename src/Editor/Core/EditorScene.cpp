@@ -190,6 +190,17 @@ void EditorScene::update(float deltaTime){
     ensureTargetInitialized();
     if(!targetScene) return;
 
+    if(playState == PlayState::Play){
+        playModePanelRefreshAccum += deltaTime;
+        if(playModePanelRefreshAccum >= playModePanelRefreshInterval){
+            playModePanelRefreshAccum = 0.0f;
+            playModeHeavyPanelsRefreshDue = true;
+        }
+    }else{
+        playModePanelRefreshAccum = 0.0f;
+        playModeHeavyPanelsRefreshDue = true;
+    }
+
     if(auto preferred = targetScene->getPreferredCamera()){
         if(preferred != targetCamera){
             targetCamera = preferred;
@@ -212,6 +223,44 @@ void EditorScene::update(float deltaTime){
             }
         }
 
+        if(auto* window = getWindow()){
+            bool shouldConstrainViewportMouse = false;
+            MouseLockMode mouseMode = MouseLockMode::FREE;
+            if(inputManager){
+                mouseMode = inputManager->getMouseCaptureMode();
+                shouldConstrainViewportMouse = (mouseMode != MouseLockMode::FREE) && viewportRect.valid;
+            }
+
+            if(shouldConstrainViewportMouse){
+                const int rectX = (int)std::floor(viewportRect.x);
+                const int rectY = (int)std::floor(viewportRect.y);
+                const int rectW = std::max(1, (int)std::ceil(viewportRect.w));
+                const int rectH = std::max(1, (int)std::ceil(viewportRect.h));
+                SDL_Rect mouseRect{rectX, rectY, rectW, rectH};
+                SDL_SetWindowMouseRect(window->getWindowPtr(), &mouseRect);
+                playViewportMouseRectConstrained = true;
+
+                // For visible captured cursor mode, clamp immediately in case capture began outside the viewport.
+                if(mouseMode == MouseLockMode::CAPTURED){
+                    float mx = 0.0f;
+                    float my = 0.0f;
+                    SDL_GetMouseState(&mx, &my);
+                    const float minX = (float)rectX;
+                    const float minY = (float)rectY;
+                    const float maxX = (float)(rectX + rectW - 1);
+                    const float maxY = (float)(rectY + rectH - 1);
+                    const float clampedX = Math3D::Clamp(mx, minX, maxX);
+                    const float clampedY = Math3D::Clamp(my, minY, maxY);
+                    if(!Math3D::AreClose(mx, clampedX) || !Math3D::AreClose(my, clampedY)){
+                        SDL_WarpMouseInWindow(window->getWindowPtr(), clampedX, clampedY);
+                    }
+                }
+            }else if(playViewportMouseRectConstrained){
+                SDL_SetWindowMouseRect(window->getWindowPtr(), nullptr);
+                playViewportMouseRectConstrained = false;
+            }
+        }
+
         viewportCamera = targetCamera ? targetCamera : editorCamera;
         if(auto mainScreen = targetScene->getMainScreen()){
             if(viewportCamera){
@@ -219,6 +268,9 @@ void EditorScene::update(float deltaTime){
             }
         }
         bool mouseInViewport = isMouseInViewport();
+        if(inputManager && inputManager->getMouseCaptureMode() != MouseLockMode::FREE){
+            mouseInViewport = true;
+        }
         ImGuiLayer::SetInputEnabled(!mouseInViewport);
         if(targetScene->consumeCloseRequest()){
             handleQuitRequest();
@@ -227,6 +279,12 @@ void EditorScene::update(float deltaTime){
         targetScene->updateECS(deltaTime);
         targetScene->update(deltaTime);
     }else{
+        if(playViewportMouseRectConstrained){
+            if(auto* window = getWindow()){
+                SDL_SetWindowMouseRect(window->getWindowPtr(), nullptr);
+            }
+            playViewportMouseRectConstrained = false;
+        }
         if(inputManager){
             bool rmb = inputManager->isRMBDown();
             bool rmbPressed = rmb && !prevRmb;
@@ -656,10 +714,15 @@ void EditorScene::render(){
     const float propertiesX = rightSplitterX + kSplitterThickness;
     const float bottomTop = panelsTop + topPanelsHeight + kSplitterThickness;
 
-    drawEcsPanel(0.0f, panelsTop, leftPanelWidth, topPanelsHeight);
+    // Note: immediate-mode placeholder swapping caused visible flicker (scrollbars/windows blinking)
+    // in play mode. Keep panels rendering every frame and rely on internal panel/cache optimizations instead.
+    bool renderHeavyPanels = true;
+    playModeHeavyPanelsRefreshDue = false;
+
+    drawEcsPanel(0.0f, panelsTop, leftPanelWidth, topPanelsHeight, !renderHeavyPanels);
     drawViewportPanel(viewportX, panelsTop, centerWidth, topPanelsHeight);
-    drawPropertiesPanel(propertiesX, panelsTop, rightPanelWidth, topPanelsHeight);
-    drawAssetsPanel(0.0f, bottomTop, width, bottomPanelHeight);
+    drawPropertiesPanel(propertiesX, panelsTop, rightPanelWidth, topPanelsHeight, !renderHeavyPanels);
+    drawAssetsPanel(0.0f, bottomTop, width, bottomPanelHeight, !renderHeavyPanels);
 
     auto drawSplitter = [](const char* windowId, const ImVec2& pos, const ImVec2& size, ImGuiMouseCursor cursor, bool vertical, float& value, float deltaSign, float minValue, float maxValue){
         ImGui::SetNextWindowPos(pos);
@@ -987,7 +1050,15 @@ bool EditorScene::consumeCloseRequest(){
     return Scene::consumeCloseRequest();
 }
 
-void EditorScene::drawEcsPanel(float x, float y, float w, float h){
+void EditorScene::drawEcsPanel(float x, float y, float w, float h, bool lightweight){
+    if(lightweight){
+        ImGui::SetNextWindowPos(ImVec2(x, y));
+        ImGui::SetNextWindowSize(ImVec2(w, h));
+        ImGui::Begin("ECS Graph", nullptr, kPanelFlags);
+        ImGui::TextDisabled("Panel throttled during play mode (10 Hz).");
+        ImGui::End();
+        return;
+    }
     ecsViewPanel.draw(
         x,
         y,
@@ -1208,7 +1279,15 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
     ImGui::PopStyleVar();
 }
 
-void EditorScene::drawPropertiesPanel(float x, float y, float w, float h){
+void EditorScene::drawPropertiesPanel(float x, float y, float w, float h, bool lightweight){
+    if(lightweight){
+        ImGui::SetNextWindowPos(ImVec2(x, y));
+        ImGui::SetNextWindowSize(ImVec2(w, h));
+        ImGui::Begin("Properties", nullptr, kPanelFlags);
+        ImGui::TextDisabled("Panel throttled during play mode (10 Hz).");
+        ImGui::End();
+        return;
+    }
     workspacePanel.setAssetRoot(assetRoot);
     propertiesPanel.draw(
         x,
@@ -1283,7 +1362,16 @@ void EditorScene::ensurePointLightBounds(NeoECS::ECSEntity* entity, float radius
     }
 }
 
-void EditorScene::drawAssetsPanel(float x, float y, float w, float h){
+void EditorScene::drawAssetsPanel(float x, float y, float w, float h, bool lightweight){
+    if(lightweight){
+        ImGui::SetNextWindowPos(ImVec2(x, y));
+        ImGui::SetNextWindowSize(ImVec2(w, h));
+        ImGui::Begin("Workspace", nullptr, kPanelFlags);
+        ImGui::TextDisabled("Panel throttled during play mode (10 Hz).");
+        ImGui::TextDisabled("Hover panel to force full refresh.");
+        ImGui::End();
+        return;
+    }
     workspacePanel.setAssetRoot(assetRoot);
     workspacePanel.draw(x, y, w, h, selectedAssetPath);
 }
@@ -1318,6 +1406,12 @@ PCamera EditorScene::resolveSelectedTargetCamera() const{
 }
 
 void EditorScene::dispose(){
+    if(playViewportMouseRectConstrained){
+        if(auto* window = getWindow()){
+            SDL_SetWindowMouseRect(window->getWindowPtr(), nullptr);
+        }
+        playViewportMouseRectConstrained = false;
+    }
     if(targetScene){
         targetScene->dispose();
     }

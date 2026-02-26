@@ -35,6 +35,10 @@ struct MeshRendererComponent : public IEditorCompatibleComponent {
     std::shared_ptr<Mesh> mesh;
     std::shared_ptr<Material> material;
     PModel model;
+    // Serializable source refs for scene/prefab save-load. Runtime pointers remain the render path.
+    std::string modelAssetRef;
+    std::string materialAssetRef; // Single mesh/material mode source material.
+    std::vector<std::string> modelPartMaterialAssetRefs; // Per-part overrides for model mode.
     Math3D::Transform localOffset;
     bool visible = true;
     bool enableBackfaceCulling = true;

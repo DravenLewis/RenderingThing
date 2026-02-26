@@ -28,6 +28,11 @@ struct GraphicsContext{
 
 class Graphics2D{
     private:
+        enum class BatchMode2D {
+            None = 0,
+            Solid,
+            Textured
+        };
 
         // Graphics Context.
         GraphicsContext context;
@@ -40,10 +45,28 @@ class Graphics2D{
         std::shared_ptr<ModelPart> unitCircle = nullptr;
         PMaterial colorMaterial = nullptr;
         PMaterial imageMaterial = nullptr;
+        std::shared_ptr<ModelPart> batchPart = nullptr;
+        PMaterial batchMaterial = nullptr;
+        std::vector<Vertex> batchVertices;
+        std::vector<uint32_t> batchIndices;
+        BatchMode2D batchMode = BatchMode2D::None;
+        PTexture batchTexture = nullptr;
+        size_t maxBatchQuads = 4096;
 
 
         // Internal Helpers.
         void drawMesh(std::shared_ptr<ModelPart> part, const Math3D::Mat4& modelMatrix, PTexture tex = nullptr);
+        void ensureBatchResources();
+        void resetBatch();
+        void flushBatch();
+        void beginBatch(BatchMode2D mode, PTexture texture = nullptr);
+        void submitQuad(
+            const Math3D::Vec3& p0, const Math3D::Vec3& p1, const Math3D::Vec3& p2, const Math3D::Vec3& p3,
+            const Math3D::Vec2& uv0, const Math3D::Vec2& uv1, const Math3D::Vec2& uv2, const Math3D::Vec2& uv3,
+            const Math3D::Vec4& color,
+            BatchMode2D mode,
+            PTexture texture = nullptr
+        );
     
     public:
         Graphics2D(PScreen screenContext);
@@ -72,7 +95,7 @@ class Graphics2D{
 
         static void DrawImage(Graphics2D& graphics, PTexture tex, float x, float y, float w = -1, float h = -1); // if w or h is -1 use default texture size from file.
 
-        static void DrawString(Graphics2D& graphics, std::string text, float x, float y);
+        static void DrawString(Graphics2D& graphics, std::string text, float x, float y, bool useCache = true);
 };
 
 #endif//GRAPHICS2D_H

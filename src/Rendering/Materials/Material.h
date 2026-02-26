@@ -69,9 +69,6 @@ class Material{
             }
             programObjPtr->bind();
 
-            // Re-apply shadow receive flag each bind to avoid stale uniform state.
-            set<int>("u_receiveShadows", receivesShadowsFlag ? 1 : 0);
-
             for(auto const& [name, prop] : properties){
                 prop->apply(*programObjPtr, name, true);
             }

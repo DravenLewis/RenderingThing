@@ -9,6 +9,7 @@
 #include "Editor/Core/EditorAssetUI.h"
 #include "Assets/Descriptors/ShaderAsset.h"
 #include "Assets/Descriptors/MaterialAsset.h"
+#include "Assets/Descriptors/ModelAsset.h"
 #include "Rendering/Materials/MaterialRegistry.h"
 #include "Foundation/Logging/Logbot.h"
 
@@ -75,6 +76,10 @@ namespace {
         char materialAssetPath[256] = "";
     };
     std::unordered_map<std::string, MaterialSelectorState> g_materialSelectorStates;
+    struct ModelSelectorState{
+        char modelAssetPath[256] = "";
+    };
+    std::unordered_map<std::string, ModelSelectorState> g_modelSelectorStates;
 
     void drawMaterialAssetFields(const std::shared_ptr<Material>& material, const char* idSuffix);
     void drawShaderAssignmentUI(const std::shared_ptr<Material>& material, const char* idSuffix);
@@ -91,6 +96,56 @@ namespace {
 
     MaterialSelectorState& getMaterialSelectorState(const char* idSuffix){
         return g_materialSelectorStates[idSuffix ? idSuffix : "default"];
+    }
+
+    ModelSelectorState& getModelSelectorState(const char* idSuffix){
+        return g_modelSelectorStates[idSuffix ? idSuffix : "default"];
+    }
+
+    void copyTextToBuffer(char* buffer, size_t bufferSize, const std::string& value){
+        if(!buffer || bufferSize == 0){
+            return;
+        }
+        std::snprintf(buffer, bufferSize, "%s", value.c_str());
+        buffer[bufferSize - 1] = '\0';
+    }
+
+    void ensureModelPartMaterialRefCount(MeshRendererComponent* renderer){
+        if(!renderer || !renderer->model){
+            return;
+        }
+        const size_t partCount = renderer->model->getParts().size();
+        if(renderer->modelPartMaterialAssetRefs.size() < partCount){
+            renderer->modelPartMaterialAssetRefs.resize(partCount);
+        }else if(renderer->modelPartMaterialAssetRefs.size() > partCount){
+            renderer->modelPartMaterialAssetRefs.resize(partCount);
+        }
+    }
+
+    void initializePartMaterialRefsFromModelAsset(MeshRendererComponent* renderer){
+        if(!renderer || !renderer->model){
+            return;
+        }
+
+        ensureModelPartMaterialRefCount(renderer);
+        if(renderer->modelAssetRef.empty()){
+            return;
+        }
+
+        ModelAssetData modelAssetData;
+        std::string error;
+        if(!ModelAssetIO::LoadFromAssetRef(renderer->modelAssetRef, modelAssetData, &error)){
+            LogBot.Log(LOG_WARN, "Failed to read model asset metadata '%s': %s", renderer->modelAssetRef.c_str(), error.c_str());
+            return;
+        }
+
+        if(modelAssetData.defaultMaterialRef.empty()){
+            return;
+        }
+
+        for(size_t i = 0; i < renderer->modelPartMaterialAssetRefs.size(); ++i){
+            renderer->modelPartMaterialAssetRefs[i] = modelAssetData.defaultMaterialRef;
+        }
     }
 
     std::shared_ptr<Texture> loadTextureFromAssetRef(const std::string& assetRef){
@@ -433,7 +488,7 @@ namespace {
         drawShaderAssignmentUI(material, idSuffix);
     }
 
-    void drawMaterialSelectionUI(std::shared_ptr<Material>& materialRef, const char* idSuffix){
+    void drawMaterialSelectionUI(std::shared_ptr<Material>& materialRef, const char* idSuffix, std::string* outMaterialAssetRef){
         MaterialRegistry::Instance().Refresh();
         const auto& entries = MaterialRegistry::Instance().GetEntries();
         MaterialSelectorState& picker = getMaterialSelectorState(idSuffix);
@@ -466,6 +521,9 @@ namespace {
                 auto created = MaterialRegistry::Instance().CreateById(entries[picker.selectedRegistryIndex].id, &error);
                 if(created){
                     materialRef = created;
+                    if(outMaterialAssetRef){
+                        outMaterialAssetRef->clear();
+                    }
                 }else{
                     LogBot.Log(LOG_ERRO, "Failed to apply material registry entry: %s", error.c_str());
                 }
@@ -487,13 +545,74 @@ namespace {
             std::string assetRef = picker.materialAssetPath;
             if(!assetRef.empty()){
                 std::string error;
-                auto mat = MaterialAssetIO::InstantiateMaterialFromRef(assetRef, nullptr, &error);
+                std::string resolvedAssetRef;
+                auto mat = MaterialAssetIO::InstantiateMaterialFromRef(assetRef, &resolvedAssetRef, &error);
                 if(!mat){
                     LogBot.Log(LOG_ERRO, "Failed to instantiate material '%s': %s", assetRef.c_str(), error.c_str());
                 }else{
                     materialRef = mat;
+                    if(outMaterialAssetRef){
+                        *outMaterialAssetRef = resolvedAssetRef;
+                    }
+                    copyTextToBuffer(picker.materialAssetPath, sizeof(picker.materialAssetPath), resolvedAssetRef);
                 }
             }
+        }
+    }
+
+    void drawModelSelectionUI(MeshRendererComponent* renderer, const char* idSuffix){
+        if(!renderer){
+            return;
+        }
+
+        ModelSelectorState& picker = getModelSelectorState(idSuffix);
+        if(picker.modelAssetPath[0] == '\0' && !renderer->modelAssetRef.empty()){
+            copyTextToBuffer(picker.modelAssetPath, sizeof(picker.modelAssetPath), renderer->modelAssetRef);
+        }
+
+        std::string assetFieldLabel = std::string("Model Asset##") + idSuffix;
+        bool dropped = false;
+        EditorAssetUI::DrawAssetDropInput(
+            assetFieldLabel.c_str(),
+            picker.modelAssetPath,
+            sizeof(picker.modelAssetPath),
+            EditorAssetUI::AssetKind::ModelAsset,
+            false,
+            &dropped
+        );
+
+        std::string applyModelLabel = std::string("Apply Model Asset##") + idSuffix;
+        std::string clearModelRefLabel = std::string("Clear Model Ref##") + idSuffix;
+        bool applyModel = ImGui::Button(applyModelLabel.c_str());
+        ImGui::SameLine();
+        if(ImGui::Button(clearModelRefLabel.c_str())){
+            picker.modelAssetPath[0] = '\0';
+            renderer->modelAssetRef.clear();
+        }
+
+        if(dropped || applyModel){
+            std::string assetRef = picker.modelAssetPath;
+            if(!assetRef.empty()){
+                std::string error;
+                std::string resolvedAssetRef;
+                auto model = ModelAssetIO::InstantiateModelFromRef(assetRef, &resolvedAssetRef, &error);
+                if(!model){
+                    LogBot.Log(LOG_ERRO, "Failed to instantiate model '%s': %s", assetRef.c_str(), error.c_str());
+                }else{
+                    renderer->model = model;
+                    renderer->modelAssetRef = resolvedAssetRef;
+                    renderer->mesh.reset();
+                    renderer->material.reset();
+                    renderer->materialAssetRef.clear();
+                    renderer->modelPartMaterialAssetRefs.clear();
+                    initializePartMaterialRefsFromModelAsset(renderer);
+                    copyTextToBuffer(picker.modelAssetPath, sizeof(picker.modelAssetPath), resolvedAssetRef);
+                }
+            }
+        }
+
+        if(!renderer->modelAssetRef.empty()){
+            ImGui::TextDisabled("Model Source: %s", renderer->modelAssetRef.c_str());
         }
     }
 
@@ -887,6 +1006,7 @@ void MeshRendererComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene sc
         ImGui::TextUnformatted("Mesh Renderer");
         ImGui::Checkbox("Visible", &renderer->visible);
         ImGui::Checkbox("Backface Cull", &renderer->enableBackfaceCulling);
+        drawModelSelectionUI(renderer, "mesh_renderer_model_asset");
 
         const bool deferredActive = (GameEngine::Engine &&
                                      GameEngine::Engine->getRenderStrategy() == EngineRenderStrategy::Deferred);
@@ -919,6 +1039,7 @@ void MeshRendererComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene sc
             ImGui::TextDisabled("Render Mode: Single Mesh + Material");
             if(renderer->mesh && renderer->material){
                 if(ImGui::Button("Convert To Model (Part 0)")){
+                    const std::string singleMaterialAssetRef = renderer->materialAssetRef;
                     auto newModel = Model::Create();
                     auto part = std::make_shared<ModelPart>();
                     part->mesh = renderer->mesh;
@@ -927,16 +1048,29 @@ void MeshRendererComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene sc
                     renderer->model = newModel;
                     renderer->mesh.reset();
                     renderer->material.reset();
+                    renderer->modelAssetRef.clear();
+                    renderer->materialAssetRef.clear();
+                    renderer->modelPartMaterialAssetRefs.clear();
+                    renderer->modelPartMaterialAssetRefs.resize(1);
+                    renderer->modelPartMaterialAssetRefs[0] = singleMaterialAssetRef;
                 }
             }
 
             if(ImGui::Button("Create Empty Model")){
                 renderer->model = Model::Create();
+                renderer->mesh.reset();
+                renderer->material.reset();
+                renderer->modelAssetRef.clear();
+                renderer->materialAssetRef.clear();
+                renderer->modelPartMaterialAssetRefs.clear();
             }
 
             ImGui::Spacing();
             ImGui::TextUnformatted("Material");
-            drawMaterialSelectionUI(renderer->material, "single_material_select");
+            if(!renderer->materialAssetRef.empty()){
+                ImGui::TextDisabled("Material Source: %s", renderer->materialAssetRef.c_str());
+            }
+            drawMaterialSelectionUI(renderer->material, "single_material_select", &renderer->materialAssetRef);
             if(renderer->material){
                 ImGui::PushID(renderer->material.get());
                 drawMaterialValueFields(renderer->material, "single_material");
@@ -955,6 +1089,7 @@ void MeshRendererComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene sc
                 renderer->model->addPart(newPart);
             }
         }
+        ensureModelPartMaterialRefCount(renderer);
 
         const auto& parts = renderer->model->getParts();
         for(size_t i = 0; i < parts.size(); ++i){
@@ -990,15 +1125,31 @@ void MeshRendererComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene sc
                 if(part->material){
                     ImGui::Separator();
                     ImGui::TextUnformatted("Part Material");
+                    if(i < renderer->modelPartMaterialAssetRefs.size() &&
+                       !renderer->modelPartMaterialAssetRefs[i].empty()){
+                        ImGui::TextDisabled("Source: %s", renderer->modelPartMaterialAssetRefs[i].c_str());
+                    }
                     char idSuffix[64] = {};
                     std::snprintf(idSuffix, sizeof(idSuffix), "part_%zu_%p", i, part.get());
                     std::string selectSuffix = std::string(idSuffix) + "_select";
-                    drawMaterialSelectionUI(part->material, selectSuffix.c_str());
+                    drawMaterialSelectionUI(
+                        part->material,
+                        selectSuffix.c_str(),
+                        (i < renderer->modelPartMaterialAssetRefs.size())
+                            ? &renderer->modelPartMaterialAssetRefs[i]
+                            : nullptr
+                    );
                     drawMaterialValueFields(part->material, idSuffix);
                 }else{
                     ImGui::Separator();
                     std::string emptySelectSuffix = std::string("part_empty_") + std::to_string(i);
-                    drawMaterialSelectionUI(part->material, emptySelectSuffix.c_str());
+                    drawMaterialSelectionUI(
+                        part->material,
+                        emptySelectSuffix.c_str(),
+                        (i < renderer->modelPartMaterialAssetRefs.size())
+                            ? &renderer->modelPartMaterialAssetRefs[i]
+                            : nullptr
+                    );
                 }
 
                 ImGui::TreePop();

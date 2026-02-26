@@ -33,6 +33,7 @@ class GameEngine{
         std::atomic<bool> renderReady{false};
 
         std::mutex sceneMutex;
+        std::mutex sceneExecutionMutex;
         std::condition_variable initCv;
         std::mutex initMutex;
 
@@ -48,6 +49,21 @@ class GameEngine{
 
         PScene activeScene;
         EngineRenderStrategy renderStrategy = EngineRenderStrategy::Forward;
+
+        struct RuntimeDebugStats{
+            std::atomic<float> updateMs{0.0f};
+            std::atomic<float> updateWaitMs{0.0f};
+            std::atomic<float> updateWorkMs{0.0f};
+            std::atomic<float> renderMs{0.0f};
+            std::atomic<float> renderWaitMs{0.0f};
+            std::atomic<float> renderWorkMs{0.0f};
+            std::atomic<float> renderSceneMs{0.0f};
+            std::atomic<float> renderBlitMs{0.0f};
+            std::atomic<float> renderImGuiMs{0.0f};
+            std::atomic<float> swapMs{0.0f};
+        };
+
+        RuntimeDebugStats runtimeDebugStats{};
 
         void init(); // Initialize The Engine
         void run();
@@ -76,6 +92,17 @@ class GameEngine{
 
         void setRenderStrategy(EngineRenderStrategy strategy) { renderStrategy = strategy; }
         EngineRenderStrategy getRenderStrategy() const { return renderStrategy; }
+        const RuntimeDebugStats& getRuntimeDebugStats() const { return runtimeDebugStats; }
+        float getLastUpdateMs() const { return runtimeDebugStats.updateMs.load(std::memory_order_relaxed); }
+        float getLastUpdateWaitMs() const { return runtimeDebugStats.updateWaitMs.load(std::memory_order_relaxed); }
+        float getLastUpdateWorkMs() const { return runtimeDebugStats.updateWorkMs.load(std::memory_order_relaxed); }
+        float getLastRenderMs() const { return runtimeDebugStats.renderMs.load(std::memory_order_relaxed); }
+        float getLastRenderWaitMs() const { return runtimeDebugStats.renderWaitMs.load(std::memory_order_relaxed); }
+        float getLastRenderWorkMs() const { return runtimeDebugStats.renderWorkMs.load(std::memory_order_relaxed); }
+        float getLastRenderSceneMs() const { return runtimeDebugStats.renderSceneMs.load(std::memory_order_relaxed); }
+        float getLastRenderBlitMs() const { return runtimeDebugStats.renderBlitMs.load(std::memory_order_relaxed); }
+        float getLastRenderImGuiMs() const { return runtimeDebugStats.renderImGuiMs.load(std::memory_order_relaxed); }
+        float getLastSwapMs() const { return runtimeDebugStats.swapMs.load(std::memory_order_relaxed); }
 
         int addState(PScene scene);
         bool enterState(int id);

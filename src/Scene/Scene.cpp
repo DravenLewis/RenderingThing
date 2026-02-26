@@ -11,6 +11,7 @@
 #include "Rendering/Lighting/LightUtils.h"
 #include "Rendering/Shaders/ShaderProgram.h"
 #include "Assets/Core/Asset.h"
+#include <algorithm>
 #include <chrono>
 #include <cmath>
 #include <cfloat>
@@ -582,14 +583,35 @@ void Scene::drawDeferredGeometry(PCamera cam){
 
     const int frontIndex = renderSnapshotIndex.load(std::memory_order_acquire);
     const auto& snapshot = renderSnapshots[frontIndex];
-    std::shared_ptr<Material> lastMaterial = nullptr;
-    bool cullStateKnown = false;
-    bool cullEnabled = true;
-
+    std::vector<const RenderItem*> deferredItems;
+    deferredItems.reserve(snapshot.drawItems.size());
     for(const auto& item : snapshot.drawItems){
         if(!item.mesh || !item.material) continue;
         if(item.isTransparent) continue;
         if(!item.isDeferredCompatible) continue;
+        deferredItems.push_back(&item);
+    }
+    std::sort(deferredItems.begin(), deferredItems.end(), [](const RenderItem* a, const RenderItem* b){
+        if(a->enableBackfaceCulling != b->enableBackfaceCulling){
+            return a->enableBackfaceCulling > b->enableBackfaceCulling;
+        }
+        auto shaderA = a->material ? a->material->getShader().get() : nullptr;
+        auto shaderB = b->material ? b->material->getShader().get() : nullptr;
+        if(shaderA != shaderB){
+            return shaderA < shaderB;
+        }
+        if(a->material.get() != b->material.get()){
+            return a->material.get() < b->material.get();
+        }
+        return a->mesh.get() < b->mesh.get();
+    });
+    std::shared_ptr<Material> lastMaterial = nullptr;
+    bool cullStateKnown = false;
+    bool cullEnabled = true;
+
+    for(const RenderItem* itemPtr : deferredItems){
+        if(!itemPtr) continue;
+        const auto& item = *itemPtr;
 
         if(!cullStateKnown || cullEnabled != item.enableBackfaceCulling){
             if(item.enableBackfaceCulling){
@@ -980,6 +1002,8 @@ void Scene::render3DPass(){
     }
 
     screen->unbind();
+    debugStats.postFxMs.store(screen->getLastPostProcessMs(), std::memory_order_relaxed);
+    debugStats.postFxEffectCount.store(screen->getLastPostProcessEffectCount(), std::memory_order_relaxed);
 }
 
 void Scene::drawModels3D(PCamera cam, RenderFilter filter, bool drawOutlines, bool skipDeferredCompatible){
@@ -997,6 +1021,7 @@ void Scene::drawModels3D(PCamera cam, RenderFilter filter, bool drawOutlines, bo
                                            GameEngine::Engine->getRenderStrategy() == EngineRenderStrategy::Deferred);
     bool cullStateKnown = false;
     bool cullEnabled = true;
+    std::shared_ptr<Material> lastBoundMaterial = nullptr;
     for(const auto& item : snapshot.drawItems){
         if(!item.mesh || !item.material) continue;
 
@@ -1030,10 +1055,18 @@ void Scene::drawModels3D(PCamera cam, RenderFilter filter, bool drawOutlines, bo
             cullStateKnown = true;
         }
 
-        drawMaterial->set<Math3D::Mat4>("u_model", item.model);
-        drawMaterial->set<Math3D::Mat4>("u_view", viewMatrix);
-        drawMaterial->set<Math3D::Mat4>("u_projection", projectionMatrix);
-        drawMaterial->bind();
+        auto shader = drawMaterial ? drawMaterial->getShader() : nullptr;
+        if(drawMaterial != lastBoundMaterial){
+            drawMaterial->bind();
+            lastBoundMaterial = drawMaterial;
+            if(shader && shader->getID() != 0){
+                shader->setUniformFast("u_view", Uniform<Math3D::Mat4>(viewMatrix));
+                shader->setUniformFast("u_projection", Uniform<Math3D::Mat4>(projectionMatrix));
+            }
+        }
+        if(shader && shader->getID() != 0){
+            shader->setUniformFast("u_model", Uniform<Math3D::Mat4>(item.model));
+        }
         item.mesh->draw();
 
         if(drawOutlines && outlineEnabled && !selectedEntityId.empty() && item.entityId == selectedEntityId && outlineMaterial){
@@ -1044,14 +1077,19 @@ void Scene::drawModels3D(PCamera cam, RenderFilter filter, bool drawOutlines, bo
             outline = outline * glm::scale(glm::mat4(1.0f), glm::vec3(1.0125f));
             Math3D::Mat4 outlineModel(outline);
 
-            outlineMaterial->set<Math3D::Mat4>("u_model", outlineModel);
-            outlineMaterial->set<Math3D::Mat4>("u_view", viewMatrix);
-            outlineMaterial->set<Math3D::Mat4>("u_projection", projectionMatrix);
             outlineMaterial->bind();
+            auto outlineShader = outlineMaterial->getShader();
+            if(outlineShader && outlineShader->getID() != 0){
+                outlineShader->setUniformFast("u_view", Uniform<Math3D::Mat4>(viewMatrix));
+                outlineShader->setUniformFast("u_projection", Uniform<Math3D::Mat4>(projectionMatrix));
+                outlineShader->setUniformFast("u_model", Uniform<Math3D::Mat4>(outlineModel));
+            }
             item.mesh->draw();
             glCullFace(GL_BACK);
             cullEnabled = true;
             cullStateKnown = true;
+            // Outline bind changed active material/program state.
+            lastBoundMaterial.reset();
         }
     }
 
@@ -1070,6 +1108,9 @@ void Scene::drawShadowsPass(){
         drawItem.mesh = item.mesh;
         drawItem.model = item.model;
         drawItem.material = item.material;
+        drawItem.hasBounds = item.hasBounds;
+        drawItem.boundsMin = item.boundsMin;
+        drawItem.boundsMax = item.boundsMax;
         drawItems.push_back(std::move(drawItem));
     }
 

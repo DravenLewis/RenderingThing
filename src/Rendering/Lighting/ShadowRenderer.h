@@ -42,6 +42,9 @@ public:
         std::shared_ptr<Mesh> mesh;
         Math3D::Mat4 model;
         std::shared_ptr<Material> material;
+        bool hasBounds = false;
+        Math3D::Vec3 boundsMin = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+        Math3D::Vec3 boundsMax = Math3D::Vec3(0.0f, 0.0f, 0.0f);
     };
 
     static void BeginFrame(PCamera camera, const std::vector<ShadowCasterBounds>* casters = nullptr);

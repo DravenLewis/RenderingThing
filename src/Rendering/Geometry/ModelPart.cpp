@@ -10,12 +10,14 @@ void ModelPart::draw(const Math3D::Mat4& parent, const Math3D::Mat4& view, const
     Math3D::Mat4 worldMatrix = parent * localTransform.toMat4();
 
     if(material){
-        material->set<Math3D::Mat4>("u_model", worldMatrix);
-        // Can become a UBO eventually.
-        material->set<Math3D::Mat4>("u_view", view);
-        material->set<Math3D::Mat4>("u_projection",proj);
-
         material->bind();
+        auto shader = material->getShader();
+        if(shader && shader->getID() != 0){
+            shader->setUniformFast("u_model", Uniform<Math3D::Mat4>(worldMatrix));
+            // Can become a UBO eventually.
+            shader->setUniformFast("u_view", Uniform<Math3D::Mat4>(view));
+            shader->setUniformFast("u_projection", Uniform<Math3D::Mat4>(proj));
+        }
     }
 
     mesh->draw();

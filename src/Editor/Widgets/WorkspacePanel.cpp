@@ -20,11 +20,11 @@ namespace {
         ImGuiWindowFlags_NoCollapse;
 
     std::string normalizedPathKey(const std::filesystem::path& path){
-        std::error_code ec;
-        std::filesystem::path normalized = std::filesystem::weakly_canonical(path, ec);
-        if(ec){
-            normalized = path.lexically_normal();
-        }
+        // UI cache/map keys are used for stable identity within the current session and do
+        // not require filesystem canonicalization. Avoid weakly_canonical() here because it
+        // performs filesystem I/O (CreateFileW on Windows) and was showing up in render-thread
+        // samples while the workspace panel is visible.
+        std::filesystem::path normalized = path.lexically_normal();
         return StringUtils::ToLowerCase(normalized.generic_string());
     }
 
@@ -65,10 +65,18 @@ namespace {
 }
 
 void WorkspacePanel::setAssetRoot(const std::filesystem::path& rootPath){
+    if(assetRoot == rootPath){
+        if(assetDir.empty()){
+            assetDir = assetRoot;
+            browserCacheDirty = true;
+        }
+        return;
+    }
     assetRoot = rootPath;
     if(assetDir.empty()){
         assetDir = assetRoot;
     }
+    browserCacheDirty = true;
 }
 
 void WorkspacePanel::beginAssetRename(const std::filesystem::path& path, std::filesystem::path& selectedAssetPath){
@@ -256,6 +264,7 @@ void WorkspacePanel::commitAssetRename(std::filesystem::path& selectedAssetPath)
     }
 
     EditorAssetUI::InvalidateAllThumbnails();
+    browserCacheDirty = true;
     cancelAssetRename();
 }
 
@@ -345,7 +354,16 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
         bool isRelated = false;
         bool forceDataIcon = false;
         std::string parentKey;
+        std::string normalizedKey;
     };
+    using LinkedChildrenMap = std::unordered_map<std::string, std::vector<std::filesystem::path>>;
+
+    // Editor UI was rebuilding this browser tree every frame (directory scan + sort + link resolution).
+    // Cache it briefly; this keeps the panel responsive while avoiding constant filesystem churn.
+    static std::vector<BrowserEntry> s_browserEntriesCache;
+    static LinkedChildrenMap s_browserLinkedCache;
+    static std::filesystem::path s_browserCacheAssetRootPath;
+    static std::filesystem::path s_browserCacheAssetDirPath;
 
     auto resolveLinkedMaterialAssetPath = [&](const std::filesystem::path& materialPath, std::filesystem::path& outLinkedPath) -> bool{
         std::string resolvedAssetRef;
@@ -373,7 +391,7 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
     };
 
     auto collectBrowserEntries = [&](std::vector<BrowserEntry>& outEntries,
-                                     std::unordered_map<std::string, std::vector<std::filesystem::path>>& outLinkedByParent){
+                                     LinkedChildrenMap& outLinkedByParent){
         outEntries.clear();
         outLinkedByParent.clear();
 
@@ -402,7 +420,13 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
             const std::string bLabel = b.isUp ? std::string("..") : b.path.filename().string();
             return aLabel < bLabel;
         });
+        for(auto& baseEntry : baseEntries){
+            if(baseEntry.normalizedKey.empty()){
+                baseEntry.normalizedKey = normalizedPathKey(baseEntry.path);
+            }
+        }
 
+        const std::string assetDirKey = normalizedPathKey(assetDir);
         std::unordered_set<std::string> hiddenRelatedAssetKeys;
         auto addLinkedChild = [&](const std::string& parentKey, const std::filesystem::path& childPath){
             if(parentKey.empty()){
@@ -433,7 +457,7 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
                 continue;
             }
 
-            if(normalizedPathKey(linkedPath.parent_path()) != normalizedPathKey(assetDir)){
+            if(normalizedPathKey(linkedPath.parent_path()) != assetDirKey){
                 continue;
             }
 
@@ -480,7 +504,7 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
             if(!std::filesystem::exists(normalizedParentPath, parentEc) || std::filesystem::is_directory(normalizedParentPath, parentEc)){
                 continue;
             }
-            if(normalizedPathKey(normalizedParentPath.parent_path()) != normalizedPathKey(assetDir)){
+            if(normalizedPathKey(normalizedParentPath.parent_path()) != assetDirKey){
                 continue;
             }
 
@@ -529,7 +553,7 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
             if(!std::filesystem::exists(normalizedParentPath, parentEc) || std::filesystem::is_directory(normalizedParentPath, parentEc)){
                 continue;
             }
-            if(normalizedPathKey(normalizedParentPath.parent_path()) != normalizedPathKey(assetDir)){
+            if(normalizedPathKey(normalizedParentPath.parent_path()) != assetDirKey){
                 continue;
             }
 
@@ -546,7 +570,7 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
         }
 
         for(const auto& entry : baseEntries){
-            const std::string entryKey = normalizedPathKey(entry.path);
+            const std::string& entryKey = entry.normalizedKey;
             if(!entry.isUp && !entry.isDirectory && hiddenRelatedAssetKeys.find(entryKey) != hiddenRelatedAssetKeys.end()){
                 continue;
             }
@@ -575,11 +599,30 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
                 BrowserEntry relatedEntry;
                 relatedEntry.path = linkedPath;
                 relatedEntry.isRelated = true;
-                relatedEntry.forceDataIcon = true;
+                relatedEntry.forceDataIcon = false;
                 relatedEntry.parentKey = entryKey;
+                relatedEntry.normalizedKey = normalizedPathKey(linkedPath);
                 outEntries.push_back(relatedEntry);
             }
         }
+    };
+
+    auto getBrowserEntriesCached = [&](const std::vector<BrowserEntry>*& outEntries,
+                                       const LinkedChildrenMap*& outLinkedByParent,
+                                       bool forceRefresh = false){
+        // Avoid per-frame normalized string cache-key building, but still rebuild when the
+        // visible directory/root changes.
+        const bool cachePathChanged =
+            (s_browserCacheAssetRootPath != assetRoot) ||
+            (s_browserCacheAssetDirPath != assetDir);
+        if(forceRefresh || browserCacheDirty || s_browserEntriesCache.empty() || cachePathChanged){
+            collectBrowserEntries(s_browserEntriesCache, s_browserLinkedCache);
+            s_browserCacheAssetRootPath = assetRoot;
+            s_browserCacheAssetDirPath = assetDir;
+            browserCacheDirty = false;
+        }
+        outEntries = &s_browserEntriesCache;
+        outLinkedByParent = &s_browserLinkedCache;
     };
 
     auto drawRelatedToggle = [&](float iconSize, bool expanded) -> bool{
@@ -608,78 +651,176 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
         return clicked;
     };
 
+    auto truncateAssetLabel = [&](const std::string& label) -> std::string{
+        constexpr size_t kMaxLabelChars = 10;
+        constexpr size_t kKeepChars = 7;
+        if(label.size() <= kMaxLabelChars){
+            return label;
+        }
+        return label.substr(0, kKeepChars) + "...";
+    };
+    constexpr float kLinkedDrawerChildTileOffset = 8.0f;
+
     auto formatEntryLabel = [&](const BrowserEntry& entry) -> std::string{
         if(entry.isUp){
             return "..";
         }
 
         std::string label = entry.path.filename().string();
-        if(!entry.isRelated){
-            const std::string lowerName = StringUtils::ToLowerCase(label);
-            if(StringUtils::EndsWith(lowerName, ".material") && !StringUtils::EndsWith(lowerName, ".material.asset")){
-                label = entry.path.stem().string();
-            }
-        }else{
-            label = std::string("-> ") + label;
+        const std::string lowerName = StringUtils::ToLowerCase(label);
+        if(StringUtils::EndsWith(lowerName, ".material") && !StringUtils::EndsWith(lowerName, ".material.asset")){
+            label = entry.path.stem().string();
+        }else if(StringUtils::EndsWith(lowerName, ".material.asset")){
+            label = label.substr(0, label.size() - std::strlen(".material.asset"));
+        }else if(StringUtils::EndsWith(lowerName, ".mat.asset")){
+            label = label.substr(0, label.size() - std::strlen(".mat.asset"));
+        }else if(StringUtils::EndsWith(lowerName, ".model.asset")){
+            label = label.substr(0, label.size() - std::strlen(".model.asset"));
+        }else if(StringUtils::EndsWith(lowerName, ".shader.asset")){
+            label = label.substr(0, label.size() - std::strlen(".shader.asset"));
         }
 
-        return label;
+        return truncateAssetLabel(label);
+    };
+
+    auto drawLinkedDrawerGroupBackdrop = [&](const BrowserEntry& entry,
+                                             bool parentExpanded,
+                                             size_t childCount,
+                                             int currentColumn,
+                                             int totalColumns,
+                                             float tileSize,
+                                             float cellWidth){
+        if(entry.isRelated || !parentExpanded || childCount == 0 || totalColumns <= 0){
+            return;
+        }
+
+        ImDrawList* drawList = ImGui::GetWindowDrawList();
+        ImDrawList* overlayDrawList = ImGui::GetForegroundDrawList();
+        if(!drawList || !overlayDrawList){
+            return;
+        }
+
+        const ImVec2 cursor = ImGui::GetCursorScreenPos();
+        const int remainingColumns = std::max(0, totalColumns - currentColumn);
+        const int visibleChildCount = std::min<int>(static_cast<int>(childCount), std::max(0, remainingColumns - 1));
+        const int spanCells = 1 + visibleChildCount;
+        if(spanCells <= 1){
+            return;
+        }
+
+        const float lastVisibleChildRight =
+            cursor.x + ((float)visibleChildCount * cellWidth) + kLinkedDrawerChildTileOffset + tileSize;
+        const float drawerRightPadding = 8.0f;
+        const float groupSpanLeft = cursor.x;
+        const float groupSpanRight = cursor.x + ((float)spanCells * cellWidth);
+        const float groupEdgeInset = 2.0f;
+        const float stripTop = cursor.y - 4.0f;
+        const float stripBottom = cursor.y + tileSize + 6.0f;
+        ImVec2 bgMin(std::max(cursor.x - 6.0f, groupSpanLeft + groupEdgeInset), stripTop);
+        ImVec2 bgMax(std::min(lastVisibleChildRight + drawerRightPadding, groupSpanRight - groupEdgeInset), stripBottom);
+        if(bgMax.x <= bgMin.x){
+            return;
+        }
+
+        const ImVec2 windowMin = ImGui::GetWindowPos();
+        const ImVec2 windowMax(windowMin.x + ImGui::GetWindowSize().x, windowMin.y + ImGui::GetWindowSize().y);
+        drawList->PushClipRect(windowMin, windowMax, false);
+        overlayDrawList->PushClipRect(windowMin, windowMax, false);
+
+        // keep the fill subtle so child tiles remain readable; use a single strong outer border.
+        ImU32 fill = IM_COL32(22, 25, 32, 58);
+        ImU32 border = IM_COL32(64, 170, 255, 235);
+        ImU32 trayFill = IM_COL32(10, 12, 16, 112);
+        drawList->AddRectFilled(bgMin, bgMax, fill, 8.0f);
+        overlayDrawList->AddRect(bgMin, bgMax, border, 8.0f, 0, 2.0f);
+
+        // connector chip between parent tile and first linked child
+        const float firstChildTileLeft = cursor.x + cellWidth + kLinkedDrawerChildTileOffset;
+        const float parentTileRight = cursor.x + tileSize;
+        const float connectorGap = Math3D::Max(0.0f, firstChildTileLeft - parentTileRight);
+        const float chipW = std::clamp(connectorGap - 8.0f, 12.0f, 24.0f);
+        const float chipH = 16.0f;
+        const float chipCenterX = (parentTileRight + firstChildTileLeft) * 0.5f;
+        const float chipCenterY = cursor.y + (tileSize * 0.5f);
+        ImVec2 chipMin(chipCenterX - (chipW * 0.5f), chipCenterY - (chipH * 0.5f));
+        ImVec2 chipMax(chipCenterX + (chipW * 0.5f), chipCenterY + (chipH * 0.5f));
+
+        // tray begins just after the connector chip, like a slide-out drawer.
+        const float trayStartX = chipMax.x - 2.0f;
+        if(trayStartX < bgMax.x - 8.0f){
+            ImVec2 trayMin(trayStartX, stripTop + 4.0f);
+            ImVec2 trayMax(bgMax.x - 8.0f, stripBottom - 4.0f);
+            drawList->AddRectFilled(trayMin, trayMax, trayFill, 6.0f);
+        }
+
+        // darker container behind the linked child tiles so the grouping reads as a drawer.
+        ImVec2 linkedContainerMin(firstChildTileLeft - 6.0f, stripTop + 2.0f);
+        ImVec2 linkedContainerMax(lastVisibleChildRight + 6.0f, stripBottom - 2.0f);
+        linkedContainerMin.x = std::max(linkedContainerMin.x, bgMin.x + 6.0f);
+        linkedContainerMax.x = std::min(linkedContainerMax.x, bgMax.x - 6.0f);
+        if(linkedContainerMax.x > linkedContainerMin.x){
+            drawList->AddRectFilled(linkedContainerMin, linkedContainerMax, IM_COL32(7, 9, 13, 168), 6.0f);
+            drawList->AddRect(linkedContainerMin, linkedContainerMax, IM_COL32(34, 40, 50, 220), 6.0f, 0, 1.0f);
+        }
+
+        overlayDrawList->AddRectFilled(chipMin, chipMax, IM_COL32(24, 26, 31, 245), 4.0f);
+        overlayDrawList->AddRect(chipMin, chipMax, IM_COL32(78, 88, 106, 230), 4.0f, 0, 1.0f);
+        const char* arrowText = ">";
+        ImVec2 arrowSize = ImGui::CalcTextSize(arrowText);
+        ImVec2 arrowPos(
+            chipMin.x + ((chipW - arrowSize.x) * 0.5f),
+            chipMin.y + ((chipH - arrowSize.y) * 0.5f) - 0.5f
+        );
+        overlayDrawList->AddText(arrowPos, IM_COL32(236, 243, 255, 255), arrowText);
+
+        overlayDrawList->PopClipRect();
+        drawList->PopClipRect();
+    };
+
+    auto drawClippedAssetGrid = [&](const char* tableId,
+                                    int columns,
+                                    float tileSize,
+                                    float cellWidth,
+                                    ImGuiTableFlags tableFlags,
+                                    const std::vector<BrowserEntry>& entryList,
+                                    auto&& drawEntry){
+        if(!ImGui::BeginTable(tableId, columns, tableFlags)){
+            return;
+        }
+        for(int col = 0; col < columns; ++col){
+            ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed, cellWidth);
+        }
+
+        const int totalEntries = static_cast<int>(entryList.size());
+        const int rowCount = (totalEntries + columns - 1) / columns;
+        const float rowHeight = tileSize + (ImGui::GetTextLineHeightWithSpacing() * 2.4f) + 20.0f;
+        ImGuiListClipper clipper;
+        clipper.Begin(rowCount, rowHeight);
+        while(clipper.Step()){
+            for(int row = clipper.DisplayStart; row < clipper.DisplayEnd; ++row){
+                ImGui::TableNextRow(ImGuiTableRowFlags_None, rowHeight);
+                for(int col = 0; col < columns; ++col){
+                    const int idx = (row * columns) + col;
+                    if(idx >= totalEntries){
+                        break;
+                    }
+                    ImGui::TableSetColumnIndex(col);
+                    drawEntry(entryList[(size_t)idx]);
+                }
+            }
+        }
+
+        ImGui::EndTable();
     };
 
     ImGui::SetNextWindowPos(ImVec2(x, y));
    ImGui::SetNextWindowSize(ImVec2(w, h));
     ImGui::Begin("Workspace", nullptr, kPanelFlags);
 
-    bool logUpdated = false;
     uint64_t version = Logbot::GetLogVersion();
-    if(version != lastLogVersion){
-        logBuffer = Logbot::GetLogHistory();
-        lastLogVersion = version;
-        logUpdated = true;
-        logLines.clear();
-        logColors.clear();
-
-        std::string current;
-        current.reserve(256);
-        for(char c : logBuffer){
-            if(c == '\n'){
-                if(!current.empty()){
-                    ImVec4 color(0.8f, 0.8f, 0.8f, 1.0f);
-                    if(current.find("[Warning]") != std::string::npos){
-                        color = ImVec4(1.0f, 0.86f, 0.2f, 1.0f);
-                    }else if(current.find("[ERROR]") != std::string::npos){
-                        color = ImVec4(1.0f, 0.25f, 0.25f, 1.0f);
-                    }else if(current.find("[FATAL ERROR]") != std::string::npos){
-                        color = ImVec4(1.0f, 0.1f, 0.1f, 1.0f);
-                    }else if(current.find("[Info]") != std::string::npos){
-                        color = ImVec4(0.5f, 0.8f, 1.0f, 1.0f);
-                    }else if(current.find("[Unknown]") != std::string::npos){
-                        color = ImVec4(0.53f, 0.53f, 0.53f, 1.0f);
-                    }
-                    logLines.push_back(current);
-                    logColors.push_back(color);
-                }
-                current.clear();
-            }else{
-                current.push_back(c);
-            }
-        }
-        if(!current.empty()){
-            ImVec4 color(0.8f, 0.8f, 0.8f, 1.0f);
-            if(current.find("[Warning]") != std::string::npos){
-                color = ImVec4(1.0f, 0.86f, 0.2f, 1.0f);
-            }else if(current.find("[ERROR]") != std::string::npos){
-                color = ImVec4(1.0f, 0.25f, 0.25f, 1.0f);
-            }else if(current.find("[FATAL ERROR]") != std::string::npos){
-                color = ImVec4(1.0f, 0.1f, 0.1f, 1.0f);
-            }else if(current.find("[Info]") != std::string::npos){
-                color = ImVec4(0.5f, 0.8f, 1.0f, 1.0f);
-            }else if(current.find("[Unknown]") != std::string::npos){
-                color = ImVec4(0.53f, 0.53f, 0.53f, 1.0f);
-            }
-            logLines.push_back(current);
-            logColors.push_back(color);
-        }
+    if(version != lastLogSummaryVersion){
+        latestLogLine = Logbot::GetLastLogLine();
+        lastLogSummaryVersion = version;
     }
 
     auto makeUniqueSiblingPath = [&](const std::filesystem::path& desiredPath) -> std::filesystem::path{
@@ -704,6 +845,7 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
         std::error_code ec;
         if(std::filesystem::create_directories(folderPath, ec)){
             beginAssetRename(folderPath, selectedAssetPath);
+            browserCacheDirty = true;
         }else{
             LogBot.Log(LOG_ERRO, "Failed to create folder: %s", folderPath.string().c_str());
         }
@@ -715,6 +857,7 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
         if(file.createFile()){
             selectedAssetPath = filePath;
             beginAssetRename(filePath, selectedAssetPath);
+            browserCacheDirty = true;
         }
     };
 
@@ -727,6 +870,7 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
         std::string error;
         if(ShaderAssetIO::SaveToAbsolutePath(path, data, &error)){
             selectedAssetPath = path;
+            browserCacheDirty = true;
         }else{
             LogBot.Log(LOG_ERRO, "Failed to create shader asset: %s", error.c_str());
         }
@@ -753,6 +897,7 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
         if(createMaterialWithLinkedAsset(materialPath, createdMaterialAssetPath, &error)){
             selectedAssetPath = materialPath;
             EditorAssetUI::InvalidateAllThumbnails();
+            browserCacheDirty = true;
         }else{
             LogBot.Log(LOG_ERRO, "Failed to create material object: %s", error.c_str());
         }
@@ -809,6 +954,7 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
         if(success){
             selectedAssetPath = targetPath;
             expandedRelatedAssets.clear();
+            browserCacheDirty = true;
         }
         return success;
     };
@@ -974,6 +1120,7 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
 
                 if(deletedAny){
                     EditorAssetUI::InvalidateAllThumbnails();
+                    browserCacheDirty = true;
                 }
                 if(hadDeleteError){
                     LogBot.Log(LOG_WARN, "One or more delete operations failed.");
@@ -1019,17 +1166,21 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
             float footerReserve = ImGui::GetFrameHeight() + ImGui::GetStyle().ItemSpacing.y + kFooterBottomPadding + 2.0f;
             ImGui::BeginChild("AssetList", ImVec2(0.0f, -footerReserve), false);
             bool openAssetContextMenu = false;
+            ImGui::Dummy(ImVec2(0.0f, 4.0f));
 
             if(std::filesystem::exists(assetDir)){
-                std::vector<BrowserEntry> entries;
-                std::unordered_map<std::string, std::vector<std::filesystem::path>> linkedByParent;
-                collectBrowserEntries(entries, linkedByParent);
+                const std::vector<BrowserEntry>* entries = nullptr;
+                const LinkedChildrenMap* linkedByParent = nullptr;
+                getBrowserEntriesCached(entries, linkedByParent);
+                if(!entries || !linkedByParent){
+                    entries = &s_browserEntriesCache;
+                    linkedByParent = &s_browserLinkedCache;
+                }
 
                 float cellWidth = assetTileSize + 20.0f;
                 int columns = std::max(1, static_cast<int>(ImGui::GetContentRegionAvail().x / cellWidth));
                 ImGuiTableFlags tableFlags = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX;
-                if(ImGui::BeginTable("AssetGridTable", columns, tableFlags)){
-                    for(const auto& entry : entries){
+                drawClippedAssetGrid("AssetGridTable", columns, assetTileSize, cellWidth, tableFlags, *entries, [&](const BrowserEntry& entry){
                         EditorAssetUI::AssetTransaction tx{};
                         const auto& path = entry.path;
                         if(entry.isUp){
@@ -1039,15 +1190,40 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
                             tx.kind = EditorAssetUI::AssetKind::Directory;
                             tx.isDirectory = true;
                         }else if(!EditorAssetUI::BuildTransaction(path, assetRoot, tx)){
-                            continue;
+                            return;
                         }
 
-                        ImGui::TableNextColumn();
                         ImGui::PushID(path.string().c_str());
 
                         EditorAssetUI::AssetTransaction drawTx = tx;
                         if(entry.forceDataIcon){
                             drawTx.kind = EditorAssetUI::AssetKind::Unknown;
+                        }
+
+                        const std::string& pathKey = entry.normalizedKey;
+                        const bool hasRelatedChildren =
+                            (!entry.isUp && !entry.isDirectory && !entry.isRelated && linkedByParent->find(pathKey) != linkedByParent->end());
+                        const bool parentExpanded = hasRelatedChildren &&
+                            (expandedRelatedAssets.find(pathKey) != expandedRelatedAssets.end());
+                        size_t relatedChildCount = 0;
+                        if(hasRelatedChildren){
+                            auto linkedIt = linkedByParent->find(pathKey);
+                            if(linkedIt != linkedByParent->end()){
+                                relatedChildCount = linkedIt->second.size();
+                            }
+                        }
+                        drawLinkedDrawerGroupBackdrop(
+                            entry,
+                            parentExpanded,
+                            relatedChildCount,
+                            ImGui::TableGetColumnIndex(),
+                            columns,
+                            assetTileSize,
+                            cellWidth
+                        );
+
+                        if(entry.isRelated){
+                            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + kLinkedDrawerChildTileOffset);
                         }
 
                         bool selected = (path == selectedAssetPath);
@@ -1068,18 +1244,15 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
                             EditorAssetUI::BeginAssetDragSource(tx);
                         }
 
-                        const std::string pathKey = normalizedPathKey(path);
-                        const bool hasRelatedChildren =
-                            (!entry.isUp && !entry.isDirectory && !entry.isRelated && linkedByParent.find(pathKey) != linkedByParent.end());
                         bool toggledChildren = false;
                         if(hasRelatedChildren){
-                            bool expanded = expandedRelatedAssets.find(pathKey) != expandedRelatedAssets.end();
+                            bool expanded = parentExpanded;
                             if(drawRelatedToggle(assetTileSize, expanded)){
                                 toggledChildren = true;
                                 if(expanded){
                                     expandedRelatedAssets.erase(pathKey);
-                                    auto linkedIt = linkedByParent.find(pathKey);
-                                    if(linkedIt != linkedByParent.end()){
+                                    auto linkedIt = linkedByParent->find(pathKey);
+                                    if(linkedIt != linkedByParent->end()){
                                         for(const auto& linkedPath : linkedIt->second){
                                             if(selectedAssetPath == linkedPath){
                                                 selectedAssetPath = path;
@@ -1090,6 +1263,7 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
                                 }else{
                                     expandedRelatedAssets.insert(pathKey);
                                 }
+                                browserCacheDirty = true;
                                 clicked = false;
                                 doubleClicked = false;
                             }
@@ -1119,9 +1293,6 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
                             }
                         }else{
                             std::string label = formatEntryLabel(entry);
-                            if(label.size() > 22){
-                                label = label.substr(0, 19) + "...";
-                            }
                             ImGui::TextWrapped("%s", label.c_str());
                             bool labelClicked = !toggledChildren && ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left);
                             bool labelDoubleClicked = !toggledChildren && ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left);
@@ -1153,9 +1324,7 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
                         }
 
                         ImGui::PopID();
-                    }
-                    ImGui::EndTable();
-                }
+                });
             }else{
                 ImGui::TextUnformatted("Directory missing.");
             }
@@ -1188,9 +1357,9 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
             ImGui::EndChild();
             ImGui::Separator();
 
-            std::string latestLogLine = logLines.empty() ? std::string("No log output.") : logLines.back();
-            if(latestLogLine.size() > 180){
-                latestLogLine = latestLogLine.substr(0, 177) + "...";
+            std::string latestFooterLogLine = latestLogLine.empty() ? std::string("No log output.") : latestLogLine;
+            if(latestFooterLogLine.size() > 180){
+                latestFooterLogLine = latestFooterLogLine.substr(0, 177) + "...";
             }
 
             float rightPaneWidth = 220.0f;
@@ -1208,10 +1377,10 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
                     label = std::string("Selected: ") + selectedTx.assetRef;
                 }else{
                     selectedAssetPath.clear();
-                    label = std::string("Latest: ") + latestLogLine;
+                    label = std::string("Latest: ") + latestFooterLogLine;
                 }
             }else{
-                label = std::string("Latest: ") + latestLogLine;
+                label = std::string("Latest: ") + latestFooterLogLine;
             }
             if(ImGui::Selectable(label.c_str(), false, ImGuiSelectableFlags_None, ImVec2(leftPaneWidth, 0.0f))){
                 requestOpenLogTab = true;
@@ -1230,6 +1399,56 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
         ImGuiTabItemFlags logTabFlags = requestOpenLogTab ? ImGuiTabItemFlags_SetSelected : ImGuiTabItemFlags_None;
         if(ImGui::BeginTabItem("Log", nullptr, logTabFlags)){
             requestOpenLogTab = false;
+            bool logUpdated = false;
+            if(version != lastLogVersion){
+                logBuffer = Logbot::GetLogHistory();
+                lastLogVersion = version;
+                logUpdated = true;
+                logLines.clear();
+                logColors.clear();
+
+                std::string current;
+                current.reserve(256);
+                for(char c : logBuffer){
+                    if(c == '\n'){
+                        if(!current.empty()){
+                            ImVec4 color(0.8f, 0.8f, 0.8f, 1.0f);
+                            if(current.find("[Warning]") != std::string::npos){
+                                color = ImVec4(1.0f, 0.86f, 0.2f, 1.0f);
+                            }else if(current.find("[ERROR]") != std::string::npos){
+                                color = ImVec4(1.0f, 0.25f, 0.25f, 1.0f);
+                            }else if(current.find("[FATAL ERROR]") != std::string::npos){
+                                color = ImVec4(1.0f, 0.1f, 0.1f, 1.0f);
+                            }else if(current.find("[Info]") != std::string::npos){
+                                color = ImVec4(0.5f, 0.8f, 1.0f, 1.0f);
+                            }else if(current.find("[Unknown]") != std::string::npos){
+                                color = ImVec4(0.53f, 0.53f, 0.53f, 1.0f);
+                            }
+                            logLines.push_back(current);
+                            logColors.push_back(color);
+                        }
+                        current.clear();
+                    }else{
+                        current.push_back(c);
+                    }
+                }
+                if(!current.empty()){
+                    ImVec4 color(0.8f, 0.8f, 0.8f, 1.0f);
+                    if(current.find("[Warning]") != std::string::npos){
+                        color = ImVec4(1.0f, 0.86f, 0.2f, 1.0f);
+                    }else if(current.find("[ERROR]") != std::string::npos){
+                        color = ImVec4(1.0f, 0.25f, 0.25f, 1.0f);
+                    }else if(current.find("[FATAL ERROR]") != std::string::npos){
+                        color = ImVec4(1.0f, 0.1f, 0.1f, 1.0f);
+                    }else if(current.find("[Info]") != std::string::npos){
+                        color = ImVec4(0.5f, 0.8f, 1.0f, 1.0f);
+                    }else if(current.find("[Unknown]") != std::string::npos){
+                        color = ImVec4(0.53f, 0.53f, 0.53f, 1.0f);
+                    }
+                    logLines.push_back(current);
+                    logColors.push_back(color);
+                }
+            }
             ImGui::BeginChild("LogView", ImVec2(0.0f, 0.0f), true, ImGuiWindowFlags_HorizontalScrollbar);
             for(size_t i = 0; i < logLines.size(); ++i){
                 ImGui::TextColored(logColors[i], "%s", logLines[i].c_str());
@@ -1261,15 +1480,22 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
             ImGui::Separator();
             float pickerTileSize = std::clamp(assetTileSize, 56.0f, 128.0f);
             bool openPickerContextMenu = false;
+            ImGui::Dummy(ImVec2(0.0f, 4.0f));
             if(std::filesystem::exists(assetDir)){
-                std::vector<BrowserEntry> entries;
-                std::unordered_map<std::string, std::vector<std::filesystem::path>> linkedByParent;
-                collectBrowserEntries(entries, linkedByParent);
+                const std::vector<BrowserEntry>* entries = nullptr;
+                const LinkedChildrenMap* linkedByParent = nullptr;
+                getBrowserEntriesCached(entries, linkedByParent);
+                if(!entries || !linkedByParent){
+                    entries = &s_browserEntriesCache;
+                    linkedByParent = &s_browserLinkedCache;
+                }
 
                 float cellWidth = pickerTileSize + 20.0f;
                 int columns = std::max(1, static_cast<int>(ImGui::GetContentRegionAvail().x / cellWidth));
-                if(ImGui::BeginTable("AssetPickerGridTable", columns, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX)){
-                    for(const auto& entry : entries){
+                drawClippedAssetGrid("AssetPickerGridTable", columns, pickerTileSize, cellWidth,
+                    ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX,
+                    *entries,
+                    [&](const BrowserEntry& entry){
                         EditorAssetUI::AssetTransaction tx{};
                         const auto& path = entry.path;
                         if(entry.isUp){
@@ -1279,15 +1505,40 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
                             tx.kind = EditorAssetUI::AssetKind::Directory;
                             tx.isDirectory = true;
                         }else if(!EditorAssetUI::BuildTransaction(path, assetRoot, tx)){
-                            continue;
+                            return;
                         }
 
-                        ImGui::TableNextColumn();
                         ImGui::PushID(path.string().c_str());
                         EditorAssetUI::AssetTransaction drawTx = tx;
                         if(entry.forceDataIcon){
                             drawTx.kind = EditorAssetUI::AssetKind::Unknown;
                         }
+                        const std::string& pathKey = entry.normalizedKey;
+                        const bool hasRelatedChildren =
+                            (!entry.isUp && !entry.isDirectory && !entry.isRelated && linkedByParent->find(pathKey) != linkedByParent->end());
+                        const bool parentExpanded = hasRelatedChildren &&
+                            (expandedRelatedAssets.find(pathKey) != expandedRelatedAssets.end());
+                        size_t relatedChildCount = 0;
+                        if(hasRelatedChildren){
+                            auto linkedIt = linkedByParent->find(pathKey);
+                            if(linkedIt != linkedByParent->end()){
+                                relatedChildCount = linkedIt->second.size();
+                            }
+                        }
+                        drawLinkedDrawerGroupBackdrop(
+                            entry,
+                            parentExpanded,
+                            relatedChildCount,
+                            ImGui::TableGetColumnIndex(),
+                            columns,
+                            pickerTileSize,
+                            cellWidth
+                        );
+
+                        if(entry.isRelated){
+                            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + kLinkedDrawerChildTileOffset);
+                        }
+
                         bool selected = (path == selectedAssetPath);
                         bool doubleClicked = false;
                         bool clicked = EditorAssetUI::DrawAssetTile("asset_picker_tile", drawTx, pickerTileSize, selected, &doubleClicked);
@@ -1306,18 +1557,15 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
                             EditorAssetUI::BeginAssetDragSource(tx);
                         }
 
-                        const std::string pathKey = normalizedPathKey(path);
-                        const bool hasRelatedChildren =
-                            (!entry.isUp && !entry.isDirectory && !entry.isRelated && linkedByParent.find(pathKey) != linkedByParent.end());
                         bool toggledChildren = false;
                         if(hasRelatedChildren){
-                            bool expanded = expandedRelatedAssets.find(pathKey) != expandedRelatedAssets.end();
+                            bool expanded = parentExpanded;
                             if(drawRelatedToggle(pickerTileSize, expanded)){
                                 toggledChildren = true;
                                 if(expanded){
                                     expandedRelatedAssets.erase(pathKey);
-                                    auto linkedIt = linkedByParent.find(pathKey);
-                                    if(linkedIt != linkedByParent.end()){
+                                    auto linkedIt = linkedByParent->find(pathKey);
+                                    if(linkedIt != linkedByParent->end()){
                                         for(const auto& linkedPath : linkedIt->second){
                                             if(selectedAssetPath == linkedPath){
                                                 selectedAssetPath = path;
@@ -1328,15 +1576,13 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
                                 }else{
                                     expandedRelatedAssets.insert(pathKey);
                                 }
+                                browserCacheDirty = true;
                                 clicked = false;
                                 doubleClicked = false;
                             }
                         }
 
                         std::string label = formatEntryLabel(entry);
-                        if(label.size() > 24){
-                            label = label.substr(0, 21) + "...";
-                        }
                         ImGui::TextWrapped("%s", label.c_str());
                         bool labelClicked = !toggledChildren && ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left);
                         bool labelDoubleClicked = !toggledChildren && ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left);
@@ -1363,9 +1609,7 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
                             selectedAssetPath = path;
                         }
                         ImGui::PopID();
-                    }
-                    ImGui::EndTable();
-                }
+                    });
             }else{
                 ImGui::TextUnformatted("Directory missing.");
             }

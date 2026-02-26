@@ -16,12 +16,14 @@
 #include <cmath>
 
 namespace {
-    constexpr int MAX_SHADOW_MAPS_2D = 24;
+    constexpr int MAX_SHADOW_MAPS_2D = 16;
     constexpr int MAX_SHADOW_MAPS_CUBE = 2;
     constexpr int SHADOW_TEX_UNIT_BASE_2D = 8;
+    // Hybrid defaults: keep high-quality directional/spot shadows, trim point shadows first.
     constexpr int SHADOW_MAP_SIZE_DIRECTIONAL = 2048;
     constexpr int SHADOW_MAP_SIZE_SPOT = 1536;
-    constexpr int SHADOW_MAP_SIZE_CUBE = 1024;
+    constexpr int SHADOW_MAP_SIZE_CUBE = 512;
+    constexpr int DIRECTIONAL_CASCADE_COUNT = 4;
 
     struct ShadowSlot2D {
         ShadowMap2D map;
@@ -167,6 +169,43 @@ namespace {
         outCorners[5] = glm::vec3(maxV.x, minV.y, maxV.z);
         outCorners[6] = glm::vec3(minV.x, maxV.y, maxV.z);
         outCorners[7] = glm::vec3(maxV.x, maxV.y, maxV.z);
+    }
+
+    bool aabbIntersectsClipFrustum(const Math3D::Vec3& minV, const Math3D::Vec3& maxV, const Math3D::Mat4& clipMatrix){
+        std::array<glm::vec3, 8> corners;
+        fillAabbCorners(minV, maxV, corners);
+
+        const glm::mat4 m = static_cast<glm::mat4>(clipMatrix);
+
+        bool allLeft = true;
+        bool allRight = true;
+        bool allBottom = true;
+        bool allTop = true;
+        bool allNear = true;
+        bool allFar = true;
+
+        for(const glm::vec3& corner : corners){
+            const glm::vec4 clip = m * glm::vec4(corner, 1.0f);
+            if(!std::isfinite(clip.x) || !std::isfinite(clip.y) || !std::isfinite(clip.z) || !std::isfinite(clip.w)){
+                return true; // Fail open on invalid math to avoid incorrect missing shadows.
+            }
+
+            allLeft = allLeft && (clip.x < -clip.w);
+            allRight = allRight && (clip.x > clip.w);
+            allBottom = allBottom && (clip.y < -clip.w);
+            allTop = allTop && (clip.y > clip.w);
+            allNear = allNear && (clip.z < -clip.w);
+            allFar = allFar && (clip.z > clip.w);
+        }
+
+        return !(allLeft || allRight || allBottom || allTop || allNear || allFar);
+    }
+
+    bool shadowItemIntersectsFrustum(const ShadowRenderer::ShadowDrawItem& item, const Math3D::Mat4& clipMatrix){
+        if(!item.hasBounds){
+            return true;
+        }
+        return aabbIntersectsClipFrustum(item.boundsMin, item.boundsMax, clipMatrix);
     }
 
     int getShadowTypePriority(LightType type){
@@ -731,7 +770,7 @@ void ShadowRenderer::BeginFrame(PCamera camera, const std::vector<ShadowCasterBo
         if(light.castsShadows){
             if(light.type == LightType::DIRECTIONAL){
                 if(i < allow2D.size() && allow2D[i]){
-                    int cascadeCount = 4;
+                    int cascadeCount = DIRECTIONAL_CASCADE_COUNT;
                     std::vector<float> splits;
                     std::vector<Math3D::Mat4> matrices;
                     computeDirectionalCascades(light, camera, cascadeCount, splits, matrices, casters);
@@ -887,40 +926,7 @@ void ShadowRenderer::BeginFrame(PCamera camera, const std::vector<ShadowCasterBo
         }
     }
 
-    for(int i = 0; i < g_active2D; ++i){
-        auto& slot = g_shadow2D[i];
-        if(slot.map.getDepthTexture() == 0 || slot.map.getSize() <= 0){
-            continue;
-        }
-        slot.map.bind();
-        glViewport(0, 0, slot.map.getSize(), slot.map.getSize());
-        glClear(GL_DEPTH_BUFFER_BIT);
-        if(shouldCheckShadowGlErrors()){
-            GLenum err = glGetError();
-            if(err != GL_NO_ERROR){
-                LogBot.Log(LOG_ERRO, "[Shadow] GL error after clearing 2D shadow map %d: 0x%X", i, err);
-            }
-        }
-    }
-
-    for(int i = 0; i < g_activeCube; ++i){
-        auto& slot = g_shadowCube[i];
-        if(slot.map.getDepthTexture() == 0 || slot.map.getSize() <= 0){
-            continue;
-        }
-        for(int face = 0; face < 6; ++face){
-            slot.map.bindFace(GL_TEXTURE_CUBE_MAP_POSITIVE_X + face);
-            glViewport(0, 0, slot.map.getSize(), slot.map.getSize());
-            glClear(GL_DEPTH_BUFFER_BIT);
-            if(shouldCheckShadowGlErrors()){
-                GLenum err = glGetError();
-                if(err != GL_NO_ERROR){
-                    LogBot.Log(LOG_ERRO, "[Shadow] GL error after clearing cube shadow map %d face %d: 0x%X", i, face, err);
-                }
-            }
-        }
-    }
-
+    // Shadow map clearing is deferred to RenderShadowsBatch where maps are actually rendered.
     glBindFramebuffer(GL_FRAMEBUFFER, g_savedFbo);
     glViewport(g_savedViewport[0], g_savedViewport[1], g_savedViewport[2], g_savedViewport[3]);
     if(shouldCheckShadowGlErrors()){
@@ -992,6 +998,14 @@ void ShadowRenderer::RenderShadowsBatch(const std::vector<ShadowDrawItem>& items
 
     if(g_shadow2DProgram && g_shadow2DProgram->getID() != 0){
         g_shadow2DProgram->bind();
+        static GLuint s_cached2DProgram = 0;
+        static GLint s_2dLightMatrixLoc = -1;
+        static GLint s_2dModelLoc = -1;
+        if(s_cached2DProgram != g_shadow2DProgram->getID()){
+            s_cached2DProgram = g_shadow2DProgram->getID();
+            s_2dLightMatrixLoc = glGetUniformLocation(s_cached2DProgram, "u_lightMatrix");
+            s_2dModelLoc = glGetUniformLocation(s_cached2DProgram, "u_model");
+        }
         for(int i = 0; i < g_active2D; ++i){
             const auto& slot = g_shadow2D[i];
             if(slot.map.getDepthTexture() == 0 || slot.map.getSize() <= 0){
@@ -1000,9 +1014,16 @@ void ShadowRenderer::RenderShadowsBatch(const std::vector<ShadowDrawItem>& items
             slot.map.bind();
             glViewport(0, 0, slot.map.getSize(), slot.map.getSize());
             glClear(GL_DEPTH_BUFFER_BIT);
-            g_shadow2DProgram->setUniformFast("u_lightMatrix", Uniform<Math3D::Mat4>(slot.matrix));
+            if(s_2dLightMatrixLoc != -1){
+                glUniformMatrix4fv(s_2dLightMatrixLoc, 1, GL_FALSE, glm::value_ptr(slot.matrix.data));
+            }
             for(const ShadowDrawItem* item : activeItems){
-                g_shadow2DProgram->setUniformFast("u_model", Uniform<Math3D::Mat4>(item->model));
+                if(!shadowItemIntersectsFrustum(*item, slot.matrix)){
+                    continue;
+                }
+                if(s_2dModelLoc != -1){
+                    glUniformMatrix4fv(s_2dModelLoc, 1, GL_FALSE, glm::value_ptr(item->model.data));
+                }
                 item->mesh->draw();
             }
             if(shouldCheckShadowGlErrors()){
@@ -1019,10 +1040,14 @@ void ShadowRenderer::RenderShadowsBatch(const std::vector<ShadowDrawItem>& items
         static GLuint s_cachedCubeProgram = 0;
         static GLint s_lightPosLoc = -1;
         static GLint s_farPlaneLoc = -1;
+        static GLint s_cubeLightMatrixLoc = -1;
+        static GLint s_cubeModelLoc = -1;
         if(s_cachedCubeProgram != g_shadowCubeProgram->getID()){
             s_cachedCubeProgram = g_shadowCubeProgram->getID();
             s_lightPosLoc = glGetUniformLocation(s_cachedCubeProgram, "u_lightPos");
             s_farPlaneLoc = glGetUniformLocation(s_cachedCubeProgram, "u_farPlane");
+            s_cubeLightMatrixLoc = glGetUniformLocation(s_cachedCubeProgram, "u_lightMatrix");
+            s_cubeModelLoc = glGetUniformLocation(s_cachedCubeProgram, "u_model");
         }
         for(int i = 0; i < g_activeCube; ++i){
             const auto& slot = g_shadowCube[i];
@@ -1039,9 +1064,16 @@ void ShadowRenderer::RenderShadowsBatch(const std::vector<ShadowDrawItem>& items
                 slot.map.bindFace(GL_TEXTURE_CUBE_MAP_POSITIVE_X + static_cast<int>(face));
                 glViewport(0, 0, slot.map.getSize(), slot.map.getSize());
                 glClear(GL_DEPTH_BUFFER_BIT);
-                g_shadowCubeProgram->setUniformFast("u_lightMatrix", Uniform<Math3D::Mat4>(slot.matrices[face]));
+                if(s_cubeLightMatrixLoc != -1){
+                    glUniformMatrix4fv(s_cubeLightMatrixLoc, 1, GL_FALSE, glm::value_ptr(slot.matrices[face].data));
+                }
                 for(const ShadowDrawItem* item : activeItems){
-                    g_shadowCubeProgram->setUniformFast("u_model", Uniform<Math3D::Mat4>(item->model));
+                    if(!shadowItemIntersectsFrustum(*item, slot.matrices[face])){
+                        continue;
+                    }
+                    if(s_cubeModelLoc != -1){
+                        glUniformMatrix4fv(s_cubeModelLoc, 1, GL_FALSE, glm::value_ptr(item->model.data));
+                    }
                     item->mesh->draw();
                 }
                 if(shouldCheckShadowGlErrors()){
@@ -1135,14 +1167,10 @@ void ShadowRenderer::BindShadowSamplers(const std::shared_ptr<ShaderProgram>& pr
     if(size2D > 0){
         glActiveTexture(GL_TEXTURE0 + fallback2DUnit);
         glBindTexture(GL_TEXTURE_2D, g_fallbackShadowTex2D);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
     }
     if(sizeCube > 0){
         glActiveTexture(GL_TEXTURE0 + fallbackCubeUnit);
         glBindTexture(GL_TEXTURE_CUBE_MAP, g_fallbackShadowTexCube);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
     }
 
     for(int i = 0; i < real2D; ++i){
@@ -1155,8 +1183,6 @@ void ShadowRenderer::BindShadowSamplers(const std::shared_ptr<ShaderProgram>& pr
         }
         glActiveTexture(GL_TEXTURE0 + units2D[i]);
         glBindTexture(GL_TEXTURE_2D, texId);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
     }
 
     for(int i = 0; i < realCube; ++i){
@@ -1169,8 +1195,6 @@ void ShadowRenderer::BindShadowSamplers(const std::shared_ptr<ShaderProgram>& pr
         }
         glActiveTexture(GL_TEXTURE0 + unitsCube[i]);
         glBindTexture(GL_TEXTURE_CUBE_MAP, texId);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
     }
 
     // Restore default active texture unit to avoid surprising later binds.

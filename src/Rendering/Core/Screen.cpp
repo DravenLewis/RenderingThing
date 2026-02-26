@@ -2,6 +2,7 @@
 #include "Rendering/Core/Screen.h"
 #include "Rendering/Lighting/ShadowRenderer.h"
 #include "Rendering/Core/View.h"
+#include <chrono>
 
 PCamera Screen::CurrentCamera = nullptr;
 PEnvironment Screen::CurrentEnvironment = nullptr;
@@ -53,6 +54,8 @@ void Screen::initScreenShader(){
 }
 
 void Screen::processRenderPipeline(){
+    using clock = std::chrono::steady_clock;
+    auto pipelineStart = clock::now();
     /*auto drawBuffer = buffer->getDrawBuffer();
     auto editBuffer = buffer->getEditBuffer();
 
@@ -101,6 +104,7 @@ void Screen::processRenderPipeline(){
     auto originalDepth = buffer->getDrawBuffer()->getDepthTexture();
 
     bool performedAnyEffects = false;
+    int appliedEffectCount = 0;
 
     // 2. Run the Effect Stack (Ping-Pong Logic)
     // If the list is empty, this loop is skipped entirely.
@@ -108,6 +112,7 @@ void Screen::processRenderPipeline(){
         if (!effect) continue;
 
         performedAnyEffects = true;
+        appliedEffectCount++;
 
         // Apply the effect: Read from Source -> Write to Target
         // If it fails, preserve the frame with one passthrough copy.
@@ -148,6 +153,13 @@ void Screen::processRenderPipeline(){
     // Front becomes Back.
     // Back becomes Middle.
     buffer->swapBuffers();
+
+    auto pipelineEnd = clock::now();
+    lastPostProcessMs.store(
+        std::chrono::duration<float, std::milli>(pipelineEnd - pipelineStart).count(),
+        std::memory_order_relaxed
+    );
+    lastPostProcessEffectCount.store(appliedEffectCount, std::memory_order_relaxed);
 }
 
 void Screen::drawToWindow(RenderWindow* window, bool clearWindow){

@@ -97,31 +97,33 @@ void FreeTypeFont::_initFont(){
 
 void FreeTypeFont::drawText(std::string text, Math3D::Vec2 position, PCamera camera, Color color, bool useCache){
     if(!this->textureAtlasPtr || !camera)  return;
-    constexpr size_t MAX_TEXT_CACHE = 500;
-    constexpr size_t TRIM_BATCH = 100;
-    if(this->meshCache.size() > MAX_TEXT_CACHE){
-        size_t toRemove = Math3D::Min(TRIM_BATCH, this->meshCache.size());
-        for(size_t i = 0; i < toRemove; ++i){
-            auto it = meshCache.begin();
-            if(it == meshCache.end()) break;
-            meshCache.erase(it);
-        }
-    }
-
-    TextCacheKey key = {text, color};
     std::shared_ptr<ModelPart> meshToDraw = nullptr;
 
-    // 1. Check Base Class Cache
-    if(useCache){
-        auto it = meshCache.find(key);
-        if(it != meshCache.end()){
-            meshToDraw = it->second; // We already have this mesh, no need to generate it.
+    if(!useCache){
+        if(!transientTextPart){
+            transientTextPart = std::make_shared<ModelPart>();
+            transientTextPart->mesh = std::make_shared<Mesh>();
+        }else if(!transientTextPart->mesh){
+            transientTextPart->mesh = std::make_shared<Mesh>();
         }
-    }
 
-    if(!meshToDraw){ // we dint have a mesh time to create one.
-        auto mat = MaterialDefaults::ImageMaterial::Create(this->textureAtlasPtr, color);
-        auto factory = ModelPartFactory::Create(mat);
+        auto imageMat = Material::GetAs<MaterialDefaults::ImageMaterial>(this->materialCachePtr);
+        if(!imageMat || !imageMat->getShader() || imageMat->getShader()->getID() == 0){
+            this->materialCachePtr = MaterialDefaults::ImageMaterial::Create(this->textureAtlasPtr, color);
+            imageMat = Material::GetAs<MaterialDefaults::ImageMaterial>(this->materialCachePtr);
+        }
+        if(!imageMat){
+            return;
+        }
+
+        imageMat->Tex = this->textureAtlasPtr;
+        imageMat->Color = color;
+        imageMat->UV = Math3D::Vec2(0.0f, 0.0f);
+
+        std::vector<Vertex> vertices;
+        std::vector<uint32_t> indices;
+        vertices.reserve(text.size() * 4);
+        indices.reserve(text.size() * 6);
 
         float x = 0, y = 0;
         const float lineHeight = std::ceil(this->fontSize);
@@ -133,7 +135,7 @@ void FreeTypeFont::drawText(std::string text, Math3D::Vec2 position, PCamera cam
                 y += lineHeight;
                 continue;
             }
-            if(c < 32 || c >= 128) continue; // we dont need the stop codes like NULL or EOL / EOF.
+            if(c < 32 || c >= 128) continue;
 
             const FontCharacter& ch = this->characters[c];
 
@@ -142,41 +144,103 @@ void FreeTypeFont::drawText(std::string text, Math3D::Vec2 position, PCamera cam
             float w = ch.sizeX;
             float h = ch.sizeY;
 
-            int v0, v1, v2, v3;
+            const uint32_t base = static_cast<uint32_t>(vertices.size());
+            vertices.push_back(Vertex::Build(Math3D::Vec3(xpos,     ypos,     0)).UV(ch.u0, ch.v0).Norm(0,0,1).Col(Color::WHITE));
+            vertices.push_back(Vertex::Build(Math3D::Vec3(xpos + w, ypos,     0)).UV(ch.u1, ch.v0).Norm(0,0,1).Col(Color::WHITE));
+            vertices.push_back(Vertex::Build(Math3D::Vec3(xpos + w, ypos + h, 0)).UV(ch.u1, ch.v1).Norm(0,0,1).Col(Color::WHITE));
+            vertices.push_back(Vertex::Build(Math3D::Vec3(xpos,     ypos + h, 0)).UV(ch.u0, ch.v1).Norm(0,0,1).Col(Color::WHITE));
 
-            factory
-                .addVertex(Vertex::Build(Math3D::Vec3(xpos, ypos, 0))
-                    .UV(ch.u0,ch.v0)
-                    .Norm(0,0,1)
-                    .Col(Color::WHITE),
-                &v0)
-
-                .addVertex(Vertex::Build(Math3D::Vec3(xpos + w, ypos, 0))
-                    .UV(ch.u1,ch.v0)
-                    .Norm(0,0,1)
-                    .Col(Color::WHITE),
-                &v1)
-
-                .addVertex(Vertex::Build(Math3D::Vec3(xpos + w  , ypos + h, 0))
-                    .UV(ch.u1,ch.v1)
-                    .Norm(0,0,1)
-                    .Col(Color::WHITE),
-                &v2)
-
-                .addVertex(Vertex::Build(Math3D::Vec3(xpos, ypos + h, 0))
-                    .UV(ch.u0,ch.v1)
-                    .Norm(0,0,1)
-                    .Col(Color::WHITE)
-                ,&v3);
-
-            factory.defineFace(v0,v3,v2,v1);
+            // Match the existing face winding used by the cached path.
+            indices.push_back(base + 0);
+            indices.push_back(base + 3);
+            indices.push_back(base + 2);
+            indices.push_back(base + 2);
+            indices.push_back(base + 1);
+            indices.push_back(base + 0);
 
             x += ch.advance;
-        
         }
 
-        meshToDraw = factory.assemble();
-        if(useCache) meshCache[key] = meshToDraw;
+        transientTextPart->mesh->upload(std::move(vertices), std::move(indices));
+        transientTextPart->material = this->materialCachePtr;
+        meshToDraw = transientTextPart;
+    }else{
+        constexpr size_t MAX_TEXT_CACHE = 500;
+        constexpr size_t TRIM_BATCH = 100;
+        if(this->meshCache.size() > MAX_TEXT_CACHE){
+            size_t toRemove = Math3D::Min(TRIM_BATCH, this->meshCache.size());
+            for(size_t i = 0; i < toRemove; ++i){
+                auto it = meshCache.begin();
+                if(it == meshCache.end()) break;
+                meshCache.erase(it);
+            }
+        }
+
+        TextCacheKey key = {text, color};
+
+        auto it = meshCache.find(key);
+        if(it != meshCache.end()){
+            meshToDraw = it->second;
+        }
+
+        if(!meshToDraw){
+            auto mat = MaterialDefaults::ImageMaterial::Create(this->textureAtlasPtr, color);
+            auto factory = ModelPartFactory::Create(mat);
+
+            float x = 0, y = 0;
+            const float lineHeight = std::ceil(this->fontSize);
+
+            for(unsigned char c : text){
+                if(c == '\r') continue;
+                if(c == '\n'){
+                    x = 0;
+                    y += lineHeight;
+                    continue;
+                }
+                if(c < 32 || c >= 128) continue;
+
+                const FontCharacter& ch = this->characters[c];
+
+                float xpos = std::round(x + ch.bearingX);
+                float ypos = std::round(y - ch.bearingY);
+                float w = ch.sizeX;
+                float h = ch.sizeY;
+
+                int v0, v1, v2, v3;
+
+                factory
+                    .addVertex(Vertex::Build(Math3D::Vec3(xpos, ypos, 0))
+                        .UV(ch.u0,ch.v0)
+                        .Norm(0,0,1)
+                        .Col(Color::WHITE),
+                    &v0)
+
+                    .addVertex(Vertex::Build(Math3D::Vec3(xpos + w, ypos, 0))
+                        .UV(ch.u1,ch.v0)
+                        .Norm(0,0,1)
+                        .Col(Color::WHITE),
+                    &v1)
+
+                    .addVertex(Vertex::Build(Math3D::Vec3(xpos + w  , ypos + h, 0))
+                        .UV(ch.u1,ch.v1)
+                        .Norm(0,0,1)
+                        .Col(Color::WHITE),
+                    &v2)
+
+                    .addVertex(Vertex::Build(Math3D::Vec3(xpos, ypos + h, 0))
+                        .UV(ch.u0,ch.v1)
+                        .Norm(0,0,1)
+                        .Col(Color::WHITE)
+                    ,&v3);
+
+                factory.defineFace(v0,v3,v2,v1);
+
+                x += ch.advance;
+            }
+
+            meshToDraw = factory.assemble();
+            meshCache[key] = meshToDraw;
+        }
     }
 
     // Draw the String.

@@ -29,6 +29,7 @@ class Scene : public View {
         virtual void dispose();
         virtual void setInputManager(std::shared_ptr<InputManager> manager) { inputManager = manager; }
         virtual bool switchState(PScene newState, PScene oldState) { return true; }
+        virtual bool shouldTickOnRenderThread() const { return false; }
 
         void updateECS(float deltaTime);
 
@@ -47,8 +48,10 @@ class Scene : public View {
             std::atomic<float> snapshotMs{0.0f};
             std::atomic<float> shadowMs{0.0f};
             std::atomic<float> drawMs{0.0f};
+            std::atomic<float> postFxMs{0.0f};
             std::atomic<int> drawCount{0};
             std::atomic<int> lightCount{0};
+            std::atomic<int> postFxEffectCount{0};
         };
 
         const DebugStats& getDebugStats() const { return debugStats; }

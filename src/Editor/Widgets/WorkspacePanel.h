@@ -34,11 +34,14 @@ class WorkspacePanel {
         bool requestOpenLogTab = false;
 
         uint64_t lastLogVersion = 0;
+        uint64_t lastLogSummaryVersion = 0;
         std::string logBuffer;
+        std::string latestLogLine;
         std::vector<std::string> logLines;
         std::vector<ImVec4> logColors;
         bool showAssetPickerWindow = false;
         std::unordered_set<std::string> expandedRelatedAssets;
+        bool browserCacheDirty = true;
 
         void beginAssetRename(const std::filesystem::path& path, std::filesystem::path& selectedAssetPath);
         void commitAssetRename(std::filesystem::path& selectedAssetPath);

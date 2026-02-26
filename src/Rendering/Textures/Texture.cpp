@@ -86,12 +86,11 @@ void Texture::dispose(){
         textureID = 0;
 
         if(SDL_GL_GetCurrentContext() != nullptr){
-            textureLogger.Log(LOG_INFO, "Deleting Texture ID: %u", idToDelete);
             glDeleteTextures(1, &idToDelete);
         }else{
             std::lock_guard<std::mutex> lock(g_pendingTextureDeleteMutex);
             g_pendingTextureDeletes.push_back(idToDelete);
-            textureLogger.Log(LOG_WARN, "Queued Texture ID for deferred delete (no GL context): %u", idToDelete);
+            // Expected during shutdown or cross-thread destruction; keep this quiet to avoid log spam.
         }
     }
 }

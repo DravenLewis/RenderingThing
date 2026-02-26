@@ -80,39 +80,39 @@ namespace GLUniformUpload {
 
     // TODO WE NEED A TEXTURE UNIFORM AS WELL.
     inline void upload(GLint loc,std::shared_ptr<Texture> tex, int slot = 0){
-        glActiveTexture(GL_TEXTURE0 + slot);
         if(tex){
             tex->bind(slot);
             glUniform1i(loc, slot);
             return;
         }
 
+        glActiveTexture(GL_TEXTURE0 + slot);
         glBindTexture(GL_TEXTURE_2D, 0);
         glUniform1i(loc, slot);
         return;
     }
 
     inline void upload(GLint loc, const TextureSlot& texSlot){
-        glActiveTexture(GL_TEXTURE0 + texSlot.slot);
         if(texSlot.texture){
             texSlot.texture->bind(texSlot.slot);
             glUniform1i(loc, texSlot.slot);
             return;
         }
 
+        glActiveTexture(GL_TEXTURE0 + texSlot.slot);
         glBindTexture(GL_TEXTURE_2D, 0);
         glUniform1i(loc, texSlot.slot);
         return;
     }
 
     inline void upload(GLint loc, const CubeMapSlot& mapSlot){
-        glActiveTexture(GL_TEXTURE0 + mapSlot.slot);
         if(mapSlot.cubemap){
             mapSlot.cubemap->bind(mapSlot.slot);
             glUniform1i(loc, mapSlot.slot);
             return;
         }
 
+        glActiveTexture(GL_TEXTURE0 + mapSlot.slot);
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
         glUniform1i(loc, mapSlot.slot);
         return;
