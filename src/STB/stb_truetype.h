@@ -276,7 +276,7 @@
 //  See "tests/truetype_demo_win32.c" for a complete version.
 #if 0
 #define STB_TRUETYPE_IMPLEMENTATION  // force following include to generate implementation
-#include "stb_truetype.h"
+#include "STB\stb_truetype.h"
 
 unsigned char ttf_buffer[1<<20];
 unsigned char temp_bitmap[512*512];
@@ -327,7 +327,7 @@ void my_stbtt_print(float x, float y, char *text)
 #if 0
 #include <stdio.h>
 #define STB_TRUETYPE_IMPLEMENTATION  // force following include to generate implementation
-#include "stb_truetype.h"
+#include "STB\stb_truetype.h"
 
 char ttf_buffer[1<<25];
 
@@ -3893,7 +3893,7 @@ typedef int stbrp_coord;
 //                                                                                //
 //                                                                                //
 // if you get a compile warning due to these symbols being defined more than      //
-// once, move #include "stb_rect_pack.h" before #include "stb_truetype.h"         //
+// once, move #include "stb_rect_pack.h" before #include "STB\stb_truetype.h"         //
 //                                                                                //
 ////////////////////////////////////////////////////////////////////////////////////
 

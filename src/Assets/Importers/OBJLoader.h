@@ -1,0 +1,49 @@
+#ifndef OBJ_LOADER_H
+#define OBJ_LOADER_H
+
+#include <memory>
+#include <vector>
+#include <string>
+
+#include "Assets/Core/Asset.h"
+#include "Rendering/Geometry/Model.h"
+#include "Rendering/Materials/Material.h"
+
+#include "Rendering/Materials/MaterialDefaults.h"
+
+class OBJLoader {
+private:
+    struct VertexIndex {
+        int posIdx = -1;
+        int texIdx = -1;
+        int normIdx = -1;
+    };
+
+    struct FaceDefinition {
+        std::vector<VertexIndex> vertices;
+        std::string materialName;
+    };
+
+    struct OBJData {
+        std::vector<Math3D::Vec3> positions;
+        std::vector<Math3D::Vec3> normals;
+        std::vector<Math3D::Vec2> texCoords;
+        std::vector<FaceDefinition> faces;
+        std::vector<std::string> materialLibs;
+    };
+
+    static OBJData ParseOBJData(const std::string& content);
+    static std::vector<Math3D::Vec3> BuildSmoothNormals(const OBJData& data);
+    
+public:
+    OBJLoader() = delete;
+
+    // Load OBJ from an asset
+    static std::shared_ptr<Model> LoadFromAsset(
+        PAsset asset,
+        PMaterial material = MaterialDefaults::LitColorMaterial::Create(Color::WHITE),
+        bool forceSmoothNormals = false
+    );
+};
+
+#endif // OBJ_LOADER_H
