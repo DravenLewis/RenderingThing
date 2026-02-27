@@ -1,5 +1,6 @@
 #include "Rendering/Textures/Texture.h"
 
+#include "Assets/Core/AssetDescriptorUtils.h"
 #include "Foundation/Logging/Logbot.h"
 
 #include <iostream>
@@ -104,8 +105,15 @@ std::shared_ptr<Texture> Texture::Load(PAsset asset, GLenum imageHint){
     if(!cpuImg){
         return nullptr;
     }
-
-    return std::make_shared<Texture>(cpuImg, imageHint);
+    auto texture = std::make_shared<Texture>(cpuImg, imageHint);
+    if(texture && asset && asset->getFileHandle()){
+        texture->setSourceAssetRef(
+            AssetDescriptorUtils::AbsolutePathToAssetRef(
+                std::filesystem::path(asset->getFileHandle()->getPath())
+            )
+        );
+    }
+    return texture;
 }
 
 std::shared_ptr<Graphics::Image::Image> Texture::LoadImage(PAsset asset){

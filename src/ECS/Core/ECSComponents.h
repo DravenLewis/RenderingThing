@@ -10,6 +10,7 @@
 #include "Rendering/PostFX/ScreenEffects.h"
 
 #include "Scene/Scene.h"
+#include <cstdint>
 #include <string>
 #include <vector>
 
@@ -37,6 +38,8 @@ struct MeshRendererComponent : public IEditorCompatibleComponent {
     PModel model;
     // Serializable source refs for scene/prefab save-load. Runtime pointers remain the render path.
     std::string modelAssetRef;
+    std::string modelSourceRef; // Optional direct source model ref (for non-wrapper model instances).
+    int modelForceSmoothNormals = 0; // Used with modelSourceRef where relevant (OBJ import path).
     std::string materialAssetRef; // Single mesh/material mode source material.
     std::vector<std::string> modelPartMaterialAssetRefs; // Per-part overrides for model mode.
     Math3D::Transform localOffset;
@@ -67,6 +70,91 @@ struct BoundsComponent : public IEditorCompatibleComponent {
     Math3D::Vec3 size = Math3D::Vec3(1.0f, 1.0f, 1.0f); // Box extents (half-size)
     float radius = 0.5f; // Sphere/Capsule radius
     float height = 1.0f; // Capsule full height
+
+    void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
+};
+
+enum class PhysicsBodyType {
+    Static,
+    Dynamic,
+    Kinematic
+};
+
+enum class PhysicsColliderShape {
+    Box,
+    Sphere,
+    Capsule
+};
+
+enum class PhysicsLayer : std::uint8_t {
+    Default = 0,
+    StaticWorld = 1,
+    DynamicBody = 2,
+    Character = 3,
+    Trigger = 4
+};
+
+using PhysicsLayerMask = std::uint32_t;
+
+constexpr PhysicsLayerMask PhysicsLayerBit(PhysicsLayer layer){
+    return static_cast<PhysicsLayerMask>(1u << static_cast<std::uint32_t>(layer));
+}
+
+namespace PhysicsLayerMasks {
+    constexpr PhysicsLayerMask None = 0u;
+    constexpr PhysicsLayerMask All = 0xFFFFFFFFu;
+    constexpr PhysicsLayerMask Gameplay =
+        PhysicsLayerBit(PhysicsLayer::Default) |
+        PhysicsLayerBit(PhysicsLayer::StaticWorld) |
+        PhysicsLayerBit(PhysicsLayer::DynamicBody) |
+        PhysicsLayerBit(PhysicsLayer::Character);
+}
+
+struct PhysicsMaterialProperties {
+    float staticFriction = 0.6f;
+    float dynamicFriction = 0.5f;
+    float restitution = 0.0f;
+    float density = 1.0f;
+};
+
+struct ColliderComponent : public IEditorCompatibleComponent {
+    using IEditorCompatibleComponent::IEditorCompatibleComponent;
+    PhysicsColliderShape shape = PhysicsColliderShape::Box;
+    Math3D::Vec3 boxHalfExtents = Math3D::Vec3(0.5f, 0.5f, 0.5f);
+    float sphereRadius = 0.5f;
+    float capsuleRadius = 0.5f;
+    float capsuleHeight = 1.0f;
+    Math3D::Transform localOffset;
+    PhysicsLayer layer = PhysicsLayer::Default;
+    PhysicsLayerMask collisionMask = PhysicsLayerMasks::Gameplay;
+    bool isTrigger = false;
+    PhysicsMaterialProperties material;
+    // Runtime backend-owned handle (Jolt shape/body proxy). Not serialized.
+    void* runtimeShapeHandle = nullptr;
+
+    void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
+};
+
+struct RigidBodyComponent : public IEditorCompatibleComponent {
+    using IEditorCompatibleComponent::IEditorCompatibleComponent;
+    PhysicsBodyType bodyType = PhysicsBodyType::Dynamic;
+    float mass = 1.0f;
+    float gravityScale = 1.0f;
+    float linearDamping = 0.02f;
+    float angularDamping = 0.05f;
+    Math3D::Vec3 linearVelocity = Math3D::Vec3::zero();
+    Math3D::Vec3 angularVelocity = Math3D::Vec3::zero();
+    bool lockLinearX = false;
+    bool lockLinearY = false;
+    bool lockLinearZ = false;
+    bool lockAngularX = false;
+    bool lockAngularY = false;
+    bool lockAngularZ = false;
+    bool useContinuousCollision = false;
+    bool canSleep = true;
+    bool startAwake = true;
+    // Runtime backend-owned handle (Jolt BodyID/native pointer). Not serialized.
+    void* runtimeBodyHandle = nullptr;
 
     void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
 };

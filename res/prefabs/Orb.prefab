@@ -1,0 +1,86 @@
+{
+  "type": "prefab",
+  "version": 1,
+  "payload": {
+    "metadata": {
+      "name": "Orb"
+    },
+    "dependencies": [
+      "@assets/models/theorb/orb.obj",
+      "@assets/sample_materials/Stone03.mat.asset"
+    ],
+    "prefabSettings": {
+      "runtimeInstantiable": true,
+      "allowChildAdditions": true,
+      "allowChildRemovals": true,
+      "allowComponentOverrides": true,
+      "exposedProperties": []
+    },
+    "snapshot": {
+      "rootEntityIds": [
+        8
+      ],
+      "entities": [
+        {
+          "id": 8,
+          "name": "Orb",
+          "components": [
+            {
+              "type": "TransformComponent",
+              "version": 1,
+              "payload": {
+                "position": [
+                  -10.0,
+                  0.0,
+                  30.0
+                ],
+                "rotationEuler": [
+                  0.0,
+                  -0.0,
+                  0.0
+                ],
+                "scale": [
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              }
+            },
+            {
+              "type": "MeshRendererComponent",
+              "version": 1,
+              "payload": {
+                "visible": true,
+                "enableBackfaceCulling": true,
+                "modelAssetRef": "",
+                "modelSourceRef": "@assets/models/theorb/orb.obj",
+                "modelForceSmoothNormals": true,
+                "materialAssetRef": "",
+                "localOffset": {
+                  "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "rotationEuler": [
+                    0.0,
+                    -0.0,
+                    0.0
+                  ],
+                  "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                  ]
+                },
+                "modelPartMaterialAssetRefs": [
+                  "@assets/sample_materials/Stone03.mat.asset"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

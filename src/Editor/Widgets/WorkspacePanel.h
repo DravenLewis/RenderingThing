@@ -3,6 +3,7 @@
 
 #include <filesystem>
 #include <cstdint>
+#include <functional>
 #include <string>
 #include <unordered_set>
 #include <vector>
@@ -11,8 +12,18 @@
 
 class WorkspacePanel {
     public:
+        using EntityDropToPrefabFn = std::function<bool(const std::string& entityId,
+                                                        const std::filesystem::path& exportDirectory,
+                                                        std::string* outError)>;
+
         void setAssetRoot(const std::filesystem::path& rootPath);
-        void draw(float x, float y, float w, float h, std::filesystem::path& selectedAssetPath);
+        void draw(float x,
+                  float y,
+                  float w,
+                  float h,
+                  std::filesystem::path& selectedAssetPath,
+                  const EntityDropToPrefabFn& onEntityDropToPrefab = EntityDropToPrefabFn());
+        const std::filesystem::path& getCurrentDirectory() const { return assetDir; }
 
     private:
         std::filesystem::path assetRoot;

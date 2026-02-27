@@ -2,6 +2,7 @@
 #define ECS_VIEW_PANEL_H
 
 #include <functional>
+#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -10,6 +11,11 @@
 
 class ECSViewPanel {
     public:
+        static constexpr const char* EntityDragPayloadType = "ECS_ENTITY_DND";
+        using InstantiatePrefabAtEntityFn = std::function<bool(const std::filesystem::path& prefabPath,
+                                                               const std::string& parentEntityId,
+                                                               std::string* outError)>;
+
         void draw(
             float x,
             float y,
@@ -17,7 +23,9 @@ class ECSViewPanel {
             float h,
             PScene targetScene,
             const std::string& selectedEntityId,
-            const std::function<void(const std::string&)>& onSelectEntity
+            const std::function<void(const std::string&)>& onSelectEntity,
+            const std::function<void(const std::string&)>& onCreatePrefabForEntity = std::function<void(const std::string&)>(),
+            const InstantiatePrefabAtEntityFn& onInstantiatePrefabAtEntity = InstantiatePrefabAtEntityFn()
         );
 
     private:
@@ -54,7 +62,9 @@ class ECSViewPanel {
             NeoECS::ECSEntity* entity,
             PScene targetScene,
             const std::string& selectedEntityId,
-            const std::function<void(const std::string&)>& onSelectEntity
+            const std::function<void(const std::string&)>& onSelectEntity,
+            const std::function<void(const std::string&)>& onCreatePrefabForEntity,
+            const InstantiatePrefabAtEntityFn& onInstantiatePrefabAtEntity
         );
         void applyPendingActions(
             PScene targetScene,

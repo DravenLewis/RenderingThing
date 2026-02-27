@@ -110,6 +110,8 @@ class PrefabSchema : public EntitySnapshotSchemaBase {
     public:
         DocumentMetadata metadata;
         std::vector<std::string> dependencies;
+        RawJsonValue prefabSettings; // Expected object JSON (optional; defaults to {}).
+        RawJsonValue variant;        // Expected object JSON (optional).
 
         PrefabSchema();
 
@@ -122,6 +124,7 @@ class PrefabSchema : public EntitySnapshotSchemaBase {
         void ResetDocumentFieldsState() override;
         bool DeserializeDocumentFields(yyjson_val* payload, int version, std::string* outError) override;
         bool SerializeDocumentFields(yyjson_mut_doc* doc, yyjson_mut_val* payload, int version, std::string* outError) const override;
+        bool ValidateDocumentState(std::string* outError) const override;
 };
 
 class SceneSchema : public EntitySnapshotSchemaBase {

@@ -152,6 +152,13 @@ NeoECS::GameObject* Scene::createModelGameObject(const std::string& name, const 
     root->addComponent<MeshRendererComponent>();
     if(auto* renderer = root->getComponent<MeshRendererComponent>()){
         renderer->model = model;
+        if(model){
+            renderer->modelSourceRef = model->getSourceAssetRef();
+            renderer->modelForceSmoothNormals = model->getSourceForceSmoothNormals() ? 1 : 0;
+        }else{
+            renderer->modelSourceRef.clear();
+            renderer->modelForceSmoothNormals = 0;
+        }
     }
 
     return root;

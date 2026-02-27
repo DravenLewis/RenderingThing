@@ -1,6 +1,8 @@
 #include "Editor/Widgets/ECSViewPanel.h"
 
+#include "Editor/Core/EditorAssetUI.h"
 #include "ECS/Core/ECSComponents.h"
+#include "Foundation/Logging/Logbot.h"
 #include "imgui.h"
 
 #include <cstring>
@@ -12,8 +14,6 @@ namespace {
         ImGuiWindowFlags_NoMove |
         ImGuiWindowFlags_NoResize |
         ImGuiWindowFlags_NoCollapse;
-
-    constexpr const char* kEntityDragPayloadType = "ECS_ENTITY_DND";
 
     struct EntityDragPayload {
         char entityId[64] = {};
@@ -202,7 +202,9 @@ void ECSViewPanel::draw(float x,
                         float h,
                         PScene targetScene,
                         const std::string& selectedEntityId,
-                        const std::function<void(const std::string&)>& onSelectEntity){
+                        const std::function<void(const std::string&)>& onSelectEntity,
+                        const std::function<void(const std::string&)>& onCreatePrefabForEntity,
+                        const InstantiatePrefabAtEntityFn& onInstantiatePrefabAtEntity){
     ImGui::SetNextWindowPos(ImVec2(x, y));
     ImGui::SetNextWindowSize(ImVec2(w, h));
     ImGui::Begin("ECS Graph", nullptr, kPanelFlags);
@@ -244,7 +246,7 @@ void ECSViewPanel::draw(float x,
         if(!entity || entity->getParent() != nullptr){
             continue;
         }
-        drawEntityTree(entity, targetScene, selectedEntityId, onSelectEntity);
+        drawEntityTree(entity, targetScene, selectedEntityId, onSelectEntity, onCreatePrefabForEntity, onInstantiatePrefabAtEntity);
     }
 
     if(ImGui::BeginPopupContextWindow("ECSGraphContextMenu", ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems)){
@@ -275,6 +277,14 @@ void ECSViewPanel::draw(float x,
             beginEntityRename(targetScene, selectedEntityId);
         }
 
+        const bool canCreatePrefabSelected =
+            selectedEntity &&
+            !targetScene->isSceneRootEntity(selectedEntity) &&
+            static_cast<bool>(onCreatePrefabForEntity);
+        if(ImGui::MenuItem("Create Prefab", nullptr, false, canCreatePrefabSelected)){
+            onCreatePrefabForEntity(selectedEntityId);
+        }
+
         const bool canReparentToRoot =
             selectedEntity &&
             !targetScene->isSceneRootEntity(selectedEntity) &&
@@ -295,7 +305,9 @@ void ECSViewPanel::draw(float x,
 void ECSViewPanel::drawEntityTree(NeoECS::ECSEntity* entity,
                                   PScene targetScene,
                                   const std::string& selectedEntityId,
-                                  const std::function<void(const std::string&)>& onSelectEntity){
+                                  const std::function<void(const std::string&)>& onSelectEntity,
+                                  const std::function<void(const std::string&)>& onCreatePrefabForEntity,
+                                  const InstantiatePrefabAtEntityFn& onInstantiatePrefabAtEntity){
     if(!entity || !targetScene || !targetScene->getECS()){
         return;
     }
@@ -369,6 +381,12 @@ void ECSViewPanel::drawEntityTree(NeoECS::ECSEntity* entity,
             beginEntityRename(targetScene, entityId);
         }
 
+        const bool canCreatePrefabThis =
+            !isSceneRoot && static_cast<bool>(onCreatePrefabForEntity);
+        if(ImGui::MenuItem("Create Prefab", nullptr, false, canCreatePrefabThis)){
+            onCreatePrefabForEntity(entityId);
+        }
+
         ImGui::EndPopup();
     }
 
@@ -376,18 +394,38 @@ void ECSViewPanel::drawEntityTree(NeoECS::ECSEntity* entity,
         EntityDragPayload payload;
         std::strncpy(payload.entityId, entityId.c_str(), sizeof(payload.entityId) - 1);
         payload.entityId[sizeof(payload.entityId) - 1] = '\0';
-        ImGui::SetDragDropPayload(kEntityDragPayloadType, &payload, sizeof(payload));
+        ImGui::SetDragDropPayload(ECSViewPanel::EntityDragPayloadType, &payload, sizeof(payload));
         ImGui::TextUnformatted(entity->getName().c_str());
         ImGui::EndDragDropSource();
     }
 
     if(ImGui::BeginDragDropTarget()){
-        const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(kEntityDragPayloadType);
+        const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(ECSViewPanel::EntityDragPayloadType);
         if(payload && payload->Data && payload->DataSize == sizeof(EntityDragPayload)){
             const auto* dragPayload = static_cast<const EntityDragPayload*>(payload->Data);
             const std::string draggedId = dragPayload->entityId;
             if(!draggedId.empty() && draggedId != entityId){
                 pendingActions.push_back({PendingActionKind::ReparentToEntity, draggedId, entityId});
+            }
+        }
+
+        if(onInstantiatePrefabAtEntity){
+            EditorAssetUI::AssetTransaction droppedAsset;
+            bool isDelivery = false;
+            if(EditorAssetUI::AcceptAssetDropInCurrentTarget(EditorAssetUI::AssetKind::Any, droppedAsset, false, &isDelivery) &&
+               isDelivery &&
+               droppedAsset.extension == ".prefab"){
+                std::string instantiateError;
+                if(!onInstantiatePrefabAtEntity(droppedAsset.absolutePath, entityId, &instantiateError)){
+                    if(instantiateError.empty()){
+                        instantiateError = "Unknown prefab instantiate error.";
+                    }
+                    LogBot.Log(LOG_ERRO,
+                               "Failed to instantiate prefab '%s' under '%s': %s",
+                               droppedAsset.absolutePath.generic_string().c_str(),
+                               entity->getName().c_str(),
+                               instantiateError.c_str());
+                }
             }
         }
         ImGui::EndDragDropTarget();
@@ -422,7 +460,7 @@ void ECSViewPanel::drawEntityTree(NeoECS::ECSEntity* entity,
 
         if(hasEntityChildren){
             for(const auto& kv : entity->children()){
-                drawEntityTree(kv.second, targetScene, selectedEntityId, onSelectEntity);
+                drawEntityTree(kv.second, targetScene, selectedEntityId, onSelectEntity, onCreatePrefabForEntity, onInstantiatePrefabAtEntity);
             }
         }
         ImGui::TreePop();

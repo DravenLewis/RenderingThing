@@ -845,12 +845,18 @@ int PrefabSchema::CurrentVersion() const{
 void PrefabSchema::Clear(){
     metadata.Clear();
     dependencies.clear();
+    prefabSettings.hasValue = true;
+    prefabSettings.json = "{}";
+    variant.Clear();
     ClearSnapshot();
 }
 
 void PrefabSchema::ResetDocumentFieldsState(){
     metadata.Clear();
     dependencies.clear();
+    prefabSettings.hasValue = true;
+    prefabSettings.json = "{}";
+    variant.Clear();
 }
 
 bool PrefabSchema::DeserializeDocumentFields(yyjson_val* payload, int, std::string* outError){
@@ -858,6 +864,16 @@ bool PrefabSchema::DeserializeDocumentFields(yyjson_val* payload, int, std::stri
         return false;
     }
     if(!ReadStringArrayField(payload, "dependencies", dependencies, outError, false)){
+        return false;
+    }
+    if(!ReadOptionalRawJsonField(payload, "prefabSettings", prefabSettings, outError, true)){
+        return false;
+    }
+    if(!prefabSettings.hasValue){
+        prefabSettings.hasValue = true;
+        prefabSettings.json = "{}";
+    }
+    if(!ReadOptionalRawJsonField(payload, "variant", variant, outError, true)){
         return false;
     }
     return true;
@@ -868,6 +884,24 @@ bool PrefabSchema::SerializeDocumentFields(yyjson_mut_doc* doc, yyjson_mut_val* 
         return false;
     }
     if(!WriteStringArrayField(doc, payload, "dependencies", dependencies, outError)){
+        return false;
+    }
+    if(!WriteOptionalRawJsonField(doc, payload, "prefabSettings", prefabSettings, outError, true)){
+        return false;
+    }
+    if(!WriteOptionalRawJsonField(doc, payload, "variant", variant, outError, true)){
+        return false;
+    }
+    return true;
+}
+
+bool PrefabSchema::ValidateDocumentState(std::string* outError) const{
+    if(!prefabSettings.hasValue){
+        SetDocSchemaError(outError, "prefabSettings must be present (use '{}' for empty settings).");
+        return false;
+    }
+    if(prefabSettings.json.empty()){
+        SetDocSchemaError(outError, "prefabSettings JSON must not be empty.");
         return false;
     }
     return true;

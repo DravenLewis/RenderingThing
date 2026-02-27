@@ -21,6 +21,7 @@ class Texture{
         std::shared_ptr<Graphics::Image::Image> cpuImage;
         int width, height;
         bool ownsTexture = true;
+        std::string sourceAssetRef;
     public:
 
         Texture() : textureID(0), width(0), height(0){};
@@ -36,6 +37,8 @@ class Texture{
         inline int getWidth() {return this->width;}
         inline int getHeight() {return this->height;}
         GLuint& getID() {return this->textureID;}
+        const std::string& getSourceAssetRef() const { return sourceAssetRef; }
+        void setSourceAssetRef(const std::string& assetRef) { sourceAssetRef = assetRef; }
 
         std::shared_ptr<Graphics::Image::Image> getImageData() const {return cpuImage;}
 

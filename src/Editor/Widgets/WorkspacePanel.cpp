@@ -1,6 +1,7 @@
 #include "Editor/Widgets/WorkspacePanel.h"
 
 #include "Editor/Core/EditorAssetUI.h"
+#include "Editor/Widgets/ECSViewPanel.h"
 #include "Foundation/IO/File.h"
 #include "Foundation/Logging/Logbot.h"
 #include "Assets/Descriptors/MaterialAsset.h"
@@ -339,7 +340,12 @@ bool WorkspacePanel::createMaterialWithLinkedAsset(const std::filesystem::path& 
     return true;
 }
 
-void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::path& selectedAssetPath){
+void WorkspacePanel::draw(float x,
+                          float y,
+                          float w,
+                          float h,
+                          std::filesystem::path& selectedAssetPath,
+                          const EntityDropToPrefabFn& onEntityDropToPrefab){
     if(assetRoot.empty()){
         assetRoot = std::filesystem::path(File::GetCWD()) / "res";
     }
@@ -1355,6 +1361,28 @@ void WorkspacePanel::draw(float x, float y, float w, float h, std::filesystem::p
             }
 
             ImGui::EndChild();
+
+            if(onEntityDropToPrefab && ImGui::BeginDragDropTarget()){
+                const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(ECSViewPanel::EntityDragPayloadType);
+                if(payload && payload->Data && payload->DataSize > 0){
+                    const char* rawEntityId = static_cast<const char*>(payload->Data);
+                    std::string entityId = StringUtils::Trim(std::string(rawEntityId));
+                    if(!entityId.empty()){
+                        std::string exportError;
+                        if(onEntityDropToPrefab(entityId, assetDir, &exportError)){
+                            expandedRelatedAssets.clear();
+                            browserCacheDirty = true;
+                        }else{
+                            if(exportError.empty()){
+                                exportError = "Unknown export error.";
+                            }
+                            LogBot.Log(LOG_ERRO, "Failed to create prefab from dropped entity: %s", exportError.c_str());
+                        }
+                    }
+                }
+                ImGui::EndDragDropTarget();
+            }
+
             ImGui::Separator();
 
             std::string latestFooterLogLine = latestLogLine.empty() ? std::string("No log output.") : latestLogLine;

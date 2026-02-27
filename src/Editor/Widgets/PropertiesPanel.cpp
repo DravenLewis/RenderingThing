@@ -21,6 +21,8 @@ namespace {
         MeshRenderer,
         Light,
         Bounds,
+        Collider,
+        RigidBody,
         Camera,
         SSAO,
         DepthOfField,
@@ -104,6 +106,25 @@ namespace {
                     return fail("Failed to ensure Transform Component.");
                 }
                 return wrapper->addComponent<BoundsComponent>();
+            case AddComponentKind::Collider:
+                if(hasComponent<ColliderComponent>(manager, entity)){
+                    return fail("Collider Component already exists.");
+                }
+                if(!ensureTransformComponent(wrapper.get(), manager, entity)){
+                    return fail("Failed to ensure Transform Component.");
+                }
+                return wrapper->addComponent<ColliderComponent>();
+            case AddComponentKind::RigidBody:
+                if(hasComponent<RigidBodyComponent>(manager, entity)){
+                    return fail("Rigid Body Component already exists.");
+                }
+                if(!hasComponent<ColliderComponent>(manager, entity)){
+                    return fail("Rigid Body requires Collider Component.");
+                }
+                if(!ensureTransformComponent(wrapper.get(), manager, entity)){
+                    return fail("Failed to ensure Transform Component.");
+                }
+                return wrapper->addComponent<RigidBodyComponent>();
             case AddComponentKind::Camera:
                 if(hasComponent<CameraComponent>(manager, entity)){
                     return fail("Camera Component already exists.");
@@ -349,6 +370,8 @@ void PropertiesPanel::draw(float x,
             const bool hasMesh = (componentMgr->getECSComponent<MeshRendererComponent>(entity) != nullptr);
             const bool hasLight = (componentMgr->getECSComponent<LightComponent>(entity) != nullptr);
             const bool hasBounds = (componentMgr->getECSComponent<BoundsComponent>(entity) != nullptr);
+            const bool hasCollider = (componentMgr->getECSComponent<ColliderComponent>(entity) != nullptr);
+            const bool hasRigidBody = (componentMgr->getECSComponent<RigidBodyComponent>(entity) != nullptr);
             const bool hasCamera = (componentMgr->getECSComponent<CameraComponent>(entity) != nullptr);
             const bool hasSsao = (componentMgr->getECSComponent<SSAOComponent>(entity) != nullptr);
             const bool hasDof = (componentMgr->getECSComponent<DepthOfFieldComponent>(entity) != nullptr);
@@ -380,6 +403,12 @@ void PropertiesPanel::draw(float x,
             if(ImGui::BeginMenu("Core")){
                 drawAddMenuItem("Transform Component", AddComponentKind::Transform, !hasTransform, "Already added");
                 drawAddMenuItem("Bounds Component", AddComponentKind::Bounds, !hasBounds, "Already added");
+                ImGui::EndMenu();
+            }
+
+            if(ImGui::BeginMenu("Physics")){
+                drawAddMenuItem("Collider Component", AddComponentKind::Collider, !hasCollider, "Already added");
+                drawAddMenuItem("Rigid Body Component", AddComponentKind::RigidBody, !hasRigidBody && hasCollider, hasCollider ? "Already added" : "Requires Collider Component");
                 ImGui::EndMenu();
             }
 

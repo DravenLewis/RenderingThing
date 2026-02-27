@@ -588,6 +588,8 @@ namespace {
         if(ImGui::Button(clearModelRefLabel.c_str())){
             picker.modelAssetPath[0] = '\0';
             renderer->modelAssetRef.clear();
+            renderer->modelSourceRef.clear();
+            renderer->modelForceSmoothNormals = 0;
         }
 
         if(dropped || applyModel){
@@ -601,6 +603,8 @@ namespace {
                 }else{
                     renderer->model = model;
                     renderer->modelAssetRef = resolvedAssetRef;
+                    renderer->modelSourceRef = model->getSourceAssetRef();
+                    renderer->modelForceSmoothNormals = model->getSourceForceSmoothNormals() ? 1 : 0;
                     renderer->mesh.reset();
                     renderer->material.reset();
                     renderer->materialAssetRef.clear();
@@ -1049,6 +1053,8 @@ void MeshRendererComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene sc
                     renderer->mesh.reset();
                     renderer->material.reset();
                     renderer->modelAssetRef.clear();
+                    renderer->modelSourceRef.clear();
+                    renderer->modelForceSmoothNormals = 0;
                     renderer->materialAssetRef.clear();
                     renderer->modelPartMaterialAssetRefs.clear();
                     renderer->modelPartMaterialAssetRefs.resize(1);
@@ -1061,6 +1067,8 @@ void MeshRendererComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene sc
                 renderer->mesh.reset();
                 renderer->material.reset();
                 renderer->modelAssetRef.clear();
+                renderer->modelSourceRef.clear();
+                renderer->modelForceSmoothNormals = 0;
                 renderer->materialAssetRef.clear();
                 renderer->modelPartMaterialAssetRefs.clear();
             }
@@ -1425,6 +1433,162 @@ void BoundsComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
         }
     }
 };
+
+void ColliderComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
+    (void)ecsPtr;
+    (void)scene;
+    if(!ImGui::CollapsingHeader("Collider Component", ImGuiTreeNodeFlags_DefaultOpen)){
+        return;
+    }
+
+    const char* shapeNames[] = { "Box", "Sphere", "Capsule" };
+    int shapeIndex = static_cast<int>(shape);
+    shapeIndex = Math3D::Clamp(shapeIndex, 0, IM_ARRAYSIZE(shapeNames) - 1);
+    if(ImGui::Combo("Shape", &shapeIndex, shapeNames, IM_ARRAYSIZE(shapeNames))){
+        shape = static_cast<PhysicsColliderShape>(shapeIndex);
+    }
+
+    switch(shape){
+        case PhysicsColliderShape::Box:
+            if(ImGui::DragFloat3("Half Extents", &boxHalfExtents.x, 0.02f, 0.01f, 1000.0f, "%.3f")){
+                boxHalfExtents.x = Math3D::Max(0.01f, boxHalfExtents.x);
+                boxHalfExtents.y = Math3D::Max(0.01f, boxHalfExtents.y);
+                boxHalfExtents.z = Math3D::Max(0.01f, boxHalfExtents.z);
+            }
+            break;
+        case PhysicsColliderShape::Sphere:
+            if(ImGui::DragFloat("Radius", &sphereRadius, 0.01f, 0.01f, 1000.0f, "%.3f")){
+                sphereRadius = Math3D::Max(0.01f, sphereRadius);
+            }
+            break;
+        case PhysicsColliderShape::Capsule:
+            if(ImGui::DragFloat("Radius", &capsuleRadius, 0.01f, 0.01f, 1000.0f, "%.3f")){
+                capsuleRadius = Math3D::Max(0.01f, capsuleRadius);
+            }
+            if(ImGui::DragFloat("Height", &capsuleHeight, 0.01f, 0.01f, 1000.0f, "%.3f")){
+                capsuleHeight = Math3D::Max(0.01f, capsuleHeight);
+            }
+            break;
+        default:
+            break;
+    }
+
+    Math3D::Vec3 offsetPos = localOffset.position;
+    if(ImGui::DragFloat3("Offset Position", &offsetPos.x, 0.05f)){
+        localOffset.position = offsetPos;
+    }
+
+    Math3D::Vec3 offsetRot = localOffset.rotation.ToEuler();
+    if(ImGui::DragFloat3("Offset Rotation", &offsetRot.x, 0.25f)){
+        localOffset.setRotation(offsetRot);
+    }
+
+    const char* layerNames[] = { "Default", "Static World", "Dynamic Body", "Character", "Trigger" };
+    int layerIndex = static_cast<int>(layer);
+    layerIndex = Math3D::Clamp(layerIndex, 0, IM_ARRAYSIZE(layerNames) - 1);
+    if(ImGui::Combo("Layer", &layerIndex, layerNames, IM_ARRAYSIZE(layerNames))){
+        layer = static_cast<PhysicsLayer>(layerIndex);
+    }
+
+    ImGui::TextUnformatted("Collides With");
+    PhysicsLayerMask mask = collisionMask;
+    auto drawMaskBit = [&](const char* label, PhysicsLayer targetLayer){
+        const PhysicsLayerMask bit = PhysicsLayerBit(targetLayer);
+        bool enabled = ((mask & bit) != 0u);
+        if(ImGui::Checkbox(label, &enabled)){
+            if(enabled){
+                mask |= bit;
+            }else{
+                mask &= ~bit;
+            }
+        }
+    };
+    drawMaskBit("Default##ColliderMaskDefault", PhysicsLayer::Default);
+    drawMaskBit("Static World##ColliderMaskStatic", PhysicsLayer::StaticWorld);
+    drawMaskBit("Dynamic Body##ColliderMaskDynamic", PhysicsLayer::DynamicBody);
+    drawMaskBit("Character##ColliderMaskCharacter", PhysicsLayer::Character);
+    drawMaskBit("Trigger##ColliderMaskTrigger", PhysicsLayer::Trigger);
+    collisionMask = mask;
+
+    ImGui::Checkbox("Is Trigger", &isTrigger);
+    ImGui::DragFloat("Static Friction", &material.staticFriction, 0.01f, 0.0f, 4.0f, "%.2f");
+    ImGui::DragFloat("Dynamic Friction", &material.dynamicFriction, 0.01f, 0.0f, 4.0f, "%.2f");
+    ImGui::DragFloat("Restitution", &material.restitution, 0.01f, 0.0f, 1.0f, "%.2f");
+    ImGui::DragFloat("Density", &material.density, 0.01f, 0.001f, 1000.0f, "%.3f");
+    material.staticFriction = Math3D::Max(0.0f, material.staticFriction);
+    material.dynamicFriction = Math3D::Max(0.0f, material.dynamicFriction);
+    material.restitution = Math3D::Clamp(material.restitution, 0.0f, 1.0f);
+    material.density = Math3D::Max(0.001f, material.density);
+
+    ImGui::TextDisabled("Runtime Shape Handle: %s", runtimeShapeHandle ? "bound" : "null");
+}
+
+void RigidBodyComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
+    (void)ecsPtr;
+    (void)scene;
+    if(!ImGui::CollapsingHeader("Rigid Body Component", ImGuiTreeNodeFlags_DefaultOpen)){
+        return;
+    }
+
+    const char* bodyTypeNames[] = { "Static", "Dynamic", "Kinematic" };
+    int typeIndex = static_cast<int>(bodyType);
+    typeIndex = Math3D::Clamp(typeIndex, 0, IM_ARRAYSIZE(bodyTypeNames) - 1);
+    if(ImGui::Combo("Body Type", &typeIndex, bodyTypeNames, IM_ARRAYSIZE(bodyTypeNames))){
+        bodyType = static_cast<PhysicsBodyType>(typeIndex);
+    }
+
+    const bool isDynamic = (bodyType == PhysicsBodyType::Dynamic);
+    if(!isDynamic){
+        ImGui::BeginDisabled();
+    }
+    if(ImGui::DragFloat("Mass", &mass, 0.05f, 0.001f, 100000.0f, "%.3f")){
+        mass = Math3D::Max(0.001f, mass);
+    }
+    if(!isDynamic){
+        ImGui::EndDisabled();
+    }
+
+    ImGui::DragFloat("Gravity Scale", &gravityScale, 0.05f, -20.0f, 20.0f, "%.2f");
+    if(ImGui::DragFloat("Linear Damping", &linearDamping, 0.01f, 0.0f, 20.0f, "%.2f")){
+        linearDamping = Math3D::Max(0.0f, linearDamping);
+    }
+    if(ImGui::DragFloat("Angular Damping", &angularDamping, 0.01f, 0.0f, 20.0f, "%.2f")){
+        angularDamping = Math3D::Max(0.0f, angularDamping);
+    }
+
+    if(bodyType != PhysicsBodyType::Static){
+        ImGui::DragFloat3("Linear Velocity", &linearVelocity.x, 0.05f);
+        ImGui::DragFloat3("Angular Velocity", &angularVelocity.x, 0.05f);
+    }
+
+    ImGui::TextUnformatted("Linear Axis Lock");
+    ImGui::Checkbox("X##RigidLockLinearX", &lockLinearX);
+    ImGui::SameLine();
+    ImGui::Checkbox("Y##RigidLockLinearY", &lockLinearY);
+    ImGui::SameLine();
+    ImGui::Checkbox("Z##RigidLockLinearZ", &lockLinearZ);
+
+    ImGui::TextUnformatted("Angular Axis Lock");
+    ImGui::Checkbox("X##RigidLockAngularX", &lockAngularX);
+    ImGui::SameLine();
+    ImGui::Checkbox("Y##RigidLockAngularY", &lockAngularY);
+    ImGui::SameLine();
+    ImGui::Checkbox("Z##RigidLockAngularZ", &lockAngularZ);
+
+    ImGui::Checkbox("Use Continuous Collision", &useContinuousCollision);
+    ImGui::Checkbox("Can Sleep", &canSleep);
+    if(!canSleep){
+        startAwake = true;
+        ImGui::BeginDisabled();
+    }
+    ImGui::Checkbox("Start Awake", &startAwake);
+    if(!canSleep){
+        ImGui::EndDisabled();
+    }
+
+    ImGui::TextDisabled("Runtime Body Handle: %s", runtimeBodyHandle ? "bound" : "null");
+}
+
 void CameraComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     (void)ecsPtr;
     if(!ImGui::CollapsingHeader("Camera Component", ImGuiTreeNodeFlags_DefaultOpen)){

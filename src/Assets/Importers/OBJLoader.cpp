@@ -2,6 +2,7 @@
 
 #include "Foundation/Logging/Logbot.h"
 #include "Assets/Descriptors/MaterialAsset.h"
+#include "Assets/Core/AssetDescriptorUtils.h"
 #include "Rendering/Materials/MaterialDefaults.h"
 #include "Assets/Importers/MtlMaterialImporter.h"
 #include "Foundation/Util/StringUtils.h"
@@ -423,6 +424,11 @@ std::shared_ptr<Model> OBJLoader::LoadFromAsset(PAsset asset, PMaterial material
         LogBot.Log(LOG_ERRO, "OBJLoader::LoadFromAsset - Failed to construct model parts");
         return nullptr;
     }
+
+    if(!objPath.empty()){
+        model->setSourceAssetRef(AssetDescriptorUtils::AbsolutePathToAssetRef(objPath));
+    }
+    model->setSourceForceSmoothNormals(forceSmoothNormals);
 
     LogBot.Log(
         LOG_INFO,

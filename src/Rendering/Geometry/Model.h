@@ -8,6 +8,7 @@
 #include "Scene/Camera.h"
 #include "Rendering/Lighting/ShadowRenderer.h"
 
+#include <string>
 #include <vector>
 #include <glad/glad.h>
 
@@ -16,6 +17,8 @@ struct Model : public IDrawable{
         Math3D::Transform modelTransform;
         std::vector<std::shared_ptr<ModelPart>> modelParts;
         bool enableBackfaceCulling = true;
+        std::string sourceAssetRef;
+        bool sourceForceSmoothNormals = false;
     public:
 
         Model() = default;
@@ -39,6 +42,22 @@ struct Model : public IDrawable{
 
         bool isBackfaceCullingEnabled() const {
             return enableBackfaceCulling;
+        }
+
+        void setSourceAssetRef(const std::string& sourceRef){
+            sourceAssetRef = sourceRef;
+        }
+
+        const std::string& getSourceAssetRef() const{
+            return sourceAssetRef;
+        }
+
+        void setSourceForceSmoothNormals(bool enabled){
+            sourceForceSmoothNormals = enabled;
+        }
+
+        bool getSourceForceSmoothNormals() const{
+            return sourceForceSmoothNormals;
         }
 
         void draw(

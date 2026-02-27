@@ -1130,30 +1130,69 @@ void BeginAssetDragSource(const AssetTransaction& tx){
     ImGui::EndDragDropSource();
 }
 
-bool AcceptAssetDrop(AssetKind requestedKind, AssetTransaction& out){
-    return AcceptAssetDrop(&requestedKind, 1, out);
+bool AcceptAssetDrop(AssetKind requestedKind, AssetTransaction& out, bool acceptBeforeDelivery, bool* outIsDelivery){
+    return AcceptAssetDrop(&requestedKind, 1, out, acceptBeforeDelivery, outIsDelivery);
 }
 
-bool AcceptAssetDrop(const AssetKind* requestedKinds, size_t requestedKindCount, AssetTransaction& out){
+bool AcceptAssetDropInCurrentTarget(AssetKind requestedKind, AssetTransaction& out, bool acceptBeforeDelivery, bool* outIsDelivery){
+    return AcceptAssetDropInCurrentTarget(&requestedKind, 1, out, acceptBeforeDelivery, outIsDelivery);
+}
+
+bool AcceptAssetDropInCurrentTarget(const AssetKind* requestedKinds,
+                                    size_t requestedKindCount,
+                                    AssetTransaction& out,
+                                    bool acceptBeforeDelivery,
+                                    bool* outIsDelivery){
+    if(outIsDelivery){
+        *outIsDelivery = false;
+    }
+
+    ImGuiDragDropFlags flags = 0;
+    if(acceptBeforeDelivery){
+        flags |= ImGuiDragDropFlags_AcceptBeforeDelivery;
+    }
+
+    const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(kAssetPayloadType, flags);
+    if(!(payload && payload->Data && payload->DataSize == sizeof(AssetDragPayload))){
+        return false;
+    }
+
+    const AssetDragPayload* data = static_cast<const AssetDragPayload*>(payload->Data);
+    AssetKind kind = static_cast<AssetKind>(data->kind);
+    if(!IsKindCompatibleAny(kind, requestedKinds, requestedKindCount)){
+        return false;
+    }
+
+    out.kind = kind;
+    out.isDirectory = (data->isDirectory != 0);
+    out.absolutePath = std::filesystem::path(data->absolutePath);
+    out.assetRef = data->assetRef;
+    out.extension = toLower(out.absolutePath.extension().string());
+    if(outIsDelivery){
+        *outIsDelivery = payload->IsDelivery();
+    }
+    return true;
+}
+
+bool AcceptAssetDrop(const AssetKind* requestedKinds,
+                     size_t requestedKindCount,
+                     AssetTransaction& out,
+                     bool acceptBeforeDelivery,
+                     bool* outIsDelivery){
+    if(outIsDelivery){
+        *outIsDelivery = false;
+    }
     if(!ImGui::BeginDragDropTarget()){
         return false;
     }
 
-    const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(kAssetPayloadType);
-    bool accepted = false;
-    if(payload && payload->Data && payload->DataSize == sizeof(AssetDragPayload)){
-        const AssetDragPayload* data = static_cast<const AssetDragPayload*>(payload->Data);
-        AssetKind kind = static_cast<AssetKind>(data->kind);
-        if(IsKindCompatibleAny(kind, requestedKinds, requestedKindCount)){
-            out.kind = kind;
-            out.isDirectory = (data->isDirectory != 0);
-            out.absolutePath = std::filesystem::path(data->absolutePath);
-            out.assetRef = data->assetRef;
-            out.extension = toLower(out.absolutePath.extension().string());
-            accepted = true;
-        }
-    }
-
+    const bool accepted = AcceptAssetDropInCurrentTarget(
+        requestedKinds,
+        requestedKindCount,
+        out,
+        acceptBeforeDelivery,
+        outIsDelivery
+    );
     ImGui::EndDragDropTarget();
     return accepted;
 }

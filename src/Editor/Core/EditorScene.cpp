@@ -12,17 +12,23 @@
 
 #include "ECS/Core/ECSComponents.h"
 #include "Foundation/IO/File.h"
+#include "Editor/Core/EditorAssetUI.h"
 #include "Editor/Core/ImGuiLayer.h"
 #include "Foundation/Logging/Logbot.h"
+#include "Foundation/Util/StringUtils.h"
 #include "Platform/Window/RenderWindow.h"
 #include "Assets/Core/Asset.h"
+#include "Serialization/IO/PrefabIO.h"
+#include "Serialization/IO/SceneIO.h"
+#include "Serialization/Schema/ComponentSerializationRegistry.h"
 #include <glad/glad.h>
 #include <SDL3/SDL.h>
 #include "neoecs.hpp"
 #include <cctype>
+#include <system_error>
 
 namespace {
-    constexpr float kToolbarHeight = 32.0f;
+    constexpr float kToolbarHeight = 64.0f;
     constexpr float kPanelGap = 4.0f;
     constexpr float kSplitterThickness = 6.0f;
     constexpr float kMinLeftPanelWidth = 180.0f;
@@ -30,11 +36,61 @@ namespace {
     constexpr float kMinCenterPanelWidth = 260.0f;
     constexpr float kMinBottomPanelHeight = 140.0f;
     constexpr float kMinTopPanelHeight = 180.0f;
+    constexpr float kIoStatusDurationSeconds = 6.0f;
 
     constexpr ImGuiWindowFlags kPanelFlags =
         ImGuiWindowFlags_NoMove |
         ImGuiWindowFlags_NoResize |
         ImGuiWindowFlags_NoCollapse;
+
+    bool endsWithIgnoreCase(const std::string& value, const std::string& suffix){
+        return StringUtils::EndsWith(StringUtils::ToLowerCase(value), StringUtils::ToLowerCase(suffix));
+    }
+
+    std::string sanitizeFileStem(const std::string& value, const std::string& fallback){
+        std::string out;
+        out.reserve(value.size());
+        for(char c : value){
+            const unsigned char uc = static_cast<unsigned char>(c);
+            if(std::isalnum(uc) || c == '_' || c == '-'){
+                out.push_back(c);
+            }else if(std::isspace(uc)){
+                out.push_back('_');
+            }
+        }
+        if(out.empty()){
+            out = fallback;
+        }
+        return out;
+    }
+
+    bool isPathWithExtension(const std::filesystem::path& path, const std::string& extension){
+        if(path.empty() || extension.empty()){
+            return false;
+        }
+        return endsWithIgnoreCase(path.generic_string(), extension);
+    }
+
+    std::filesystem::path makeUniquePath(const std::filesystem::path& desiredPath){
+        std::error_code ec;
+        if(!std::filesystem::exists(desiredPath, ec)){
+            return desiredPath;
+        }
+
+        const std::filesystem::path parent = desiredPath.parent_path();
+        const std::string stem = desiredPath.stem().string();
+        const std::string ext = desiredPath.extension().string();
+        int suffix = 1;
+        std::filesystem::path candidate;
+        do{
+            candidate = parent / (stem + "_" + std::to_string(suffix) + ext);
+            suffix++;
+        }while(std::filesystem::exists(candidate, ec));
+        if(ec){
+            return desiredPath;
+        }
+        return candidate;
+    }
 
     class EditorInputBlocker : public IEventHandler {
         public:
@@ -189,6 +245,14 @@ void EditorScene::setInputManager(std::shared_ptr<InputManager> manager){
 void EditorScene::update(float deltaTime){
     ensureTargetInitialized();
     if(!targetScene) return;
+
+    if(ioStatusTimeRemaining > 0.0f){
+        ioStatusTimeRemaining = std::max(0.0f, ioStatusTimeRemaining - deltaTime);
+        if(ioStatusTimeRemaining <= 0.0f){
+            ioStatusMessage.clear();
+            ioStatusIsError = false;
+        }
+    }
 
     if(playState == PlayState::Play){
         playModePanelRefreshAccum += deltaTime;
@@ -783,11 +847,418 @@ void EditorScene::drawToWindow(bool clearWindow, float, float, float, float){
     }
 }
 
+void EditorScene::setIoStatus(const std::string& message, bool isError){
+    ioStatusMessage = message;
+    ioStatusIsError = isError;
+    ioStatusTimeRemaining = kIoStatusDurationSeconds;
+
+    if(isError){
+        LogBot.Log(LOG_ERRO, "%s", message.c_str());
+    }else{
+        LogBot.Log(LOG_INFO, "%s", message.c_str());
+    }
+}
+
+bool EditorScene::saveSceneFromEditorCommand(){
+    if(playState != PlayState::Edit){
+        setIoStatus("Save Scene is only available in Edit mode.", true);
+        return false;
+    }
+    if(!targetScene || !targetScene->getECS()){
+        setIoStatus("Save Scene failed: target scene is unavailable.", true);
+        return false;
+    }
+
+    std::filesystem::path savePath = activeScenePath;
+    if(isPathWithExtension(selectedAssetPath, ".scene")){
+        savePath = selectedAssetPath;
+    }
+    if(savePath.empty()){
+        std::filesystem::path currentDir = workspacePanel.getCurrentDirectory();
+        if(currentDir.empty()){
+            currentDir = assetRoot;
+        }
+        savePath = currentDir / "Main.scene";
+    }
+    savePath = savePath.lexically_normal();
+
+    SceneIO::SceneSaveOptions options;
+    options.registry = &Serialization::DefaultComponentSerializationRegistry();
+    options.metadata.name = savePath.stem().string();
+    if(options.metadata.name.empty()){
+        options.metadata.name = "Scene";
+    }
+
+    std::string error;
+    if(!SceneIO::SaveSceneToAbsolutePath(targetScene, savePath, options, &error)){
+        setIoStatus("Save Scene failed: " + error, true);
+        return false;
+    }
+
+    activeScenePath = savePath;
+    selectedAssetPath = savePath;
+    setIoStatus("Scene saved: " + savePath.generic_string(), false);
+    return true;
+}
+
+bool EditorScene::loadSceneFromEditorCommand(){
+    if(playState != PlayState::Edit){
+        setIoStatus("Load Scene is only available in Edit mode.", true);
+        return false;
+    }
+    if(!targetScene || !targetScene->getECS()){
+        setIoStatus("Load Scene failed: target scene is unavailable.", true);
+        return false;
+    }
+
+    cancelViewportPrefabDragPreview();
+
+    std::filesystem::path loadPath = activeScenePath;
+    if(isPathWithExtension(selectedAssetPath, ".scene")){
+        loadPath = selectedAssetPath;
+    }
+    if(loadPath.empty()){
+        setIoStatus("Load Scene failed: select a .scene file in the workspace.", true);
+        return false;
+    }
+    loadPath = loadPath.lexically_normal();
+
+    SceneIO::SceneLoadOptions options;
+    options.registry = &Serialization::DefaultComponentSerializationRegistry();
+
+    std::string error;
+    if(!SceneIO::LoadSceneFromAbsolutePath(targetScene, loadPath, options, nullptr, &error)){
+        setIoStatus("Load Scene failed: " + error, true);
+        return false;
+    }
+
+    selectedEntityId = targetScene->getSelectedEntityId();
+    targetCamera = targetScene->getPreferredCamera();
+    if(!targetCamera){
+        if(auto mainScreen = targetScene->getMainScreen()){
+            targetCamera = mainScreen->getCamera();
+        }
+    }
+    transformWidget.reset();
+    cameraWidget.reset();
+    previewTexture.reset();
+    previewCamera.reset();
+
+    activeScenePath = loadPath;
+    selectedAssetPath = loadPath;
+    setIoStatus("Scene loaded: " + loadPath.generic_string(), false);
+    return true;
+}
+
+bool EditorScene::exportEntityAsPrefabToDirectory(const std::string& entityId, const std::filesystem::path& directoryPath){
+    if(playState != PlayState::Edit){
+        setIoStatus("Create Prefab is only available in Edit mode.", true);
+        return false;
+    }
+    if(!targetScene || !targetScene->getECS()){
+        setIoStatus("Create Prefab failed: target scene is unavailable.", true);
+        return false;
+    }
+
+    NeoECS::ECSEntity* entity = findEntityById(entityId);
+    if(!entity){
+        setIoStatus("Create Prefab failed: selected entity was not found.", true);
+        return false;
+    }
+    if(targetScene->isSceneRootEntity(entity)){
+        setIoStatus("Create Prefab failed: scene root cannot be exported.", true);
+        return false;
+    }
+
+    std::filesystem::path exportDirectory = directoryPath;
+    if(exportDirectory.empty()){
+        exportDirectory = assetRoot;
+    }
+    std::error_code ec;
+    if(!std::filesystem::exists(exportDirectory, ec)){
+        if(!std::filesystem::create_directories(exportDirectory, ec)){
+            setIoStatus("Create Prefab failed: could not create export directory.", true);
+            return false;
+        }
+    }else if(!std::filesystem::is_directory(exportDirectory, ec)){
+        setIoStatus("Create Prefab failed: export path is not a directory.", true);
+        return false;
+    }
+
+    exportDirectory = exportDirectory.lexically_normal();
+    const std::string safeStem = sanitizeFileStem(entity->getName(), "Prefab");
+    std::filesystem::path prefabPath = makeUniquePath(exportDirectory / (safeStem + ".prefab"));
+
+    PrefabIO::PrefabSaveOptions options;
+    options.registry = &Serialization::DefaultComponentSerializationRegistry();
+    options.metadata.name = entity->getName().empty() ? safeStem : entity->getName();
+
+    std::string error;
+    if(!PrefabIO::SaveEntitySubtreeToAbsolutePath(targetScene, entity, prefabPath, options, &error)){
+        setIoStatus("Create Prefab failed: " + error, true);
+        return false;
+    }
+
+    selectedAssetPath = prefabPath;
+    setIoStatus("Prefab created: " + prefabPath.generic_string(), false);
+    return true;
+}
+
+bool EditorScene::exportEntityAsPrefabToWorkspaceDirectory(const std::string& entityId){
+    return exportEntityAsPrefabToDirectory(entityId, workspacePanel.getCurrentDirectory());
+}
+
+bool EditorScene::instantiatePrefabFromAbsolutePath(const std::filesystem::path& prefabPath,
+                                                    NeoECS::GameObject* parentObject,
+                                                    PrefabIO::PrefabInstantiateResult* outResult,
+                                                    std::string* outError){
+    if(!targetScene || !targetScene->getECS()){
+        if(outError){
+            *outError = "Target scene is unavailable.";
+        }
+        return false;
+    }
+    if(!isPathWithExtension(prefabPath, ".prefab")){
+        if(outError){
+            *outError = "Dropped asset is not a .prefab file.";
+        }
+        return false;
+    }
+
+    std::error_code ec;
+    if(!std::filesystem::exists(prefabPath, ec) || std::filesystem::is_directory(prefabPath, ec)){
+        if(outError){
+            *outError = "Prefab file does not exist.";
+        }
+        return false;
+    }
+
+    PrefabIO::PrefabInstantiateOptions options;
+    options.parent = parentObject;
+    options.registry = &Serialization::DefaultComponentSerializationRegistry();
+    if(!PrefabIO::InstantiateFromAbsolutePath(targetScene, prefabPath, options, outResult, outError)){
+        return false;
+    }
+    if(outResult && outResult->rootObjects.empty()){
+        if(outError){
+            *outError = "Prefab instantiated with no root objects.";
+        }
+        return false;
+    }
+    return true;
+}
+
+bool EditorScene::instantiatePrefabUnderParentEntity(const std::filesystem::path& prefabPath, const std::string& parentEntityId){
+    if(playState != PlayState::Edit){
+        setIoStatus("Instantiate Prefab is only available in Edit mode.", true);
+        return false;
+    }
+    if(!targetScene || !targetScene->getECS()){
+        setIoStatus("Instantiate Prefab failed: target scene is unavailable.", true);
+        return false;
+    }
+
+    NeoECS::GameObject* parentObject = nullptr;
+    std::unique_ptr<NeoECS::GameObject> parentWrapper;
+    if(!parentEntityId.empty()){
+        NeoECS::ECSEntity* parentEntity = findEntityById(parentEntityId);
+        if(!parentEntity){
+            setIoStatus("Instantiate Prefab failed: target parent entity was not found.", true);
+            return false;
+        }
+        parentWrapper.reset(NeoECS::GameObject::CreateFromECSEntity(targetScene->getECS()->getContext(), parentEntity));
+        if(!parentWrapper){
+            setIoStatus("Instantiate Prefab failed: could not resolve target parent object.", true);
+            return false;
+        }
+        parentObject = parentWrapper.get();
+    }
+
+    PrefabIO::PrefabInstantiateResult result;
+    std::string error;
+    const std::filesystem::path normalizedPath = prefabPath.lexically_normal();
+    if(!instantiatePrefabFromAbsolutePath(normalizedPath, parentObject, &result, &error)){
+        setIoStatus("Instantiate Prefab failed: " + error, true);
+        return false;
+    }
+
+    if(!result.rootObjects.empty() && result.rootObjects.front() && result.rootObjects.front()->gameobject()){
+        selectEntity(result.rootObjects.front()->gameobject()->getNodeUniqueID());
+    }
+
+    setIoStatus("Prefab instantiated: " + normalizedPath.generic_string(), false);
+    return true;
+}
+
+bool EditorScene::beginViewportPrefabDragPreview(const std::filesystem::path& prefabPath){
+    cancelViewportPrefabDragPreview();
+    if(playState != PlayState::Edit){
+        return false;
+    }
+
+    PrefabIO::PrefabInstantiateResult result;
+    std::string error;
+    const std::filesystem::path normalizedPath = prefabPath.lexically_normal();
+    if(!instantiatePrefabFromAbsolutePath(normalizedPath, nullptr, &result, &error)){
+        setIoStatus("Prefab drag failed: " + error, true);
+        return false;
+    }
+    if(result.rootObjects.empty()){
+        setIoStatus("Prefab drag failed: instantiated no root objects.", true);
+        return false;
+    }
+
+    viewportPrefabDragState.active = true;
+    viewportPrefabDragState.prefabPath = normalizedPath;
+    viewportPrefabDragState.rootEntityIds.clear();
+    viewportPrefabDragState.rootOffsets.clear();
+
+    Math3D::Vec3 anchor = Math3D::Vec3::zero();
+    bool anchorInitialized = false;
+    for(auto* rootObject : result.rootObjects){
+        if(!rootObject || !rootObject->gameobject()){
+            continue;
+        }
+        NeoECS::ECSEntity* entity = rootObject->gameobject();
+        const std::string entityId = entity->getNodeUniqueID();
+        viewportPrefabDragState.rootEntityIds.push_back(entityId);
+        Math3D::Vec3 worldPos = targetScene->getWorldPosition(entity);
+        if(!anchorInitialized){
+            anchor = worldPos;
+            anchorInitialized = true;
+        }
+        viewportPrefabDragState.rootOffsets.push_back(worldPos - anchor);
+    }
+
+    if(!anchorInitialized || viewportPrefabDragState.rootEntityIds.empty()){
+        cancelViewportPrefabDragPreview();
+        setIoStatus("Prefab drag failed: could not resolve instantiated root objects.", true);
+        return false;
+    }
+
+    viewportPrefabDragState.placementPlaneY = anchor.y;
+    selectEntity(viewportPrefabDragState.rootEntityIds.front());
+    return true;
+}
+
+bool EditorScene::computeViewportMousePlacement(float planeY, Math3D::Vec3& outWorldPosition) const{
+    if(!inputManager || !viewportCamera || !viewportRect.valid){
+        return false;
+    }
+
+    Math3D::Vec2 mouse = inputManager->getMousePosition();
+    Math3D::Vec3 nearPoint = screenToWorld(viewportCamera, mouse.x, mouse.y, 0.0f, viewportRect.x, viewportRect.y, viewportRect.w, viewportRect.h);
+    Math3D::Vec3 farPoint = screenToWorld(viewportCamera, mouse.x, mouse.y, 1.0f, viewportRect.x, viewportRect.y, viewportRect.w, viewportRect.h);
+    Math3D::Vec3 rayDir = farPoint - nearPoint;
+    if(rayDir.length() <= Math3D::EPSILON){
+        return false;
+    }
+    rayDir = rayDir.normalize();
+
+    float t = 4.0f;
+    if(std::fabs(rayDir.y) > 0.0001f){
+        t = (planeY - nearPoint.y) / rayDir.y;
+        if(t < 0.0f){
+            t = 4.0f;
+        }
+    }
+
+    outWorldPosition = nearPoint + (rayDir * t);
+    outWorldPosition.y = planeY;
+    return true;
+}
+
+void EditorScene::updateViewportPrefabDragPreviewFromMouse(){
+    if(!viewportPrefabDragState.active || !targetScene || !targetScene->getECS()){
+        return;
+    }
+
+    Math3D::Vec3 anchorPos = Math3D::Vec3::zero();
+    if(!computeViewportMousePlacement(viewportPrefabDragState.placementPlaneY, anchorPos)){
+        return;
+    }
+
+    auto* manager = targetScene->getECS()->getComponentManager();
+    const size_t count = std::min(viewportPrefabDragState.rootEntityIds.size(), viewportPrefabDragState.rootOffsets.size());
+    for(size_t i = 0; i < count; ++i){
+        NeoECS::ECSEntity* entity = findEntityById(viewportPrefabDragState.rootEntityIds[i]);
+        if(!entity){
+            continue;
+        }
+        auto* transformComp = manager->getECSComponent<TransformComponent>(entity);
+        if(!transformComp){
+            continue;
+        }
+        transformComp->local.position = anchorPos + viewportPrefabDragState.rootOffsets[i];
+    }
+}
+
+void EditorScene::finalizeViewportPrefabDragPreview(){
+    if(!viewportPrefabDragState.active){
+        return;
+    }
+    std::filesystem::path placedPath = viewportPrefabDragState.prefabPath;
+    viewportPrefabDragState = ViewportPrefabDragState{};
+    setIoStatus("Prefab instantiated: " + placedPath.generic_string(), false);
+}
+
+void EditorScene::cancelViewportPrefabDragPreview(){
+    if(!viewportPrefabDragState.active){
+        return;
+    }
+    if(targetScene && targetScene->getECS()){
+        for(const std::string& rootId : viewportPrefabDragState.rootEntityIds){
+            NeoECS::ECSEntity* entity = findEntityById(rootId);
+            if(!entity || targetScene->isSceneRootEntity(entity)){
+                continue;
+            }
+            std::unique_ptr<NeoECS::GameObject> wrapper(NeoECS::GameObject::CreateFromECSEntity(targetScene->getECS()->getContext(), entity));
+            if(wrapper){
+                targetScene->destroyECSGameObject(wrapper.get());
+            }
+        }
+    }
+    viewportPrefabDragState = ViewportPrefabDragState{};
+    if(!selectedEntityId.empty() && !findEntityById(selectedEntityId)){
+        selectEntity("");
+    }
+}
+
 void EditorScene::drawToolbar(float width, float height){
     ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
     ImGui::SetNextWindowSize(ImVec2(width, height));
+    ImGui::Begin("##Toolbar", nullptr, kPanelFlags | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_MenuBar);
 
-    ImGui::Begin("##Toolbar", nullptr, kPanelFlags | ImGuiWindowFlags_NoTitleBar);
+    bool saveSceneClicked = false;
+    bool loadSceneClicked = false;
+    if(ImGui::BeginMenuBar()){
+        if(ImGui::BeginMenu("File")){
+            saveSceneClicked = ImGui::MenuItem("Save Scene", "Ctrl+S", false, playState == PlayState::Edit);
+            loadSceneClicked = ImGui::MenuItem("Load Scene", "Ctrl+O", false, playState == PlayState::Edit);
+            ImGui::EndMenu();
+        }
+        if(ImGui::BeginMenu("Edit")){
+            ImGui::MenuItem("Undo", "Ctrl+Z", false, false);
+            ImGui::MenuItem("Redo", "Ctrl+Y", false, false);
+            ImGui::EndMenu();
+        }
+        if(ImGui::BeginMenu("View")){
+            ImGui::MenuItem("Maximize On Play", nullptr, &maximizeOnPlay);
+            ImGui::EndMenu();
+        }
+        ImGui::EndMenuBar();
+    }
+
+    ImGuiIO& io = ImGui::GetIO();
+    if(playState == PlayState::Edit && !io.WantTextInput){
+        if(io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_S, false)){
+            saveSceneClicked = true;
+        }
+        if(io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_O, false)){
+            loadSceneClicked = true;
+        }
+    }
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
 
     bool playClicked = ImGui::Button(playState == PlayState::Play ? "Playing" : "Play");
     ImGui::SameLine();
@@ -803,8 +1274,7 @@ void EditorScene::drawToolbar(float width, float height){
     ImGui::SameLine();
     ImGui::TextUnformatted("|");
     ImGui::SameLine();
-    ImGui::Checkbox("Maximize on play", &maximizeOnPlay);
-
+    ImGui::TextUnformatted(playState == PlayState::Edit ? "File > Save/Load Scene" : "Scene IO locked during play");
     ImGui::SameLine();
     ImGui::TextUnformatted("|");
     ImGui::SameLine();
@@ -824,6 +1294,15 @@ void EditorScene::drawToolbar(float width, float height){
         ImGui::SameLine();
     };
     modeButton("All", TransformWidget::Mode::Combined);
+
+    if(!ioStatusMessage.empty()){
+        ImGui::SameLine();
+        ImGui::TextUnformatted("|");
+        ImGui::SameLine();
+        const ImVec4 statusColor = ioStatusIsError ? ImVec4(0.95f, 0.35f, 0.35f, 1.0f)
+                                                   : ImVec4(0.45f, 0.95f, 0.55f, 1.0f);
+        ImGui::TextColored(statusColor, "%s", ioStatusMessage.c_str());
+    }
 
     if(playClicked){
         if(playState == PlayState::Edit){
@@ -846,6 +1325,13 @@ void EditorScene::drawToolbar(float width, float height){
         if(playState != PlayState::Edit){
             resetRequested.store(true);
         }
+    }
+
+    if(saveSceneClicked){
+        saveSceneFromEditorCommand();
+    }
+    if(loadSceneClicked){
+        loadSceneFromEditorCommand();
     }
 
     ImGui::End();
@@ -988,6 +1474,7 @@ bool EditorScene::handleQuitRequest(){
 }
 
 void EditorScene::performStop(){
+    cancelViewportPrefabDragPreview();
     playState = PlayState::Edit;
     viewportRect = ViewportRect{};
     viewportHovered = false;
@@ -1068,6 +1555,16 @@ void EditorScene::drawEcsPanel(float x, float y, float w, float h, bool lightwei
         selectedEntityId,
         [this](const std::string& id){
             selectEntity(id);
+        },
+        [this](const std::string& entityId){
+            exportEntityAsPrefabToWorkspaceDirectory(entityId);
+        },
+        [this](const std::filesystem::path& prefabPath, const std::string& parentEntityId, std::string* outError) -> bool {
+            const bool ok = instantiatePrefabUnderParentEntity(prefabPath, parentEntityId);
+            if(!ok && outError){
+                *outError = ioStatusMessage.empty() ? "Instantiate Prefab failed." : ioStatusMessage;
+            }
+            return ok;
         }
     );
 }
@@ -1077,7 +1574,15 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
     ImGui::SetNextWindowSize(ImVec2(w, h));
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-    ImGui::Begin("Viewport", nullptr, kPanelFlags | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground);
+    ImGui::Begin(
+        "Viewport",
+        nullptr,
+        kPanelFlags |
+            ImGuiWindowFlags_NoTitleBar |
+            ImGuiWindowFlags_NoBackground |
+            ImGuiWindowFlags_NoScrollbar |
+            ImGuiWindowFlags_NoScrollWithMouse
+    );
     ImVec2 pos = ImGui::GetWindowPos();
     ImVec2 size = ImGui::GetWindowSize();
     viewportHovered = ImGui::IsWindowHovered();
@@ -1086,6 +1591,40 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
     viewportRect.w = size.x;
     viewportRect.h = size.y;
     viewportRect.valid = (size.x > 1.0f && size.y > 1.0f);
+
+    ImGui::SetCursorScreenPos(pos);
+    ImGui::InvisibleButton("##ViewportDragDropTarget", size);
+
+    bool sawViewportPrefabPayload = false;
+    bool deliveredViewportPrefabPayload = false;
+    std::filesystem::path viewportPrefabPayloadPath;
+    if(playState == PlayState::Edit && ImGui::BeginDragDropTarget()){
+        EditorAssetUI::AssetTransaction droppedAsset;
+        bool isDelivery = false;
+        if(EditorAssetUI::AcceptAssetDropInCurrentTarget(EditorAssetUI::AssetKind::Any, droppedAsset, true, &isDelivery) &&
+           isPathWithExtension(droppedAsset.absolutePath, ".prefab")){
+            sawViewportPrefabPayload = true;
+            deliveredViewportPrefabPayload = isDelivery;
+            viewportPrefabPayloadPath = droppedAsset.absolutePath.lexically_normal();
+        }
+        ImGui::EndDragDropTarget();
+    }
+
+    if(playState != PlayState::Edit){
+        cancelViewportPrefabDragPreview();
+    }else if(sawViewportPrefabPayload){
+        if(!viewportPrefabDragState.active || viewportPrefabDragState.prefabPath != viewportPrefabPayloadPath){
+            beginViewportPrefabDragPreview(viewportPrefabPayloadPath);
+        }
+        if(viewportPrefabDragState.active){
+            updateViewportPrefabDragPreviewFromMouse();
+            if(deliveredViewportPrefabPayload){
+                finalizeViewportPrefabDragPreview();
+            }
+        }
+    }else if(viewportPrefabDragState.active){
+        cancelViewportPrefabDragPreview();
+    }
 
     if(playState == PlayState::Edit && targetScene && viewportCamera && viewportRect.valid && targetScene->getECS()){
         auto* ecs = targetScene->getECS();
@@ -1274,7 +1813,6 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
         }
     }
 
-    ImGui::TextUnformatted("Viewport");
     ImGui::End();
     ImGui::PopStyleVar();
 }
@@ -1373,7 +1911,20 @@ void EditorScene::drawAssetsPanel(float x, float y, float w, float h, bool light
         return;
     }
     workspacePanel.setAssetRoot(assetRoot);
-    workspacePanel.draw(x, y, w, h, selectedAssetPath);
+    workspacePanel.draw(
+        x,
+        y,
+        w,
+        h,
+        selectedAssetPath,
+        [this](const std::string& entityId, const std::filesystem::path& exportDirectory, std::string* outError) -> bool {
+            const bool ok = exportEntityAsPrefabToDirectory(entityId, exportDirectory);
+            if(!ok && outError){
+                *outError = ioStatusMessage.empty() ? "Create Prefab failed." : ioStatusMessage;
+            }
+            return ok;
+        }
+    );
 }
 
 NeoECS::ECSEntity* EditorScene::findEntityById(const std::string& id) const{
@@ -1406,6 +1957,7 @@ PCamera EditorScene::resolveSelectedTargetCamera() const{
 }
 
 void EditorScene::dispose(){
+    cancelViewportPrefabDragPreview();
     if(playViewportMouseRectConstrained){
         if(auto* window = getWindow()){
             SDL_SetWindowMouseRect(window->getWindowPtr(), nullptr);

@@ -48,8 +48,10 @@ void InvalidateMaterialThumbnail(const std::string& assetRef = "");
 
 bool DrawAssetTile(const char* id, const AssetTransaction& tx, float iconSize, bool selected = false, bool* outDoubleClicked = nullptr);
 void BeginAssetDragSource(const AssetTransaction& tx);
-bool AcceptAssetDrop(AssetKind requestedKind, AssetTransaction& out);
-bool AcceptAssetDrop(const AssetKind* requestedKinds, size_t requestedKindCount, AssetTransaction& out);
+bool AcceptAssetDrop(AssetKind requestedKind, AssetTransaction& out, bool acceptBeforeDelivery = false, bool* outIsDelivery = nullptr);
+bool AcceptAssetDrop(const AssetKind* requestedKinds, size_t requestedKindCount, AssetTransaction& out, bool acceptBeforeDelivery = false, bool* outIsDelivery = nullptr);
+bool AcceptAssetDropInCurrentTarget(AssetKind requestedKind, AssetTransaction& out, bool acceptBeforeDelivery = false, bool* outIsDelivery = nullptr);
+bool AcceptAssetDropInCurrentTarget(const AssetKind* requestedKinds, size_t requestedKindCount, AssetTransaction& out, bool acceptBeforeDelivery = false, bool* outIsDelivery = nullptr);
 bool DrawAssetDropInput(const char* label, char* buffer, size_t bufferSize, AssetKind requestedKind, bool readOnly = false, bool* outDropped = nullptr);
 bool DrawAssetDropInput(const char* label, std::string& value, const AssetKind* requestedKinds, size_t requestedKindCount, bool readOnly = false, bool* outDropped = nullptr);
 bool DrawAssetDropInput(const char* label, std::string& value, std::initializer_list<AssetKind> requestedKinds, bool readOnly = false, bool* outDropped = nullptr);

@@ -20,6 +20,7 @@
 #include "Editor/Widgets/PropertiesPanel.h"
 #include "Editor/Widgets/WorkspacePanel.h"
 #include "Rendering/Textures/Texture.h"
+#include "Serialization/IO/PrefabIO.h"
 
 // EditorScene is a wrapper/editor-host scene that contains and edits another scene instance.
 // It must keep its own editor camera for viewport navigation, while target-scene cameras are
@@ -135,6 +136,18 @@ class EditorScene : public Scene {
         bool previewWindowInitialized = false;
         Math3D::Vec2 previewWindowLocalPos = Math3D::Vec2(0.0f, 0.0f);
         Math3D::Vec2 previewWindowSize = Math3D::Vec2(280.0f, 210.0f);
+        struct ViewportPrefabDragState {
+            bool active = false;
+            std::filesystem::path prefabPath;
+            std::vector<std::string> rootEntityIds;
+            std::vector<Math3D::Vec3> rootOffsets;
+            float placementPlaneY = 0.0f;
+        };
+        ViewportPrefabDragState viewportPrefabDragState;
+        std::filesystem::path activeScenePath;
+        std::string ioStatusMessage;
+        bool ioStatusIsError = false;
+        float ioStatusTimeRemaining = 0.0f;
 
         void ensureTargetInitialized();
         void drawToolbar(float width, float height);
@@ -160,6 +173,21 @@ class EditorScene : public Scene {
                                ImU32 tint) const;
         void ensurePointLightBounds(NeoECS::ECSEntity* entity, float radius);
         bool computeSceneBounds(Math3D::Vec3& outCenter, float& outRadius) const;
+        void setIoStatus(const std::string& message, bool isError);
+        bool saveSceneFromEditorCommand();
+        bool loadSceneFromEditorCommand();
+        bool exportEntityAsPrefabToDirectory(const std::string& entityId, const std::filesystem::path& directoryPath);
+        bool exportEntityAsPrefabToWorkspaceDirectory(const std::string& entityId);
+        bool instantiatePrefabUnderParentEntity(const std::filesystem::path& prefabPath, const std::string& parentEntityId);
+        bool instantiatePrefabFromAbsolutePath(const std::filesystem::path& prefabPath,
+                                               NeoECS::GameObject* parentObject,
+                                               PrefabIO::PrefabInstantiateResult* outResult,
+                                               std::string* outError);
+        bool beginViewportPrefabDragPreview(const std::filesystem::path& prefabPath);
+        void updateViewportPrefabDragPreviewFromMouse();
+        void finalizeViewportPrefabDragPreview();
+        void cancelViewportPrefabDragPreview();
+        bool computeViewportMousePlacement(float planeY, Math3D::Vec3& outWorldPosition) const;
 };
 
 #endif // EDITOR_SCENE_H

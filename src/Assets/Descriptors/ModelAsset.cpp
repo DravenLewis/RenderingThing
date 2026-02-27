@@ -280,6 +280,9 @@ std::shared_ptr<Model> InstantiateModel(const ModelAssetData& data, std::string*
         auto model = OBJLoader::LoadFromAsset(sourceAsset, fallbackMaterial, forceSmooth);
         if(!model && outError){
             *outError = "OBJ model load failed for source: " + sourceRef;
+        }else if(model){
+            model->setSourceAssetRef(sourceRef);
+            model->setSourceForceSmoothNormals(forceSmooth);
         }
         return model;
     }

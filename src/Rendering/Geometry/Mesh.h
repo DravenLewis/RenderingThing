@@ -194,6 +194,7 @@ class Mesh : public IDrawable{
         void setLocationAttributeOffset(int attribute, int dataSize, int dataOffset);
 
         std::vector<Vertex>& getVertecies() {return this->verticies;}
+        const std::vector<uint32_t>& getFaces() const { return faces; }
         bool getLocalBounds(Math3D::Vec3& outMin, Math3D::Vec3& outMax) const;
 
         static void Unbind();
