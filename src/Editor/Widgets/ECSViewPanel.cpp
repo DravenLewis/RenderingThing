@@ -4,6 +4,7 @@
 #include "imgui.h"
 
 #include <cstring>
+#include <cctype>
 #include <memory>
 
 namespace {
@@ -83,6 +84,116 @@ namespace {
             NeoECS::GameObject::CreateFromECSEntity(scene->getECS()->getContext(), entity)
         );
     }
+
+    std::string trimCopy(const std::string& source){
+        size_t begin = 0;
+        while(begin < source.size() && std::isspace(static_cast<unsigned char>(source[begin]))){
+            begin++;
+        }
+
+        size_t end = source.size();
+        while(end > begin && std::isspace(static_cast<unsigned char>(source[end - 1]))){
+            end--;
+        }
+
+        return source.substr(begin, end - begin);
+    }
+}
+
+void ECSViewPanel::beginEntityRename(PScene targetScene, const std::string& entityId){
+    if(entityId.empty()){
+        return;
+    }
+
+    NeoECS::ECSEntity* entity = findEntityById(targetScene, entityId);
+    if(!entity){
+        return;
+    }
+
+    entityRenameActive = true;
+    entityRenameFocus = true;
+    entityRenamePopupPendingOpen = true;
+    entityRenameId = entityId;
+    std::memset(entityRenameBuffer, 0, sizeof(entityRenameBuffer));
+    std::strncpy(entityRenameBuffer, entity->getName().c_str(), sizeof(entityRenameBuffer) - 1);
+    entityRenameBuffer[sizeof(entityRenameBuffer) - 1] = '\0';
+}
+
+void ECSViewPanel::commitEntityRename(PScene targetScene){
+    if(!entityRenameActive || entityRenameId.empty()){
+        cancelEntityRename();
+        return;
+    }
+
+    NeoECS::ECSEntity* entity = findEntityById(targetScene, entityRenameId);
+    if(!entity){
+        cancelEntityRename();
+        return;
+    }
+
+    std::string requestedName = trimCopy(entityRenameBuffer);
+    if(requestedName.empty()){
+        cancelEntityRename();
+        return;
+    }
+
+    entity->setName(std::move(requestedName));
+    cancelEntityRename();
+}
+
+void ECSViewPanel::cancelEntityRename(){
+    entityRenameActive = false;
+    entityRenameFocus = false;
+    entityRenamePopupPendingOpen = false;
+    entityRenameId.clear();
+    std::memset(entityRenameBuffer, 0, sizeof(entityRenameBuffer));
+}
+
+void ECSViewPanel::drawRenamePopup(PScene targetScene){
+    if(!entityRenameActive){
+        return;
+    }
+
+    if(entityRenamePopupPendingOpen){
+        ImGui::OpenPopup("Rename Entity");
+        entityRenamePopupPendingOpen = false;
+    }
+
+    if(ImGui::BeginPopupModal("Rename Entity", nullptr, ImGuiWindowFlags_AlwaysAutoResize)){
+        ImGui::TextUnformatted("Entity Name");
+        if(entityRenameFocus){
+            ImGui::SetKeyboardFocusHere();
+            entityRenameFocus = false;
+        }
+
+        bool submitted = ImGui::InputText(
+            "##EntityRenameInput",
+            entityRenameBuffer,
+            sizeof(entityRenameBuffer),
+            ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll
+        );
+        if(submitted){
+            commitEntityRename(targetScene);
+            ImGui::CloseCurrentPopup();
+        }
+
+        if(ImGui::Button("Save")){
+            commitEntityRename(targetScene);
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::SameLine();
+        if(ImGui::Button("Cancel")){
+            cancelEntityRename();
+            ImGui::CloseCurrentPopup();
+        }
+
+        if(ImGui::IsKeyPressed(ImGuiKey_Escape, false)){
+            cancelEntityRename();
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
+    }
 }
 
 void ECSViewPanel::draw(float x,
@@ -102,6 +213,18 @@ void ECSViewPanel::draw(float x,
         ImGui::TextUnformatted("No ECS loaded.");
         ImGui::End();
         return;
+    }
+
+    if(entityRenameActive && !findEntityById(targetScene, entityRenameId)){
+        cancelEntityRename();
+    }
+
+    if(!entityRenameActive &&
+       !selectedEntityId.empty() &&
+       ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
+       ImGui::IsKeyPressed(ImGuiKey_F2, false) &&
+       !ImGui::GetIO().WantTextInput){
+        beginEntityRename(targetScene, selectedEntityId);
     }
 
     auto* entityManager = targetScene->getECS()->getEntityManager();
@@ -147,6 +270,11 @@ void ECSViewPanel::draw(float x,
             pendingActions.push_back({PendingActionKind::DeleteEntity, selectedEntityId, ""});
         }
 
+        const bool canRenameSelected = selectedEntity != nullptr;
+        if(ImGui::MenuItem("Rename Selected", "F2", false, canRenameSelected)){
+            beginEntityRename(targetScene, selectedEntityId);
+        }
+
         const bool canReparentToRoot =
             selectedEntity &&
             !targetScene->isSceneRootEntity(selectedEntity) &&
@@ -158,6 +286,7 @@ void ECSViewPanel::draw(float x,
         ImGui::EndPopup();
     }
 
+    drawRenamePopup(targetScene);
     applyPendingActions(targetScene, selectedEntityId, onSelectEntity);
 
     ImGui::End();
@@ -206,7 +335,8 @@ void ECSViewPanel::drawEntityTree(NeoECS::ECSEntity* entity,
 
     const bool isSceneRoot = targetScene->isSceneRootEntity(entity);
     const std::string entityId = entity->getNodeUniqueID();
-    if(ImGui::BeginPopupContextItem("EntityContextMenu")){
+    const std::string contextMenuId = "EntityContextMenu##" + entityId;
+    if(ImGui::BeginPopupContextItem(contextMenuId.c_str())){
         if(ImGui::BeginMenu("Create Child")){
             if(ImGui::MenuItem("Empty Game Object")){
                 pendingActions.push_back({PendingActionKind::CreateEmpty, "", entityId});
@@ -233,6 +363,10 @@ void ECSViewPanel::drawEntityTree(NeoECS::ECSEntity* entity,
         const bool canDeleteThis = !isSceneRoot;
         if(ImGui::MenuItem("Delete", nullptr, false, canDeleteThis)){
             pendingActions.push_back({PendingActionKind::DeleteEntity, entityId, ""});
+        }
+
+        if(ImGui::MenuItem("Rename", "F2")){
+            beginEntityRename(targetScene, entityId);
         }
 
         ImGui::EndPopup();

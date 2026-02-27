@@ -14,6 +14,12 @@ enum GLProfile{
     LEGACY = SDL_GL_CONTEXT_PROFILE_COMPATIBILITY
 };
 
+enum class VSyncMode{
+    Off = 0,
+    On = 1,
+    Adaptive = -1
+};
+
 struct GLVersionInfo{
     int glMajor;
     int glMinor;
@@ -53,6 +59,7 @@ struct DisplayMode{
     int windowResolutionY;
     bool fullScreen;
     bool resizable;
+    VSyncMode vSyncMode;
     int bufferSize;
     int depthBitWidth;
 
@@ -69,13 +76,21 @@ struct DisplayMode{
 
     static const int FIRST = 0;
 
-    static DisplayMode New(int width = 640, int height = 480, GLVersionInfo glInfo = GLVersionInfo(), bool fs = false, bool rs = false, int bs = 1, int dbw = 24){
+    static DisplayMode New(int width = 640,
+                           int height = 480,
+                           GLVersionInfo glInfo = GLVersionInfo(),
+                           bool fs = false,
+                           bool rs = false,
+                           int bs = 1,
+                           int dbw = 24,
+                           VSyncMode vSync = VSyncMode::Off){
         DisplayMode mode;
         mode.windowResolutionX = width;
         mode.windowResolutionY = height;
         mode.versionInfo = glInfo;
         mode.fullScreen = fs;
         mode.resizable = rs;
+        mode.vSyncMode = vSync;
         mode.bufferSize = bs;
         mode.depthBitWidth = dbw;
         return mode;
@@ -153,6 +168,10 @@ class RenderWindow{
         bool setWindowSize(int width, int height);
         int  getWindowWidth();
         int  getWindowHeight();
+        bool setVSyncMode(VSyncMode mode);
+        VSyncMode getVSyncMode() const;
+        bool setVSyncEnabled(bool enabled);
+        bool isVSyncEnabled() const;
         bool setFullScreen(bool fullscreen);
         bool isFullScreen();
         void setWindowName(std::string windowName);

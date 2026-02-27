@@ -3,25 +3,52 @@
 
 #include <stdexcept> 
 #include <cfloat>
+#include <utility>
 
 
-void Mesh::upload(std::vector<Vertex> verts, std::vector<uint32_t> faces){
+void Mesh::upload(const std::vector<Vertex>& verts, const std::vector<uint32_t>& faces, GLenum usage){
     this->faces = faces;
     this->verticies = verts;
     computeLocalBounds();
 
     if(!_areBuffersBound()){
-        _genBuffers();
+        _genBuffers(usage);
     }else{
         this->bind();
 
         std::vector<float> rawVerts = this->getRawVertexData();
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, rawVerts.size() * sizeof(float), rawVerts.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, rawVerts.size() * sizeof(float), rawVerts.data(), usage);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->faces.size() * sizeof(int), this->faces.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->faces.size() * sizeof(int), this->faces.data(), usage);
+
+        Mesh::Unbind();
+    }
+
+    if(!_areBuffersBound()){
+        throw std::runtime_error("Cannot Bind. Unable to get valid VAO,VBO, or EBO");
+    }
+}
+
+void Mesh::upload(std::vector<Vertex>&& verts, std::vector<uint32_t>&& faces, GLenum usage){
+    this->faces = std::move(faces);
+    this->verticies = std::move(verts);
+    computeLocalBounds();
+
+    if(!_areBuffersBound()){
+        _genBuffers(usage);
+    }else{
+        this->bind();
+
+        std::vector<float> rawVerts = this->getRawVertexData();
+
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, rawVerts.size() * sizeof(float), rawVerts.data(), usage);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->faces.size() * sizeof(int), this->faces.data(), usage);
 
         Mesh::Unbind();
     }
@@ -32,7 +59,7 @@ void Mesh::upload(std::vector<Vertex> verts, std::vector<uint32_t> faces){
 }
 
 void Mesh::reload(){
-    _genBuffers();
+    _genBuffers(GL_STATIC_DRAW);
 }
 
 namespace {
@@ -55,7 +82,7 @@ Mesh::~Mesh(){
     dispose();
 }
 
-void Mesh::_genBuffers(){
+void Mesh::_genBuffers(GLenum usage){
 
     if(_areBuffersBound()){
         dispose(); // time to rebind.
@@ -71,11 +98,11 @@ void Mesh::_genBuffers(){
 
     // Set Up VBO
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, rawVerts.size() * sizeof(float), rawVerts.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, rawVerts.size() * sizeof(float), rawVerts.data(), usage);
 
     // Set Up EBO
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->faces.size() * sizeof(int), this->faces.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->faces.size() * sizeof(int), this->faces.data(), usage);
 
     this->setLocationAttributeOffset(0,3,0);  // Attribute 0, Width 3 (X,Y,Z), Offset 0
     this->setLocationAttributeOffset(1,4,3);  // Attribute 1, Width 4 (X,Y,Z), Offset 3

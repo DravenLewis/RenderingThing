@@ -53,6 +53,7 @@ bool RenderWindow::initSDL(){
     gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress);
     
     glEnable(GL_DEPTH_TEST);
+    setVSyncMode(this->displayMode.vSyncMode);
 
     return true;
 }
@@ -99,6 +100,57 @@ int  RenderWindow::getWindowHeight(){
     return this->windowHeight;
 }
 
+bool RenderWindow::setVSyncEnabled(bool enabled){
+    return setVSyncMode(enabled ? VSyncMode::On : VSyncMode::Off);
+}
+
+bool RenderWindow::isVSyncEnabled() const{
+    return this->displayMode.vSyncMode != VSyncMode::Off;
+}
+
+bool RenderWindow::setVSyncMode(VSyncMode mode){
+    auto applySwapInterval = [&](int interval) -> bool{
+        if(SDL_GL_SetSwapInterval(interval)){
+            return true;
+        }
+        LogBot.Log(
+            LOG_WARN,
+            "RenderWindow::setVSyncMode(%d) failed (interval=%d): %s",
+            (int)mode,
+            interval,
+            SDL_GetError()
+        );
+        return false;
+    };
+
+    if(mode == VSyncMode::Adaptive){
+        if(applySwapInterval(-1)){
+            this->displayMode.vSyncMode = VSyncMode::Adaptive;
+            return true;
+        }
+
+        // Adaptive VSync is optional driver support; gracefully fall back to regular VSync.
+        if(applySwapInterval(1)){
+            this->displayMode.vSyncMode = VSyncMode::On;
+            LogBot.Log(LOG_WARN, "RenderWindow::setVSyncMode(Adaptive) unsupported, fell back to VSync On.");
+            return true;
+        }
+        return false;
+    }
+
+    int interval = (mode == VSyncMode::On) ? 1 : 0;
+    if(!applySwapInterval(interval)){
+        return false;
+    }
+
+    this->displayMode.vSyncMode = mode;
+    return true;
+}
+
+VSyncMode RenderWindow::getVSyncMode() const{
+    return this->displayMode.vSyncMode;
+}
+
 bool RenderWindow::setFullScreen(bool fullscreen){
     // 1. Determine flags
     Uint32 flags = fullscreen ? SDL_WINDOW_FULLSCREEN : 0;
@@ -136,8 +188,10 @@ bool RenderWindow::setFullScreen(bool fullscreen){
         // Try the toggle one last time with the new mode applied
         if (SDL_SetWindowFullscreen(this->windowPtr, flags) == 0) {
             // SUCCESS: Now safely update the member variables
+            VSyncMode preserveVSync = this->displayMode.vSyncMode;
             this->displayMode = candidateMode;
             this->displayMode.fullScreen = true;
+            this->displayMode.vSyncMode = preserveVSync;
             return true;
         }
     }

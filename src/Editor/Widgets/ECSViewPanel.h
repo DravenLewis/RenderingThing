@@ -21,6 +21,8 @@ class ECSViewPanel {
         );
 
     private:
+        static constexpr size_t kEntityRenameBufferSize = 256;
+
         enum class PendingActionKind {
             CreateEmpty,
             CreateLight,
@@ -37,8 +39,17 @@ class ECSViewPanel {
         };
 
         bool showHiddenModelPartsInTree = false;
+        bool entityRenameActive = false;
+        bool entityRenameFocus = false;
+        bool entityRenamePopupPendingOpen = false;
+        std::string entityRenameId;
+        char entityRenameBuffer[kEntityRenameBufferSize] = {};
         std::vector<PendingAction> pendingActions;
 
+        void beginEntityRename(PScene targetScene, const std::string& entityId);
+        void commitEntityRename(PScene targetScene);
+        void cancelEntityRename();
+        void drawRenamePopup(PScene targetScene);
         void drawEntityTree(
             NeoECS::ECSEntity* entity,
             PScene targetScene,

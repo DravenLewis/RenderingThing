@@ -95,170 +95,136 @@ void FreeTypeFont::_initFont(){
     Font::FontLogger.Log(LOG_INFO,"Freetype atlas generated for font: %s", assetPtr->getFileHandle()->getFileName().c_str());
 }
 
-void FreeTypeFont::drawText(std::string text, Math3D::Vec2 position, PCamera camera, Color color, bool useCache){
-    if(!this->textureAtlasPtr || !camera)  return;
-    std::shared_ptr<ModelPart> meshToDraw = nullptr;
-
-    if(!useCache){
-        if(!transientTextPart){
-            transientTextPart = std::make_shared<ModelPart>();
-            transientTextPart->mesh = std::make_shared<Mesh>();
-        }else if(!transientTextPart->mesh){
-            transientTextPart->mesh = std::make_shared<Mesh>();
-        }
-
-        auto imageMat = Material::GetAs<MaterialDefaults::ImageMaterial>(this->materialCachePtr);
-        if(!imageMat || !imageMat->getShader() || imageMat->getShader()->getID() == 0){
-            this->materialCachePtr = MaterialDefaults::ImageMaterial::Create(this->textureAtlasPtr, color);
-            imageMat = Material::GetAs<MaterialDefaults::ImageMaterial>(this->materialCachePtr);
-        }
-        if(!imageMat){
-            return;
-        }
-
-        imageMat->Tex = this->textureAtlasPtr;
-        imageMat->Color = color;
-        imageMat->UV = Math3D::Vec2(0.0f, 0.0f);
-
-        std::vector<Vertex> vertices;
-        std::vector<uint32_t> indices;
-        vertices.reserve(text.size() * 4);
-        indices.reserve(text.size() * 6);
-
-        float x = 0, y = 0;
-        const float lineHeight = std::ceil(this->fontSize);
-
-        for(unsigned char c : text){
-            if(c == '\r') continue;
-            if(c == '\n'){
-                x = 0;
-                y += lineHeight;
-                continue;
-            }
-            if(c < 32 || c >= 128) continue;
-
-            const FontCharacter& ch = this->characters[c];
-
-            float xpos = std::round(x + ch.bearingX);
-            float ypos = std::round(y - ch.bearingY);
-            float w = ch.sizeX;
-            float h = ch.sizeY;
-
-            const uint32_t base = static_cast<uint32_t>(vertices.size());
-            vertices.push_back(Vertex::Build(Math3D::Vec3(xpos,     ypos,     0)).UV(ch.u0, ch.v0).Norm(0,0,1).Col(Color::WHITE));
-            vertices.push_back(Vertex::Build(Math3D::Vec3(xpos + w, ypos,     0)).UV(ch.u1, ch.v0).Norm(0,0,1).Col(Color::WHITE));
-            vertices.push_back(Vertex::Build(Math3D::Vec3(xpos + w, ypos + h, 0)).UV(ch.u1, ch.v1).Norm(0,0,1).Col(Color::WHITE));
-            vertices.push_back(Vertex::Build(Math3D::Vec3(xpos,     ypos + h, 0)).UV(ch.u0, ch.v1).Norm(0,0,1).Col(Color::WHITE));
-
-            // Match the existing face winding used by the cached path.
-            indices.push_back(base + 0);
-            indices.push_back(base + 3);
-            indices.push_back(base + 2);
-            indices.push_back(base + 2);
-            indices.push_back(base + 1);
-            indices.push_back(base + 0);
-
-            x += ch.advance;
-        }
-
-        transientTextPart->mesh->upload(std::move(vertices), std::move(indices));
-        transientTextPart->material = this->materialCachePtr;
-        meshToDraw = transientTextPart;
-    }else{
-        constexpr size_t MAX_TEXT_CACHE = 500;
-        constexpr size_t TRIM_BATCH = 100;
-        if(this->meshCache.size() > MAX_TEXT_CACHE){
-            size_t toRemove = Math3D::Min(TRIM_BATCH, this->meshCache.size());
-            for(size_t i = 0; i < toRemove; ++i){
-                auto it = meshCache.begin();
-                if(it == meshCache.end()) break;
-                meshCache.erase(it);
-            }
-        }
-
-        TextCacheKey key = {text, color};
-
-        auto it = meshCache.find(key);
-        if(it != meshCache.end()){
-            meshToDraw = it->second;
-        }
-
-        if(!meshToDraw){
-            auto mat = MaterialDefaults::ImageMaterial::Create(this->textureAtlasPtr, color);
-            auto factory = ModelPartFactory::Create(mat);
-
-            float x = 0, y = 0;
-            const float lineHeight = std::ceil(this->fontSize);
-
-            for(unsigned char c : text){
-                if(c == '\r') continue;
-                if(c == '\n'){
-                    x = 0;
-                    y += lineHeight;
-                    continue;
-                }
-                if(c < 32 || c >= 128) continue;
-
-                const FontCharacter& ch = this->characters[c];
-
-                float xpos = std::round(x + ch.bearingX);
-                float ypos = std::round(y - ch.bearingY);
-                float w = ch.sizeX;
-                float h = ch.sizeY;
-
-                int v0, v1, v2, v3;
-
-                factory
-                    .addVertex(Vertex::Build(Math3D::Vec3(xpos, ypos, 0))
-                        .UV(ch.u0,ch.v0)
-                        .Norm(0,0,1)
-                        .Col(Color::WHITE),
-                    &v0)
-
-                    .addVertex(Vertex::Build(Math3D::Vec3(xpos + w, ypos, 0))
-                        .UV(ch.u1,ch.v0)
-                        .Norm(0,0,1)
-                        .Col(Color::WHITE),
-                    &v1)
-
-                    .addVertex(Vertex::Build(Math3D::Vec3(xpos + w  , ypos + h, 0))
-                        .UV(ch.u1,ch.v1)
-                        .Norm(0,0,1)
-                        .Col(Color::WHITE),
-                    &v2)
-
-                    .addVertex(Vertex::Build(Math3D::Vec3(xpos, ypos + h, 0))
-                        .UV(ch.u0,ch.v1)
-                        .Norm(0,0,1)
-                        .Col(Color::WHITE)
-                    ,&v3);
-
-                factory.defineFace(v0,v3,v2,v1);
-
-                x += ch.advance;
-            }
-
-            meshToDraw = factory.assemble();
-            meshCache[key] = meshToDraw;
+FreeTypeFont::DeferredBatch& FreeTypeFont::getOrCreateBatch(const Color& color){
+    const uint32_t colorKey = color.toRGBA32();
+    for(auto& batch : deferredBatches){
+        if(batch.colorKey == colorKey){
+            return batch;
         }
     }
 
-    // Draw the String.
+    deferredBatches.push_back(DeferredBatch{});
+    DeferredBatch& created = deferredBatches.back();
+    created.colorKey = colorKey;
+    created.color = color;
+    return created;
+}
+
+void FreeTypeFont::beginFrame(PCamera){
+    frameActive = true;
+    for(auto& batch : deferredBatches){
+        batch.vertices.clear();
+        batch.indices.clear();
+    }
+}
+
+void FreeTypeFont::drawText(std::string text, Math3D::Vec2 position, PCamera camera, Color color, bool){
+    if(!this->textureAtlasPtr || !camera || text.empty()){
+        return;
+    }
+
+    if(!frameActive){
+        beginFrame(camera);
+    }
+
+    DeferredBatch& batch = getOrCreateBatch(color);
+    batch.vertices.reserve(batch.vertices.size() + (text.size() * 4));
+    batch.indices.reserve(batch.indices.size() + (text.size() * 6));
+
+    const float baseX = std::floor(position.x);
+    const float baseY = std::floor(position.y);
+    float penX = 0.0f;
+    float penY = 0.0f;
+    const float lineHeight = std::ceil(this->fontSize);
+
+    for(unsigned char c : text){
+        if(c == '\r'){
+            continue;
+        }
+        if(c == '\n'){
+            penX = 0.0f;
+            penY += lineHeight;
+            continue;
+        }
+        if(c < 32 || c >= 128){
+            continue;
+        }
+
+        const FontCharacter& ch = this->characters[c];
+        const float xpos = std::round(baseX + penX + ch.bearingX);
+        const float ypos = std::round(baseY + penY - ch.bearingY);
+        const float w = ch.sizeX;
+        const float h = ch.sizeY;
+        const uint32_t base = static_cast<uint32_t>(batch.vertices.size());
+
+        batch.vertices.push_back(Vertex::Build(Math3D::Vec3(xpos,     ypos,     0)).UV(ch.u0, ch.v0).Norm(0,0,1).Col(Color::WHITE));
+        batch.vertices.push_back(Vertex::Build(Math3D::Vec3(xpos + w, ypos,     0)).UV(ch.u1, ch.v0).Norm(0,0,1).Col(Color::WHITE));
+        batch.vertices.push_back(Vertex::Build(Math3D::Vec3(xpos + w, ypos + h, 0)).UV(ch.u1, ch.v1).Norm(0,0,1).Col(Color::WHITE));
+        batch.vertices.push_back(Vertex::Build(Math3D::Vec3(xpos,     ypos + h, 0)).UV(ch.u0, ch.v1).Norm(0,0,1).Col(Color::WHITE));
+
+        batch.indices.push_back(base + 0);
+        batch.indices.push_back(base + 3);
+        batch.indices.push_back(base + 2);
+        batch.indices.push_back(base + 2);
+        batch.indices.push_back(base + 1);
+        batch.indices.push_back(base + 0);
+
+        penX += ch.advance;
+    }
+}
+
+void FreeTypeFont::flushQueuedText(PCamera camera){
+    if(!frameActive){
+        return;
+    }
+    if(!camera){
+        frameActive = false;
+        return;
+    }
+
+    if(!transientTextPart){
+        transientTextPart = std::make_shared<ModelPart>();
+        transientTextPart->mesh = std::make_shared<Mesh>();
+    }else if(!transientTextPart->mesh){
+        transientTextPart->mesh = std::make_shared<Mesh>();
+    }
+
+    auto imageMat = Material::GetAs<MaterialDefaults::ImageMaterial>(this->materialCachePtr);
+    if(!imageMat || !imageMat->getShader() || imageMat->getShader()->getID() == 0){
+        this->materialCachePtr = MaterialDefaults::ImageMaterial::Create(this->textureAtlasPtr, Color::WHITE);
+        imageMat = Material::GetAs<MaterialDefaults::ImageMaterial>(this->materialCachePtr);
+    }
+    if(!imageMat){
+        frameActive = false;
+        return;
+    }
+
+    imageMat->Tex = this->textureAtlasPtr;
+    imageMat->UV = Math3D::Vec2(0.0f, 0.0f);
+    transientTextPart->material = this->materialCachePtr;
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glDisable(GL_DEPTH_TEST); 
+    glDisable(GL_DEPTH_TEST);
     glDepthMask(GL_FALSE);
     glDisable(GL_CULL_FACE);
 
-    float sx = std::floor(position.x);
-    float sy = std::floor(position.y);
-
     Math3D::Transform t;
-    t.setPosition(Math3D::Vec3(sx, sy, 0));
-    
-    if (meshToDraw) {
-        meshToDraw->draw(t.toMat4(), camera->getViewMatrix(), camera->getProjectionMatrix());
+    t.setPosition(Math3D::Vec3(0, 0, 0));
+    const Math3D::Mat4 model = t.toMat4();
+    const Math3D::Mat4 view = camera->getViewMatrix();
+    const Math3D::Mat4 projection = camera->getProjectionMatrix();
+
+    for(auto& batch : deferredBatches){
+        if(batch.vertices.empty() || batch.indices.empty()){
+            continue;
+        }
+        imageMat->Color = batch.color;
+        transientTextPart->mesh->upload(batch.vertices, batch.indices, GL_STREAM_DRAW);
+        transientTextPart->draw(model, view, projection);
     }
+
+    frameActive = false;
 
     glDepthMask(GL_TRUE);
     glEnable(GL_DEPTH_TEST);

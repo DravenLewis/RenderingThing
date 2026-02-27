@@ -52,6 +52,7 @@ class Graphics2D{
         BatchMode2D batchMode = BatchMode2D::None;
         PTexture batchTexture = nullptr;
         size_t maxBatchQuads = 4096;
+        std::vector<PFont> queuedFonts;
 
 
         // Internal Helpers.
@@ -59,6 +60,8 @@ class Graphics2D{
         void ensureBatchResources();
         void resetBatch();
         void flushBatch();
+        void queueFontForFlush(PFont font);
+        void flushQueuedFonts();
         void beginBatch(BatchMode2D mode, PTexture texture = nullptr);
         void submitQuad(
             const Math3D::Vec3& p0, const Math3D::Vec3& p1, const Math3D::Vec3& p2, const Math3D::Vec3& p3,
@@ -90,6 +93,7 @@ class Graphics2D{
         static void DrawLine(Graphics2D& graphics, float x1, float y1, float x2, float y2);
         static void DrawRect(Graphics2D& graphics, float x, float y, float w, float h);
         static void FillRect(Graphics2D& graphics, float x, float y, float w, float h);
+        static void FillTriangle(Graphics2D& graphics, float x1, float y1, float x2, float y2, float x3, float y3);
         static void DrawEllipse(Graphics2D& graphics, float x, float y, float w, float h);
         static void FillEllipse(Graphics2D& graphics, float x, float y, float w, float h);
 

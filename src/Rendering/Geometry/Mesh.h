@@ -165,7 +165,7 @@ class Mesh : public IDrawable{
         Math3D::Vec3 localBoundsMax = Math3D::Vec3(0.0f, 0.0f, 0.0f);
         bool hasLocalBounds = false;
 
-        void _genBuffers();
+        void _genBuffers(GLenum usage = GL_STATIC_DRAW);
         bool _areBuffersBound();
         void computeLocalBounds();
 
@@ -174,7 +174,8 @@ class Mesh : public IDrawable{
         Mesh(const Mesh&) = delete;
         Mesh(Mesh&& other) noexcept;
 
-        void upload(std::vector<Vertex> verts, std::vector<uint32_t> faces);
+        void upload(const std::vector<Vertex>& verts, const std::vector<uint32_t>& faces, GLenum usage = GL_STATIC_DRAW);
+        void upload(std::vector<Vertex>&& verts, std::vector<uint32_t>&& faces, GLenum usage = GL_STATIC_DRAW);
         void reload();
 
         void bind();

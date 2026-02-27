@@ -347,27 +347,6 @@ void DemoScene::update(float deltaTime){
     totalTime += deltaTime;
 
     if(deltaTime > frameTimeSpike) frameTimeSpike = deltaTime;
-    frameTimeGraph.setCaptureEnabled(showDebugWidgets);
-    if(showDebugWidgets){
-        frameTimeGraph.updateFromSources(deltaTime, getDebugStats(), GameEngine::Engine);
-    }
-
-    fpsSampleAccumTime += deltaTime;
-    fpsSampleAccumFrames += 1;
-    if(displayedAverageFps <= 0.0f && deltaTime > 0.0f){
-        displayedAverageFps = 1.0f / deltaTime;
-        displayedAverageFrameMs = deltaTime * 1000.0f;
-    }
-    if(fpsSampleAccumTime >= 0.5f && fpsSampleAccumFrames > 0){
-        displayedAverageFps = (fpsSampleAccumTime > 0.0f)
-            ? (static_cast<float>(fpsSampleAccumFrames) / fpsSampleAccumTime)
-            : 0.0f;
-        displayedAverageFrameMs = (fpsSampleAccumTime > 0.0f)
-            ? ((fpsSampleAccumTime * 1000.0f) / static_cast<float>(fpsSampleAccumFrames))
-            : 0.0f;
-        fpsSampleAccumTime = 0.0f;
-        fpsSampleAccumFrames = 0;
-    }
 
     if(fpsController && inputManager){
         fpsController->update(deltaTime, inputManager);
@@ -405,11 +384,30 @@ void DemoScene::render(){
 
     render3DPass();
 
-    if(graphics2d && uiScreen && cam){
-        graphics2d->begin();
+    float renderFrameSeconds = 0.0f;
+    if(GameEngine::Engine){
+        const float renderFrameMs = GameEngine::Engine->getLastRenderMs() + GameEngine::Engine->getLastSwapMs();
+        if(renderFrameMs > 0.0f){
+            renderFrameSeconds = renderFrameMs / 1000.0f;
+        }
+    }
 
-        std::string info = StringUtils::Format(
-            "Current Player Pos: (X:%f, Y:%f, Z:%f)\nCurrent Camera View: (P:%f, Y:%f, R:%f)\nFPS (0.5s avg): %.2f (%.2f ms)\nPress F11 for Fullscreen\nPress ESC to close.\nGRAVE(`) to Unlock Mouse.",
+    if(renderFrameSeconds > 0.0f){
+        displayedAverageFps = 1.0f / renderFrameSeconds;
+        displayedAverageFrameMs = renderFrameSeconds * 1000.0f;
+    }
+
+    frameTimeGraph.setCaptureEnabled(showDebugWidgets);
+    profilerPieChart.setCaptureEnabled(showDebugWidgets);
+    if(showDebugWidgets){
+        const float graphDelta = (renderFrameSeconds > 0.0f) ? renderFrameSeconds : lastDeltaTime;
+        frameTimeGraph.updateFromSources(graphDelta, getDebugStats(), GameEngine::Engine);
+        profilerPieChart.updateFromSources(graphDelta, getDebugStats(), GameEngine::Engine);
+    }
+
+    if(graphics2d && uiScreen && cam){
+        const std::string infoOverlayText = StringUtils::Format(
+            "Current Player Pos: (X:%f, Y:%f, Z:%f)\nCurrent Camera View: (P:%f, Y:%f, R:%f)\nRender FPS (live): %.2f (%.2f ms)\nPress F11 for Fullscreen\nPress ESC to close.\nGRAVE(`) to Unlock Mouse.",
             cam->transform().position.x,
             cam->transform().position.y,
             cam->transform().position.z,
@@ -420,13 +418,15 @@ void DemoScene::render(){
             displayedAverageFrameMs
         );
 
+        graphics2d->begin();
+
         Color c0 = Color::fromRGBA255(10,10,32,200);
         Graphics2D::SetBackgroundColor(*graphics2d, c0);
         Graphics2D::FillRect(*graphics2d, 0, 0, 600, 140);
 
         Color c1 = Color::WHITE;
         Graphics2D::SetForegroundColor(*graphics2d, c1);
-        Graphics2D::DrawString(*graphics2d, info, 30, 30, false);
+        Graphics2D::DrawString(*graphics2d, infoOverlayText, 30, 30, true);
 
         if(showDebugWidgets){
             Color c2 = Color::fromRGBA255(10,10,32,200);
@@ -434,11 +434,18 @@ void DemoScene::render(){
             Graphics2D::FillRect(*graphics2d, 0, uiScreen->getHeight() - 164, uiScreen->getWidth(), 164);
             Graphics2D::SetBackgroundColor(*graphics2d, Color::WHITE);
             frameTimeGraph.draw(*graphics2d, 0, uiScreen->getHeight() - 70, uiScreen->getWidth(), 60);
-        }
-        
-        auto shadowTex = ShadowRenderer::GetDepthBuffer();
-        if(shadowTex && showDebugWidgets){
-            Graphics2D::DrawImage(*graphics2d, shadowTex, uiScreen->getWidth() - (uiScreen->getWidth() / 4.0f) - 30, 30,uiScreen->getWidth() / 4.0f, uiScreen->getHeight() / 4.0f);
+            const float pieW = uiScreen->getWidth() / 3.0f;
+            const float pieH = uiScreen->getHeight() / 3.2f;
+            const float pieX = uiScreen->getWidth() - pieW - 30.0f;
+            const float pieY = 30.0f;
+            profilerPieChart.draw(
+                *graphics2d,
+                pieX,
+                pieY,
+                pieW,
+                pieH,
+                GameEngine::Engine
+            );
         }
 
         graphics2d->end();
@@ -461,6 +468,7 @@ void DemoScene::dispose(){
 void DemoScene::toggleDebugWidgets(){
     showDebugWidgets = !showDebugWidgets;
     frameTimeGraph.setCaptureEnabled(showDebugWidgets);
+    profilerPieChart.setCaptureEnabled(showDebugWidgets);
 }
 
 void DemoScene::toggleDebugShadows(){

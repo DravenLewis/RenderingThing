@@ -63,6 +63,9 @@ class Font{
 
 
         virtual void drawText(std::string text = "", Math3D::Vec2 position = Math3D::Vec2(0,0), PCamera camera = nullptr, Color color = Color::WHITE, bool useCache = true) = 0;
+        virtual bool supportsQueuedDrawing() const { return false; }
+        virtual void beginFrame(PCamera camera) {}
+        virtual void flushQueuedText(PCamera camera) {}
         void clearCache(){
             this->meshCache.clear();
         }

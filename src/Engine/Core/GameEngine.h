@@ -23,6 +23,15 @@ enum class EngineRenderStrategy{
 
 class GameEngine{
     private:
+        static constexpr int kFrameCapUncapped = -1;
+        static constexpr int kFrameCapMin = 1;
+        static constexpr int kFrameCapMax = 400;
+        static constexpr int kFixedUpdateRateMin = 15;
+        static constexpr int kFixedUpdateRateMax = 400;
+        static constexpr int kDefaultFixedUpdateRate = 60;
+        static constexpr int kMaxFixedTicksPerCycle = 4;
+        static constexpr float kMaxAccumulatedDeltaSeconds = 0.25f;
+
         std::shared_ptr<RenderWindow> windowPtr;
         std::shared_ptr<InputManager> inputManager;
         DisplayMode windowDisplayMode;
@@ -46,6 +55,10 @@ class GameEngine{
         int nextStateId = 1;
         int activeStateId = -1;
         std::atomic<int> pendingStateId{-1};
+        std::atomic<int> requestedVSyncMode{static_cast<int>(VSyncMode::Off)};
+        std::atomic<int> appliedVSyncMode{static_cast<int>(VSyncMode::Off)};
+        std::atomic<int> frameCapFps{kFrameCapUncapped};
+        std::atomic<int> fixedUpdateRateHz{kDefaultFixedUpdateRate};
 
         PScene activeScene;
         EngineRenderStrategy renderStrategy = EngineRenderStrategy::Forward;
@@ -67,6 +80,8 @@ class GameEngine{
 
         void init(); // Initialize The Engine
         void run();
+        void applyPendingVSyncMode();
+        void stepFixedUpdates(float frameDeltaSeconds, float& accumulatorSeconds);
         void tick(float deltaTime); // Update the Engine (Delta Time Interval using nano time)
         void render(); // Update as fast as possible.
         void processEvents(SDL_Event& event); // Handle all events
@@ -75,7 +90,9 @@ class GameEngine{
 
         GameEngine(DisplayMode displayMode = DisplayMode::New(), const std::string& windowTitle = "[Untitled Game Engine Game]") :
             windowDisplayMode(displayMode),
-            windowInitialTitle(windowTitle)
+            windowInitialTitle(windowTitle),
+            requestedVSyncMode(static_cast<int>(displayMode.vSyncMode)),
+            appliedVSyncMode(static_cast<int>(displayMode.vSyncMode))
         {
             GameEngine::Engine = this;
         };
@@ -103,6 +120,17 @@ class GameEngine{
         float getLastRenderBlitMs() const { return runtimeDebugStats.renderBlitMs.load(std::memory_order_relaxed); }
         float getLastRenderImGuiMs() const { return runtimeDebugStats.renderImGuiMs.load(std::memory_order_relaxed); }
         float getLastSwapMs() const { return runtimeDebugStats.swapMs.load(std::memory_order_relaxed); }
+
+        static constexpr int FrameCapUncapped = kFrameCapUncapped;
+        static constexpr int FrameCapMin = kFrameCapMin;
+        static constexpr int FrameCapMax = kFrameCapMax;
+        bool setVSyncMode(VSyncMode mode);
+        VSyncMode getVSyncMode() const;
+        bool setFrameCap(int fps);
+        int getFrameCap() const;
+        bool setFixedUpdateRate(int hz);
+        int getFixedUpdateRate() const;
+        float getFixedUpdateStepSeconds() const;
 
         int addState(PScene scene);
         bool enterState(int id);

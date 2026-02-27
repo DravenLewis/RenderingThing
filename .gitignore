@@ -59,6 +59,8 @@ pids
 *.pid.lock
 tmp/
 temp/
+*.gdb
+
 
 # Environment variables (SECURITY RISK if committed)
 .env

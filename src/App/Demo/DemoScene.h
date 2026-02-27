@@ -12,6 +12,7 @@
 #include "Rendering/Geometry/Model.h"
 #include "Rendering/Textures/SkyBox.h"
 #include "Debug/FrameTimeGraph.h"
+#include "Debug/ProfilerPieChart.h"
 
 namespace NeoECS {
     class GameObject;
@@ -64,14 +65,13 @@ class DemoScene : public Scene3D {
         float totalTime = 0.0f;
         float lastDeltaTime = 0.0f;
         float frameTimeSpike = 0.0f;
-        float fpsSampleAccumTime = 0.0f;
-        int fpsSampleAccumFrames = 0;
         float displayedAverageFps = 0.0f;
         float displayedAverageFrameMs = 0.0f;
         bool showDebugWidgets = false;
         bool showDebugShadows = false;
 
         FrameTimeGraph frameTimeGraph;
+        ProfilerPieChart profilerPieChart;
 
         std::shared_ptr<IEventHandler> sceneInputHandler;
 };

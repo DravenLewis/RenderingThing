@@ -1,4 +1,5 @@
 #include "Rendering/Core/Graphics2D.h"
+#include <algorithm>
 
 namespace {
     std::shared_ptr<Material> CreateGraphics2DBatchMaterial(){
@@ -106,11 +107,13 @@ void Graphics2D::resize(int w, int h){
 
 void Graphics2D::begin(){
     resetBatch();
+    queuedFonts.clear();
     this->target->bind();
 }
 
 void Graphics2D::end(){
     flushBatch();
+    flushQueuedFonts();
     this->target->unbind();
 }
 
@@ -143,6 +146,32 @@ void Graphics2D::resetBatch(){
     batchTexture.reset();
 }
 
+void Graphics2D::queueFontForFlush(PFont font){
+    if(!font || !font->supportsQueuedDrawing()){
+        return;
+    }
+
+    if(std::find(queuedFonts.begin(), queuedFonts.end(), font) != queuedFonts.end()){
+        return;
+    }
+
+    font->beginFrame(uiCamera);
+    queuedFonts.push_back(font);
+}
+
+void Graphics2D::flushQueuedFonts(){
+    if(queuedFonts.empty()){
+        return;
+    }
+
+    for(auto& font : queuedFonts){
+        if(font){
+            font->flushQueuedText(uiCamera);
+        }
+    }
+    queuedFonts.clear();
+}
+
 void Graphics2D::beginBatch(BatchMode2D mode, PTexture texture){
     if(mode == BatchMode2D::None){
         return;
@@ -169,6 +198,7 @@ void Graphics2D::submitQuad(
         return;
     }
 
+    flushQueuedFonts();
     ensureBatchResources();
     beginBatch(mode, texture);
 
@@ -206,7 +236,7 @@ void Graphics2D::flushBatch(){
 
     batchPart->material->set<int>("u_useTexture", (batchMode == BatchMode2D::Textured) ? 1 : 0);
     batchPart->material->set<std::shared_ptr<Texture>>("u_texture", batchTexture);
-    batchPart->mesh->upload(batchVertices, batchIndices);
+    batchPart->mesh->upload(batchVertices, batchIndices, GL_STREAM_DRAW);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -340,6 +370,22 @@ void Graphics2D::FillRect(Graphics2D& graphics, float x, float y, float w, float
     );
 }
 
+void Graphics2D::FillTriangle(Graphics2D& graphics, float x1, float y1, float x2, float y2, float x3, float y3){
+    const Math3D::Vec4 color = graphics.context.backgroundColor.get();
+    graphics.submitQuad(
+        Math3D::Vec3(x1, y1, 0.0f),
+        Math3D::Vec3(x2, y2, 0.0f),
+        Math3D::Vec3(x3, y3, 0.0f),
+        Math3D::Vec3(x3, y3, 0.0f),
+        Math3D::Vec2(0, 0),
+        Math3D::Vec2(0, 0),
+        Math3D::Vec2(0, 0),
+        Math3D::Vec2(0, 0),
+        color,
+        BatchMode2D::Solid
+    );
+}
+
 
 void Graphics2D::DrawEllipse(Graphics2D& graphics, float x, float y, float w, float h){
     // Since we don't have a "Ring" mesh, we approximate the ellipse using line segments.
@@ -404,11 +450,19 @@ void Graphics2D::DrawString(Graphics2D& graphics, std::string text, float x, flo
     graphics.flushBatch();
     auto font = graphics.context.font.get();
     if(!font) return;
+
+    if(font->supportsQueuedDrawing()){
+        graphics.queueFontForFlush(font);
+        font->drawText(text, Math3D::Vec2(x, y), graphics.uiCamera, graphics.context.foregroundColor.get(), useCache);
+        return;
+    }
+
     font->drawText(text, Math3D::Vec2(x, y), graphics.uiCamera, graphics.context.foregroundColor.get(), useCache);
 }
 
 void Graphics2D::drawMesh(std::shared_ptr<ModelPart> part, const Math3D::Mat4& modelMatrix, PTexture tex){
     flushBatch();
+    flushQueuedFonts();
     /*
     // 1. Setup the material color based on current context
     auto mat = std::dynamic_pointer_cast<MaterialDefaults::ColorMaterial>(this->colorMaterial);

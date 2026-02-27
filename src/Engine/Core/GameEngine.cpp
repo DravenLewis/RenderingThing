@@ -2,6 +2,7 @@
 #include "Engine/Core/GameEngine.h"
 
 #include <chrono>
+#include <algorithm>
 
 #include "App/Demo/DefaultState.h"
 #include "Foundation/Logging/Logbot.h"
@@ -12,9 +13,119 @@
 
 GameEngine* GameEngine::Engine = nullptr;
 
+bool GameEngine::setVSyncMode(VSyncMode mode){
+    requestedVSyncMode.store(static_cast<int>(mode), std::memory_order_relaxed);
+    return true;
+}
+
+VSyncMode GameEngine::getVSyncMode() const{
+    return static_cast<VSyncMode>(requestedVSyncMode.load(std::memory_order_relaxed));
+}
+
+bool GameEngine::setFrameCap(int fps){
+    if(fps == kFrameCapUncapped || (fps >= kFrameCapMin && fps <= kFrameCapMax)){
+        frameCapFps.store(fps, std::memory_order_relaxed);
+        return true;
+    }
+
+    LogBot.Log(
+        LOG_WARN,
+        "GameEngine::setFrameCap(%d) rejected. Valid values are -1 (uncapped) or [%d, %d].",
+        fps,
+        kFrameCapMin,
+        kFrameCapMax
+    );
+    return false;
+}
+
+int GameEngine::getFrameCap() const{
+    return frameCapFps.load(std::memory_order_relaxed);
+}
+
+bool GameEngine::setFixedUpdateRate(int hz){
+    if(hz < kFixedUpdateRateMin || hz > kFixedUpdateRateMax){
+        LogBot.Log(
+            LOG_WARN,
+            "GameEngine::setFixedUpdateRate(%d) rejected. Valid range is [%d, %d].",
+            hz,
+            kFixedUpdateRateMin,
+            kFixedUpdateRateMax
+        );
+        return false;
+    }
+
+    fixedUpdateRateHz.store(hz, std::memory_order_relaxed);
+    return true;
+}
+
+int GameEngine::getFixedUpdateRate() const{
+    return fixedUpdateRateHz.load(std::memory_order_relaxed);
+}
+
+float GameEngine::getFixedUpdateStepSeconds() const{
+    int hz = fixedUpdateRateHz.load(std::memory_order_relaxed);
+    if(hz <= 0){
+        return 0.0f;
+    }
+    return 1.0f / static_cast<float>(hz);
+}
+
+void GameEngine::applyPendingVSyncMode(){
+    if(!windowPtr){
+        return;
+    }
+
+    int requestedRaw = requestedVSyncMode.load(std::memory_order_relaxed);
+    int appliedRaw = appliedVSyncMode.load(std::memory_order_relaxed);
+    if(requestedRaw == appliedRaw){
+        return;
+    }
+
+    VSyncMode requestedMode = static_cast<VSyncMode>(requestedRaw);
+    windowPtr->setVSyncMode(requestedMode);
+
+    int actualRaw = static_cast<int>(windowPtr->getVSyncMode());
+    requestedVSyncMode.store(actualRaw, std::memory_order_relaxed);
+    appliedVSyncMode.store(actualRaw, std::memory_order_relaxed);
+}
+
+void GameEngine::stepFixedUpdates(float frameDeltaSeconds, float& accumulatorSeconds){
+    if(frameDeltaSeconds <= 0.0f){
+        return;
+    }
+
+    frameDeltaSeconds = std::min(frameDeltaSeconds, kMaxAccumulatedDeltaSeconds);
+    const int hz = fixedUpdateRateHz.load(std::memory_order_relaxed);
+    if(hz <= 0){
+        return;
+    }
+
+    const float fixedStepSeconds = 1.0f / static_cast<float>(hz);
+    const float maxAccumulation = fixedStepSeconds * static_cast<float>(kMaxFixedTicksPerCycle);
+    accumulatorSeconds = std::min(accumulatorSeconds + frameDeltaSeconds, maxAccumulation);
+
+    int steps = 0;
+    while(running && accumulatorSeconds >= fixedStepSeconds && steps < kMaxFixedTicksPerCycle){
+        tick(fixedStepSeconds);
+        accumulatorSeconds -= fixedStepSeconds;
+        ++steps;
+    }
+
+    if(steps == kMaxFixedTicksPerCycle && accumulatorSeconds >= fixedStepSeconds){
+        // Drop excessive backlog under overload so rendering/input stay responsive.
+        accumulatorSeconds = 0.0f;
+    }
+}
+
 void GameEngine::init(){
     windowPtr = std::make_shared<RenderWindow>(windowInitialTitle, windowDisplayMode);
     inputManager = std::make_shared<InputManager>(windowPtr, true);
+
+    if(windowPtr){
+        int activeMode = static_cast<int>(windowPtr->getVSyncMode());
+        requestedVSyncMode.store(activeMode, std::memory_order_relaxed);
+        appliedVSyncMode.store(activeMode, std::memory_order_relaxed);
+    }
 
     windowPtr->addWindowEventHandler([this](SDL_Event& event){
         processEvents(event);
@@ -332,10 +443,13 @@ void GameEngine::run(){ // Render Thread.
     initCv.notify_one();
 
     using frameClock = std::chrono::steady_clock;
-    auto editorLastTick = frameClock::now();
-    bool editorTickClockPrimed = false;
+    auto renderTickLast = frameClock::now();
+    bool renderTickClockPrimed = false;
+    float renderTickAccumulator = 0.0f;
 
     while(running){
+        auto frameStart = frameClock::now();
+
         if(windowPtr){
             windowPtr->process();
         }
@@ -350,20 +464,23 @@ void GameEngine::run(){ // Render Thread.
 
         if(tickOnRenderThread){
             auto now = frameClock::now();
-            if(!editorTickClockPrimed){
-                editorLastTick = now;
-                editorTickClockPrimed = true;
+            if(!renderTickClockPrimed){
+                renderTickLast = now;
+                renderTickClockPrimed = true;
+                renderTickAccumulator = 0.0f;
             }
-            float deltaTime = std::chrono::duration<float>(now - editorLastTick).count();
-            editorLastTick = now;
-            tick(deltaTime);
+            float deltaTime = std::chrono::duration<float>(now - renderTickLast).count();
+            renderTickLast = now;
+            stepFixedUpdates(deltaTime, renderTickAccumulator);
         }else{
-            editorTickClockPrimed = false;
+            renderTickClockPrimed = false;
+            renderTickAccumulator = 0.0f;
         }
 
         render();
 
         if(windowPtr){
+            applyPendingVSyncMode();
             auto swapStart = std::chrono::steady_clock::now();
             windowPtr->swap();
             auto swapEnd = std::chrono::steady_clock::now();
@@ -377,6 +494,22 @@ void GameEngine::run(){ // Render Thread.
             }
         }else{
             runtimeDebugStats.swapMs.store(0.0f, std::memory_order_relaxed);
+        }
+
+        int frameCap = frameCapFps.load(std::memory_order_relaxed);
+        if(frameCap != kFrameCapUncapped){
+            auto targetFrameDuration = std::chrono::duration<float>(1.0f / static_cast<float>(frameCap));
+            auto frameDeadline = frameStart + std::chrono::duration_cast<frameClock::duration>(targetFrameDuration);
+            auto now = frameClock::now();
+            if(now < frameDeadline){
+                auto remaining = frameDeadline - now;
+                if(remaining > std::chrono::milliseconds(2)){
+                    std::this_thread::sleep_for(remaining - std::chrono::milliseconds(1));
+                }
+                while(running && frameClock::now() < frameDeadline){
+                    std::this_thread::yield();
+                }
+            }
         }
     }
 
@@ -398,12 +531,19 @@ void GameEngine::start(){ // Local Logic Thread.
     }
 
     using clock = std::chrono::steady_clock;
-    auto last = clock::now();
+    auto logicTickLast = clock::now();
+    bool logicTickClockPrimed = false;
+    float logicTickAccumulator = 0.0f;
 
     while(running){
         auto now = clock::now();
-        float deltaTime = std::chrono::duration<float>(now - last).count();
-        last = now;
+        if(!logicTickClockPrimed){
+            logicTickLast = now;
+            logicTickClockPrimed = true;
+            logicTickAccumulator = 0.0f;
+        }
+        float deltaTime = std::chrono::duration<float>(now - logicTickLast).count();
+        logicTickLast = now;
 
         bool tickOnLogicThread = true;
         {
@@ -413,7 +553,10 @@ void GameEngine::start(){ // Local Logic Thread.
             }
         }
         if(tickOnLogicThread){
-            tick(deltaTime);
+            stepFixedUpdates(deltaTime, logicTickAccumulator);
+        }else{
+            logicTickClockPrimed = false;
+            logicTickAccumulator = 0.0f;
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
