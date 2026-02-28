@@ -7,6 +7,7 @@
 #include <imgui.h>
 #include <algorithm>
 #include <cmath>
+#include <cstring>
 #include <limits>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -90,6 +91,46 @@ namespace {
             return desiredPath;
         }
         return candidate;
+    }
+
+    void copyFixedString(char* dst, size_t dstSize, const std::string& value){
+        if(!dst || dstSize == 0){
+            return;
+        }
+        std::memset(dst, 0, dstSize);
+        if(value.empty()){
+            return;
+        }
+        std::strncpy(dst, value.c_str(), dstSize - 1);
+        dst[dstSize - 1] = '\0';
+    }
+
+    bool pathWithinRoot(const std::filesystem::path& path, const std::filesystem::path& root){
+        if(path.empty() || root.empty()){
+            return false;
+        }
+
+        std::error_code ec;
+        std::filesystem::path normalizedRoot = std::filesystem::weakly_canonical(root, ec);
+        if(ec){
+            normalizedRoot = root.lexically_normal();
+            ec.clear();
+        }
+
+        std::filesystem::path normalizedPath = std::filesystem::weakly_canonical(path, ec);
+        if(ec){
+            normalizedPath = path.lexically_normal();
+        }
+
+        const std::filesystem::path rel = normalizedPath.lexically_relative(normalizedRoot);
+        if(rel.empty()){
+            return normalizedPath == normalizedRoot;
+        }
+        return !StringUtils::BeginsWith(rel.generic_string(), "..");
+    }
+
+    std::string trimCopy(const std::string& value){
+        return StringUtils::Trim(value);
     }
 
     class EditorInputBlocker : public IEventHandler {
@@ -825,6 +866,7 @@ void EditorScene::render(){
     drawSplitter("##LeftRightSplitter", ImVec2(leftSplitterX, panelsTop), ImVec2(kSplitterThickness, topPanelsHeight), ImGuiMouseCursor_ResizeEW, true, leftPanelWidth, +1.0f, kMinLeftPanelWidth, std::max(kMinLeftPanelWidth, availableWidth - kMinRightPanelWidth - kMinCenterPanelWidth));
     drawSplitter("##RightPropsSplitter", ImVec2(rightSplitterX, panelsTop), ImVec2(kSplitterThickness, topPanelsHeight), ImGuiMouseCursor_ResizeEW, true, rightPanelWidth, -1.0f, kMinRightPanelWidth, std::max(kMinRightPanelWidth, availableWidth - leftPanelWidth - kMinCenterPanelWidth));
     drawSplitter("##BottomSplitter", ImVec2(0.0f, panelsTop + topPanelsHeight), ImVec2(width, kSplitterThickness), ImGuiMouseCursor_ResizeNS, false, bottomPanelHeight, -1.0f, kMinBottomPanelHeight, std::max(kMinBottomPanelHeight, availableHeight - kMinTopPanelHeight - kSplitterThickness));
+    drawSceneFileDialog();
 }
 
 void EditorScene::drawToWindow(bool clearWindow, float, float, float, float){
@@ -859,7 +901,87 @@ void EditorScene::setIoStatus(const std::string& message, bool isError){
     }
 }
 
+bool EditorScene::openSceneFileDialog(SceneFileDialogMode mode){
+    if(mode == SceneFileDialogMode::None){
+        return false;
+    }
+    if(playState != PlayState::Edit){
+        const char* action = (mode == SceneFileDialogMode::Save) ? "Save Scene" : "Load Scene";
+        setIoStatus(std::string(action) + " is only available in Edit mode.", true);
+        return false;
+    }
+    if(!targetScene || !targetScene->getECS()){
+        const char* action = (mode == SceneFileDialogMode::Save) ? "Save Scene" : "Load Scene";
+        setIoStatus(std::string(action) + " failed: target scene is unavailable.", true);
+        return false;
+    }
+
+    sceneFileDialogState = SceneFileDialogState{};
+    sceneFileDialogState.mode = mode;
+    sceneFileDialogState.openRequested = true;
+    sceneFileDialogState.focusNameInput = true;
+
+    std::filesystem::path initialDir = workspacePanel.getCurrentDirectory();
+    if(initialDir.empty()){
+        initialDir = assetRoot;
+    }
+
+    std::filesystem::path preferredScenePath;
+    if(isPathWithExtension(selectedAssetPath, ".scene")){
+        preferredScenePath = selectedAssetPath.lexically_normal();
+    }else if(isPathWithExtension(activeScenePath, ".scene")){
+        preferredScenePath = activeScenePath.lexically_normal();
+    }
+
+    if(!selectedAssetPath.empty() && pathWithinRoot(selectedAssetPath, assetRoot)){
+        std::error_code ec;
+        if(std::filesystem::is_directory(selectedAssetPath, ec) && !ec){
+            initialDir = selectedAssetPath.lexically_normal();
+        }
+    }
+
+    if(!preferredScenePath.empty()){
+        const std::filesystem::path preferredDir = preferredScenePath.parent_path();
+        if(!preferredDir.empty() && pathWithinRoot(preferredDir, assetRoot)){
+            initialDir = preferredDir;
+        }
+    }
+
+    if(!pathWithinRoot(initialDir, assetRoot)){
+        initialDir = assetRoot;
+    }
+    sceneFileDialogState.currentDirectory = initialDir.lexically_normal();
+
+    if(!preferredScenePath.empty() && pathWithinRoot(preferredScenePath, assetRoot)){
+        if(mode == SceneFileDialogMode::Save){
+            sceneFileDialogState.selectedPath = preferredScenePath;
+        }else{
+            std::error_code ec;
+            if(std::filesystem::exists(preferredScenePath, ec) && !std::filesystem::is_directory(preferredScenePath, ec)){
+                sceneFileDialogState.selectedPath = preferredScenePath;
+            }
+        }
+    }
+
+    std::string initialFileName;
+    if(!sceneFileDialogState.selectedPath.empty()){
+        initialFileName = sceneFileDialogState.selectedPath.filename().string();
+    }
+    if(initialFileName.empty() && !preferredScenePath.empty()){
+        initialFileName = preferredScenePath.filename().string();
+    }
+    if(mode == SceneFileDialogMode::Save && initialFileName.empty()){
+        initialFileName = "Main.scene";
+    }
+    copyFixedString(sceneFileDialogState.fileNameBuffer, sizeof(sceneFileDialogState.fileNameBuffer), initialFileName);
+    return true;
+}
+
 bool EditorScene::saveSceneFromEditorCommand(){
+    return openSceneFileDialog(SceneFileDialogMode::Save);
+}
+
+bool EditorScene::saveSceneToAbsolutePath(const std::filesystem::path& savePath){
     if(playState != PlayState::Edit){
         setIoStatus("Save Scene is only available in Edit mode.", true);
         return false;
@@ -869,39 +991,60 @@ bool EditorScene::saveSceneFromEditorCommand(){
         return false;
     }
 
-    std::filesystem::path savePath = activeScenePath;
-    if(isPathWithExtension(selectedAssetPath, ".scene")){
-        savePath = selectedAssetPath;
-    }
     if(savePath.empty()){
-        std::filesystem::path currentDir = workspacePanel.getCurrentDirectory();
-        if(currentDir.empty()){
-            currentDir = assetRoot;
-        }
-        savePath = currentDir / "Main.scene";
+        setIoStatus("Save Scene failed: choose a valid scene file name.", true);
+        return false;
     }
-    savePath = savePath.lexically_normal();
+
+    std::filesystem::path normalizedPath = savePath.lexically_normal();
+    if(!isPathWithExtension(normalizedPath, ".scene")){
+        normalizedPath += ".scene";
+    }
+    if(normalizedPath.filename().empty()){
+        setIoStatus("Save Scene failed: choose a valid scene file name.", true);
+        return false;
+    }
+
+    std::filesystem::path saveDirectory = normalizedPath.parent_path();
+    if(saveDirectory.empty()){
+        saveDirectory = assetRoot;
+        normalizedPath = saveDirectory / normalizedPath.filename();
+    }
+    if(!pathWithinRoot(saveDirectory, assetRoot)){
+        setIoStatus("Save Scene failed: scene files must stay inside the asset workspace.", true);
+        return false;
+    }
+
+    std::error_code ec;
+    if(!std::filesystem::exists(saveDirectory, ec) || !std::filesystem::is_directory(saveDirectory, ec)){
+        setIoStatus("Save Scene failed: target directory does not exist.", true);
+        return false;
+    }
 
     SceneIO::SceneSaveOptions options;
     options.registry = &Serialization::DefaultComponentSerializationRegistry();
-    options.metadata.name = savePath.stem().string();
+    options.metadata.name = normalizedPath.stem().string();
     if(options.metadata.name.empty()){
         options.metadata.name = "Scene";
     }
 
     std::string error;
-    if(!SceneIO::SaveSceneToAbsolutePath(targetScene, savePath, options, &error)){
+    if(!SceneIO::SaveSceneToAbsolutePath(targetScene, normalizedPath, options, &error)){
         setIoStatus("Save Scene failed: " + error, true);
         return false;
     }
 
-    activeScenePath = savePath;
-    selectedAssetPath = savePath;
-    setIoStatus("Scene saved: " + savePath.generic_string(), false);
+    activeScenePath = normalizedPath;
+    selectedAssetPath = normalizedPath;
+    setIoStatus("Scene saved: " + normalizedPath.generic_string(), false);
     return true;
 }
 
 bool EditorScene::loadSceneFromEditorCommand(){
+    return openSceneFileDialog(SceneFileDialogMode::Load);
+}
+
+bool EditorScene::loadSceneFromAbsolutePath(const std::filesystem::path& loadPath){
     if(playState != PlayState::Edit){
         setIoStatus("Load Scene is only available in Edit mode.", true);
         return false;
@@ -913,21 +1056,31 @@ bool EditorScene::loadSceneFromEditorCommand(){
 
     cancelViewportPrefabDragPreview();
 
-    std::filesystem::path loadPath = activeScenePath;
-    if(isPathWithExtension(selectedAssetPath, ".scene")){
-        loadPath = selectedAssetPath;
-    }
     if(loadPath.empty()){
-        setIoStatus("Load Scene failed: select a .scene file in the workspace.", true);
+        setIoStatus("Load Scene failed: choose a .scene file.", true);
         return false;
     }
-    loadPath = loadPath.lexically_normal();
+
+    std::filesystem::path normalizedPath = loadPath.lexically_normal();
+    if(!isPathWithExtension(normalizedPath, ".scene")){
+        normalizedPath += ".scene";
+    }
+    if(!pathWithinRoot(normalizedPath, assetRoot)){
+        setIoStatus("Load Scene failed: scene files must stay inside the asset workspace.", true);
+        return false;
+    }
+
+    std::error_code ec;
+    if(!std::filesystem::exists(normalizedPath, ec) || std::filesystem::is_directory(normalizedPath, ec)){
+        setIoStatus("Load Scene failed: scene file does not exist.", true);
+        return false;
+    }
 
     SceneIO::SceneLoadOptions options;
     options.registry = &Serialization::DefaultComponentSerializationRegistry();
 
     std::string error;
-    if(!SceneIO::LoadSceneFromAbsolutePath(targetScene, loadPath, options, nullptr, &error)){
+    if(!SceneIO::LoadSceneFromAbsolutePath(targetScene, normalizedPath, options, nullptr, &error)){
         setIoStatus("Load Scene failed: " + error, true);
         return false;
     }
@@ -944,10 +1097,208 @@ bool EditorScene::loadSceneFromEditorCommand(){
     previewTexture.reset();
     previewCamera.reset();
 
-    activeScenePath = loadPath;
-    selectedAssetPath = loadPath;
-    setIoStatus("Scene loaded: " + loadPath.generic_string(), false);
+    activeScenePath = normalizedPath;
+    selectedAssetPath = normalizedPath;
+    setIoStatus("Scene loaded: " + normalizedPath.generic_string(), false);
     return true;
+}
+
+void EditorScene::drawSceneFileDialog(){
+    if(sceneFileDialogState.mode == SceneFileDialogMode::None){
+        return;
+    }
+
+    constexpr const char* kPopupId = "Scene File Dialog##EditorScene";
+    if(sceneFileDialogState.openRequested){
+        ImGui::OpenPopup(kPopupId);
+        sceneFileDialogState.openRequested = false;
+    }
+
+    ImGuiViewport* viewport = ImGui::GetMainViewport();
+    if(viewport){
+        const float modalWidth = std::clamp(viewport->Size.x * 0.46f, 540.0f, 900.0f);
+        const float modalHeight = std::clamp(viewport->Size.y * 0.58f, 360.0f, 680.0f);
+        ImGui::SetNextWindowPos(viewport->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+        ImGui::SetNextWindowSize(ImVec2(modalWidth, modalHeight), ImGuiCond_Appearing);
+    }
+
+    ImGui::PushStyleColor(ImGuiCol_ModalWindowDimBg, ImVec4(0.0f, 0.0f, 0.0f, 0.82f));
+    if(!ImGui::BeginPopupModal(kPopupId, nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse)){
+        if(!ImGui::IsPopupOpen(kPopupId)){
+            sceneFileDialogState = SceneFileDialogState{};
+        }
+        ImGui::PopStyleColor();
+        return;
+    }
+
+    if(sceneFileDialogState.currentDirectory.empty() || !pathWithinRoot(sceneFileDialogState.currentDirectory, assetRoot)){
+        sceneFileDialogState.currentDirectory = assetRoot;
+    }
+
+    const bool isSaveMode = (sceneFileDialogState.mode == SceneFileDialogMode::Save);
+    ImGui::TextUnformatted(isSaveMode ? "Save Scene" : "Load Scene");
+    ImGui::TextDisabled("Directory: %s", sceneFileDialogState.currentDirectory.generic_string().c_str());
+
+    if(!sceneFileDialogState.errorMessage.empty()){
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.95f, 0.35f, 0.35f, 1.0f));
+        ImGui::TextWrapped("%s", sceneFileDialogState.errorMessage.c_str());
+        ImGui::PopStyleColor();
+    }
+
+    if(ImGui::Button("Root")){
+        sceneFileDialogState.currentDirectory = assetRoot;
+        sceneFileDialogState.selectedPath.clear();
+        sceneFileDialogState.errorMessage.clear();
+    }
+    ImGui::SameLine();
+    const bool canGoUp =
+        !sceneFileDialogState.currentDirectory.empty() &&
+        sceneFileDialogState.currentDirectory != assetRoot &&
+        pathWithinRoot(sceneFileDialogState.currentDirectory.parent_path(), assetRoot);
+    ImGui::BeginDisabled(!canGoUp);
+    if(ImGui::Button("Up") && canGoUp){
+        sceneFileDialogState.currentDirectory = sceneFileDialogState.currentDirectory.parent_path();
+        sceneFileDialogState.selectedPath.clear();
+        sceneFileDialogState.errorMessage.clear();
+    }
+    ImGui::EndDisabled();
+
+    ImGui::Separator();
+    const float footerReserve = ImGui::GetFrameHeight() * (isSaveMode ? 4.8f : 4.0f);
+    ImGui::BeginChild("SceneFileDialogEntries", ImVec2(0.0f, -footerReserve), true);
+    if(std::filesystem::exists(sceneFileDialogState.currentDirectory)){
+        struct Entry {
+            std::filesystem::path path;
+            bool isDirectory = false;
+        };
+
+        std::vector<Entry> entries;
+        std::error_code ec;
+        for(const auto& dirEntry : std::filesystem::directory_iterator(
+                sceneFileDialogState.currentDirectory,
+                std::filesystem::directory_options::skip_permission_denied,
+                ec)){
+            const std::filesystem::path entryPath = dirEntry.path().lexically_normal();
+            const bool isDirectory = dirEntry.is_directory();
+            if(isDirectory){
+                entries.push_back({entryPath, true});
+                continue;
+            }
+            if(isPathWithExtension(entryPath, ".scene")){
+                entries.push_back({entryPath, false});
+            }
+        }
+
+        std::sort(entries.begin(), entries.end(), [](const Entry& a, const Entry& b){
+            if(a.isDirectory != b.isDirectory){
+                return a.isDirectory > b.isDirectory;
+            }
+            return a.path.filename().string() < b.path.filename().string();
+        });
+
+        for(const Entry& entry : entries){
+            std::string label = entry.path.filename().string();
+            if(entry.isDirectory){
+                label = "[DIR] " + label;
+            }
+
+            const bool isSelected = (!entry.isDirectory && sceneFileDialogState.selectedPath == entry.path);
+            if(ImGui::Selectable(label.c_str(), isSelected, ImGuiSelectableFlags_AllowDoubleClick)){
+                sceneFileDialogState.errorMessage.clear();
+                if(entry.isDirectory){
+                    if(ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)){
+                        sceneFileDialogState.currentDirectory = entry.path;
+                    }
+                    sceneFileDialogState.selectedPath.clear();
+                }else{
+                    sceneFileDialogState.selectedPath = entry.path;
+                    copyFixedString(
+                        sceneFileDialogState.fileNameBuffer,
+                        sizeof(sceneFileDialogState.fileNameBuffer),
+                        entry.path.filename().string()
+                    );
+                }
+            }
+        }
+    }else{
+        ImGui::TextDisabled("Directory missing.");
+    }
+    ImGui::EndChild();
+
+    bool submitRequested = false;
+    if(sceneFileDialogState.focusNameInput){
+        ImGui::SetKeyboardFocusHere();
+        sceneFileDialogState.focusNameInput = false;
+    }
+    if(ImGui::InputText("Scene File", sceneFileDialogState.fileNameBuffer, sizeof(sceneFileDialogState.fileNameBuffer), ImGuiInputTextFlags_EnterReturnsTrue)){
+        submitRequested = true;
+    }
+
+    auto buildCandidatePath = [&]() -> std::filesystem::path {
+        std::string fileName = trimCopy(sceneFileDialogState.fileNameBuffer);
+        if(fileName.empty() && !sceneFileDialogState.selectedPath.empty()){
+            fileName = sceneFileDialogState.selectedPath.filename().string();
+        }
+        if(fileName.empty()){
+            return {};
+        }
+
+        std::filesystem::path candidate = sceneFileDialogState.currentDirectory / fileName;
+        if(!isPathWithExtension(candidate, ".scene")){
+            candidate += ".scene";
+        }
+        return candidate.lexically_normal();
+    };
+
+    const std::filesystem::path candidatePath = buildCandidatePath();
+    if(!candidatePath.empty()){
+        ImGui::TextDisabled("%s", candidatePath.generic_string().c_str());
+    }else{
+        ImGui::TextDisabled("%s", isSaveMode ? "Enter a scene file name." : "Select or enter a .scene file.");
+    }
+
+    const bool canConfirm = !candidatePath.empty();
+    if(!canConfirm){
+        ImGui::BeginDisabled();
+    }
+    if(ImGui::Button(isSaveMode ? "Save" : "Load") || (submitRequested && canConfirm)){
+        sceneFileDialogState.errorMessage.clear();
+        bool success = false;
+        if(isSaveMode){
+            success = saveSceneToAbsolutePath(candidatePath);
+        }else{
+            success = loadSceneFromAbsolutePath(candidatePath);
+        }
+
+        if(success){
+            ImGui::CloseCurrentPopup();
+            sceneFileDialogState = SceneFileDialogState{};
+            ImGui::EndPopup();
+            ImGui::PopStyleColor();
+            return;
+        }
+
+        if(sceneFileDialogState.errorMessage.empty()){
+            sceneFileDialogState.errorMessage = ioStatusMessage.empty()
+                ? (isSaveMode ? "Save Scene failed." : "Load Scene failed.")
+                : ioStatusMessage;
+        }
+    }
+    if(!canConfirm){
+        ImGui::EndDisabled();
+    }
+
+    ImGui::SameLine();
+    if(ImGui::Button("Cancel")){
+        ImGui::CloseCurrentPopup();
+        sceneFileDialogState = SceneFileDialogState{};
+        ImGui::EndPopup();
+        ImGui::PopStyleColor();
+        return;
+    }
+
+    ImGui::EndPopup();
+    ImGui::PopStyleColor();
 }
 
 bool EditorScene::exportEntityAsPrefabToDirectory(const std::string& entityId, const std::filesystem::path& directoryPath){

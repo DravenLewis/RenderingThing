@@ -48,6 +48,12 @@ class EditorScene : public Scene {
             Pause
         };
 
+        enum class SceneFileDialogMode {
+            None = 0,
+            Save,
+            Load
+        };
+
         struct ViewportRect {
             float x = 0.0f;
             float y = 0.0f;
@@ -144,6 +150,16 @@ class EditorScene : public Scene {
             float placementPlaneY = 0.0f;
         };
         ViewportPrefabDragState viewportPrefabDragState;
+        struct SceneFileDialogState {
+            bool openRequested = false;
+            bool focusNameInput = false;
+            SceneFileDialogMode mode = SceneFileDialogMode::None;
+            std::filesystem::path currentDirectory;
+            std::filesystem::path selectedPath;
+            char fileNameBuffer[256] = {};
+            std::string errorMessage;
+        };
+        SceneFileDialogState sceneFileDialogState;
         std::filesystem::path activeScenePath;
         std::string ioStatusMessage;
         bool ioStatusIsError = false;
@@ -176,6 +192,10 @@ class EditorScene : public Scene {
         void setIoStatus(const std::string& message, bool isError);
         bool saveSceneFromEditorCommand();
         bool loadSceneFromEditorCommand();
+        bool openSceneFileDialog(SceneFileDialogMode mode);
+        bool saveSceneToAbsolutePath(const std::filesystem::path& savePath);
+        bool loadSceneFromAbsolutePath(const std::filesystem::path& loadPath);
+        void drawSceneFileDialog();
         bool exportEntityAsPrefabToDirectory(const std::string& entityId, const std::filesystem::path& directoryPath);
         bool exportEntityAsPrefabToWorkspaceDirectory(const std::string& entityId);
         bool instantiatePrefabUnderParentEntity(const std::filesystem::path& prefabPath, const std::string& parentEntityId);
