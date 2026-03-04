@@ -360,6 +360,97 @@ bool tryReadEmbeddedMaterialDataField(yyjson_val* partObj, MaterialAssetData& ou
     return true;
 }
 
+bool writeModelPartEmbeddedMaterialOverridesField(const MeshRendererComponent& component,
+                                                  yyjson_mut_doc* doc,
+                                                  yyjson_mut_val* payload,
+                                                  std::string* outError){
+    if(!component.model){
+        return true;
+    }
+
+    const auto& parts = component.model->getParts();
+    bool hasAnyEmbeddedOverride = false;
+    const size_t maxCount = std::min(parts.size(), component.modelPartMaterialOverrides.size());
+    for(size_t i = 0; i < maxCount; ++i){
+        if(component.modelPartMaterialOverrides[i] == 0){
+            continue;
+        }
+        const auto& part = parts[i];
+        MaterialAssetData embeddedMaterial;
+        if(captureEmbeddedMaterialData(part ? part->material : nullptr, embeddedMaterial)){
+            hasAnyEmbeddedOverride = true;
+            break;
+        }
+    }
+    if(!hasAnyEmbeddedOverride){
+        return true;
+    }
+
+    yyjson_mut_val* overridesArr = yyjson_mut_obj_add_arr(doc, payload, "modelPartEmbeddedMaterials");
+    if(!overridesArr){
+        setComponentSerializationError(outError, "Failed to create modelPartEmbeddedMaterials array.");
+        return false;
+    }
+
+    for(size_t i = 0; i < parts.size(); ++i){
+        const auto& part = parts[i];
+        yyjson_mut_val* partOverrideObj = yyjson_mut_arr_add_obj(doc, overridesArr);
+        if(!partOverrideObj){
+            setComponentSerializationError(outError, "Failed to append model part material override.");
+            return false;
+        }
+
+        const bool shouldWriteOverride =
+            (i < component.modelPartMaterialOverrides.size()) &&
+            (component.modelPartMaterialOverrides[i] != 0);
+        MaterialAssetData embeddedMaterial;
+        if(shouldWriteOverride &&
+           captureEmbeddedMaterialData(part ? part->material : nullptr, embeddedMaterial) &&
+           !writeEmbeddedMaterialDataField(embeddedMaterial, doc, partOverrideObj, outError)){
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void readModelPartEmbeddedMaterialOverridesField(yyjson_val* payload, MeshRendererComponent& component){
+    if(!component.model){
+        return;
+    }
+
+    const auto& parts = component.model->getParts();
+    component.modelPartMaterialOverrides.assign(parts.size(), 0);
+
+    yyjson_val* overridesArr = JsonUtils::ObjGetArray(payload, "modelPartEmbeddedMaterials");
+    if(!overridesArr){
+        return;
+    }
+
+    const size_t maxCount = std::min(parts.size(), yyjson_arr_size(overridesArr));
+    for(size_t i = 0; i < maxCount; ++i){
+        const auto& part = parts[i];
+        if(!part){
+            continue;
+        }
+
+        yyjson_val* partOverrideObj = yyjson_arr_get(overridesArr, i);
+        if(!partOverrideObj || !yyjson_is_obj(partOverrideObj)){
+            continue;
+        }
+
+        MaterialAssetData embeddedMaterial;
+        if(!tryReadEmbeddedMaterialDataField(partOverrideObj, embeddedMaterial)){
+            continue;
+        }
+
+        if(auto overrideMaterial = MaterialAssetIO::InstantiateMaterial(embeddedMaterial, nullptr)){
+            part->material = overrideMaterial;
+            component.modelPartMaterialOverrides[i] = 1;
+        }
+    }
+}
+
 bool writeEmbeddedModelField(const MeshRendererComponent& component,
                              yyjson_mut_doc* doc,
                              yyjson_mut_val* payload,
@@ -477,6 +568,7 @@ bool tryReadEmbeddedModelField(yyjson_val* payload,
     if(component.modelPartMaterialAssetRefs.size() < partCount){
         component.modelPartMaterialAssetRefs.resize(partCount);
     }
+    component.modelPartMaterialOverrides.assign(partCount, 0);
     for(size_t i = 0; i < partCount; ++i){
         yyjson_val* partObj = yyjson_arr_get(partsArr, i);
         if(!partObj || !yyjson_is_obj(partObj)){
@@ -630,7 +722,7 @@ bool registerDefaultBoundsSerializer(Serialization::ComponentSerializationRegist
 bool registerDefaultMeshRendererSerializer(Serialization::ComponentSerializationRegistry& registry, std::string* outError){
     return registry.registerTypedSerializer<MeshRendererComponent>(
         "MeshRendererComponent",
-        1,
+        3,
         [](const MeshRendererComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
             std::string modelSourceRef = component.modelSourceRef;
             bool modelForceSmoothNormals = (component.modelForceSmoothNormals != 0);
@@ -669,6 +761,20 @@ bool registerDefaultMeshRendererSerializer(Serialization::ComponentSerialization
             if(!addStringArrayField(doc, payload, "modelPartMaterialAssetRefs", component.modelPartMaterialAssetRefs, error)){
                 return false;
             }
+            const bool shouldWriteSingleEmbeddedMaterial = component.material &&
+                (component.materialAssetRef.empty() || component.materialOverridesSource);
+            if(shouldWriteSingleEmbeddedMaterial){
+                MaterialAssetData embeddedMaterial;
+                if(captureEmbeddedMaterialData(component.material, embeddedMaterial) &&
+                   !writeEmbeddedMaterialDataField(embeddedMaterial, doc, payload, error)){
+                    return false;
+                }
+            }
+            if(component.model &&
+               !shouldEmbedModel &&
+               !writeModelPartEmbeddedMaterialOverridesField(component, doc, payload, error)){
+                return false;
+            }
             if(shouldEmbedModel && !writeEmbeddedModelField(component, doc, payload, error)){
                 return false;
             }
@@ -676,7 +782,6 @@ bool registerDefaultMeshRendererSerializer(Serialization::ComponentSerialization
         },
         [](MeshRendererComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
             (void)version;
-
             JsonUtils::TryGetBool(payload, "visible", component.visible);
             JsonUtils::TryGetBool(payload, "enableBackfaceCulling", component.enableBackfaceCulling);
             JsonUtils::TryGetString(payload, "modelAssetRef", component.modelAssetRef);
@@ -690,6 +795,8 @@ bool registerDefaultMeshRendererSerializer(Serialization::ComponentSerialization
                 readTransformFields(offsetObj, component.localOffset);
             }
             readStringArrayField(payload, "modelPartMaterialAssetRefs", component.modelPartMaterialAssetRefs, nullptr);
+            component.materialOverridesSource = false;
+            component.modelPartMaterialOverrides.clear();
 
             component.mesh.reset();
             component.material.reset();
@@ -722,6 +829,7 @@ bool registerDefaultMeshRendererSerializer(Serialization::ComponentSerialization
 
             if(component.model){
                 const auto& parts = component.model->getParts();
+                component.modelPartMaterialOverrides.assign(parts.size(), 0);
                 if(!component.modelPartMaterialAssetRefs.empty()){
                     const size_t maxCount = std::min(parts.size(), component.modelPartMaterialAssetRefs.size());
                     for(size_t i = 0; i < maxCount; ++i){
@@ -739,9 +847,16 @@ bool registerDefaultMeshRendererSerializer(Serialization::ComponentSerialization
                         }
                     }
                 }
+                readModelPartEmbeddedMaterialOverridesField(payload, component);
             }
 
-            if(!component.materialAssetRef.empty()){
+            MaterialAssetData embeddedMaterial;
+            const bool hasSingleEmbeddedMaterial = tryReadEmbeddedMaterialDataField(payload, embeddedMaterial);
+            if(hasSingleEmbeddedMaterial){
+                component.material = MaterialAssetIO::InstantiateMaterial(embeddedMaterial, nullptr);
+                component.materialOverridesSource = !component.materialAssetRef.empty();
+            }
+            if(!component.material && !component.materialAssetRef.empty()){
                 component.material =
                     MaterialAssetIO::InstantiateMaterialFromRef(component.materialAssetRef, nullptr, nullptr);
             }
@@ -1137,9 +1252,10 @@ bool registerDefaultSsaoSerializer(Serialization::ComponentSerializationRegistry
 bool registerDefaultDepthOfFieldSerializer(Serialization::ComponentSerializationRegistry& registry, std::string* outError){
     return registry.registerTypedSerializer<DepthOfFieldComponent>(
         "DepthOfFieldComponent",
-        1,
+        2,
         [](const DepthOfFieldComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
             return JsonUtils::MutObjAddBool(doc, payload, "enabled", component.enabled) &&
+                   JsonUtils::MutObjAddBool(doc, payload, "adaptiveFocus", component.adaptiveFocus) &&
                    JsonUtils::MutObjAddFloat(doc, payload, "focusDistance", component.focusDistance) &&
                    JsonUtils::MutObjAddFloat(doc, payload, "focusRange", component.focusRange) &&
                    JsonUtils::MutObjAddFloat(doc, payload, "blurStrength", component.blurStrength) &&
@@ -1150,6 +1266,8 @@ bool registerDefaultDepthOfFieldSerializer(Serialization::ComponentSerialization
             (void)version;
             (void)error;
             JsonUtils::TryGetBool(payload, "enabled", component.enabled);
+            component.adaptiveFocus = false;
+            JsonUtils::TryGetBool(payload, "adaptiveFocus", component.adaptiveFocus);
             JsonUtils::TryGetFloat(payload, "focusDistance", component.focusDistance);
             JsonUtils::TryGetFloat(payload, "focusRange", component.focusRange);
             JsonUtils::TryGetFloat(payload, "blurStrength", component.blurStrength);

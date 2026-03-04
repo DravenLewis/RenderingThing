@@ -45,6 +45,14 @@ namespace {
         return AssetDescriptorUtils::ReadTextRefOrPath(refOrPath, outText, outError);
     }
 
+    bool writeTextPath(const std::filesystem::path& path, const std::string& text, std::string* outError){
+        return AssetDescriptorUtils::WriteTextPath(path, text, outError);
+    }
+
+    bool writeTextAsset(const std::string& assetRef, const std::string& text, std::string* outError){
+        return AssetDescriptorUtils::WriteTextAsset(assetRef, text, outError);
+    }
+
     bool isMaterialAssetPathInternal(const std::filesystem::path& path){
         const std::string lower = toLowerCopy(path.generic_string());
         return StringUtils::EndsWith(lower, ".material.asset") || StringUtils::EndsWith(lower, ".mat.asset");
@@ -64,6 +72,10 @@ namespace {
 
     std::string toAssetRefFromAbsolutePath(const std::filesystem::path& absolutePath){
         return AssetDescriptorUtils::AbsolutePathToAssetRef(absolutePath);
+    }
+
+    bool pathExists(const std::filesystem::path& path, bool* outIsDirectory = nullptr){
+        return AssetDescriptorUtils::PathExists(path, outIsDirectory);
     }
 
     Math3D::Vec2 parseVec2(const std::string& value, const Math3D::Vec2& fallback){
@@ -365,8 +377,8 @@ bool LoadFromAssetRef(const std::string& assetRef, MaterialAssetData& outData, s
         }
         return false;
     }
-    std::error_code ec;
-    if(!std::filesystem::exists(resolvedPath, ec) || std::filesystem::is_directory(resolvedPath, ec)){
+    bool isDirectory = false;
+    if(!pathExists(resolvedPath, &isDirectory) || isDirectory){
         if(outError){
             *outError = "Material asset does not exist: " + resolvedPath.generic_string();
         }
@@ -386,76 +398,71 @@ bool LoadFromAssetRef(const std::string& assetRef, MaterialAssetData& outData, s
 }
 
 bool SaveToAbsolutePath(const std::filesystem::path& path, const MaterialAssetData& data, std::string* outError){
-    std::filesystem::path parent = path.parent_path();
-    std::error_code ec;
-    if(!parent.empty() && !std::filesystem::exists(parent, ec)){
-        if(!std::filesystem::create_directories(parent, ec)){
-            if(outError){
-                *outError = "Failed to create directory: " + parent.generic_string();
-            }
-            return false;
-        }
-    }
-
-    auto writer = std::make_unique<FileWriter>(new File(path.string()));
-    if(!writer){
-        if(outError){
-            *outError = "Failed to open file for write: " + path.generic_string();
-        }
-        return false;
-    }
-
-    writer->putln(StringUtils::Format("name=%s", data.name.c_str()).c_str());
-    writer->putln(StringUtils::Format("@link-parent=%s", data.linkParentRef.c_str()).c_str());
-    writer->putln(StringUtils::Format("type=%s", TypeToString(data.type)).c_str());
-    writer->putln(StringUtils::Format("shader_asset=%s", data.shaderAssetRef.c_str()).c_str());
-    writer->putln(StringUtils::Format("color=%s", vec4ToString(data.color).c_str()).c_str());
-    writer->putln(StringUtils::Format("uv=%s", vec2ToString(data.uv).c_str()).c_str());
-    writer->putln(StringUtils::Format("texture=%s", data.textureRef.c_str()).c_str());
-    writer->putln(StringUtils::Format("metallic=%.6f", data.metallic).c_str());
-    writer->putln(StringUtils::Format("roughness=%.6f", data.roughness).c_str());
-    writer->putln(StringUtils::Format("normal_scale=%.6f", data.normalScale).c_str());
-    writer->putln(StringUtils::Format("height_scale=%.6f", data.heightScale).c_str());
-    writer->putln(StringUtils::Format("emissive_color=%s", vec3ToString(data.emissiveColor).c_str()).c_str());
-    writer->putln(StringUtils::Format("emissive_strength=%.6f", data.emissiveStrength).c_str());
-    writer->putln(StringUtils::Format("occlusion_strength=%.6f", data.occlusionStrength).c_str());
-    writer->putln(StringUtils::Format("env_strength=%.6f", data.envStrength).c_str());
-    writer->putln(StringUtils::Format("use_env_map=%d", data.useEnvMap).c_str());
-    writer->putln(StringUtils::Format("uv_scale=%s", vec2ToString(data.uvScale).c_str()).c_str());
-    writer->putln(StringUtils::Format("uv_offset=%s", vec2ToString(data.uvOffset).c_str()).c_str());
-    writer->putln(StringUtils::Format("alpha_cutoff=%.6f", data.alphaCutoff).c_str());
-    writer->putln(StringUtils::Format("use_alpha_clip=%d", data.useAlphaClip).c_str());
-    writer->putln(StringUtils::Format("base_color_tex=%s", data.baseColorTexRef.c_str()).c_str());
-    writer->putln(StringUtils::Format("roughness_tex=%s", data.roughnessTexRef.c_str()).c_str());
-    writer->putln(StringUtils::Format("metallic_roughness_tex=%s", data.metallicRoughnessTexRef.c_str()).c_str());
-    writer->putln(StringUtils::Format("normal_tex=%s", data.normalTexRef.c_str()).c_str());
-    writer->putln(StringUtils::Format("height_tex=%s", data.heightTexRef.c_str()).c_str());
-    writer->putln(StringUtils::Format("emissive_tex=%s", data.emissiveTexRef.c_str()).c_str());
-    writer->putln(StringUtils::Format("occlusion_tex=%s", data.occlusionTexRef.c_str()).c_str());
-    writer->putln(StringUtils::Format("casts_shadows=%d", data.castsShadows ? 1 : 0).c_str());
-    writer->putln(StringUtils::Format("receives_shadows=%d", data.receivesShadows ? 1 : 0).c_str());
-
-    if(!writer->flush()){
-        if(outError){
-            *outError = "Failed to write file: " + path.generic_string();
-        }
-        writer->close();
-        return false;
-    }
-    writer->close();
-    AssetManager::Instance.unmanageAsset(path.generic_string());
-    return true;
+    std::string text;
+    text += StringUtils::Format("name=%s\n", data.name.c_str());
+    text += StringUtils::Format("@link-parent=%s\n", data.linkParentRef.c_str());
+    text += StringUtils::Format("type=%s\n", TypeToString(data.type));
+    text += StringUtils::Format("shader_asset=%s\n", data.shaderAssetRef.c_str());
+    text += StringUtils::Format("color=%s\n", vec4ToString(data.color).c_str());
+    text += StringUtils::Format("uv=%s\n", vec2ToString(data.uv).c_str());
+    text += StringUtils::Format("texture=%s\n", data.textureRef.c_str());
+    text += StringUtils::Format("metallic=%.6f\n", data.metallic);
+    text += StringUtils::Format("roughness=%.6f\n", data.roughness);
+    text += StringUtils::Format("normal_scale=%.6f\n", data.normalScale);
+    text += StringUtils::Format("height_scale=%.6f\n", data.heightScale);
+    text += StringUtils::Format("emissive_color=%s\n", vec3ToString(data.emissiveColor).c_str());
+    text += StringUtils::Format("emissive_strength=%.6f\n", data.emissiveStrength);
+    text += StringUtils::Format("occlusion_strength=%.6f\n", data.occlusionStrength);
+    text += StringUtils::Format("env_strength=%.6f\n", data.envStrength);
+    text += StringUtils::Format("use_env_map=%d\n", data.useEnvMap);
+    text += StringUtils::Format("uv_scale=%s\n", vec2ToString(data.uvScale).c_str());
+    text += StringUtils::Format("uv_offset=%s\n", vec2ToString(data.uvOffset).c_str());
+    text += StringUtils::Format("alpha_cutoff=%.6f\n", data.alphaCutoff);
+    text += StringUtils::Format("use_alpha_clip=%d\n", data.useAlphaClip);
+    text += StringUtils::Format("base_color_tex=%s\n", data.baseColorTexRef.c_str());
+    text += StringUtils::Format("roughness_tex=%s\n", data.roughnessTexRef.c_str());
+    text += StringUtils::Format("metallic_roughness_tex=%s\n", data.metallicRoughnessTexRef.c_str());
+    text += StringUtils::Format("normal_tex=%s\n", data.normalTexRef.c_str());
+    text += StringUtils::Format("height_tex=%s\n", data.heightTexRef.c_str());
+    text += StringUtils::Format("emissive_tex=%s\n", data.emissiveTexRef.c_str());
+    text += StringUtils::Format("occlusion_tex=%s\n", data.occlusionTexRef.c_str());
+    text += StringUtils::Format("casts_shadows=%d\n", data.castsShadows ? 1 : 0);
+    text += StringUtils::Format("receives_shadows=%d\n", data.receivesShadows ? 1 : 0);
+    return writeTextPath(path, text, outError);
 }
 
 bool SaveToAssetRef(const std::string& assetRef, const MaterialAssetData& data, std::string* outError){
-    std::filesystem::path path;
-    if(!toAbsolutePathFromAssetRef(assetRef, path)){
-        if(outError){
-            *outError = "Invalid material asset path: " + assetRef;
-        }
-        return false;
-    }
-    return SaveToAbsolutePath(path, data, outError);
+    std::string text;
+    text += StringUtils::Format("name=%s\n", data.name.c_str());
+    text += StringUtils::Format("@link-parent=%s\n", data.linkParentRef.c_str());
+    text += StringUtils::Format("type=%s\n", TypeToString(data.type));
+    text += StringUtils::Format("shader_asset=%s\n", data.shaderAssetRef.c_str());
+    text += StringUtils::Format("color=%s\n", vec4ToString(data.color).c_str());
+    text += StringUtils::Format("uv=%s\n", vec2ToString(data.uv).c_str());
+    text += StringUtils::Format("texture=%s\n", data.textureRef.c_str());
+    text += StringUtils::Format("metallic=%.6f\n", data.metallic);
+    text += StringUtils::Format("roughness=%.6f\n", data.roughness);
+    text += StringUtils::Format("normal_scale=%.6f\n", data.normalScale);
+    text += StringUtils::Format("height_scale=%.6f\n", data.heightScale);
+    text += StringUtils::Format("emissive_color=%s\n", vec3ToString(data.emissiveColor).c_str());
+    text += StringUtils::Format("emissive_strength=%.6f\n", data.emissiveStrength);
+    text += StringUtils::Format("occlusion_strength=%.6f\n", data.occlusionStrength);
+    text += StringUtils::Format("env_strength=%.6f\n", data.envStrength);
+    text += StringUtils::Format("use_env_map=%d\n", data.useEnvMap);
+    text += StringUtils::Format("uv_scale=%s\n", vec2ToString(data.uvScale).c_str());
+    text += StringUtils::Format("uv_offset=%s\n", vec2ToString(data.uvOffset).c_str());
+    text += StringUtils::Format("alpha_cutoff=%.6f\n", data.alphaCutoff);
+    text += StringUtils::Format("use_alpha_clip=%d\n", data.useAlphaClip);
+    text += StringUtils::Format("base_color_tex=%s\n", data.baseColorTexRef.c_str());
+    text += StringUtils::Format("roughness_tex=%s\n", data.roughnessTexRef.c_str());
+    text += StringUtils::Format("metallic_roughness_tex=%s\n", data.metallicRoughnessTexRef.c_str());
+    text += StringUtils::Format("normal_tex=%s\n", data.normalTexRef.c_str());
+    text += StringUtils::Format("height_tex=%s\n", data.heightTexRef.c_str());
+    text += StringUtils::Format("emissive_tex=%s\n", data.emissiveTexRef.c_str());
+    text += StringUtils::Format("occlusion_tex=%s\n", data.occlusionTexRef.c_str());
+    text += StringUtils::Format("casts_shadows=%d\n", data.castsShadows ? 1 : 0);
+    text += StringUtils::Format("receives_shadows=%d\n", data.receivesShadows ? 1 : 0);
+    return writeTextAsset(assetRef, text, outError);
 }
 
 std::shared_ptr<Material> InstantiateMaterial(const MaterialAssetData& data, std::string* outError){
@@ -575,13 +582,12 @@ bool LoadMaterialObjectFromAbsolutePath(const std::filesystem::path& path, Mater
     const std::filesystem::path legacyMaterialAsset = parent / (stem + ".mat.asset");
 
     auto fallbackToSiblingAsset = [&](){
-        std::error_code ec;
-        if(std::filesystem::exists(defaultMaterialAsset, ec) && !std::filesystem::is_directory(defaultMaterialAsset, ec)){
+        bool isDirectory = false;
+        if(pathExists(defaultMaterialAsset, &isDirectory) && !isDirectory){
             outData.materialAssetRef = toAssetRefFromAbsolutePath(defaultMaterialAsset);
             return true;
         }
-        ec.clear();
-        if(std::filesystem::exists(legacyMaterialAsset, ec) && !std::filesystem::is_directory(legacyMaterialAsset, ec)){
+        if(pathExists(legacyMaterialAsset, &isDirectory) && !isDirectory){
             outData.materialAssetRef = toAssetRefFromAbsolutePath(legacyMaterialAsset);
             return true;
         }
@@ -594,10 +600,10 @@ bool LoadMaterialObjectFromAbsolutePath(const std::filesystem::path& path, Mater
         std::string resolveError;
         if(MaterialAssetIO::ResolveMaterialAssetRef(outData.materialAssetRef, resolvedRef, &resolveError)){
             std::filesystem::path resolvedPath;
-            std::error_code ec;
+            bool isDirectory = false;
             if(toAbsolutePathFromAssetRef(resolvedRef, resolvedPath) &&
-               std::filesystem::exists(resolvedPath, ec) &&
-               !std::filesystem::is_directory(resolvedPath, ec) &&
+               pathExists(resolvedPath, &isDirectory) &&
+               !isDirectory &&
                IsMaterialAssetPath(resolvedPath)){
                 hasValidResolvedRef = true;
                 outData.materialAssetRef = resolvedRef;
@@ -641,17 +647,6 @@ bool SaveMaterialObjectToAbsolutePath(const std::filesystem::path& path, const M
         return false;
     }
 
-    std::filesystem::path parent = path.parent_path();
-    std::error_code ec;
-    if(!parent.empty() && !std::filesystem::exists(parent, ec)){
-        if(!std::filesystem::create_directories(parent, ec)){
-            if(outError){
-                *outError = "Failed to create directory: " + parent.generic_string();
-            }
-            return false;
-        }
-    }
-
     std::string resolvedAssetRef = data.materialAssetRef;
     if(!resolvedAssetRef.empty()){
         std::string normalizedRef;
@@ -661,27 +656,13 @@ bool SaveMaterialObjectToAbsolutePath(const std::filesystem::path& path, const M
         resolvedAssetRef = normalizedRef;
     }
 
-    auto writer = std::make_unique<FileWriter>(new File(path.string()));
-    if(!writer){
-        if(outError){
-            *outError = "Failed to open file for write: " + path.generic_string();
-        }
-        return false;
-    }
-
     const std::string objectName = data.name.empty() ? path.stem().string() : data.name;
-    writer->putln(StringUtils::Format("name=%s", objectName.c_str()).c_str());
-    writer->putln(StringUtils::Format("material_asset=%s", resolvedAssetRef.c_str()).c_str());
-
-    if(!writer->flush()){
-        if(outError){
-            *outError = "Failed to write file: " + path.generic_string();
-        }
-        writer->close();
+    std::string text;
+    text += StringUtils::Format("name=%s\n", objectName.c_str());
+    text += StringUtils::Format("material_asset=%s\n", resolvedAssetRef.c_str());
+    if(!writeTextPath(path, text, outError)){
         return false;
     }
-    writer->close();
-    AssetManager::Instance.unmanageAsset(path.generic_string());
 
     if(!resolvedAssetRef.empty()){
         MaterialAssetData linkedData;
@@ -729,8 +710,8 @@ bool ResolveMaterialAssetRef(const std::string& materialOrAssetRef, std::string&
         }
 
         if(IsMaterialAssetPath(absolutePath)){
-            std::error_code ec;
-            if(!std::filesystem::exists(absolutePath, ec) || std::filesystem::is_directory(absolutePath, ec)){
+            bool isDirectory = false;
+            if(!pathExists(absolutePath, &isDirectory) || isDirectory){
                 if(outError){
                     *outError = "Material asset does not exist: " + absolutePath.generic_string();
                 }

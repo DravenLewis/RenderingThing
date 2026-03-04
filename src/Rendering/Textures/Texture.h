@@ -42,8 +42,8 @@ class Texture{
 
         std::shared_ptr<Graphics::Image::Image> getImageData() const {return cpuImage;}
 
-        static std::shared_ptr<Texture> Load(PAsset asset, GLenum imageHint = GL_TEXTURE_2D);
-        static std::shared_ptr<Graphics::Image::Image> LoadImage(PAsset asset);
+        static std::shared_ptr<Texture> Load(PAsset asset, GLenum imageHint = GL_TEXTURE_2D, bool flipVertically = true);
+        static std::shared_ptr<Graphics::Image::Image> LoadImage(PAsset asset, bool flipVertically = true);
         static std::shared_ptr<Texture> CreateEmpty(int width, int height);
         static std::shared_ptr<Texture> CreateFromAlphaBuffer(int width, int height, const unsigned char* alphaData);
         static std::shared_ptr<Texture> CreateFromExisting(GLuint id, int width, int height, bool owns = false);

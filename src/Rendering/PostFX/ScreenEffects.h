@@ -136,6 +136,12 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
                 return (2.0 * u_nearPlane * u_farPlane) / max((u_farPlane + u_nearPlane) - (z * (u_farPlane - u_nearPlane)), 0.0001);
             }
 
+            float hash12(vec2 p){
+                vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+                p3 += dot(p3, p3.yzx + 33.33);
+                return fract((p3.x + p3.y) * p3.z);
+            }
+
             void main() {
                 vec4 base = texture(screenTexture, TexCoords);
                 float centerDepthRaw = texture(depthTexture, TexCoords).r;
@@ -150,6 +156,9 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
                 float radiusPx = max(u_radiusPx, 0.25);
                 float depthRadius = max(u_depthRadius, 0.00005);
                 int count = clamp(u_sampleCount, 1, 16);
+                float angle = hash12(TexCoords * vec2(173.3, 97.1)) * 6.2831853;
+                float sinAngle = sin(angle);
+                float cosAngle = cos(angle);
 
                 // Scale thresholds with distance and local depth slope for temporal stability.
                 float depthScale = clamp(centerDepth * 0.08, 1.0, 32.0);
@@ -160,30 +169,44 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
                 float occ = 0.0;
                 float weightSum = 0.0;
                 for(int i = 0; i < count; ++i){
-                    vec2 pixelOffset = kPoisson[i] * radiusPx;
-                    vec2 uv = TexCoords + (pixelOffset * u_texelSize);
-                    if(uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0){
-                        continue;
-                    }
-                    float sampleDepthRaw = texture(depthTexture, uv).r;
-                    if(sampleDepthRaw >= kSkyDepthCutoff){
-                        continue;
-                    }
-                    float sampleDepth = linearizeDepth(sampleDepthRaw);
+                    float ringT = (float(i) + 0.5) / float(count);
+                    vec2 poisson = kPoisson[i];
+                    vec2 rotated = vec2(
+                        (poisson.x * cosAngle) - (poisson.y * sinAngle),
+                        (poisson.x * sinAngle) + (poisson.y * cosAngle)
+                    );
 
-                    float depthDelta = centerDepth - sampleDepth;
-                    float slopeAllowance = depthSlope * length(pixelOffset);
-                    float adjustedDelta = depthDelta - (baseBias + slopeAllowance);
-                    float sampleOcc = smoothstep(0.0, adaptiveDepthRadius, adjustedDelta);
-                    // Weight by raw geometric proximity so non-occluding neighbors still normalize.
-                    float rangeWeight = 1.0 - smoothstep(0.0, adaptiveDepthRadius * 2.0, abs(depthDelta));
-                    occ += sampleOcc * rangeWeight;
-                    weightSum += rangeWeight;
+                    for(int mirror = 0; mirror < 2; ++mirror){
+                        vec2 direction = (mirror == 0) ? rotated : -rotated;
+                        vec2 pixelOffset = direction * radiusPx * ringT;
+                        vec2 uv = TexCoords + (pixelOffset * u_texelSize);
+                        if(uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0){
+                            continue;
+                        }
+                        float sampleDepthRaw = texture(depthTexture, uv).r;
+                        if(sampleDepthRaw >= kSkyDepthCutoff){
+                            continue;
+                        }
+                        float sampleDepth = linearizeDepth(sampleDepthRaw);
+
+                        float depthDelta = centerDepth - sampleDepth;
+                        float slopeAllowance = depthSlope * length(pixelOffset);
+                        float adjustedDelta = depthDelta - (baseBias + slopeAllowance);
+                        float sampleOcc = smoothstep(0.0, adaptiveDepthRadius, adjustedDelta);
+                        float radialBias = 1.0 - smoothstep(0.35, 1.0, ringT);
+                        sampleOcc *= mix(1.0, 1.35, radialBias);
+                        // Weight by raw geometric proximity so non-occluding neighbors still normalize.
+                        float rangeWeight = 1.0 - smoothstep(0.0, adaptiveDepthRadius * 2.5, abs(depthDelta));
+                        occ += sampleOcc * rangeWeight;
+                        weightSum += rangeWeight;
+                    }
                 }
 
-                occ /= max(weightSum, 0.0001);
+                occ = clamp(occ / max(weightSum, 0.0001), 0.0, 1.0);
+                occ = pow(occ, 0.85);
+                float effectiveIntensity = pow(max(u_intensity, 0.0), 0.6);
                 // Keep a floor so SSAO cannot collapse the whole frame into near-black.
-                float ao = clamp(1.0 - (occ * u_intensity), 0.45, 1.0);
+                float ao = clamp(1.0 - (occ * effectiveIntensity), 0.35, 1.0);
 
                 float giFactor = (1.0 - ao);
                 giFactor = giFactor * giFactor * u_giBoost;
@@ -294,12 +317,47 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
             uniform float u_blurStrength;
             uniform float u_maxBlurPx;
             uniform int u_sampleCount;
+            uniform int u_adaptiveFocusEnabled;
+            uniform vec2 u_focusUv;
             uniform float u_nearPlane;
             uniform float u_farPlane;
 
             float linearizeDepth(float depth){
                 float z = depth * 2.0 - 1.0;
                 return (2.0 * u_nearPlane * u_farPlane) / max((u_farPlane + u_nearPlane) - (z * (u_farPlane - u_nearPlane)), 0.0001);
+            }
+
+            float resolveFocusDistance(){
+                if(u_adaptiveFocusEnabled == 0){
+                    return u_focusDistance;
+                }
+
+                const float kSkyDepthCutoff = 0.9995;
+                vec2 taps[5] = vec2[](
+                    vec2( 0.0,  0.0),
+                    vec2( 1.0,  0.0),
+                    vec2(-1.0,  0.0),
+                    vec2( 0.0,  1.0),
+                    vec2( 0.0, -1.0)
+                );
+
+                float accum = 0.0;
+                float weight = 0.0;
+                for(int i = 0; i < 5; ++i){
+                    vec2 sampleUv = clamp(u_focusUv + (taps[i] * u_texelSize), vec2(0.0), vec2(1.0));
+                    float sampleDepth = texture(depthTexture, sampleUv).r;
+                    if(sampleDepth >= kSkyDepthCutoff){
+                        continue;
+                    }
+                    float tapWeight = (i == 0) ? 2.0 : 1.0;
+                    accum += linearizeDepth(sampleDepth) * tapWeight;
+                    weight += tapWeight;
+                }
+
+                if(weight <= 0.0001){
+                    return u_focusDistance;
+                }
+                return accum / weight;
             }
 
             vec3 gatherBlur(vec2 uv, float radiusPx, int sampleCount, float centerLinearDepth){
@@ -320,7 +378,7 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
                 float depthTolerance = max(u_focusRange * 0.35, 0.25);
                 for(int i = 0; i < loops; ++i){
                     vec2 offset = dirs[i] * radiusPx * u_texelSize;
-                    vec2 sampleUv = uv + offset;
+                    vec2 sampleUv = clamp(uv + offset, vec2(0.0), vec2(1.0));
                     vec3 sampleColor = texture(screenTexture, sampleUv).rgb;
                     float sampleLinearDepth = linearizeDepth(texture(depthTexture, sampleUv).r);
                     float depthDelta = abs(sampleLinearDepth - centerLinearDepth);
@@ -335,9 +393,10 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
                 vec4 base = texture(screenTexture, TexCoords);
                 float depth = texture(depthTexture, TexCoords).r;
                 float linearDepth = linearizeDepth(depth);
+                float focusDistance = resolveFocusDistance();
 
                 float focusRange = max(u_focusRange, 0.001);
-                float coc = clamp(abs(linearDepth - u_focusDistance) / focusRange, 0.0, 1.0);
+                float coc = clamp(abs(linearDepth - focusDistance) / focusRange, 0.0, 1.0);
                 coc = clamp(coc * u_blurStrength, 0.0, 1.0);
                 coc = coc * coc;
 
@@ -372,6 +431,8 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
         float blurStrength = 0.65f;
         float maxBlurPx = 7.0f;
         int sampleCount = 6;
+        bool adaptiveFocus = false;
+        Math3D::Vec2 focusUv = Math3D::Vec2(0.5f, 0.5f);
         float nearPlane = 0.1f;
         float farPlane = 1000.0f;
 
@@ -401,6 +462,8 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
             shader->setUniformFast("u_focusRange", Uniform<float>(focusRange));
             shader->setUniformFast("u_blurStrength", Uniform<float>(blurStrength));
             shader->setUniformFast("u_maxBlurPx", Uniform<float>(maxBlurPx));
+            shader->setUniformFast("u_adaptiveFocusEnabled", Uniform<int>(adaptiveFocus ? 1 : 0));
+            shader->setUniformFast("u_focusUv", Uniform<Math3D::Vec2>(focusUv));
             int effectiveSamples = sampleCount;
             const int pixelCount = outFbo->getWidth() * outFbo->getHeight();
             if(pixelCount >= (2560 * 1440) && effectiveSamples > 4){

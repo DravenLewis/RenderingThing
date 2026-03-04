@@ -36,6 +36,8 @@ void LoadedScene::init(){
 
 bool LoadedScene::loadSceneDocument(){
     lastLoadError.clear();
+    sourceScenePath.clear();
+    sourceSceneAsset.reset();
     if(sceneRefOrPath.empty()){
         lastLoadError = "Scene ref/path is empty.";
         return false;
@@ -52,6 +54,10 @@ bool LoadedScene::loadSceneDocument(){
 
     const bool usesAssetRef = AssetDescriptorUtils::IsAssetRef(sceneRefOrPath);
     if(usesAssetRef){
+        std::filesystem::path resolvedSourcePath;
+        if(AssetDescriptorUtils::AssetRefToAbsolutePath(sceneRefOrPath, resolvedSourcePath)){
+            sourceScenePath = resolvedSourcePath.lexically_normal();
+        }
         if(!SceneIO::LoadSceneFromAssetRef(self, sceneRefOrPath, loadOptions, nullptr, &lastLoadError)){
             return false;
         }
@@ -65,6 +71,7 @@ bool LoadedScene::loadSceneDocument(){
             }
         }
         absolutePath = absolutePath.lexically_normal();
+        sourceScenePath = absolutePath;
 
         if(!SceneIO::LoadSceneFromAbsolutePath(self, absolutePath, loadOptions, nullptr, &lastLoadError)){
             return false;
@@ -72,6 +79,16 @@ bool LoadedScene::loadSceneDocument(){
     }
 
     ensureCameraAfterLoad();
+    if(!sourceScenePath.empty()){
+        std::error_code ec;
+        if(std::filesystem::exists(sourceScenePath, ec) &&
+           !ec &&
+           !std::filesystem::is_directory(sourceScenePath, ec) &&
+           !ec){
+            AssetManager::Instance.unmanageAsset(sourceScenePath.generic_string());
+            sourceSceneAsset = AssetManager::Instance.getOrLoad(sourceScenePath.generic_string());
+        }
+    }
     return true;
 }
 

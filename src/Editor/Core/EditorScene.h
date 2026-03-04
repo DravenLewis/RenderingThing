@@ -52,7 +52,7 @@ class EditorScene : public Scene {
 
         enum class SceneFileDialogMode {
             None = 0,
-            Save,
+            SaveAs,
             Load
         };
 
@@ -163,6 +163,11 @@ class EditorScene : public Scene {
         };
         SceneFileDialogState sceneFileDialogState;
         std::filesystem::path activeScenePath;
+        bool pendingPlayAfterSceneSave = false;
+        bool pendingToolbarPlayCommand = false;
+        bool pendingToolbarSaveSceneCommand = false;
+        bool pendingToolbarSaveSceneAsCommand = false;
+        bool pendingToolbarLoadSceneCommand = false;
         std::string ioStatusMessage;
         bool ioStatusIsError = false;
         float ioStatusTimeRemaining = 0.0f;
@@ -194,10 +199,16 @@ class EditorScene : public Scene {
         bool computeSceneBounds(Math3D::Vec3& outCenter, float& outRadius) const;
         void setIoStatus(const std::string& message, bool isError);
         bool saveSceneFromEditorCommand();
+        bool saveSceneAsFromEditorCommand();
         bool loadSceneFromEditorCommand();
         bool openSceneFileDialog(SceneFileDialogMode mode);
         bool saveSceneToAbsolutePath(const std::filesystem::path& savePath);
         bool loadSceneFromAbsolutePath(const std::filesystem::path& loadPath);
+        std::filesystem::path resolveCurrentSceneSourcePath() const;
+        void updateSceneSourceAfterSave(const std::filesystem::path& savePath);
+        bool beginPlayModeFromEditor();
+        bool enterPlayModeFromScenePath(const std::filesystem::path& scenePath);
+        void processDeferredToolbarCommands();
         void drawSceneFileDialog();
         bool exportEntityAsPrefabToDirectory(const std::string& entityId, const std::filesystem::path& directoryPath);
         bool exportEntityAsPrefabToWorkspaceDirectory(const std::string& entityId);

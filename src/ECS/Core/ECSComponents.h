@@ -43,7 +43,9 @@ struct MeshRendererComponent : public IEditorCompatibleComponent {
     std::string modelSourceRef; // Optional direct source model ref (for non-wrapper model instances).
     int modelForceSmoothNormals = 0; // Used with modelSourceRef where relevant (OBJ import path).
     std::string materialAssetRef; // Single mesh/material mode source material.
+    bool materialOverridesSource = false; // When true, scene-saved material fields override materialAssetRef on reload.
     std::vector<std::string> modelPartMaterialAssetRefs; // Per-part overrides for model mode.
+    std::vector<int> modelPartMaterialOverrides; // When non-zero, scene-saved fields override source part materials on reload.
     Math3D::Transform localOffset;
     bool visible = true;
     bool enableBackfaceCulling = true;
@@ -195,6 +197,7 @@ struct SSAOComponent : public IEditorCompatibleComponent {
 struct DepthOfFieldComponent : public IEditorCompatibleComponent {
     using IEditorCompatibleComponent::IEditorCompatibleComponent;
     bool enabled = false;
+    bool adaptiveFocus = false;
     float focusDistance = 8.0f;
     float focusRange = 4.0f;
     float blurStrength = 0.65f;

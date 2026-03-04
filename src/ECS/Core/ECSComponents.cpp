@@ -82,8 +82,8 @@ namespace {
     };
     std::unordered_map<std::string, ModelSelectorState> g_modelSelectorStates;
 
-    void drawMaterialAssetFields(const std::shared_ptr<Material>& material, const char* idSuffix);
-    void drawShaderAssignmentUI(const std::shared_ptr<Material>& material, const char* idSuffix);
+    bool drawMaterialAssetFields(const std::shared_ptr<Material>& material, const char* idSuffix);
+    bool drawShaderAssignmentUI(const std::shared_ptr<Material>& material, const char* idSuffix);
 
     ShaderPickerState& getShaderPickerState(const std::shared_ptr<Material>& material){
         uintptr_t key = reinterpret_cast<uintptr_t>(material.get());
@@ -120,6 +120,11 @@ namespace {
             renderer->modelPartMaterialAssetRefs.resize(partCount);
         }else if(renderer->modelPartMaterialAssetRefs.size() > partCount){
             renderer->modelPartMaterialAssetRefs.resize(partCount);
+        }
+        if(renderer->modelPartMaterialOverrides.size() < partCount){
+            renderer->modelPartMaterialOverrides.resize(partCount, 0);
+        }else if(renderer->modelPartMaterialOverrides.size() > partCount){
+            renderer->modelPartMaterialOverrides.resize(partCount);
         }
     }
 
@@ -259,25 +264,29 @@ namespace {
         return names;
     }
 
-    void drawMaterialValueFields(const std::shared_ptr<Material>& material, const char* idSuffix){
+    bool drawMaterialValueFields(const std::shared_ptr<Material>& material, const char* idSuffix){
         if(!material){
-            return;
+            return false;
         }
 
         std::string header = std::string("Material Parameters##") + idSuffix;
         if(!ImGui::CollapsingHeader(header.c_str(), ImGuiTreeNodeFlags_DefaultOpen)){
-            return;
+            return false;
         }
+
+        bool changed = false;
 
         bool castsShadows = material->castsShadows();
         std::string castsLabel = std::string("Casts Shadows##") + idSuffix;
         if(ImGui::Checkbox(castsLabel.c_str(), &castsShadows)){
             material->setCastsShadows(castsShadows);
+            changed = true;
         }
         bool receivesShadows = material->receivesShadows();
         std::string receivesLabel = std::string("Receives Shadows##") + idSuffix;
         if(ImGui::Checkbox(receivesLabel.c_str(), &receivesShadows)){
             material->setReceivesShadows(receivesShadows);
+            changed = true;
         }
 
         if(auto pbr = Material::GetAs<PBRMaterial>(material)){
@@ -285,72 +294,84 @@ namespace {
             std::string baseColorLabel = std::string("Base Color##") + idSuffix;
             if(ImGui::ColorEdit4(baseColorLabel.c_str(), &baseColor.x)){
                 pbr->BaseColor = baseColor;
+                changed = true;
             }
 
             float metallic = pbr->Metallic.get();
             std::string metallicLabel = std::string("Metallic##") + idSuffix;
             if(ImGui::SliderFloat(metallicLabel.c_str(), &metallic, 0.0f, 1.0f)){
                 pbr->Metallic = metallic;
+                changed = true;
             }
 
             float roughness = pbr->Roughness.get();
             std::string roughnessLabel = std::string("Roughness##") + idSuffix;
             if(ImGui::SliderFloat(roughnessLabel.c_str(), &roughness, 0.0f, 1.0f)){
                 pbr->Roughness = roughness;
+                changed = true;
             }
 
             float normalScale = pbr->NormalScale.get();
             std::string normalScaleLabel = std::string("Normal Scale##") + idSuffix;
             if(ImGui::DragFloat(normalScaleLabel.c_str(), &normalScale, 0.01f, 0.0f, 8.0f)){
                 pbr->NormalScale = normalScale;
+                changed = true;
             }
 
             float heightScale = pbr->HeightScale.get();
             std::string heightScaleLabel = std::string("Height Scale##") + idSuffix;
             if(ImGui::DragFloat(heightScaleLabel.c_str(), &heightScale, 0.001f, 0.0f, 1.0f)){
                 pbr->HeightScale = heightScale;
+                changed = true;
             }
 
             Math3D::Vec3 emissiveColor = pbr->EmissiveColor.get();
             std::string emissiveColorLabel = std::string("Emissive Color##") + idSuffix;
             if(ImGui::ColorEdit3(emissiveColorLabel.c_str(), &emissiveColor.x)){
                 pbr->EmissiveColor = emissiveColor;
+                changed = true;
             }
 
             float emissiveStrength = pbr->EmissiveStrength.get();
             std::string emissiveStrengthLabel = std::string("Emissive Strength##") + idSuffix;
             if(ImGui::DragFloat(emissiveStrengthLabel.c_str(), &emissiveStrength, 0.01f, 0.0f, 32.0f)){
                 pbr->EmissiveStrength = emissiveStrength;
+                changed = true;
             }
 
             float occlusionStrength = pbr->OcclusionStrength.get();
             std::string occlusionStrengthLabel = std::string("AO Strength##") + idSuffix;
             if(ImGui::SliderFloat(occlusionStrengthLabel.c_str(), &occlusionStrength, 0.0f, 4.0f)){
                 pbr->OcclusionStrength = occlusionStrength;
+                changed = true;
             }
 
             Math3D::Vec2 uvScale = pbr->UVScale.get();
             std::string uvScaleLabel = std::string("UV Scale##") + idSuffix;
             if(ImGui::DragFloat2(uvScaleLabel.c_str(), &uvScale.x, 0.01f, -64.0f, 64.0f)){
                 pbr->UVScale = uvScale;
+                changed = true;
             }
 
             Math3D::Vec2 uvOffset = pbr->UVOffset.get();
             std::string uvOffsetLabel = std::string("UV Offset##") + idSuffix;
             if(ImGui::DragFloat2(uvOffsetLabel.c_str(), &uvOffset.x, 0.01f, -64.0f, 64.0f)){
                 pbr->UVOffset = uvOffset;
+                changed = true;
             }
 
             bool useAlphaClip = (pbr->UseAlphaClip.get() != 0);
             std::string useAlphaClipLabel = std::string("Use Alpha Clip##") + idSuffix;
             if(ImGui::Checkbox(useAlphaClipLabel.c_str(), &useAlphaClip)){
                 pbr->UseAlphaClip = useAlphaClip ? 1 : 0;
+                changed = true;
             }
             if(useAlphaClip){
                 float alphaCutoff = pbr->AlphaCutoff.get();
                 std::string alphaCutoffLabel = std::string("Alpha Cutoff##") + idSuffix;
                 if(ImGui::SliderFloat(alphaCutoffLabel.c_str(), &alphaCutoff, 0.0f, 1.0f)){
                     pbr->AlphaCutoff = alphaCutoff;
+                    changed = true;
                 }
             }
 
@@ -358,12 +379,14 @@ namespace {
             std::string useEnvMapLabel = std::string("Use Env Map##") + idSuffix;
             if(ImGui::Checkbox(useEnvMapLabel.c_str(), &useEnvMap)){
                 pbr->UseEnvMap = useEnvMap ? 1 : 0;
+                changed = true;
             }
 
             float envStrength = pbr->EnvStrength.get();
             std::string envStrengthLabel = std::string("Env Strength##") + idSuffix;
             if(ImGui::DragFloat(envStrengthLabel.c_str(), &envStrength, 0.01f, 0.0f, 8.0f)){
                 pbr->EnvStrength = envStrength;
+                changed = true;
             }
         }else if(auto constructed = Material::GetAs<ConstructedMaterial>(material)){
             auto& fields = constructed->fields();
@@ -437,6 +460,7 @@ namespace {
                 if(changedField){
                     constructed->markFieldsDirty();
                     constructed->applyField(i);
+                    changed = true;
                 }
             }
         }else if(auto colorMat = Material::GetAs<MaterialDefaults::ColorMaterial>(material)){
@@ -444,55 +468,64 @@ namespace {
             std::string colorLabel = std::string("Color##") + idSuffix;
             if(ImGui::ColorEdit4(colorLabel.c_str(), &color.x)){
                 colorMat->Color = color;
+                changed = true;
             }
         }else if(auto imageMat = Material::GetAs<MaterialDefaults::ImageMaterial>(material)){
             Math3D::Vec4 color = imageMat->Color.get();
             std::string colorLabel = std::string("Color##") + idSuffix;
             if(ImGui::ColorEdit4(colorLabel.c_str(), &color.x)){
                 imageMat->Color = color;
+                changed = true;
             }
             Math3D::Vec2 uv = imageMat->UV.get();
             std::string uvLabel = std::string("UV Offset##") + idSuffix;
             if(ImGui::DragFloat2(uvLabel.c_str(), &uv.x, 0.01f, -64.0f, 64.0f)){
                 imageMat->UV = uv;
+                changed = true;
             }
         }else if(auto litColor = Material::GetAs<MaterialDefaults::LitColorMaterial>(material)){
             Math3D::Vec4 color = litColor->Color.get();
             std::string colorLabel = std::string("Color##") + idSuffix;
             if(ImGui::ColorEdit4(colorLabel.c_str(), &color.x)){
                 litColor->Color = color;
+                changed = true;
             }
         }else if(auto litImage = Material::GetAs<MaterialDefaults::LitImageMaterial>(material)){
             Math3D::Vec4 color = litImage->Color.get();
             std::string colorLabel = std::string("Color##") + idSuffix;
             if(ImGui::ColorEdit4(colorLabel.c_str(), &color.x)){
                 litImage->Color = color;
+                changed = true;
             }
         }else if(auto flatColor = Material::GetAs<MaterialDefaults::FlatColorMaterial>(material)){
             Math3D::Vec4 color = flatColor->Color.get();
             std::string colorLabel = std::string("Color##") + idSuffix;
             if(ImGui::ColorEdit4(colorLabel.c_str(), &color.x)){
                 flatColor->Color = color;
+                changed = true;
             }
         }else if(auto flatImage = Material::GetAs<MaterialDefaults::FlatImageMaterial>(material)){
             Math3D::Vec4 color = flatImage->Color.get();
             std::string colorLabel = std::string("Color##") + idSuffix;
             if(ImGui::ColorEdit4(colorLabel.c_str(), &color.x)){
                 flatImage->Color = color;
+                changed = true;
             }
         }else{
             ImGui::TextDisabled("No editable material value fields for this type.");
         }
 
         ImGui::Separator();
-        drawMaterialAssetFields(material, idSuffix);
-        drawShaderAssignmentUI(material, idSuffix);
+        changed = drawMaterialAssetFields(material, idSuffix) || changed;
+        changed = drawShaderAssignmentUI(material, idSuffix) || changed;
+        return changed;
     }
 
-    void drawMaterialSelectionUI(std::shared_ptr<Material>& materialRef, const char* idSuffix, std::string* outMaterialAssetRef){
+    bool drawMaterialSelectionUI(std::shared_ptr<Material>& materialRef, const char* idSuffix, std::string* outMaterialAssetRef){
         MaterialRegistry::Instance().Refresh();
         const auto& entries = MaterialRegistry::Instance().GetEntries();
         MaterialSelectorState& picker = getMaterialSelectorState(idSuffix);
+        bool changed = false;
         if(picker.selectedRegistryIndex >= static_cast<int>(entries.size())){
             picker.selectedRegistryIndex = -1;
         }
@@ -525,6 +558,7 @@ namespace {
                     if(outMaterialAssetRef){
                         outMaterialAssetRef->clear();
                     }
+                    changed = true;
                 }else{
                     LogBot.Log(LOG_ERRO, "Failed to apply material registry entry: %s", error.c_str());
                 }
@@ -556,9 +590,11 @@ namespace {
                         *outMaterialAssetRef = resolvedAssetRef;
                     }
                     copyTextToBuffer(picker.materialAssetPath, sizeof(picker.materialAssetPath), resolvedAssetRef);
+                    changed = true;
                 }
             }
         }
+        return changed;
     }
 
     void drawModelSelectionUI(MeshRendererComponent* renderer, const char* idSuffix){
@@ -609,7 +645,9 @@ namespace {
                     renderer->mesh.reset();
                     renderer->material.reset();
                     renderer->materialAssetRef.clear();
+                    renderer->materialOverridesSource = false;
                     renderer->modelPartMaterialAssetRefs.clear();
+                    renderer->modelPartMaterialOverrides.clear();
                     initializePartMaterialRefsFromModelAsset(renderer);
                     copyTextToBuffer(picker.modelAssetPath, sizeof(picker.modelAssetPath), resolvedAssetRef);
                 }
@@ -621,17 +659,18 @@ namespace {
         }
     }
 
-    void drawShaderAssignmentUI(const std::shared_ptr<Material>& material, const char* idSuffix){
+    bool drawShaderAssignmentUI(const std::shared_ptr<Material>& material, const char* idSuffix){
         if(!material){
             ImGui::TextDisabled("No material assigned.");
-            return;
+            return false;
         }
 
         std::string shaderHeader = std::string("Shader Assignment##") + idSuffix;
         if(!ImGui::TreeNodeEx(shaderHeader.c_str())){
-            return;
+            return false;
         }
 
+        bool changed = false;
         auto shader = material->getShader();
         ImGui::Text("Shader Program ID: %u", shader ? shader->getID() : 0);
 
@@ -649,7 +688,7 @@ namespace {
             picker.hasAppliedShaderAsset = false;
         }
         if(droppedShaderAsset || applyShaderAsset){
-            applyShaderAssetToMaterial(material, picker, true);
+            changed = applyShaderAssetToMaterial(material, picker, true) || changed;
         }
         ImGui::Separator();
 
@@ -689,6 +728,7 @@ namespace {
                     if(EditorAssetUI::TryReplacePointer(shaderPtr, it->second)){
                         material->setShader(shaderPtr);
                         picker.hasAppliedShaderAsset = false;
+                        changed = true;
                     }
                 }else{
                     LogBot.Log(LOG_ERRO, "Selected cached shader is invalid.");
@@ -727,6 +767,7 @@ namespace {
                         if(EditorAssetUI::TryReplacePointer(shaderPtr, program)){
                             material->setShader(shaderPtr);
                             picker.hasAppliedShaderAsset = false;
+                            changed = true;
                         }
                     }
                 }
@@ -734,6 +775,7 @@ namespace {
         }
 
         ImGui::TreePop();
+        return changed;
     }
 
     void drawPartTransformEditor(Math3D::Transform& localTransform){
@@ -752,41 +794,32 @@ namespace {
         }
     }
 
-    void drawMaterialAssetFields(const std::shared_ptr<Material>& material, const char* idSuffix){
+    bool drawMaterialAssetFields(const std::shared_ptr<Material>& material, const char* idSuffix){
         if(!material){
-            return;
+            return false;
         }
 
         MaterialAssetFieldState& fieldState = getMaterialAssetFieldState(material);
+        bool changed = false;
 
         auto drawTextureField = [&](const char* label,
                                     const char* key,
                                     char* pathBuffer,
                                     const std::function<void(const std::shared_ptr<Texture>&)>& applyTexture,
                                     const std::function<std::shared_ptr<Texture>()>& readTexture){
-            std::string fieldLabel = std::string(label) + "##" + idSuffix;
+            ImGui::TextUnformatted(label);
+
+            const std::string fieldLabel = std::string("##") + idSuffix + "_" + key + "_asset";
             bool dropped = false;
+            const ImGuiStyle& style = ImGui::GetStyle();
+            const float browseButtonWidth = ImGui::CalcTextSize("...").x + (style.FramePadding.x * 2.0f);
+            const float inputWidth = Math3D::Max(48.0f, ImGui::GetContentRegionAvail().x - browseButtonWidth - style.ItemInnerSpacing.x);
+            ImGui::PushItemWidth(inputWidth);
             EditorAssetUI::DrawAssetDropInput(fieldLabel.c_str(), pathBuffer, 256, EditorAssetUI::AssetKind::Image, false, &dropped);
+            ImGui::PopItemWidth();
 
             const std::string applyId = std::string("Apply##") + idSuffix + "_" + key;
             const std::string clearId = std::string("Clear##") + idSuffix + "_" + key;
-            bool applyClicked = ImGui::Button(applyId.c_str());
-            bool clearClicked = ImGui::Button(clearId.c_str());
-
-            if(clearClicked){
-                pathBuffer[0] = '\0';
-                applyTexture(nullptr);
-            }else if(dropped || applyClicked){
-                std::string assetRef = pathBuffer;
-                if(assetRef.empty()){
-                    applyTexture(nullptr);
-                }else{
-                    auto tex = loadTextureFromAssetRef(assetRef);
-                    if(tex){
-                        applyTexture(tex);
-                    }
-                }
-            }
 
             std::shared_ptr<Texture> previewTex;
             if(readTexture){
@@ -794,17 +827,57 @@ namespace {
             }
 
             std::string previewId = std::string("preview_") + idSuffix + "_" + key;
-            ImGui::TextUnformatted("Preview");
-            ImGui::PushID(previewId.c_str());
-            if(previewTex && previewTex->getID() != 0){
-                ImTextureID texId = (ImTextureID)(intptr_t)previewTex->getID();
-                ImGui::Image(texId, ImVec2(44.0f, 44.0f), ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
-            }else{
-                ImGui::BeginDisabled();
-                ImGui::Button("None", ImVec2(44.0f, 44.0f));
-                ImGui::EndDisabled();
+            const std::string rowId = std::string("texture_row##") + idSuffix + "_" + key;
+            const ImVec2 previewSize(48.0f, 48.0f);
+            const ImVec2 actionButtonSize(64.0f, 0.0f);
+            bool applyClicked = false;
+            bool clearClicked = false;
+
+            if(ImGui::BeginTable(rowId.c_str(), 4, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_NoPadOuterX)){
+                ImGui::TableNextRow();
+
+                ImGui::TableSetColumnIndex(0);
+                ImGui::AlignTextToFramePadding();
+                ImGui::TextUnformatted("Preview");
+
+                ImGui::TableSetColumnIndex(1);
+                ImGui::PushID(previewId.c_str());
+                if(previewTex && previewTex->getID() != 0){
+                    ImTextureID texId = (ImTextureID)(intptr_t)previewTex->getID();
+                    ImGui::Image(texId, previewSize, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
+                }else{
+                    ImGui::BeginDisabled();
+                    ImGui::Button("None", previewSize);
+                    ImGui::EndDisabled();
+                }
+                ImGui::PopID();
+
+                ImGui::TableSetColumnIndex(2);
+                applyClicked = ImGui::Button(applyId.c_str(), actionButtonSize);
+
+                ImGui::TableSetColumnIndex(3);
+                clearClicked = ImGui::Button(clearId.c_str(), actionButtonSize);
+
+                ImGui::EndTable();
             }
-            ImGui::PopID();
+
+            if(clearClicked){
+                pathBuffer[0] = '\0';
+                applyTexture(nullptr);
+                changed = true;
+            }else if(dropped || applyClicked){
+                std::string assetRef = pathBuffer;
+                if(assetRef.empty()){
+                    applyTexture(nullptr);
+                    changed = true;
+                }else{
+                    auto tex = loadTextureFromAssetRef(assetRef);
+                    if(tex){
+                        applyTexture(tex);
+                        changed = true;
+                    }
+                }
+            }
 
             ImGui::Spacing();
         };
@@ -812,30 +885,30 @@ namespace {
         if(auto pbr = Material::GetAs<PBRMaterial>(material)){
             std::string header = std::string("PBR Texture Slots##") + idSuffix;
             if(ImGui::TreeNodeEx(header.c_str(), ImGuiTreeNodeFlags_DefaultOpen)){
-                drawTextureField("Base Color Tex", "pbr_base", fieldState.baseColorTex,
+                drawTextureField("Base Color", "pbr_base", fieldState.baseColorTex,
                     [&](const std::shared_ptr<Texture>& tex){ pbr->BaseColorTex = tex; },
                     [&](){ return pbr->BaseColorTex.get(); });
-                drawTextureField("Roughness Tex", "pbr_rough", fieldState.roughnessTex,
+                drawTextureField("Roughness", "pbr_rough", fieldState.roughnessTex,
                     [&](const std::shared_ptr<Texture>& tex){ pbr->RoughnessTex = tex; },
                     [&](){ return pbr->RoughnessTex.get(); });
-                drawTextureField("Metal/Rough Tex", "pbr_mr", fieldState.metallicRoughTex,
+                drawTextureField("Metal/Rough", "pbr_mr", fieldState.metallicRoughTex,
                     [&](const std::shared_ptr<Texture>& tex){ pbr->MetallicRoughnessTex = tex; },
                     [&](){ return pbr->MetallicRoughnessTex.get(); });
-                drawTextureField("Normal Tex", "pbr_normal", fieldState.normalTex,
+                drawTextureField("Normal", "pbr_normal", fieldState.normalTex,
                     [&](const std::shared_ptr<Texture>& tex){ pbr->NormalTex = tex; },
                     [&](){ return pbr->NormalTex.get(); });
-                drawTextureField("Height Tex", "pbr_height", fieldState.heightTex,
+                drawTextureField("Height", "pbr_height", fieldState.heightTex,
                     [&](const std::shared_ptr<Texture>& tex){ pbr->HeightTex = tex; },
                     [&](){ return pbr->HeightTex.get(); });
-                drawTextureField("Emissive Tex", "pbr_emissive", fieldState.emissiveTex,
+                drawTextureField("Emissive", "pbr_emissive", fieldState.emissiveTex,
                     [&](const std::shared_ptr<Texture>& tex){ pbr->EmissiveTex = tex; },
                     [&](){ return pbr->EmissiveTex.get(); });
-                drawTextureField("Occlusion Tex", "pbr_occ", fieldState.occlusionTex,
+                drawTextureField("Occlusion", "pbr_occ", fieldState.occlusionTex,
                     [&](const std::shared_ptr<Texture>& tex){ pbr->OcclusionTex = tex; },
                     [&](){ return pbr->OcclusionTex.get(); });
                 ImGui::TreePop();
             }
-            return;
+            return changed;
         }
 
         if(auto imageMat = Material::GetAs<MaterialDefaults::ImageMaterial>(material)){
@@ -846,7 +919,7 @@ namespace {
                     [&](){ return imageMat->Tex.get(); });
                 ImGui::TreePop();
             }
-            return;
+            return changed;
         }
 
         if(auto litImage = Material::GetAs<MaterialDefaults::LitImageMaterial>(material)){
@@ -857,7 +930,7 @@ namespace {
                     [&](){ return litImage->Tex.get(); });
                 ImGui::TreePop();
             }
-            return;
+            return changed;
         }
 
         if(auto flatImage = Material::GetAs<MaterialDefaults::FlatImageMaterial>(material)){
@@ -868,8 +941,10 @@ namespace {
                     [&](){ return flatImage->Tex.get(); });
                 ImGui::TreePop();
             }
-            return;
+            return changed;
         }
+
+        return changed;
     }
 }
 
@@ -1045,6 +1120,7 @@ void MeshRendererComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene sc
             if(renderer->mesh && renderer->material){
                 if(ImGui::Button("Convert To Model (Part 0)")){
                     const std::string singleMaterialAssetRef = renderer->materialAssetRef;
+                    const bool singleMaterialOverride = renderer->materialOverridesSource;
                     auto newModel = Model::Create();
                     auto part = std::make_shared<ModelPart>();
                     part->mesh = renderer->mesh;
@@ -1057,9 +1133,13 @@ void MeshRendererComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene sc
                     renderer->modelSourceRef.clear();
                     renderer->modelForceSmoothNormals = 0;
                     renderer->materialAssetRef.clear();
+                    renderer->materialOverridesSource = false;
                     renderer->modelPartMaterialAssetRefs.clear();
                     renderer->modelPartMaterialAssetRefs.resize(1);
                     renderer->modelPartMaterialAssetRefs[0] = singleMaterialAssetRef;
+                    renderer->modelPartMaterialOverrides.clear();
+                    renderer->modelPartMaterialOverrides.resize(1, 0);
+                    renderer->modelPartMaterialOverrides[0] = singleMaterialOverride ? 1 : 0;
                 }
             }
 
@@ -1071,7 +1151,9 @@ void MeshRendererComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene sc
                 renderer->modelSourceRef.clear();
                 renderer->modelForceSmoothNormals = 0;
                 renderer->materialAssetRef.clear();
+                renderer->materialOverridesSource = false;
                 renderer->modelPartMaterialAssetRefs.clear();
+                renderer->modelPartMaterialOverrides.clear();
             }
 
             ImGui::Spacing();
@@ -1079,10 +1161,15 @@ void MeshRendererComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene sc
             if(!renderer->materialAssetRef.empty()){
                 ImGui::TextDisabled("Material Source: %s", renderer->materialAssetRef.c_str());
             }
-            drawMaterialSelectionUI(renderer->material, "single_material_select", &renderer->materialAssetRef);
+            if(drawMaterialSelectionUI(renderer->material, "single_material_select", &renderer->materialAssetRef)){
+                renderer->materialOverridesSource = false;
+            }
             if(renderer->material){
                 ImGui::PushID(renderer->material.get());
-                drawMaterialValueFields(renderer->material, "single_material");
+                if(drawMaterialValueFields(renderer->material, "single_material") &&
+                   !renderer->materialAssetRef.empty()){
+                    renderer->materialOverridesSource = true;
+                }
                 ImGui::PopID();
             }else{
                 ImGui::TextDisabled("No material assigned.");
@@ -1141,24 +1228,37 @@ void MeshRendererComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene sc
                     char idSuffix[64] = {};
                     std::snprintf(idSuffix, sizeof(idSuffix), "part_%zu_%p", i, part.get());
                     std::string selectSuffix = std::string(idSuffix) + "_select";
-                    drawMaterialSelectionUI(
+                    if(drawMaterialSelectionUI(
                         part->material,
                         selectSuffix.c_str(),
                         (i < renderer->modelPartMaterialAssetRefs.size())
                             ? &renderer->modelPartMaterialAssetRefs[i]
                             : nullptr
-                    );
-                    drawMaterialValueFields(part->material, idSuffix);
+                    )){
+                        ensureModelPartMaterialRefCount(renderer);
+                        renderer->modelPartMaterialOverrides[i] =
+                            (i < renderer->modelPartMaterialAssetRefs.size() &&
+                             !renderer->modelPartMaterialAssetRefs[i].empty()) ? 0 : 1;
+                    }
+                    if(drawMaterialValueFields(part->material, idSuffix)){
+                        ensureModelPartMaterialRefCount(renderer);
+                        renderer->modelPartMaterialOverrides[i] = 1;
+                    }
                 }else{
                     ImGui::Separator();
                     std::string emptySelectSuffix = std::string("part_empty_") + std::to_string(i);
-                    drawMaterialSelectionUI(
+                    if(drawMaterialSelectionUI(
                         part->material,
                         emptySelectSuffix.c_str(),
                         (i < renderer->modelPartMaterialAssetRefs.size())
                             ? &renderer->modelPartMaterialAssetRefs[i]
                             : nullptr
-                    );
+                    )){
+                        ensureModelPartMaterialRefCount(renderer);
+                        renderer->modelPartMaterialOverrides[i] =
+                            (i < renderer->modelPartMaterialAssetRefs.size() &&
+                             !renderer->modelPartMaterialAssetRefs[i].empty()) ? 0 : 1;
+                    }
                 }
 
                 ImGui::TreePop();
@@ -1704,7 +1804,7 @@ Graphics::PostProcessing::PPostProcessingEffect SSAOComponent::getEffectForCamer
     runtimeEffect->bias = Math3D::Max(0.0f, bias);
     runtimeEffect->intensity = Math3D::Clamp(intensity, 0.0f, 2.0f);
     runtimeEffect->giBoost = Math3D::Clamp(giBoost, 0.0f, 0.6f);
-    runtimeEffect->sampleCount = Math3D::Clamp(sampleCount, 1, 16);
+    runtimeEffect->sampleCount = Math3D::Clamp(sampleCount, 2, 16);
     runtimeEffect->nearPlane = Math3D::Max(0.001f, settings.nearPlane);
     runtimeEffect->farPlane = Math3D::Max(runtimeEffect->nearPlane + 0.001f, settings.farPlane);
     return runtimeEffect;
@@ -1728,7 +1828,7 @@ void SSAOComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     ImGui::SliderFloat("Bias", &bias, 0.0f, 0.05f, "%.4f");
     ImGui::SliderFloat("AO Strength", &intensity, 0.0f, 2.0f, "%.2f");
     ImGui::SliderFloat("GI Boost", &giBoost, 0.0f, 0.6f, "%.2f");
-    ImGui::SliderInt("Samples", &sampleCount, 1, 16);
+    ImGui::SliderInt("Samples", &sampleCount, 2, 16);
 }
 
 Graphics::PostProcessing::PPostProcessingEffect DepthOfFieldComponent::getEffectForCamera(const CameraSettings& settings){
@@ -1738,6 +1838,8 @@ Graphics::PostProcessing::PPostProcessingEffect DepthOfFieldComponent::getEffect
     if(!runtimeEffect){
         runtimeEffect = DepthOfFieldEffect::New();
     }
+    runtimeEffect->adaptiveFocus = adaptiveFocus;
+    runtimeEffect->focusUv = Math3D::Vec2(0.5f, 0.5f);
     runtimeEffect->focusDistance = Math3D::Max(0.01f, focusDistance);
     runtimeEffect->focusRange = Math3D::Max(0.001f, focusRange);
     runtimeEffect->blurStrength = Math3D::Clamp(blurStrength, 0.0f, 1.5f);
@@ -1761,7 +1863,12 @@ void DepthOfFieldComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene sc
         return;
     }
 
-    ImGui::DragFloat("Focus Distance", &focusDistance, 0.1f, 0.01f, 10000.0f, "%.2f");
+    ImGui::Checkbox("Adaptive Focus", &adaptiveFocus);
+    if(adaptiveFocus){
+        ImGui::TextDisabled("Uses the center screen depth as the focus target.");
+    }
+
+    ImGui::DragFloat(adaptiveFocus ? "Fallback Focus Distance" : "Focus Distance", &focusDistance, 0.1f, 0.01f, 10000.0f, "%.2f");
     ImGui::DragFloat("Focus Range", &focusRange, 0.05f, 0.001f, 10000.0f, "%.3f");
     ImGui::SliderFloat("Blur Strength", &blurStrength, 0.0f, 1.5f, "%.2f");
     ImGui::SliderFloat("Max Blur (Px)", &maxBlurPx, 0.0f, 16.0f, "%.1f");

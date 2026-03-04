@@ -5,6 +5,9 @@
 #include <initializer_list>
 #include <memory>
 #include <string>
+#include <vector>
+
+class Asset;
 
 namespace EditorAssetUI {
 
@@ -40,12 +43,55 @@ struct AssetTransaction {
     bool isDirectory = false;
 };
 
+struct PickedAssetRef {
+    AssetTransaction transaction;
+    std::shared_ptr<Asset> asset;
+};
+
 AssetKind ClassifyPath(const std::filesystem::path& path, bool isDirectory);
 bool IsKindCompatible(AssetKind offered, AssetKind requested);
 bool IsKindCompatibleAny(AssetKind offered, const AssetKind* requestedKinds, size_t requestedKindCount);
 bool BuildTransaction(const std::filesystem::path& absolutePath, const std::filesystem::path& assetRoot, AssetTransaction& out);
+bool ResolvePickedAssetRef(const AssetTransaction& tx, PickedAssetRef& out);
 void InvalidateAllThumbnails();
 void InvalidateMaterialThumbnail(const std::string& assetRef = "");
+
+class AssetBrowserWidget {
+    public:
+        struct DrawResult {
+            bool selectionChanged = false;
+            bool selectionActivated = false;
+            bool itemContextRequested = false;
+            bool backgroundContextRequested = false;
+        };
+
+        void setAssetRoot(const std::filesystem::path& rootPath);
+        void setCurrentDirectory(const std::filesystem::path& directoryPath);
+        void setSelectedPath(const std::filesystem::path& selectedPath);
+        void setRequestedKinds(const AssetKind* requestedKinds, size_t requestedKindCount);
+        void resetRequestedKinds();
+        void setTileSize(float size);
+        void syncSelectionFromValue(const std::string& currentValue);
+        void goToRoot();
+        void goUp();
+
+        DrawResult draw(const char* childId, float footerReserve = 0.0f);
+
+        const std::filesystem::path& getAssetRoot() const;
+        const std::filesystem::path& getCurrentDirectory() const;
+        const std::filesystem::path& getSelectedPath() const;
+        bool isBrowsingBundle() const;
+        bool hasSelectedAsset() const;
+        bool tryGetSelectedTransaction(AssetTransaction& out) const;
+        bool tryGetSelectedReference(PickedAssetRef& out) const;
+
+    private:
+        std::filesystem::path assetRoot;
+        std::filesystem::path currentDirectory;
+        std::filesystem::path selectedPath;
+        float tileSize = 76.0f;
+        std::vector<AssetKind> requestedKinds;
+    };
 
 bool DrawAssetTile(const char* id, const AssetTransaction& tx, float iconSize, bool selected = false, bool* outDoubleClicked = nullptr);
 void BeginAssetDragSource(const AssetTransaction& tx);

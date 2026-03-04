@@ -131,6 +131,34 @@ namespace {
         return !StringUtils::BeginsWith(rel.generic_string(), "..");
     }
 
+    bool tryResolveValidSceneAssetPath(const PAsset& asset, const std::filesystem::path& assetRoot, std::filesystem::path& outPath){
+        outPath.clear();
+        if(!asset){
+            return false;
+        }
+
+        std::unique_ptr<File>& fileHandle = asset->getFileHandle();
+        if(!fileHandle || fileHandle->isInMemoryFile()){
+            return false;
+        }
+
+        std::filesystem::path candidate = std::filesystem::path(fileHandle->getPath()).lexically_normal();
+        if(candidate.empty() || !isPathWithExtension(candidate, ".scene") || !pathWithinRoot(candidate, assetRoot)){
+            return false;
+        }
+
+        std::error_code ec;
+        if(!std::filesystem::exists(candidate, ec) || ec){
+            return false;
+        }
+        if(std::filesystem::is_directory(candidate, ec) || ec){
+            return false;
+        }
+
+        outPath = candidate;
+        return true;
+    }
+
     std::string trimCopy(const std::string& value){
         return StringUtils::Trim(value);
     }
@@ -208,6 +236,7 @@ void EditorScene::setActiveScene(PScene scene){
     targetScene = std::move(scene);
     targetInitialized = false;
     targetFactory = nullptr;
+    activeScenePath.clear();
     targetCamera.reset();
     viewportCamera = editorCamera;
     selectedEntityId.clear();
@@ -244,6 +273,9 @@ void EditorScene::applyActiveSceneState(){
     }
 
     targetInitialized = true;
+    if(std::shared_ptr<LoadedScene> loadedScene = std::dynamic_pointer_cast<LoadedScene>(targetScene)){
+        activeScenePath = loadedScene->getSourceScenePath();
+    }
     targetScene->setOutlineEnabled(true);
     targetCamera = targetScene->getPreferredCamera();
     if(!targetCamera){
@@ -931,6 +963,7 @@ void EditorScene::render(){
     drawSplitter("##LeftRightSplitter", ImVec2(leftSplitterX, panelsTop), ImVec2(kSplitterThickness, topPanelsHeight), ImGuiMouseCursor_ResizeEW, true, leftPanelWidth, +1.0f, kMinLeftPanelWidth, std::max(kMinLeftPanelWidth, availableWidth - kMinRightPanelWidth - kMinCenterPanelWidth));
     drawSplitter("##RightPropsSplitter", ImVec2(rightSplitterX, panelsTop), ImVec2(kSplitterThickness, topPanelsHeight), ImGuiMouseCursor_ResizeEW, true, rightPanelWidth, -1.0f, kMinRightPanelWidth, std::max(kMinRightPanelWidth, availableWidth - leftPanelWidth - kMinCenterPanelWidth));
     drawSplitter("##BottomSplitter", ImVec2(0.0f, panelsTop + topPanelsHeight), ImVec2(width, kSplitterThickness), ImGuiMouseCursor_ResizeNS, false, bottomPanelHeight, -1.0f, kMinBottomPanelHeight, std::max(kMinBottomPanelHeight, availableHeight - kMinTopPanelHeight - kSplitterThickness));
+    processDeferredToolbarCommands();
     drawSceneFileDialog();
 }
 
@@ -971,12 +1004,12 @@ bool EditorScene::openSceneFileDialog(SceneFileDialogMode mode){
         return false;
     }
     if(playState != PlayState::Edit){
-        const char* action = (mode == SceneFileDialogMode::Save) ? "Save Scene" : "Load Scene";
+        const char* action = (mode == SceneFileDialogMode::SaveAs) ? "Save Scene As" : "Load Scene";
         setIoStatus(std::string(action) + " is only available in Edit mode.", true);
         return false;
     }
-    if(mode == SceneFileDialogMode::Save && (!targetScene || !targetScene->getECS())){
-        setIoStatus("Save Scene failed: target scene is unavailable.", true);
+    if(mode == SceneFileDialogMode::SaveAs && (!targetScene || !targetScene->getECS())){
+        setIoStatus("Save Scene As failed: target scene is unavailable.", true);
         return false;
     }
 
@@ -1017,7 +1050,7 @@ bool EditorScene::openSceneFileDialog(SceneFileDialogMode mode){
     sceneFileDialogState.currentDirectory = initialDir.lexically_normal();
 
     if(!preferredScenePath.empty() && pathWithinRoot(preferredScenePath, assetRoot)){
-        if(mode == SceneFileDialogMode::Save){
+        if(mode == SceneFileDialogMode::SaveAs){
             sceneFileDialogState.selectedPath = preferredScenePath;
         }else{
             std::error_code ec;
@@ -1034,7 +1067,7 @@ bool EditorScene::openSceneFileDialog(SceneFileDialogMode mode){
     if(initialFileName.empty() && !preferredScenePath.empty()){
         initialFileName = preferredScenePath.filename().string();
     }
-    if(mode == SceneFileDialogMode::Save && initialFileName.empty()){
+    if(mode == SceneFileDialogMode::SaveAs && initialFileName.empty()){
         initialFileName = "Main.scene";
     }
     copyFixedString(sceneFileDialogState.fileNameBuffer, sizeof(sceneFileDialogState.fileNameBuffer), initialFileName);
@@ -1042,7 +1075,119 @@ bool EditorScene::openSceneFileDialog(SceneFileDialogMode mode){
 }
 
 bool EditorScene::saveSceneFromEditorCommand(){
-    return openSceneFileDialog(SceneFileDialogMode::Save);
+    pendingPlayAfterSceneSave = false;
+    std::filesystem::path sourcePath = resolveCurrentSceneSourcePath();
+    if(sourcePath.empty()){
+        return openSceneFileDialog(SceneFileDialogMode::SaveAs);
+    }
+    return saveSceneToAbsolutePath(sourcePath);
+}
+
+bool EditorScene::saveSceneAsFromEditorCommand(){
+    pendingPlayAfterSceneSave = false;
+    return openSceneFileDialog(SceneFileDialogMode::SaveAs);
+}
+
+std::filesystem::path EditorScene::resolveCurrentSceneSourcePath() const{
+    if(isPathWithExtension(activeScenePath, ".scene")){
+        return activeScenePath.lexically_normal();
+    }
+
+    if(std::shared_ptr<LoadedScene> loadedScene = std::dynamic_pointer_cast<LoadedScene>(targetScene)){
+        const std::filesystem::path sourcePath = loadedScene->getSourceScenePath();
+        if(isPathWithExtension(sourcePath, ".scene")){
+            return sourcePath.lexically_normal();
+        }
+    }
+
+    return {};
+}
+
+void EditorScene::updateSceneSourceAfterSave(const std::filesystem::path& savePath){
+    const std::filesystem::path normalizedPath = savePath.lexically_normal();
+    activeScenePath = normalizedPath;
+    AssetManager::Instance.unmanageAsset(normalizedPath.generic_string());
+    PAsset sourceSceneAsset = AssetManager::Instance.getOrLoad(normalizedPath.generic_string());
+    if(std::shared_ptr<LoadedScene> loadedScene = std::dynamic_pointer_cast<LoadedScene>(targetScene)){
+        loadedScene->setSceneRefOrPath(normalizedPath.generic_string());
+        loadedScene->setBaseDirectory(normalizedPath.parent_path());
+        loadedScene->setSourceScenePath(normalizedPath);
+        loadedScene->setSourceSceneAsset(sourceSceneAsset);
+    }
+
+    const std::filesystem::path sceneDirectory = normalizedPath.parent_path();
+    targetFactory = [normalizedPath, sceneDirectory](RenderWindow* window) -> PScene {
+        return std::make_shared<LoadedScene>(window, normalizedPath.generic_string(), sceneDirectory);
+    };
+}
+
+bool EditorScene::beginPlayModeFromEditor(){
+    if(playState == PlayState::Pause){
+        playState = PlayState::Play;
+        return true;
+    }
+    if(playState != PlayState::Edit){
+        return false;
+    }
+
+    std::shared_ptr<LoadedScene> loadedScene = std::dynamic_pointer_cast<LoadedScene>(targetScene);
+    std::filesystem::path sourcePath;
+    if(loadedScene && tryResolveValidSceneAssetPath(loadedScene->getSourceSceneAsset(), assetRoot, sourcePath)){
+        if(!saveSceneToAbsolutePath(sourcePath)){
+            return false;
+        }
+
+        return enterPlayModeFromScenePath(sourcePath);
+    }
+
+    pendingPlayAfterSceneSave = false;
+    if(!openSceneFileDialog(SceneFileDialogMode::SaveAs)){
+        return false;
+    }
+
+    pendingPlayAfterSceneSave = true;
+    return false;
+}
+
+bool EditorScene::enterPlayModeFromScenePath(const std::filesystem::path& scenePath){
+    if(scenePath.empty()){
+        return false;
+    }
+
+    storeSelectionForPlay();
+    if(!loadSceneFromAbsolutePath(scenePath)){
+        restoreSelectionAfterReset();
+        return false;
+    }
+
+    playState = PlayState::Play;
+    return true;
+}
+
+void EditorScene::processDeferredToolbarCommands(){
+    if(ImGui::IsAnyItemActive()){
+        return;
+    }
+
+    if(pendingToolbarSaveSceneCommand){
+        pendingToolbarSaveSceneCommand = false;
+        saveSceneFromEditorCommand();
+    }
+
+    if(pendingToolbarSaveSceneAsCommand){
+        pendingToolbarSaveSceneAsCommand = false;
+        saveSceneAsFromEditorCommand();
+    }
+
+    if(pendingToolbarLoadSceneCommand){
+        pendingToolbarLoadSceneCommand = false;
+        loadSceneFromEditorCommand();
+    }
+
+    if(pendingToolbarPlayCommand){
+        pendingToolbarPlayCommand = false;
+        beginPlayModeFromEditor();
+    }
 }
 
 bool EditorScene::saveSceneToAbsolutePath(const std::filesystem::path& savePath){
@@ -1098,13 +1243,14 @@ bool EditorScene::saveSceneToAbsolutePath(const std::filesystem::path& savePath)
         return false;
     }
 
-    activeScenePath = normalizedPath;
+    updateSceneSourceAfterSave(normalizedPath);
     selectedAssetPath = normalizedPath;
     setIoStatus("Scene saved: " + normalizedPath.generic_string(), false);
     return true;
 }
 
 bool EditorScene::loadSceneFromEditorCommand(){
+    pendingPlayAfterSceneSave = false;
     return openSceneFileDialog(SceneFileDialogMode::Load);
 }
 
@@ -1196,6 +1342,7 @@ void EditorScene::drawSceneFileDialog(){
     if(!ImGui::BeginPopupModal(kPopupId, nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse)){
         if(!ImGui::IsPopupOpen(kPopupId)){
             sceneFileDialogState = SceneFileDialogState{};
+            pendingPlayAfterSceneSave = false;
         }
         ImGui::PopStyleColor();
         return;
@@ -1205,8 +1352,8 @@ void EditorScene::drawSceneFileDialog(){
         sceneFileDialogState.currentDirectory = assetRoot;
     }
 
-    const bool isSaveMode = (sceneFileDialogState.mode == SceneFileDialogMode::Save);
-    ImGui::TextUnformatted(isSaveMode ? "Save Scene" : "Load Scene");
+    const bool isSaveMode = (sceneFileDialogState.mode == SceneFileDialogMode::SaveAs);
+    ImGui::TextUnformatted(isSaveMode ? "Save Scene As" : "Load Scene");
     ImGui::TextDisabled("Directory: %s", sceneFileDialogState.currentDirectory.generic_string().c_str());
 
     if(!sceneFileDialogState.errorMessage.empty()){
@@ -1331,7 +1478,7 @@ void EditorScene::drawSceneFileDialog(){
     if(!canConfirm){
         ImGui::BeginDisabled();
     }
-    if(ImGui::Button(isSaveMode ? "Save" : "Load") || (submitRequested && canConfirm)){
+    if(ImGui::Button(isSaveMode ? "Save As" : "Load") || (submitRequested && canConfirm)){
         sceneFileDialogState.errorMessage.clear();
         bool success = false;
         if(isSaveMode){
@@ -1341,6 +1488,13 @@ void EditorScene::drawSceneFileDialog(){
         }
 
         if(success){
+            if(isSaveMode && pendingPlayAfterSceneSave){
+                success = enterPlayModeFromScenePath(candidatePath);
+            }
+        }
+
+        if(success){
+            pendingPlayAfterSceneSave = false;
             ImGui::CloseCurrentPopup();
             sceneFileDialogState = SceneFileDialogState{};
             ImGui::EndPopup();
@@ -1350,7 +1504,7 @@ void EditorScene::drawSceneFileDialog(){
 
         if(sceneFileDialogState.errorMessage.empty()){
             sceneFileDialogState.errorMessage = ioStatusMessage.empty()
-                ? (isSaveMode ? "Save Scene failed." : "Load Scene failed.")
+                ? (isSaveMode ? "Save Scene As failed." : "Load Scene failed.")
                 : ioStatusMessage;
         }
     }
@@ -1360,6 +1514,7 @@ void EditorScene::drawSceneFileDialog(){
 
     ImGui::SameLine();
     if(ImGui::Button("Cancel")){
+        pendingPlayAfterSceneSave = false;
         ImGui::CloseCurrentPopup();
         sceneFileDialogState = SceneFileDialogState{};
         ImGui::EndPopup();
@@ -1651,10 +1806,12 @@ void EditorScene::drawToolbar(float width, float height){
     ImGui::Begin("##Toolbar", nullptr, kPanelFlags | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_MenuBar);
 
     bool saveSceneClicked = false;
+    bool saveSceneAsClicked = false;
     bool loadSceneClicked = false;
     if(ImGui::BeginMenuBar()){
         if(ImGui::BeginMenu("File")){
             saveSceneClicked = ImGui::MenuItem("Save Scene", "Ctrl+S", false, playState == PlayState::Edit);
+            saveSceneAsClicked = ImGui::MenuItem("Save Scene As", "Ctrl+Shift+S", false, playState == PlayState::Edit);
             loadSceneClicked = ImGui::MenuItem("Load Scene", "Ctrl+O", false, playState == PlayState::Edit);
             ImGui::EndMenu();
         }
@@ -1672,7 +1829,9 @@ void EditorScene::drawToolbar(float width, float height){
 
     ImGuiIO& io = ImGui::GetIO();
     if(playState == PlayState::Edit && !io.WantTextInput){
-        if(io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_S, false)){
+        if(io.KeyCtrl && io.KeyShift && ImGui::IsKeyPressed(ImGuiKey_S, false)){
+            saveSceneAsClicked = true;
+        }else if(io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_S, false)){
             saveSceneClicked = true;
         }
         if(io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_O, false)){
@@ -1695,7 +1854,7 @@ void EditorScene::drawToolbar(float width, float height){
     ImGui::SameLine();
     ImGui::TextUnformatted("|");
     ImGui::SameLine();
-    ImGui::TextUnformatted(playState == PlayState::Edit ? "File > Save/Load Scene" : "Scene IO locked during play");
+    ImGui::TextUnformatted(playState == PlayState::Edit ? "File > Save/Save As/Load Scene" : "Scene IO locked during play");
     ImGui::SameLine();
     ImGui::TextUnformatted("|");
     ImGui::SameLine();
@@ -1726,12 +1885,7 @@ void EditorScene::drawToolbar(float width, float height){
     }
 
     if(playClicked){
-        if(playState == PlayState::Edit){
-            storeSelectionForPlay();
-            playState = PlayState::Play;
-        }else if(playState == PlayState::Pause){
-            playState = PlayState::Play;
-        }
+        pendingToolbarPlayCommand = true;
     }
 
     if(pauseClicked){
@@ -1749,10 +1903,13 @@ void EditorScene::drawToolbar(float width, float height){
     }
 
     if(saveSceneClicked){
-        saveSceneFromEditorCommand();
+        pendingToolbarSaveSceneCommand = true;
+    }
+    if(saveSceneAsClicked){
+        pendingToolbarSaveSceneAsCommand = true;
     }
     if(loadSceneClicked){
-        loadSceneFromEditorCommand();
+        pendingToolbarLoadSceneCommand = true;
     }
 
     ImGui::End();

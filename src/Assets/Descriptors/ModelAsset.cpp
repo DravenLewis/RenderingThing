@@ -40,12 +40,24 @@ namespace {
         return AssetDescriptorUtils::ReadTextRefOrPath(refOrPath, outText, outError);
     }
 
+    bool writeTextPath(const std::filesystem::path& path, const std::string& text, std::string* outError){
+        return AssetDescriptorUtils::WriteTextPath(path, text, outError);
+    }
+
+    bool writeTextAsset(const std::string& assetRef, const std::string& text, std::string* outError){
+        return AssetDescriptorUtils::WriteTextAsset(assetRef, text, outError);
+    }
+
     bool toAbsolutePathFromAssetRef(const std::string& assetRef, std::filesystem::path& outPath){
         return AssetDescriptorUtils::AssetRefToAbsolutePath(assetRef, outPath);
     }
 
     std::string toAssetRefFromAbsolutePath(const std::filesystem::path& absolutePath){
         return AssetDescriptorUtils::AbsolutePathToAssetRef(absolutePath);
+    }
+
+    bool pathExists(const std::filesystem::path& path, bool* outIsDirectory = nullptr){
+        return AssetDescriptorUtils::PathExists(path, outIsDirectory);
     }
 
     bool parseModelAssetText(const std::string& text, ModelAssetData& outData){
@@ -112,8 +124,8 @@ bool ResolveModelAssetRef(const std::string& modelAssetRefOrPath, std::string& o
         return false;
     }
 
-    std::error_code ec;
-    if(!std::filesystem::exists(absolutePath, ec) || std::filesystem::is_directory(absolutePath, ec)){
+    bool isDirectory = false;
+    if(!pathExists(absolutePath, &isDirectory) || isDirectory){
         if(outError){
             *outError = "Model asset does not exist: " + absolutePath.generic_string();
         }
@@ -182,53 +194,25 @@ bool SaveToAbsolutePath(const std::filesystem::path& path, const ModelAssetData&
         return false;
     }
 
-    std::filesystem::path parent = path.parent_path();
-    std::error_code ec;
-    if(!parent.empty() && !std::filesystem::exists(parent, ec)){
-        if(!std::filesystem::create_directories(parent, ec)){
-            if(outError){
-                *outError = "Failed to create directory: " + parent.generic_string();
-            }
-            return false;
-        }
-    }
-
-    auto writer = std::make_unique<FileWriter>(new File(path.string()));
-    if(!writer){
-        if(outError){
-            *outError = "Failed to open file for write: " + path.generic_string();
-        }
-        return false;
-    }
-
     const std::string modelName = data.name.empty() ? path.filename().string() : data.name;
-    writer->putln(StringUtils::Format("name=%s", modelName.c_str()).c_str());
-    writer->putln(StringUtils::Format("@link-parent=%s", data.linkParentRef.c_str()).c_str());
-    writer->putln(StringUtils::Format("source_model=%s", data.sourceModelRef.c_str()).c_str());
-    writer->putln(StringUtils::Format("default_material=%s", data.defaultMaterialRef.c_str()).c_str());
-    writer->putln(StringUtils::Format("force_smooth_normals=%d", data.forceSmoothNormals).c_str());
-
-    if(!writer->flush()){
-        if(outError){
-            *outError = "Failed to write file: " + path.generic_string();
-        }
-        writer->close();
-        return false;
-    }
-    writer->close();
-    AssetManager::Instance.unmanageAsset(path.generic_string());
-    return true;
+    std::string text;
+    text += StringUtils::Format("name=%s\n", modelName.c_str());
+    text += StringUtils::Format("@link-parent=%s\n", data.linkParentRef.c_str());
+    text += StringUtils::Format("source_model=%s\n", data.sourceModelRef.c_str());
+    text += StringUtils::Format("default_material=%s\n", data.defaultMaterialRef.c_str());
+    text += StringUtils::Format("force_smooth_normals=%d\n", data.forceSmoothNormals);
+    return writeTextPath(path, text, outError);
 }
 
 bool SaveToAssetRef(const std::string& assetRef, const ModelAssetData& data, std::string* outError){
-    std::filesystem::path path;
-    if(!toAbsolutePathFromAssetRef(assetRef, path)){
-        if(outError){
-            *outError = "Invalid model asset path: " + assetRef;
-        }
-        return false;
-    }
-    return SaveToAbsolutePath(path, data, outError);
+    const std::string modelName = data.name.empty() ? std::filesystem::path(assetRef).filename().string() : data.name;
+    std::string text;
+    text += StringUtils::Format("name=%s\n", modelName.c_str());
+    text += StringUtils::Format("@link-parent=%s\n", data.linkParentRef.c_str());
+    text += StringUtils::Format("source_model=%s\n", data.sourceModelRef.c_str());
+    text += StringUtils::Format("default_material=%s\n", data.defaultMaterialRef.c_str());
+    text += StringUtils::Format("force_smooth_normals=%d\n", data.forceSmoothNormals);
+    return writeTextAsset(assetRef, text, outError);
 }
 
 std::shared_ptr<Model> InstantiateModel(const ModelAssetData& data, std::string* outError){

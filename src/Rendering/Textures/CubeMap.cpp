@@ -62,7 +62,7 @@ static bool loadFace(GLuint cubemapId, GLenum face, const PAsset& asset, int& ou
         return false;
     }
 
-    auto cpuImg = Texture::LoadImage(asset);
+    auto cpuImg = Texture::LoadImage(asset, false);
     if(!cpuImg){
         cubemapLogger.Log(LOG_ERRO, "Failed to load image for: %s", asset->getFileHandle()->getFileName().c_str());
         return false;

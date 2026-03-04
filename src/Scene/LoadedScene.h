@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <string>
 
+#include "Assets/Core/Asset.h"
 #include "Scene/Scene.h"
 
 class LoadedScene : public Scene3D {
@@ -18,6 +19,13 @@ class LoadedScene : public Scene3D {
         void setBaseDirectory(const std::filesystem::path& value) { baseDirectory = value; }
         const std::filesystem::path& getBaseDirectory() const { return baseDirectory; }
 
+        void setSourceScenePath(const std::filesystem::path& value) {
+            sourceScenePath = value.empty() ? std::filesystem::path() : value.lexically_normal();
+        }
+        const std::filesystem::path& getSourceScenePath() const { return sourceScenePath; }
+        void setSourceSceneAsset(const PAsset& value) { sourceSceneAsset = value; }
+        const PAsset& getSourceSceneAsset() const { return sourceSceneAsset; }
+
         bool didLoadSuccessfully() const { return sceneLoaded; }
         const std::string& getLastLoadError() const { return lastLoadError; }
 
@@ -30,6 +38,8 @@ class LoadedScene : public Scene3D {
 
         std::string sceneRefOrPath;
         std::filesystem::path baseDirectory;
+        std::filesystem::path sourceScenePath;
+        PAsset sourceSceneAsset;
         bool sceneLoaded = false;
         std::string lastLoadError;
 };

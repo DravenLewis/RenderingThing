@@ -10,6 +10,7 @@
 #include <memory>
 #include <map>
 #include <filesystem>
+#include <functional>
 
 
 #define ASSET_DELIMITER "@assets"
@@ -22,6 +23,7 @@ class Asset{
         std::unique_ptr<File> fileHandle; // This file owns the pointer.
         FileBlob fblob;
         bool isLoaded = false;
+        std::string cacheKey;
 
     public:
         Asset() = delete;
@@ -33,6 +35,8 @@ class Asset{
 
         std::string asString();
         BinaryBuffer asRaw();
+        void setCacheKey(const std::string& key);
+        const std::string& getCacheKey() const;
         
         inline bool loaded() const {return isLoaded;};
 
@@ -42,86 +46,34 @@ class Asset{
 };
 
 class AssetManager{
+    public:
+        struct ResolvedRequest {
+            std::string cacheKey;
+            std::function<std::shared_ptr<Asset>()> loader;
+        };
+
+        using AliasResolver = std::function<bool(const std::string& request, ResolvedRequest& outResolved, std::string* outError)>;
+
     private:
         std::map<std::string, std::shared_ptr<Asset>> assetMap;
-        std::string makeAssetKey(const std::string& name){
-            if(name.empty()){
-                return std::string();
-            }
+        std::map<std::string, AliasResolver> aliasResolvers;
 
-            std::string interpreted = name;
-            size_t pos = interpreted.find(ASSET_DELIMITER);
-            if(pos != std::string::npos){
-                std::string cwd = File::GetCWD();
-                interpreted = StringUtils::ReplaceAll(interpreted.c_str(), ASSET_DELIMITER, StringUtils::Format("%s\\res", cwd.c_str()));
-            }
-            interpreted = StringUtils::ReplaceAll(interpreted.c_str(), "/", "\\");
+        static std::string NormalizeAliasToken(const std::string& alias);
+        static bool ExtractAliasToken(const std::string& request, std::string& outAlias, std::string& outRemainder);
+        static std::string NormalizeFileSystemKey(const std::string& name);
+        bool resolveRequest(const std::string& name, ResolvedRequest& outResolved, std::string* outError = nullptr) const;
+        void registerBuiltInProviders();
 
-            std::error_code ec;
-            std::filesystem::path normalizedPath = std::filesystem::weakly_canonical(std::filesystem::path(interpreted), ec);
-            if(ec){
-                normalizedPath = std::filesystem::path(interpreted).lexically_normal();
-            }
-
-            std::string key = normalizedPath.generic_string();
-            #ifdef _WIN32
-                key = StringUtils::ToLowerCase(key);
-            #endif
-            return key;
-        }
     public:
-        void manageAsset(std::shared_ptr<Asset> assetPtr){
-            if(!assetPtr) return;
-            std::string name = assetPtr->getFileHandle()->getPath();
-            std::string key = makeAssetKey(name);
-            if(key.empty()){
-                return;
-            }
-            this->assetMap[key] = assetPtr;
-        }
-
-        void unmanageAsset(const std::string& name){
-            std::string key = makeAssetKey(name);
-            if(key.empty()){
-                return;
-            }
-            auto it = assetMap.find(key);
-            if(it != assetMap.end()){
-                assetMap.erase(it);
-            }
-        }
-
-        bool hasAsset(const std::string& name){
-            std::string key = makeAssetKey(name);
-            if(key.empty()){
-                return false;
-            }
-            auto it = assetMap.find(key);
-            return it != assetMap.end() && static_cast<bool>(it->second);
-        }
-
-        std::shared_ptr<Asset> getOrLoad(const std::string& name){
-            std::string key = makeAssetKey(name);
-            if(key.empty()){
-                return nullptr;
-            }
-
-            auto cached = assetMap.find(key);
-            if(cached != assetMap.end()){
-                if(cached->second){
-                    return cached->second;
-                }
-                assetMap.erase(cached);
-            }
-
-            auto assetPtr = std::make_shared<Asset>(name);
-            if(assetPtr->load()){
-                manageAsset(assetPtr);
-                return assetPtr;
-            }
-
-            return nullptr;
-        }
+        AssetManager();
+        void manageAsset(std::shared_ptr<Asset> assetPtr);
+        void unmanageAsset(const std::string& name);
+        void unmanageAliasAssets(const std::string& alias);
+        bool hasAsset(const std::string& name);
+        std::shared_ptr<Asset> getOrLoad(const std::string& name);
+        bool registerAliasProvider(const std::string& alias, const AliasResolver& resolver);
+        void unregisterAliasProvider(const std::string& alias);
+        bool hasAliasProvider(const std::string& alias) const;
 
         static AssetManager Instance;
         

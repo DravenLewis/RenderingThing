@@ -2,12 +2,15 @@
 
 #include "Editor/Core/EditorAssetUI.h"
 #include "Editor/Widgets/ECSViewPanel.h"
+#include "Assets/Bundles/AssetBundleRegistry.h"
+#include "Assets/Core/AssetDescriptorUtils.h"
 #include "Foundation/IO/File.h"
 #include "Foundation/Logging/Logbot.h"
 #include "Assets/Descriptors/MaterialAsset.h"
 #include "Assets/Descriptors/ModelAsset.h"
 #include "Assets/Descriptors/SkyboxAsset.h"
 #include "Assets/Descriptors/ShaderAsset.h"
+#include "Assets/Bundles/AssetBundle.h"
 #include "Foundation/Util/StringUtils.h"
 
 #include <algorithm>
@@ -31,38 +34,15 @@ namespace {
     }
 
     bool assetRefToAbsolutePath(const std::string& assetRef, std::filesystem::path& outPath){
-        if(assetRef.empty()){
-            return false;
-        }
-        if(StringUtils::BeginsWith(assetRef, ASSET_DELIMITER)){
-            std::string rel = assetRef.substr(std::strlen(ASSET_DELIMITER));
-            if(!rel.empty() && (rel[0] == '/' || rel[0] == '\\')){
-                rel.erase(rel.begin());
-            }
-            outPath = std::filesystem::path(File::GetCWD()) / "res" / rel;
-            return true;
-        }
-        outPath = std::filesystem::path(assetRef);
-        return true;
+        return AssetDescriptorUtils::AssetRefToAbsolutePath(assetRef, outPath);
     }
 
     std::string absolutePathToAssetRef(const std::filesystem::path& absolutePath){
-        std::error_code ec;
-        std::filesystem::path assetRoot = std::filesystem::weakly_canonical(std::filesystem::path(File::GetCWD()) / "res", ec);
-        if(ec){
-            assetRoot = (std::filesystem::path(File::GetCWD()) / "res").lexically_normal();
-        }
+        return AssetDescriptorUtils::AbsolutePathToAssetRef(absolutePath);
+    }
 
-        std::filesystem::path normalizedPath = std::filesystem::weakly_canonical(absolutePath, ec);
-        if(ec){
-            normalizedPath = absolutePath.lexically_normal();
-        }
-
-        std::filesystem::path rel = normalizedPath.lexically_relative(assetRoot);
-        if(!rel.empty() && !StringUtils::BeginsWith(rel.generic_string(), "..")){
-            return std::string(ASSET_DELIMITER) + "/" + rel.generic_string();
-        }
-        return normalizedPath.generic_string();
+    bool pathExists(const std::filesystem::path& path, bool* outIsDirectory = nullptr){
+        return AssetDescriptorUtils::PathExists(path, outIsDirectory);
     }
 }
 
@@ -111,6 +91,7 @@ void WorkspacePanel::commitAssetRename(std::filesystem::path& selectedAssetPath)
     const bool oldPathIsMaterialObject = MaterialAssetIO::IsMaterialObjectPath(oldPath);
     const bool oldPathIsMaterialAsset = MaterialAssetIO::IsMaterialAssetPath(oldPath);
     const bool oldPathIsSkyboxAsset = SkyboxAssetIO::IsSkyboxAssetPath(oldPath);
+    const bool oldPathIsBundleAsset = AssetBundle::IsBundlePath(oldPath);
 
     std::string normalizedNewName = requestedName;
     std::string normalizedNewNameLower = StringUtils::ToLowerCase(normalizedNewName);
@@ -139,6 +120,8 @@ void WorkspacePanel::commitAssetRename(std::filesystem::path& selectedAssetPath)
         }
     }else if(oldPathIsSkyboxAsset){
         ensureSuffix(".skybox.asset");
+    }else if(oldPathIsBundleAsset){
+        ensureSuffix(".bundle.asset");
     }
 
     std::filesystem::path newPath = oldPath.parent_path() / normalizedNewName;
@@ -146,6 +129,42 @@ void WorkspacePanel::commitAssetRename(std::filesystem::path& selectedAssetPath)
         cancelAssetRename();
         return;
     }
+
+    const bool oldPathIsVirtual = AssetBundleRegistry::IsVirtualEntryPath(oldPath);
+    bool oldPathIsDirectory = false;
+    pathExists(oldPath, &oldPathIsDirectory);
+
+    auto retargetPath = [&](std::filesystem::path& candidate){
+        if(candidate.empty()){
+            return;
+        }
+
+        if(candidate == oldPath){
+            candidate = newPath;
+            return;
+        }
+
+        if(!oldPathIsDirectory){
+            return;
+        }
+
+        const std::filesystem::path relative = candidate.lexically_relative(oldPath);
+        if(relative.empty()){
+            return;
+        }
+
+        auto firstSegment = relative.begin();
+        if(firstSegment == relative.end()){
+            return;
+        }
+
+        const std::string firstName = firstSegment->generic_string();
+        if(firstName == "." || firstName == ".."){
+            return;
+        }
+
+        candidate = (newPath / relative).lexically_normal();
+    };
 
     std::filesystem::path oldLinkedPath;
     bool hasOldLinkedPath = false;
@@ -162,6 +181,103 @@ void WorkspacePanel::commitAssetRename(std::filesystem::path& selectedAssetPath)
         }
     }
 
+    if(oldPathIsVirtual){
+        std::filesystem::path bundlePath;
+        std::string oldEntryPath;
+        if(!AssetBundleRegistry::DecodeVirtualEntryPath(oldPath, bundlePath, oldEntryPath)){
+            LogBot.Log(LOG_ERRO, "Rename failed: invalid virtual bundle path (%s).", oldPath.string().c_str());
+            assetRenameFocus = true;
+            return;
+        }
+
+        std::filesystem::path newBundlePath;
+        std::string newEntryPath;
+        if(!AssetBundleRegistry::DecodeVirtualEntryPath(newPath, newBundlePath, newEntryPath) ||
+           normalizedPathKey(newBundlePath) != normalizedPathKey(bundlePath)){
+            LogBot.Log(LOG_ERRO, "Rename failed: bundle entry rename must stay within the same bundle.");
+            assetRenameFocus = true;
+            return;
+        }
+
+        bool targetIsDirectory = false;
+        if(pathExists(newPath, &targetIsDirectory)){
+            LogBot.Log(LOG_WARN, "Rename cancelled: target already exists (%s).", newPath.string().c_str());
+            assetRenameFocus = true;
+            return;
+        }
+
+        std::shared_ptr<AssetBundle> bundle = AssetBundleRegistry::Instance.getBundleByPath(bundlePath);
+        if(!bundle){
+            LogBot.Log(LOG_ERRO, "Rename failed: bundle is no longer mounted (%s).", bundlePath.string().c_str());
+            assetRenameFocus = true;
+            return;
+        }
+
+        std::string renameError;
+        if(!bundle->renameEntry(oldEntryPath, newEntryPath, &renameError) ||
+           !bundle->save(&renameError)){
+            LogBot.Log(LOG_ERRO,
+                       "Rename failed (%s -> %s): %s",
+                       oldPath.string().c_str(),
+                       newPath.string().c_str(),
+                       renameError.c_str());
+            assetRenameFocus = true;
+            return;
+        }
+
+        AssetManager::Instance.unmanageAliasAssets(bundle->aliasToken());
+
+        retargetPath(assetDir);
+        retargetPath(selectedAssetPath);
+        retargetPath(clipboardAssetPath);
+        retargetPath(contextMenuTargetPath);
+        retargetPath(pickerContextMenuTargetPath);
+        retargetPath(pendingDeleteAssetPath);
+
+        if(oldPathIsMaterialObject){
+            MaterialObjectData objectData;
+            std::string objectError;
+            if(MaterialAssetIO::LoadMaterialObjectFromAbsolutePath(newPath, objectData, &objectError)){
+                objectData.name = newPath.stem().string();
+                if(!MaterialAssetIO::SaveMaterialObjectToAbsolutePath(newPath, objectData, &objectError)){
+                    LogBot.Log(LOG_WARN,
+                               "Failed to update material object after rename (%s): %s",
+                               newPath.string().c_str(),
+                               objectError.c_str());
+                }
+            }else{
+                LogBot.Log(LOG_WARN,
+                           "Failed to reload renamed material object (%s): %s",
+                           newPath.string().c_str(),
+                           objectError.c_str());
+            }
+
+            if(hasOldLinkedPath){
+                MaterialAssetData linkedData;
+                std::string linkedDataError;
+                if(MaterialAssetIO::LoadFromAbsolutePath(oldLinkedPath, linkedData, &linkedDataError)){
+                    linkedData.linkParentRef = absolutePathToAssetRef(newPath);
+                    if(!MaterialAssetIO::SaveToAbsolutePath(oldLinkedPath, linkedData, &linkedDataError)){
+                        LogBot.Log(LOG_WARN,
+                                   "Failed to update material asset link parent after rename (%s): %s",
+                                   oldLinkedPath.string().c_str(),
+                                   linkedDataError.c_str());
+                    }
+                }else{
+                    LogBot.Log(LOG_WARN,
+                               "Failed to load linked material asset for parent update (%s): %s",
+                               oldLinkedPath.string().c_str(),
+                               linkedDataError.c_str());
+                }
+            }
+        }
+
+        EditorAssetUI::InvalidateAllThumbnails();
+        browserCacheDirty = true;
+        cancelAssetRename();
+        return;
+    }
+
     std::error_code ec;
     if(std::filesystem::exists(newPath, ec)){
         LogBot.Log(LOG_WARN, "Rename cancelled: target already exists (%s).", newPath.string().c_str());
@@ -176,12 +292,12 @@ void WorkspacePanel::commitAssetRename(std::filesystem::path& selectedAssetPath)
         return;
     }
 
-    if(assetDir == oldPath){
-        assetDir = newPath;
-    }
-    if(selectedAssetPath == oldPath){
-        selectedAssetPath = newPath;
-    }
+    retargetPath(assetDir);
+    retargetPath(selectedAssetPath);
+    retargetPath(clipboardAssetPath);
+    retargetPath(contextMenuTargetPath);
+    retargetPath(pickerContextMenuTargetPath);
+    retargetPath(pendingDeleteAssetPath);
 
     if(oldPathIsMaterialObject){
         std::filesystem::path resolvedLinkedPath = oldLinkedPath;
@@ -268,6 +384,15 @@ void WorkspacePanel::commitAssetRename(std::filesystem::path& selectedAssetPath)
         }
     }
 
+    if(oldPathIsBundleAsset){
+        AssetBundleRegistry::Instance.unmountBundle(oldPath);
+        std::string mountError;
+        AssetBundleRegistry::Instance.mountBundle(newPath, &mountError);
+        if(!mountError.empty()){
+            LogBot.Log(LOG_WARN, "Renamed bundle but failed to mount new path: %s", mountError.c_str());
+        }
+    }
+
     EditorAssetUI::InvalidateAllThumbnails();
     browserCacheDirty = true;
     cancelAssetRename();
@@ -281,7 +406,7 @@ void WorkspacePanel::cancelAssetRename(){
 }
 
 std::filesystem::path WorkspacePanel::makeUniquePathWithSuffix(const std::filesystem::path& desiredPath, const std::string& suffix) const{
-    if(!std::filesystem::exists(desiredPath)){
+    if(!pathExists(desiredPath)){
         return desiredPath;
     }
 
@@ -299,7 +424,7 @@ std::filesystem::path WorkspacePanel::makeUniquePathWithSuffix(const std::filesy
     do{
         candidate = parent / (stem + "_" + std::to_string(suffixIndex) + suffix);
         suffixIndex++;
-    }while(std::filesystem::exists(candidate));
+    }while(pathExists(candidate));
     return candidate;
 }
 
@@ -392,7 +517,8 @@ void WorkspacePanel::draw(float x,
         if(ec){
             normalizedPath = linkedAbsolutePath.lexically_normal();
         }
-        if(!std::filesystem::exists(normalizedPath, ec) || std::filesystem::is_directory(normalizedPath, ec)){
+        bool isDirectory = false;
+        if(!pathExists(normalizedPath, &isDirectory) || isDirectory){
             return false;
         }
 
@@ -404,6 +530,82 @@ void WorkspacePanel::draw(float x,
                                      LinkedChildrenMap& outLinkedByParent){
         outEntries.clear();
         outLinkedByParent.clear();
+
+        std::filesystem::path bundlePath;
+        std::string bundleEntryPath;
+        bool bundleDirectory = false;
+        if(AssetBundleRegistry::DecodeVirtualEntryPath(assetDir, bundlePath, bundleEntryPath, &bundleDirectory)){
+            std::shared_ptr<AssetBundle> bundle = AssetBundleRegistry::Instance.getBundleByPath(bundlePath);
+            if(!bundle || !bundleDirectory){
+                return;
+            }
+
+            std::string currentDir = bundleEntryPath;
+            if(!currentDir.empty() && currentDir.back() == '/'){
+                currentDir.pop_back();
+            }
+
+            std::vector<BrowserEntry> baseEntries;
+            if(currentDir.empty()){
+                baseEntries.push_back({bundlePath.parent_path(), true, true, false, false, ""});
+            }else{
+                const std::string parentDir = std::filesystem::path(currentDir).parent_path().generic_string();
+                baseEntries.push_back({
+                    AssetBundleRegistry::MakeVirtualEntryPath(bundlePath, parentDir, true),
+                    true,
+                    true,
+                    false,
+                    false,
+                    ""
+                });
+            }
+
+            for(const auto& entry : bundle->getEntries()){
+                const bool isDirectory = (entry.kind == "directory");
+                std::string displayPath = entry.path;
+                if(isDirectory && !displayPath.empty() && displayPath.back() == '/'){
+                    displayPath.pop_back();
+                }
+                if(displayPath.empty()){
+                    continue;
+                }
+
+                const std::string parentDir = std::filesystem::path(displayPath).parent_path().generic_string();
+                if(currentDir.empty()){
+                    if(!parentDir.empty() && parentDir != "."){
+                        continue;
+                    }
+                }else if(parentDir != currentDir){
+                    continue;
+                }
+
+                BrowserEntry browserEntry;
+                browserEntry.path = AssetBundleRegistry::MakeVirtualEntryPath(bundlePath, entry.path, isDirectory);
+                browserEntry.isDirectory = isDirectory;
+                baseEntries.push_back(browserEntry);
+            }
+
+            std::sort(baseEntries.begin(), baseEntries.end(), [](const BrowserEntry& a, const BrowserEntry& b){
+                if(a.isUp != b.isUp){
+                    return a.isUp;
+                }
+                if(a.isDirectory != b.isDirectory){
+                    return a.isDirectory > b.isDirectory;
+                }
+                const std::string aLabel = a.isUp ? std::string("..") : a.path.filename().string();
+                const std::string bLabel = b.isUp ? std::string("..") : b.path.filename().string();
+                return aLabel < bLabel;
+            });
+
+            for(auto& baseEntry : baseEntries){
+                if(baseEntry.normalizedKey.empty()){
+                    baseEntry.normalizedKey = normalizedPathKey(baseEntry.path);
+                }
+            }
+
+            outEntries = std::move(baseEntries);
+            return;
+        }
 
         std::error_code ec;
         if(!std::filesystem::exists(assetDir, ec)){
@@ -688,6 +890,8 @@ void WorkspacePanel::draw(float x,
             label = label.substr(0, label.size() - std::strlen(".model.asset"));
         }else if(StringUtils::EndsWith(lowerName, ".shader.asset")){
             label = label.substr(0, label.size() - std::strlen(".shader.asset"));
+        }else if(StringUtils::EndsWith(lowerName, ".bundle.asset")){
+            label = label.substr(0, label.size() - std::strlen(".bundle.asset"));
         }
 
         return truncateAssetLabel(label);
@@ -823,6 +1027,10 @@ void WorkspacePanel::draw(float x,
         ImGui::EndTable();
     };
 
+    const bool bundleViewActive = AssetBundleRegistry::IsVirtualEntryPath(assetDir);
+    if(bundleViewActive){
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.075f, 0.095f, 0.135f, 1.0f));
+    }
     ImGui::SetNextWindowPos(ImVec2(x, y));
    ImGui::SetNextWindowSize(ImVec2(w, h));
     ImGui::Begin("Workspace", nullptr, kPanelFlags);
@@ -834,7 +1042,7 @@ void WorkspacePanel::draw(float x,
     }
 
     auto makeUniqueSiblingPath = [&](const std::filesystem::path& desiredPath) -> std::filesystem::path{
-        if(!std::filesystem::exists(desiredPath)){
+        if(!pathExists(desiredPath)){
             return desiredPath;
         }
         const std::filesystem::path parent = desiredPath.parent_path();
@@ -845,12 +1053,29 @@ void WorkspacePanel::draw(float x,
         do{
             candidate = parent / (stem + "_" + std::to_string(suffix) + ext);
             suffix++;
-        }while(std::filesystem::exists(candidate));
+        }while(pathExists(candidate));
         return candidate;
     };
 
     auto createFolderAndBeginRename = [&](){
         std::filesystem::path folderPath = makeUniqueSiblingPath(assetDir / "New Folder");
+
+        std::filesystem::path bundlePath;
+        std::string entryPath;
+        if(AssetBundleRegistry::DecodeVirtualEntryPath(folderPath, bundlePath, entryPath)){
+            std::shared_ptr<AssetBundle> bundle = AssetBundleRegistry::Instance.getBundleByPath(bundlePath);
+            std::string error;
+            if(bundle &&
+               bundle->ensureDirectory(entryPath, &error) &&
+               bundle->save(&error)){
+                AssetManager::Instance.unmanageAliasAssets(bundle->aliasToken());
+                selectedAssetPath = folderPath;
+                browserCacheDirty = true;
+            }else{
+                LogBot.Log(LOG_ERRO, "Failed to create bundle folder: %s", error.c_str());
+            }
+            return;
+        }
 
         std::error_code ec;
         if(std::filesystem::create_directories(folderPath, ec)){
@@ -863,11 +1088,15 @@ void WorkspacePanel::draw(float x,
 
     auto createDefaultFile = [&](){
         std::filesystem::path filePath = makeUniqueSiblingPath(assetDir / "NewFile.txt");
-        File file(filePath.string());
-        if(file.createFile()){
+        std::string error;
+        if(AssetDescriptorUtils::WriteTextPath(filePath, "", &error)){
             selectedAssetPath = filePath;
-            beginAssetRename(filePath, selectedAssetPath);
+            if(!AssetBundleRegistry::IsVirtualEntryPath(filePath)){
+                beginAssetRename(filePath, selectedAssetPath);
+            }
             browserCacheDirty = true;
+        }else if(!error.empty()){
+            LogBot.Log(LOG_ERRO, "Failed to create file: %s", error.c_str());
         }
     };
 
@@ -899,6 +1128,27 @@ void WorkspacePanel::draw(float x,
         }
     };
 
+    auto createDefaultBundleAsset = [&](){
+        if(AssetBundleRegistry::IsVirtualEntryPath(assetDir)){
+            LogBot.Log(LOG_WARN, "Nested asset bundles are not supported.");
+            return;
+        }
+        std::filesystem::path path = makeUniquePathWithSuffix(assetDir / "NewBundle.bundle.asset", ".bundle.asset");
+        auto bundle = std::make_shared<AssetBundle>();
+        std::string error;
+        if(bundle && bundle->createEmpty(path, path.stem().stem().string(), &error)){
+            std::string mountError;
+            AssetBundleRegistry::Instance.mountBundle(path, &mountError);
+            if(!mountError.empty()){
+                LogBot.Log(LOG_WARN, "Created bundle but failed to mount it immediately: %s", mountError.c_str());
+            }
+            selectedAssetPath = path;
+            browserCacheDirty = true;
+        }else{
+            LogBot.Log(LOG_ERRO, "Failed to create bundle asset: %s", error.c_str());
+        }
+    };
+
     auto createDefaultMaterialObject = [&](){
         std::string baseName = "NewMaterial";
         const std::string originalBaseName = baseName;
@@ -908,7 +1158,7 @@ void WorkspacePanel::draw(float x,
         while(true){
             materialPath = assetDir / (baseName + ".material");
             materialAssetPath = assetDir / (baseName + ".mat.asset");
-            if(!std::filesystem::exists(materialPath) && !std::filesystem::exists(materialAssetPath)){
+            if(!pathExists(materialPath) && !pathExists(materialAssetPath)){
                 break;
             }
             baseName = originalBaseName + "_" + std::to_string(suffixIndex);
@@ -927,17 +1177,134 @@ void WorkspacePanel::draw(float x,
     };
 
     auto pasteClipboardToCurrentDirectory = [&]() -> bool{
-        std::error_code ec;
-        if(clipboardAssetPath.empty() || !std::filesystem::exists(clipboardAssetPath, ec)){
+        bool sourceIsDir = false;
+        if(clipboardAssetPath.empty() || !pathExists(clipboardAssetPath, &sourceIsDir)){
             return false;
         }
 
         const std::filesystem::path sourcePath = clipboardAssetPath;
         const std::filesystem::path targetPath = makeUniqueSiblingPath(assetDir / sourcePath.filename());
-        const bool sourceIsDir = std::filesystem::is_directory(sourcePath, ec);
-        if(ec){
-            return false;
+
+        if(AssetBundleRegistry::IsVirtualEntryPath(assetDir)){
+            std::string error;
+            std::filesystem::path targetBundlePath;
+            std::string targetEntryPath;
+            if(!AssetBundleRegistry::DecodeVirtualEntryPath(targetPath, targetBundlePath, targetEntryPath)){
+                return false;
+            }
+
+            std::shared_ptr<AssetBundle> targetBundle = AssetBundleRegistry::Instance.getBundleByPath(targetBundlePath);
+            if(!targetBundle){
+                return false;
+            }
+
+            auto removeMovedSource = [&]() -> bool{
+                if(!clipboardAssetCutMode){
+                    return true;
+                }
+
+                std::filesystem::path sourceBundlePath;
+                std::string sourceEntryPath;
+                if(AssetBundleRegistry::DecodeVirtualEntryPath(sourcePath, sourceBundlePath, sourceEntryPath)){
+                    std::shared_ptr<AssetBundle> sourceBundle = AssetBundleRegistry::Instance.getBundleByPath(sourceBundlePath);
+                    if(!sourceBundle ||
+                       !sourceBundle->removeEntry(sourceEntryPath, &error) ||
+                       !sourceBundle->save(&error)){
+                        return false;
+                    }
+                    AssetManager::Instance.unmanageAliasAssets(sourceBundle->aliasToken());
+                }else{
+                    File sourceFile(sourcePath.string());
+                    if(!sourceFile.deleteFile()){
+                        error = "Failed to remove the original item after paste.";
+                        return false;
+                    }
+                }
+
+                clipboardAssetPath.clear();
+                clipboardAssetCutMode = false;
+                return true;
+            };
+
+            bool staged = false;
+            std::filesystem::path sourceBundlePath;
+            std::string sourceEntryPath;
+            if(AssetBundleRegistry::DecodeVirtualEntryPath(sourcePath, sourceBundlePath, sourceEntryPath)){
+                if(sourceIsDir){
+                    error = "Copying bundle folders is not supported yet.";
+                    return false;
+                }
+
+                BinaryBuffer bytes;
+                std::shared_ptr<AssetBundle> sourceBundle = AssetBundleRegistry::Instance.getBundleByPath(sourceBundlePath);
+                if(!sourceBundle || !sourceBundle->readEntryBytes(sourceEntryPath, bytes, &error)){
+                    return false;
+                }
+
+                staged = targetBundle->addOrUpdateFileFromBuffer(
+                    targetEntryPath,
+                    bytes,
+                    absolutePathToAssetRef(sourcePath),
+                    &error
+                );
+            }else if(sourceIsDir){
+                staged = targetBundle->ensureDirectory(targetEntryPath, &error);
+                if(staged){
+                    std::error_code walkEc;
+                    for(const auto& entry : std::filesystem::recursive_directory_iterator(
+                            sourcePath,
+                            std::filesystem::directory_options::skip_permission_denied,
+                            walkEc)){
+                        if(walkEc){
+                            error = walkEc.message();
+                            staged = false;
+                            break;
+                        }
+
+                        std::error_code relEc;
+                        const std::filesystem::path rel = std::filesystem::relative(entry.path(), sourcePath, relEc);
+                        if(relEc){
+                            error = relEc.message();
+                            staged = false;
+                            break;
+                        }
+
+                        const std::string bundleEntryPath = (std::filesystem::path(targetEntryPath) / rel).generic_string();
+                        if(entry.is_directory(walkEc)){
+                            staged = targetBundle->ensureDirectory(bundleEntryPath, &error);
+                        }else if(entry.is_regular_file(walkEc)){
+                            staged = targetBundle->addOrUpdateFileFromAbsolutePath(bundleEntryPath, entry.path(), &error);
+                        }else{
+                            continue;
+                        }
+
+                        if(!staged){
+                            break;
+                        }
+                    }
+                }
+            }else{
+                staged = targetBundle->addOrUpdateFileFromAbsolutePath(targetEntryPath, sourcePath, &error);
+            }
+
+            if(!staged || !targetBundle->save(&error)){
+                if(!error.empty()){
+                    LogBot.Log(LOG_ERRO, "Failed to paste into bundle: %s", error.c_str());
+                }
+                return false;
+            }
+
+            AssetManager::Instance.unmanageAliasAssets(targetBundle->aliasToken());
+            if(!removeMovedSource() && !error.empty()){
+                LogBot.Log(LOG_WARN, "Bundle paste completed but cleanup failed: %s", error.c_str());
+            }
+            selectedAssetPath = targetPath;
+            expandedRelatedAssets.clear();
+            browserCacheDirty = true;
+            return true;
         }
+
+        std::error_code ec;
 
         bool success = false;
         if(clipboardAssetCutMode){
@@ -975,6 +1342,9 @@ void WorkspacePanel::draw(float x,
         }
 
         if(success){
+            if(sourceIsDir || AssetBundle::IsBundlePath(sourcePath) || AssetBundle::IsBundlePath(targetPath)){
+                AssetBundleRegistry::Instance.scanKnownLocations(nullptr);
+            }
             selectedAssetPath = targetPath;
             expandedRelatedAssets.clear();
             browserCacheDirty = true;
@@ -983,13 +1353,28 @@ void WorkspacePanel::draw(float x,
     };
 
     auto drawContextMenu = [&](const char* popupId, const std::filesystem::path& targetPath, bool hasTarget, const char* confirmDeletePopupId){
-        if(!ImGui::BeginPopup(popupId)){
+        if(!ImGui::BeginPopupContextWindow(popupId, ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems)){
             return;
         }
 
-        std::error_code ec;
+        const bool currentDirIsVirtual = AssetBundleRegistry::IsVirtualEntryPath(assetDir);
         bool canTarget = hasTarget && !targetPath.empty();
-        bool canPaste = !hasTarget && !clipboardAssetPath.empty() && std::filesystem::exists(clipboardAssetPath, ec);
+        bool targetIsDirectory = false;
+        if(canTarget){
+            canTarget = pathExists(targetPath, &targetIsDirectory);
+        }
+
+        bool clipboardIsDirectory = false;
+        const bool clipboardExists = !clipboardAssetPath.empty() && pathExists(clipboardAssetPath, &clipboardIsDirectory);
+        const bool clipboardIsVirtual = AssetBundleRegistry::IsVirtualEntryPath(clipboardAssetPath);
+        const bool canPaste = !hasTarget &&
+                              clipboardExists &&
+                              (currentDirIsVirtual
+                                   ? (!clipboardIsVirtual || !clipboardIsDirectory)
+                                   : !clipboardIsVirtual);
+        const bool canCut = canTarget && !currentDirIsVirtual;
+        const bool canCopy = canTarget && (!currentDirIsVirtual || !targetIsDirectory);
+        const bool canRename = canTarget;
 
         ImGui::Separator();
         if(!hasTarget){
@@ -1001,6 +1386,9 @@ void WorkspacePanel::draw(float x,
                     createFolderAndBeginRename();
                 }
                 if(ImGui::BeginMenu("Asset")){
+                    if(!currentDirIsVirtual && ImGui::MenuItem("Asset Bundle")){
+                        createDefaultBundleAsset();
+                    }
                     if(ImGui::MenuItem("Shader Asset")){
                         createDefaultShaderAsset();
                     }
@@ -1017,11 +1405,11 @@ void WorkspacePanel::draw(float x,
         }
 
         ImGui::Separator();
-        if(ImGui::MenuItem("Cut", nullptr, false, canTarget)){
+        if(ImGui::MenuItem("Cut", nullptr, false, canCut)){
             clipboardAssetPath = targetPath;
             clipboardAssetCutMode = true;
         }
-        if(ImGui::MenuItem("Copy", nullptr, false, canTarget)){
+        if(ImGui::MenuItem("Copy", nullptr, false, canCopy)){
             clipboardAssetPath = targetPath;
             clipboardAssetCutMode = false;
         }
@@ -1034,7 +1422,7 @@ void WorkspacePanel::draw(float x,
             deletePopupIdToOpen = confirmDeletePopupId;
             ImGui::CloseCurrentPopup();
         }
-        if(ImGui::MenuItem("Rename", nullptr, false, canTarget)){
+        if(ImGui::MenuItem("Rename", nullptr, false, canRename)){
             beginAssetRename(targetPath, selectedAssetPath);
         }
         ImGui::Separator();
@@ -1066,10 +1454,10 @@ void WorkspacePanel::draw(float x,
         if(pendingDeleteAssetPath.empty()){
             ImGui::TextUnformatted("No asset selected.");
         }else{
-            std::error_code ec;
-            const bool isDir = std::filesystem::is_directory(pendingDeleteAssetPath, ec);
+            bool isDir = false;
+            pathExists(pendingDeleteAssetPath, &isDir);
             ImGui::Text("Delete %s?", isDir ? "directory" : "file");
-            ImGui::TextWrapped("%s", pendingDeleteAssetPath.string().c_str());
+            ImGui::TextWrapped("%s", absolutePathToAssetRef(pendingDeleteAssetPath).c_str());
             ImGui::TextDisabled("This cannot be undone.");
         }
 
@@ -1128,9 +1516,28 @@ void WorkspacePanel::draw(float x,
 
                 bool hadDeleteError = false;
                 bool deletedAny = false;
+                bool refreshBundleRegistry = false;
                 for(const auto& deletePath : deleteTargets){
-                    std::error_code existsEc;
-                    if(!std::filesystem::exists(deletePath, existsEc)){
+                    bool deletingDirectory = false;
+                    if(!pathExists(deletePath, &deletingDirectory)){
+                        continue;
+                    }
+
+                    std::filesystem::path bundlePath;
+                    std::string entryPath;
+                    if(AssetBundleRegistry::DecodeVirtualEntryPath(deletePath, bundlePath, entryPath)){
+                        std::shared_ptr<AssetBundle> bundle = AssetBundleRegistry::Instance.getBundleByPath(bundlePath);
+                        std::string error;
+                        if(!bundle ||
+                           !bundle->removeEntry(entryPath, &error) ||
+                           !bundle->save(&error)){
+                            hadDeleteError = true;
+                            continue;
+                        }
+
+                        AssetManager::Instance.unmanageAliasAssets(bundle->aliasToken());
+                        deletedAny = true;
+                        clearDeletedPathState(deletePath);
                         continue;
                     }
 
@@ -1141,10 +1548,17 @@ void WorkspacePanel::draw(float x,
                     }
 
                     deletedAny = true;
+                    refreshBundleRegistry =
+                        refreshBundleRegistry ||
+                        deletingDirectory ||
+                        AssetBundle::IsBundlePath(deletePath);
                     clearDeletedPathState(deletePath);
                 }
 
                 if(deletedAny){
+                    if(refreshBundleRegistry){
+                        AssetBundleRegistry::Instance.scanKnownLocations(nullptr);
+                    }
                     EditorAssetUI::InvalidateAllThumbnails();
                     browserCacheDirty = true;
                 }
@@ -1172,18 +1586,12 @@ void WorkspacePanel::draw(float x,
     if(ImGui::BeginTabBar("BottomTabs")){
         if(ImGui::BeginTabItem("Assets")){
             if(assetRenameActive){
-                std::error_code ec;
-                if(assetRenamePath.empty() || !std::filesystem::exists(assetRenamePath, ec)){
+                if(assetRenamePath.empty() || !pathExists(assetRenamePath)){
                     cancelAssetRename();
                 }
             }
 
-            ImGui::Text("Directory: %s", assetDir.string().c_str());
-            ImGui::Separator();
-
-            if(ImGui::Button("Pop Out Picker")){
-                showAssetPickerWindow = true;
-            }
+            ImGui::Text("Directory: %s", absolutePathToAssetRef(assetDir).c_str());
             drawDeleteConfirmationPopup("Confirm Delete Asset Main");
 
             ImGui::Separator();
@@ -1194,7 +1602,8 @@ void WorkspacePanel::draw(float x,
             bool openAssetContextMenu = false;
             ImGui::Dummy(ImVec2(0.0f, 4.0f));
 
-            if(std::filesystem::exists(assetDir)){
+            bool assetDirIsDirectory = false;
+            if(pathExists(assetDir, &assetDirIsDirectory) && assetDirIsDirectory){
                 const std::vector<BrowserEntry>* entries = nullptr;
                 const LinkedChildrenMap* linkedByParent = nullptr;
                 getBrowserEntriesCached(entries, linkedByParent);
@@ -1210,11 +1619,13 @@ void WorkspacePanel::draw(float x,
                         EditorAssetUI::AssetTransaction tx{};
                         const auto& path = entry.path;
                         if(entry.isUp){
-                            tx.absolutePath = path;
-                            tx.assetRef = std::string(ASSET_DELIMITER) + "/..";
-                            tx.extension.clear();
-                            tx.kind = EditorAssetUI::AssetKind::Directory;
-                            tx.isDirectory = true;
+                            if(!EditorAssetUI::BuildTransaction(path, assetRoot, tx)){
+                                tx.absolutePath = path;
+                                tx.assetRef = absolutePathToAssetRef(path);
+                                tx.extension.clear();
+                                tx.kind = EditorAssetUI::AssetKind::Directory;
+                                tx.isDirectory = true;
+                            }
                         }else if(!EditorAssetUI::BuildTransaction(path, assetRoot, tx)){
                             return;
                         }
@@ -1345,6 +1756,12 @@ void WorkspacePanel::draw(float x,
                             }else if(clicked){
                                 selectedAssetPath = path;
                             }
+                        }else if(doubleClicked &&
+                                 AssetBundle::IsBundlePath(path) &&
+                                 !AssetBundleRegistry::IsVirtualEntryPath(path)){
+                            assetDir = AssetBundleRegistry::MakeVirtualEntryPath(path, "", true);
+                            selectedAssetPath.clear();
+                            browserCacheDirty = true;
                         }else if(clicked){
                             selectedAssetPath = path;
                         }
@@ -1364,11 +1781,9 @@ void WorkspacePanel::draw(float x,
                 contextMenuHasTarget = false;
                 contextMenuTargetPath.clear();
             }else if(ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup) &&
-                     ImGui::IsMouseReleased(ImGuiMouseButton_Right) &&
-                     !ImGui::IsAnyItemHovered()){
+                     ImGui::IsMouseReleased(ImGuiMouseButton_Right)){
                 contextMenuHasTarget = false;
                 contextMenuTargetPath.clear();
-                ImGui::OpenPopup("AssetContextMenuMain");
             }
             drawContextMenu("AssetContextMenuMain", contextMenuTargetPath, contextMenuHasTarget, "Confirm Delete Asset Main");
 
@@ -1512,171 +1927,49 @@ void WorkspacePanel::draw(float x,
     }
 
     ImGui::End();
+    if(bundleViewActive){
+        ImGui::PopStyleColor();
+    }
 
     if(showAssetPickerWindow){
+        static EditorAssetUI::AssetBrowserWidget s_workspacePickerBrowser;
+        s_workspacePickerBrowser.setAssetRoot(assetRoot);
+        s_workspacePickerBrowser.setCurrentDirectory(assetDir);
+        s_workspacePickerBrowser.setSelectedPath(selectedAssetPath);
+        s_workspacePickerBrowser.resetRequestedKinds();
+        s_workspacePickerBrowser.setTileSize(assetTileSize);
+
         ImGui::SetNextWindowSize(ImVec2(760.0f, 500.0f), ImGuiCond_FirstUseEver);
+        const bool pickerBundleViewActive = s_workspacePickerBrowser.isBrowsingBundle();
+        if(pickerBundleViewActive){
+            ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.075f, 0.095f, 0.135f, 1.0f));
+        }
         if(ImGui::Begin("Asset Picker", &showAssetPickerWindow)){
-            ImGui::Text("Directory: %s", assetDir.string().c_str());
-            if(ImGui::Button("Root")){
-                assetDir = assetRoot;
-            }
-            ImGui::SameLine();
-            if(ImGui::Button("Up") && assetDir != assetRoot){
-                assetDir = assetDir.parent_path();
-            }
+            const std::filesystem::path previousDirectory = assetDir;
+            const std::filesystem::path previousSelection = selectedAssetPath;
+            const EditorAssetUI::AssetBrowserWidget::DrawResult drawResult =
+                s_workspacePickerBrowser.draw("WorkspaceAssetPickerBrowser");
 
-            ImGui::Separator();
-            float pickerTileSize = std::clamp(assetTileSize, 56.0f, 128.0f);
-            bool openPickerContextMenu = false;
-            ImGui::Dummy(ImVec2(0.0f, 4.0f));
-            if(std::filesystem::exists(assetDir)){
-                const std::vector<BrowserEntry>* entries = nullptr;
-                const LinkedChildrenMap* linkedByParent = nullptr;
-                getBrowserEntriesCached(entries, linkedByParent);
-                if(!entries || !linkedByParent){
-                    entries = &s_browserEntriesCache;
-                    linkedByParent = &s_browserLinkedCache;
-                }
+            assetDir = s_workspacePickerBrowser.getCurrentDirectory();
+            selectedAssetPath = s_workspacePickerBrowser.getSelectedPath();
 
-                float cellWidth = pickerTileSize + 20.0f;
-                int columns = std::max(1, static_cast<int>(ImGui::GetContentRegionAvail().x / cellWidth));
-                drawClippedAssetGrid("AssetPickerGridTable", columns, pickerTileSize, cellWidth,
-                    ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX,
-                    *entries,
-                    [&](const BrowserEntry& entry){
-                        EditorAssetUI::AssetTransaction tx{};
-                        const auto& path = entry.path;
-                        if(entry.isUp){
-                            tx.absolutePath = path;
-                            tx.assetRef = std::string(ASSET_DELIMITER) + "/..";
-                            tx.extension.clear();
-                            tx.kind = EditorAssetUI::AssetKind::Directory;
-                            tx.isDirectory = true;
-                        }else if(!EditorAssetUI::BuildTransaction(path, assetRoot, tx)){
-                            return;
-                        }
-
-                        ImGui::PushID(path.string().c_str());
-                        EditorAssetUI::AssetTransaction drawTx = tx;
-                        if(entry.forceDataIcon){
-                            drawTx.kind = EditorAssetUI::AssetKind::Unknown;
-                        }
-                        const std::string& pathKey = entry.normalizedKey;
-                        const bool hasRelatedChildren =
-                            (!entry.isUp && !entry.isDirectory && !entry.isRelated && linkedByParent->find(pathKey) != linkedByParent->end());
-                        const bool parentExpanded = hasRelatedChildren &&
-                            (expandedRelatedAssets.find(pathKey) != expandedRelatedAssets.end());
-                        size_t relatedChildCount = 0;
-                        if(hasRelatedChildren){
-                            auto linkedIt = linkedByParent->find(pathKey);
-                            if(linkedIt != linkedByParent->end()){
-                                relatedChildCount = linkedIt->second.size();
-                            }
-                        }
-                        drawLinkedDrawerGroupBackdrop(
-                            entry,
-                            parentExpanded,
-                            relatedChildCount,
-                            ImGui::TableGetColumnIndex(),
-                            columns,
-                            pickerTileSize,
-                            cellWidth
-                        );
-
-                        if(entry.isRelated){
-                            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + kLinkedDrawerChildTileOffset);
-                        }
-
-                        bool selected = (path == selectedAssetPath);
-                        bool doubleClicked = false;
-                        bool clicked = EditorAssetUI::DrawAssetTile("asset_picker_tile", drawTx, pickerTileSize, selected, &doubleClicked);
-                        ImVec2 tileMin = ImGui::GetItemRectMin();
-                        ImVec2 tileMax = ImGui::GetItemRectMax();
-                        bool tileRightClicked = ImGui::IsMouseHoveringRect(tileMin, tileMax, false) && ImGui::IsMouseReleased(ImGuiMouseButton_Right);
-                        if(tileRightClicked){
-                            pickerContextMenuTargetPath = path;
-                            pickerContextMenuHasTarget = true;
-                            selectedAssetPath = path;
-                            openPickerContextMenu = true;
-                            clicked = false;
-                            doubleClicked = false;
-                        }
-                        if(!entry.isUp){
-                            EditorAssetUI::BeginAssetDragSource(tx);
-                        }
-
-                        bool toggledChildren = false;
-                        if(hasRelatedChildren){
-                            bool expanded = parentExpanded;
-                            if(drawRelatedToggle(pickerTileSize, expanded)){
-                                toggledChildren = true;
-                                if(expanded){
-                                    expandedRelatedAssets.erase(pathKey);
-                                    auto linkedIt = linkedByParent->find(pathKey);
-                                    if(linkedIt != linkedByParent->end()){
-                                        for(const auto& linkedPath : linkedIt->second){
-                                            if(selectedAssetPath == linkedPath){
-                                                selectedAssetPath = path;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }else{
-                                    expandedRelatedAssets.insert(pathKey);
-                                }
-                                browserCacheDirty = true;
-                                clicked = false;
-                                doubleClicked = false;
-                            }
-                        }
-
-                        std::string label = formatEntryLabel(entry);
-                        ImGui::TextWrapped("%s", label.c_str());
-                        bool labelClicked = !toggledChildren && ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left);
-                        bool labelDoubleClicked = !toggledChildren && ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left);
-                        bool labelRightClicked = !toggledChildren && ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Right);
-                        clicked = clicked || labelClicked;
-                        doubleClicked = doubleClicked || labelDoubleClicked;
-                        if(labelRightClicked){
-                            pickerContextMenuTargetPath = path;
-                            pickerContextMenuHasTarget = true;
-                            selectedAssetPath = path;
-                            openPickerContextMenu = true;
-                            clicked = false;
-                            doubleClicked = false;
-                        }
-
-                        if(entry.isDirectory){
-                            if(doubleClicked){
-                                assetDir = path;
-                                selectedAssetPath.clear();
-                            }else if(clicked){
-                                selectedAssetPath = path;
-                            }
-                        }else if(clicked){
-                            selectedAssetPath = path;
-                        }
-                        ImGui::PopID();
-                    });
-            }else{
-                ImGui::TextUnformatted("Directory missing.");
+            if(assetDir != previousDirectory){
+                browserCacheDirty = true;
             }
 
-            if(openPickerContextMenu){
+            if(drawResult.itemContextRequested){
+                pickerContextMenuTargetPath = selectedAssetPath;
+                pickerContextMenuHasTarget = !selectedAssetPath.empty();
                 ImGui::OpenPopup("AssetContextMenuPicker");
-            }else if(ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup) &&
-                     ImGui::IsMouseReleased(ImGuiMouseButton_Left) &&
-                     !ImGui::IsAnyItemHovered()){
-                selectedAssetPath.clear();
-                pickerContextMenuHasTarget = false;
-                pickerContextMenuTargetPath.clear();
-            }else if(ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup) &&
-                     ImGui::IsMouseReleased(ImGuiMouseButton_Right) &&
-                     !ImGui::IsAnyItemHovered()){
+            }else if(drawResult.backgroundContextRequested){
                 pickerContextMenuHasTarget = false;
                 pickerContextMenuTargetPath.clear();
                 ImGui::OpenPopup("AssetContextMenuPicker");
+            }else if(selectedAssetPath.empty() && !previousSelection.empty()){
+                pickerContextMenuHasTarget = false;
+                pickerContextMenuTargetPath.clear();
             }
+
             drawContextMenu("AssetContextMenuPicker", pickerContextMenuTargetPath, pickerContextMenuHasTarget, "Confirm Delete Asset Picker");
             drawDeleteConfirmationPopup("Confirm Delete Asset Picker");
 
@@ -1690,5 +1983,8 @@ void WorkspacePanel::draw(float x,
 
         }
         ImGui::End();
+        if(pickerBundleViewActive){
+            ImGui::PopStyleColor();
+        }
     }
 }

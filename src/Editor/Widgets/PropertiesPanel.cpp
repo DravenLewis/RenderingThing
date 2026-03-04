@@ -1,5 +1,6 @@
 #include "Editor/Widgets/PropertiesPanel.h"
 
+#include "Assets/Core/AssetDescriptorUtils.h"
 #include "ECS/Core/ECSComponents.h"
 #include "Foundation/Logging/Logbot.h"
 #include "Foundation/Util/StringUtils.h"
@@ -309,12 +310,11 @@ void PropertiesPanel::draw(float x,
 
     filePreviewWidget.setAssetRoot(assetRoot);
     if(!selectedAssetPath.empty()){
-        std::error_code ec;
-        bool exists = std::filesystem::exists(selectedAssetPath, ec);
-        if(!exists || ec){
+        bool isDirectory = false;
+        if(!AssetDescriptorUtils::PathExists(selectedAssetPath, &isDirectory)){
             selectedAssetPath.clear();
         }else{
-            if(std::filesystem::is_regular_file(selectedAssetPath, ec)){
+            if(!isDirectory){
                 ImGui::TextUnformatted("Asset Preview");
                 ImGui::Separator();
                 filePreviewWidget.setFilePath(selectedAssetPath);
@@ -322,9 +322,9 @@ void PropertiesPanel::draw(float x,
                 ImGui::End();
                 return;
             }
-            if(std::filesystem::is_directory(selectedAssetPath, ec)){
+            if(isDirectory){
                 ImGui::Text("Directory: %s", selectedAssetPath.filename().string().c_str());
-                ImGui::TextDisabled("%s", selectedAssetPath.string().c_str());
+                ImGui::TextDisabled("%s", AssetDescriptorUtils::AbsolutePathToAssetRef(selectedAssetPath).c_str());
                 ImGui::End();
                 return;
             }

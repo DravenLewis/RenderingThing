@@ -42,7 +42,18 @@ File::File(std::string pathName){
     this->isVirtual = !std::filesystem::exists(this->filepath, ec);
 }
 
+File::File(std::string pathName, const BinaryBuffer& inMemoryData){
+    this->filepath = pathName;
+    this->isVirtual = true;
+    this->hasVirtualData = true;
+    this->virtualData = inMemoryData;
+}
+
 bool File::exists(){
+    if(hasVirtualData){
+        return true;
+    }
+
     std::error_code ec;
     const bool value = std::filesystem::exists(this->filepath, ec);
     this->isVirtual = !value || static_cast<bool>(ec);
@@ -50,6 +61,10 @@ bool File::exists(){
 }
 
 bool File::isDirectory(){
+    if(hasVirtualData){
+        return false;
+    }
+
     std::error_code ec;
     if(std::filesystem::is_directory(this->filepath, ec)){
         return !ec;
@@ -82,6 +97,11 @@ std::string File::getFileType(){
 }
 
 bool File::createFile(){
+    if(hasVirtualData){
+        LogBot.Log(LOG_WARN, "Cannot create in-memory file on disk: '%s'", this->filepath.c_str());
+        return false;
+    }
+
     if(!exists()){
         if(isDirectory()){
             if(!std::filesystem::create_directories(this->filepath)){
@@ -111,6 +131,13 @@ bool File::createFile(){
 }
 
 bool File::deleteFile(){
+    if(hasVirtualData){
+        virtualData.clear();
+        hasVirtualData = false;
+        isVirtual = true;
+        return true;
+    }
+
     std::error_code ec;
     if(!std::filesystem::exists(this->filepath, ec)){
         this->isVirtual = true;
@@ -156,6 +183,10 @@ bool File::deleteFile(){
 }
 
 bool File::open(std::ios::openmode options){
+    if(hasVirtualData){
+        return false;
+    }
+
     this->fileStream = std::fstream(this->filepath, options);
     if(!fileStream){
         return false;
@@ -182,7 +213,19 @@ std::string& File::getPath(){
     return this->filepath;
 }
 
+bool File::isInMemoryFile() const{
+    return hasVirtualData;
+}
+
+const BinaryBuffer& File::getInMemoryData() const{
+    return virtualData;
+}
+
 FileBlob FileReader::Read(File* filePtr){
+    if(filePtr && filePtr->isInMemoryFile()){
+        return FileBlob::Create(filePtr->getInMemoryData());
+    }
+
     if(filePtr->exists() && !filePtr->isDirectory()){
         auto fileInputStream = std::fstream(filePtr->getPath(), std::ios::in | std::ios::binary);
 

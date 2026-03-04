@@ -3,6 +3,7 @@
 #include "Editor/Core/EditorAssetUI.h"
 #include "Assets/Core/Asset.h"
 #include "Assets/Core/AssetDescriptorUtils.h"
+#include "Assets/Bundles/AssetBundleRegistry.h"
 #include "Rendering/Materials/ConstructedMaterial.h"
 #include "Rendering/Lighting/Environment.h"
 #include "Rendering/Core/FrameBuffer.h"
@@ -14,6 +15,7 @@
 #include "Rendering/Core/Screen.h"
 #include "Assets/Descriptors/ShaderAsset.h"
 #include "Rendering/Textures/SkyBox.h"
+#include "Foundation/Logging/Logbot.h"
 #include "Foundation/Util/StringUtils.h"
 #include "Rendering/Textures/Texture.h"
 #include "imgui.h"
@@ -138,131 +140,31 @@ namespace {
         if(absolutePath.empty()){
             return "";
         }
+        const std::string resolved = AssetDescriptorUtils::AbsolutePathToAssetRef(absolutePath);
+        if(!resolved.empty()){
+            return resolved;
+        }
         if(assetRoot.empty()){
             return absolutePath.generic_string();
         }
 
-        std::error_code ec;
-        std::filesystem::path rel = std::filesystem::weakly_canonical(absolutePath, ec).lexically_relative(std::filesystem::weakly_canonical(assetRoot, ec));
-        if(!rel.empty() && !StringUtils::BeginsWith(rel.generic_string(), "..")){
-            return std::string(ASSET_DELIMITER) + "/" + rel.generic_string();
-        }
         return absolutePath.generic_string();
     }
 
-    std::shared_ptr<Texture> loadTextureAsset(const std::string& assetRef){
-        if(assetRef.empty()){
-            return nullptr;
-        }
-        const int frameNow = ImGui::GetFrameCount();
-        pruneTexturePreviewCache(frameNow);
-
-        auto cachedIt = g_texturePreviewCache.find(assetRef);
-        if(cachedIt != g_texturePreviewCache.end()){
-            TexturePreviewCacheEntry& cached = cachedIt->second;
-            if(cached.texture){
-                cached.lastUsedFrame = frameNow;
-                const bool needsValidation =
-                    (frameNow - cached.lastValidationFrame) >= kTexturePreviewCacheValidationIntervalFrames;
-                if(!needsValidation){
-                    return cached.texture;
-                }
-
-                std::filesystem::path absolutePath;
-                if(!AssetDescriptorUtils::AssetRefToAbsolutePath(assetRef, absolutePath)){
-                    absolutePath = std::filesystem::path(assetRef);
-                }
-
-                std::error_code ec;
-                bool hasWriteTime = false;
-                std::filesystem::file_time_type writeTime{};
-                if(std::filesystem::exists(absolutePath, ec) && !std::filesystem::is_directory(absolutePath, ec)){
-                    writeTime = std::filesystem::last_write_time(absolutePath, ec);
-                    hasWriteTime = !ec;
-                }
-                cached.lastValidationFrame = frameNow;
-
-                const bool cacheValid =
-                    (cached.hasWriteTime == hasWriteTime) &&
-                    (!hasWriteTime || cached.writeTime == writeTime);
-                if(cacheValid){
-                    return cached.texture;
-                }
-            }
-        }
-
-        auto asset = AssetManager::Instance.getOrLoad(assetRef);
-        if(!asset){
-            return nullptr;
-        }
-        auto tex = Texture::Load(asset);
-        if(!tex){
-            return nullptr;
-        }
-
-        TexturePreviewCacheEntry entry;
-        entry.texture = tex;
-        entry.lastValidationFrame = frameNow;
-        entry.lastUsedFrame = frameNow;
-
-        std::filesystem::path absolutePath;
-        if(!AssetDescriptorUtils::AssetRefToAbsolutePath(assetRef, absolutePath)){
-            absolutePath = std::filesystem::path(assetRef);
-        }
-        std::error_code ec;
-        if(std::filesystem::exists(absolutePath, ec) && !std::filesystem::is_directory(absolutePath, ec)){
-            entry.writeTime = std::filesystem::last_write_time(absolutePath, ec);
-            entry.hasWriteTime = !ec;
-        }
-
-        g_texturePreviewCache[assetRef] = entry;
-        return tex;
+    bool pathExists(const std::filesystem::path& path, bool* outIsDirectory = nullptr){
+        return AssetDescriptorUtils::PathExists(path, outIsDirectory);
     }
 
-    void drawTexturePreviewSmall(const std::string& assetRef){
-        if(assetRef.empty()){
-            ImGui::BeginDisabled();
-            ImGui::Button("None", ImVec2(44.0f, 44.0f));
-            ImGui::EndDisabled();
-            return;
+    std::filesystem::path backingWritePath(const std::filesystem::path& path){
+        std::filesystem::path bundlePath;
+        std::string entryPath;
+        if(AssetBundleRegistry::DecodeVirtualEntryPath(path, bundlePath, entryPath)){
+            return bundlePath;
         }
-
-        auto tex = loadTextureAsset(assetRef);
-        if(tex && tex->getID() != 0){
-            ImTextureID texId = (ImTextureID)(intptr_t)tex->getID();
-            ImGui::Image(texId, ImVec2(44.0f, 44.0f), ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
-            return;
-        }
-
-        ImGui::BeginDisabled();
-        ImGui::Button("Missing", ImVec2(44.0f, 44.0f));
-        ImGui::EndDisabled();
+        return path;
     }
 
-    bool isModelPath(const std::filesystem::path& path){
-        const std::string ext = StringUtils::ToLowerCase(path.extension().string());
-        return (ext == ".obj" || ext == ".fbx" || ext == ".gltf" || ext == ".glb");
-    }
-
-    bool isMtlPath(const std::filesystem::path& path){
-        return StringUtils::ToLowerCase(path.extension().string()) == ".mtl";
-    }
-
-    std::string buildRawByteDump(const std::filesystem::path& path){
-        std::ifstream file(path, std::ios::binary);
-        if(!file.is_open()){
-            return "Unable to open file for raw-byte dump.";
-        }
-
-        std::vector<unsigned char> bytes;
-        file.seekg(0, std::ios::end);
-        const std::streamoff size = file.tellg();
-        file.seekg(0, std::ios::beg);
-        if(size > 0){
-            bytes.resize(static_cast<size_t>(size));
-            file.read(reinterpret_cast<char*>(bytes.data()), size);
-        }
-
+    std::string buildRawByteDump(const BinaryBuffer& bytes){
         const size_t maxBytes = 4096;
         const size_t shownBytes = std::min(bytes.size(), maxBytes);
         const bool truncated = bytes.size() > maxBytes;
@@ -308,6 +210,141 @@ namespace {
         }
 
         return oss.str();
+    }
+
+    std::string buildRawByteDump(const std::filesystem::path& path){
+        std::error_code ec;
+        std::filesystem::path bundlePath;
+        std::string entryPath;
+        if(AssetBundleRegistry::DecodeVirtualEntryPath(path, bundlePath, entryPath)){
+            std::shared_ptr<AssetBundle> bundle = AssetBundleRegistry::Instance.getBundleByPath(bundlePath);
+            if(!bundle || entryPath.empty()){
+                return "Unable to open bundle entry for raw-byte dump.";
+            }
+
+            BinaryBuffer data;
+            std::string error;
+            if(!bundle->readEntryBytes(entryPath, data, &error)){
+                return error.empty() ? "Unable to open bundle entry for raw-byte dump." : error;
+            }
+            return buildRawByteDump(data);
+        }
+
+        std::ifstream file(path, std::ios::binary);
+        if(!file.is_open()){
+            return "Unable to open file for raw-byte dump.";
+        }
+
+        std::vector<unsigned char> bytes;
+        file.seekg(0, std::ios::end);
+        const std::streamoff size = file.tellg();
+        file.seekg(0, std::ios::beg);
+        if(size > 0){
+            bytes.resize(static_cast<size_t>(size));
+            file.read(reinterpret_cast<char*>(bytes.data()), size);
+        }
+
+        return buildRawByteDump(bytes);
+    }
+
+    std::shared_ptr<Texture> loadTextureAsset(const std::string& assetRef){
+        if(assetRef.empty()){
+            return nullptr;
+        }
+        const int frameNow = ImGui::GetFrameCount();
+        pruneTexturePreviewCache(frameNow);
+
+        auto cachedIt = g_texturePreviewCache.find(assetRef);
+        if(cachedIt != g_texturePreviewCache.end()){
+            TexturePreviewCacheEntry& cached = cachedIt->second;
+            if(cached.texture){
+                cached.lastUsedFrame = frameNow;
+                const bool needsValidation =
+                    (frameNow - cached.lastValidationFrame) >= kTexturePreviewCacheValidationIntervalFrames;
+                if(!needsValidation){
+                    return cached.texture;
+                }
+
+                std::filesystem::path absolutePath;
+                if(!AssetDescriptorUtils::AssetRefToAbsolutePath(assetRef, absolutePath)){
+                    absolutePath = std::filesystem::path(assetRef);
+                }
+
+                std::filesystem::path writePath = backingWritePath(absolutePath);
+                std::error_code ec;
+                bool hasWriteTime = false;
+                std::filesystem::file_time_type writeTime{};
+                if(std::filesystem::exists(writePath, ec) && !std::filesystem::is_directory(writePath, ec)){
+                    writeTime = std::filesystem::last_write_time(writePath, ec);
+                    hasWriteTime = !ec;
+                }
+                cached.lastValidationFrame = frameNow;
+
+                const bool cacheValid =
+                    (cached.hasWriteTime == hasWriteTime) &&
+                    (!hasWriteTime || cached.writeTime == writeTime);
+                if(cacheValid){
+                    return cached.texture;
+                }
+            }
+        }
+
+        auto asset = AssetManager::Instance.getOrLoad(assetRef);
+        if(!asset){
+            return nullptr;
+        }
+        auto tex = Texture::Load(asset);
+        if(!tex){
+            return nullptr;
+        }
+
+        TexturePreviewCacheEntry entry;
+        entry.texture = tex;
+        entry.lastValidationFrame = frameNow;
+        entry.lastUsedFrame = frameNow;
+
+        std::filesystem::path absolutePath;
+        if(!AssetDescriptorUtils::AssetRefToAbsolutePath(assetRef, absolutePath)){
+            absolutePath = std::filesystem::path(assetRef);
+        }
+        const std::filesystem::path writePath = backingWritePath(absolutePath);
+        std::error_code ec;
+        if(std::filesystem::exists(writePath, ec) && !std::filesystem::is_directory(writePath, ec)){
+            entry.writeTime = std::filesystem::last_write_time(writePath, ec);
+            entry.hasWriteTime = !ec;
+        }
+
+        g_texturePreviewCache[assetRef] = entry;
+        return tex;
+    }
+
+    void drawTexturePreviewSmall(const std::string& assetRef){
+        if(assetRef.empty()){
+            ImGui::BeginDisabled();
+            ImGui::Button("None", ImVec2(44.0f, 44.0f));
+            ImGui::EndDisabled();
+            return;
+        }
+
+        auto tex = loadTextureAsset(assetRef);
+        if(tex && tex->getID() != 0){
+            ImTextureID texId = (ImTextureID)(intptr_t)tex->getID();
+            ImGui::Image(texId, ImVec2(44.0f, 44.0f), ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
+            return;
+        }
+
+        ImGui::BeginDisabled();
+        ImGui::Button("Missing", ImVec2(44.0f, 44.0f));
+        ImGui::EndDisabled();
+    }
+
+    bool isModelPath(const std::filesystem::path& path){
+        const std::string ext = StringUtils::ToLowerCase(path.extension().string());
+        return (ext == ".obj" || ext == ".fbx" || ext == ".gltf" || ext == ".glb");
+    }
+
+    bool isMtlPath(const std::filesystem::path& path){
+        return StringUtils::ToLowerCase(path.extension().string()) == ".mtl";
     }
 
     bool computeModelBounds(const std::shared_ptr<Model>& model, Math3D::Vec3& outCenter, float& outRadius){
@@ -389,14 +426,20 @@ void FilePreviewWidget::setFilePath(const std::filesystem::path& path){
     hasLoadedData = false;
     statusMessage.clear();
     statusIsError = false;
+    bundleAsset.reset();
     previewMaterial.reset();
     previewModel.reset();
+    bundleAssetSavePending = false;
     skyboxAssetSavePending = false;
     materialAssetSavePending = false;
     previewMaterialDirty = true;
     previewModelDirty = true;
     mtlMaterials.clear();
     selectedMtlMaterialIndex = 0;
+    std::memset(bundleAlias, 0, sizeof(bundleAlias));
+    std::memset(bundleRootEntry, 0, sizeof(bundleRootEntry));
+    std::memset(bundleAddEntryPath, 0, sizeof(bundleAddEntryPath));
+    std::memset(bundleAddSourceRef, 0, sizeof(bundleAddSourceRef));
     std::memset(skyboxName, 0, sizeof(skyboxName));
     std::memset(skyboxRightFace, 0, sizeof(skyboxRightFace));
     std::memset(skyboxLeftFace, 0, sizeof(skyboxLeftFace));
@@ -424,6 +467,7 @@ void FilePreviewWidget::reloadFromDisk(bool force){
     hasLoadedData = true;
     statusMessage.clear();
     statusIsError = false;
+    isBundleAssetFile = AssetBundle::IsBundlePath(filePath);
     isShaderAssetFile = ShaderAssetIO::IsShaderAssetPath(filePath);
     isSkyboxAssetFile = SkyboxAssetIO::IsSkyboxAssetPath(filePath);
     isMaterialAssetFile = MaterialAssetIO::IsMaterialAssetPath(filePath);
@@ -433,10 +477,27 @@ void FilePreviewWidget::reloadFromDisk(bool force){
     isModelFile = isModelPath(filePath);
 
     std::error_code ec;
-    if(std::filesystem::exists(filePath, ec)){
-        lastWriteTime = std::filesystem::last_write_time(filePath, ec);
+    const std::filesystem::path writePath = backingWritePath(filePath);
+    if(std::filesystem::exists(writePath, ec)){
+        lastWriteTime = std::filesystem::last_write_time(writePath, ec);
     }
     lastExternalWriteTimeValidationFrame = ImGui::GetFrameCount();
+
+    if(isBundleAssetFile){
+        bundleAsset = std::make_shared<AssetBundle>();
+        std::string error;
+        if(!bundleAsset || !bundleAsset->open(filePath, &error)){
+            statusIsError = true;
+            statusMessage = error.empty() ? "Failed to load asset bundle." : error;
+            bundleAsset.reset();
+            return;
+        }
+
+        copyBuffer(bundleAlias, sizeof(bundleAlias), bundleAsset->alias());
+        copyBuffer(bundleRootEntry, sizeof(bundleRootEntry), bundleAsset->rootEntry());
+        bundleAssetSavePending = false;
+        return;
+    }
 
     if(isShaderAssetFile){
         ShaderAssetData data;
@@ -560,8 +621,9 @@ void FilePreviewWidget::draw(){
         lastExternalWriteTimeValidationFrame = frameNow;
 
         std::error_code ec;
-        if(std::filesystem::exists(filePath, ec)){
-            const auto onDiskWriteTime = std::filesystem::last_write_time(filePath, ec);
+        const std::filesystem::path writePath = backingWritePath(filePath);
+        if(std::filesystem::exists(writePath, ec)){
+            const auto onDiskWriteTime = std::filesystem::last_write_time(writePath, ec);
             if(!ec && onDiskWriteTime != lastWriteTime){
                 hasLoadedData = false;
             }
@@ -573,6 +635,11 @@ void FilePreviewWidget::draw(){
     ImGui::TextDisabled("%s", toAssetRef(filePath, assetRoot).c_str());
     ImGui::Separator();
 
+    if(isBundleAssetFile){
+        drawBundleAssetEditor();
+        drawErrorByteDumpIfNeeded();
+        return;
+    }
     if(isShaderAssetFile){
         drawShaderAssetEditor();
         drawErrorByteDumpIfNeeded();
@@ -610,6 +677,77 @@ void FilePreviewWidget::draw(){
     }
     drawGenericInfo();
     drawErrorByteDumpIfNeeded();
+}
+
+void FilePreviewWidget::drawBundleAssetEditor(){
+    if(!bundleAsset){
+        ImGui::TextDisabled("Bundle preview unavailable.");
+        return;
+    }
+
+    const bool aliasChanged = ImGui::InputText("Bundle Alias", bundleAlias, sizeof(bundleAlias));
+    if(aliasChanged){
+        bundleAssetSavePending = true;
+    }
+
+    const bool commitNow = bundleAssetSavePending && !ImGui::IsAnyItemActive();
+    if(commitNow){
+        std::string error;
+        if(bundleAsset->setAlias(StringUtils::Trim(bundleAlias), &error) &&
+           bundleAsset->save(&error)){
+            std::string mountError;
+            AssetBundleRegistry::Instance.mountBundle(filePath, &mountError);
+            if(!mountError.empty()){
+                LogBot.Log(LOG_WARN, "Bundle saved but registry refresh failed: %s", mountError.c_str());
+            }
+            reloadFromDisk(true);
+            bundleAssetSavePending = false;
+            statusIsError = false;
+            statusMessage = "Bundle alias updated.";
+        }else{
+            bundleAssetSavePending = false;
+            statusIsError = true;
+            statusMessage = error.empty() ? "Failed to save bundle." : error;
+        }
+    }
+
+    ImGui::TextDisabled("Root Entry: ./");
+    ImGui::Separator();
+    ImGui::Text("Entries: %d", static_cast<int>(bundleAsset->getEntries().size()));
+    if(bundleAsset->getEntries().empty()){
+        ImGui::TextDisabled("Double-click the bundle in the workspace to browse and edit its contents.");
+    }else if(ImGui::BeginTable("##BundleEntries", 3, ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_ScrollY, ImVec2(0.0f, 220.0f))){
+        ImGui::TableSetupColumn("Path", ImGuiTableColumnFlags_WidthStretch, 2.8f);
+        ImGui::TableSetupColumn("Kind", ImGuiTableColumnFlags_WidthFixed, 72.0f);
+        ImGui::TableSetupColumn("Source", ImGuiTableColumnFlags_WidthStretch, 2.0f);
+        ImGui::TableHeadersRow();
+
+        for(const auto& entry : bundleAsset->getEntries()){
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextUnformatted(entry.path.c_str());
+            ImGui::TableSetColumnIndex(1);
+            ImGui::TextUnformatted(entry.kind.c_str());
+            ImGui::TableSetColumnIndex(2);
+            if(entry.sourceRef.empty()){
+                ImGui::TextDisabled("-");
+            }else{
+                ImGui::TextUnformatted(entry.sourceRef.c_str());
+            }
+        }
+
+        ImGui::EndTable();
+    }
+
+    if(bundleAssetSavePending){
+        ImGui::TextDisabled("Apply the alias field to save.");
+    }else if(statusMessage.empty()){
+        ImGui::TextDisabled("Double-click this bundle in the workspace to open it like a folder.");
+    }else if(statusIsError){
+        ImGui::TextColored(ImVec4(1.0f, 0.35f, 0.35f, 1.0f), "%s", statusMessage.c_str());
+    }else{
+        ImGui::TextColored(ImVec4(0.45f, 0.85f, 0.45f, 1.0f), "%s", statusMessage.c_str());
+    }
 }
 
 void FilePreviewWidget::drawShaderAssetEditor(){
@@ -671,7 +809,7 @@ void FilePreviewWidget::drawShaderAssetEditor(){
             statusIsError = false;
             statusMessage = "Saved.";
             std::error_code ec;
-            lastWriteTime = std::filesystem::last_write_time(filePath, ec);
+            lastWriteTime = std::filesystem::last_write_time(backingWritePath(filePath), ec);
         }else{
             statusIsError = true;
             statusMessage = error;
@@ -729,7 +867,7 @@ void FilePreviewWidget::drawSkyboxAssetEditor(){
             statusIsError = false;
             statusMessage = "Saved.";
             std::error_code ec;
-            lastWriteTime = std::filesystem::last_write_time(filePath, ec);
+            lastWriteTime = std::filesystem::last_write_time(backingWritePath(filePath), ec);
             skyboxAssetSavePending = false;
         }else{
             statusIsError = true;
@@ -881,7 +1019,7 @@ void FilePreviewWidget::drawMaterialAssetEditor(){
             statusIsError = false;
             statusMessage = "Saved.";
             std::error_code ec;
-            lastWriteTime = std::filesystem::last_write_time(filePath, ec);
+            lastWriteTime = std::filesystem::last_write_time(backingWritePath(filePath), ec);
             materialAssetSavePending = false;
             previewMaterialDirty = true;
             EditorAssetUI::InvalidateMaterialThumbnail();
@@ -968,7 +1106,7 @@ void FilePreviewWidget::drawMaterialObjectEditor(){
             statusIsError = false;
             statusMessage = "Saved.";
             std::error_code ec;
-            lastWriteTime = std::filesystem::last_write_time(filePath, ec);
+            lastWriteTime = std::filesystem::last_write_time(backingWritePath(filePath), ec);
             previewMaterialDirty = true;
             EditorAssetUI::InvalidateMaterialThumbnail();
         }else{
@@ -1082,7 +1220,7 @@ void FilePreviewWidget::drawModelAssetEditor(){
             statusIsError = false;
             statusMessage = "Saved.";
             std::error_code ec;
-            lastWriteTime = std::filesystem::last_write_time(filePath, ec);
+            lastWriteTime = std::filesystem::last_write_time(backingWritePath(filePath), ec);
             previewModelDirty = true;
             EditorAssetUI::InvalidateAllThumbnails();
         }else{
@@ -1165,7 +1303,7 @@ bool FilePreviewWidget::importSelectedMtlMaterial(){
         const std::string candidateBaseName = baseName + suffix;
         materialPath = parentDir / (candidateBaseName + ".material");
         materialAssetPath = parentDir / (candidateBaseName + ".mat.asset");
-        if(!std::filesystem::exists(materialPath) && !std::filesystem::exists(materialAssetPath)){
+        if(!pathExists(materialPath) && !pathExists(materialAssetPath)){
             break;
         }
         suffixIndex++;
@@ -1235,7 +1373,7 @@ bool FilePreviewWidget::importCurrentModelAsAsset(){
         const std::string suffix = (suffixIndex <= 0) ? "" : ("_" + std::to_string(suffixIndex));
         const std::string candidateBaseName = baseName + suffix;
         modelAssetPath = parentDir / (candidateBaseName + ".model.asset");
-        if(!std::filesystem::exists(modelAssetPath)){
+        if(!pathExists(modelAssetPath)){
             break;
         }
         suffixIndex++;
@@ -1432,19 +1570,34 @@ void FilePreviewWidget::drawModelFilePreview(){
 }
 
 void FilePreviewWidget::drawGenericInfo() const{
-    std::error_code ec;
-    if(!std::filesystem::exists(filePath, ec)){
+    bool isDirectory = false;
+    if(!pathExists(filePath, &isDirectory)){
         ImGui::TextColored(ImVec4(1.0f, 0.35f, 0.35f, 1.0f), "File does not exist.");
         return;
     }
-    if(std::filesystem::is_directory(filePath, ec)){
+    if(isDirectory){
         ImGui::TextUnformatted("Directory selected.");
         return;
     }
 
-    auto fileSize = std::filesystem::file_size(filePath, ec);
-    if(!ec){
-        ImGui::Text("Size: %llu bytes", static_cast<unsigned long long>(fileSize));
+    std::filesystem::path bundlePath;
+    std::string entryPath;
+    if(AssetBundleRegistry::DecodeVirtualEntryPath(filePath, bundlePath, entryPath)){
+        std::shared_ptr<AssetBundle> bundle = AssetBundleRegistry::Instance.getBundleByPath(bundlePath);
+        if(bundle && !entryPath.empty()){
+            for(const auto& entry : bundle->getEntries()){
+                if(entry.path == entryPath){
+                    ImGui::Text("Size: %llu bytes", static_cast<unsigned long long>(entry.size));
+                    break;
+                }
+            }
+        }
+    }else{
+        std::error_code ec;
+        auto fileSize = std::filesystem::file_size(filePath, ec);
+        if(!ec){
+            ImGui::Text("Size: %llu bytes", static_cast<unsigned long long>(fileSize));
+        }
     }
     ImGui::TextDisabled("No preview widget for this file type.");
 }
@@ -1457,13 +1610,14 @@ void FilePreviewWidget::refreshErrorByteDump(){
     }
 
     std::error_code ec;
-    if(!std::filesystem::exists(filePath, ec) || std::filesystem::is_directory(filePath, ec)){
+    bool isDirectory = false;
+    if(!pathExists(filePath, &isDirectory) || isDirectory){
         errorByteDump = "File does not exist or is a directory.";
         errorByteDumpPath = filePath;
         return;
     }
 
-    std::filesystem::file_time_type writeTime = std::filesystem::last_write_time(filePath, ec);
+    std::filesystem::file_time_type writeTime = std::filesystem::last_write_time(backingWritePath(filePath), ec);
     if(errorByteDumpPath == filePath && !ec && writeTime == errorByteDumpWriteTime && !errorByteDump.empty()){
         return;
     }

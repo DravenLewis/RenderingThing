@@ -17,11 +17,14 @@ class File{
     private:
         std::string filepath;
         bool isVirtual;
+        bool hasVirtualData = false;
+        BinaryBuffer virtualData;
         std::fstream fileStream;
         File() = delete;
 
     public:
         File(std::string path);
+        File(std::string path, const BinaryBuffer& inMemoryData);
         bool exists();
         bool isDirectory();
         std::string getFileName();
@@ -33,6 +36,8 @@ class File{
         bool isOpen();
         void close();
         std::string& getPath();
+        bool isInMemoryFile() const;
+        const BinaryBuffer& getInMemoryData() const;
         static std::string GetCWD();
 };
 

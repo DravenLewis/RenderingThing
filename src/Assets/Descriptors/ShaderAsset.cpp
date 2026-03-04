@@ -151,57 +151,51 @@ bool LoadFromAssetRef(const std::string& assetRef, ShaderAssetData& outData, std
 }
 
 bool SaveToAbsolutePath(const std::filesystem::path& path, const ShaderAssetData& data, std::string* outError){
-    std::filesystem::path parent = path.parent_path();
-    std::error_code ec;
-    if(!parent.empty() && !std::filesystem::exists(parent, ec)){
-        if(!std::filesystem::create_directories(parent, ec)){
-            if(outError){
-                *outError = "Failed to create directory: " + parent.generic_string();
-            }
-            return false;
-        }
-    }
-
-    auto writer = std::make_unique<FileWriter>(new File(path.string()));
-    if(!writer){
-        if(outError){
-            *outError = "Failed to open file for write: " + path.generic_string();
-        }
-        return false;
-    }
-
     std::string cacheName = data.cacheName.empty() ? "ShaderAssetProgram" : data.cacheName;
-    writer->putln(StringUtils::Format("cache_name=%s", cacheName.c_str()).c_str());
-    writer->putln(StringUtils::Format("vertex=%s", data.vertexAssetRef.c_str()).c_str());
-    writer->putln(StringUtils::Format("fragment=%s", data.fragmentAssetRef.c_str()).c_str());
+    std::string text;
+    text += StringUtils::Format("cache_name=%s\n", cacheName.c_str());
+    text += StringUtils::Format("vertex=%s\n", data.vertexAssetRef.c_str());
+    text += StringUtils::Format("fragment=%s\n", data.fragmentAssetRef.c_str());
     if(!data.geometryAssetRef.empty()){
-        writer->putln(StringUtils::Format("geometry=%s", data.geometryAssetRef.c_str()).c_str());
+        text += StringUtils::Format("geometry=%s\n", data.geometryAssetRef.c_str());
     }
     if(!data.tesselationAssetRef.empty()){
-        writer->putln(StringUtils::Format("tesselation=%s", data.tesselationAssetRef.c_str()).c_str());
+        text += StringUtils::Format("tesselation=%s\n", data.tesselationAssetRef.c_str());
     }
     if(!data.computeAssetRef.empty()){
-        writer->putln(StringUtils::Format("compute=%s", data.computeAssetRef.c_str()).c_str());
+        text += StringUtils::Format("compute=%s\n", data.computeAssetRef.c_str());
     }
     if(!data.taskAssetRef.empty()){
-        writer->putln(StringUtils::Format("task=%s", data.taskAssetRef.c_str()).c_str());
+        text += StringUtils::Format("task=%s\n", data.taskAssetRef.c_str());
     }
     if(!data.rtAssetRef.empty()){
-        writer->putln(StringUtils::Format("rt=%s", data.rtAssetRef.c_str()).c_str());
+        text += StringUtils::Format("rt=%s\n", data.rtAssetRef.c_str());
     }
-    if(!writer->flush()){
-        if(outError){
-            *outError = "Failed to write file: " + path.generic_string();
-        }
-        writer->close();
-        return false;
-    }
-    writer->close();
-    return true;
+    return AssetDescriptorUtils::WriteTextPath(path, text, outError);
 }
 
 bool SaveToAssetRef(const std::string& assetRef, const ShaderAssetData& data, std::string* outError){
-    return SaveToAbsolutePath(AssetRefToAbsolutePath(assetRef), data, outError);
+    std::string cacheName = data.cacheName.empty() ? "ShaderAssetProgram" : data.cacheName;
+    std::string text;
+    text += StringUtils::Format("cache_name=%s\n", cacheName.c_str());
+    text += StringUtils::Format("vertex=%s\n", data.vertexAssetRef.c_str());
+    text += StringUtils::Format("fragment=%s\n", data.fragmentAssetRef.c_str());
+    if(!data.geometryAssetRef.empty()){
+        text += StringUtils::Format("geometry=%s\n", data.geometryAssetRef.c_str());
+    }
+    if(!data.tesselationAssetRef.empty()){
+        text += StringUtils::Format("tesselation=%s\n", data.tesselationAssetRef.c_str());
+    }
+    if(!data.computeAssetRef.empty()){
+        text += StringUtils::Format("compute=%s\n", data.computeAssetRef.c_str());
+    }
+    if(!data.taskAssetRef.empty()){
+        text += StringUtils::Format("task=%s\n", data.taskAssetRef.c_str());
+    }
+    if(!data.rtAssetRef.empty()){
+        text += StringUtils::Format("rt=%s\n", data.rtAssetRef.c_str());
+    }
+    return AssetDescriptorUtils::WriteTextAsset(assetRef, text, outError);
 }
 
 std::shared_ptr<ShaderProgram> CompileProgram(const ShaderAssetData& data,

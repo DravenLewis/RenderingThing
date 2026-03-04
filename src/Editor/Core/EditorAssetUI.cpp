@@ -1,7 +1,9 @@
 #include "Editor/Core/EditorAssetUI.h"
+#include "Assets/Bundles/AssetBundle.h"
 #include "Assets/Core/Asset.h"
+#include "Assets/Bundles/AssetBundleRegistry.h"
+#include "Assets/Core/AssetDescriptorUtils.h"
 #include "Rendering/Lighting/Environment.h"
-#include "Foundation/IO/File.h"
 #include "Rendering/Core/FrameBuffer.h"
 #include "Foundation/Logging/Logbot.h"
 #include "Assets/Descriptors/MaterialAsset.h"
@@ -62,20 +64,18 @@ namespace {
     int g_materialThumbnailSize = 0;
 
     struct AssetPickerState{
-        bool openRequested = false;
+        bool windowOpen = false;
+        bool focusRequested = false;
         int drawnFrame = -1;
         ImGuiID ownerId = 0;
-        std::filesystem::path assetRoot;
-        std::filesystem::path currentDir;
-        std::filesystem::path selectedPath;
-        std::string selectedAssetRef;
+        EditorAssetUI::AssetBrowserWidget browser;
         std::vector<EditorAssetUI::AssetKind> requestedKinds;
         bool hasPendingSelection = false;
         ImGuiID pendingOwnerId = 0;
-        std::string pendingAssetRef;
+        EditorAssetUI::PickedAssetRef pendingSelection;
     };
 
-    constexpr const char* kAssetPickerPopupId = "Editor Asset Picker##EditorAssetUI";
+    constexpr const char* kAssetPickerWindowId = "Editor Asset Picker";
     AssetPickerState g_assetPickerState;
 
     std::string requestedKindsTooltip(const EditorAssetUI::AssetKind* requestedKinds, size_t requestedKindCount);
@@ -381,26 +381,18 @@ namespace {
     }
 
     bool assetRefToAbsolutePath(const std::string& assetRef, std::filesystem::path& outPath){
-        if(assetRef.empty()){
-            return false;
-        }
-        if(StringUtils::BeginsWith(assetRef, ASSET_DELIMITER)){
-            std::string rel = assetRef.substr(std::strlen(ASSET_DELIMITER));
-            if(!rel.empty() && (rel[0] == '/' || rel[0] == '\\')){
-                rel.erase(rel.begin());
-            }
-            outPath = std::filesystem::path(File::GetCWD()) / "res" / rel;
-            return true;
-        }
-        outPath = std::filesystem::path(assetRef);
-        return true;
+        return AssetDescriptorUtils::AssetRefToAbsolutePath(assetRef, outPath);
     }
 
     std::filesystem::path getAssetRootPathForPicker(){
-        return (std::filesystem::path(File::GetCWD()) / "res").lexically_normal();
+        return AssetDescriptorUtils::GetAssetRootPath().lexically_normal();
     }
 
     bool pathWithinRoot(const std::filesystem::path& path, const std::filesystem::path& root){
+        if(AssetBundleRegistry::IsVirtualEntryPath(path)){
+            return true;
+        }
+
         std::error_code ec;
         std::filesystem::path normalizedRoot = std::filesystem::weakly_canonical(root, ec);
         if(ec){
@@ -421,7 +413,7 @@ namespace {
 
     void requestAssetPicker(ImGuiID ownerId, const EditorAssetUI::AssetKind* requestedKinds, size_t requestedKindCount, const std::string& currentValue){
         g_assetPickerState.ownerId = ownerId;
-        g_assetPickerState.assetRoot = getAssetRootPathForPicker();
+        g_assetPickerState.browser.setAssetRoot(getAssetRootPathForPicker());
         g_assetPickerState.requestedKinds.clear();
         if(requestedKinds && requestedKindCount > 0){
             g_assetPickerState.requestedKinds.assign(requestedKinds, requestedKinds + requestedKindCount);
@@ -429,205 +421,104 @@ namespace {
         if(g_assetPickerState.requestedKinds.empty()){
             g_assetPickerState.requestedKinds.push_back(EditorAssetUI::AssetKind::Any);
         }
-
-        if(g_assetPickerState.currentDir.empty() ||
-           !pathWithinRoot(g_assetPickerState.currentDir, g_assetPickerState.assetRoot) ||
-           !std::filesystem::exists(g_assetPickerState.currentDir)){
-            g_assetPickerState.currentDir = g_assetPickerState.assetRoot;
-        }
-
-        std::filesystem::path currentPath;
-        if(!currentValue.empty() && assetRefToAbsolutePath(currentValue, currentPath)){
-            std::error_code ec;
-            std::filesystem::path normalized = std::filesystem::weakly_canonical(currentPath, ec);
-            if(ec){
-                normalized = currentPath.lexically_normal();
-            }
-            if(pathWithinRoot(normalized, g_assetPickerState.assetRoot) && std::filesystem::exists(normalized)){
-                if(std::filesystem::is_directory(normalized)){
-                    g_assetPickerState.currentDir = normalized;
-                    g_assetPickerState.selectedPath.clear();
-                    g_assetPickerState.selectedAssetRef.clear();
-                }else{
-                    g_assetPickerState.currentDir = normalized.parent_path();
-                    g_assetPickerState.selectedPath = normalized;
-
-                    EditorAssetUI::AssetTransaction tx;
-                    if(EditorAssetUI::BuildTransaction(normalized, g_assetPickerState.assetRoot, tx)){
-                        g_assetPickerState.selectedAssetRef = tx.assetRef;
-                    }else{
-                        g_assetPickerState.selectedAssetRef.clear();
-                    }
-                }
-            }else{
-                g_assetPickerState.selectedPath.clear();
-                g_assetPickerState.selectedAssetRef.clear();
-            }
-        }else{
-            g_assetPickerState.selectedPath.clear();
-            g_assetPickerState.selectedAssetRef.clear();
-        }
-
-        g_assetPickerState.openRequested = true;
+        g_assetPickerState.browser.setRequestedKinds(
+            g_assetPickerState.requestedKinds.data(),
+            g_assetPickerState.requestedKinds.size()
+        );
+        g_assetPickerState.browser.syncSelectionFromValue(currentValue);
+        g_assetPickerState.windowOpen = true;
+        g_assetPickerState.focusRequested = true;
     }
 
-    bool consumeAssetPickerSelection(ImGuiID ownerId, std::string& outAssetRef){
+    bool consumeAssetPickerSelection(ImGuiID ownerId, EditorAssetUI::PickedAssetRef& outSelection){
         if(!g_assetPickerState.hasPendingSelection || g_assetPickerState.pendingOwnerId != ownerId){
             return false;
         }
-        outAssetRef = g_assetPickerState.pendingAssetRef;
+        outSelection = g_assetPickerState.pendingSelection;
         g_assetPickerState.hasPendingSelection = false;
         g_assetPickerState.pendingOwnerId = 0;
-        g_assetPickerState.pendingAssetRef.clear();
+        g_assetPickerState.pendingSelection = EditorAssetUI::PickedAssetRef{};
         return true;
     }
 
-    void drawAssetPickerPopup(){
+    bool consumeAssetPickerSelection(ImGuiID ownerId, std::string& outAssetRef){
+        EditorAssetUI::PickedAssetRef selection;
+        if(!consumeAssetPickerSelection(ownerId, selection)){
+            return false;
+        }
+
+        outAssetRef = selection.transaction.assetRef;
+        return true;
+    }
+
+    void drawAssetPickerWindow(){
         const int frame = ImGui::GetFrameCount();
         if(g_assetPickerState.drawnFrame == frame){
             return;
         }
         g_assetPickerState.drawnFrame = frame;
 
-        if(g_assetPickerState.openRequested){
-            ImGui::OpenPopup(kAssetPickerPopupId);
-            g_assetPickerState.openRequested = false;
-        }
-
-        ImGui::SetNextWindowSize(ImVec2(760.0f, 500.0f), ImGuiCond_FirstUseEver);
-        if(!ImGui::BeginPopupModal(kAssetPickerPopupId, nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse)){
+        if(!g_assetPickerState.windowOpen){
             return;
         }
 
-        if(g_assetPickerState.assetRoot.empty()){
-            g_assetPickerState.assetRoot = getAssetRootPathForPicker();
+        if(g_assetPickerState.focusRequested){
+            ImGui::SetNextWindowFocus();
+            g_assetPickerState.focusRequested = false;
         }
-        if(g_assetPickerState.currentDir.empty()){
-            g_assetPickerState.currentDir = g_assetPickerState.assetRoot;
+        ImGui::SetNextWindowSize(ImVec2(760.0f, 500.0f), ImGuiCond_FirstUseEver);
+        bool keepWindowOpen = g_assetPickerState.windowOpen;
+        const bool bundleViewActive = g_assetPickerState.browser.isBrowsingBundle();
+        if(bundleViewActive){
+            ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.075f, 0.095f, 0.135f, 1.0f));
         }
-
-        ImGui::Text("Directory: %s", g_assetPickerState.currentDir.string().c_str());
+        if(ImGui::Begin(kAssetPickerWindowId, &keepWindowOpen, ImGuiWindowFlags_NoCollapse)){
         ImGui::TextDisabled("Allowed: %s", requestedKindsTooltip(
             g_assetPickerState.requestedKinds.data(),
             g_assetPickerState.requestedKinds.size()).c_str()
         );
 
-        if(ImGui::Button("Root")){
-            g_assetPickerState.currentDir = g_assetPickerState.assetRoot;
-            g_assetPickerState.selectedPath.clear();
-            g_assetPickerState.selectedAssetRef.clear();
-        }
-        ImGui::SameLine();
-        if(ImGui::Button("Up") &&
-           g_assetPickerState.currentDir != g_assetPickerState.assetRoot &&
-           pathWithinRoot(g_assetPickerState.currentDir.parent_path(), g_assetPickerState.assetRoot)){
-            g_assetPickerState.currentDir = g_assetPickerState.currentDir.parent_path();
-            g_assetPickerState.selectedPath.clear();
-            g_assetPickerState.selectedAssetRef.clear();
-        }
-
         const float footerReserve = ImGui::GetFrameHeight() + ImGui::GetStyle().ItemSpacing.y + 8.0f;
-        ImGui::Separator();
-        ImGui::BeginChild("AssetPickerList", ImVec2(0.0f, -footerReserve), true);
+        const EditorAssetUI::AssetBrowserWidget::DrawResult drawResult =
+            g_assetPickerState.browser.draw("EditorAssetPickerBrowser", footerReserve);
 
-        if(pathWithinRoot(g_assetPickerState.currentDir, g_assetPickerState.assetRoot) &&
-           std::filesystem::exists(g_assetPickerState.currentDir)){
-            struct Entry{
-                std::filesystem::path path;
-                bool isDirectory = false;
-                EditorAssetUI::AssetTransaction tx;
-            };
-
-            std::vector<Entry> entries;
-            std::error_code ec;
-            for(const auto& dirEntry : std::filesystem::directory_iterator(g_assetPickerState.currentDir, std::filesystem::directory_options::skip_permission_denied, ec)){
-                const std::filesystem::path path = dirEntry.path();
-                const bool isDirectory = dirEntry.is_directory();
-
-                if(isDirectory){
-                    entries.push_back({path, true, {}});
-                    continue;
-                }
-
-                EditorAssetUI::AssetTransaction tx;
-                if(!EditorAssetUI::BuildTransaction(path, g_assetPickerState.assetRoot, tx)){
-                    continue;
-                }
-                if(!EditorAssetUI::IsKindCompatibleAny(
-                       tx.kind,
-                       g_assetPickerState.requestedKinds.data(),
-                       g_assetPickerState.requestedKinds.size())){
-                    continue;
-                }
-                entries.push_back({path, false, tx});
+        auto commitSelection = [&](){
+            EditorAssetUI::PickedAssetRef selection;
+            if(!g_assetPickerState.browser.tryGetSelectedReference(selection)){
+                return false;
             }
 
-            std::sort(entries.begin(), entries.end(), [](const Entry& a, const Entry& b){
-                if(a.isDirectory != b.isDirectory){
-                    return a.isDirectory > b.isDirectory;
-                }
-                return a.path.filename().string() < b.path.filename().string();
-            });
+            g_assetPickerState.hasPendingSelection = true;
+            g_assetPickerState.pendingOwnerId = g_assetPickerState.ownerId;
+            g_assetPickerState.pendingSelection = selection;
+            keepWindowOpen = false;
+            return true;
+        };
 
-            if(g_assetPickerState.currentDir != g_assetPickerState.assetRoot){
-                if(ImGui::Selectable("..", false, ImGuiSelectableFlags_AllowDoubleClick) &&
-                   ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)){
-                    g_assetPickerState.currentDir = g_assetPickerState.currentDir.parent_path();
-                    g_assetPickerState.selectedPath.clear();
-                    g_assetPickerState.selectedAssetRef.clear();
-                }
-            }
-
-            for(const auto& entry : entries){
-                std::string label = entry.path.filename().string();
-                if(entry.isDirectory){
-                    label = "[DIR] " + label;
-                }
-
-                const bool selected = (g_assetPickerState.selectedPath == entry.path);
-                if(ImGui::Selectable(label.c_str(), selected, ImGuiSelectableFlags_AllowDoubleClick)){
-                    g_assetPickerState.selectedPath = entry.path;
-                    if(entry.isDirectory){
-                        g_assetPickerState.selectedAssetRef.clear();
-                        if(ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)){
-                            g_assetPickerState.currentDir = entry.path;
-                            g_assetPickerState.selectedPath.clear();
-                        }
-                    }else{
-                        g_assetPickerState.selectedAssetRef = entry.tx.assetRef;
-                        if(ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)){
-                            g_assetPickerState.hasPendingSelection = true;
-                            g_assetPickerState.pendingOwnerId = g_assetPickerState.ownerId;
-                            g_assetPickerState.pendingAssetRef = entry.tx.assetRef;
-                            ImGui::CloseCurrentPopup();
-                        }
-                    }
-                }
-            }
-        }else{
-            ImGui::TextDisabled("Directory missing.");
+        if(drawResult.selectionActivated){
+            commitSelection();
         }
 
-        ImGui::EndChild();
-        const bool canSelect = !g_assetPickerState.selectedAssetRef.empty();
+        const bool canSelect = g_assetPickerState.browser.hasSelectedAsset();
         if(!canSelect){
             ImGui::BeginDisabled();
         }
         if(ImGui::Button("Select")){
-            g_assetPickerState.hasPendingSelection = true;
-            g_assetPickerState.pendingOwnerId = g_assetPickerState.ownerId;
-            g_assetPickerState.pendingAssetRef = g_assetPickerState.selectedAssetRef;
-            ImGui::CloseCurrentPopup();
+            commitSelection();
         }
         if(!canSelect){
             ImGui::EndDisabled();
         }
         ImGui::SameLine();
         if(ImGui::Button("Cancel")){
-            ImGui::CloseCurrentPopup();
+            keepWindowOpen = false;
         }
-
-        ImGui::EndPopup();
+        }
+        ImGui::End();
+        if(bundleViewActive){
+            ImGui::PopStyleColor();
+        }
+        g_assetPickerState.windowOpen = keepWindowOpen;
     }
 
     bool tryGetWriteTime(const std::filesystem::path& path, std::filesystem::file_time_type& outWriteTime){
@@ -1004,12 +895,509 @@ bool IsKindCompatibleAny(AssetKind offered, const AssetKind* requestedKinds, siz
     return false;
 }
 
+bool ResolvePickedAssetRef(const AssetTransaction& tx, PickedAssetRef& out){
+    out = PickedAssetRef{};
+    out.transaction = tx;
+    if(tx.assetRef.empty() || tx.isDirectory){
+        return false;
+    }
+
+    out.asset = AssetManager::Instance.getOrLoad(tx.assetRef);
+    return true;
+}
+
+void AssetBrowserWidget::setAssetRoot(const std::filesystem::path& rootPath){
+    assetRoot = rootPath.empty() ? std::filesystem::path() : rootPath.lexically_normal();
+    if(currentDirectory.empty()){
+        currentDirectory = assetRoot;
+    }
+}
+
+void AssetBrowserWidget::setCurrentDirectory(const std::filesystem::path& directoryPath){
+    currentDirectory = directoryPath.empty() ? std::filesystem::path() : directoryPath.lexically_normal();
+}
+
+void AssetBrowserWidget::setSelectedPath(const std::filesystem::path& newSelectedPath){
+    selectedPath = newSelectedPath.empty() ? std::filesystem::path() : newSelectedPath.lexically_normal();
+}
+
+void AssetBrowserWidget::setRequestedKinds(const AssetKind* newRequestedKinds, size_t requestedKindCount){
+    requestedKinds.clear();
+    if(newRequestedKinds && requestedKindCount > 0){
+        requestedKinds.assign(newRequestedKinds, newRequestedKinds + requestedKindCount);
+    }
+    if(requestedKinds.empty()){
+        requestedKinds.push_back(AssetKind::Any);
+    }
+}
+
+void AssetBrowserWidget::resetRequestedKinds(){
+    requestedKinds.clear();
+    requestedKinds.push_back(AssetKind::Any);
+}
+
+void AssetBrowserWidget::setTileSize(float size){
+    tileSize = std::clamp(size, 56.0f, 128.0f);
+}
+
+void AssetBrowserWidget::syncSelectionFromValue(const std::string& currentValue){
+    if(assetRoot.empty()){
+        assetRoot = getAssetRootPathForPicker();
+    }
+
+    if(currentValue.empty()){
+        selectedPath.clear();
+        if(currentDirectory.empty()){
+            currentDirectory = assetRoot;
+        }
+        return;
+    }
+
+    std::filesystem::path resolvedPath;
+    bool resolvedIsDirectory = false;
+    if(!assetRefToAbsolutePath(currentValue, resolvedPath) ||
+       !AssetDescriptorUtils::PathExists(resolvedPath, &resolvedIsDirectory)){
+        selectedPath.clear();
+        if(currentDirectory.empty()){
+            currentDirectory = assetRoot;
+        }
+        return;
+    }
+
+    resolvedPath = resolvedPath.lexically_normal();
+    if(resolvedIsDirectory){
+        currentDirectory = resolvedPath;
+        selectedPath.clear();
+        return;
+    }
+
+    currentDirectory = resolvedPath.parent_path().lexically_normal();
+    selectedPath = resolvedPath;
+}
+
+void AssetBrowserWidget::goToRoot(){
+    if(assetRoot.empty()){
+        assetRoot = getAssetRootPathForPicker();
+    }
+
+    std::filesystem::path bundlePath;
+    std::string entryPath;
+    if(AssetBundleRegistry::DecodeVirtualEntryPath(currentDirectory, bundlePath, entryPath)){
+        currentDirectory = AssetBundleRegistry::MakeVirtualEntryPath(bundlePath, "", true);
+    }else{
+        currentDirectory = assetRoot;
+    }
+    selectedPath.clear();
+}
+
+void AssetBrowserWidget::goUp(){
+    if(assetRoot.empty()){
+        assetRoot = getAssetRootPathForPicker();
+    }
+
+    std::filesystem::path bundlePath;
+    std::string entryPath;
+    if(AssetBundleRegistry::DecodeVirtualEntryPath(currentDirectory, bundlePath, entryPath)){
+        if(entryPath.empty()){
+            currentDirectory = bundlePath.parent_path().lexically_normal();
+        }else{
+            std::string parentDir = entryPath;
+            if(!parentDir.empty() && parentDir.back() == '/'){
+                parentDir.pop_back();
+            }
+            parentDir = std::filesystem::path(parentDir).parent_path().generic_string();
+            currentDirectory = AssetBundleRegistry::MakeVirtualEntryPath(bundlePath, parentDir, true);
+        }
+    }else if(currentDirectory != assetRoot){
+        const std::filesystem::path parent = currentDirectory.parent_path().lexically_normal();
+        if(pathWithinRoot(parent, assetRoot)){
+            currentDirectory = parent;
+        }else{
+            currentDirectory = assetRoot;
+        }
+    }
+
+    selectedPath.clear();
+}
+
+AssetBrowserWidget::DrawResult AssetBrowserWidget::draw(const char* childId, float footerReserve){
+    DrawResult result;
+
+    if(assetRoot.empty()){
+        assetRoot = getAssetRootPathForPicker();
+    }
+    if(requestedKinds.empty()){
+        requestedKinds.push_back(AssetKind::Any);
+    }
+    if(currentDirectory.empty()){
+        currentDirectory = assetRoot;
+    }
+
+    bool currentDirIsDirectory = false;
+    if(!pathWithinRoot(currentDirectory, assetRoot) ||
+       !AssetDescriptorUtils::PathExists(currentDirectory, &currentDirIsDirectory) ||
+       !currentDirIsDirectory){
+        currentDirectory = assetRoot;
+        currentDirIsDirectory = true;
+        if(!selectedPath.empty()){
+            selectedPath.clear();
+            result.selectionChanged = true;
+        }
+    }
+
+    if(!selectedPath.empty() && !AssetDescriptorUtils::PathExists(selectedPath)){
+        selectedPath.clear();
+        result.selectionChanged = true;
+    }
+
+    ImGui::Text("Directory: %s", AssetDescriptorUtils::AbsolutePathToAssetRef(currentDirectory).c_str());
+    if(ImGui::Button("Root")){
+        goToRoot();
+        result.selectionChanged = true;
+    }
+
+    const bool canGoUp = AssetBundleRegistry::IsVirtualEntryPath(currentDirectory) || currentDirectory != assetRoot;
+    ImGui::SameLine();
+    if(!canGoUp){
+        ImGui::BeginDisabled();
+    }
+    if(ImGui::Button("Up") && canGoUp){
+        goUp();
+        result.selectionChanged = true;
+    }
+    if(!canGoUp){
+        ImGui::EndDisabled();
+    }
+
+    struct BrowserEntry {
+        std::filesystem::path path;
+        AssetTransaction tx;
+        bool isUp = false;
+        bool opensContainer = false;
+        bool canSelect = false;
+    };
+
+    auto buildDirectoryTx = [&](const std::filesystem::path& path) -> AssetTransaction {
+        AssetTransaction tx{};
+        if(!BuildTransaction(path, assetRoot, tx)){
+            tx.absolutePath = path.lexically_normal();
+            tx.assetRef = AssetDescriptorUtils::AbsolutePathToAssetRef(path);
+            tx.extension.clear();
+            tx.kind = AssetKind::Directory;
+            tx.isDirectory = true;
+        }
+        return tx;
+    };
+
+    auto canSelectTx = [&](const AssetTransaction& tx) -> bool {
+        if(tx.isDirectory || tx.assetRef.empty()){
+            return false;
+        }
+        return IsKindCompatibleAny(tx.kind, requestedKinds.data(), requestedKinds.size());
+    };
+
+    auto pushEntry = [&](std::vector<BrowserEntry>& entries, const std::filesystem::path& path, bool isDirectory, bool isUp){
+        BrowserEntry entry{};
+        entry.path = path.lexically_normal();
+        entry.isUp = isUp;
+        entry.opensContainer =
+            isDirectory ||
+            (AssetBundle::IsBundlePath(entry.path) && !AssetBundleRegistry::IsVirtualEntryPath(entry.path));
+
+        if(isDirectory){
+            entry.tx = buildDirectoryTx(entry.path);
+            entry.canSelect = false;
+        }else if(BuildTransaction(entry.path, assetRoot, entry.tx)){
+            entry.canSelect = canSelectTx(entry.tx);
+        }else{
+            return;
+        }
+
+        entries.push_back(entry);
+    };
+
+    std::vector<BrowserEntry> entries;
+    if(canGoUp){
+        std::filesystem::path upPath = currentDirectory;
+        if(AssetBundleRegistry::IsVirtualEntryPath(currentDirectory)){
+            std::filesystem::path bundlePath;
+            std::string entryPath;
+            if(AssetBundleRegistry::DecodeVirtualEntryPath(currentDirectory, bundlePath, entryPath)){
+                if(entryPath.empty()){
+                    upPath = bundlePath.parent_path();
+                }else{
+                    std::string parentDir = entryPath;
+                    if(!parentDir.empty() && parentDir.back() == '/'){
+                        parentDir.pop_back();
+                    }
+                    parentDir = std::filesystem::path(parentDir).parent_path().generic_string();
+                    upPath = AssetBundleRegistry::MakeVirtualEntryPath(bundlePath, parentDir, true);
+                }
+            }
+        }else{
+            upPath = currentDirectory.parent_path();
+        }
+        pushEntry(entries, upPath, true, true);
+    }
+
+    std::filesystem::path currentBundlePath;
+    std::string currentBundleEntryPath;
+    bool currentIsVirtual = AssetBundleRegistry::DecodeVirtualEntryPath(currentDirectory, currentBundlePath, currentBundleEntryPath);
+    if(currentIsVirtual){
+        std::shared_ptr<AssetBundle> bundle = AssetBundleRegistry::Instance.getBundleByPath(currentBundlePath);
+        if(bundle){
+            std::string normalizedCurrent = currentBundleEntryPath;
+            if(!normalizedCurrent.empty() && normalizedCurrent.back() == '/'){
+                normalizedCurrent.pop_back();
+            }
+
+            for(const auto& manifestEntry : bundle->getEntries()){
+                const bool isDirectory = (manifestEntry.kind == "directory");
+                std::string displayPath = manifestEntry.path;
+                if(isDirectory && !displayPath.empty() && displayPath.back() == '/'){
+                    displayPath.pop_back();
+                }
+                if(displayPath.empty()){
+                    continue;
+                }
+
+                const std::string parentDir = std::filesystem::path(displayPath).parent_path().generic_string();
+                if(normalizedCurrent.empty()){
+                    if(!parentDir.empty() && parentDir != "."){
+                        continue;
+                    }
+                }else if(parentDir != normalizedCurrent){
+                    continue;
+                }
+
+                pushEntry(
+                    entries,
+                    AssetBundleRegistry::MakeVirtualEntryPath(currentBundlePath, manifestEntry.path, isDirectory),
+                    isDirectory,
+                    false
+                );
+            }
+        }
+    }else{
+        std::error_code ec;
+        for(const auto& dirEntry : std::filesystem::directory_iterator(
+                currentDirectory,
+                std::filesystem::directory_options::skip_permission_denied,
+                ec)){
+            if(ec){
+                break;
+            }
+
+            const std::filesystem::path path = dirEntry.path().lexically_normal();
+            bool isDirectory = dirEntry.is_directory(ec);
+            if(ec){
+                ec.clear();
+                continue;
+            }
+
+            if(isDirectory){
+                pushEntry(entries, path, true, false);
+                continue;
+            }
+            pushEntry(entries, path, false, false);
+        }
+    }
+
+    std::sort(entries.begin(), entries.end(), [](const BrowserEntry& a, const BrowserEntry& b){
+        if(a.isUp != b.isUp){
+            return a.isUp;
+        }
+        if(a.tx.isDirectory != b.tx.isDirectory){
+            return a.tx.isDirectory > b.tx.isDirectory;
+        }
+        const std::string aLabel = a.isUp ? std::string("..") : a.path.filename().string();
+        const std::string bLabel = b.isUp ? std::string("..") : b.path.filename().string();
+        return StringUtils::ToLowerCase(aLabel) < StringUtils::ToLowerCase(bLabel);
+    });
+
+    ImGui::Separator();
+    ImGui::BeginChild(childId, ImVec2(0.0f, footerReserve > 0.0f ? -footerReserve : 0.0f), true);
+
+    bool anyEntryHovered = false;
+    if(entries.empty()){
+        ImGui::TextDisabled("Directory empty.");
+    }else{
+        const float effectiveTileSize = std::clamp(tileSize, 56.0f, 128.0f);
+        const float cellWidth = effectiveTileSize + 20.0f;
+        const int columns = std::max(1, static_cast<int>(ImGui::GetContentRegionAvail().x / cellWidth));
+
+        std::string tableId = std::string(childId) + "_table";
+        if(ImGui::BeginTable(tableId.c_str(),
+                             columns,
+                             ImGuiTableFlags_SizingFixedFit |
+                                 ImGuiTableFlags_NoPadOuterX |
+                                 ImGuiTableFlags_NoPadInnerX)){
+            for(size_t index = 0; index < entries.size(); ++index){
+                const BrowserEntry& entry = entries[index];
+                ImGui::TableNextColumn();
+                ImGui::PushID(static_cast<int>(index));
+
+                const bool selected = (selectedPath == entry.path);
+                bool doubleClicked = false;
+                bool clicked = DrawAssetTile("asset_browser_tile", entry.tx, effectiveTileSize, selected, &doubleClicked);
+                const ImVec2 tileMin = ImGui::GetItemRectMin();
+                const ImVec2 tileMax = ImGui::GetItemRectMax();
+                const bool tileHovered = ImGui::IsMouseHoveringRect(tileMin, tileMax, false);
+                const bool tileRightClicked = tileHovered && ImGui::IsMouseReleased(ImGuiMouseButton_Right);
+
+                std::string label = entry.isUp ? std::string("..") : entry.path.filename().string();
+                ImGui::TextWrapped("%s", label.c_str());
+                const bool labelHovered = ImGui::IsItemHovered();
+                const bool labelClicked = labelHovered && ImGui::IsMouseClicked(ImGuiMouseButton_Left);
+                const bool labelDoubleClicked = labelHovered && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left);
+                const bool labelRightClicked = labelHovered && ImGui::IsMouseReleased(ImGuiMouseButton_Right);
+
+                anyEntryHovered = anyEntryHovered || tileHovered || labelHovered;
+                clicked = clicked || labelClicked;
+                doubleClicked = doubleClicked || labelDoubleClicked;
+
+                if(tileRightClicked || labelRightClicked){
+                    if(selectedPath != entry.path){
+                        selectedPath = entry.path;
+                        result.selectionChanged = true;
+                    }
+                    result.itemContextRequested = true;
+                    clicked = false;
+                    doubleClicked = false;
+                }
+
+                if(clicked && selectedPath != entry.path){
+                    selectedPath = entry.path;
+                    result.selectionChanged = true;
+                }
+
+                if(doubleClicked){
+                    if(entry.isUp){
+                        goUp();
+                        result.selectionChanged = true;
+                    }else if(entry.opensContainer){
+                        if(AssetBundle::IsBundlePath(entry.path) && !AssetBundleRegistry::IsVirtualEntryPath(entry.path)){
+                            currentDirectory = AssetBundleRegistry::MakeVirtualEntryPath(entry.path, "", true);
+                        }else{
+                            currentDirectory = entry.path;
+                        }
+                        selectedPath.clear();
+                        result.selectionChanged = true;
+                    }else if(entry.canSelect){
+                        result.selectionActivated = true;
+                    }
+                }
+
+                ImGui::PopID();
+            }
+            ImGui::EndTable();
+        }
+    }
+
+    if(ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup) &&
+       ImGui::IsMouseReleased(ImGuiMouseButton_Left) &&
+       !anyEntryHovered){
+        if(!selectedPath.empty()){
+            selectedPath.clear();
+            result.selectionChanged = true;
+        }
+    }
+    if(ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup) &&
+       ImGui::IsMouseReleased(ImGuiMouseButton_Right) &&
+       !anyEntryHovered){
+        result.backgroundContextRequested = true;
+    }
+
+    ImGui::EndChild();
+    return result;
+}
+
+const std::filesystem::path& AssetBrowserWidget::getAssetRoot() const{
+    return assetRoot;
+}
+
+const std::filesystem::path& AssetBrowserWidget::getCurrentDirectory() const{
+    return currentDirectory;
+}
+
+const std::filesystem::path& AssetBrowserWidget::getSelectedPath() const{
+    return selectedPath;
+}
+
+bool AssetBrowserWidget::isBrowsingBundle() const{
+    return AssetBundleRegistry::IsVirtualEntryPath(currentDirectory);
+}
+
+bool AssetBrowserWidget::hasSelectedAsset() const{
+    AssetTransaction tx{};
+    return tryGetSelectedTransaction(tx);
+}
+
+bool AssetBrowserWidget::tryGetSelectedTransaction(AssetTransaction& out) const{
+    out = AssetTransaction{};
+    if(selectedPath.empty()){
+        return false;
+    }
+
+    bool isDirectory = false;
+    if(!AssetDescriptorUtils::PathExists(selectedPath, &isDirectory) || isDirectory){
+        return false;
+    }
+    if(!BuildTransaction(selectedPath, assetRoot.empty() ? getAssetRootPathForPicker() : assetRoot, out)){
+        return false;
+    }
+
+    return IsKindCompatibleAny(out.kind, requestedKinds.data(), requestedKinds.size());
+}
+
+bool AssetBrowserWidget::tryGetSelectedReference(PickedAssetRef& out) const{
+    AssetTransaction tx{};
+    if(!tryGetSelectedTransaction(tx)){
+        out = PickedAssetRef{};
+        return false;
+    }
+    return ResolvePickedAssetRef(tx, out);
+}
+
 bool BuildTransaction(const std::filesystem::path& absolutePath, const std::filesystem::path& assetRoot, AssetTransaction& out){
     // Workspace/grid drawing calls this for visible entries every frame. Avoid
     // weakly_canonical() here because it performs filesystem I/O on Windows.
     std::filesystem::path normalized = absolutePath.lexically_normal();
     std::filesystem::path normalizedRoot = assetRoot.lexically_normal();
     std::error_code ec;
+
+    std::filesystem::path bundlePath;
+    std::string entryPath;
+    bool isBundleDirectory = false;
+    if(AssetBundleRegistry::DecodeVirtualEntryPath(normalized, bundlePath, entryPath, &isBundleDirectory)){
+        std::shared_ptr<AssetBundle> bundle = AssetBundleRegistry::Instance.getBundleByPath(bundlePath);
+        if(!bundle){
+            return false;
+        }
+
+        std::filesystem::path entryDisplayPath;
+        if(!entryPath.empty()){
+            std::string displayPath = entryPath;
+            if(isBundleDirectory && !displayPath.empty() && displayPath.back() == '/'){
+                displayPath.pop_back();
+            }
+            entryDisplayPath = std::filesystem::path(displayPath);
+        }
+
+        out.absolutePath = normalized;
+        out.kind = ClassifyPath(entryDisplayPath, isBundleDirectory);
+        out.isDirectory = isBundleDirectory;
+        out.extension = toLower(entryDisplayPath.extension().string());
+        out.assetRef = bundle->aliasToken();
+        if(!entryPath.empty()){
+            std::string normalizedEntry = entryPath;
+            if(!normalizedEntry.empty() && normalizedEntry.back() == '/'){
+                normalizedEntry.pop_back();
+            }
+            out.assetRef += "/" + normalizedEntry;
+        }
+        return true;
+    }
 
     std::filesystem::path rel = normalized.lexically_relative(normalizedRoot);
     if(rel.empty() || rel.string().find("..") == 0){
@@ -1088,7 +1476,7 @@ bool DrawAssetTile(const char* id, const AssetTransaction& tx, float iconSize, b
         std::shared_ptr<Texture> thumb = getImageThumbnail(tx);
         if(thumb && thumb->getID() != 0){
             drawList->AddRectFilled(squareMin, squareMax, IM_COL32(20, 20, 20, 255), 4.0f);
-            drawCenteredTextureInSquare(drawList, thumb, squareMin, squareSide, false);
+            drawCenteredTextureInSquare(drawList, thumb, squareMin, squareSide, true);
             drewThumbnail = true;
         }
     }else if(tx.kind == AssetKind::MaterialAsset || tx.kind == AssetKind::Material){
@@ -1251,7 +1639,7 @@ bool DrawAssetDropInput(const char* label, char* buffer, size_t bufferSize, Asse
     if(requestPicker){
         requestAssetPicker(ownerId, &requestedKind, 1, std::string(buffer));
     }
-    drawAssetPickerPopup();
+    drawAssetPickerWindow();
 
     std::string selectedAssetRef;
     if(consumeAssetPickerSelection(ownerId, selectedAssetRef)){
@@ -1330,7 +1718,7 @@ bool DrawAssetDropInput(const char* label, std::string& value, const AssetKind* 
     if(requestPicker){
         requestAssetPicker(ownerId, requestedKinds, requestedKindCount, value);
     }
-    drawAssetPickerPopup();
+    drawAssetPickerWindow();
 
     std::string selectedAssetRef;
     if(consumeAssetPickerSelection(ownerId, selectedAssetRef)){

@@ -1,0 +1,5 @@
+name=fence.model.asset
+@link-parent=@assets/models/fence/fence.obj
+source_model=@assets/models/fence/fence.obj
+default_material=
+force_smooth_normals=1

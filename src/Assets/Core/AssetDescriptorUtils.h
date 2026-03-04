@@ -12,10 +12,14 @@ bool IsAssetRef(const std::string& value);
 std::string MakeAssetRefFromRelative(const std::string& relative);
 bool AssetRefToAbsolutePath(const std::string& assetRef, std::filesystem::path& outPath);
 std::string AbsolutePathToAssetRef(const std::filesystem::path& absolutePath);
+bool PathExists(const std::filesystem::path& path, bool* outIsDirectory = nullptr);
 
 bool ReadTextAsset(const std::string& assetRef, std::string& outText, std::string* outError = nullptr);
+bool WriteTextAsset(const std::string& assetRef, const std::string& text, std::string* outError = nullptr);
 bool ReadTextPath(const std::filesystem::path& path, std::string& outText, std::string* outError = nullptr);
+bool WriteTextPath(const std::filesystem::path& path, const std::string& text, std::string* outError = nullptr);
 bool ReadTextRefOrPath(const std::string& refOrPath, std::string& outText, std::string* outError = nullptr);
+bool WriteTextRefOrPath(const std::string& refOrPath, const std::string& text, std::string* outError = nullptr);
 
 } // namespace AssetDescriptorUtils
 

@@ -25,8 +25,20 @@ namespace {
         return AssetDescriptorUtils::ReadTextPath(path, outText, outError);
     }
 
+    bool writeTextPath(const std::filesystem::path& path, const std::string& text, std::string* outError){
+        return AssetDescriptorUtils::WriteTextPath(path, text, outError);
+    }
+
+    bool writeTextAsset(const std::string& assetRef, const std::string& text, std::string* outError){
+        return AssetDescriptorUtils::WriteTextAsset(assetRef, text, outError);
+    }
+
     bool toAbsolutePathFromAssetRef(const std::string& assetRef, std::filesystem::path& outPath){
         return AssetDescriptorUtils::AssetRefToAbsolutePath(assetRef, outPath);
+    }
+
+    bool pathExists(const std::filesystem::path& path, bool* outIsDirectory = nullptr){
+        return AssetDescriptorUtils::PathExists(path, outIsDirectory);
     }
 
     bool isSkyboxAssetPathInternal(const std::filesystem::path& path){
@@ -109,8 +121,8 @@ bool LoadFromAbsolutePath(const std::filesystem::path& path, SkyboxAssetData& ou
         return false;
     }
 
-    std::error_code ec;
-    if(!std::filesystem::exists(path, ec) || std::filesystem::is_directory(path, ec)){
+    bool isDirectory = false;
+    if(!pathExists(path, &isDirectory) || isDirectory){
         if(outError){
             *outError = "Skybox asset does not exist: " + path.generic_string();
         }
@@ -158,56 +170,29 @@ bool SaveToAbsolutePath(const std::filesystem::path& path, const SkyboxAssetData
         return false;
     }
 
-    const std::filesystem::path parent = path.parent_path();
-    std::error_code ec;
-    if(!parent.empty() && !std::filesystem::exists(parent, ec)){
-        if(!std::filesystem::create_directories(parent, ec)){
-            if(outError){
-                *outError = "Failed to create directory: " + parent.generic_string();
-            }
-            return false;
-        }
-    }
-
-    auto writer = std::make_unique<FileWriter>(new File(path.string()));
-    if(!writer){
-        if(outError){
-            *outError = "Failed to open file for write: " + path.generic_string();
-        }
-        return false;
-    }
-
     const std::string name = data.name.empty() ? path.filename().string() : data.name;
-    writer->putln(StringUtils::Format("name=%s", name.c_str()).c_str());
-    writer->putln(StringUtils::Format("right=%s", data.rightFaceRef.c_str()).c_str());
-    writer->putln(StringUtils::Format("left=%s", data.leftFaceRef.c_str()).c_str());
-    writer->putln(StringUtils::Format("top=%s", data.topFaceRef.c_str()).c_str());
-    writer->putln(StringUtils::Format("bottom=%s", data.bottomFaceRef.c_str()).c_str());
-    writer->putln(StringUtils::Format("front=%s", data.frontFaceRef.c_str()).c_str());
-    writer->putln(StringUtils::Format("back=%s", data.backFaceRef.c_str()).c_str());
-
-    if(!writer->flush()){
-        if(outError){
-            *outError = "Failed to write file: " + path.generic_string();
-        }
-        writer->close();
-        return false;
-    }
-
-    writer->close();
-    AssetManager::Instance.unmanageAsset(path.generic_string());
-    return true;
+    std::string text;
+    text += StringUtils::Format("name=%s\n", name.c_str());
+    text += StringUtils::Format("right=%s\n", data.rightFaceRef.c_str());
+    text += StringUtils::Format("left=%s\n", data.leftFaceRef.c_str());
+    text += StringUtils::Format("top=%s\n", data.topFaceRef.c_str());
+    text += StringUtils::Format("bottom=%s\n", data.bottomFaceRef.c_str());
+    text += StringUtils::Format("front=%s\n", data.frontFaceRef.c_str());
+    text += StringUtils::Format("back=%s\n", data.backFaceRef.c_str());
+    return writeTextPath(path, text, outError);
 }
 
 bool SaveToAssetRef(const std::string& assetRef, const SkyboxAssetData& data, std::string* outError){
-    std::filesystem::path path;
-    if(!toAbsolutePathFromAssetRef(assetRef, path)){
-        if(outError){
-            *outError = "Invalid skybox asset path: " + assetRef;
-        }
-        return false;
-    }
-    return SaveToAbsolutePath(path, data, outError);
+    const std::string name = data.name.empty() ? std::filesystem::path(assetRef).filename().string() : data.name;
+    std::string text;
+    text += StringUtils::Format("name=%s\n", name.c_str());
+    text += StringUtils::Format("right=%s\n", data.rightFaceRef.c_str());
+    text += StringUtils::Format("left=%s\n", data.leftFaceRef.c_str());
+    text += StringUtils::Format("top=%s\n", data.topFaceRef.c_str());
+    text += StringUtils::Format("bottom=%s\n", data.bottomFaceRef.c_str());
+    text += StringUtils::Format("front=%s\n", data.frontFaceRef.c_str());
+    text += StringUtils::Format("back=%s\n", data.backFaceRef.c_str());
+    return writeTextAsset(assetRef, text, outError);
 }
 
 bool HasRequiredFaces(const SkyboxAssetData& data){

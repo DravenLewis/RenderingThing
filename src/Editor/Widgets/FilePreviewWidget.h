@@ -11,6 +11,7 @@
 #include "Assets/Descriptors/SkyboxAsset.h"
 #include "Assets/Importers/MtlMaterialImporter.h"
 #include "Assets/Descriptors/ShaderAsset.h"
+#include "Assets/Bundles/AssetBundle.h"
 
 struct FrameBuffer;
 class Texture;
@@ -29,6 +30,7 @@ class FilePreviewWidget {
 
     private:
         void reloadFromDisk(bool force = false);
+        void drawBundleAssetEditor();
         void drawShaderAssetEditor();
         void drawSkyboxAssetEditor();
         void drawMaterialAssetEditor();
@@ -52,6 +54,7 @@ class FilePreviewWidget {
         std::filesystem::file_time_type lastWriteTime{};
         int lastExternalWriteTimeValidationFrame = -100000;
         bool hasLoadedData = false;
+        bool isBundleAssetFile = false;
         bool isShaderAssetFile = false;
         bool isSkyboxAssetFile = false;
         bool isMaterialAssetFile = false;
@@ -65,6 +68,12 @@ class FilePreviewWidget {
         std::filesystem::path errorByteDumpPath;
         std::filesystem::file_time_type errorByteDumpWriteTime{};
         char cacheName[128] = {};
+        std::shared_ptr<AssetBundle> bundleAsset;
+        char bundleAlias[128] = {};
+        char bundleRootEntry[256] = {};
+        char bundleAddEntryPath[256] = {};
+        char bundleAddSourceRef[256] = {};
+        bool bundleAssetSavePending = false;
 
         ShaderAssetData bundledShaderData;
         SkyboxAssetData skyboxData;

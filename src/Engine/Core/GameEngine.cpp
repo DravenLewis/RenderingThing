@@ -5,6 +5,7 @@
 #include <algorithm>
 
 #include "App/Demo/DefaultState.h"
+#include "Assets/Bundles/AssetBundleRegistry.h"
 #include "Foundation/Logging/Logbot.h"
 #include "Editor/Core/ImGuiLayer.h"
 #include "Editor/Core/EditorScene.h"
@@ -130,6 +131,14 @@ void GameEngine::init(){
     windowPtr->addWindowEventHandler([this](SDL_Event& event){
         processEvents(event);
     });
+
+    std::string bundleScanError;
+    const size_t mountedBundleCount = AssetBundleRegistry::Instance.scanKnownLocations(&bundleScanError);
+    if(mountedBundleCount > 0){
+        LogBot.Log(LOG_INFO, "Mounted %llu asset bundle(s).", static_cast<unsigned long long>(mountedBundleCount));
+    }else if(!bundleScanError.empty()){
+        LogBot.Log(LOG_WARN, "Asset bundle scan completed without mounted bundles: %s", bundleScanError.c_str());
+    }
 
     ImGuiLayer::Init(windowPtr.get());
     CrashReporter::Install();

@@ -6,20 +6,15 @@
       "name": "Main"
     },
     "dependencies": [
-      "@assets/NewSkybox.skybox.asset",
-      "@assets/images/skybox/default/skybox_default_back.png",
-      "@assets/images/skybox/default/skybox_default_bottom.png",
-      "@assets/images/skybox/default/skybox_default_front.png",
-      "@assets/images/skybox/default/skybox_default_left.png",
-      "@assets/images/skybox/default/skybox_default_right.png",
-      "@assets/images/skybox/default/skybox_default_top.png",
+      "@assets/models/fence/fence.model.asset",
+      "@assets/models/fence/fence.obj",
       "@assets/models/lucille/lucille.obj",
       "@assets/models/theorb/orb.obj",
       "@assets/sample_materials/Gold01.mat.asset"
     ],
     "sceneSettings": {
       "outlineEnabled": true,
-      "selectedEntitySnapshotId": 30,
+      "selectedEntitySnapshotId": 28,
       "preferredCameraSnapshotId": 20
     },
     "snapshot": {
@@ -35,10 +30,9 @@
         28,
         29,
         30,
-        31,
-        32,
         33,
-        34
+        38,
+        39
       ],
       "entities": [
         {
@@ -50,14 +44,14 @@
               "version": 1,
               "payload": {
                 "position": [
-                  0.0,
-                  1.5,
-                  8.0
+                  -17.69217872619629,
+                  1.4999980926513672,
+                  25.984539031982422
                 ],
                 "rotationEuler": [
-                  -180.0,
-                  0.000005008956122765085,
-                  -180.0
+                  180.0,
+                  -87.27782440185547,
+                  180.0
                 ],
                 "scale": [
                   1.0,
@@ -76,7 +70,7 @@
                   1.0,
                   1.0
                 ],
-                "radius": 0.4000000059604645,
+                "radius": 1.2999999523162842,
                 "height": 1.0
               }
             },
@@ -89,7 +83,7 @@
                   "isOrtho": false,
                   "nearPlane": 0.10000000149011612,
                   "farPlane": 1000.0,
-                  "fov": 45.0,
+                  "fov": 54.400001525878906,
                   "aspect": 1.7777777910232544,
                   "viewPlanePosition": [
                     0.0,
@@ -106,7 +100,7 @@
               "type": "SkyboxComponent",
               "version": 1,
               "payload": {
-                "skyboxAssetRef": "@assets/NewSkybox.skybox.asset"
+                "skyboxAssetRef": "@HDSkybox/HDCloudy.skybox.asset"
               }
             },
             {
@@ -114,23 +108,24 @@
               "version": 1,
               "payload": {
                 "enabled": true,
-                "radiusPx": 2.0,
-                "depthRadius": 0.014999999664723873,
-                "bias": 0.0007999999797903001,
-                "intensity": 0.6000000238418579,
-                "giBoost": 0.029999999329447746,
-                "sampleCount": 4
+                "radiusPx": 12.0,
+                "depthRadius": 0.20000000298023224,
+                "bias": 0.0013000000035390258,
+                "intensity": 2.0,
+                "giBoost": 0.17000000178813934,
+                "sampleCount": 5
               }
             },
             {
               "type": "DepthOfFieldComponent",
-              "version": 1,
+              "version": 2,
               "payload": {
-                "enabled": false,
-                "focusDistance": 14.0,
-                "focusRange": 10.0,
-                "blurStrength": 0.3499999940395355,
-                "maxBlurPx": 4.0,
+                "enabled": true,
+                "adaptiveFocus": false,
+                "focusDistance": 1.0,
+                "focusRange": 35.0,
+                "blurStrength": 0.9800000190734863,
+                "maxBlurPx": 1.899999976158142,
                 "sampleCount": 5
               }
             },
@@ -138,7 +133,7 @@
               "type": "AntiAliasingComponent",
               "version": 1,
               "payload": {
-                "preset": 2
+                "preset": 3
               }
             }
           ]
@@ -153,7 +148,7 @@
               "payload": {
                 "position": [
                   0.0,
-                  -5.0,
+                  -2.311448097229004,
                   0.0
                 ],
                 "rotationEuler": [
@@ -170,7 +165,7 @@
             },
             {
               "type": "MeshRendererComponent",
-              "version": 1,
+              "version": 3,
               "payload": {
                 "visible": true,
                 "enableBackfaceCulling": true,
@@ -358,7 +353,7 @@
             },
             {
               "type": "MeshRendererComponent",
-              "version": 1,
+              "version": 3,
               "payload": {
                 "visible": true,
                 "enableBackfaceCulling": true,
@@ -8291,7 +8286,7 @@
             },
             {
               "type": "MeshRendererComponent",
-              "version": 1,
+              "version": 3,
               "payload": {
                 "visible": true,
                 "enableBackfaceCulling": true,
@@ -8584,8 +8579,8 @@
                         0.0
                       ],
                       "rotationEuler": [
-                        90.0,
-                        -89.96043395996094,
+                        -90.0,
+                        89.91606903076172,
                         0.0
                       ],
                       "scale": [
@@ -8708,8 +8703,8 @@
                         0.0
                       ],
                       "rotationEuler": [
-                        90.0,
-                        89.96043395996094,
+                        269.9940185546875,
+                        -90.0,
                         0.0
                       ],
                       "scale": [
@@ -8833,8 +8828,8 @@
                       ],
                       "rotationEuler": [
                         90.0,
-                        -0.000005008956122765085,
-                        0.000005008956577512436
+                        -0.000005122641596244648,
+                        180.0
                       ],
                       "scale": [
                         1.0,
@@ -8958,7 +8953,7 @@
                       "rotationEuler": [
                         -90.0,
                         -0.000005008956122765085,
-                        180.0
+                        0.000005008956577512436
                       ],
                       "scale": [
                         1.0,
@@ -9104,7 +9099,7 @@
             },
             {
               "type": "MeshRendererComponent",
-              "version": 1,
+              "version": 3,
               "payload": {
                 "visible": true,
                 "enableBackfaceCulling": true,
@@ -9163,7 +9158,7 @@
             },
             {
               "type": "MeshRendererComponent",
-              "version": 1,
+              "version": 3,
               "payload": {
                 "visible": true,
                 "enableBackfaceCulling": true,
@@ -9188,7 +9183,60 @@
                     1.0
                   ]
                 },
-                "modelPartMaterialAssetRefs": []
+                "modelPartMaterialAssetRefs": [
+                  ""
+                ],
+                "modelPartEmbeddedMaterials": [
+                  {
+                    "embeddedMaterial": {
+                      "type": "PBR",
+                      "shaderAssetRef": "",
+                      "color": [
+                        0.0,
+                        0.9019607901573181,
+                        0.0,
+                        1.0
+                      ],
+                      "uv": [
+                        0.0,
+                        0.0
+                      ],
+                      "textureRef": "",
+                      "metallic": 1.0,
+                      "roughness": 0.6269999742507935,
+                      "normalScale": 1.0,
+                      "heightScale": 0.019999999552965164,
+                      "emissiveColor": [
+                        0.0,
+                        0.0,
+                        0.0
+                      ],
+                      "emissiveStrength": 1.0,
+                      "occlusionStrength": 1.0,
+                      "envStrength": 1.0,
+                      "useEnvMap": 1,
+                      "uvScale": [
+                        1.0,
+                        1.0
+                      ],
+                      "uvOffset": [
+                        0.0,
+                        0.0
+                      ],
+                      "alphaCutoff": 0.5,
+                      "useAlphaClip": 0,
+                      "baseColorTexRef": "@assets/images/golden_material/DirtyGold01_Albedo.png",
+                      "roughnessTexRef": "@assets/images/golden_material/DirtyGold01_Roughness.png",
+                      "metallicRoughnessTexRef": "@assets/images/golden_material/DirtyGold01_Metallic.png",
+                      "normalTexRef": "@assets/images/golden_material/DirtyGold01_Normal.png",
+                      "heightTexRef": "@assets/images/golden_material/DirtyGold01_Height.png",
+                      "emissiveTexRef": "",
+                      "occlusionTexRef": "@assets/images/golden_material/DirtyGold01_AO.png",
+                      "castsShadows": true,
+                      "receivesShadows": true
+                    }
+                  }
+                ]
               }
             }
           ]
@@ -9202,9 +9250,9 @@
               "version": 1,
               "payload": {
                 "position": [
-                  -7.0,
-                  -2.0,
-                  10.0
+                  -22.249032974243164,
+                  -0.31661295890808105,
+                  1.318878173828125
                 ],
                 "rotationEuler": [
                   0.0,
@@ -9220,7 +9268,7 @@
             },
             {
               "type": "MeshRendererComponent",
-              "version": 1,
+              "version": 3,
               "payload": {
                 "visible": true,
                 "enableBackfaceCulling": true,
@@ -9653,19 +9701,19 @@
         },
         {
           "id": 27,
-          "name": "SunLight",
+          "name": "KeyLight",
           "components": [
             {
               "type": "TransformComponent",
               "version": 1,
               "payload": {
                 "position": [
-                  0.0,
-                  0.0,
-                  0.0
+                  -14.829000473022461,
+                  6.226563453674316,
+                  27.887346267700195
                 ],
                 "rotationEuler": [
-                  90.0,
+                  0.0,
                   -0.0,
                   0.0
                 ],
@@ -9677,67 +9725,17 @@
               }
             },
             {
-              "type": "LightComponent",
+              "type": "BoundsComponent",
               "version": 1,
               "payload": {
-                "light": {
-                  "type": 1,
-                  "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                  ],
-                  "direction": [
-                    0.0,
-                    -1.0,
-                    5.960465188081798e-8
-                  ],
-                  "color": [
-                    1.0,
-                    0.8156862854957581,
-                    0.7058823704719543,
-                    1.0
-                  ],
-                  "intensity": 3.0,
-                  "range": 20.0,
-                  "falloff": 2.0,
-                  "spotAngle": 45.0,
-                  "shadowRange": 90.0,
-                  "castsShadows": true,
-                  "shadowType": 2,
-                  "shadowBias": 0.0035000001080334187,
-                  "shadowNormalBias": 0.014999999664723873,
-                  "shadowStrength": 1.0
-                },
-                "syncTransform": false,
-                "syncDirection": true
-              }
-            }
-          ]
-        },
-        {
-          "id": 28,
-          "name": "KeyLight",
-          "components": [
-            {
-              "type": "TransformComponent",
-              "version": 1,
-              "payload": {
-                "position": [
-                  4.5,
-                  6.0,
-                  2.0
-                ],
-                "rotationEuler": [
-                  0.0,
-                  -0.0,
-                  0.0
-                ],
-                "scale": [
+                "type": 1,
+                "size": [
                   1.0,
                   1.0,
                   1.0
-                ]
+                ],
+                "radius": 18.0,
+                "height": 1.0
               }
             },
             {
@@ -9747,9 +9745,9 @@
                 "light": {
                   "type": 0,
                   "position": [
-                    4.5,
-                    6.0,
-                    2.0
+                    -14.829000473022461,
+                    6.226563453674316,
+                    27.887346267700195
                   ],
                   "direction": [
                     0.0,
@@ -9758,8 +9756,8 @@
                   ],
                   "color": [
                     1.0,
-                    0.9019607901573181,
-                    0.7058823704719543,
+                    0.6666666269302368,
+                    0.0,
                     1.0
                   ],
                   "intensity": 6.5,
@@ -9780,7 +9778,7 @@
           ]
         },
         {
-          "id": 29,
+          "id": 28,
           "name": "FillLight",
           "components": [
             {
@@ -9802,6 +9800,20 @@
                   1.0,
                   1.0
                 ]
+              }
+            },
+            {
+              "type": "BoundsComponent",
+              "version": 1,
+              "payload": {
+                "type": 1,
+                "size": [
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "radius": 20.0,
+                "height": 1.0
               }
             },
             {
@@ -9844,7 +9856,7 @@
           ]
         },
         {
-          "id": 30,
+          "id": 29,
           "name": "RimLight",
           "components": [
             {
@@ -9922,8 +9934,207 @@
           ]
         },
         {
+          "id": 30,
+          "name": "ENV Lights",
+          "components": [
+            {
+              "type": "TransformComponent",
+              "version": 1,
+              "payload": {
+                "position": [
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "rotationEuler": [
+                  0.0,
+                  -0.0,
+                  0.0
+                ],
+                "scale": [
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              }
+            }
+          ]
+        },
+        {
           "id": 31,
+          "name": "SunLight",
+          "parentId": 30,
+          "components": [
+            {
+              "type": "TransformComponent",
+              "version": 1,
+              "payload": {
+                "position": [
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "rotationEuler": [
+                  90.0,
+                  -0.0,
+                  81.48393249511719
+                ],
+                "scale": [
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              }
+            },
+            {
+              "type": "LightComponent",
+              "version": 1,
+              "payload": {
+                "light": {
+                  "type": 1,
+                  "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "direction": [
+                    0.988974392414093,
+                    -0.1480867862701416,
+                    0.0
+                  ],
+                  "color": [
+                    1.0,
+                    0.6190849542617798,
+                    0.39215683937072754,
+                    1.0
+                  ],
+                  "intensity": 5.599999904632568,
+                  "range": 20.0,
+                  "falloff": 2.0,
+                  "spotAngle": 45.0,
+                  "shadowRange": 90.0,
+                  "castsShadows": true,
+                  "shadowType": 2,
+                  "shadowBias": 0.0035000001080334187,
+                  "shadowNormalBias": 0.014999999664723873,
+                  "shadowStrength": 1.0
+                },
+                "syncTransform": true,
+                "syncDirection": true
+              }
+            }
+          ]
+        },
+        {
+          "id": 32,
+          "name": "Ambient Light",
+          "parentId": 30,
+          "components": [
+            {
+              "type": "TransformComponent",
+              "version": 1,
+              "payload": {
+                "position": [
+                  0.0,
+                  2.0,
+                  0.0
+                ],
+                "rotationEuler": [
+                  90.92192840576172,
+                  1.0868866443634033,
+                  -49.6904182434082
+                ],
+                "scale": [
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              }
+            },
+            {
+              "type": "BoundsComponent",
+              "version": 1,
+              "payload": {
+                "type": 1,
+                "size": [
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "radius": 12.0,
+                "height": 1.0
+              }
+            },
+            {
+              "type": "LightComponent",
+              "version": 1,
+              "payload": {
+                "light": {
+                  "type": 1,
+                  "position": [
+                    0.0,
+                    2.0,
+                    0.0
+                  ],
+                  "direction": [
+                    -0.7626588940620422,
+                    -0.6466009020805359,
+                    -0.016086939722299576
+                  ],
+                  "color": [
+                    0.42344236373901367,
+                    0.36764705181121826,
+                    1.0,
+                    1.0
+                  ],
+                  "intensity": 1.0,
+                  "range": 20.0,
+                  "falloff": 2.0,
+                  "spotAngle": 45.0,
+                  "shadowRange": 20.0,
+                  "castsShadows": false,
+                  "shadowType": 2,
+                  "shadowBias": 0.0024999999441206455,
+                  "shadowNormalBias": 0.004999999888241291,
+                  "shadowStrength": 1.0
+                },
+                "syncTransform": true,
+                "syncDirection": true
+              }
+            }
+          ]
+        },
+        {
+          "id": 33,
+          "name": "Light Cluster",
+          "components": [
+            {
+              "type": "TransformComponent",
+              "version": 1,
+              "payload": {
+                "position": [
+                  -21.98199462890625,
+                  0.18003606796264648,
+                  0.0
+                ],
+                "rotationEuler": [
+                  0.0,
+                  -0.0,
+                  0.0
+                ],
+                "scale": [
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": 34,
           "name": "TestRedLight",
+          "parentId": 33,
           "components": [
             {
               "type": "TransformComponent",
@@ -9947,14 +10158,28 @@
               }
             },
             {
+              "type": "BoundsComponent",
+              "version": 1,
+              "payload": {
+                "type": 1,
+                "size": [
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "radius": 8.0,
+                "height": 1.0
+              }
+            },
+            {
               "type": "LightComponent",
               "version": 1,
               "payload": {
                 "light": {
                   "type": 0,
                   "position": [
-                    -2.0,
-                    2.0,
+                    -23.98199462890625,
+                    2.1800360679626465,
                     -2.0
                   ],
                   "direction": [
@@ -9986,8 +10211,9 @@
           ]
         },
         {
-          "id": 32,
+          "id": 35,
           "name": "TestGreenLight",
+          "parentId": 33,
           "components": [
             {
               "type": "TransformComponent",
@@ -10011,14 +10237,28 @@
               }
             },
             {
+              "type": "BoundsComponent",
+              "version": 1,
+              "payload": {
+                "type": 1,
+                "size": [
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "radius": 8.0,
+                "height": 1.0
+              }
+            },
+            {
               "type": "LightComponent",
               "version": 1,
               "payload": {
                 "light": {
                   "type": 0,
                   "position": [
-                    2.0,
-                    2.0,
+                    -19.98199462890625,
+                    2.1800360679626465,
                     -2.0
                   ],
                   "direction": [
@@ -10050,8 +10290,9 @@
           ]
         },
         {
-          "id": 33,
+          "id": 36,
           "name": "TestBlueLight",
+          "parentId": 33,
           "components": [
             {
               "type": "TransformComponent",
@@ -10075,14 +10316,28 @@
               }
             },
             {
+              "type": "BoundsComponent",
+              "version": 1,
+              "payload": {
+                "type": 1,
+                "size": [
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "radius": 8.0,
+                "height": 1.0
+              }
+            },
+            {
               "type": "LightComponent",
               "version": 1,
               "payload": {
                 "light": {
                   "type": 0,
                   "position": [
-                    -2.0,
-                    2.0,
+                    -23.98199462890625,
+                    2.1800360679626465,
                     2.0
                   ],
                   "direction": [
@@ -10114,8 +10369,9 @@
           ]
         },
         {
-          "id": 34,
+          "id": 37,
           "name": "TestYellowLight",
+          "parentId": 33,
           "components": [
             {
               "type": "TransformComponent",
@@ -10139,14 +10395,28 @@
               }
             },
             {
+              "type": "BoundsComponent",
+              "version": 1,
+              "payload": {
+                "type": 1,
+                "size": [
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "radius": 8.0,
+                "height": 1.0
+              }
+            },
+            {
               "type": "LightComponent",
               "version": 1,
               "payload": {
                 "light": {
                   "type": 0,
                   "position": [
-                    2.0,
-                    2.0,
+                    -19.98199462890625,
+                    2.1800360679626465,
                     2.0
                   ],
                   "direction": [
@@ -10173,6 +10443,178 @@
                 },
                 "syncTransform": true,
                 "syncDirection": false
+              }
+            }
+          ]
+        },
+        {
+          "id": 38,
+          "name": "Lucille",
+          "components": [
+            {
+              "type": "TransformComponent",
+              "version": 1,
+              "payload": {
+                "position": [
+                  17.30986785888672,
+                  -1.5847370624542236,
+                  25.564611434936523
+                ],
+                "rotationEuler": [
+                  -41.72523498535156,
+                  -44.93202590942383,
+                  10.592222213745117
+                ],
+                "scale": [
+                  3.575000047683716,
+                  3.575000047683716,
+                  3.575000047683716
+                ]
+              }
+            },
+            {
+              "type": "MeshRendererComponent",
+              "version": 3,
+              "payload": {
+                "visible": true,
+                "enableBackfaceCulling": true,
+                "modelAssetRef": "",
+                "modelSourceRef": "@assets/models/lucille/lucille.obj",
+                "modelForceSmoothNormals": false,
+                "materialAssetRef": "",
+                "localOffset": {
+                  "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "rotationEuler": [
+                    0.0,
+                    -0.0,
+                    0.0
+                  ],
+                  "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                  ]
+                },
+                "modelPartMaterialAssetRefs": [
+                  ""
+                ],
+                "modelPartEmbeddedMaterials": [
+                  {
+                    "embeddedMaterial": {
+                      "type": "PBR",
+                      "shaderAssetRef": "",
+                      "color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                      ],
+                      "uv": [
+                        0.0,
+                        0.0
+                      ],
+                      "textureRef": "",
+                      "metallic": 0.0,
+                      "roughness": 1.0,
+                      "normalScale": 1.0,
+                      "heightScale": 0.009999999776482582,
+                      "emissiveColor": [
+                        0.0,
+                        0.0,
+                        0.0
+                      ],
+                      "emissiveStrength": 1.0,
+                      "occlusionStrength": 1.0,
+                      "envStrength": 1.0,
+                      "useEnvMap": 1,
+                      "uvScale": [
+                        1.0,
+                        1.0
+                      ],
+                      "uvOffset": [
+                        0.0,
+                        0.0
+                      ],
+                      "alphaCutoff": 0.5,
+                      "useAlphaClip": 0,
+                      "baseColorTexRef": "@assets/images/Materials/StoneWall03/MAT_SW_ALBEDO.png",
+                      "roughnessTexRef": "",
+                      "metallicRoughnessTexRef": "@assets/images/Materials/StoneWall03/MAT_SW_ROUGHNESS.png",
+                      "normalTexRef": "@assets/images/Materials/StoneWall03/MAT_SW_NORMAL.png",
+                      "heightTexRef": "@assets/images/Materials/StoneWall03/MAT_SW_HEIGHT.png",
+                      "emissiveTexRef": "",
+                      "occlusionTexRef": "@assets/images/Materials/StoneWall03/MAT_SW_AO.png",
+                      "castsShadows": true,
+                      "receivesShadows": true
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": 39,
+          "name": "Fence",
+          "components": [
+            {
+              "type": "TransformComponent",
+              "version": 1,
+              "payload": {
+                "position": [
+                  0.0,
+                  -2.2723448276519775,
+                  5.1847991943359375
+                ],
+                "rotationEuler": [
+                  0.0,
+                  -0.0,
+                  0.0
+                ],
+                "scale": [
+                  0.6449999809265137,
+                  0.6449999809265137,
+                  0.6449999809265137
+                ]
+              }
+            },
+            {
+              "type": "MeshRendererComponent",
+              "version": 3,
+              "payload": {
+                "visible": true,
+                "enableBackfaceCulling": true,
+                "modelAssetRef": "@assets/models/fence/fence.model.asset",
+                "modelSourceRef": "@assets/models/fence/fence.obj",
+                "modelForceSmoothNormals": true,
+                "materialAssetRef": "",
+                "localOffset": {
+                  "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "rotationEuler": [
+                    0.0,
+                    -0.0,
+                    0.0
+                  ],
+                  "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                  ]
+                },
+                "modelPartMaterialAssetRefs": [
+                  "",
+                  "",
+                  "",
+                  ""
+                ]
               }
             }
           ]

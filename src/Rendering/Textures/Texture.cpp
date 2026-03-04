@@ -100,8 +100,8 @@ void Texture::FlipVerticallyOnLoad(int i){
     stbi_set_flip_vertically_on_load(i);
 }
 
-std::shared_ptr<Texture> Texture::Load(PAsset asset, GLenum imageHint){
-    auto cpuImg = LoadImage(asset);
+std::shared_ptr<Texture> Texture::Load(PAsset asset, GLenum imageHint, bool flipVertically){
+    auto cpuImg = LoadImage(asset, flipVertically);
     if(!cpuImg){
         return nullptr;
     }
@@ -116,7 +116,7 @@ std::shared_ptr<Texture> Texture::Load(PAsset asset, GLenum imageHint){
     return texture;
 }
 
-std::shared_ptr<Graphics::Image::Image> Texture::LoadImage(PAsset asset){
+std::shared_ptr<Graphics::Image::Image> Texture::LoadImage(PAsset asset, bool flipVertically){
     if(!asset){
         textureLogger.Log(LOG_ERRO,"Asset was invalid (nullptr)");
         return nullptr;
@@ -135,6 +135,7 @@ std::shared_ptr<Graphics::Image::Image> Texture::LoadImage(PAsset asset){
 
     int stb_w, stb_h, stb_channels;
 
+    stbi_set_flip_vertically_on_load_thread(flipVertically ? 1 : 0);
     unsigned char * stb_integer_data = stbi_load_from_memory(
         reinterpret_cast<const unsigned char*>(fileBuffer.data()),
         static_cast<int>(fileBuffer.size()),
@@ -143,6 +144,7 @@ std::shared_ptr<Graphics::Image::Image> Texture::LoadImage(PAsset asset){
         &stb_channels,
         4
     );
+    stbi_set_flip_vertically_on_load_thread(0);
 
     if(!stb_integer_data){
         textureLogger.Log(LOG_ERRO,"STB Faild to decode texture data for Texture: %s",asset->getFileHandle()->getFileName().c_str());
