@@ -4,6 +4,7 @@
 #include "Rendering/Lighting/ShadowRenderer.h"
 #include "Foundation/Logging/Logbot.h"
 #include "Rendering/Textures/SkyBox.h"
+#include "Assets/Descriptors/SkyboxAsset.h"
 #include "ECS/Core/ECSComponents.h"
 #include "Foundation/Math/Color.h"
 #include "Engine/Core/GameEngine.h"
@@ -258,7 +259,11 @@ Math3D::Mat4 Scene::buildWorldMatrix(NeoECS::ECSEntity* entity, NeoECS::ECSCompo
 void Scene::updateECS(float deltaTime){
     if(!ecsInstance) return;
     ecsInstance->update(deltaTime);
+    refreshRenderState();
+}
 
+void Scene::refreshRenderState(){
+    if(!ecsInstance) return;
     auto snapshotStart = std::chrono::steady_clock::now();
 
     auto mainScreen = getMainScreen();
@@ -409,6 +414,10 @@ void Scene::updateECS(float deltaTime){
     debugStats.lightCount.store(static_cast<int>(snapshot.lights.size()), std::memory_order_relaxed);
 }
 
+void Scene::renderViewportContents(){
+    render3DPass();
+}
+
 void Scene::updateActiveCameraEffects(NeoECS::ECSEntity* activeCameraEntity, NeoECS::ECSComponentManager* manager){
     auto screen = getMainScreen();
     if(!screen){
@@ -426,6 +435,36 @@ void Scene::updateActiveCameraEffects(NeoECS::ECSEntity* activeCameraEntity, Neo
     }
 
     const CameraSettings& settings = camComponent->camera->getSettings();
+    auto env = screen->getEnvironment();
+
+    if(auto* skybox = manager->getECSComponent<SkyboxComponent>(activeCameraEntity)){
+        if(skybox->skyboxAssetRef.empty()){
+            skybox->loadedSkyboxAssetRef.clear();
+            skybox->runtimeSkyBox.reset();
+            if(env){
+                env->setSkyBox(nullptr);
+            }
+        }else{
+            if(!skybox->runtimeSkyBox || skybox->loadedSkyboxAssetRef != skybox->skyboxAssetRef){
+                std::string error;
+                auto runtimeSkybox = SkyboxAssetIO::InstantiateSkyBoxFromRef(skybox->skyboxAssetRef, &error);
+                if(!runtimeSkybox){
+                    if(!error.empty()){
+                        LogBot.Log(LOG_WARN, "Failed to load skybox '%s': %s", skybox->skyboxAssetRef.c_str(), error.c_str());
+                    }
+                    skybox->loadedSkyboxAssetRef.clear();
+                    skybox->runtimeSkyBox.reset();
+                }else{
+                    skybox->runtimeSkyBox = runtimeSkybox;
+                    skybox->loadedSkyboxAssetRef = skybox->skyboxAssetRef;
+                }
+            }
+
+            if(env && skybox->runtimeSkyBox){
+                env->setSkyBox(skybox->runtimeSkyBox);
+            }
+        }
+    }
 
     if(auto* ssao = manager->getECSComponent<SSAOComponent>(activeCameraEntity)){
         auto effect = ssao->getEffectForCamera(settings);

@@ -2,6 +2,7 @@
 
 #include "ECS/Core/ECSComponents.h"
 #include "Assets/Core/Asset.h"
+#include "Assets/Descriptors/SkyboxAsset.h"
 
 #include <algorithm>
 #include <set>
@@ -54,6 +55,22 @@ void CollectAssetDependenciesFromEntities(
         if(auto* scripts = manager->getECSComponent<ScriptComponent>(entity)){
             for(const std::string& scriptRef : scripts->scriptAssetRefs){
                 addDependencyIfValid(scriptRef, deps);
+            }
+        }
+
+        if(auto* skybox = manager->getECSComponent<SkyboxComponent>(entity)){
+            addDependencyIfValid(skybox->skyboxAssetRef, deps);
+
+            if(!skybox->skyboxAssetRef.empty()){
+                SkyboxAssetData skyboxData;
+                if(SkyboxAssetIO::LoadFromAssetRef(skybox->skyboxAssetRef, skyboxData, nullptr)){
+                    addDependencyIfValid(skyboxData.rightFaceRef, deps);
+                    addDependencyIfValid(skyboxData.leftFaceRef, deps);
+                    addDependencyIfValid(skyboxData.topFaceRef, deps);
+                    addDependencyIfValid(skyboxData.bottomFaceRef, deps);
+                    addDependencyIfValid(skyboxData.frontFaceRef, deps);
+                    addDependencyIfValid(skyboxData.backFaceRef, deps);
+                }
             }
         }
     }

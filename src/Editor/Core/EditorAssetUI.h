@@ -24,6 +24,7 @@ enum class AssetKind : int {
     ShaderRaytrace,
     ShaderGeneric,
     ShaderAsset,
+    SkyboxAsset,
     MaterialAsset,
     Material,
     Font,

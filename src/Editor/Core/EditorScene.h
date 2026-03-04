@@ -40,6 +40,8 @@ class EditorScene : public Scene {
         bool consumeCloseRequest() override;
         bool shouldTickOnRenderThread() const override { return true; }
         bool handleQuitRequest();
+        void setActiveScene(PScene scene);
+        PScene getActiveScene() const { return targetScene; }
 
     private:
         enum class PlayState {
@@ -166,6 +168,7 @@ class EditorScene : public Scene {
         float ioStatusTimeRemaining = 0.0f;
 
         void ensureTargetInitialized();
+        void applyActiveSceneState();
         void drawToolbar(float width, float height);
         void drawEcsPanel(float x, float y, float w, float h, bool lightweight = false);
         void drawViewportPanel(float x, float y, float w, float h);

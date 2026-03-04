@@ -19,6 +19,8 @@
 #include "Foundation/Util/StringUtils.h"
 #include "Platform/Window/RenderWindow.h"
 #include "Assets/Core/Asset.h"
+#include "Assets/Descriptors/SkyboxAsset.h"
+#include "Scene/LoadedScene.h"
 #include "Serialization/IO/PrefabIO.h"
 #include "Serialization/IO/SceneIO.h"
 #include "Serialization/Schema/ComponentSerializationRegistry.h"
@@ -192,6 +194,30 @@ EditorScene::EditorScene(RenderWindow* window, PScene targetScene, std::function
       targetFactory(std::move(factory)) {
 }
 
+void EditorScene::setActiveScene(PScene scene){
+    if(targetScene == scene){
+        return;
+    }
+
+    cancelViewportPrefabDragPreview();
+
+    if(targetScene){
+        targetScene->dispose();
+    }
+
+    targetScene = std::move(scene);
+    targetInitialized = false;
+    targetFactory = nullptr;
+    targetCamera.reset();
+    viewportCamera = editorCamera;
+    selectedEntityId.clear();
+    transformWidget.reset();
+    cameraWidget.reset();
+    previewTexture.reset();
+    previewCamera.reset();
+    focusActive = false;
+}
+
 void EditorScene::init(){
     assetRoot = std::filesystem::path(File::GetCWD()) / "res";
     workspacePanel.setAssetRoot(assetRoot);
@@ -209,16 +235,23 @@ void EditorScene::ensureTargetInitialized(){
     }
 
     targetScene->init();
+    applyActiveSceneState();
+}
+
+void EditorScene::applyActiveSceneState(){
+    if(!targetScene){
+        return;
+    }
+
     targetInitialized = true;
     targetScene->setOutlineEnabled(true);
-
-    auto mainScreen = targetScene->getMainScreen();
-    if(mainScreen && !targetCamera){
-        targetCamera = targetScene->getPreferredCamera();
-        if(!targetCamera){
+    targetCamera = targetScene->getPreferredCamera();
+    if(!targetCamera){
+        if(auto mainScreen = targetScene->getMainScreen()){
             targetCamera = mainScreen->getCamera();
         }
     }
+    selectedEntityId = targetScene->getSelectedEntityId();
 
     if(!editorCameraObject){
         editorCameraObject = createECSGameObject("EditorCamera");
@@ -624,7 +657,7 @@ void EditorScene::update(float deltaTime){
             }
         }
 
-        targetScene->updateECS(0.0f);
+        targetScene->refreshRenderState();
     }
 }
 
@@ -654,6 +687,38 @@ void EditorScene::render(){
                 if(!camComponent || !camComponent->camera){
                     return;
                 }
+
+                if(auto* skybox = components->getECSComponent<SkyboxComponent>(cameraEntity)){
+                    if(skybox->skyboxAssetRef.empty()){
+                        skybox->loadedSkyboxAssetRef.clear();
+                        skybox->runtimeSkyBox.reset();
+                        if(auto env = mainScreen->getEnvironment()){
+                            env->setSkyBox(nullptr);
+                        }
+                    }else{
+                        if(!skybox->runtimeSkyBox || skybox->loadedSkyboxAssetRef != skybox->skyboxAssetRef){
+                            std::string error;
+                            auto runtimeSkybox = SkyboxAssetIO::InstantiateSkyBoxFromRef(skybox->skyboxAssetRef, &error);
+                            if(!runtimeSkybox){
+                                if(!error.empty()){
+                                    LogBot.Log(LOG_WARN, "Failed to load skybox '%s': %s", skybox->skyboxAssetRef.c_str(), error.c_str());
+                                }
+                                skybox->loadedSkyboxAssetRef.clear();
+                                skybox->runtimeSkyBox.reset();
+                            }else{
+                                skybox->runtimeSkyBox = runtimeSkybox;
+                                skybox->loadedSkyboxAssetRef = skybox->skyboxAssetRef;
+                            }
+                        }
+
+                        if(auto env = mainScreen->getEnvironment()){
+                            if(skybox->runtimeSkyBox){
+                                env->setSkyBox(skybox->runtimeSkyBox);
+                            }
+                        }
+                    }
+                }
+
                 const CameraSettings& settings = camComponent->camera->getSettings();
                 if(auto* ssao = components->getECSComponent<SSAOComponent>(cameraEntity)){
                     if(auto effect = ssao->getEffectForCamera(settings)){
@@ -676,7 +741,7 @@ void EditorScene::render(){
             if(mainScreen && previewCamera && previewEntity){
                 applyCameraEffects(previewEntity);
                 mainScreen->setCamera(previewCamera);
-                targetScene->render();
+                targetScene->renderViewportContents();
                 auto sourceBuffer = mainScreen->getDisplayBuffer();
                 if(sourceBuffer){
                     int srcW = sourceBuffer->getWidth();
@@ -734,11 +799,11 @@ void EditorScene::render(){
                 mainScreen->clearEffects();
                 mainScreen->setCamera(mainEditCamera);
             }
-            targetScene->render();
+            targetScene->renderViewportContents();
         }else{
             previewTexture.reset();
             previewCamera.reset();
-            targetScene->render();
+            targetScene->renderViewportContents();
         }
     }
 
@@ -910,9 +975,8 @@ bool EditorScene::openSceneFileDialog(SceneFileDialogMode mode){
         setIoStatus(std::string(action) + " is only available in Edit mode.", true);
         return false;
     }
-    if(!targetScene || !targetScene->getECS()){
-        const char* action = (mode == SceneFileDialogMode::Save) ? "Save Scene" : "Load Scene";
-        setIoStatus(std::string(action) + " failed: target scene is unavailable.", true);
+    if(mode == SceneFileDialogMode::Save && (!targetScene || !targetScene->getECS())){
+        setIoStatus("Save Scene failed: target scene is unavailable.", true);
         return false;
     }
 
@@ -1049,10 +1113,6 @@ bool EditorScene::loadSceneFromAbsolutePath(const std::filesystem::path& loadPat
         setIoStatus("Load Scene is only available in Edit mode.", true);
         return false;
     }
-    if(!targetScene || !targetScene->getECS()){
-        setIoStatus("Load Scene failed: target scene is unavailable.", true);
-        return false;
-    }
 
     cancelViewportPrefabDragPreview();
 
@@ -1076,27 +1136,37 @@ bool EditorScene::loadSceneFromAbsolutePath(const std::filesystem::path& loadPat
         return false;
     }
 
-    SceneIO::SceneLoadOptions options;
-    options.registry = &Serialization::DefaultComponentSerializationRegistry();
+    const std::filesystem::path sceneDirectory = normalizedPath.parent_path();
+    auto loadedSceneFactory = [normalizedPath, sceneDirectory](RenderWindow* window) -> PScene {
+        return std::make_shared<LoadedScene>(window, normalizedPath.generic_string(), sceneDirectory);
+    };
 
-    std::string error;
-    if(!SceneIO::LoadSceneFromAbsolutePath(targetScene, normalizedPath, options, nullptr, &error)){
+    std::shared_ptr<LoadedScene> loadedScene = std::dynamic_pointer_cast<LoadedScene>(loadedSceneFactory(getWindow()));
+    if(!loadedScene){
+        setIoStatus("Load Scene failed: could not create loaded scene instance.", true);
+        return false;
+    }
+
+    if(getWindow()){
+        loadedScene->attachWindow(getWindow());
+    }
+    if(inputManager){
+        loadedScene->setInputManager(inputManager);
+    }
+    loadedScene->init();
+    if(!loadedScene->didLoadSuccessfully()){
+        const std::string error = loadedScene->getLastLoadError().empty()
+            ? std::string("Unknown load error.")
+            : loadedScene->getLastLoadError();
+        loadedScene->dispose();
         setIoStatus("Load Scene failed: " + error, true);
         return false;
     }
 
-    selectedEntityId = targetScene->getSelectedEntityId();
-    targetCamera = targetScene->getPreferredCamera();
-    if(!targetCamera){
-        if(auto mainScreen = targetScene->getMainScreen()){
-            targetCamera = mainScreen->getCamera();
-        }
-    }
-    transformWidget.reset();
-    cameraWidget.reset();
-    previewTexture.reset();
-    previewCamera.reset();
-
+    setActiveScene(loadedScene);
+    targetInitialized = true;
+    targetFactory = loadedSceneFactory;
+    applyActiveSceneState();
     activeScenePath = normalizedPath;
     selectedAssetPath = normalizedPath;
     setIoStatus("Scene loaded: " + normalizedPath.generic_string(), false);
@@ -1831,12 +1901,10 @@ void EditorScene::performStop(){
     viewportHovered = false;
     previewWindowInitialized = false;
     if(targetFactory){
-        if(targetScene){
-            targetScene->dispose();
-        }
-        targetScene = targetFactory(getWindow());
-        targetInitialized = false;
-        targetCamera.reset();
+        std::function<PScene(RenderWindow*)> resetFactory = targetFactory;
+        PScene replacementScene = resetFactory(getWindow());
+        setActiveScene(replacementScene);
+        targetFactory = resetFactory;
         ensureTargetInitialized();
     }
     LogBot.Log(LOG_WARN, "EditorScene::performStop() -> Done");
@@ -2073,6 +2141,7 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
             const float margin = 10.0f;
             float maxPreviewW = std::max(minPreviewW, viewportRect.w - (margin * 2.0f));
             float maxPreviewH = std::max(minPreviewH, viewportRect.h - (margin * 2.0f));
+            bool forcePreviewLayout = false;
 
             if(!previewWindowInitialized){
                 float defaultW = std::clamp(viewportRect.w * 0.32f, minPreviewW, std::min(380.0f, maxPreviewW));
@@ -2080,26 +2149,39 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
                 previewWindowSize = Math3D::Vec2(defaultW, defaultH);
                 previewWindowLocalPos = Math3D::Vec2(viewportRect.w - defaultW - margin, 28.0f);
                 previewWindowInitialized = true;
+                forcePreviewLayout = true;
             }
 
+            Math3D::Vec2 unclampedSize = previewWindowSize;
             previewWindowSize.x = std::clamp(previewWindowSize.x, minPreviewW, maxPreviewW);
             previewWindowSize.y = std::clamp(previewWindowSize.y, minPreviewH, maxPreviewH);
+            if(!Math3D::AreClose(unclampedSize.x, previewWindowSize.x) ||
+               !Math3D::AreClose(unclampedSize.y, previewWindowSize.y)){
+                forcePreviewLayout = true;
+            }
 
             if(previewWindowPinned){
                 previewWindowLocalPos.x = viewportRect.w - previewWindowSize.x - margin;
                 previewWindowLocalPos.y = 28.0f;
+                forcePreviewLayout = true;
             }
 
+            Math3D::Vec2 unclampedPos = previewWindowLocalPos;
             float maxLocalX = std::max(0.0f, viewportRect.w - previewWindowSize.x);
             float maxLocalY = std::max(0.0f, viewportRect.h - previewWindowSize.y);
             previewWindowLocalPos.x = std::clamp(previewWindowLocalPos.x, 0.0f, maxLocalX);
             previewWindowLocalPos.y = std::clamp(previewWindowLocalPos.y, 0.0f, maxLocalY);
+            if(!Math3D::AreClose(unclampedPos.x, previewWindowLocalPos.x) ||
+               !Math3D::AreClose(unclampedPos.y, previewWindowLocalPos.y)){
+                forcePreviewLayout = true;
+            }
 
             ImVec2 windowPos(viewportRect.x + previewWindowLocalPos.x, viewportRect.y + previewWindowLocalPos.y);
             ImVec2 windowSize(previewWindowSize.x, previewWindowSize.y);
+            const ImGuiCond layoutCond = forcePreviewLayout ? ImGuiCond_Always : ImGuiCond_Appearing;
 
-            ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always);
-            ImGui::SetNextWindowSize(windowSize, ImGuiCond_Always);
+            ImGui::SetNextWindowPos(windowPos, layoutCond);
+            ImGui::SetNextWindowSize(windowSize, layoutCond);
             ImGui::SetNextWindowSizeConstraints(
                 ImVec2(minPreviewW, minPreviewH),
                 ImVec2(maxPreviewW, maxPreviewH)
@@ -2121,6 +2203,10 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
                 bool pinned = previewWindowPinned;
                 if(ImGui::Checkbox("Pin", &pinned)){
                     previewWindowPinned = pinned;
+                    if(previewWindowPinned){
+                        previewWindowLocalPos.x = viewportRect.w - previewWindowSize.x - margin;
+                        previewWindowLocalPos.y = 28.0f;
+                    }
                 }
                 ImGui::Separator();
 

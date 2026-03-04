@@ -391,11 +391,19 @@ void FilePreviewWidget::setFilePath(const std::filesystem::path& path){
     statusIsError = false;
     previewMaterial.reset();
     previewModel.reset();
+    skyboxAssetSavePending = false;
     materialAssetSavePending = false;
     previewMaterialDirty = true;
     previewModelDirty = true;
     mtlMaterials.clear();
     selectedMtlMaterialIndex = 0;
+    std::memset(skyboxName, 0, sizeof(skyboxName));
+    std::memset(skyboxRightFace, 0, sizeof(skyboxRightFace));
+    std::memset(skyboxLeftFace, 0, sizeof(skyboxLeftFace));
+    std::memset(skyboxTopFace, 0, sizeof(skyboxTopFace));
+    std::memset(skyboxBottomFace, 0, sizeof(skyboxBottomFace));
+    std::memset(skyboxFrontFace, 0, sizeof(skyboxFrontFace));
+    std::memset(skyboxBackFace, 0, sizeof(skyboxBackFace));
     std::memset(modelAssetName, 0, sizeof(modelAssetName));
     std::memset(modelAssetSource, 0, sizeof(modelAssetSource));
     std::memset(modelAssetMaterialRef, 0, sizeof(modelAssetMaterialRef));
@@ -417,6 +425,7 @@ void FilePreviewWidget::reloadFromDisk(bool force){
     statusMessage.clear();
     statusIsError = false;
     isShaderAssetFile = ShaderAssetIO::IsShaderAssetPath(filePath);
+    isSkyboxAssetFile = SkyboxAssetIO::IsSkyboxAssetPath(filePath);
     isMaterialAssetFile = MaterialAssetIO::IsMaterialAssetPath(filePath);
     isMaterialObjectFile = MaterialAssetIO::IsMaterialObjectPath(filePath);
     isModelAssetFile = ModelAssetIO::IsModelAssetPath(filePath);
@@ -440,6 +449,24 @@ void FilePreviewWidget::reloadFromDisk(bool force){
 
         bundledShaderData = data;
         copyBuffer(cacheName, sizeof(cacheName), data.cacheName);
+        return;
+    }
+
+    if(isSkyboxAssetFile){
+        std::string error;
+        if(!SkyboxAssetIO::LoadFromAbsolutePath(filePath, skyboxData, &error)){
+            statusIsError = true;
+            statusMessage = error;
+            return;
+        }
+        copyBuffer(skyboxName, sizeof(skyboxName), skyboxData.name);
+        copyBuffer(skyboxRightFace, sizeof(skyboxRightFace), skyboxData.rightFaceRef);
+        copyBuffer(skyboxLeftFace, sizeof(skyboxLeftFace), skyboxData.leftFaceRef);
+        copyBuffer(skyboxTopFace, sizeof(skyboxTopFace), skyboxData.topFaceRef);
+        copyBuffer(skyboxBottomFace, sizeof(skyboxBottomFace), skyboxData.bottomFaceRef);
+        copyBuffer(skyboxFrontFace, sizeof(skyboxFrontFace), skyboxData.frontFaceRef);
+        copyBuffer(skyboxBackFace, sizeof(skyboxBackFace), skyboxData.backFaceRef);
+        skyboxAssetSavePending = false;
         return;
     }
 
@@ -551,6 +578,11 @@ void FilePreviewWidget::draw(){
         drawErrorByteDumpIfNeeded();
         return;
     }
+    if(isSkyboxAssetFile){
+        drawSkyboxAssetEditor();
+        drawErrorByteDumpIfNeeded();
+        return;
+    }
     if(isMaterialAssetFile){
         drawMaterialAssetEditor();
         drawErrorByteDumpIfNeeded();
@@ -655,6 +687,68 @@ void FilePreviewWidget::drawShaderAssetEditor(){
         ImGui::TextColored(ImVec4(1.0f, 0.35f, 0.35f, 1.0f), "%s", statusMessage.c_str());
     }else{
         ImGui::TextColored(ImVec4(0.45f, 0.85f, 0.45f, 1.0f), "%s", statusMessage.c_str());
+    }
+}
+
+void FilePreviewWidget::drawSkyboxAssetEditor(){
+    bool changed = false;
+    changed |= ImGui::InputText("Skybox Name", skyboxName, sizeof(skyboxName));
+
+    auto drawFaceField = [&](const char* label, char* pathBuffer, size_t bufferSize){
+        bool localChanged = false;
+        localChanged |= EditorAssetUI::DrawAssetDropInput(label, pathBuffer, bufferSize, EditorAssetUI::AssetKind::Image);
+        ImGui::PushID(label);
+        drawTexturePreviewSmall(pathBuffer);
+        ImGui::PopID();
+        ImGui::Spacing();
+        return localChanged;
+    };
+
+    changed |= drawFaceField("Right (+X)", skyboxRightFace, sizeof(skyboxRightFace));
+    changed |= drawFaceField("Left (-X)", skyboxLeftFace, sizeof(skyboxLeftFace));
+    changed |= drawFaceField("Top (+Y)", skyboxTopFace, sizeof(skyboxTopFace));
+    changed |= drawFaceField("Bottom (-Y)", skyboxBottomFace, sizeof(skyboxBottomFace));
+    changed |= drawFaceField("Front (+Z)", skyboxFrontFace, sizeof(skyboxFrontFace));
+    changed |= drawFaceField("Back (-Z)", skyboxBackFace, sizeof(skyboxBackFace));
+
+    if(changed){
+        skyboxData.name = skyboxName;
+        skyboxData.rightFaceRef = skyboxRightFace;
+        skyboxData.leftFaceRef = skyboxLeftFace;
+        skyboxData.topFaceRef = skyboxTopFace;
+        skyboxData.bottomFaceRef = skyboxBottomFace;
+        skyboxData.frontFaceRef = skyboxFrontFace;
+        skyboxData.backFaceRef = skyboxBackFace;
+        skyboxAssetSavePending = true;
+    }
+
+    const bool commitEditsNow = skyboxAssetSavePending && !ImGui::IsAnyItemActive();
+    if(commitEditsNow){
+        std::string error;
+        if(SkyboxAssetIO::SaveToAbsolutePath(filePath, skyboxData, &error)){
+            statusIsError = false;
+            statusMessage = "Saved.";
+            std::error_code ec;
+            lastWriteTime = std::filesystem::last_write_time(filePath, ec);
+            skyboxAssetSavePending = false;
+        }else{
+            statusIsError = true;
+            statusMessage = error;
+        }
+    }
+
+    if(skyboxAssetSavePending){
+        ImGui::TextDisabled("Release control to apply changes.");
+    }else if(statusMessage.empty()){
+        ImGui::TextDisabled("Edits save automatically.");
+    }else if(statusIsError){
+        ImGui::TextColored(ImVec4(1.0f, 0.35f, 0.35f, 1.0f), "%s", statusMessage.c_str());
+    }else{
+        ImGui::TextColored(ImVec4(0.45f, 0.85f, 0.45f, 1.0f), "%s", statusMessage.c_str());
+    }
+
+    if(!SkyboxAssetIO::HasRequiredFaces(skyboxData)){
+        ImGui::TextDisabled("Assign all six faces before this skybox can render.");
     }
 }
 

@@ -8,6 +8,7 @@
 
 #include "Assets/Descriptors/MaterialAsset.h"
 #include "Assets/Descriptors/ModelAsset.h"
+#include "Assets/Descriptors/SkyboxAsset.h"
 #include "Assets/Importers/MtlMaterialImporter.h"
 #include "Assets/Descriptors/ShaderAsset.h"
 
@@ -29,6 +30,7 @@ class FilePreviewWidget {
     private:
         void reloadFromDisk(bool force = false);
         void drawShaderAssetEditor();
+        void drawSkyboxAssetEditor();
         void drawMaterialAssetEditor();
         void drawMaterialObjectEditor();
         void drawModelAssetEditor();
@@ -51,6 +53,7 @@ class FilePreviewWidget {
         int lastExternalWriteTimeValidationFrame = -100000;
         bool hasLoadedData = false;
         bool isShaderAssetFile = false;
+        bool isSkyboxAssetFile = false;
         bool isMaterialAssetFile = false;
         bool isMaterialObjectFile = false;
         bool isModelAssetFile = false;
@@ -64,6 +67,14 @@ class FilePreviewWidget {
         char cacheName[128] = {};
 
         ShaderAssetData bundledShaderData;
+        SkyboxAssetData skyboxData;
+        char skyboxName[128] = {};
+        char skyboxRightFace[256] = {};
+        char skyboxLeftFace[256] = {};
+        char skyboxTopFace[256] = {};
+        char skyboxBottomFace[256] = {};
+        char skyboxFrontFace[256] = {};
+        char skyboxBackFace[256] = {};
 
         MaterialAssetData materialData;
         char materialName[128] = {};
@@ -94,6 +105,7 @@ class FilePreviewWidget {
         std::shared_ptr<SkyBox> previewSkyBox;
         std::shared_ptr<Material> previewMaterial;
         std::shared_ptr<Model> previewModel;
+        bool skyboxAssetSavePending = false;
         bool materialAssetSavePending = false;
         bool previewMaterialDirty = true;
         bool previewModelDirty = true;

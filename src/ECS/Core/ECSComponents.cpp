@@ -10,6 +10,7 @@
 #include "Assets/Descriptors/ShaderAsset.h"
 #include "Assets/Descriptors/MaterialAsset.h"
 #include "Assets/Descriptors/ModelAsset.h"
+#include "Assets/Descriptors/SkyboxAsset.h"
 #include "Rendering/Materials/MaterialRegistry.h"
 #include "Foundation/Logging/Logbot.h"
 
@@ -1657,6 +1658,37 @@ void CameraComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
             settings.fov = fov;
         }
         ImGui::TextDisabled("Aspect: %.3f", settings.aspect);
+    }
+}
+
+void SkyboxComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
+    (void)ecsPtr;
+    (void)scene;
+    if(!ImGui::CollapsingHeader("Skybox Component", ImGuiTreeNodeFlags_DefaultOpen)){
+        return;
+    }
+
+    if(EditorAssetUI::DrawAssetDropInput("Skybox Asset", skyboxAssetRef, {EditorAssetUI::AssetKind::SkyboxAsset})){
+        skyboxAssetRef = StringUtils::Trim(skyboxAssetRef);
+        loadedSkyboxAssetRef.clear();
+        runtimeSkyBox.reset();
+    }
+
+    if(skyboxAssetRef.empty()){
+        ImGui::TextDisabled("No skybox assigned.");
+        return;
+    }
+
+    if(ImGui::Button("Reload Skybox")){
+        loadedSkyboxAssetRef.clear();
+        runtimeSkyBox.reset();
+    }
+
+    ImGui::SameLine();
+    if(runtimeSkyBox && loadedSkyboxAssetRef == StringUtils::Trim(skyboxAssetRef)){
+        ImGui::TextDisabled("Loaded.");
+    }else{
+        ImGui::TextDisabled("Loads when this camera is active.");
     }
 }
 

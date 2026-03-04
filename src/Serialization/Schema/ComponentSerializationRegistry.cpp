@@ -886,6 +886,63 @@ bool registerDefaultCameraSerializer(Serialization::ComponentSerializationRegist
     );
 }
 
+bool registerDefaultSkyboxSerializer(Serialization::ComponentSerializationRegistry& registry, std::string* outError){
+    return registry.registerTypedSerializer<SkyboxComponent>(
+        "SkyboxComponent",
+        1,
+        [](const SkyboxComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
+            (void)error;
+            return JsonUtils::MutObjAddString(doc, payload, "skyboxAssetRef", StringUtils::Trim(component.skyboxAssetRef));
+        },
+        [](SkyboxComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
+            (void)version;
+            (void)error;
+            JsonUtils::TryGetString(payload, "skyboxAssetRef", component.skyboxAssetRef);
+            component.skyboxAssetRef = StringUtils::Trim(component.skyboxAssetRef);
+            component.loadedSkyboxAssetRef.clear();
+            component.runtimeSkyBox.reset();
+            return true;
+        },
+        [](NeoECS::GameObject* wrapper, std::string* error) -> bool {
+            if(!wrapper){
+                if(error){
+                    *error = "Null GameObject wrapper while ensuring SkyboxComponent.";
+                }
+                return false;
+            }
+
+            if(!wrapper->hasComponent<CameraComponent>() && !wrapper->addComponent<CameraComponent>()){
+                if(error){
+                    *error = "SkyboxComponent requires CameraComponent.";
+                }
+                return false;
+            }
+            if(auto* camera = wrapper->getComponent<CameraComponent>()){
+                if(!camera->camera){
+                    camera->camera = Camera::CreatePerspective(45.0f, Math3D::Vec2(1280.0f, 720.0f), 0.1f, 1000.0f);
+                    if(!camera->camera){
+                        if(error){
+                            *error = "Failed to allocate default camera for SkyboxComponent.";
+                        }
+                        return false;
+                    }
+                }
+            }
+            if(wrapper->hasComponent<SkyboxComponent>()){
+                return true;
+            }
+            if(!wrapper->addComponent<SkyboxComponent>()){
+                if(error){
+                    *error = "Failed to add missing SkyboxComponent to entity.";
+                }
+                return false;
+            }
+            return wrapper->hasComponent<SkyboxComponent>();
+        },
+        outError
+    );
+}
+
 bool registerDefaultColliderSerializer(Serialization::ComponentSerializationRegistry& registry, std::string* outError){
     return registry.registerTypedSerializer<ColliderComponent>(
         "ColliderComponent",
@@ -1357,6 +1414,7 @@ void RegisterDefaultComponentSerializers(ComponentSerializationRegistry& registr
     if(!registry.hasSerializer("MeshRendererComponent") && !registerDefaultMeshRendererSerializer(registry, outError)) return;
     if(!registry.hasSerializer("LightComponent") && !registerDefaultLightSerializer(registry, outError)) return;
     if(!registry.hasSerializer("CameraComponent") && !registerDefaultCameraSerializer(registry, outError)) return;
+    if(!registry.hasSerializer("SkyboxComponent") && !registerDefaultSkyboxSerializer(registry, outError)) return;
     if(!registry.hasSerializer("ColliderComponent") && !registerDefaultColliderSerializer(registry, outError)) return;
     if(!registry.hasSerializer("RigidBodyComponent") && !registerDefaultRigidBodySerializer(registry, outError)) return;
     if(!registry.hasSerializer("ScriptComponent") && !registerDefaultScriptSerializer(registry, outError)) return;

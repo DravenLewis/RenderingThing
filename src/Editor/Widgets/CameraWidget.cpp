@@ -20,9 +20,12 @@ namespace {
                           Math3D::Vec3& outForward,
                           Math3D::Vec3& outRight,
                           Math3D::Vec3& outUp){
-        outForward = rawForward;
+        // Transform::forward() is the local +Z axis, but this renderer's cameras
+        // look down -Z (matching the view/projection convention), so invert it
+        // for the frustum gizmo and its handles.
+        outForward = rawForward * -1.0f;
         if(outForward.length() < Math3D::EPSILON){
-            outForward = Math3D::Vec3(0,0,1);
+            outForward = Math3D::Vec3(0,0,-1);
         }else{
             outForward = outForward.normalize();
         }

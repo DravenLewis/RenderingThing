@@ -200,6 +200,7 @@ namespace {
             case AssetKind::ShaderRaytrace: return "RTX";
             case AssetKind::ShaderGeneric:  return "SHD";
             case AssetKind::ShaderAsset:    return "SAS";
+            case AssetKind::SkyboxAsset:    return "SKY";
             case AssetKind::MaterialAsset:  return "MAT";
             case AssetKind::Material:       return "MTL";
             case AssetKind::Font:           return "FNT";
@@ -226,6 +227,7 @@ namespace {
             case AssetKind::ShaderRaytrace: return IM_COL32(255, 94, 94, 255);
             case AssetKind::ShaderGeneric:  return IM_COL32(166, 96, 242, 255);
             case AssetKind::ShaderAsset:    return IM_COL32(237, 132, 255, 255);
+            case AssetKind::SkyboxAsset:    return IM_COL32(96, 182, 255, 255);
             case AssetKind::MaterialAsset:  return IM_COL32(90, 201, 155, 255);
             case AssetKind::Material:       return IM_COL32(62, 168, 212, 255);
             case AssetKind::Font:           return IM_COL32(104, 212, 219, 255);
@@ -285,6 +287,9 @@ namespace {
         }
         if(requested == AssetKind::ShaderAsset){
             return offered == AssetKind::ShaderAsset;
+        }
+        if(requested == AssetKind::SkyboxAsset){
+            return offered == AssetKind::SkyboxAsset;
         }
         if(requested == AssetKind::MaterialAsset){
             return offered == AssetKind::MaterialAsset;
@@ -916,6 +921,9 @@ AssetKind ClassifyPath(const std::filesystem::path& path, bool isDirectory){
     std::string pathLower = toLower(path.generic_string());
     if(endsWith(pathLower, ".shader.asset")){
         return AssetKind::ShaderAsset;
+    }
+    if(endsWith(pathLower, ".skybox.asset")){
+        return AssetKind::SkyboxAsset;
     }
     if(endsWith(pathLower, ".material.asset")){
         return AssetKind::MaterialAsset;

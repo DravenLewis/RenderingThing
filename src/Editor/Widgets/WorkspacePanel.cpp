@@ -6,6 +6,7 @@
 #include "Foundation/Logging/Logbot.h"
 #include "Assets/Descriptors/MaterialAsset.h"
 #include "Assets/Descriptors/ModelAsset.h"
+#include "Assets/Descriptors/SkyboxAsset.h"
 #include "Assets/Descriptors/ShaderAsset.h"
 #include "Foundation/Util/StringUtils.h"
 
@@ -109,6 +110,7 @@ void WorkspacePanel::commitAssetRename(std::filesystem::path& selectedAssetPath)
     std::filesystem::path oldPath = assetRenamePath;
     const bool oldPathIsMaterialObject = MaterialAssetIO::IsMaterialObjectPath(oldPath);
     const bool oldPathIsMaterialAsset = MaterialAssetIO::IsMaterialAssetPath(oldPath);
+    const bool oldPathIsSkyboxAsset = SkyboxAssetIO::IsSkyboxAssetPath(oldPath);
 
     std::string normalizedNewName = requestedName;
     std::string normalizedNewNameLower = StringUtils::ToLowerCase(normalizedNewName);
@@ -135,6 +137,8 @@ void WorkspacePanel::commitAssetRename(std::filesystem::path& selectedAssetPath)
                 ensureSuffix(".mat.asset");
             }
         }
+    }else if(oldPathIsSkyboxAsset){
+        ensureSuffix(".skybox.asset");
     }
 
     std::filesystem::path newPath = oldPath.parent_path() / normalizedNewName;
@@ -882,6 +886,19 @@ void WorkspacePanel::draw(float x,
         }
     };
 
+    auto createDefaultSkyboxAsset = [&](){
+        std::filesystem::path path = makeUniquePathWithSuffix(assetDir / "NewSkybox.skybox.asset", ".skybox.asset");
+        SkyboxAssetData data;
+        data.name = path.filename().string();
+        std::string error;
+        if(SkyboxAssetIO::SaveToAbsolutePath(path, data, &error)){
+            selectedAssetPath = path;
+            browserCacheDirty = true;
+        }else{
+            LogBot.Log(LOG_ERRO, "Failed to create skybox asset: %s", error.c_str());
+        }
+    };
+
     auto createDefaultMaterialObject = [&](){
         std::string baseName = "NewMaterial";
         const std::string originalBaseName = baseName;
@@ -986,6 +1003,9 @@ void WorkspacePanel::draw(float x,
                 if(ImGui::BeginMenu("Asset")){
                     if(ImGui::MenuItem("Shader Asset")){
                         createDefaultShaderAsset();
+                    }
+                    if(ImGui::MenuItem("Skybox Asset")){
+                        createDefaultSkyboxAsset();
                     }
                     if(ImGui::MenuItem("Material (.material)")){
                         createDefaultMaterialObject();

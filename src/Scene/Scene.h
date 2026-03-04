@@ -30,8 +30,10 @@ class Scene : public View {
         virtual void setInputManager(std::shared_ptr<InputManager> manager) { inputManager = manager; }
         virtual bool switchState(PScene newState, PScene oldState) { return true; }
         virtual bool shouldTickOnRenderThread() const { return false; }
+        void renderViewportContents();
 
         void updateECS(float deltaTime);
+        void refreshRenderState();
 
         NeoECS::NeoECS* getECS() const { return ecsInstance; }
         NeoECS::NeoAPI* getECSAPI() const { return ecsAPI; }

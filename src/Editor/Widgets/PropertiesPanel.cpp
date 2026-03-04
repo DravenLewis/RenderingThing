@@ -24,6 +24,7 @@ namespace {
         Collider,
         RigidBody,
         Camera,
+        Skybox,
         SSAO,
         DepthOfField,
         AntiAliasing,
@@ -155,6 +156,14 @@ namespace {
                     return fail("SSAO requires Camera Component.");
                 }
                 return wrapper->addComponent<SSAOComponent>();
+            case AddComponentKind::Skybox:
+                if(hasComponent<SkyboxComponent>(manager, entity)){
+                    return fail("Skybox Component already exists.");
+                }
+                if(!hasComponent<CameraComponent>(manager, entity)){
+                    return fail("Skybox requires Camera Component.");
+                }
+                return wrapper->addComponent<SkyboxComponent>();
             case AddComponentKind::DepthOfField:
                 if(hasComponent<DepthOfFieldComponent>(manager, entity)){
                     return fail("Depth Of Field Component already exists.");
@@ -373,6 +382,7 @@ void PropertiesPanel::draw(float x,
             const bool hasCollider = (componentMgr->getECSComponent<ColliderComponent>(entity) != nullptr);
             const bool hasRigidBody = (componentMgr->getECSComponent<RigidBodyComponent>(entity) != nullptr);
             const bool hasCamera = (componentMgr->getECSComponent<CameraComponent>(entity) != nullptr);
+            const bool hasSkybox = (componentMgr->getECSComponent<SkyboxComponent>(entity) != nullptr);
             const bool hasSsao = (componentMgr->getECSComponent<SSAOComponent>(entity) != nullptr);
             const bool hasDof = (componentMgr->getECSComponent<DepthOfFieldComponent>(entity) != nullptr);
             const bool hasAa = (componentMgr->getECSComponent<AntiAliasingComponent>(entity) != nullptr);
@@ -425,6 +435,7 @@ void PropertiesPanel::draw(float x,
             if(ImGui::BeginMenu("Camera")){
                 drawAddMenuItem("Camera Component", AddComponentKind::Camera, !hasCamera, "Already added");
                 ImGui::Separator();
+                drawAddMenuItem("Skybox Component", AddComponentKind::Skybox, !hasSkybox && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
                 drawAddMenuItem("SSAO / GI Component", AddComponentKind::SSAO, !hasSsao && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
                 drawAddMenuItem("Depth Of Field Component", AddComponentKind::DepthOfField, !hasDof && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
                 drawAddMenuItem("Anti-Aliasing Component", AddComponentKind::AntiAliasing, !hasAa && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");

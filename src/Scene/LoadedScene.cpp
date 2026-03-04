@@ -19,8 +19,15 @@ LoadedScene::LoadedScene(RenderWindow* window,
 }
 
 void LoadedScene::init(){
+    if(auto mainScreen = getMainScreen()){
+        if(auto env = mainScreen->getEnvironment()){
+            env->setLightingEnabled(true);
+        }
+    }
+
     sceneLoaded = loadSceneDocument();
     if(sceneLoaded){
+        refreshRenderState();
         LogBot.Log(LOG_INFO, "LoadedScene initialized from '%s'.", sceneRefOrPath.c_str());
     }else if(!lastLoadError.empty()){
         LogBot.Log(LOG_ERRO, "LoadedScene initialization failed: %s", lastLoadError.c_str());
@@ -102,5 +109,5 @@ void LoadedScene::render(){
 
     glClearColor(0.02f, 0.02f, 0.03f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    render3DPass();
+    renderViewportContents();
 }

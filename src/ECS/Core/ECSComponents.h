@@ -14,6 +14,8 @@
 #include <string>
 #include <vector>
 
+class SkyBox;
+
 // Converts a script path/asset-ref into an inspector-friendly name.
 // Example: "@assets/scripts/FPSController.lua" -> "FPS Controller"
 std::string BuildScriptDisplayNameFromPath(const std::string& scriptPath);
@@ -162,6 +164,15 @@ struct RigidBodyComponent : public IEditorCompatibleComponent {
 struct CameraComponent : public IEditorCompatibleComponent {
     using IEditorCompatibleComponent::IEditorCompatibleComponent;
     PCamera camera;
+
+    void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
+};
+
+struct SkyboxComponent : public IEditorCompatibleComponent {
+    using IEditorCompatibleComponent::IEditorCompatibleComponent;
+    std::string skyboxAssetRef;
+    std::string loadedSkyboxAssetRef;
+    std::shared_ptr<SkyBox> runtimeSkyBox;
 
     void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
 };

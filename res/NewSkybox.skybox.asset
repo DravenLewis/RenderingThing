@@ -1,0 +1,7 @@
+name=NewSkybox.skybox.asset
+right=@assets/images/skybox/default/skybox_default_right.png
+left=@assets/images/skybox/default/skybox_default_left.png
+top=@assets/images/skybox/default/skybox_default_top.png
+bottom=@assets/images/skybox/default/skybox_default_bottom.png
+front=@assets/images/skybox/default/skybox_default_front.png
+back=@assets/images/skybox/default/skybox_default_back.png
