@@ -15,6 +15,7 @@
 #include "Foundation/IO/File.h"
 #include "Editor/Core/EditorAssetUI.h"
 #include "Editor/Core/ImGuiLayer.h"
+#include "Editor/Widgets/BoundsEditState.h"
 #include "Foundation/Logging/Logbot.h"
 #include "Foundation/Util/StringUtils.h"
 #include "Platform/Window/RenderWindow.h"
@@ -40,6 +41,7 @@ namespace {
     constexpr float kMinBottomPanelHeight = 140.0f;
     constexpr float kMinTopPanelHeight = 180.0f;
     constexpr float kIoStatusDurationSeconds = 6.0f;
+    constexpr float kHelperCenterPickRadiusPx = 18.0f;
 
     constexpr ImGuiWindowFlags kPanelFlags =
         ImGuiWindowFlags_NoMove |
@@ -242,6 +244,8 @@ void EditorScene::setActiveScene(PScene scene){
     selectedEntityId.clear();
     transformWidget.reset();
     cameraWidget.reset();
+    boundsWidget.reset();
+    BoundsEditState::Deactivate();
     previewTexture.reset();
     previewCamera.reset();
     focusActive = false;
@@ -621,68 +625,90 @@ void EditorScene::update(float deltaTime){
                         Math3D::Transform worldTx = Math3D::Transform::fromMat4(world);
                         Math3D::Vec3 worldForward = worldTx.forward();
                         TransformWidget::Viewport viewport{viewportRect.x, viewportRect.y, viewportRect.w, viewportRect.h, viewportRect.valid};
-                        widgetConsumed = transformWidget.update(
-                            this,
-                            inputManager.get(),
-                            viewportCamera,
-                            viewport,
-                            worldPos,
-                            transformComp->local,
-                            mouseInViewportInteractive && !allowControl,
-                            lmbPressed,
-                            lmb,
-                            lmbReleased
-                        );
-                        if(auto* lightComp = components->getECSComponent<LightComponent>(entity)){
-                            if(!widgetConsumed){
-                                widgetConsumed = lightWidget.update(
-                                    this,
-                                    inputManager.get(),
-                                    viewportCamera,
-                                    viewport,
-                                    worldPos,
-                                    worldForward,
-                                    lightComp->light,
-                                    lightComp->syncTransform,
-                                    lightComp->syncDirection,
-                                    mouseInViewportInteractive && !allowControl,
-                                    lmbPressed,
-                                    lmb,
-                                    lmbReleased
-                                );
-                                if(lightComp->light.type == LightType::POINT){
-                                    ensurePointLightBounds(entity, lightComp->light.range);
+                        auto* boundsComp = components->getECSComponent<BoundsComponent>(entity);
+                        const bool boundsModeActive = boundsComp && BoundsEditState::IsActiveForEntity(selectedEntityId);
+
+                        if(boundsModeActive){
+                            widgetConsumed = boundsWidget.update(
+                                this,
+                                inputManager.get(),
+                                viewportCamera,
+                                viewport,
+                                world,
+                                *boundsComp,
+                                mouseInViewportInteractive && !allowControl,
+                                lmbPressed,
+                                lmb,
+                                lmbReleased
+                            );
+                        }else{
+                            widgetConsumed = transformWidget.update(
+                                this,
+                                inputManager.get(),
+                                viewportCamera,
+                                viewport,
+                                worldPos,
+                                transformComp->local,
+                                mouseInViewportInteractive && !allowControl,
+                                lmbPressed,
+                                lmb,
+                                lmbReleased
+                            );
+                            if(auto* lightComp = components->getECSComponent<LightComponent>(entity)){
+                                if(!widgetConsumed){
+                                    widgetConsumed = lightWidget.update(
+                                        this,
+                                        inputManager.get(),
+                                        viewportCamera,
+                                        viewport,
+                                        worldPos,
+                                        worldForward,
+                                        lightComp->light,
+                                        lightComp->syncTransform,
+                                        lightComp->syncDirection,
+                                        mouseInViewportInteractive && !allowControl,
+                                        lmbPressed,
+                                        lmb,
+                                        lmbReleased
+                                    );
+                                    if(lightComp->light.type == LightType::POINT){
+                                        ensurePointLightBounds(entity, lightComp->light.range);
+                                    }
                                 }
                             }
-                        }
-                        if(auto* cameraComp = components->getECSComponent<CameraComponent>(entity)){
-                            if(!widgetConsumed && cameraComp->camera){
-                                widgetConsumed = cameraWidget.update(
-                                    this,
-                                    inputManager.get(),
-                                    viewportCamera,
-                                    viewport,
-                                    worldPos,
-                                    worldForward,
-                                    cameraComp->camera->getSettings(),
-                                    mouseInViewportInteractive && !allowControl,
-                                    lmbPressed,
-                                    lmb,
-                                    lmbReleased
-                                );
+                            if(auto* cameraComp = components->getECSComponent<CameraComponent>(entity)){
+                                if(!widgetConsumed && cameraComp->camera){
+                                    widgetConsumed = cameraWidget.update(
+                                        this,
+                                        inputManager.get(),
+                                        viewportCamera,
+                                        viewport,
+                                        worldPos,
+                                        worldForward,
+                                        cameraComp->camera->getSettings(),
+                                        mouseInViewportInteractive && !allowControl,
+                                        lmbPressed,
+                                        lmb,
+                                        lmbReleased
+                                    );
+                                }
                             }
                         }
                     }
                 }
             }
 
-            if(playState != PlayState::Play && lmbPressed && mouseInViewportInteractive && !allowControl && !widgetConsumed){
+            if(playState != PlayState::Play && lmbPressed && mouseInViewportInteractive && !allowControl){
                 if(viewportCamera){
                     Math3D::Vec2 mouse = inputManager->getMousePosition();
                     std::string picked = pickEntityIdAtScreen(mouse.x, mouse.y, viewportCamera);
-                    if(!picked.empty()){
+                    if(!picked.empty() && picked != selectedEntityId){
                         selectEntity(picked);
-                    }else{
+                    }else if(!picked.empty() && !widgetConsumed){
+                        // Keep viewport behavior aligned with the ECS tree:
+                        // clicking an already-selected entity focuses/frames it.
+                        selectEntity(picked);
+                    }else if(picked.empty() && !widgetConsumed){
                         selectEntity("");
                     }
                 }
@@ -1986,6 +2012,8 @@ void EditorScene::selectEntity(const std::string& id){
     }
     transformWidget.reset();
     cameraWidget.reset();
+    boundsWidget.reset();
+    BoundsEditState::Deactivate();
     if(targetScene){
         targetScene->setSelectedEntityId(id);
     }
@@ -2005,9 +2033,11 @@ void EditorScene::focusOnEntity(const std::string& id){
     auto* boundsComp = components->getECSComponent<BoundsComponent>(entity);
     if(!transformComp) return;
 
-    Math3D::Vec3 target = targetScene->getWorldPosition(entity);
+    Math3D::Mat4 world = buildWorldMatrix(entity, components);
+    Math3D::Vec3 target = world.getPosition();
     float radius = 1.0f;
     if(boundsComp){
+        target = Math3D::Transform::transformPoint(world, boundsComp->offset);
         switch(boundsComp->type){
             case BoundsType::Box:
                 radius = Math3D::Vec3(boundsComp->size.x, boundsComp->size.y, boundsComp->size.z).length();
@@ -2061,7 +2091,11 @@ std::string EditorScene::pickEntityIdAtScreen(float x, float y, PCamera cam){
         if(!transform) continue;
         if(!renderer && !cameraComp && !lightComp && !bounds) continue;
 
-        Math3D::Vec3 pos = targetScene->getWorldPosition(entity);
+        Math3D::Mat4 world = buildWorldMatrix(entity, componentManager);
+        Math3D::Vec3 pos = world.getPosition();
+        if(bounds){
+            pos = Math3D::Transform::transformPoint(world, bounds->offset);
+        }
         Math3D::Vec3 toPoint = pos - nearPoint;
         float t = Math3D::Vec3::dot(toPoint, rayDir);
         if(t < 0.0f) continue;
@@ -2087,6 +2121,18 @@ std::string EditorScene::pickEntityIdAtScreen(float x, float y, PCamera cam){
         }
 
         if(dist <= radius && t < bestT){
+            if(!renderer && (cameraComp || lightComp)){
+                Math3D::Vec3 screen = worldToScreen(cam, pos, viewportRect.x, viewportRect.y, viewportRect.w, viewportRect.h);
+                if(!screenPointInViewport(screen, TransformWidget::Viewport{viewportRect.x, viewportRect.y, viewportRect.w, viewportRect.h, viewportRect.valid})){
+                    continue;
+                }
+                float dx = screen.x - x;
+                float dy = screen.y - y;
+                float centerDistPx = std::sqrt(dx * dx + dy * dy);
+                if(centerDistPx > kHelperCenterPickRadiusPx){
+                    continue;
+                }
+            }
             bestT = t;
             bestId = entity->getNodeUniqueID();
         }
@@ -2105,6 +2151,8 @@ bool EditorScene::handleQuitRequest(){
 }
 
 void EditorScene::performStop(){
+    boundsWidget.reset();
+    BoundsEditState::Deactivate();
     cancelViewportPrefabDragPreview();
     playState = PlayState::Edit;
     viewportRect = ViewportRect{};
@@ -2325,22 +2373,28 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
                 Math3D::Transform worldTx = Math3D::Transform::fromMat4(world);
                 Math3D::Vec3 worldForward = worldTx.forward();
 
-                transformWidget.draw(drawList, this, viewportCamera, viewport, worldPos, transformComp->local, viewportHovered);
-                if(auto* cameraComp = components->getECSComponent<CameraComponent>(entity)){
-                    if(cameraComp->camera){
-                        cameraWidget.draw(
-                            drawList,
-                            this,
-                            viewportCamera,
-                            viewport,
-                            worldPos,
-                            worldForward,
-                            cameraComp->camera->getSettings()
-                        );
+                auto* boundsComp = components->getECSComponent<BoundsComponent>(entity);
+                const bool boundsModeActive = boundsComp && BoundsEditState::IsActiveForEntity(selectedEntityId);
+                if(boundsModeActive){
+                    boundsWidget.draw(drawList, this, viewportCamera, viewport, world, *boundsComp);
+                }else{
+                    transformWidget.draw(drawList, this, viewportCamera, viewport, worldPos, transformComp->local, viewportHovered);
+                    if(auto* cameraComp = components->getECSComponent<CameraComponent>(entity)){
+                        if(cameraComp->camera){
+                            cameraWidget.draw(
+                                drawList,
+                                this,
+                                viewportCamera,
+                                viewport,
+                                worldPos,
+                                worldForward,
+                                cameraComp->camera->getSettings()
+                            );
+                        }
                     }
-                }
-                if(auto* lightComp = components->getECSComponent<LightComponent>(entity)){
-                    lightWidget.draw(drawList, this, viewportCamera, viewport, worldPos, worldForward, lightComp->light, lightComp->syncTransform, lightComp->syncDirection);
+                    if(auto* lightComp = components->getECSComponent<LightComponent>(entity)){
+                        lightWidget.draw(drawList, this, viewportCamera, viewport, worldPos, worldForward, lightComp->light, lightComp->syncTransform, lightComp->syncDirection);
+                    }
                 }
             }
         }

@@ -16,6 +16,7 @@
 #include "Editor/Widgets/TransformWidget.h"
 #include "Editor/Widgets/LightWidget.h"
 #include "Editor/Widgets/CameraWidget.h"
+#include "Editor/Widgets/BoundsWidget.h"
 #include "Editor/Widgets/ECSViewPanel.h"
 #include "Editor/Widgets/PropertiesPanel.h"
 #include "Editor/Widgets/WorkspacePanel.h"
@@ -130,6 +131,7 @@ class EditorScene : public Scene {
         bool prevKeyR = false;
         LightWidget lightWidget;
         CameraWidget cameraWidget;
+        BoundsWidget boundsWidget;
         std::unordered_set<std::string> migratedLightSyncTransform;
         std::unordered_set<std::string> migratedLightDefaults;
         bool editorIconsLoaded = false;

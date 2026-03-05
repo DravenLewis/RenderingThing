@@ -688,31 +688,36 @@ bool registerDefaultTransformSerializer(Serialization::ComponentSerializationReg
 bool registerDefaultBoundsSerializer(Serialization::ComponentSerializationRegistry& registry, std::string* outError){
     return registry.registerTypedSerializer<BoundsComponent>(
         "BoundsComponent",
-        1,
+        2,
         [](const BoundsComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
             return JsonUtils::MutObjAddInt(doc, payload, "type", static_cast<int>(component.type)) &&
                    JsonUtils::MutObjAddVec3(doc, payload, "size", component.size) &&
                    JsonUtils::MutObjAddFloat(doc, payload, "radius", component.radius) &&
-                   JsonUtils::MutObjAddFloat(doc, payload, "height", component.height);
+                   JsonUtils::MutObjAddFloat(doc, payload, "height", component.height) &&
+                   JsonUtils::MutObjAddVec3(doc, payload, "offset", component.offset);
         },
         [](BoundsComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
-            (void)version;
             (void)error;
 
             int type = static_cast<int>(component.type);
             Math3D::Vec3 size = component.size;
             float radius = component.radius;
             float height = component.height;
+            Math3D::Vec3 offset = Math3D::Vec3(0.0f, 0.0f, 0.0f);
 
             JsonUtils::TryGetInt(payload, "type", type);
             JsonUtils::TryGetVec3(payload, "size", size);
             JsonUtils::TryGetFloat(payload, "radius", radius);
             JsonUtils::TryGetFloat(payload, "height", height);
+            if(version >= 2){
+                JsonUtils::TryGetVec3(payload, "offset", offset);
+            }
 
             component.type = enumFromIntClamped(type, 0, 2, BoundsType::Sphere);
             component.size = size;
             component.radius = Math3D::Max(0.0f, radius);
             component.height = Math3D::Max(0.0f, height);
+            component.offset = offset;
             return true;
         },
         {},

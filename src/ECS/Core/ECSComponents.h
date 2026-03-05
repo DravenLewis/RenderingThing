@@ -73,7 +73,8 @@ struct BoundsComponent : public IEditorCompatibleComponent {
     BoundsType type = BoundsType::Sphere;
     Math3D::Vec3 size = Math3D::Vec3(1.0f, 1.0f, 1.0f); // Box extents (half-size)
     float radius = 0.5f; // Sphere/Capsule radius
-    float height = 1.0f; // Capsule full height
+    float height = 1.0f; // Capsule cylinder height
+    Math3D::Vec3 offset = Math3D::Vec3(0.0f, 0.0f, 0.0f); // Local-space center offset
 
     void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
 };

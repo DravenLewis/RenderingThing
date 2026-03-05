@@ -14,7 +14,7 @@
     ],
     "sceneSettings": {
       "outlineEnabled": true,
-      "selectedEntitySnapshotId": 31,
+      "selectedEntitySnapshotId": 39,
       "preferredCameraSnapshotId": 20
     },
     "snapshot": {
@@ -49,9 +49,9 @@
                   25.984539031982422
                 ],
                 "rotationEuler": [
-                  -180.0,
+                  180.0,
                   -87.27782440185547,
-                  -180.0
+                  180.0
                 ],
                 "scale": [
                   1.0,
@@ -62,7 +62,7 @@
             },
             {
               "type": "BoundsComponent",
-              "version": 1,
+              "version": 2,
               "payload": {
                 "type": 1,
                 "size": [
@@ -71,7 +71,12 @@
                   1.0
                 ],
                 "radius": 1.2999999523162842,
-                "height": 1.0
+                "height": 1.0,
+                "offset": [
+                  0.0,
+                  0.0,
+                  0.0
+                ]
               }
             },
             {
@@ -134,6 +139,7 @@
               "version": 1,
               "payload": {
                 "enabled": true,
+                "adaptiveBloom": false,
                 "threshold": 1.0,
                 "softKnee": 0.550000011920929,
                 "intensity": 0.3499999940395355,
@@ -4345,7 +4351,7 @@
                         0.0
                       ],
                       "rotationEuler": [
-                        180.0,
+                        -180.0,
                         -0.0,
                         0.0
                       ],
@@ -8472,7 +8478,7 @@
                         0.0
                       ],
                       "rotationEuler": [
-                        180.0,
+                        -180.0,
                         -0.0,
                         0.0
                       ],
@@ -8846,7 +8852,7 @@
                       "rotationEuler": [
                         90.0,
                         -0.000005122641596244648,
-                        -180.0
+                        180.0
                       ],
                       "scale": [
                         1.0,
@@ -9743,7 +9749,7 @@
             },
             {
               "type": "BoundsComponent",
-              "version": 1,
+              "version": 2,
               "payload": {
                 "type": 1,
                 "size": [
@@ -9752,7 +9758,12 @@
                   1.0
                 ],
                 "radius": 18.0,
-                "height": 1.0
+                "height": 1.0,
+                "offset": [
+                  0.0,
+                  0.0,
+                  0.0
+                ]
               }
             },
             {
@@ -9822,7 +9833,7 @@
             },
             {
               "type": "BoundsComponent",
-              "version": 1,
+              "version": 2,
               "payload": {
                 "type": 1,
                 "size": [
@@ -9831,7 +9842,12 @@
                   1.0
                 ],
                 "radius": 20.0,
-                "height": 1.0
+                "height": 1.0,
+                "offset": [
+                  0.0,
+                  0.0,
+                  0.0
+                ]
               }
             },
             {
@@ -9901,7 +9917,7 @@
             },
             {
               "type": "BoundsComponent",
-              "version": 1,
+              "version": 2,
               "payload": {
                 "type": 1,
                 "size": [
@@ -9910,7 +9926,12 @@
                   1.0
                 ],
                 "radius": 20.0,
-                "height": 1.0
+                "height": 1.0,
+                "offset": [
+                  0.0,
+                  0.0,
+                  0.0
+                ]
               }
             },
             {
@@ -10074,7 +10095,7 @@
             },
             {
               "type": "BoundsComponent",
-              "version": 1,
+              "version": 2,
               "payload": {
                 "type": 1,
                 "size": [
@@ -10083,7 +10104,12 @@
                   1.0
                 ],
                 "radius": 12.0,
-                "height": 1.0
+                "height": 1.0,
+                "offset": [
+                  0.0,
+                  0.0,
+                  0.0
+                ]
               }
             },
             {
@@ -10181,7 +10207,7 @@
             },
             {
               "type": "BoundsComponent",
-              "version": 1,
+              "version": 2,
               "payload": {
                 "type": 1,
                 "size": [
@@ -10190,7 +10216,12 @@
                   1.0
                 ],
                 "radius": 8.0,
-                "height": 1.0
+                "height": 1.0,
+                "offset": [
+                  0.0,
+                  0.0,
+                  0.0
+                ]
               }
             },
             {
@@ -10261,7 +10292,7 @@
             },
             {
               "type": "BoundsComponent",
-              "version": 1,
+              "version": 2,
               "payload": {
                 "type": 1,
                 "size": [
@@ -10270,7 +10301,12 @@
                   1.0
                 ],
                 "radius": 8.0,
-                "height": 1.0
+                "height": 1.0,
+                "offset": [
+                  0.0,
+                  0.0,
+                  0.0
+                ]
               }
             },
             {
@@ -10341,7 +10377,7 @@
             },
             {
               "type": "BoundsComponent",
-              "version": 1,
+              "version": 2,
               "payload": {
                 "type": 1,
                 "size": [
@@ -10350,7 +10386,12 @@
                   1.0
                 ],
                 "radius": 8.0,
-                "height": 1.0
+                "height": 1.0,
+                "offset": [
+                  0.0,
+                  0.0,
+                  0.0
+                ]
               }
             },
             {
@@ -10421,7 +10462,7 @@
             },
             {
               "type": "BoundsComponent",
-              "version": 1,
+              "version": 2,
               "payload": {
                 "type": 1,
                 "size": [
@@ -10430,7 +10471,12 @@
                   1.0
                 ],
                 "radius": 8.0,
-                "height": 1.0
+                "height": 1.0,
+                "offset": [
+                  0.0,
+                  0.0,
+                  0.0
+                ]
               }
             },
             {
@@ -10487,9 +10533,9 @@
                   25.564611434936523
                 ],
                 "rotationEuler": [
-                  -41.72523498535156,
+                  -41.72523880004883,
                   -44.93202590942383,
-                  10.5922269821167
+                  10.592231750488281
                 ],
                 "scale": [
                   3.575000047683716,
@@ -10605,6 +10651,25 @@
                   0.6449999809265137,
                   0.6449999809265137,
                   0.6449999809265137
+                ]
+              }
+            },
+            {
+              "type": "BoundsComponent",
+              "version": 2,
+              "payload": {
+                "type": 0,
+                "size": [
+                  0.2880787253379822,
+                  1.3696811199188232,
+                  2.8143110275268555
+                ],
+                "radius": 0.5,
+                "height": 1.0,
+                "offset": [
+                  0.0,
+                  1.1666641235351562,
+                  -2.637453317642212
                 ]
               }
             },

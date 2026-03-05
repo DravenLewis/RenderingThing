@@ -24,24 +24,25 @@ namespace {
         if(!bounds){
             return false;
         }
+        const Math3D::Vec3 center = bounds->offset;
         switch(bounds->type){
             case BoundsType::Box: {
                 Math3D::Vec3 e = bounds->size;
-                outMin = Math3D::Vec3(-e.x, -e.y, -e.z);
-                outMax = Math3D::Vec3( e.x,  e.y,  e.z);
+                outMin = center + Math3D::Vec3(-e.x, -e.y, -e.z);
+                outMax = center + Math3D::Vec3( e.x,  e.y,  e.z);
                 return true;
             }
             case BoundsType::Sphere: {
                 float r = bounds->radius;
-                outMin = Math3D::Vec3(-r, -r, -r);
-                outMax = Math3D::Vec3( r,  r,  r);
+                outMin = center + Math3D::Vec3(-r, -r, -r);
+                outMax = center + Math3D::Vec3( r,  r,  r);
                 return true;
             }
             case BoundsType::Capsule: {
                 float r = bounds->radius;
                 float half = bounds->height * 0.5f;
-                outMin = Math3D::Vec3(-r, -(r + half), -r);
-                outMax = Math3D::Vec3( r,  (r + half),  r);
+                outMin = center + Math3D::Vec3(-r, -(r + half), -r);
+                outMax = center + Math3D::Vec3( r,  (r + half),  r);
                 return true;
             }
             default:

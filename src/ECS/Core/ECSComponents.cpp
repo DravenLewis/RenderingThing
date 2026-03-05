@@ -13,6 +13,7 @@
 #include "Assets/Descriptors/SkyboxAsset.h"
 #include "Rendering/Materials/MaterialRegistry.h"
 #include "Foundation/Logging/Logbot.h"
+#include "Editor/Widgets/BoundsEditState.h"
 
 #include <cmath>
 #include <cstdint>
@@ -1505,45 +1506,66 @@ void LightComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
 }
 
 void BoundsComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
-    if (ImGui::CollapsingHeader("Bounds Component", ImGuiTreeNodeFlags_DefaultOpen)) {
-        
-        // 1. Type Selector
+    (void)ecsPtr;
+    (void)scene;
+    if(ImGui::CollapsingHeader("Bounds Component", ImGuiTreeNodeFlags_DefaultOpen)){
         const char* typeNames[] = { "Box", "Sphere", "Capsule" };
-        
-        // Convert Enum to int for ImGui
         int currentItem = static_cast<int>(type);
-        
-        if (ImGui::Combo("Shape Type", &currentItem, typeNames, IM_ARRAYSIZE(typeNames))) {
+        if(ImGui::Combo("Shape Type", &currentItem, typeNames, IM_ARRAYSIZE(typeNames))){
             type = static_cast<BoundsType>(currentItem);
         }
 
+        if(ImGui::DragFloat3("Offset", &offset.x, 0.05f)){
+            if(!std::isfinite(offset.x)) offset.x = 0.0f;
+            if(!std::isfinite(offset.y)) offset.y = 0.0f;
+            if(!std::isfinite(offset.z)) offset.z = 0.0f;
+        }
+
         ImGui::Separator();
 
-        // 2. Context-Sensitive Fields
-        switch (type) {
+        switch(type){
             case BoundsType::Box:
-                ImGui::TextDisabled("(Half-Size Extents)");
-                // Clamp min to 0 to prevent inverted boxes
-                ImGui::DragFloat3("Extents", &size.x, 0.05f, 0.0f, 0.0f, "%.2f");
+                if(ImGui::DragFloat3("Half Extents", &size.x, 0.05f, 0.01f, 1000.0f, "%.2f")){
+                    size.x = Math3D::Max(0.01f, size.x);
+                    size.y = Math3D::Max(0.01f, size.y);
+                    size.z = Math3D::Max(0.01f, size.z);
+                }
                 break;
-
             case BoundsType::Sphere:
-                ImGui::DragFloat("Radius", &radius, 0.05f, 0.0f, 0.0f, "%.2f");
+                if(ImGui::DragFloat("Radius", &radius, 0.05f, 0.01f, 1000.0f, "%.2f")){
+                    radius = Math3D::Max(0.01f, radius);
+                }
                 break;
-
             case BoundsType::Capsule:
-                ImGui::DragFloat("Radius", &radius, 0.05f, 0.0f, 0.0f, "%.2f");
-                ImGui::DragFloat("Total Height", &height, 0.05f, 0.0f, 0.0f, "%.2f");
+                if(ImGui::DragFloat("Radius", &radius, 0.05f, 0.01f, 1000.0f, "%.2f")){
+                    radius = Math3D::Max(0.01f, radius);
+                }
+                if(ImGui::DragFloat("Height", &height, 0.05f, 0.01f, 1000.0f, "%.2f")){
+                    height = Math3D::Max(0.01f, height);
+                }
+                break;
+            default:
                 break;
         }
 
-        ImGui::Separator();
-        // Assuming you have a debug rendering flag somewhere
-        static bool debugDraw = false; 
-        ImGui::Checkbox("Show Debug Lines", &debugDraw);
-        if(debugDraw && scene) { 
-            // Call your debug drawer here / none yet will add.
+        auto* owner = getParentEntity();
+        const std::string ownerId = owner ? owner->getNodeUniqueID() : std::string();
+        const bool canToggleGizmo = !ownerId.empty();
+        const bool gizmoActive = canToggleGizmo && BoundsEditState::IsActiveForEntity(ownerId);
+        if(!canToggleGizmo){
+            ImGui::BeginDisabled();
         }
+        if(ImGui::Button(gizmoActive ? "Stop Bounds Gizmo" : "Edit Bounds Gizmo")){
+            if(gizmoActive){
+                BoundsEditState::Deactivate();
+            }else{
+                BoundsEditState::ActivateForEntity(ownerId);
+            }
+        }
+        if(!canToggleGizmo){
+            ImGui::EndDisabled();
+        }
+        ImGui::TextDisabled("Viewport handles edit size and offset.");
     }
 };
 
