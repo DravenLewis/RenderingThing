@@ -14,7 +14,7 @@
     ],
     "sceneSettings": {
       "outlineEnabled": true,
-      "selectedEntitySnapshotId": 28,
+      "selectedEntitySnapshotId": 31,
       "preferredCameraSnapshotId": 20
     },
     "snapshot": {
@@ -49,9 +49,9 @@
                   25.984539031982422
                 ],
                 "rotationEuler": [
-                  180.0,
+                  -180.0,
                   -87.27782440185547,
-                  180.0
+                  -180.0
                 ],
                 "scale": [
                   1.0,
@@ -127,6 +127,23 @@
                 "blurStrength": 0.9800000190734863,
                 "maxBlurPx": 1.899999976158142,
                 "sampleCount": 5
+              }
+            },
+            {
+              "type": "BloomComponent",
+              "version": 1,
+              "payload": {
+                "enabled": true,
+                "threshold": 1.0,
+                "softKnee": 0.550000011920929,
+                "intensity": 0.3499999940395355,
+                "radiusPx": 5.0,
+                "sampleCount": 8,
+                "tint": [
+                  1.0,
+                  0.9800000190734863,
+                  0.949999988079071
+                ]
               }
             },
             {
@@ -4328,7 +4345,7 @@
                         0.0
                       ],
                       "rotationEuler": [
-                        -180.0,
+                        180.0,
                         -0.0,
                         0.0
                       ],
@@ -8455,7 +8472,7 @@
                         0.0
                       ],
                       "rotationEuler": [
-                        -180.0,
+                        180.0,
                         -0.0,
                         0.0
                       ],
@@ -8829,7 +8846,7 @@
                       "rotationEuler": [
                         90.0,
                         -0.000005122641596244648,
-                        180.0
+                        -180.0
                       ],
                       "scale": [
                         1.0,
@@ -9767,8 +9784,9 @@
                   "shadowRange": 18.0,
                   "castsShadows": true,
                   "shadowType": 2,
-                  "shadowBias": 0.0024999999441206455,
-                  "shadowNormalBias": 0.004999999888241291,
+                  "shadowBias": 0.0035000001080334187,
+                  "shadowNormalBias": 0.009999999776482582,
+                  "cascadeLambda": 0.8199999928474426,
                   "shadowStrength": 1.0
                 },
                 "syncTransform": true,
@@ -9847,6 +9865,7 @@
                   "shadowType": 2,
                   "shadowBias": 0.0024999999441206455,
                   "shadowNormalBias": 0.004999999888241291,
+                  "cascadeLambda": 0.8199999928474426,
                   "shadowStrength": 1.0
                 },
                 "syncTransform": true,
@@ -9925,6 +9944,7 @@
                   "shadowType": 2,
                   "shadowBias": 0.0024999999441206455,
                   "shadowNormalBias": 0.004999999888241291,
+                  "cascadeLambda": 0.8199999928474426,
                   "shadowStrength": 1.0
                 },
                 "syncTransform": true,
@@ -10012,11 +10032,12 @@
                   "range": 20.0,
                   "falloff": 2.0,
                   "spotAngle": 45.0,
-                  "shadowRange": 90.0,
+                  "shadowRange": 240.0,
                   "castsShadows": true,
                   "shadowType": 2,
                   "shadowBias": 0.0035000001080334187,
                   "shadowNormalBias": 0.014999999664723873,
+                  "cascadeLambda": 0.10899999737739563,
                   "shadowStrength": 1.0
                 },
                 "syncTransform": true,
@@ -10096,6 +10117,7 @@
                   "shadowType": 2,
                   "shadowBias": 0.0024999999441206455,
                   "shadowNormalBias": 0.004999999888241291,
+                  "cascadeLambda": 0.8199999928474426,
                   "shadowStrength": 1.0
                 },
                 "syncTransform": true,
@@ -10202,6 +10224,7 @@
                   "shadowType": 2,
                   "shadowBias": 0.0024999999441206455,
                   "shadowNormalBias": 0.004999999888241291,
+                  "cascadeLambda": 0.8199999928474426,
                   "shadowStrength": 1.0
                 },
                 "syncTransform": true,
@@ -10281,6 +10304,7 @@
                   "shadowType": 2,
                   "shadowBias": 0.0024999999441206455,
                   "shadowNormalBias": 0.004999999888241291,
+                  "cascadeLambda": 0.8199999928474426,
                   "shadowStrength": 1.0
                 },
                 "syncTransform": true,
@@ -10360,6 +10384,7 @@
                   "shadowType": 2,
                   "shadowBias": 0.0024999999441206455,
                   "shadowNormalBias": 0.004999999888241291,
+                  "cascadeLambda": 0.8199999928474426,
                   "shadowStrength": 1.0
                 },
                 "syncTransform": true,
@@ -10439,6 +10464,7 @@
                   "shadowType": 2,
                   "shadowBias": 0.0024999999441206455,
                   "shadowNormalBias": 0.004999999888241291,
+                  "cascadeLambda": 0.8199999928474426,
                   "shadowStrength": 1.0
                 },
                 "syncTransform": true,
@@ -10463,7 +10489,7 @@
                 "rotationEuler": [
                   -41.72523498535156,
                   -44.93202590942383,
-                  10.592222213745117
+                  10.5922269821167
                 ],
                 "scale": [
                   3.575000047683716,

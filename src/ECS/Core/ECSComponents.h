@@ -209,6 +209,22 @@ struct DepthOfFieldComponent : public IEditorCompatibleComponent {
     void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
 };
 
+struct BloomComponent : public IEditorCompatibleComponent {
+    using IEditorCompatibleComponent::IEditorCompatibleComponent;
+    bool enabled = false;
+    bool adaptiveBloom = false;
+    float threshold = 0.75f;
+    float softKnee = 0.5f;
+    float intensity = 0.65f;
+    float radiusPx = 6.0f;
+    int sampleCount = 8;
+    Math3D::Vec3 tint = Math3D::Vec3(1.0f, 1.0f, 1.0f);
+    std::shared_ptr<BloomEffect> runtimeEffect;
+
+    Graphics::PostProcessing::PPostProcessingEffect getEffectForCamera(const CameraSettings& settings);
+    void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
+};
+
 struct AntiAliasingComponent : public IEditorCompatibleComponent {
     using IEditorCompatibleComponent::IEditorCompatibleComponent;
     AntiAliasingPreset preset = AntiAliasingPreset::FXAA_Medium;

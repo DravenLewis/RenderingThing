@@ -69,7 +69,16 @@ vec2 applyHeightMapParallax(vec2 uv, vec2 duvDx, vec2 duvDy, vec3 viewDirWS, mat
     float angleFade = viewZ * viewZ;
     float edgeDist = min(min(uv.x, uv.y), min(1.0 - uv.x, 1.0 - uv.y));
     float edgeFade = smoothstep(0.02, 0.08, edgeDist);
-    float parallaxStrength = u_heightScale * angleFade * edgeFade;
+    vec2 hTexSize = vec2(textureSize(u_heightTex, 0));
+    float texelFootprint = max(length(duvDx * hTexSize), length(duvDy * hTexSize));
+    float minifyFade = 1.0 - smoothstep(1.0, 4.0, texelFootprint);
+    float viewDist = length(u_viewPos - v_fragPos);
+    float distanceFade = 1.0 - smoothstep(12.0, 45.0, viewDist);
+    float parallaxFade = angleFade * edgeFade * minifyFade * distanceFade;
+    if(parallaxFade <= 1e-4){
+        return uv;
+    }
+    float parallaxStrength = u_heightScale * parallaxFade;
 
     float denom = max(viewZ, 0.25);
     float height = textureGrad(u_heightTex, uv, duvDx, duvDy).r;

@@ -5,6 +5,8 @@
 #include "Rendering/Shaders/ShaderProgram.h"
 #include "Foundation/Math/Color.h"
 #include "Foundation/Logging/Logbot.h"
+#include <chrono>
+#include <cmath>
 
 enum class AntiAliasingPreset {
     Off = 0,
@@ -156,15 +158,21 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
                 float radiusPx = max(u_radiusPx, 0.25);
                 float depthRadius = max(u_depthRadius, 0.00005);
                 int count = clamp(u_sampleCount, 1, 16);
-                float angle = hash12(TexCoords * vec2(173.3, 97.1)) * 6.2831853;
+                // Use pixel-stable noise to avoid UV-space stripe patterns on large flat surfaces.
+                float angle = hash12(floor(gl_FragCoord.xy)) * 6.2831853;
                 float sinAngle = sin(angle);
                 float cosAngle = cos(angle);
 
                 // Scale thresholds with distance and local depth slope for temporal stability.
+                // Avoid derivative-based slope (dFdx/dFdy), which can introduce primitive-edge seams.
                 float depthScale = clamp(centerDepth * 0.08, 1.0, 32.0);
                 float adaptiveDepthRadius = depthRadius * depthScale;
-                float depthSlope = abs(dFdx(centerDepth)) + abs(dFdy(centerDepth));
-                float baseBias = max(u_bias * depthScale, adaptiveDepthRadius * 0.08);
+                float depthRightRaw = texture(depthTexture, clamp(TexCoords + vec2(u_texelSize.x, 0.0), vec2(0.0), vec2(1.0))).r;
+                float depthUpRaw = texture(depthTexture, clamp(TexCoords + vec2(0.0, u_texelSize.y), vec2(0.0), vec2(1.0))).r;
+                float depthRight = (depthRightRaw >= kSkyDepthCutoff) ? centerDepth : linearizeDepth(depthRightRaw);
+                float depthUp = (depthUpRaw >= kSkyDepthCutoff) ? centerDepth : linearizeDepth(depthUpRaw);
+                float depthSlope = abs(depthRight - centerDepth) + abs(depthUp - centerDepth);
+                float baseBias = max(u_bias * depthScale, adaptiveDepthRadius * 0.10);
 
                 float occ = 0.0;
                 float weightSum = 0.0;
@@ -489,6 +497,303 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
 
         static std::shared_ptr<DepthOfFieldEffect> New() {
             return std::make_shared<DepthOfFieldEffect>();
+        }
+};
+
+class BloomEffect : public Graphics::PostProcessing::PostProcessingEffect {
+    private:
+        std::shared_ptr<ShaderProgram> shader;
+        bool compileAttempted = false;
+        const std::string BLOOM_FRAG_SHADER = R"(
+            #version 330 core
+
+            out vec4 FragColor;
+            in vec2 TexCoords;
+
+            uniform sampler2D screenTexture;
+            uniform vec2 u_texelSize;
+            uniform float u_threshold;
+            uniform float u_softKnee;
+            uniform float u_intensity;
+            uniform float u_radiusPx;
+            uniform int u_sampleCount;
+            uniform vec3 u_tint;
+            uniform float u_exposureScale;
+
+            const vec2 kPoisson[12] = vec2[](
+                vec2(-0.326, -0.406),
+                vec2(-0.840, -0.074),
+                vec2(-0.696,  0.457),
+                vec2(-0.203,  0.621),
+                vec2( 0.962, -0.195),
+                vec2( 0.473, -0.480),
+                vec2( 0.519,  0.767),
+                vec2( 0.185, -0.893),
+                vec2( 0.507,  0.064),
+                vec2( 0.896,  0.412),
+                vec2(-0.322,  0.951),
+                vec2(-0.720,  0.631)
+            );
+
+            vec3 prefilterBright(vec3 color){
+                float brightness = max(color.r, max(color.g, color.b));
+                float threshold = max(u_threshold, 0.0);
+                float knee = max(threshold * max(u_softKnee, 0.0001), 0.00001);
+                float soft = clamp(brightness - threshold + knee, 0.0, 2.0 * knee);
+                soft = (0.25 / knee) * soft * soft;
+                float hard = max(brightness - threshold, 0.0);
+                float contribution = max(hard, soft) / max(brightness, 0.0001);
+                return color * contribution;
+            }
+
+            void main() {
+                float exposureScale = max(u_exposureScale, 0.0);
+                vec3 base = texture(screenTexture, TexCoords).rgb;
+
+                int count = clamp(u_sampleCount, 1, 12);
+                float radiusPx = max(u_radiusPx, 0.0);
+                vec3 bloomAccum = prefilterBright(base);
+                float weightSum = 1.0;
+
+                for(int i = 0; i < 12; ++i){
+                    if(i >= count){
+                        break;
+                    }
+                    float ringT = (float(i) + 0.5) / float(count);
+                    float radialScale = mix(0.35, 1.0, ringT);
+                    float weight = mix(1.0, 0.35, ringT);
+                    vec2 offset = kPoisson[i] * radiusPx * radialScale * u_texelSize;
+                    vec2 uvA = clamp(TexCoords + offset, vec2(0.0), vec2(1.0));
+                    vec2 uvB = clamp(TexCoords - offset, vec2(0.0), vec2(1.0));
+                    vec3 sampleA = prefilterBright(texture(screenTexture, uvA).rgb * exposureScale);
+                    vec3 sampleB = prefilterBright(texture(screenTexture, uvB).rgb * exposureScale);
+                    bloomAccum += (sampleA + sampleB) * weight;
+                    weightSum += 2.0 * weight;
+                }
+
+                vec3 bloom = (bloomAccum / max(weightSum, 0.0001));
+                bloom *= max(u_intensity, 0.0) * u_tint;
+
+                vec3 color = base + bloom;
+                FragColor = vec4(max(color, vec3(0.0)), 1.0);
+            }
+        )";
+        GLuint adaptationReadFbo = 0;
+        bool adaptationInitialized = false;
+        float adaptedLuminance = 0.35f;
+        float filteredLuminance = 0.35f;
+        float smoothedThresholdScale = 1.0f;
+        float smoothedIntensityScale = 1.0f;
+        float smoothedExposureScale = 1.0f;
+        std::chrono::steady_clock::time_point lastAdaptationTime = std::chrono::steady_clock::now();
+
+        bool sampleSceneLuminance(PTexture tex, float& outLuminance){
+            if(!tex || tex->getID() == 0 || tex->getWidth() <= 0 || tex->getHeight() <= 0){
+                return false;
+            }
+            if(adaptationReadFbo == 0){
+                glGenFramebuffers(1, &adaptationReadFbo);
+            }
+            if(adaptationReadFbo == 0){
+                return false;
+            }
+
+            GLint prevReadFbo = 0;
+            glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &prevReadFbo);
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, adaptationReadFbo);
+            glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex->getID(), 0);
+            if(glCheckFramebufferStatus(GL_READ_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
+                glBindFramebuffer(GL_READ_FRAMEBUFFER, static_cast<GLuint>(prevReadFbo));
+                return false;
+            }
+
+            glReadBuffer(GL_COLOR_ATTACHMENT0);
+            auto readLumaAt = [](int x, int y) -> float {
+                float pixel[4] = {0.0f, 0.0f, 0.0f, 1.0f};
+                glReadPixels(x, y, 1, 1, GL_RGBA, GL_FLOAT, pixel);
+                return (pixel[0] * 0.2126f) + (pixel[1] * 0.7152f) + (pixel[2] * 0.0722f);
+            };
+
+            const int width = tex->getWidth();
+            const int height = tex->getHeight();
+            const int centerX = width / 2;
+            const int centerY = height / 2;
+
+            float luma = 0.0f;
+            luma += readLumaAt(centerX, centerY) * 0.50f;
+            luma += readLumaAt(width / 4, height / 4) * 0.125f;
+            luma += readLumaAt((width * 3) / 4, height / 4) * 0.125f;
+            luma += readLumaAt(width / 4, (height * 3) / 4) * 0.125f;
+            luma += readLumaAt((width * 3) / 4, (height * 3) / 4) * 0.125f;
+
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, static_cast<GLuint>(prevReadFbo));
+            if(!std::isfinite(luma)){
+                return false;
+            }
+
+            outLuminance = Math3D::Clamp(luma, 0.0001f, 64.0f);
+            return true;
+        }
+
+        void computeAdaptiveScales(PTexture tex, float& outThresholdScale, float& outIntensityScale, float& outExposureScale){
+            outThresholdScale = smoothedThresholdScale;
+            outIntensityScale = smoothedIntensityScale;
+            outExposureScale = smoothedExposureScale;
+            if(!adaptiveBloom){
+                adaptationInitialized = false;
+                adaptedLuminance = 0.35f;
+                filteredLuminance = 0.35f;
+                smoothedThresholdScale = 1.0f;
+                smoothedIntensityScale = 1.0f;
+                smoothedExposureScale = 1.0f;
+                outThresholdScale = smoothedThresholdScale;
+                outIntensityScale = smoothedIntensityScale;
+                outExposureScale = smoothedExposureScale;
+                return;
+            }
+
+            float observedLuminance = adaptedLuminance;
+            if(!sampleSceneLuminance(tex, observedLuminance)){
+                return;
+            }
+
+            auto now = std::chrono::steady_clock::now();
+            if(!adaptationInitialized){
+                adaptedLuminance = observedLuminance;
+                filteredLuminance = observedLuminance;
+                smoothedThresholdScale = 1.0f;
+                smoothedIntensityScale = 1.0f;
+                smoothedExposureScale = 1.0f;
+                adaptationInitialized = true;
+                lastAdaptationTime = now;
+            }else{
+                float dt = std::chrono::duration<float>(now - lastAdaptationTime).count();
+                dt = Math3D::Clamp(dt, 0.001f, 0.25f);
+                lastAdaptationTime = now;
+
+                // First, filter noisy per-frame luminance shifts (camera motion over high-contrast edges).
+                const float observedFilterRate = 5.0f;
+                const float observedAlpha = 1.0f - std::exp(-observedFilterRate * dt);
+                filteredLuminance += (observedLuminance - filteredLuminance) * observedAlpha;
+
+                // Then move the "eye adaptation" state toward filtered luminance.
+                const float adaptationRateUp = 1.35f;
+                const float adaptationRateDown = 0.95f;
+                const float adaptationRate = (filteredLuminance > adaptedLuminance) ? adaptationRateUp : adaptationRateDown;
+                const float adaptationAlpha = 1.0f - std::exp(-adaptationRate * dt);
+                adaptedLuminance += (filteredLuminance - adaptedLuminance) * adaptationAlpha;
+
+                float ratio = Math3D::Clamp(filteredLuminance / Math3D::Max(adaptedLuminance, 0.0001f), 0.5f, 2.5f);
+                if(std::abs(std::log2(ratio)) < 0.06f){
+                    ratio = 1.0f;
+                }
+
+                const float targetExposureScale = Math3D::Clamp(std::pow(ratio, 0.16f), 0.92f, 1.16f);
+                const float targetIntensityScale = Math3D::Clamp(std::pow(ratio, 0.30f), 0.72f, 1.55f);
+                const float targetThresholdScale = Math3D::Clamp(std::pow(ratio, -0.18f), 0.78f, 1.22f);
+
+                const float outputSmoothingRate = 4.2f;
+                const float outputAlpha = 1.0f - std::exp(-outputSmoothingRate * dt);
+                smoothedExposureScale += (targetExposureScale - smoothedExposureScale) * outputAlpha;
+                smoothedIntensityScale += (targetIntensityScale - smoothedIntensityScale) * outputAlpha;
+                smoothedThresholdScale += (targetThresholdScale - smoothedThresholdScale) * outputAlpha;
+            }
+
+            outThresholdScale = smoothedThresholdScale;
+            outIntensityScale = smoothedIntensityScale;
+            outExposureScale = smoothedExposureScale;
+        }
+
+        bool ensureCompiled(){
+            if(!shader){
+                return false;
+            }
+            if(shader->getID() != 0){
+                return true;
+            }
+            if(compileAttempted){
+                return false;
+            }
+            compileAttempted = true;
+            if(shader->compile() == 0){
+                LogBot.Log(LOG_ERRO, "Failed to compile Bloom shader:\n%s", shader->getLog().c_str());
+                return false;
+            }
+            return true;
+        }
+
+    public:
+        bool adaptiveBloom = false;
+        float threshold = 0.75f;
+        float softKnee = 0.5f;
+        float intensity = 0.65f;
+        float radiusPx = 6.0f;
+        int sampleCount = 8;
+        Math3D::Vec3 tint = Math3D::Vec3(1.0f, 1.0f, 1.0f);
+
+        BloomEffect() {
+            shader = std::make_shared<ShaderProgram>();
+            shader->setVertexShader(Graphics::ShaderDefaults::SCREEN_VERT_SRC);
+            shader->setFragmentShader(BLOOM_FRAG_SHADER);
+        }
+
+        ~BloomEffect() override {
+            if(adaptationReadFbo != 0){
+                glDeleteFramebuffers(1, &adaptationReadFbo);
+                adaptationReadFbo = 0;
+            }
+        }
+
+        bool apply(PTexture tex, PTexture, PFrameBuffer outFbo, std::shared_ptr<ModelPart> quad) override {
+            if(!outFbo || !quad || !tex){
+                return false;
+            }
+            if(!ensureCompiled()){
+                return false;
+            }
+
+            outFbo->bind();
+            outFbo->clear(Color::CLEAR);
+            glDisable(GL_DEPTH_TEST);
+
+            shader->bind();
+            shader->setUniformFast("screenTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(tex, 0)));
+            shader->setUniformFast("u_texelSize", Uniform<Math3D::Vec2>(Math3D::Vec2(1.0f / (float)outFbo->getWidth(), 1.0f / (float)outFbo->getHeight())));
+            float thresholdScale = 1.0f;
+            float intensityScale = 1.0f;
+            float exposureScale = 1.0f;
+            computeAdaptiveScales(tex, thresholdScale, intensityScale, exposureScale);
+
+            shader->setUniformFast("u_threshold", Uniform<float>(Math3D::Clamp(threshold * thresholdScale, 0.0f, 4.0f)));
+            shader->setUniformFast("u_softKnee", Uniform<float>(softKnee));
+            shader->setUniformFast("u_intensity", Uniform<float>(Math3D::Clamp(intensity * intensityScale, 0.0f, 6.0f)));
+            shader->setUniformFast("u_radiusPx", Uniform<float>(radiusPx));
+            shader->setUniformFast("u_exposureScale", Uniform<float>(exposureScale));
+
+            int effectiveSamples = sampleCount;
+            const int pixelCount = outFbo->getWidth() * outFbo->getHeight();
+            if(pixelCount >= (2560 * 1440) && effectiveSamples > 8){
+                effectiveSamples = 8;
+            }else if(pixelCount >= (1920 * 1080) && effectiveSamples > 10){
+                effectiveSamples = 10;
+            }
+            if(effectiveSamples < 1){
+                effectiveSamples = 1;
+            }
+            shader->setUniformFast("u_sampleCount", Uniform<int>(effectiveSamples));
+            shader->setUniformFast("u_tint", Uniform<Math3D::Vec3>(tint));
+
+            static const Math3D::Mat4 IDENTITY;
+            shader->setUniformFast("u_model", Uniform<Math3D::Mat4>(IDENTITY));
+            shader->setUniformFast("u_view", Uniform<Math3D::Mat4>(IDENTITY));
+            shader->setUniformFast("u_projection", Uniform<Math3D::Mat4>(IDENTITY));
+            quad->draw(IDENTITY, IDENTITY, IDENTITY);
+            outFbo->unbind();
+            return true;
+        }
+
+        static std::shared_ptr<BloomEffect> New() {
+            return std::make_shared<BloomEffect>();
         }
 };
 

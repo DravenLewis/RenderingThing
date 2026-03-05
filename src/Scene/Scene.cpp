@@ -473,6 +473,13 @@ void Scene::updateActiveCameraEffects(NeoECS::ECSEntity* activeCameraEntity, Neo
         }
     }
 
+    if(auto* bloom = manager->getECSComponent<BloomComponent>(activeCameraEntity)){
+        auto effect = bloom->getEffectForCamera(settings);
+        if(effect){
+            screen->addEffect(effect);
+        }
+    }
+
     if(auto* dof = manager->getECSComponent<DepthOfFieldComponent>(activeCameraEntity)){
         auto effect = dof->getEffectForCamera(settings);
         if(effect){
@@ -580,7 +587,7 @@ void Scene::ensureDeferredResources(PScreen screen){
         auto vertexShader = AssetManager::Instance.getOrLoad("@assets/shader/Shader_Vert_Default.vert");
         auto fragmentShader = AssetManager::Instance.getOrLoad("@assets/shader/Shader_Frag_DeferredLight.frag");
         if(vertexShader && fragmentShader){
-            deferredLightShader = ShaderCacheManager::INSTANCE.getOrCompile("DeferredLightPass_v1", vertexShader->asString(), fragmentShader->asString());
+            deferredLightShader = ShaderCacheManager::INSTANCE.getOrCompile("DeferredLightPass_v4", vertexShader->asString(), fragmentShader->asString());
             if(deferredLightShader && deferredLightShader->getID() == 0){
                 LogBot.Log(LOG_ERRO, "Failed to link DeferredLightPass shader: \n%s", deferredLightShader->getLog().c_str());
             }

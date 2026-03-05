@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <atomic>
+#include <cstdint>
 
 #include "Rendering/Core/FrameBuffer.h"
 #include "Rendering/Textures/Texture.h"
@@ -36,6 +37,8 @@ class Screen{
         bool bound = false;
         std::atomic<float> lastPostProcessMs{0.0f};
         std::atomic<int> lastPostProcessEffectCount{0};
+        std::uint32_t presentFrameIndex = 0;
+        float presentDebandStrength = 1.25f;
 
         void initScreenGeom();
         void initScreenShader();

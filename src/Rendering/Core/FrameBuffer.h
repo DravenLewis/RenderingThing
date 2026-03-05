@@ -217,7 +217,8 @@ struct FrameBuffer{
 
             {
                 GBufferAttachment position;
-                position.internalFormat = GL_RGBA16F;
+                // Large receivers (e.g. 200x200 ground planes) need full precision to avoid deferred-light banding.
+                position.internalFormat = GL_RGBA32F;
                 position.format = GL_RGBA;
                 position.type = GL_FLOAT;
                 position.texture = createAttachment(position.internalFormat, position.format, position.type);

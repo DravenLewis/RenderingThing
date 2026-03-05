@@ -43,12 +43,24 @@ Texture::Texture(std::shared_ptr<Graphics::Image::Image> imagePtr, GLenum imageH
 
     const bool preferNearest = (width <= 64 && height <= 64);
     if(preferNearest){
-        // Preserve crisp texels for small pixel-art style textures.
+        // Preserve crisp texels for small pixel-art style textures (e.g. 16x16 terrain tiles).
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }else{
+        // Use filtered mip sampling for larger lit/material textures on broad surfaces.
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        #if defined(GL_TEXTURE_MAX_ANISOTROPY) && defined(GL_MAX_TEXTURE_MAX_ANISOTROPY)
+            GLfloat maxAniso = 1.0f;
+            glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY, &maxAniso);
+            float targetAniso = (maxAniso > 8.0f) ? 8.0f : ((maxAniso < 1.0f) ? 1.0f : maxAniso);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY, targetAniso);
+        #elif defined(GL_TEXTURE_MAX_ANISOTROPY_EXT) && defined(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT)
+            GLfloat maxAniso = 1.0f;
+            glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAniso);
+            float targetAniso = (maxAniso > 8.0f) ? 8.0f : ((maxAniso < 1.0f) ? 1.0f : maxAniso);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, targetAniso);
+        #endif
     }
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -169,6 +181,31 @@ std::shared_ptr<Texture> Texture::CreateEmpty(int width, int height){
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
     // Render targets should stay nearest to avoid unintended blur in post/deferred passes.
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+    return tex;
+}
+
+std::shared_ptr<Texture> Texture::CreateRenderTarget(
+    int width,
+    int height,
+    GLenum internalFormat,
+    GLenum format,
+    GLenum type
+){
+    auto tex = std::make_shared<Texture>();
+    tex->width = width;
+    tex->height = height;
+
+    glGenTextures(1, &tex->getID());
+    glBindTexture(GL_TEXTURE_2D, tex->getID());
+
+    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, NULL);
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);

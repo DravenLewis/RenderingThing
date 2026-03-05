@@ -27,6 +27,7 @@ namespace {
         Camera,
         Skybox,
         SSAO,
+        Bloom,
         DepthOfField,
         AntiAliasing,
         Script
@@ -173,6 +174,14 @@ namespace {
                     return fail("Depth Of Field requires Camera Component.");
                 }
                 return wrapper->addComponent<DepthOfFieldComponent>();
+            case AddComponentKind::Bloom:
+                if(hasComponent<BloomComponent>(manager, entity)){
+                    return fail("Bloom Component already exists.");
+                }
+                if(!hasComponent<CameraComponent>(manager, entity)){
+                    return fail("Bloom requires Camera Component.");
+                }
+                return wrapper->addComponent<BloomComponent>();
             case AddComponentKind::AntiAliasing:
                 if(hasComponent<AntiAliasingComponent>(manager, entity)){
                     return fail("Anti-Aliasing Component already exists.");
@@ -384,6 +393,7 @@ void PropertiesPanel::draw(float x,
             const bool hasCamera = (componentMgr->getECSComponent<CameraComponent>(entity) != nullptr);
             const bool hasSkybox = (componentMgr->getECSComponent<SkyboxComponent>(entity) != nullptr);
             const bool hasSsao = (componentMgr->getECSComponent<SSAOComponent>(entity) != nullptr);
+            const bool hasBloom = (componentMgr->getECSComponent<BloomComponent>(entity) != nullptr);
             const bool hasDof = (componentMgr->getECSComponent<DepthOfFieldComponent>(entity) != nullptr);
             const bool hasAa = (componentMgr->getECSComponent<AntiAliasingComponent>(entity) != nullptr);
             auto* scriptComp = componentMgr->getECSComponent<ScriptComponent>(entity);
@@ -437,6 +447,7 @@ void PropertiesPanel::draw(float x,
                 ImGui::Separator();
                 drawAddMenuItem("Skybox Component", AddComponentKind::Skybox, !hasSkybox && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
                 drawAddMenuItem("SSAO / GI Component", AddComponentKind::SSAO, !hasSsao && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
+                drawAddMenuItem("Bloom Component", AddComponentKind::Bloom, !hasBloom && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
                 drawAddMenuItem("Depth Of Field Component", AddComponentKind::DepthOfField, !hasDof && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
                 drawAddMenuItem("Anti-Aliasing Component", AddComponentKind::AntiAliasing, !hasAa && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
                 ImGui::EndMenu();

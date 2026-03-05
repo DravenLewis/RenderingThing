@@ -70,6 +70,7 @@ class EditorScene : public Scene {
         PlayState playState = PlayState::Edit;
         bool maximizeOnPlay = false;
         bool inputBlockerRegistered = false;
+        bool showEditorCameraSettings = false;
 
         ViewportRect viewportRect;
         bool viewportHovered = false;

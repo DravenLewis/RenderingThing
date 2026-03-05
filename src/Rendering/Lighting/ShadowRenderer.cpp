@@ -20,7 +20,7 @@ namespace {
     constexpr int MAX_SHADOW_MAPS_CUBE = 2;
     constexpr int SHADOW_TEX_UNIT_BASE_2D = 8;
     // Hybrid defaults: keep high-quality directional/spot shadows, trim point shadows first.
-    constexpr int SHADOW_MAP_SIZE_DIRECTIONAL = 2048;
+    constexpr int SHADOW_MAP_SIZE_DIRECTIONAL = 4096;
     constexpr int SHADOW_MAP_SIZE_SPOT = 1536;
     constexpr int SHADOW_MAP_SIZE_CUBE = 512;
     constexpr int DIRECTIONAL_CASCADE_COUNT = 4;
@@ -300,8 +300,8 @@ namespace {
             glBindTexture(GL_TEXTURE_2D, g_fallbackShadowTex2D);
             float depthOne = 1.0f;
             glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, 1, 1, 0, GL_DEPTH_COMPONENT, GL_FLOAT, &depthOne);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
             const float border[] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -328,8 +328,8 @@ namespace {
                     &depthOne
                 );
             }
-            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
@@ -486,8 +486,8 @@ static void computeDirectionalCascades(
     float nearPlane = camera->getSettings().nearPlane;
     float shadowRange = safeFloat(light.shadowRange, light.range);
     float farPlane = Math3D::Min(camera->getSettings().farPlane, (shadowRange > 0.0f) ? shadowRange : camera->getSettings().farPlane);
-    // Favor logarithmic splits to keep higher density in near cascades.
-    float lambda = 0.85f;
+    // Lower lambda biases toward linear distribution (pushes split boundaries farther away).
+    float lambda = Math3D::Clamp(safeFloat(light.cascadeLambda, 0.82f), 0.0f, 1.0f);
 
     std::vector<float> splits;
     splits.reserve(cascadeCount);
@@ -508,32 +508,44 @@ static void computeDirectionalCascades(
         up = glm::vec3(0,0,1);
     }
 
-    constexpr float kCascadeGuardBand = 0.02f;
+    constexpr float kCascadeGuardBand = 0.10f;
     constexpr float kCascadeCasterXYMarginFactor = 0.1f;
+    constexpr float kCascadeDepthOverlap = 0.08f;
 
     float prevSplit = nearPlane;
     for(int i = 0; i < cascadeCount; ++i){
         float splitDist = splits[i];
+        float cascadeNear = prevSplit;
+        float cascadeFar = splitDist;
+        if(i > 0){
+            cascadeNear = Math3D::Max(nearPlane, prevSplit * (1.0f - kCascadeDepthOverlap));
+        }
+        if(i < cascadeCount - 1){
+            cascadeFar = Math3D::Min(farPlane, splitDist * (1.0f + kCascadeDepthOverlap));
+        }
+        if(cascadeFar < cascadeNear + 0.05f){
+            cascadeFar = cascadeNear + 0.05f;
+        }
         float tanHalfFov = std::tan(glm::radians(camera->getSettings().fov * 0.5f));
         float aspect = camera->getSettings().aspect;
 
-        float nearH = tanHalfFov * prevSplit;
+        float nearH = tanHalfFov * cascadeNear;
         float nearW = nearH * aspect;
-        float farH = tanHalfFov * splitDist;
+        float farH = tanHalfFov * cascadeFar;
         float farW = farH * aspect;
 
         std::vector<glm::vec3> corners;
         corners.reserve(8);
-        corners.push_back(glm::vec3( nearW,  nearH, -prevSplit));
-        corners.push_back(glm::vec3(-nearW,  nearH, -prevSplit));
-        corners.push_back(glm::vec3( nearW, -nearH, -prevSplit));
-        corners.push_back(glm::vec3(-nearW, -nearH, -prevSplit));
-        corners.push_back(glm::vec3( farW,  farH, -splitDist));
-        corners.push_back(glm::vec3(-farW,  farH, -splitDist));
-        corners.push_back(glm::vec3( farW, -farH, -splitDist));
-        corners.push_back(glm::vec3(-farW, -farH, -splitDist));
+        corners.push_back(glm::vec3( nearW,  nearH, -cascadeNear));
+        corners.push_back(glm::vec3(-nearW,  nearH, -cascadeNear));
+        corners.push_back(glm::vec3( nearW, -nearH, -cascadeNear));
+        corners.push_back(glm::vec3(-nearW, -nearH, -cascadeNear));
+        corners.push_back(glm::vec3( farW,  farH, -cascadeFar));
+        corners.push_back(glm::vec3(-farW,  farH, -cascadeFar));
+        corners.push_back(glm::vec3( farW, -farH, -cascadeFar));
+        corners.push_back(glm::vec3(-farW, -farH, -cascadeFar));
 
-        glm::vec3 center(0);
+        glm::vec3 center(0.0f);
         for(auto& c : corners){
             glm::vec4 world = invView * glm::vec4(c, 1.0f);
             c = glm::vec3(world) / world.w;
@@ -541,7 +553,17 @@ static void computeDirectionalCascades(
         }
         center /= static_cast<float>(corners.size());
 
-        glm::vec3 lightPos = center - glm::vec3(lightDir.x, lightDir.y, lightDir.z) * 100.0f;
+        float cascadeRadius = 0.0f;
+        for(const auto& c : corners){
+            cascadeRadius = std::max(cascadeRadius, glm::length(c - center));
+        }
+        cascadeRadius = std::max(cascadeRadius, 1.0f);
+        // Quantize radius to stabilize cascade coverage and reduce shimmering.
+        cascadeRadius = std::ceil(cascadeRadius * 16.0f) / 16.0f;
+
+        glm::vec3 lightDirVec(lightDir.x, lightDir.y, lightDir.z);
+        float lightDistance = std::max(80.0f, cascadeRadius * 2.5f);
+        glm::vec3 lightPos = center - lightDirVec * lightDistance;
         glm::mat4 lightView = glm::lookAt(lightPos, center, up);
 
         glm::vec3 minV(FLT_MAX), maxV(-FLT_MAX);
@@ -592,6 +614,12 @@ static void computeDirectionalCascades(
         int shadowMapSize = Math3D::Max(1, getShadowMapSize2D(light));
         float texelWorldSize = (halfSize * 2.0f) / static_cast<float>(shadowMapSize);
         if(texelWorldSize > 1e-6f){
+            // Reserve a few texels so PCF/receiver offsets do not fall off cascade edges.
+            constexpr float kCascadeKernelMarginTexels = 12.0f;
+            halfSize += texelWorldSize * kCascadeKernelMarginTexels;
+            texelWorldSize = (halfSize * 2.0f) / static_cast<float>(shadowMapSize);
+        }
+        if(texelWorldSize > 1e-6f){
             centerXY = glm::floor((centerXY / texelWorldSize) + glm::vec2(0.5f)) * texelWorldSize;
         }
         minV.x = centerXY.x - halfSize;
@@ -601,7 +629,7 @@ static void computeDirectionalCascades(
 
         float zSpan = maxV.z - minV.z;
         // Keep depth padding modest to preserve precision and reduce shadow acne.
-        float zMult = Math3D::Max(0.75f, zSpan * 0.05f);
+        float zMult = Math3D::Max(0.8f, zSpan * 0.10f);
         float nearZ = -maxV.z - zMult;
         float farZ = -minV.z + zMult;
         if(nearZ < 0.05f) nearZ = 0.05f;
@@ -712,7 +740,7 @@ void ShadowRenderer::BeginFrame(PCamera camera, const std::vector<ShadowCasterBo
             ShadowCandidate candidate;
             candidate.lightIndex = i;
             candidate.type = light.type;
-            candidate.slotCost = 4; // 4 cascades
+            candidate.slotCost = DIRECTIONAL_CASCADE_COUNT;
             candidate.normalizedDistance = 0.0f;
             candidate.distanceToCamera = 0.0f;
             candidates2D.push_back(candidate);
@@ -773,7 +801,20 @@ void ShadowRenderer::BeginFrame(PCamera camera, const std::vector<ShadowCasterBo
                     int cascadeCount = DIRECTIONAL_CASCADE_COUNT;
                     std::vector<float> splits;
                     std::vector<Math3D::Mat4> matrices;
-                    computeDirectionalCascades(light, camera, cascadeCount, splits, matrices, casters);
+                    if(cascadeCount <= 1){
+                        // Use a stable, camera-centered orthographic shadow for directional lights.
+                        // This keeps distant/off-screen casters (including top/bottom) contributing consistently.
+                        matrices.push_back(computeDirectionalMatrix(light, camera));
+                        float shadowRange = safeFloat(light.shadowRange, camera->getSettings().farPlane);
+                        if(shadowRange <= 0.0f){
+                            shadowRange = camera->getSettings().farPlane;
+                        }
+                        splits.push_back(Math3D::Min(camera->getSettings().farPlane, shadowRange));
+                        cascadeCount = 1;
+                    }else{
+                        computeDirectionalCascades(light, camera, cascadeCount, splits, matrices, casters);
+                        cascadeCount = Math3D::Max(1, static_cast<int>(matrices.size()));
+                    }
 
                     if(g_active2D + cascadeCount <= MAX_SHADOW_MAPS_2D){
                         if(static_cast<int>(g_shadow2D.size()) < g_active2D + cascadeCount){
@@ -991,12 +1032,16 @@ void ShadowRenderer::RenderShadowsBatch(const std::vector<ShadowDrawItem>& items
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
     glDisable(GL_BLEND);
-    glDisable(GL_CULL_FACE);
-    // Add slope-scaled depth bias during shadow map rendering to reduce self-shadow acne.
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    // Use raster-time depth bias, tuned per shadow type below.
     glEnable(GL_POLYGON_OFFSET_FILL);
-    glPolygonOffset(1.75f, 4.0f);
+    glPolygonOffset(0.0f, 0.0f);
 
     if(g_shadow2DProgram && g_shadow2DProgram->getID() != 0){
+        // Directional/spot maps: conservative slope bias with back-face culling to keep contact shadows anchored.
+        glCullFace(GL_BACK);
+        glPolygonOffset(1.1f, 2.0f);
         g_shadow2DProgram->bind();
         static GLuint s_cached2DProgram = 0;
         static GLint s_2dLightMatrixLoc = -1;
@@ -1006,10 +1051,15 @@ void ShadowRenderer::RenderShadowsBatch(const std::vector<ShadowDrawItem>& items
             s_2dLightMatrixLoc = glGetUniformLocation(s_cached2DProgram, "u_lightMatrix");
             s_2dModelLoc = glGetUniformLocation(s_cached2DProgram, "u_model");
         }
+        const auto& activeLights = getActiveLights();
         for(int i = 0; i < g_active2D; ++i){
             const auto& slot = g_shadow2D[i];
             if(slot.map.getDepthTexture() == 0 || slot.map.getSize() <= 0){
                 continue;
+            }
+            bool directionalSlot = false;
+            if(slot.lightIndex >= 0 && slot.lightIndex < static_cast<int>(activeLights.size())){
+                directionalSlot = (activeLights[slot.lightIndex].type == LightType::DIRECTIONAL);
             }
             slot.map.bind();
             glViewport(0, 0, slot.map.getSize(), slot.map.getSize());
@@ -1018,7 +1068,7 @@ void ShadowRenderer::RenderShadowsBatch(const std::vector<ShadowDrawItem>& items
                 glUniformMatrix4fv(s_2dLightMatrixLoc, 1, GL_FALSE, glm::value_ptr(slot.matrix.data));
             }
             for(const ShadowDrawItem* item : activeItems){
-                if(!shadowItemIntersectsFrustum(*item, slot.matrix)){
+                if(!directionalSlot && !shadowItemIntersectsFrustum(*item, slot.matrix)){
                     continue;
                 }
                 if(s_2dModelLoc != -1){
@@ -1036,6 +1086,9 @@ void ShadowRenderer::RenderShadowsBatch(const std::vector<ShadowDrawItem>& items
     }
 
     if(g_shadowCubeProgram && g_shadowCubeProgram->getID() != 0){
+        // Point maps: mild raster bias; shader-side kernel and bias handle the rest.
+        glCullFace(GL_BACK);
+        glPolygonOffset(0.4f, 0.8f);
         g_shadowCubeProgram->bind();
         static GLuint s_cachedCubeProgram = 0;
         static GLint s_lightPosLoc = -1;
@@ -1091,6 +1144,7 @@ void ShadowRenderer::RenderShadowsBatch(const std::vector<ShadowDrawItem>& items
     glDisable(GL_POLYGON_OFFSET_FILL);
     glPolygonOffset(0.0f, 0.0f);
     glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
     g_inShadowPass = false;
 }
 

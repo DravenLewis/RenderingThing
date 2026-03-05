@@ -294,33 +294,62 @@ void EditorScene::applyActiveSceneState(){
         }
     }
 
-    if(editorCameraObject && !editorCameraComponent){
+    if(editorCameraObject){
         auto* manager = getECS()->getComponentManager();
-        editorCameraTransform = manager->getECSComponent<TransformComponent>(editorCameraObject->gameobject());
-        editorCameraComponent = manager->getECSComponent<CameraComponent>(editorCameraObject->gameobject());
-        auto* boundsComp = manager->getECSComponent<BoundsComponent>(editorCameraObject->gameobject());
-        if(editorCameraComponent && !editorCameraComponent->camera){
-            RenderWindow* window = getWindow();
-            float w = window ? (float)window->getWindowWidth() : 1280.0f;
-            float h = window ? (float)window->getWindowHeight() : 720.0f;
-            editorCameraComponent->camera = Camera::CreatePerspective(45.0f, Math3D::Vec2(w, h), 0.1f, 2000.0f);
+        NeoECS::ECSEntity* editorEntity = editorCameraObject->gameobject();
+
+        if(manager && editorEntity){
+            // The editor viewport camera always exposes all post-process components,
+            // but starts with every effect disabled.
+            if(!manager->getECSComponent<SSAOComponent>(editorEntity) && editorCameraObject->addComponent<SSAOComponent>()){
+                if(auto* ssao = manager->getECSComponent<SSAOComponent>(editorEntity)){
+                    ssao->enabled = false;
+                }
+            }
+            if(!manager->getECSComponent<BloomComponent>(editorEntity) && editorCameraObject->addComponent<BloomComponent>()){
+                if(auto* bloom = manager->getECSComponent<BloomComponent>(editorEntity)){
+                    bloom->enabled = false;
+                }
+            }
+            if(!manager->getECSComponent<DepthOfFieldComponent>(editorEntity) && editorCameraObject->addComponent<DepthOfFieldComponent>()){
+                if(auto* dof = manager->getECSComponent<DepthOfFieldComponent>(editorEntity)){
+                    dof->enabled = false;
+                }
+            }
+            if(!manager->getECSComponent<AntiAliasingComponent>(editorEntity) && editorCameraObject->addComponent<AntiAliasingComponent>()){
+                if(auto* aa = manager->getECSComponent<AntiAliasingComponent>(editorEntity)){
+                    aa->preset = AntiAliasingPreset::Off;
+                }
+            }
         }
 
-        if(editorCameraComponent){
-            editorCamera = editorCameraComponent->camera;
-            viewportCamera = editorCamera;
-        }
+        if(!editorCameraComponent && manager && editorEntity){
+            editorCameraTransform = manager->getECSComponent<TransformComponent>(editorEntity);
+            editorCameraComponent = manager->getECSComponent<CameraComponent>(editorEntity);
+            auto* boundsComp = manager->getECSComponent<BoundsComponent>(editorEntity);
+            if(editorCameraComponent && !editorCameraComponent->camera){
+                RenderWindow* window = getWindow();
+                float w = window ? (float)window->getWindowWidth() : 1280.0f;
+                float h = window ? (float)window->getWindowHeight() : 720.0f;
+                editorCameraComponent->camera = Camera::CreatePerspective(45.0f, Math3D::Vec2(w, h), 0.1f, 2000.0f);
+            }
 
-        if(boundsComp){
-            boundsComp->type = BoundsType::Sphere;
-            boundsComp->radius = 0.5f;
-        }
+            if(editorCameraComponent){
+                editorCamera = editorCameraComponent->camera;
+                viewportCamera = editorCamera;
+            }
 
-        if(targetCamera && editorCameraTransform){
-            editorCameraTransform->local = targetCamera->transform();
-            Math3D::Vec3 euler = targetCamera->transform().rotation.ToEuler();
-            editorPitch = euler.x;
-            editorYaw = euler.y;
+            if(boundsComp){
+                boundsComp->type = BoundsType::Sphere;
+                boundsComp->radius = 0.5f;
+            }
+
+            if(targetCamera && editorCameraTransform){
+                editorCameraTransform->local = targetCamera->transform();
+                Math3D::Vec3 euler = targetCamera->transform().rotation.ToEuler();
+                editorPitch = euler.x;
+                editorYaw = euler.y;
+            }
         }
     }
 }
@@ -706,15 +735,14 @@ void EditorScene::render(){
             auto mainScreen = targetScene->getMainScreen();
             NeoECS::ECSEntity* previewEntity = findEntityById(selectedEntityId);
 
-            auto applyCameraEffects = [&](NeoECS::ECSEntity* cameraEntity){
+            auto applyCameraEffects = [&](NeoECS::ECSComponentManager* components, NeoECS::ECSEntity* cameraEntity){
                 if(!mainScreen){
                     return;
                 }
                 mainScreen->clearEffects();
-                if(!cameraEntity || !targetScene || !targetScene->getECS()){
+                if(!components || !cameraEntity){
                     return;
                 }
-                auto* components = targetScene->getECS()->getComponentManager();
                 auto* camComponent = components->getECSComponent<CameraComponent>(cameraEntity);
                 if(!camComponent || !camComponent->camera){
                     return;
@@ -757,6 +785,11 @@ void EditorScene::render(){
                         mainScreen->addEffect(effect);
                     }
                 }
+                if(auto* bloom = components->getECSComponent<BloomComponent>(cameraEntity)){
+                    if(auto effect = bloom->getEffectForCamera(settings)){
+                        mainScreen->addEffect(effect);
+                    }
+                }
                 if(auto* dof = components->getECSComponent<DepthOfFieldComponent>(cameraEntity)){
                     if(auto effect = dof->getEffectForCamera(settings)){
                         mainScreen->addEffect(effect);
@@ -771,7 +804,10 @@ void EditorScene::render(){
 
             // Render the selected target-scene camera into a small preview texture first.
             if(mainScreen && previewCamera && previewEntity){
-                applyCameraEffects(previewEntity);
+                auto* targetComponents = targetScene && targetScene->getECS()
+                    ? targetScene->getECS()->getComponentManager()
+                    : nullptr;
+                applyCameraEffects(targetComponents, previewEntity);
                 mainScreen->setCamera(previewCamera);
                 targetScene->renderViewportContents();
                 auto sourceBuffer = mainScreen->getDisplayBuffer();
@@ -828,7 +864,18 @@ void EditorScene::render(){
             // Keep the editor viewport render driven by the editor camera in edit mode.
             PCamera mainEditCamera = viewportCamera ? viewportCamera : editorCamera;
             if(mainScreen && mainEditCamera){
-                mainScreen->clearEffects();
+                NeoECS::ECSComponentManager* effectManager = nullptr;
+                NeoECS::ECSEntity* effectEntity = nullptr;
+
+                if(mainEditCamera == editorCamera && editorCameraObject && getECS()){
+                    effectManager = getECS()->getComponentManager();
+                    effectEntity = editorCameraObject->gameobject();
+                }else if(previewEntity && previewCamera && targetScene && targetScene->getECS()){
+                    effectManager = targetScene->getECS()->getComponentManager();
+                    effectEntity = previewEntity;
+                }
+
+                applyCameraEffects(effectManager, effectEntity);
                 mainScreen->setCamera(mainEditCamera);
             }
             targetScene->renderViewportContents();
@@ -1818,6 +1865,11 @@ void EditorScene::drawToolbar(float width, float height){
         if(ImGui::BeginMenu("Edit")){
             ImGui::MenuItem("Undo", "Ctrl+Z", false, false);
             ImGui::MenuItem("Redo", "Ctrl+Y", false, false);
+            ImGui::Separator();
+            if(ImGui::MenuItem("Editor Camera Settings")){
+                showEditorCameraSettings = true;
+                selectedAssetPath.clear();
+            }
             ImGui::EndMenu();
         }
         if(ImGui::BeginMenu("View")){
@@ -1927,6 +1979,7 @@ void EditorScene::selectEntity(const std::string& id){
         focusOnEntity(id);
         return;
     }
+    showEditorCameraSettings = false;
     selectedEntityId = id;
     if(!id.empty()){
         selectedAssetPath.clear();
@@ -2421,18 +2474,41 @@ void EditorScene::drawPropertiesPanel(float x, float y, float w, float h, bool l
         return;
     }
     workspacePanel.setAssetRoot(assetRoot);
+    PScene panelScene = targetScene;
+    std::string panelSelectedEntityId = selectedEntityId;
+    std::function<NeoECS::ECSEntity*(const std::string&)> findPanelEntityById = [this](const std::string& id) -> NeoECS::ECSEntity* {
+        return findEntityById(id);
+    };
+
+    if(showEditorCameraSettings && editorCameraObject && editorCameraObject->gameobject() && getECS()){
+        panelScene = PScene(this, [](Scene*) {});
+        panelSelectedEntityId = editorCameraObject->gameobject()->getNodeUniqueID();
+        findPanelEntityById = [this](const std::string& id) -> NeoECS::ECSEntity* {
+            if(id.empty() || !getECS()){
+                return nullptr;
+            }
+            auto* entityManager = getECS()->getEntityManager();
+            const auto& entities = entityManager->getEntities();
+            for(const auto& entityPtr : entities){
+                auto* entity = entityPtr.get();
+                if(entity && entity->getNodeUniqueID() == id){
+                    return entity;
+                }
+            }
+            return nullptr;
+        };
+    }
+
     propertiesPanel.draw(
         x,
         y,
         w,
         h,
-        targetScene,
+        panelScene,
         assetRoot,
         selectedAssetPath,
-        selectedEntityId,
-        [this](const std::string& id) -> NeoECS::ECSEntity* {
-            return findEntityById(id);
-        }
+        panelSelectedEntityId,
+        findPanelEntityById
     );
 }
 

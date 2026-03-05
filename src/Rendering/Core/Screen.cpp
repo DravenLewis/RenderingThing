@@ -85,6 +85,9 @@ void Screen::processRenderPipeline(){
         screenShader->bind();
         Uniform<PTexture> passthroughTex(source->getTexture());
         screenShader->setUniform("screenTexture", passthroughTex);
+        screenShader->setUniform("u_applyDeband", Uniform<int>(0));
+        screenShader->setUniform("u_frameIndex", Uniform<int>(static_cast<int>(presentFrameIndex)));
+        screenShader->setUniform("u_debandStrength", Uniform<float>(presentDebandStrength));
 
         static const Math3D::Mat4 IDENTITY;
         screenShader->setUniform("u_model", Uniform<Math3D::Mat4>(IDENTITY));
@@ -153,6 +156,7 @@ void Screen::processRenderPipeline(){
     // Front becomes Back.
     // Back becomes Middle.
     buffer->swapBuffers();
+    presentFrameIndex++;
 
     auto pipelineEnd = clock::now();
     lastPostProcessMs.store(
@@ -173,6 +177,7 @@ void Screen::drawToWindow(RenderWindow* window, bool clearWindow){
 
         glDisable(GL_DEPTH_TEST); 
         glDisable(GL_CULL_FACE);
+        glEnable(GL_DITHER);
 
         if(clearWindow){
             glDisable(GL_BLEND);
@@ -187,6 +192,9 @@ void Screen::drawToWindow(RenderWindow* window, bool clearWindow){
 
             Uniform<PTexture> texUniform(buffer->getDisplayBuffer()->getTexture());
             screenShader->setUniform("screenTexture", texUniform);
+            screenShader->setUniform("u_applyDeband", Uniform<int>(1));
+            screenShader->setUniform("u_frameIndex", Uniform<int>(static_cast<int>(presentFrameIndex)));
+            screenShader->setUniform("u_debandStrength", Uniform<float>(presentDebandStrength));
 
             static const Math3D::Mat4 IDENTITY;
             screenShader->setUniform("u_model", Uniform<Math3D::Mat4>(IDENTITY));
@@ -221,6 +229,7 @@ void Screen::drawToView(PView view, bool clearWindow, float x, float y, float wi
 
     glDisable(GL_DEPTH_TEST); 
     glDisable(GL_CULL_FACE);
+    glEnable(GL_DITHER);
 
     if(clearWindow){
         glDisable(GL_BLEND);
@@ -235,6 +244,9 @@ void Screen::drawToView(PView view, bool clearWindow, float x, float y, float wi
 
             Uniform<PTexture> texUniform(buffer->getDisplayBuffer()->getTexture());
             screenShader->setUniform("screenTexture", texUniform);
+            screenShader->setUniform("u_applyDeband", Uniform<int>(1));
+            screenShader->setUniform("u_frameIndex", Uniform<int>(static_cast<int>(presentFrameIndex)));
+            screenShader->setUniform("u_debandStrength", Uniform<float>(presentDebandStrength));
 
         if(!uiCamera || uiWidth != window->getWindowWidth() || uiHeight != window->getWindowHeight()){
             uiCamera = Camera::CreateOrthogonal(
@@ -295,9 +307,20 @@ void Screen::resize(int w, int h){
         this->width = w;
         this->height = h;
 
-        buffer->getBack()->attachTexture(Texture::CreateEmpty(w,h));
-        buffer->getMiddle()->attachTexture(Texture::CreateEmpty(w,h));
-        buffer->getFront()->attachTexture(Texture::CreateEmpty(w,h));
+        // Keep the post-process chain in HDR precision to avoid LDR banding
+        // on large smooth gradients (terrain, fog, soft shadow transitions).
+        auto attachBestColorTarget = [w, h](const std::shared_ptr<FrameBuffer>& target){
+            if(!target){
+                return;
+            }
+            target->attachTexture(Texture::CreateRenderTarget(w, h));
+            if(!target->validate()){
+                target->attachTexture(Texture::CreateEmpty(w, h));
+            }
+        };
+        attachBestColorTarget(buffer->getBack());
+        attachBestColorTarget(buffer->getMiddle());
+        attachBestColorTarget(buffer->getFront());
     }
 
     if(camera){

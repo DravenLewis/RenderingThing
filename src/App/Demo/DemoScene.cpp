@@ -100,6 +100,7 @@ void DemoScene::init(){
         demoCameraObject->addComponent<CameraComponent>();
         demoCameraObject->addComponent<BoundsComponent>();
         demoCameraObject->addComponent<SSAOComponent>();
+        demoCameraObject->addComponent<BloomComponent>();
         demoCameraObject->addComponent<DepthOfFieldComponent>();
         demoCameraObject->addComponent<AntiAliasingComponent>();
 
@@ -107,6 +108,7 @@ void DemoScene::init(){
         demoCameraComponent = demoCameraObject->getComponent<CameraComponent>();
         auto* bounds = demoCameraObject->getComponent<BoundsComponent>();
         auto* ssao = demoCameraObject->getComponent<SSAOComponent>();
+        auto* bloom = demoCameraObject->getComponent<BloomComponent>();
         auto* dof = demoCameraObject->getComponent<DepthOfFieldComponent>();
         auto* aa = demoCameraObject->getComponent<AntiAliasingComponent>();
 
@@ -140,6 +142,15 @@ void DemoScene::init(){
             ssao->intensity = 0.6f;
             ssao->giBoost = 0.03f;
             ssao->sampleCount = 4;
+        }
+        if(bloom){
+            bloom->enabled = true;
+            bloom->threshold = 1.0f;
+            bloom->softKnee = 0.55f;
+            bloom->intensity = 0.35f;
+            bloom->radiusPx = 5.0f;
+            bloom->sampleCount = 8;
+            bloom->tint = Math3D::Vec3(1.0f, 0.98f, 0.95f);
         }
         if(dof){
             // Editor-friendly default: DOF is one of the heaviest full-screen passes.

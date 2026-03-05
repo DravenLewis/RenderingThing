@@ -127,10 +127,44 @@ namespace Graphics{
             in vec2 TexCoords;
 
             uniform sampler2D screenTexture;
+            uniform int u_applyDeband;
+            uniform int u_frameIndex;
+            uniform float u_debandStrength;
+
+            float luma(vec3 c){
+                return dot(c, vec3(0.299, 0.587, 0.114));
+            }
+
+            float interleavedGradientNoise(vec2 p, float frame){
+                vec2 jitter = vec2(frame * 0.75487765, frame * 0.56984026);
+                return fract(52.9829189 * fract(dot(p + jitter, vec2(0.06711056, 0.00583715))));
+            }
+
+            float triangularNoise(vec2 p, float frame){
+                float a = interleavedGradientNoise(p + vec2(0.5, 0.25), frame);
+                float b = interleavedGradientNoise(p + vec2(1.25, 2.75), frame + 17.0);
+                return a - b;
+            }
 
             void main() {
-                FragColor = texture(screenTexture, TexCoords);
-                //FragColor = vec4(1.0,0.0,0.0,1.0);
+                vec4 color = texture(screenTexture, TexCoords);
+
+                if(u_applyDeband != 0){
+                    vec2 texelSize = 1.0 / vec2(textureSize(screenTexture, 0));
+                    vec3 rightColor = texture(screenTexture, clamp(TexCoords + vec2(texelSize.x, 0.0), vec2(0.0), vec2(1.0))).rgb;
+                    vec3 upColor = texture(screenTexture, clamp(TexCoords + vec2(0.0, texelSize.y), vec2(0.0), vec2(1.0))).rgb;
+
+                    float centerLuma = luma(color.rgb);
+                    float gradient = abs(centerLuma - luma(rightColor)) + abs(centerLuma - luma(upColor));
+                    float smoothRegion = 1.0 - smoothstep(0.002, 0.030, gradient);
+
+                    float frame = mod(float(u_frameIndex), 1024.0);
+                    float noise = triangularNoise(gl_FragCoord.xy, frame);
+                    float strength = (1.0 / 255.0) * max(u_debandStrength, 0.0) * mix(0.35, 1.65, smoothRegion);
+                    color.rgb += vec3(noise * strength);
+                }
+
+                FragColor = vec4(max(color.rgb, vec3(0.0)), color.a);
             }
         )";
 

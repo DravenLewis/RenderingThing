@@ -1,7 +1,7 @@
 #version 410 core
 
 #define MAX_LIGHTS 16
-#define MAX_SHADOW_MAPS_2D 24
+#define MAX_SHADOW_MAPS_2D 16
 #define MAX_SHADOW_MAPS_CUBE 2
 
 struct Light {
@@ -41,86 +41,216 @@ vec3 safeNormalize(vec3 v){
     return (lenV > 1e-5) ? (v / lenV) : vec3(0.0, -1.0, 0.0);
 }
 
+vec3 getShadowDirection(Light light, vec3 fragPos){
+    int lightType = int(light.meta.x + 0.5);
+    return (lightType == 1)
+        ? safeNormalize(-light.direction.xyz)
+        : safeNormalize(light.position.xyz - fragPos);
+}
+
+float hash13(vec3 p){
+    p = fract(p * 0.1031);
+    p += dot(p, p.yzx + 33.33);
+    return fract((p.x + p.y) * p.z);
+}
+
+mat2 rotate2D(float angle){
+    float s = sin(angle);
+    float c = cos(angle);
+    return mat2(c, -s, s, c);
+}
+
 
 float sampleShadow2D(int shadowType, int mapIndex, vec4 lightSpacePos, float bias) {
     if(mapIndex < 0 || mapIndex >= MAX_SHADOW_MAPS_2D) return 1.0;
 
     vec3 projCoords = lightSpacePos.xyz / lightSpacePos.w;
     projCoords = projCoords * 0.5 + 0.5;
-    if(projCoords.z > 1.0 || projCoords.z < 0.0) return 1.0;
+    if(projCoords.z > 1.001 || projCoords.z < -0.001) return 1.0;
+    if(projCoords.x < 0.0 || projCoords.x > 1.0 || projCoords.y < 0.0 || projCoords.y > 1.0) return 1.0;
 
     vec2 texelSize = 1.0 / vec2(textureSize(u_shadowMaps2D[mapIndex], 0));
-    float shadow = 0.0;
-    int samples = 0;
+    float filterScale = 1.0;
+    vec2 pcfTexel = texelSize * filterScale;
+    float pcfBias = 0.0;
+    if(shadowType == 1){
+        pcfBias = max(texelSize.x, texelSize.y) * filterScale * 0.90;
+    }else if(shadowType == 2){
+        pcfBias = max(texelSize.x, texelSize.y) * filterScale * 1.60;
+    }
+    float compareDepth = clamp(projCoords.z - (bias + pcfBias), 0.0, 1.0);
+    vec2 uvMin = texelSize * 1.5;
+    vec2 uvMax = vec2(1.0) - uvMin;
 
     if(shadowType == 0){
-        return texture(u_shadowMaps2D[mapIndex], vec3(projCoords.xy, projCoords.z - bias));
-    }else if(shadowType == 1){
-        for(int x = -1; x <= 1; ++x){
-            for(int y = -1; y <= 1; ++y){
-                shadow += texture(u_shadowMaps2D[mapIndex], vec3(projCoords.xy + vec2(x,y) * texelSize, projCoords.z - bias));
-                samples++;
-            }
+        return texture(u_shadowMaps2D[mapIndex], vec3(clamp(projCoords.xy, uvMin, uvMax), compareDepth));
+    }
+
+    float shadow = 0.0;
+    float weightSum = 0.0;
+
+    if(shadowType == 1){
+        const int tapCount = 8;
+        vec2 kernel[tapCount] = vec2[tapCount](
+            vec2(-0.326, -0.406),
+            vec2(-0.840, -0.074),
+            vec2(-0.696,  0.457),
+            vec2(-0.203,  0.621),
+            vec2( 0.962, -0.195),
+            vec2( 0.473, -0.480),
+            vec2( 0.519,  0.767),
+            vec2( 0.185, -0.893)
+        );
+        for(int i = 0; i < tapCount; ++i){
+            vec2 sampleUv = clamp(projCoords.xy + (kernel[i] * pcfTexel * 1.15), uvMin, uvMax);
+            float weight = 1.0 - smoothstep(0.75, 1.10, length(kernel[i]));
+            shadow += texture(u_shadowMaps2D[mapIndex], vec3(sampleUv, compareDepth)) * weight;
+            weightSum += weight;
         }
     }else{
-        for(int x = -2; x <= 2; ++x){
-            for(int y = -2; y <= 2; ++y){
-                shadow += texture(u_shadowMaps2D[mapIndex], vec3(projCoords.xy + vec2(x,y) * texelSize, projCoords.z - bias));
-                samples++;
-            }
+        const int tapCount = 16;
+        vec2 kernel[tapCount] = vec2[tapCount](
+            vec2(-0.942, -0.399), vec2( 0.945, -0.384),
+            vec2(-0.807,  0.577), vec2( 0.811,  0.566),
+            vec2(-0.316, -0.949), vec2( 0.324, -0.946),
+            vec2(-0.249,  0.968), vec2( 0.231,  0.973),
+            vec2(-0.619, -0.153), vec2( 0.620, -0.140),
+            vec2(-0.531,  0.145), vec2( 0.541,  0.124),
+            vec2(-0.093, -0.553), vec2( 0.105, -0.548),
+            vec2(-0.087,  0.553), vec2( 0.091,  0.560)
+        );
+        for(int i = 0; i < tapCount; ++i){
+            vec2 sampleUv = clamp(projCoords.xy + (kernel[i] * pcfTexel * 1.85), uvMin, uvMax);
+            float weight = 1.0 - smoothstep(0.70, 1.15, length(kernel[i]));
+            shadow += texture(u_shadowMaps2D[mapIndex], vec3(sampleUv, compareDepth)) * weight;
+            weightSum += weight;
         }
     }
 
-    return shadow / float(samples);
+    float visibility = shadow / max(weightSum, 0.0001);
+    float edge = min(min(projCoords.x, projCoords.y), min(1.0 - projCoords.x, 1.0 - projCoords.y));
+    float edgeFade = smoothstep(0.0, max(texelSize.x, texelSize.y) * 8.0, edge);
+    return mix(1.0, visibility, edgeFade);
 }
 
 float sampleShadowCube(int shadowType, int mapIndex, vec3 fragPos, vec3 lightPos, float farPlane, float bias) {
     if(mapIndex < 0 || mapIndex >= MAX_SHADOW_MAPS_CUBE) return 1.0;
 
+    float safeFarPlane = max(farPlane, 0.1);
     vec3 toLight = fragPos - lightPos;
     float currentDepth = length(toLight);
-    float depth = currentDepth / farPlane;
-    vec3 dir = normalize(toLight);
+    if(currentDepth >= safeFarPlane){
+        return 1.0;
+    }
+    float depth = currentDepth / safeFarPlane;
+    vec3 dir = safeNormalize(toLight);
     float cubeTexel = 1.0 / float(max(textureSize(u_shadowMapsCube[mapIndex], 0).x, 1));
+    float depth01 = clamp(depth, 0.0, 1.0);
+    float cubeBias = cubeTexel * mix(1.8, 4.0, depth01);
+    if(shadowType == 1){
+        cubeBias *= 1.15;
+    }else if(shadowType == 2){
+        cubeBias *= 1.35;
+    }
+    float compareDepth = clamp(depth - (bias + cubeBias), 0.0, 1.0);
 
     if(shadowType == 0){
-        return texture(u_shadowMapsCube[mapIndex], vec4(dir, depth - bias));
-    }else if(shadowType == 1){
-        float shadow = 0.0;
-        float sampleRadius = cubeTexel * 1.5;
-        vec3 offsets[4] = vec3[4](
-            vec3( 1.0, 1.0, 1.0),
-            vec3(-1.0, 1.0,-1.0),
-            vec3( 1.0,-1.0, 1.0),
-            vec3(-1.0,-1.0,-1.0)
-        );
-        for(int i = 0; i < 4; ++i){
-            shadow += texture(u_shadowMapsCube[mapIndex], vec4(normalize(dir + offsets[i] * sampleRadius), depth - bias));
-        }
-        return shadow * 0.25;
-    }else{
-        float shadow = 0.0;
-        float sampleRadius = cubeTexel * 2.5;
-        vec3 offsets[8] = vec3[8](
-            vec3( 1.0, 1.0, 1.0), vec3(-1.0, 1.0, 1.0),
-            vec3( 1.0,-1.0, 1.0), vec3(-1.0,-1.0, 1.0),
-            vec3( 1.0, 1.0,-1.0), vec3(-1.0, 1.0,-1.0),
-            vec3( 1.0,-1.0,-1.0), vec3(-1.0,-1.0,-1.0)
-        );
-        for(int i = 0; i < 8; ++i){
-            shadow += texture(u_shadowMapsCube[mapIndex], vec4(normalize(dir + offsets[i] * sampleRadius), depth - bias));
-        }
-        return shadow * 0.125;
+        return texture(u_shadowMapsCube[mapIndex], vec4(dir, compareDepth));
     }
+
+    vec3 up = (abs(dir.y) < 0.99) ? vec3(0.0, 1.0, 0.0) : vec3(1.0, 0.0, 0.0);
+    vec3 tangent = safeNormalize(cross(up, dir));
+    vec3 bitangent = cross(dir, tangent);
+    float rotation = hash13(fragPos * 0.37 + lightPos * 0.11) * 6.28318530718;
+    mat2 kernelRot = rotate2D(rotation);
+    float distScale = mix(0.85, 2.0, clamp(depth, 0.0, 1.0));
+    float sampleRadius = cubeTexel * ((shadowType == 1) ? 1.4 : 2.4) * distScale;
+    float shadow = 0.0;
+
+    if(shadowType == 1){
+        const int tapCount = 8;
+        vec2 kernel[tapCount] = vec2[tapCount](
+            vec2(-0.326, -0.406),
+            vec2(-0.840, -0.074),
+            vec2(-0.696,  0.457),
+            vec2(-0.203,  0.621),
+            vec2( 0.962, -0.195),
+            vec2( 0.473, -0.480),
+            vec2( 0.519,  0.767),
+            vec2( 0.185, -0.893)
+        );
+        for(int i = 0; i < tapCount; ++i){
+            vec2 o = kernelRot * (kernel[i] * sampleRadius);
+            vec3 sampleDir = safeNormalize(dir + tangent * o.x + bitangent * o.y);
+            shadow += texture(u_shadowMapsCube[mapIndex], vec4(sampleDir, compareDepth));
+        }
+        return shadow / float(tapCount);
+    }
+
+    const int tapCount = 16;
+    vec2 kernel[tapCount] = vec2[tapCount](
+        vec2(-0.942, -0.399), vec2( 0.945, -0.384),
+        vec2(-0.807,  0.577), vec2( 0.811,  0.566),
+        vec2(-0.316, -0.949), vec2( 0.324, -0.946),
+        vec2(-0.249,  0.968), vec2( 0.231,  0.973),
+        vec2(-0.619, -0.153), vec2( 0.620, -0.140),
+        vec2(-0.531,  0.145), vec2( 0.541,  0.124),
+        vec2(-0.093, -0.553), vec2( 0.105, -0.548),
+        vec2(-0.087,  0.553), vec2( 0.091,  0.560)
+    );
+    for(int i = 0; i < tapCount; ++i){
+        vec2 o = kernelRot * (kernel[i] * sampleRadius);
+        vec3 sampleDir = safeNormalize(dir + tangent * o.x + bitangent * o.y);
+        shadow += texture(u_shadowMapsCube[mapIndex], vec4(sampleDir, compareDepth));
+    }
+    return shadow / float(tapCount);
 }
 
 float computeShadowBias(Light light, vec3 normal, vec3 fragPos){
     int lightType = int(light.meta.x + 0.5);
-    vec3 biasDir = (lightType == 1)
-        ? safeNormalize(-light.direction.xyz)
-        : safeNormalize(light.position.xyz - fragPos);
-    float NdotL = max(dot(normal, biasDir), 0.0);
-    return light.shadow.x + light.shadow.y * (1.0 - NdotL);
+    vec3 shadowDir = getShadowDirection(light, fragPos);
+    float NdotL = max(dot(normal, shadowDir), 0.0);
+    float slope = 1.0 - NdotL;
+    float baseOffset = max(light.shadow.x, 0.0);
+    float normalOffset = max(light.shadow.y, 0.0);
+    if(lightType == 1){
+        float baseBias = baseOffset * 0.010;
+        float slopeBias = normalOffset * (0.0018 + slope * 0.0080);
+        return clamp(baseBias + slopeBias, 0.00008, 0.00070);
+    }else if(lightType == 2){
+        float baseBias = baseOffset * 0.020;
+        float slopeBias = normalOffset * (0.0030 + slope * 0.0160);
+        return clamp(baseBias + slopeBias, 0.00006, 0.00060);
+    }else{
+        float baseBias = baseOffset * 0.060;
+        float slopeBias = normalOffset * (0.0100 + slope * 0.0400);
+        return clamp(baseBias + slopeBias, 0.00020, 0.00120);
+    }
+}
+
+vec3 offsetShadowReceiver(Light light, vec3 normal, vec3 fragPos){
+    int lightType = int(light.meta.x + 0.5);
+    vec3 normalDir = safeNormalize(normal);
+    float baseOffset = max(light.shadow.x, 0.0);
+    float normalOffset = max(light.shadow.y, 0.0);
+    if(lightType == 1){
+        float worldOffset = normalOffset * 0.030 + baseOffset * 0.010;
+        worldOffset = clamp(worldOffset, 0.0, 0.00035);
+        return fragPos + normalDir * worldOffset;
+    }
+
+    vec3 shadowDir = getShadowDirection(light, fragPos);
+    float grazing = 1.0 - max(dot(normalDir, shadowDir), 0.0);
+
+    if(lightType == 2){
+        float worldOffset = normalOffset * (0.012 + grazing * 0.030) + baseOffset * 0.004;
+        worldOffset = clamp(worldOffset, 0.0, 0.00120);
+        return fragPos + normalDir * worldOffset;
+    }
+
+    float worldOffset = normalOffset * (0.050 + grazing * 0.140) + baseOffset * 0.015;
+    worldOffset = clamp(worldOffset, 0.0, 0.00450);
+    return fragPos + normalDir * worldOffset;
 }
 
 vec3 calculateLight(Light light, vec3 norm, vec3 fragPos) {
@@ -196,6 +326,7 @@ void main() {
 
         if(u_receiveShadows != 0 && light.meta.z >= 0.0){
             float bias = computeShadowBias(light, norm, v_fragPos);
+            vec3 shadowPos = offsetShadowReceiver(light, norm, v_fragPos);
             float visibility = 1.0;
             int lType = int(light.meta.x + 0.5);
             int sType = int(light.meta.y + 0.5);
@@ -204,17 +335,21 @@ void main() {
             int cascadeIndex = 0;
 
             if(lType == 0){
-                visibility = sampleShadowCube(sType, baseIndex, v_fragPos, light.position.xyz, max(light.cascadeSplits.x, 0.1), bias);
+                visibility = sampleShadowCube(sType, baseIndex, shadowPos, light.position.xyz, max(light.cascadeSplits.x, 0.1), bias);
             }else{
-                cascadeCount = int(light.shadow.z + 0.5);
-                float viewDepth = -(u_view * vec4(v_fragPos, 1.0)).z;
+                cascadeCount = clamp(int(light.shadow.z + 0.5), 1, 4);
+                float viewDepth = -(u_view * vec4(shadowPos, 1.0)).z;
                 if(cascadeCount > 1){
                     if(viewDepth > light.cascadeSplits.x) cascadeIndex = 1;
                     if(viewDepth > light.cascadeSplits.y) cascadeIndex = 2;
                     if(viewDepth > light.cascadeSplits.z) cascadeIndex = 3;
                     cascadeIndex = clamp(cascadeIndex, 0, cascadeCount - 1);
                 }
-                vec4 lightSpacePos = light.lightMatrices[cascadeIndex] * vec4(v_fragPos, 1.0);
+                if(lType == 1){
+                    float cascadeBiasScale = (sType == 0) ? 0.02 : 0.05;
+                    bias *= (1.0 + float(cascadeIndex) * cascadeBiasScale);
+                }
+                vec4 lightSpacePos = light.lightMatrices[cascadeIndex] * vec4(shadowPos, 1.0);
                 if(u_debugShadows == 3){
                     vec3 projCoords = lightSpacePos.xyz / lightSpacePos.w;
                     projCoords = projCoords * 0.5 + 0.5;
@@ -225,6 +360,37 @@ void main() {
                     return;
                 }
                 visibility = sampleShadow2D(sType, baseIndex + cascadeIndex, lightSpacePos, bias);
+                if(lType == 1 && cascadeCount > 1 && cascadeIndex == (cascadeCount - 1) && sType != 0){
+                    float prevSplit = (cascadeIndex > 0) ? light.cascadeSplits[cascadeIndex - 1] : 0.0;
+                    float splitDist = light.cascadeSplits[cascadeIndex];
+                    float cascadeSpan = max(splitDist - prevSplit, 0.001);
+                    float localCascadeT = clamp((viewDepth - prevSplit) / cascadeSpan, 0.0, 1.0);
+                    float hardVisibility = sampleShadow2D(0, baseIndex + cascadeIndex, lightSpacePos, bias);
+                    float filterToHard = smoothstep(0.25, 0.95, localCascadeT);
+                    visibility = mix(visibility, hardVisibility, filterToHard);
+                }
+                if(lType == 1 && cascadeCount > 1 && cascadeIndex < (cascadeCount - 1)){
+                    float splitDist = light.cascadeSplits[cascadeIndex];
+                    float prevSplit = (cascadeIndex > 0) ? light.cascadeSplits[cascadeIndex - 1] : 0.0;
+                    float cascadeSpan = max(splitDist - prevSplit, 0.001);
+                    float blendRange = clamp(cascadeSpan * 0.22, 0.20, 2.50);
+                    float blendStart = splitDist - blendRange;
+                    float blendT = clamp((viewDepth - blendStart) / blendRange, 0.0, 1.0);
+                    if(blendT > 0.0){
+                        vec4 nextLightSpacePos = light.lightMatrices[cascadeIndex + 1] * vec4(shadowPos, 1.0);
+                        float nextVisibility = sampleShadow2D(sType, baseIndex + cascadeIndex + 1, nextLightSpacePos, bias);
+                        visibility = mix(visibility, nextVisibility, blendT);
+                    }
+                }
+                if(lType == 1){
+                    float maxShadowDepth = light.cascadeSplits[cascadeCount - 1];
+                    if(maxShadowDepth > 0.0){
+                        float fadeStart = maxShadowDepth * ((sType == 0) ? 0.985 : 0.94);
+                        float fadeWidth = max(maxShadowDepth - fadeStart, (sType == 0) ? 2.5 : 6.0);
+                        float farFade = clamp((viewDepth - fadeStart) / fadeWidth, 0.0, 1.0);
+                        visibility = mix(visibility, 1.0, farFade);
+                    }
+                }
             }
 
             visibility = mix(1.0, visibility, clamp(light.meta.w, 0.0, 1.0));
@@ -256,5 +422,7 @@ void main() {
         FragColor = vec4(result, u_color.a);
     }
 }
+
+
 
 

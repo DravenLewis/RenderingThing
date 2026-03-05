@@ -11,6 +11,7 @@
 #include "Foundation/Util/StringUtils.h"
 
 #include <algorithm>
+#include <cmath>
 #include <cstdint>
 #include <filesystem>
 #include <memory>
@@ -892,6 +893,7 @@ bool registerDefaultLightSerializer(Serialization::ComponentSerializationRegistr
                    JsonUtils::MutObjAddInt(doc, lightObj, "shadowType", static_cast<int>(component.light.shadowType)) &&
                    JsonUtils::MutObjAddFloat(doc, lightObj, "shadowBias", component.light.shadowBias) &&
                    JsonUtils::MutObjAddFloat(doc, lightObj, "shadowNormalBias", component.light.shadowNormalBias) &&
+                   JsonUtils::MutObjAddFloat(doc, lightObj, "cascadeLambda", component.light.cascadeLambda) &&
                    JsonUtils::MutObjAddFloat(doc, lightObj, "shadowStrength", component.light.shadowStrength) &&
                    JsonUtils::MutObjAddBool(doc, payload, "syncTransform", component.syncTransform) &&
                    JsonUtils::MutObjAddBool(doc, payload, "syncDirection", component.syncDirection);
@@ -919,10 +921,15 @@ bool registerDefaultLightSerializer(Serialization::ComponentSerializationRegistr
                 JsonUtils::TryGetInt(lightObj, "shadowType", shadowType);
                 JsonUtils::TryGetFloat(lightObj, "shadowBias", component.light.shadowBias);
                 JsonUtils::TryGetFloat(lightObj, "shadowNormalBias", component.light.shadowNormalBias);
+                JsonUtils::TryGetFloat(lightObj, "cascadeLambda", component.light.cascadeLambda);
                 JsonUtils::TryGetFloat(lightObj, "shadowStrength", component.light.shadowStrength);
 
                 component.light.type = enumFromIntClamped(type, 0, 2, LightType::POINT);
                 component.light.shadowType = enumFromIntClamped(shadowType, 0, 2, ShadowType::Smooth);
+                if(!std::isfinite(component.light.cascadeLambda)){
+                    component.light.cascadeLambda = 0.82f;
+                }
+                component.light.cascadeLambda = Math3D::Clamp(component.light.cascadeLambda, 0.0f, 1.0f);
                 if(direction.length() > Math3D::EPSILON){
                     component.light.direction = direction.normalize();
                 }
@@ -1281,6 +1288,40 @@ bool registerDefaultDepthOfFieldSerializer(Serialization::ComponentSerialization
     );
 }
 
+bool registerDefaultBloomSerializer(Serialization::ComponentSerializationRegistry& registry, std::string* outError){
+    return registry.registerTypedSerializer<BloomComponent>(
+        "BloomComponent",
+        1,
+        [](const BloomComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
+            return JsonUtils::MutObjAddBool(doc, payload, "enabled", component.enabled) &&
+                   JsonUtils::MutObjAddBool(doc, payload, "adaptiveBloom", component.adaptiveBloom) &&
+                   JsonUtils::MutObjAddFloat(doc, payload, "threshold", component.threshold) &&
+                   JsonUtils::MutObjAddFloat(doc, payload, "softKnee", component.softKnee) &&
+                   JsonUtils::MutObjAddFloat(doc, payload, "intensity", component.intensity) &&
+                   JsonUtils::MutObjAddFloat(doc, payload, "radiusPx", component.radiusPx) &&
+                   JsonUtils::MutObjAddInt(doc, payload, "sampleCount", component.sampleCount) &&
+                   JsonUtils::MutObjAddVec3(doc, payload, "tint", component.tint);
+        },
+        [](BloomComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
+            (void)version;
+            (void)error;
+            JsonUtils::TryGetBool(payload, "enabled", component.enabled);
+            component.adaptiveBloom = false;
+            JsonUtils::TryGetBool(payload, "adaptiveBloom", component.adaptiveBloom);
+            JsonUtils::TryGetFloat(payload, "threshold", component.threshold);
+            JsonUtils::TryGetFloat(payload, "softKnee", component.softKnee);
+            JsonUtils::TryGetFloat(payload, "intensity", component.intensity);
+            JsonUtils::TryGetFloat(payload, "radiusPx", component.radiusPx);
+            JsonUtils::TryGetInt(payload, "sampleCount", component.sampleCount);
+            JsonUtils::TryGetVec3(payload, "tint", component.tint);
+            component.runtimeEffect.reset();
+            return true;
+        },
+        {},
+        outError
+    );
+}
+
 bool registerDefaultAntiAliasingSerializer(Serialization::ComponentSerializationRegistry& registry, std::string* outError){
     return registry.registerTypedSerializer<AntiAliasingComponent>(
         "AntiAliasingComponent",
@@ -1538,6 +1579,7 @@ void RegisterDefaultComponentSerializers(ComponentSerializationRegistry& registr
     if(!registry.hasSerializer("ScriptComponent") && !registerDefaultScriptSerializer(registry, outError)) return;
     if(!registry.hasSerializer("SSAOComponent") && !registerDefaultSsaoSerializer(registry, outError)) return;
     if(!registry.hasSerializer("DepthOfFieldComponent") && !registerDefaultDepthOfFieldSerializer(registry, outError)) return;
+    if(!registry.hasSerializer("BloomComponent") && !registerDefaultBloomSerializer(registry, outError)) return;
     if(!registry.hasSerializer("AntiAliasingComponent") && !registerDefaultAntiAliasingSerializer(registry, outError)) return;
 }
 

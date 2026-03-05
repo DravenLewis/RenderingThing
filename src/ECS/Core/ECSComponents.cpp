@@ -1338,9 +1338,15 @@ void LightComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
         };
         auto defaultShadowRangeForType = [&]() -> float {
             if(self->light.type == LightType::DIRECTIONAL){
-                return 200.0f;
+                return 300.0f;
             }
             return Math3D::Max(self->light.range, 1.0f);
+        };
+        auto sanitizeCascadeLambda = [&]() {
+            if(!std::isfinite(self->light.cascadeLambda)){
+                self->light.cascadeLambda = 0.82f;
+            }
+            self->light.cascadeLambda = Math3D::Clamp(self->light.cascadeLambda, 0.0f, 1.0f);
         };
 
         const std::string entityId = entity->getNodeUniqueID();
@@ -1368,12 +1374,14 @@ void LightComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
                 if(self->light.falloff <= 0.0f){
                     self->light.falloff = 2.0f;
                 }
+                sanitizeCascadeLambda();
                 if(self->light.type == LightType::SPOT && self->light.spotAngle <= 0.0f){
                     self->light.spotAngle = 45.0f;
                 }
                 migratedLightDefaults.insert(key);
             }
         }
+        sanitizeCascadeLambda();
         syncLightFromTransform();
         const char* typeLabels[] = {"Point", "Directional", "Spot"};
         int typeIndex = static_cast<int>(self->light.type);
@@ -1401,7 +1409,7 @@ void LightComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
                     }
                     if(prevType != LightType::DIRECTIONAL){
                         self->light.range = 20.0f;
-                        self->light.shadowRange = 200.0f;
+                        self->light.shadowRange = 300.0f;
                     }
                 }else if(newType == LightType::SPOT){
                     if(self->light.direction.length() < Math3D::EPSILON){
@@ -1451,6 +1459,10 @@ void LightComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
             ImGui::DragFloat("Shadow Range", &self->light.shadowRange, 0.1f, 0.0f, 2000.0f);
         }else if(self->light.type == LightType::DIRECTIONAL){
             ImGui::DragFloat("Shadow Range", &self->light.shadowRange, 0.5f, 10.0f, 2000.0f);
+            if(ImGui::SliderFloat("Cascade Lambda", &self->light.cascadeLambda, 0.0f, 1.0f, "%.3f")){
+                self->light.cascadeLambda = Math3D::Clamp(self->light.cascadeLambda, 0.0f, 1.0f);
+            }
+            ImGui::TextDisabled("Lower values push cascade splits farther from camera.");
         }
         if(self->light.type != LightType::POINT){
             bool prevSyncDirection = self->syncDirection;
@@ -1804,7 +1816,7 @@ Graphics::PostProcessing::PPostProcessingEffect SSAOComponent::getEffectForCamer
     runtimeEffect->bias = Math3D::Max(0.0f, bias);
     runtimeEffect->intensity = Math3D::Clamp(intensity, 0.0f, 2.0f);
     runtimeEffect->giBoost = Math3D::Clamp(giBoost, 0.0f, 0.6f);
-    runtimeEffect->sampleCount = Math3D::Clamp(sampleCount, 2, 16);
+    runtimeEffect->sampleCount = Math3D::Clamp(sampleCount, 4, 16);
     runtimeEffect->nearPlane = Math3D::Max(0.001f, settings.nearPlane);
     runtimeEffect->farPlane = Math3D::Max(runtimeEffect->nearPlane + 0.001f, settings.farPlane);
     return runtimeEffect;
@@ -1813,7 +1825,7 @@ Graphics::PostProcessing::PPostProcessingEffect SSAOComponent::getEffectForCamer
 void SSAOComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     (void)ecsPtr;
     (void)scene;
-    if(!ImGui::CollapsingHeader("SSAO / GI Effect", ImGuiTreeNodeFlags_DefaultOpen)){
+    if(!ImGui::CollapsingHeader("SSAO / GI Effect")){
         return;
     }
 
@@ -1853,7 +1865,7 @@ Graphics::PostProcessing::PPostProcessingEffect DepthOfFieldComponent::getEffect
 void DepthOfFieldComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     (void)ecsPtr;
     (void)scene;
-    if(!ImGui::CollapsingHeader("Depth Of Field Effect", ImGuiTreeNodeFlags_DefaultOpen)){
+    if(!ImGui::CollapsingHeader("Depth Of Field Effect")){
         return;
     }
 
@@ -1875,6 +1887,54 @@ void DepthOfFieldComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene sc
     ImGui::SliderInt("Samples", &sampleCount, 1, 8);
 }
 
+Graphics::PostProcessing::PPostProcessingEffect BloomComponent::getEffectForCamera(const CameraSettings& settings){
+    (void)settings;
+    if(!enabled){
+        return nullptr;
+    }
+    if(!runtimeEffect){
+        runtimeEffect = BloomEffect::New();
+    }
+    runtimeEffect->threshold = Math3D::Clamp(threshold, 0.0f, 2.0f);
+    runtimeEffect->softKnee = Math3D::Clamp(softKnee, 0.01f, 1.0f);
+    runtimeEffect->intensity = Math3D::Clamp(intensity, 0.0f, 4.0f);
+    runtimeEffect->radiusPx = Math3D::Clamp(radiusPx, 0.5f, 24.0f);
+    runtimeEffect->sampleCount = Math3D::Clamp(sampleCount, 4, 12);
+    runtimeEffect->adaptiveBloom = adaptiveBloom;
+    runtimeEffect->tint = Math3D::Vec3(
+        Math3D::Clamp(tint.x, 0.0f, 4.0f),
+        Math3D::Clamp(tint.y, 0.0f, 4.0f),
+        Math3D::Clamp(tint.z, 0.0f, 4.0f)
+    );
+    return runtimeEffect;
+}
+
+void BloomComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
+    (void)ecsPtr;
+    (void)scene;
+    if(!ImGui::CollapsingHeader("Bloom Effect")){
+        return;
+    }
+
+    ImGui::Checkbox("Enabled", &enabled);
+    if(!enabled){
+        ImGui::TextDisabled("Effect disabled.");
+        return;
+    }
+
+    ImGui::Checkbox("Adaptive Bloom", &adaptiveBloom);
+    if(adaptiveBloom){
+        ImGui::TextDisabled("Simulates eye adaptation between dark and bright scenes.");
+    }
+
+    ImGui::SliderFloat("Threshold", &threshold, 0.0f, 2.0f, "%.2f");
+    ImGui::SliderFloat("Soft Knee", &softKnee, 0.01f, 1.0f, "%.2f");
+    ImGui::SliderFloat("Intensity", &intensity, 0.0f, 4.0f, "%.2f");
+    ImGui::SliderFloat("Radius (Px)", &radiusPx, 0.5f, 24.0f, "%.1f");
+    ImGui::SliderInt("Samples", &sampleCount, 4, 12);
+    ImGui::ColorEdit3("Tint", &tint.x);
+}
+
 Graphics::PostProcessing::PPostProcessingEffect AntiAliasingComponent::getEffectForCamera(const CameraSettings& settings){
     (void)settings;
     if(preset == AntiAliasingPreset::Off){
@@ -1890,7 +1950,7 @@ Graphics::PostProcessing::PPostProcessingEffect AntiAliasingComponent::getEffect
 void AntiAliasingComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     (void)ecsPtr;
     (void)scene;
-    if(!ImGui::CollapsingHeader("Anti-Aliasing Effect", ImGuiTreeNodeFlags_DefaultOpen)){
+    if(!ImGui::CollapsingHeader("Anti-Aliasing Effect")){
         return;
     }
 
