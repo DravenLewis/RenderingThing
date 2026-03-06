@@ -82,7 +82,7 @@ bool buildSceneSettingsRawJson(
                     continue;
                 }
                 auto* cameraComp = manager->getECSComponent<CameraComponent>(entity);
-                if(cameraComp && cameraComp->camera == preferredCamera){
+                if(cameraComp && IsComponentActive(cameraComp) && cameraComp->camera == preferredCamera){
                     if(!JsonUtils::MutObjAddUInt64(doc.get(), root, "preferredCameraSnapshotId", kv.second)){
                         setSceneIoError(outError, "Failed to write sceneSettings.preferredCameraSnapshotId.");
                         return false;
@@ -152,7 +152,7 @@ bool applySceneSettingsRawJson(
         auto preferredIt = snapshotIdToEntity.find(preferredCameraSnapshotId);
         if(preferredIt != snapshotIdToEntity.end() && preferredIt->second){
             auto* cameraComp = scene->getECS()->getComponentManager()->getECSComponent<CameraComponent>(preferredIt->second);
-            if(cameraComp && cameraComp->camera){
+            if(cameraComp && IsComponentActive(cameraComp) && cameraComp->camera){
                 scene->setPreferredCamera(cameraComp->camera, true);
             }
         }

@@ -5,8 +5,11 @@
 #include "Rendering/Shaders/ShaderProgram.h"
 #include "Foundation/Math/Color.h"
 #include "Foundation/Logging/Logbot.h"
+#include <algorithm>
+#include <array>
 #include <chrono>
 #include <cmath>
+#include <vector>
 
 enum class AntiAliasingPreset {
     Off = 0,
@@ -70,7 +73,8 @@ class GrayscaleEffect : public Graphics::PostProcessing::PostProcessingEffect{
             }
 
             outFbo->bind();
-            outFbo->clear();
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
             glDisable(GL_DEPTH_TEST);
 
             shader->bind();
@@ -267,7 +271,8 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
             }
 
             outFbo->bind();
-            outFbo->clear(Color::CLEAR);
+            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
             glDisable(GL_DEPTH_TEST);
 
             shader->bind();
@@ -311,6 +316,23 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
     private:
         std::shared_ptr<ShaderProgram> shader;
         bool compileAttempted = false;
+        float resolvedFocusDistance = 8.0f;
+        float resolvedFocusRange = 4.0f;
+        bool focusAdaptationInitialized = false;
+        float smoothedFocusDistance = 8.0f;
+        float smoothedFocusRange = 4.0f;
+        float focusPullBackRate = 10.0f;
+        float focusPushOutRate = 3.0f;
+        float focusFallbackRate = 2.0f;
+        bool debugAdaptiveCenterValid = false;
+        float debugAdaptiveCenterDistance = 0.0f;
+        bool debugAdaptiveRayValid = false;
+        float debugAdaptiveRayDistance = 0.0f;
+        bool debugAdaptiveUsedFallback = false;
+        float debugAdaptiveTargetDistance = 0.0f;
+        float debugAdaptiveFallbackDistance = 0.0f;
+        std::chrono::steady_clock::time_point lastFocusAdaptationTime = std::chrono::steady_clock::now();
+        std::vector<float> adaptiveFocusDepthCpu;
         const std::string DOF_FRAG_SHADER = R"(
             #version 330 core
 
@@ -322,9 +344,13 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
             uniform vec2 u_texelSize;
             uniform float u_focusDistance;
             uniform float u_focusRange;
+            uniform float u_focusBandWidth;
+            uniform float u_blurRamp;
+            uniform float u_blurDistanceLerp;
             uniform float u_blurStrength;
             uniform float u_maxBlurPx;
             uniform int u_sampleCount;
+            uniform int u_debugCocView;
             uniform int u_adaptiveFocusEnabled;
             uniform vec2 u_focusUv;
             uniform float u_nearPlane;
@@ -341,25 +367,33 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
                 }
 
                 const float kSkyDepthCutoff = 0.9995;
-                vec2 taps[5] = vec2[](
-                    vec2( 0.0,  0.0),
+                vec2 clampedFocusUv = clamp(u_focusUv, vec2(0.0), vec2(1.0));
+                float centerDepth = texture(depthTexture, clampedFocusUv).r;
+                if(centerDepth < kSkyDepthCutoff){
+                    return linearizeDepth(centerDepth);
+                }
+
+                vec2 fallbackTaps[8] = vec2[](
                     vec2( 1.0,  0.0),
                     vec2(-1.0,  0.0),
                     vec2( 0.0,  1.0),
-                    vec2( 0.0, -1.0)
+                    vec2( 0.0, -1.0),
+                    vec2( 2.0,  0.0),
+                    vec2(-2.0,  0.0),
+                    vec2( 0.0,  2.0),
+                    vec2( 0.0, -2.0)
                 );
 
                 float accum = 0.0;
                 float weight = 0.0;
-                for(int i = 0; i < 5; ++i){
-                    vec2 sampleUv = clamp(u_focusUv + (taps[i] * u_texelSize), vec2(0.0), vec2(1.0));
+                for(int i = 0; i < 8; ++i){
+                    vec2 sampleUv = clamp(clampedFocusUv + (fallbackTaps[i] * u_texelSize), vec2(0.0), vec2(1.0));
                     float sampleDepth = texture(depthTexture, sampleUv).r;
                     if(sampleDepth >= kSkyDepthCutoff){
                         continue;
                     }
-                    float tapWeight = (i == 0) ? 2.0 : 1.0;
-                    accum += linearizeDepth(sampleDepth) * tapWeight;
-                    weight += tapWeight;
+                    accum += linearizeDepth(sampleDepth);
+                    weight += 1.0;
                 }
 
                 if(weight <= 0.0001){
@@ -368,7 +402,7 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
                 return accum / weight;
             }
 
-            vec3 gatherBlur(vec2 uv, float radiusPx, int sampleCount, float centerLinearDepth){
+            vec3 gatherBlur(vec2 uv, float radiusPx, int sampleCount, float centerLinearDepth, float blurAmount){
                 vec2 dirs[8] = vec2[](
                     vec2( 1.0,  0.0),
                     vec2(-1.0,  0.0),
@@ -383,14 +417,17 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
                 vec3 accum = texture(screenTexture, uv).rgb;
                 float weight = 1.0;
                 int loops = clamp(sampleCount, 1, 8);
-                float depthTolerance = max(u_focusRange * 0.35, 0.25);
+                float baseDepthTolerance = max(u_focusRange * 0.35, 0.25);
+                float blurRelax = smoothstep(0.18, 1.0, clamp(blurAmount, 0.0, 1.0));
+                float relaxedDepthTolerance = mix(baseDepthTolerance, max(baseDepthTolerance * 8.0, 2.5), blurRelax);
                 for(int i = 0; i < loops; ++i){
                     vec2 offset = dirs[i] * radiusPx * u_texelSize;
                     vec2 sampleUv = clamp(uv + offset, vec2(0.0), vec2(1.0));
                     vec3 sampleColor = texture(screenTexture, sampleUv).rgb;
                     float sampleLinearDepth = linearizeDepth(texture(depthTexture, sampleUv).r);
                     float depthDelta = abs(sampleLinearDepth - centerLinearDepth);
-                    float depthWeight = 1.0 - smoothstep(0.0, depthTolerance, depthDelta);
+                    float depthWeight = 1.0 - smoothstep(0.0, relaxedDepthTolerance, depthDelta);
+                    depthWeight = mix(depthWeight, 1.0, blurRelax * 0.72);
                     accum += sampleColor * depthWeight;
                     weight += depthWeight;
                 }
@@ -404,13 +441,36 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
                 float focusDistance = resolveFocusDistance();
 
                 float focusRange = max(u_focusRange, 0.001);
-                float coc = clamp(abs(linearDepth - focusDistance) / focusRange, 0.0, 1.0);
-                coc = clamp(coc * u_blurStrength, 0.0, 1.0);
-                coc = coc * coc;
-
-                float blurRadius = coc * max(u_maxBlurPx, 0.0);
-                vec3 blurred = gatherBlur(TexCoords, blurRadius, u_sampleCount, linearDepth);
-                vec3 color = mix(base.rgb, blurred, coc);
+                float depthDelta = linearDepth - focusDistance;
+                float nearBoost = (depthDelta < 0.0) ? 1.15 : 1.0;
+                // Smooth CoC falloff prevents a harsh in-focus strip while keeping
+                // a clear focal region around the resolved distance.
+                float absDepthDelta = abs(depthDelta);
+                float focusBandWidth = max(u_focusBandWidth, 0.05);
+                float focusSigma = max(focusRange * focusBandWidth, 0.02);
+                float coc = 1.0 - exp(-(absDepthDelta * absDepthDelta) / (2.0 * focusSigma * focusSigma));
+                coc = clamp(coc * nearBoost, 0.0, 1.0);
+                float blurRamp = max(u_blurRamp, 0.05);
+                float cocCurve = pow(coc, blurRamp);
+                float blurDistanceLerp = clamp(u_blurDistanceLerp, 0.0, 1.0);
+                float cocBlend = mix(cocCurve, coc, blurDistanceLerp);
+                float strength = max(u_blurStrength, 0.0);
+                float blurRadius = cocBlend * max(u_maxBlurPx, 0.0) * strength;
+                // Use stronger blend than radius scaling so clearly out-of-focus regions
+                // don't remain overly crisp at moderate blurStrength values.
+                float blurAmount = clamp(cocBlend * clamp(strength * 1.8, 0.0, 1.0), 0.0, 1.0);
+                if(u_debugCocView != 0){
+                    vec3 focusColor = vec3(0.10, 0.95, 0.20);
+                    vec3 nearColor = vec3(0.18, 0.55, 1.00);
+                    vec3 farColor = vec3(1.00, 0.42, 0.12);
+                    vec3 sideColor = (depthDelta < 0.0) ? nearColor : farColor;
+                    vec3 cocColor = mix(focusColor, sideColor, coc);
+                    cocColor *= mix(0.45, 1.0, blurAmount);
+                    FragColor = vec4(cocColor, 1.0);
+                    return;
+                }
+                vec3 blurred = gatherBlur(TexCoords, blurRadius, u_sampleCount, linearDepth, blurAmount);
+                vec3 color = mix(base.rgb, blurred, blurAmount);
                 FragColor = vec4(color, base.a);
             }
         )";
@@ -433,21 +493,122 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
             return true;
         }
 
+        float linearizeDepthCpu(float depth) const{
+            float z = (depth * 2.0f) - 1.0f;
+            return (2.0f * nearPlane * farPlane) /
+                   Math3D::Max((farPlane + nearPlane) - (z * (farPlane - nearPlane)), 0.0001f);
+        }
+
+        bool sampleAdaptiveFocusDistance(PTexture depthTex, float& outDistance){
+            if(!depthTex || depthTex->getID() == 0){
+                return false;
+            }
+
+            int width = 0;
+            int height = 0;
+            GLint prevTexBinding = 0;
+            glGetIntegerv(GL_TEXTURE_BINDING_2D, &prevTexBinding);
+            glBindTexture(GL_TEXTURE_2D, depthTex->getID());
+            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
+            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
+            if(width <= 0 || height <= 0){
+                glBindTexture(GL_TEXTURE_2D, static_cast<GLuint>(prevTexBinding));
+                return false;
+            }
+
+            size_t pixelCount = static_cast<size_t>(width) * static_cast<size_t>(height);
+            if(pixelCount == 0){
+                glBindTexture(GL_TEXTURE_2D, static_cast<GLuint>(prevTexBinding));
+                return false;
+            }
+            if(adaptiveFocusDepthCpu.size() != pixelCount){
+                adaptiveFocusDepthCpu.resize(pixelCount);
+            }
+            if(adaptiveFocusDepthCpu.empty()){
+                glBindTexture(GL_TEXTURE_2D, static_cast<GLuint>(prevTexBinding));
+                return false;
+            }
+
+            GLenum preReadErr = glGetError();
+            (void)preReadErr;
+            glGetTexImage(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, GL_FLOAT, adaptiveFocusDepthCpu.data());
+            GLenum readErr = glGetError();
+            glBindTexture(GL_TEXTURE_2D, static_cast<GLuint>(prevTexBinding));
+            if(readErr != GL_NO_ERROR){
+                return false;
+            }
+
+            const float kSkyDepthCutoff = 0.9995f;
+            int x = Math3D::Clamp(static_cast<int>(std::round(focusUv.x * static_cast<float>(width - 1))), 0, width - 1);
+            int y = Math3D::Clamp(static_cast<int>(std::round(focusUv.y * static_cast<float>(height - 1))), 0, height - 1);
+            float depth = adaptiveFocusDepthCpu[static_cast<size_t>(y) * static_cast<size_t>(width) + static_cast<size_t>(x)];
+            if(!std::isfinite(depth) || depth >= kSkyDepthCutoff){
+                return false;
+            }
+            outDistance = linearizeDepthCpu(depth);
+            return std::isfinite(outDistance) && outDistance > 0.0f;
+        }
+
     public:
         float focusDistance = 8.0f;
         float focusRange = 4.0f;
+        float focusBandWidth = 0.85f;
+        float blurRamp = 2.0f;
+        float blurDistanceLerp = 0.35f;
+        float fallbackFocusRange = 6.0f;
         float blurStrength = 0.65f;
         float maxBlurPx = 7.0f;
         int sampleCount = 6;
+        bool debugCocView = false;
         bool adaptiveFocus = false;
         Math3D::Vec2 focusUv = Math3D::Vec2(0.5f, 0.5f);
         float nearPlane = 0.1f;
         float farPlane = 1000.0f;
+        bool externalAdaptiveFocusValid = false;
+        float externalAdaptiveFocusDistance = 0.0f;
 
         DepthOfFieldEffect() {
             shader = std::make_shared<ShaderProgram>();
             shader->setVertexShader(Graphics::ShaderDefaults::SCREEN_VERT_SRC);
             shader->setFragmentShader(DOF_FRAG_SHADER);
+        }
+
+        ~DepthOfFieldEffect() override = default;
+
+        float getResolvedFocusDistance() const{
+            return resolvedFocusDistance;
+        }
+
+        float getResolvedFocusRange() const{
+            return resolvedFocusRange;
+        }
+
+        bool getDebugAdaptiveCenterValid() const{
+            return debugAdaptiveCenterValid;
+        }
+
+        float getDebugAdaptiveCenterDistance() const{
+            return debugAdaptiveCenterDistance;
+        }
+
+        bool getDebugAdaptiveRayValid() const{
+            return debugAdaptiveRayValid;
+        }
+
+        float getDebugAdaptiveRayDistance() const{
+            return debugAdaptiveRayDistance;
+        }
+
+        bool getDebugAdaptiveUsedFallback() const{
+            return debugAdaptiveUsedFallback;
+        }
+
+        float getDebugAdaptiveTargetDistance() const{
+            return debugAdaptiveTargetDistance;
+        }
+
+        float getDebugAdaptiveFallbackDistance() const{
+            return debugAdaptiveFallbackDistance;
         }
 
         bool apply(PTexture tex, PTexture depthTex, PFrameBuffer outFbo, std::shared_ptr<ModelPart> quad) override {
@@ -459,18 +620,107 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
             }
 
             outFbo->bind();
-            outFbo->clear(Color::CLEAR);
+            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
             glDisable(GL_DEPTH_TEST);
+
+            float targetFocusRange = Math3D::Max(0.001f, focusRange);
+            bool useExternalAdaptiveFocus = externalAdaptiveFocusValid;
+            float externalAdaptiveDistance = externalAdaptiveFocusDistance;
+            externalAdaptiveFocusValid = false;
+            debugAdaptiveCenterValid = false;
+            debugAdaptiveCenterDistance = 0.0f;
+            debugAdaptiveRayValid = false;
+            debugAdaptiveRayDistance = 0.0f;
+            debugAdaptiveUsedFallback = false;
+            debugAdaptiveTargetDistance = 0.0f;
+            debugAdaptiveFallbackDistance = Math3D::Max(0.01f, focusDistance);
+            if(adaptiveFocus){
+                const float fallbackFocusDistance = Math3D::Max(0.01f, focusDistance);
+                bool hasRayFocusTarget = false;
+                float targetFocusPlaneDistance = fallbackFocusDistance;
+                float sampledFocusDistance = 0.0f;
+                if(sampleAdaptiveFocusDistance(depthTex, sampledFocusDistance)){
+                    targetFocusPlaneDistance = Math3D::Max(0.01f, sampledFocusDistance);
+                    hasRayFocusTarget = true;
+                    debugAdaptiveCenterValid = true;
+                    debugAdaptiveCenterDistance = targetFocusPlaneDistance;
+                }else if(useExternalAdaptiveFocus && std::isfinite(externalAdaptiveDistance) && externalAdaptiveDistance > 0.0f){
+                    targetFocusPlaneDistance = Math3D::Max(0.01f, externalAdaptiveDistance);
+                    hasRayFocusTarget = true;
+                    debugAdaptiveRayValid = true;
+                    debugAdaptiveRayDistance = targetFocusPlaneDistance;
+                }else{
+                    targetFocusRange = Math3D::Max(0.001f, fallbackFocusRange);
+                }
+                debugAdaptiveTargetDistance = targetFocusPlaneDistance;
+                debugAdaptiveUsedFallback = !hasRayFocusTarget;
+                debugAdaptiveFallbackDistance = fallbackFocusDistance;
+
+                auto now = std::chrono::steady_clock::now();
+                if(!focusAdaptationInitialized){
+                    smoothedFocusDistance = targetFocusPlaneDistance;
+                    smoothedFocusRange = targetFocusRange;
+                    focusAdaptationInitialized = true;
+                    lastFocusAdaptationTime = now;
+                }else{
+                    float dt = std::chrono::duration<float>(now - lastFocusAdaptationTime).count();
+                    dt = Math3D::Clamp(dt, 0.001f, 0.25f);
+                    lastFocusAdaptationTime = now;
+
+                    auto moveTowardNoOvershoot = [&](float current, float target, float rate) -> float {
+                        float alpha = 1.0f - std::exp(-Math3D::Max(rate, 0.0001f) * dt);
+                        float next = current + (target - current) * alpha;
+                        if(target >= current){
+                            return Math3D::Min(next, target);
+                        }
+                        return Math3D::Max(next, target);
+                    };
+
+                    if(hasRayFocusTarget){
+                        if(smoothedFocusDistance > targetFocusPlaneDistance){
+                            // FocusDistance is beyond target plane: pull back quickly toward it.
+                            smoothedFocusDistance = moveTowardNoOvershoot(smoothedFocusDistance, targetFocusPlaneDistance, focusPullBackRate);
+                        }else if(smoothedFocusDistance < targetFocusPlaneDistance){
+                            // FocusDistance is nearer than target plane: push out slowly toward it.
+                            smoothedFocusDistance = moveTowardNoOvershoot(smoothedFocusDistance, targetFocusPlaneDistance, focusPushOutRate);
+                        }
+                    }else{
+                        // No ray hit: drift back to fallback focus distance.
+                        smoothedFocusDistance = moveTowardNoOvershoot(smoothedFocusDistance, fallbackFocusDistance, focusFallbackRate);
+                    }
+
+                    const float rangeRate = hasRayFocusTarget ? 5.0f : 2.5f;
+                    const float rangeAlpha = 1.0f - std::exp(-rangeRate * dt);
+                    smoothedFocusRange += (targetFocusRange - smoothedFocusRange) * rangeAlpha;
+                }
+
+                resolvedFocusDistance = Math3D::Max(0.01f, smoothedFocusDistance);
+                resolvedFocusRange = Math3D::Max(0.001f, smoothedFocusRange);
+            }else{
+                float targetFocusDistance = Math3D::Max(0.01f, focusDistance);
+                focusAdaptationInitialized = false;
+                smoothedFocusDistance = targetFocusDistance;
+                smoothedFocusRange = targetFocusRange;
+                resolvedFocusDistance = targetFocusDistance;
+                resolvedFocusRange = targetFocusRange;
+            }
 
             shader->bind();
             shader->setUniformFast("screenTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(tex, 0)));
             shader->setUniformFast("depthTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(depthTex, 1)));
             shader->setUniformFast("u_texelSize", Uniform<Math3D::Vec2>(Math3D::Vec2(1.0f / (float)outFbo->getWidth(), 1.0f / (float)outFbo->getHeight())));
-            shader->setUniformFast("u_focusDistance", Uniform<float>(focusDistance));
-            shader->setUniformFast("u_focusRange", Uniform<float>(focusRange));
+            shader->setUniformFast("u_focusDistance", Uniform<float>(resolvedFocusDistance));
+            shader->setUniformFast("u_focusRange", Uniform<float>(resolvedFocusRange));
+            shader->setUniformFast("u_focusBandWidth", Uniform<float>(Math3D::Clamp(focusBandWidth, 0.05f, 4.0f)));
+            shader->setUniformFast("u_blurRamp", Uniform<float>(Math3D::Clamp(blurRamp, 0.05f, 6.0f)));
+            shader->setUniformFast("u_blurDistanceLerp", Uniform<float>(Math3D::Clamp(blurDistanceLerp, 0.0f, 1.0f)));
             shader->setUniformFast("u_blurStrength", Uniform<float>(blurStrength));
             shader->setUniformFast("u_maxBlurPx", Uniform<float>(maxBlurPx));
-            shader->setUniformFast("u_adaptiveFocusEnabled", Uniform<int>(adaptiveFocus ? 1 : 0));
+            shader->setUniformFast("u_debugCocView", Uniform<int>(debugCocView ? 1 : 0));
+            // CPU resolves and smooths adaptive focus distance from scene raycast each frame.
+            // Keep shader-side adaptive depth sampling disabled to avoid competing focus targets.
+            shader->setUniformFast("u_adaptiveFocusEnabled", Uniform<int>(0));
             shader->setUniformFast("u_focusUv", Uniform<Math3D::Vec2>(focusUv));
             int effectiveSamples = sampleCount;
             const int pixelCount = outFbo->getWidth() * outFbo->getHeight();
@@ -730,6 +980,8 @@ class BloomEffect : public Graphics::PostProcessing::PostProcessingEffect {
         float radiusPx = 6.0f;
         int sampleCount = 8;
         Math3D::Vec3 tint = Math3D::Vec3(1.0f, 1.0f, 1.0f);
+        float autoExposureIntensityScale = 1.0f;
+        float autoExposureThresholdScale = 1.0f;
 
         BloomEffect() {
             shader = std::make_shared<ShaderProgram>();
@@ -753,16 +1005,21 @@ class BloomEffect : public Graphics::PostProcessing::PostProcessingEffect {
             }
 
             outFbo->bind();
-            outFbo->clear(Color::CLEAR);
+            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
             glDisable(GL_DEPTH_TEST);
 
             shader->bind();
             shader->setUniformFast("screenTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(tex, 0)));
             shader->setUniformFast("u_texelSize", Uniform<Math3D::Vec2>(Math3D::Vec2(1.0f / (float)outFbo->getWidth(), 1.0f / (float)outFbo->getHeight())));
-            float thresholdScale = 1.0f;
-            float intensityScale = 1.0f;
+            float thresholdScale = Math3D::Clamp(autoExposureThresholdScale, 0.25f, 4.0f);
+            float intensityScale = Math3D::Clamp(autoExposureIntensityScale, 0.25f, 4.0f);
             float exposureScale = 1.0f;
-            computeAdaptiveScales(tex, thresholdScale, intensityScale, exposureScale);
+            float adaptiveThresholdScale = 1.0f;
+            float adaptiveIntensityScale = 1.0f;
+            computeAdaptiveScales(tex, adaptiveThresholdScale, adaptiveIntensityScale, exposureScale);
+            thresholdScale *= adaptiveThresholdScale;
+            intensityScale *= adaptiveIntensityScale;
 
             shader->setUniformFast("u_threshold", Uniform<float>(Math3D::Clamp(threshold * thresholdScale, 0.0f, 4.0f)));
             shader->setUniformFast("u_softKnee", Uniform<float>(softKnee));
@@ -794,6 +1051,265 @@ class BloomEffect : public Graphics::PostProcessing::PostProcessingEffect {
 
         static std::shared_ptr<BloomEffect> New() {
             return std::make_shared<BloomEffect>();
+        }
+};
+
+class AutoExposureEffect : public Graphics::PostProcessing::PostProcessingEffect {
+    private:
+        std::shared_ptr<ShaderProgram> shader;
+        bool compileAttempted = false;
+        GLuint meteringReadFbo = 0;
+        bool adaptationInitialized = false;
+        float adaptedExposure = 1.0f;
+        float filteredLogLuminance = std::log2(0.18f);
+        std::chrono::steady_clock::time_point lastAdaptationTime = std::chrono::steady_clock::now();
+
+        const std::string AUTO_EXPOSURE_FRAG_SHADER = R"(
+            #version 330 core
+
+            out vec4 FragColor;
+            in vec2 TexCoords;
+
+            uniform sampler2D screenTexture;
+            uniform float u_exposure;
+
+            vec3 tonemapAces(vec3 color){
+                vec3 a = color * (color * 2.51 + 0.03);
+                vec3 b = color * (color * 2.43 + 0.59) + 0.14;
+                return clamp(a / max(b, vec3(0.0001)), 0.0, 1.0);
+            }
+
+            void main() {
+                vec4 base = texture(screenTexture, TexCoords);
+                vec3 exposed = max(base.rgb, vec3(0.0)) * max(u_exposure, 0.0001);
+                vec3 mapped = tonemapAces(exposed);
+                FragColor = vec4(mapped, base.a);
+            }
+        )";
+
+        bool sampleSceneLuminance(PTexture tex, float& outLuminance){
+            if(!tex || tex->getID() == 0 || tex->getWidth() <= 0 || tex->getHeight() <= 0){
+                return false;
+            }
+            if(meteringReadFbo == 0){
+                glGenFramebuffers(1, &meteringReadFbo);
+            }
+            if(meteringReadFbo == 0){
+                return false;
+            }
+
+            GLint prevReadFbo = 0;
+            glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &prevReadFbo);
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, meteringReadFbo);
+            glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex->getID(), 0);
+            if(glCheckFramebufferStatus(GL_READ_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
+                glBindFramebuffer(GL_READ_FRAMEBUFFER, static_cast<GLuint>(prevReadFbo));
+                return false;
+            }
+
+            glReadBuffer(GL_COLOR_ATTACHMENT0);
+
+            struct MeterTap {
+                float u;
+                float v;
+                float weight;
+            };
+
+            static const std::array<MeterTap, 13> kMeterTaps = {{
+                {0.50f, 0.50f, 0.22f},
+                {0.35f, 0.35f, 0.10f},
+                {0.65f, 0.35f, 0.10f},
+                {0.35f, 0.65f, 0.10f},
+                {0.65f, 0.65f, 0.10f},
+                {0.12f, 0.12f, 0.07f},
+                {0.88f, 0.12f, 0.07f},
+                {0.12f, 0.88f, 0.07f},
+                {0.88f, 0.88f, 0.07f},
+                {0.50f, 0.20f, 0.025f},
+                {0.20f, 0.50f, 0.025f},
+                {0.80f, 0.50f, 0.025f},
+                {0.50f, 0.80f, 0.025f}
+            }};
+
+            std::array<float, kMeterTaps.size()> logLuminance{};
+            std::array<float, kMeterTaps.size()> weights{};
+            size_t sampleCount = 0;
+
+            const int width = tex->getWidth();
+            const int height = tex->getHeight();
+            for(const MeterTap& tap : kMeterTaps){
+                int x = Math3D::Clamp(static_cast<int>(std::round(tap.u * static_cast<float>(width - 1))), 0, width - 1);
+                int y = Math3D::Clamp(static_cast<int>(std::round(tap.v * static_cast<float>(height - 1))), 0, height - 1);
+                float pixel[4] = {0.0f, 0.0f, 0.0f, 1.0f};
+                glReadPixels(x, y, 1, 1, GL_RGBA, GL_FLOAT, pixel);
+                float luminance = (pixel[0] * 0.2126f) + (pixel[1] * 0.7152f) + (pixel[2] * 0.0722f);
+                luminance = Math3D::Clamp(luminance, 0.0001f, 64.0f);
+                logLuminance[sampleCount] = std::log2(luminance);
+                weights[sampleCount] = tap.weight;
+                sampleCount++;
+            }
+
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, static_cast<GLuint>(prevReadFbo));
+
+            if(sampleCount == 0){
+                return false;
+            }
+
+            std::array<float, kMeterTaps.size()> sortedLog = logLuminance;
+            std::sort(sortedLog.begin(), sortedLog.begin() + static_cast<int>(sampleCount));
+            const size_t lowIndex = (sampleCount > 4) ? (sampleCount / 6) : 0;
+            const size_t highIndex = (sampleCount > 4) ? (sampleCount - 1 - (sampleCount / 6)) : (sampleCount - 1);
+            const float trimmedLow = sortedLog[lowIndex];
+            const float trimmedHigh = sortedLog[highIndex];
+
+            float weightedLog = 0.0f;
+            float totalWeight = 0.0f;
+            for(size_t i = 0; i < sampleCount; ++i){
+                float clampedLog = Math3D::Clamp(logLuminance[i], trimmedLow, trimmedHigh);
+                weightedLog += clampedLog * weights[i];
+                totalWeight += weights[i];
+            }
+            if(totalWeight <= 0.0001f || !std::isfinite(weightedLog)){
+                return false;
+            }
+
+            float meteredLuminance = std::exp2(weightedLog / totalWeight);
+            if(!std::isfinite(meteredLuminance)){
+                return false;
+            }
+            outLuminance = Math3D::Clamp(meteredLuminance, 0.0001f, 64.0f);
+            return true;
+        }
+
+        void updateAdaptation(PTexture tex){
+            float observedLuminance = 0.18f;
+            if(!sampleSceneLuminance(tex, observedLuminance)){
+                return;
+            }
+
+            const float minExp = Math3D::Clamp(minExposure, 0.01f, 64.0f);
+            const float maxExp = Math3D::Clamp(maxExposure, minExp, 64.0f);
+            const float compensationScale = std::pow(2.0f, exposureCompensation);
+            auto now = std::chrono::steady_clock::now();
+
+            if(!adaptationInitialized){
+                filteredLogLuminance = std::log2(Math3D::Clamp(observedLuminance, 0.0001f, 64.0f));
+                float targetExposure = (0.18f / Math3D::Max(observedLuminance, 0.0001f)) * compensationScale;
+                adaptedExposure = Math3D::Clamp(targetExposure, minExp, maxExp);
+                adaptationInitialized = true;
+                lastAdaptationTime = now;
+                return;
+            }
+
+            float dt = std::chrono::duration<float>(now - lastAdaptationTime).count();
+            dt = Math3D::Clamp(dt, 0.001f, 0.25f);
+            lastAdaptationTime = now;
+
+            float observedLog = std::log2(Math3D::Clamp(observedLuminance, 0.0001f, 64.0f));
+            const float meteringFilterRate = 3.5f;
+            const float filterAlpha = 1.0f - std::exp(-meteringFilterRate * dt);
+            filteredLogLuminance += (observedLog - filteredLogLuminance) * filterAlpha;
+
+            float filteredLuminance = std::exp2(filteredLogLuminance);
+            float targetExposure = (0.18f / Math3D::Max(filteredLuminance, 0.0001f)) * compensationScale;
+            targetExposure = Math3D::Clamp(targetExposure, minExp, maxExp);
+
+            float currentExposure = Math3D::Clamp(adaptedExposure, minExp, maxExp);
+            const float speedUp = Math3D::Max(adaptationSpeedUp, 0.01f);
+            const float speedDown = Math3D::Max(adaptationSpeedDown, 0.01f);
+            const float adaptationRate = (targetExposure > currentExposure) ? speedUp : speedDown;
+
+            float currentEv = std::log2(Math3D::Max(currentExposure, 0.0001f));
+            float targetEv = std::log2(Math3D::Max(targetExposure, 0.0001f));
+            float evDelta = targetEv - currentEv;
+            if(std::abs(evDelta) < 0.015f){
+                evDelta = 0.0f;
+            }
+            float maxEvStep = Math3D::Max(0.001f, adaptationRate * dt);
+            evDelta = Math3D::Clamp(evDelta, -maxEvStep, maxEvStep);
+            float steppedExposure = std::exp2(currentEv + evDelta);
+            adaptedExposure = Math3D::Clamp(steppedExposure, minExp, maxExp);
+        }
+
+        bool ensureCompiled(){
+            if(!shader){
+                return false;
+            }
+            if(shader->getID() != 0){
+                return true;
+            }
+            if(compileAttempted){
+                return false;
+            }
+            compileAttempted = true;
+            if(shader->compile() == 0){
+                LogBot.Log(LOG_ERRO, "Failed to compile Auto Exposure shader:\n%s", shader->getLog().c_str());
+                return false;
+            }
+            return true;
+        }
+
+    public:
+        float minExposure = 0.6f;
+        float maxExposure = 2.4f;
+        float exposureCompensation = 0.0f;
+        float adaptationSpeedUp = 1.2f;
+        float adaptationSpeedDown = 0.7f;
+
+        AutoExposureEffect(){
+            shader = std::make_shared<ShaderProgram>();
+            shader->setVertexShader(Graphics::ShaderDefaults::SCREEN_VERT_SRC);
+            shader->setFragmentShader(AUTO_EXPOSURE_FRAG_SHADER);
+        }
+
+        ~AutoExposureEffect() override {
+            if(meteringReadFbo != 0){
+                glDeleteFramebuffers(1, &meteringReadFbo);
+                meteringReadFbo = 0;
+            }
+        }
+
+        void resetAdaptation(){
+            adaptationInitialized = false;
+            adaptedExposure = 1.0f;
+            filteredLogLuminance = std::log2(0.18f);
+            lastAdaptationTime = std::chrono::steady_clock::now();
+        }
+
+        float getCurrentExposure() const{
+            return adaptedExposure;
+        }
+
+        bool apply(PTexture tex, PTexture, PFrameBuffer outFbo, std::shared_ptr<ModelPart> quad) override {
+            if(!outFbo || !quad || !tex){
+                return false;
+            }
+            if(!ensureCompiled()){
+                return false;
+            }
+
+            updateAdaptation(tex);
+
+            outFbo->bind();
+            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
+            glDisable(GL_DEPTH_TEST);
+
+            shader->bind();
+            shader->setUniformFast("screenTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(tex, 0)));
+            shader->setUniformFast("u_exposure", Uniform<float>(Math3D::Clamp(adaptedExposure, 0.01f, 64.0f)));
+
+            static const Math3D::Mat4 IDENTITY;
+            shader->setUniformFast("u_model", Uniform<Math3D::Mat4>(IDENTITY));
+            shader->setUniformFast("u_view", Uniform<Math3D::Mat4>(IDENTITY));
+            shader->setUniformFast("u_projection", Uniform<Math3D::Mat4>(IDENTITY));
+            quad->draw(IDENTITY, IDENTITY, IDENTITY);
+            outFbo->unbind();
+            return true;
+        }
+
+        static std::shared_ptr<AutoExposureEffect> New(){
+            return std::make_shared<AutoExposureEffect>();
         }
 };
 
@@ -925,7 +1441,8 @@ class FXAAEffect : public Graphics::PostProcessing::PostProcessingEffect {
             }
 
             outFbo->bind();
-            outFbo->clear(Color::CLEAR);
+            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
             glDisable(GL_DEPTH_TEST);
 
             shader->bind();

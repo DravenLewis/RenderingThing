@@ -135,7 +135,7 @@ void DemoScene::init(){
             bounds->radius = 0.4f;
         }
         if(ssao){
-            ssao->enabled = true;
+            SetComponentActive(ssao, true);
             ssao->radiusPx = 2.0f;
             ssao->depthRadius = 0.015f;
             ssao->bias = 0.0008f;
@@ -144,7 +144,7 @@ void DemoScene::init(){
             ssao->sampleCount = 4;
         }
         if(bloom){
-            bloom->enabled = true;
+            SetComponentActive(bloom, true);
             bloom->threshold = 1.0f;
             bloom->softKnee = 0.55f;
             bloom->intensity = 0.35f;
@@ -154,7 +154,7 @@ void DemoScene::init(){
         }
         if(dof){
             // Editor-friendly default: DOF is one of the heaviest full-screen passes.
-            dof->enabled = false;
+            SetComponentActive(dof, false);
             dof->focusDistance = 14.0f;
             dof->focusRange = 10.0f;
             dof->blurStrength = 0.35f;

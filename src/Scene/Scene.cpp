@@ -82,6 +82,44 @@ namespace {
         outMin = Math3D::Vec3(minV);
         outMax = Math3D::Vec3(maxV);
     }
+
+    bool rayIntersectsAabb(const Math3D::Vec3& origin,
+                           const Math3D::Vec3& direction,
+                           const Math3D::Vec3& boundsMin,
+                           const Math3D::Vec3& boundsMax,
+                           float& outDistance){
+        float tMin = 0.0f;
+        float tMax = FLT_MAX;
+
+        auto testAxis = [&](float originAxis, float dirAxis, float minAxis, float maxAxis) -> bool {
+            if(std::abs(dirAxis) < 0.000001f){
+                return (originAxis >= minAxis && originAxis <= maxAxis);
+            }
+
+            float inv = 1.0f / dirAxis;
+            float t1 = (minAxis - originAxis) * inv;
+            float t2 = (maxAxis - originAxis) * inv;
+            if(t1 > t2){
+                std::swap(t1, t2);
+            }
+            tMin = Math3D::Max(tMin, t1);
+            tMax = Math3D::Min(tMax, t2);
+            return tMax >= tMin;
+        };
+
+        if(!testAxis(origin.x, direction.x, boundsMin.x, boundsMax.x)) return false;
+        if(!testAxis(origin.y, direction.y, boundsMin.y, boundsMax.y)) return false;
+        if(!testAxis(origin.z, direction.z, boundsMin.z, boundsMax.z)) return false;
+
+        float hitDistance = (tMin >= 0.0f) ? tMin : tMax;
+        if(hitDistance < 0.0f || !std::isfinite(hitDistance)){
+            return false;
+        }
+
+        outDistance = hitDistance;
+        return true;
+    }
+
 }
 
 Scene::Scene(RenderWindow* window) : View(window) {
@@ -93,6 +131,9 @@ Scene::Scene(RenderWindow* window) : View(window) {
             sceneRootObject = ecsAPI->CreateGameObjectAndInstantiate("SceneNode", nullptr);
             if(sceneRootObject){
                 sceneRootObject->setReparentChildrenOnDestroy(true);
+                if(!sceneRootObject->getComponent<EntityPropertiesComponent>()){
+                    sceneRootObject->addComponent<EntityPropertiesComponent>();
+                }
             }
         }
     }
@@ -128,7 +169,11 @@ NeoECS::GameObject* Scene::createECSGameObject(const std::string& name, NeoECS::
     if(!targetParent){
         targetParent = sceneRootObject;
     }
-    return ecsAPI->CreateGameObjectAndInstantiate(name, targetParent);
+    NeoECS::GameObject* object = ecsAPI->CreateGameObjectAndInstantiate(name, targetParent);
+    if(object && !object->getComponent<EntityPropertiesComponent>()){
+        object->addComponent<EntityPropertiesComponent>();
+    }
+    return object;
 }
 
 bool Scene::destroyECSGameObject(NeoECS::GameObject* object){
@@ -269,10 +314,6 @@ void Scene::refreshRenderState(){
 
     auto mainScreen = getMainScreen();
     PCamera activeCamera = mainScreen ? mainScreen->getCamera() : nullptr;
-    if(!activeCamera && preferredCamera && mainScreen){
-        mainScreen->setCamera(preferredCamera);
-        activeCamera = preferredCamera;
-    }
 
     const int backIndex = 1 - renderSnapshotIndex.load(std::memory_order_acquire);
     auto& snapshot = renderSnapshots[backIndex];
@@ -284,18 +325,36 @@ void Scene::refreshRenderState(){
     snapshot.drawItems.reserve(entities.size());
     snapshot.lights.reserve(entities.size());
     NeoECS::ECSEntity* activeCameraEntity = nullptr;
+    NeoECS::ECSEntity* firstEnabledCameraEntity = nullptr;
+    NeoECS::ECSEntity* preferredEnabledCameraEntity = nullptr;
+    PCamera firstEnabledCamera = nullptr;
+    PCamera preferredEnabledCamera = nullptr;
 
     for(const auto& entityPtr : entities){
         auto* entity = entityPtr.get();
         if(!entity) continue;
+
+        auto* entityProperties = componentManager->getECSComponent<EntityPropertiesComponent>(entity);
+        if(!entityProperties){
+            std::unique_ptr<NeoECS::GameObject> wrapper(NeoECS::GameObject::CreateFromECSEntity(ecsInstance->getContext(), entity));
+            if(wrapper && wrapper->addComponent<EntityPropertiesComponent>()){
+                entityProperties = componentManager->getECSComponent<EntityPropertiesComponent>(entity);
+            }
+        }
 
         auto* transform = componentManager->getECSComponent<TransformComponent>(entity);
         auto* renderer = componentManager->getECSComponent<MeshRendererComponent>(entity);
         auto* lightComponent = componentManager->getECSComponent<LightComponent>(entity);
         auto* boundsComp = componentManager->getECSComponent<BoundsComponent>(entity);
         auto* cameraComponent = componentManager->getECSComponent<CameraComponent>(entity);
-        const bool needsWorld = (renderer && renderer->visible) ||
-                                (lightComponent && (lightComponent->syncTransform || lightComponent->syncDirection)) ||
+        const bool rendererActive = IsComponentActive(renderer);
+        const bool lightActive = IsComponentActive(lightComponent);
+        const bool boundsActive = IsComponentActive(boundsComp);
+        const bool cameraActive = IsComponentActive(cameraComponent);
+        const bool entityPropertiesActive = IsComponentActive(entityProperties);
+
+        const bool needsWorld = (rendererActive && renderer && renderer->visible) ||
+                                (lightActive && lightComponent && (lightComponent->syncTransform || lightComponent->syncDirection)) ||
                                 (cameraComponent && cameraComponent->camera && transform);
 
         Math3D::Mat4 world(1.0f);
@@ -303,7 +362,7 @@ void Scene::refreshRenderState(){
             world = buildWorldMatrix(entity, componentManager);
         }
 
-        if(renderer && renderer->visible){
+        if(rendererActive && renderer && renderer->visible){
             Math3D::Mat4 base = world * renderer->localOffset.toMat4();
             bool cull = renderer->enableBackfaceCulling;
 
@@ -312,7 +371,7 @@ void Scene::refreshRenderState(){
             Math3D::Vec3 overrideMax;
             Math3D::Vec3 localMin;
             Math3D::Vec3 localMax;
-            if(buildLocalBoundsFromComponent(boundsComp, localMin, localMax)){
+            if(boundsActive && buildLocalBoundsFromComponent(boundsComp, localMin, localMax)){
                 transformAabb(base, localMin, localMax, overrideMin, overrideMax);
                 hasOverrideBounds = true;
             }
@@ -330,6 +389,7 @@ void Scene::refreshRenderState(){
                     item.isTransparent = isMaterialTransparent(item.material);
                     item.isDeferredCompatible = isDeferredCompatibleMaterial(item.material);
                     item.entityId = entity->getNodeUniqueID();
+                    item.ignoreRaycastHit = (entityPropertiesActive && entityProperties && entityProperties->ignoreRaycastHit);
                     item.castsShadows = item.material->castsShadows();
                     if(hasOverrideBounds){
                         item.hasBounds = true;
@@ -350,6 +410,7 @@ void Scene::refreshRenderState(){
                 item.isTransparent = isMaterialTransparent(item.material);
                 item.isDeferredCompatible = isDeferredCompatibleMaterial(item.material);
                 item.entityId = entity->getNodeUniqueID();
+                item.ignoreRaycastHit = (entityPropertiesActive && entityProperties && entityProperties->ignoreRaycastHit);
                 item.castsShadows = item.material->castsShadows();
                 if(hasOverrideBounds){
                     item.hasBounds = true;
@@ -363,7 +424,7 @@ void Scene::refreshRenderState(){
             }
         }
 
-        if(lightComponent){
+        if(lightActive && lightComponent){
             Light light = lightComponent->light;
             if(lightComponent->syncTransform){
                 light.position = world.getPosition();
@@ -392,19 +453,44 @@ void Scene::refreshRenderState(){
         }
 
         if(cameraComponent && cameraComponent->camera){
-            if(!preferredCamera){
-                preferredCamera = cameraComponent->camera;
-            }
             if(transform){
                 cameraComponent->camera->setTransform(Math3D::Transform::fromMat4(world));
             }
-            if(activeCamera && cameraComponent->camera == activeCamera){
-                activeCameraEntity = entity;
+            if(cameraActive){
+                if(!firstEnabledCamera){
+                    firstEnabledCamera = cameraComponent->camera;
+                    firstEnabledCameraEntity = entity;
+                }
+                if(preferredCamera && cameraComponent->camera == preferredCamera){
+                    preferredEnabledCamera = cameraComponent->camera;
+                    preferredEnabledCameraEntity = entity;
+                }
+                if(activeCamera && cameraComponent->camera == activeCamera){
+                    activeCameraEntity = entity;
+                }
             }
         }
     }
 
-    updateActiveCameraEffects(activeCameraEntity, componentManager);
+    NeoECS::ECSEntity* resolvedCameraEntity = nullptr;
+    PCamera resolvedCamera = nullptr;
+    if(activeCameraEntity && activeCamera){
+        resolvedCamera = activeCamera;
+        resolvedCameraEntity = activeCameraEntity;
+    }else if(preferredEnabledCamera){
+        resolvedCamera = preferredEnabledCamera;
+        resolvedCameraEntity = preferredEnabledCameraEntity;
+    }else if(firstEnabledCamera){
+        resolvedCamera = firstEnabledCamera;
+        resolvedCameraEntity = firstEnabledCameraEntity;
+    }
+
+    preferredCamera = resolvedCamera;
+    if(mainScreen && mainScreen->getCamera() != resolvedCamera){
+        mainScreen->setCamera(resolvedCamera);
+    }
+
+    updateActiveCameraEffects(resolvedCameraEntity, componentManager);
 
     renderSnapshotIndex.store(backIndex, std::memory_order_release);
 
@@ -419,81 +505,342 @@ void Scene::renderViewportContents(){
     render3DPass();
 }
 
-void Scene::updateActiveCameraEffects(NeoECS::ECSEntity* activeCameraEntity, NeoECS::ECSComponentManager* manager){
-    auto screen = getMainScreen();
+void Scene::ApplyCameraEffectsToScreen(
+    PScreen screen,
+    NeoECS::ECSComponentManager* manager,
+    NeoECS::ECSEntity* cameraEntity,
+    bool clearExisting,
+    NeoECS::ECSEntityManager* entityManager
+){
+    (void)entityManager;
     if(!screen){
         return;
     }
-
-    screen->clearEffects();
-    if(!activeCameraEntity || !manager){
+    if(clearExisting){
+        screen->clearEffects();
+    }
+    if(!cameraEntity || !manager){
         return;
     }
 
-    auto* camComponent = manager->getECSComponent<CameraComponent>(activeCameraEntity);
-    if(!camComponent || !camComponent->camera){
+    auto env = screen->getEnvironment();
+    auto* camComponent = manager->getECSComponent<CameraComponent>(cameraEntity);
+    if(!camComponent || !camComponent->camera || !IsComponentActive(camComponent)){
+        if(env){
+            env->setSkyBox(nullptr);
+        }
         return;
     }
 
     const CameraSettings& settings = camComponent->camera->getSettings();
-    auto env = screen->getEnvironment();
 
-    if(auto* skybox = manager->getECSComponent<SkyboxComponent>(activeCameraEntity)){
-        if(skybox->skyboxAssetRef.empty()){
-            skybox->loadedSkyboxAssetRef.clear();
-            skybox->runtimeSkyBox.reset();
-            if(env){
-                env->setSkyBox(nullptr);
-            }
-        }else{
-            if(!skybox->runtimeSkyBox || skybox->loadedSkyboxAssetRef != skybox->skyboxAssetRef){
-                std::string error;
-                auto runtimeSkybox = SkyboxAssetIO::InstantiateSkyBoxFromRef(skybox->skyboxAssetRef, &error);
-                if(!runtimeSkybox){
-                    if(!error.empty()){
-                        LogBot.Log(LOG_WARN, "Failed to load skybox '%s': %s", skybox->skyboxAssetRef.c_str(), error.c_str());
+    auto* autoExposure = manager->getECSComponent<AutoExposureComponent>(cameraEntity);
+    Graphics::PostProcessing::PPostProcessingEffect autoExposureEffect = nullptr;
+    if(IsComponentActive(autoExposure)){
+        autoExposureEffect = autoExposure->getEffectForCamera(settings);
+    }
+
+    if(auto* skybox = manager->getECSComponent<SkyboxComponent>(cameraEntity)){
+        if(IsComponentActive(skybox)){
+            if(skybox->skyboxAssetRef.empty()){
+                skybox->loadedSkyboxAssetRef.clear();
+                skybox->runtimeSkyBox.reset();
+                if(env){
+                    env->setSkyBox(nullptr);
+                }
+            }else{
+                if(!skybox->runtimeSkyBox || skybox->loadedSkyboxAssetRef != skybox->skyboxAssetRef){
+                    std::string error;
+                    auto runtimeSkybox = SkyboxAssetIO::InstantiateSkyBoxFromRef(skybox->skyboxAssetRef, &error);
+                    if(!runtimeSkybox){
+                        if(!error.empty()){
+                            LogBot.Log(LOG_WARN, "Failed to load skybox '%s': %s", skybox->skyboxAssetRef.c_str(), error.c_str());
+                        }
+                        skybox->loadedSkyboxAssetRef.clear();
+                        skybox->runtimeSkyBox.reset();
+                    }else{
+                        skybox->runtimeSkyBox = runtimeSkybox;
+                        skybox->loadedSkyboxAssetRef = skybox->skyboxAssetRef;
                     }
-                    skybox->loadedSkyboxAssetRef.clear();
-                    skybox->runtimeSkyBox.reset();
-                }else{
-                    skybox->runtimeSkyBox = runtimeSkybox;
-                    skybox->loadedSkyboxAssetRef = skybox->skyboxAssetRef;
+                }
+
+                if(env && skybox->runtimeSkyBox){
+                    env->setSkyBox(skybox->runtimeSkyBox);
                 }
             }
+        }else if(env){
+            env->setSkyBox(nullptr);
+        }
+    }
 
-            if(env && skybox->runtimeSkyBox){
-                env->setSkyBox(skybox->runtimeSkyBox);
+    if(auto* ssao = manager->getECSComponent<SSAOComponent>(cameraEntity)){
+        if(IsComponentActive(ssao)){
+            auto effect = ssao->getEffectForCamera(settings);
+            if(effect){
+                screen->addEffect(effect);
             }
         }
     }
 
-    if(auto* ssao = manager->getECSComponent<SSAOComponent>(activeCameraEntity)){
-        auto effect = ssao->getEffectForCamera(settings);
-        if(effect){
-            screen->addEffect(effect);
+    if(auto* bloom = manager->getECSComponent<BloomComponent>(cameraEntity)){
+        if(IsComponentActive(bloom)){
+            auto effect = bloom->getEffectForCamera(settings);
+            if(effect){
+                if(autoExposureEffect){
+                    autoExposure->applyBloomCoupling(bloom);
+                }
+                screen->addEffect(effect);
+            }
         }
     }
 
-    if(auto* bloom = manager->getECSComponent<BloomComponent>(activeCameraEntity)){
-        auto effect = bloom->getEffectForCamera(settings);
-        if(effect){
-            screen->addEffect(effect);
+    if(auto* dof = manager->getECSComponent<DepthOfFieldComponent>(cameraEntity)){
+        if(IsComponentActive(dof)){
+            auto effect = dof->getEffectForCamera(settings);
+            if(effect){
+                screen->addEffect(effect);
+            }
         }
     }
 
-    if(auto* dof = manager->getECSComponent<DepthOfFieldComponent>(activeCameraEntity)){
-        auto effect = dof->getEffectForCamera(settings);
-        if(effect){
-            screen->addEffect(effect);
+    if(autoExposureEffect){
+        screen->addEffect(autoExposureEffect);
+    }
+
+    if(auto* aa = manager->getECSComponent<AntiAliasingComponent>(cameraEntity)){
+        if(IsComponentActive(aa)){
+            auto effect = aa->getEffectForCamera(settings);
+            if(effect){
+                screen->addEffect(effect);
+            }
+        }
+    }
+}
+
+bool Scene::computeAdaptiveFocusDistanceFromSnapshot(NeoECS::ECSEntity* cameraEntity, const PCamera& camera, float& outDistance) const{
+    if(!camera){
+        return false;
+    }
+
+    Math3D::Transform cameraTransform = camera->transform();
+    Math3D::Vec3 origin = cameraTransform.position;
+    Math3D::Vec3 forward = cameraTransform.forward() * -1.0f;
+    if(!std::isfinite(forward.x) || !std::isfinite(forward.y) || !std::isfinite(forward.z) ||
+       forward.length() < 0.0001f){
+        return false;
+    }
+    forward = forward.normalize();
+
+    Math3D::Vec3 right = cameraTransform.right();
+    if(!std::isfinite(right.x) || !std::isfinite(right.y) || !std::isfinite(right.z) || right.length() < 0.0001f){
+        right = Math3D::Vec3::cross(forward, Math3D::Vec3::up());
+        if(right.length() < 0.0001f){
+            right = Math3D::Vec3::cross(forward, Math3D::Vec3::right());
+        }
+    }
+    if(right.length() < 0.0001f){
+        return false;
+    }
+    right = right.normalize();
+
+    Math3D::Vec3 up = cameraTransform.up();
+    if(!std::isfinite(up.x) || !std::isfinite(up.y) || !std::isfinite(up.z) || up.length() < 0.0001f){
+        up = Math3D::Vec3::cross(right, forward);
+    }
+    if(up.length() < 0.0001f){
+        up = Math3D::Vec3::up();
+    }
+    up = up.normalize();
+
+    // Re-orthonormalize basis to keep tap rays stable when camera transform is noisy.
+    right = Math3D::Vec3::cross(forward, up);
+    if(right.length() < 0.0001f){
+        return false;
+    }
+    right = right.normalize();
+    up = Math3D::Vec3::cross(right, forward);
+    if(up.length() < 0.0001f){
+        return false;
+    }
+    up = up.normalize();
+
+    const std::string cameraId = cameraEntity ? cameraEntity->getNodeUniqueID() : std::string();
+    const int frontIndex = renderSnapshotIndex.load(std::memory_order_acquire);
+    const auto& snapshot = renderSnapshots[frontIndex];
+    auto findNearestHitDistance = [&](const Math3D::Vec3& rayOrigin,
+                                      const Math3D::Vec3& rayDirection,
+                                      float& outHitDistance) -> bool {
+        float nearestDistance = FLT_MAX;
+        bool found = false;
+        for(const auto& item : snapshot.drawItems){
+            if(!item.hasBounds){
+                continue;
+            }
+            if(item.ignoreRaycastHit){
+                continue;
+            }
+            if(!cameraId.empty() && item.entityId == cameraId){
+                continue;
+            }
+
+            float hitDistance = 0.0f;
+            if(rayIntersectsAabb(rayOrigin, rayDirection, item.boundsMin, item.boundsMax, hitDistance) &&
+               hitDistance >= 0.01f &&
+               hitDistance < nearestDistance){
+                nearestDistance = hitDistance;
+                found = true;
+            }
+        }
+        if(!found || !std::isfinite(nearestDistance)){
+            return false;
+        }
+        outHitDistance = nearestDistance;
+        return true;
+    };
+
+    struct AdaptiveFocusTap {
+        float x;
+        float y;
+        float weight;
+    };
+    // Normalized screen-space tap pattern around the center (NDC-like offsets).
+    static const std::array<AdaptiveFocusTap, 9> kAdaptiveFocusTaps = {{
+        { 0.000f,  0.000f, 2.00f},
+        { 0.020f,  0.000f, 1.00f},
+        {-0.020f,  0.000f, 1.00f},
+        { 0.000f,  0.020f, 1.00f},
+        { 0.000f, -0.020f, 1.00f},
+        { 0.014f,  0.014f, 0.85f},
+        {-0.014f,  0.014f, 0.85f},
+        { 0.014f, -0.014f, 0.85f},
+        {-0.014f, -0.014f, 0.85f}
+    }};
+
+    const CameraSettings cameraSettings = camera->getSettings();
+    const bool isOrtho = cameraSettings.isOrtho;
+    const float safeAspect = Math3D::Max(std::abs(cameraSettings.aspect), 0.001f);
+    const float tanHalfFov = std::tan(glm::radians(Math3D::Clamp(cameraSettings.fov, 1.0f, 179.0f) * 0.5f));
+    const float orthoHalfWidth = Math3D::Max(std::abs(cameraSettings.viewPlane.size.x) * 0.5f, 0.001f);
+    const float orthoHalfHeight = Math3D::Max(std::abs(cameraSettings.viewPlane.size.y) * 0.5f, 0.001f);
+
+    auto sampleTap = [&](const AdaptiveFocusTap& tap, float& outTapDistance) -> bool {
+        Math3D::Vec3 tapOrigin = origin;
+        Math3D::Vec3 tapDirection = forward;
+        if(isOrtho){
+            tapOrigin += (right * (tap.x * orthoHalfWidth)) + (up * (tap.y * orthoHalfHeight));
+        }else{
+            float offsetX = tap.x * safeAspect * tanHalfFov;
+            float offsetY = tap.y * tanHalfFov;
+            tapDirection = (forward + (right * offsetX) + (up * offsetY));
+            if(tapDirection.length() < 0.0001f){
+                return false;
+            }
+            tapDirection = tapDirection.normalize();
+        }
+        return findNearestHitDistance(tapOrigin, tapDirection, outTapDistance);
+    };
+
+    float centerDistance = 0.0f;
+    bool centerHit = sampleTap(kAdaptiveFocusTaps[0], centerDistance);
+
+    float weightedDistanceSum = 0.0f;
+    float totalWeight = 0.0f;
+    int hitCount = 0;
+
+    if(centerHit){
+        const float centerWeight = 4.5f;
+        weightedDistanceSum = centerDistance * centerWeight;
+        totalWeight = centerWeight;
+        hitCount = 1;
+
+        // Keep peripheral taps only if they are close to the center hit distance.
+        // This prevents far background/sky taps from stealing focus on small center subjects.
+        const float inlierThreshold = Math3D::Max(0.35f, centerDistance * 0.45f);
+        for(size_t i = 1; i < kAdaptiveFocusTaps.size(); ++i){
+            float tapDistance = 0.0f;
+            if(!sampleTap(kAdaptiveFocusTaps[i], tapDistance)){
+                continue;
+            }
+
+            float delta = std::abs(tapDistance - centerDistance);
+            if(delta > inlierThreshold){
+                continue;
+            }
+
+            float proximity = 1.0f - Math3D::Clamp(delta / inlierThreshold, 0.0f, 1.0f);
+            float adjustedWeight = kAdaptiveFocusTaps[i].weight * (0.35f + (0.65f * proximity));
+            weightedDistanceSum += tapDistance * adjustedWeight;
+            totalWeight += adjustedWeight;
+            hitCount++;
+        }
+    }else{
+        for(const auto& tap : kAdaptiveFocusTaps){
+            float tapDistance = 0.0f;
+            if(!sampleTap(tap, tapDistance)){
+                continue;
+            }
+
+            // Without a center hit, bias toward nearer hits to avoid locking onto far background.
+            float distanceBias = 1.0f / (1.0f + (tapDistance * 0.08f));
+            float adjustedWeight = tap.weight * distanceBias;
+            weightedDistanceSum += tapDistance * adjustedWeight;
+            totalWeight += adjustedWeight;
+            hitCount++;
         }
     }
 
-    if(auto* aa = manager->getECSComponent<AntiAliasingComponent>(activeCameraEntity)){
-        auto effect = aa->getEffectForCamera(settings);
-        if(effect){
-            screen->addEffect(effect);
+    if(hitCount == 0 || totalWeight <= 0.0001f){
+        return false;
+    }
+
+    outDistance = weightedDistanceSum / totalWeight;
+    return std::isfinite(outDistance) && outDistance >= 0.01f;
+}
+
+bool Scene::computeAdaptiveFocusDistanceFromSnapshotForCamera(const PCamera& camera, float& outDistance) const{
+    return computeAdaptiveFocusDistanceFromSnapshot(nullptr, camera, outDistance);
+}
+
+void Scene::applyCameraEffectsToScreen(PScreen screen,
+                                       NeoECS::ECSEntity* cameraEntity,
+                                       bool clearExisting,
+                                       const Scene* adaptiveFocusSourceScene){
+    NeoECS::ECSComponentManager* manager = ecsInstance ? ecsInstance->getComponentManager() : nullptr;
+    NeoECS::ECSEntityManager* entityManager = ecsInstance ? ecsInstance->getEntityManager() : nullptr;
+    const Scene* focusSource = adaptiveFocusSourceScene ? adaptiveFocusSourceScene : this;
+
+    if(manager && cameraEntity){
+        auto* camComponent = manager->getECSComponent<CameraComponent>(cameraEntity);
+        auto* dof = manager->getECSComponent<DepthOfFieldComponent>(cameraEntity);
+        if(camComponent && IsComponentActive(camComponent) &&
+           camComponent->camera &&
+           dof && IsComponentActive(dof) &&
+           dof->adaptiveFocus &&
+           dof->runtimeEffect){
+            float adaptiveFocusDistance = 0.0f;
+            bool hasAdaptiveFocus = false;
+            if(focusSource == this){
+                hasAdaptiveFocus = computeAdaptiveFocusDistanceFromSnapshot(cameraEntity, camComponent->camera, adaptiveFocusDistance);
+            }else{
+                hasAdaptiveFocus = focusSource->computeAdaptiveFocusDistanceFromSnapshotForCamera(camComponent->camera, adaptiveFocusDistance);
+            }
+            if(hasAdaptiveFocus){
+                dof->runtimeEffect->externalAdaptiveFocusDistance = adaptiveFocusDistance;
+                dof->runtimeEffect->externalAdaptiveFocusValid = true;
+            }else{
+                dof->runtimeEffect->externalAdaptiveFocusValid = false;
+            }
+        }else if(dof && dof->runtimeEffect){
+            dof->runtimeEffect->externalAdaptiveFocusValid = false;
         }
     }
+
+    ApplyCameraEffectsToScreen(screen, manager, cameraEntity, clearExisting, entityManager);
+}
+
+void Scene::updateActiveCameraEffects(NeoECS::ECSEntity* activeCameraEntity, NeoECS::ECSComponentManager* manager){
+    (void)manager;
+    applyCameraEffectsToScreen(getMainScreen(), activeCameraEntity, true);
 }
 
 void Scene::updateSceneLights(){
@@ -966,13 +1313,34 @@ void Scene::renderDeferred(PScreen screen, PCamera cam){
 
     auto drawBuffer = screen ? screen->getDrawBuffer() : nullptr;
     if(drawBuffer){
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer->getID());
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, drawBuffer->getID());
-        glBlitFramebuffer(
-            0, 0, gBufferWidth, gBufferHeight,
-            0, 0, drawBuffer->getWidth(), drawBuffer->getHeight(),
-            GL_DEPTH_BUFFER_BIT, GL_NEAREST
-        );
+        bool copiedDepth = false;
+        auto gBufferDepth = gBuffer->getDepthTexture();
+        auto drawDepth = drawBuffer->getDepthTexture();
+        if(gBufferDepth && drawDepth &&
+           gBufferDepth->getID() != 0 && drawDepth->getID() != 0 &&
+           gBufferWidth == drawBuffer->getWidth() &&
+           gBufferHeight == drawBuffer->getHeight()){
+            if(glCopyImageSubData){
+                glCopyImageSubData(
+                    gBufferDepth->getID(), GL_TEXTURE_2D, 0, 0, 0, 0,
+                    drawDepth->getID(), GL_TEXTURE_2D, 0, 0, 0, 0,
+                    gBufferWidth, gBufferHeight, 1
+                );
+                copiedDepth = (glGetError() == GL_NO_ERROR);
+            }
+        }
+
+        if(!copiedDepth){
+            // Depth writes must be enabled for the depth blit to populate the main draw buffer.
+            glDepthMask(GL_TRUE);
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer->getID());
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, drawBuffer->getID());
+            glBlitFramebuffer(
+                0, 0, gBufferWidth, gBufferHeight,
+                0, 0, drawBuffer->getWidth(), drawBuffer->getHeight(),
+                GL_DEPTH_BUFFER_BIT, GL_NEAREST
+            );
+        }
         glBindFramebuffer(GL_FRAMEBUFFER, drawBuffer->getID());
     }
     checkGlError("depth blit");

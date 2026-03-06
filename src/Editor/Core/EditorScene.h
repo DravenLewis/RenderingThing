@@ -225,6 +225,11 @@ class EditorScene : public Scene {
         void finalizeViewportPrefabDragPreview();
         void cancelViewportPrefabDragPreview();
         bool computeViewportMousePlacement(float planeY, Math3D::Vec3& outWorldPosition) const;
+        std::filesystem::path resolveEditorCameraPrefabPath() const;
+        bool loadEditorCameraFromPrefab(std::string* outError = nullptr);
+        bool saveEditorCameraToPrefab(std::string* outError = nullptr) const;
+        bool createDefaultEditorCameraObject();
+        void setEditorCameraSettingsOpen(bool open);
 };
 
 #endif // EDITOR_SCENE_H

@@ -28,6 +28,7 @@ namespace {
         Skybox,
         SSAO,
         Bloom,
+        AutoExposure,
         DepthOfField,
         AntiAliasing,
         Script
@@ -182,6 +183,14 @@ namespace {
                     return fail("Bloom requires Camera Component.");
                 }
                 return wrapper->addComponent<BloomComponent>();
+            case AddComponentKind::AutoExposure:
+                if(hasComponent<AutoExposureComponent>(manager, entity)){
+                    return fail("Auto Exposure Component already exists.");
+                }
+                if(!hasComponent<CameraComponent>(manager, entity)){
+                    return fail("Auto Exposure requires Camera Component.");
+                }
+                return wrapper->addComponent<AutoExposureComponent>();
             case AddComponentKind::AntiAliasing:
                 if(hasComponent<AntiAliasingComponent>(manager, entity)){
                     return fail("Anti-Aliasing Component already exists.");
@@ -351,6 +360,8 @@ void PropertiesPanel::draw(float x,
     }
 
     ImGui::Text("Entity: %s", entity->getName().c_str());
+    ImGui::SameLine();
+    ImGui::Checkbox("Show Hidden", &showHiddenComponents);
     ImGui::Separator();
 
     if(targetScene && targetScene->getECS()){
@@ -367,6 +378,9 @@ void PropertiesPanel::draw(float x,
         for(auto component : componentsForEntity){
             IEditorCompatibleComponent* editorComponentPtr = dynamic_cast<IEditorCompatibleComponent*>(component);
             if(!editorComponentPtr) continue;
+            if(editorComponentPtr->isEditorHidden() && !showHiddenComponents){
+                continue;
+            }
 
             ImGui::PushID(component);
             editorComponentPtr->drawPropertyWidget(targetScene->getECS(), targetScene);
@@ -394,6 +408,7 @@ void PropertiesPanel::draw(float x,
             const bool hasSkybox = (componentMgr->getECSComponent<SkyboxComponent>(entity) != nullptr);
             const bool hasSsao = (componentMgr->getECSComponent<SSAOComponent>(entity) != nullptr);
             const bool hasBloom = (componentMgr->getECSComponent<BloomComponent>(entity) != nullptr);
+            const bool hasAutoExposure = (componentMgr->getECSComponent<AutoExposureComponent>(entity) != nullptr);
             const bool hasDof = (componentMgr->getECSComponent<DepthOfFieldComponent>(entity) != nullptr);
             const bool hasAa = (componentMgr->getECSComponent<AntiAliasingComponent>(entity) != nullptr);
             auto* scriptComp = componentMgr->getECSComponent<ScriptComponent>(entity);
@@ -448,6 +463,7 @@ void PropertiesPanel::draw(float x,
                 drawAddMenuItem("Skybox Component", AddComponentKind::Skybox, !hasSkybox && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
                 drawAddMenuItem("SSAO / GI Component", AddComponentKind::SSAO, !hasSsao && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
                 drawAddMenuItem("Bloom Component", AddComponentKind::Bloom, !hasBloom && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
+                drawAddMenuItem("Auto Exposure Component", AddComponentKind::AutoExposure, !hasAutoExposure && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
                 drawAddMenuItem("Depth Of Field Component", AddComponentKind::DepthOfField, !hasDof && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
                 drawAddMenuItem("Anti-Aliasing Component", AddComponentKind::AntiAliasing, !hasAa && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
                 ImGui::EndMenu();

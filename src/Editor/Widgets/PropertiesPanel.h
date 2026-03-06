@@ -25,6 +25,7 @@ class PropertiesPanel {
 
     private:
         FilePreviewWidget filePreviewWidget;
+        bool showHiddenComponents = false;
 };
 
 #endif // PROPERTIES_PANEL_H

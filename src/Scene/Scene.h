@@ -34,6 +34,18 @@ class Scene : public View {
 
         void updateECS(float deltaTime);
         void refreshRenderState();
+        static void ApplyCameraEffectsToScreen(
+            PScreen screen,
+            NeoECS::ECSComponentManager* manager,
+            NeoECS::ECSEntity* cameraEntity,
+            bool clearExisting = true,
+            NeoECS::ECSEntityManager* entityManager = nullptr
+        );
+        void applyCameraEffectsToScreen(PScreen screen,
+                                        NeoECS::ECSEntity* cameraEntity,
+                                        bool clearExisting = true,
+                                        const Scene* adaptiveFocusSourceScene = nullptr);
+        bool computeAdaptiveFocusDistanceFromSnapshotForCamera(const PCamera& camera, float& outDistance) const;
 
         NeoECS::NeoECS* getECS() const { return ecsInstance; }
         NeoECS::NeoAPI* getECSAPI() const { return ecsAPI; }
@@ -76,6 +88,7 @@ class Scene : public View {
             bool isTransparent = false;
             bool isDeferredCompatible = false;
             std::string entityId;
+            bool ignoreRaycastHit = false;
             bool castsShadows = true;
             bool hasBounds = false;
             Math3D::Vec3 boundsMin = Math3D::Vec3(0.0f, 0.0f, 0.0f);
@@ -115,6 +128,7 @@ class Scene : public View {
         bool isMaterialTransparent(const std::shared_ptr<Material>& material) const;
         bool isDeferredCompatibleMaterial(const std::shared_ptr<Material>& material) const;
         void ensureDeferredResources(PScreen screen);
+        bool computeAdaptiveFocusDistanceFromSnapshot(NeoECS::ECSEntity* cameraEntity, const PCamera& camera, float& outDistance) const;
         void updateActiveCameraEffects(NeoECS::ECSEntity* activeCameraEntity, NeoECS::ECSComponentManager* manager);
         void drawDeferredGeometry(PCamera cam);
         void drawDeferredLighting(PScreen screen, PCamera cam);

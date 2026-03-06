@@ -1056,32 +1056,185 @@ std::string BuildScriptDisplayNameFromPath(const std::string& scriptPath){
     return out.empty() ? std::string("Script") : out;
 }
 
+namespace {
+    bool canRemoveEditorComponent(const IEditorCompatibleComponent* component){
+        if(!component){
+            return false;
+        }
+        if(dynamic_cast<const TransformComponent*>(component)){
+            return false;
+        }
+        if(dynamic_cast<const EntityPropertiesComponent*>(component)){
+            return false;
+        }
+        return true;
+    }
+
+    bool removeEditorComponent(IEditorCompatibleComponent* component, NeoECS::NeoECS* ecsPtr){
+        if(!component || !ecsPtr || !canRemoveEditorComponent(component)){
+            return false;
+        }
+        auto* manager = ecsPtr->getComponentManager();
+        NeoECS::ECSEntity* entity = component->getParentEntity();
+        if(!manager || !entity){
+            return false;
+        }
+
+        if(dynamic_cast<MeshRendererComponent*>(component)){ manager->removeECSComponent<MeshRendererComponent>(entity); return true; }
+        if(dynamic_cast<LightComponent*>(component)){ manager->removeECSComponent<LightComponent>(entity); return true; }
+        if(dynamic_cast<BoundsComponent*>(component)){ manager->removeECSComponent<BoundsComponent>(entity); return true; }
+        if(dynamic_cast<ColliderComponent*>(component)){ manager->removeECSComponent<ColliderComponent>(entity); return true; }
+        if(dynamic_cast<RigidBodyComponent*>(component)){ manager->removeECSComponent<RigidBodyComponent>(entity); return true; }
+        if(dynamic_cast<CameraComponent*>(component)){ manager->removeECSComponent<CameraComponent>(entity); return true; }
+        if(dynamic_cast<SkyboxComponent*>(component)){ manager->removeECSComponent<SkyboxComponent>(entity); return true; }
+        if(dynamic_cast<SSAOComponent*>(component)){ manager->removeECSComponent<SSAOComponent>(entity); return true; }
+        if(dynamic_cast<DepthOfFieldComponent*>(component)){ manager->removeECSComponent<DepthOfFieldComponent>(entity); return true; }
+        if(dynamic_cast<BloomComponent*>(component)){ manager->removeECSComponent<BloomComponent>(entity); return true; }
+        if(dynamic_cast<AutoExposureComponent*>(component)){ manager->removeECSComponent<AutoExposureComponent>(entity); return true; }
+        if(dynamic_cast<AntiAliasingComponent*>(component)){ manager->removeECSComponent<AntiAliasingComponent>(entity); return true; }
+        if(dynamic_cast<ScriptComponent*>(component)){ manager->removeECSComponent<ScriptComponent>(entity); return true; }
+        return false;
+    }
+
+    bool beginEditorComponentSection(IEditorCompatibleComponent* component,
+                                     const char* label,
+                                     ImGuiTreeNodeFlags flags = 0,
+                                     NeoECS::NeoECS* ecsPtr = nullptr){
+        if(!component || !label){
+            return false;
+        }
+
+        ImGui::PushID(component);
+        bool* enabledState = component->getEditorEnabledState();
+        bool* hiddenState = component->getEditorHiddenState();
+        const bool isEnabled = enabledState ? *enabledState : true;
+        const bool isHidden = hiddenState ? *hiddenState : false;
+
+        std::string headerLabel = label;
+        if(!isEnabled){
+            headerLabel += " (Disabled)";
+        }
+        if(isHidden){
+            headerLabel += " (Hidden)";
+        }
+
+        if(!isEnabled){
+            ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4(ImGuiCol_TextDisabled));
+        }
+        bool open = ImGui::CollapsingHeader(headerLabel.c_str(), flags);
+        const ImGuiID headerId = ImGui::GetItemID();
+        if(!isEnabled){
+            ImGui::PopStyleColor();
+        }
+
+        bool removeRequested = false;
+        const bool allowRemove = canRemoveEditorComponent(component);
+        if(ImGui::BeginPopupContextItem("##ComponentHeaderContext")){
+            if(ImGui::MenuItem("Expand", nullptr, false, !open)){
+                ImGui::GetStateStorage()->SetInt(headerId, 1);
+                open = true;
+            }
+            if(ImGui::MenuItem("Collapse", nullptr, false, open)){
+                ImGui::GetStateStorage()->SetInt(headerId, 0);
+                open = false;
+            }
+            ImGui::Separator();
+            if(hiddenState){
+                const char* hideLabel = isHidden ? "Show" : "Hide";
+                if(ImGui::MenuItem(hideLabel)){
+                    *hiddenState = !(*hiddenState);
+                }
+            }
+            if(enabledState){
+                const char* activeLabel = isEnabled ? "Deactivate" : "Activate";
+                if(ImGui::MenuItem(activeLabel)){
+                    *enabledState = !(*enabledState);
+                }
+            }
+            if(!hiddenState && !enabledState){
+                ImGui::TextDisabled("No toggle options");
+            }
+            ImGui::Separator();
+            if(ImGui::MenuItem("Remove Component", nullptr, false, allowRemove)){
+                removeRequested = true;
+            }
+            ImGui::EndPopup();
+        }
+
+        if(removeRequested){
+            if(!removeEditorComponent(component, ecsPtr)){
+                LogBot.Log(LOG_WARN, "Failed to remove component '%s' from entity.", label);
+            }
+            ImGui::PopID();
+            return false;
+        }
+
+        if(open){
+            bool drewStateControls = false;
+            if(enabledState){
+                ImGui::Checkbox("Enabled##ComponentEnabled", enabledState);
+                drewStateControls = true;
+            }
+            if(hiddenState){
+                if(drewStateControls){
+                    ImGui::SameLine();
+                }
+                ImGui::Checkbox("Hidden##ComponentHidden", hiddenState);
+                drewStateControls = true;
+            }
+            if(drewStateControls){
+                ImGui::Separator();
+            }
+        }
+
+        ImGui::PopID();
+        return open;
+    }
+}
+
+void EntityPropertiesComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
+    (void)ecsPtr;
+    (void)scene;
+    if(!beginEditorComponentSection(this, "Entity Properties Component", 0, ecsPtr)){
+        return;
+    }
+
+    ImGui::Checkbox("Ignore Raycast Hit", &ignoreRaycastHit);
+}
+
 void TransformComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
-    if(ImGui::CollapsingHeader("Transform Component", ImGuiTreeNodeFlags_DefaultOpen)){
+    (void)ecsPtr;
+    (void)scene;
+    if(!beginEditorComponentSection(this, "Transform Component", ImGuiTreeNodeFlags_DefaultOpen, ecsPtr)){
+        return;
+    }
 
-        auto transform = this;
+    auto transform = this;
 
-        Math3D::Vec3 pos = transform->local.position;
-        Math3D::Vec3 rot = transform->local.rotation.ToEuler();
-        Math3D::Vec3 scale = transform->local.scale;
+    Math3D::Vec3 pos = transform->local.position;
+    Math3D::Vec3 rot = transform->local.rotation.ToEuler();
+    Math3D::Vec3 scale = transform->local.scale;
 
-        if(ImGui::DragFloat3("Position", &pos.x, 0.1f)){
-            transform->local.position = pos;
-        }
+    if(ImGui::DragFloat3("Position", &pos.x, 0.1f)){
+        transform->local.position = pos;
+    }
 
-        if(ImGui::DragFloat3("Rotation", &rot.x, 0.5f)){
-            transform->local.setRotation(rot);
-        }
+    if(ImGui::DragFloat3("Rotation", &rot.x, 0.5f)){
+        transform->local.setRotation(rot);
+    }
 
-        if(ImGui::DragFloat3("Scale", &scale.x, 0.1f)){
-            transform->local.scale = scale;
-        }
+    if(ImGui::DragFloat3("Scale", &scale.x, 0.1f)){
+        transform->local.scale = scale;
     }
 }
 
 void MeshRendererComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
-    if(ImGui::CollapsingHeader("Mesh Renderer Component", ImGuiTreeNodeFlags_DefaultOpen)){
-        auto renderer = this;
+    (void)ecsPtr;
+    (void)scene;
+    if(!beginEditorComponentSection(this, "Mesh Renderer Component", ImGuiTreeNodeFlags_DefaultOpen, ecsPtr)){
+        return;
+    }
+    auto renderer = this;
 
         ImGui::Separator();
         ImGui::TextUnformatted("Mesh Renderer");
@@ -1267,20 +1420,21 @@ void MeshRendererComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene sc
 
             ImGui::PopID();
         }
-    }
 }
 
 void LightComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
-    if(ImGui::CollapsingHeader("Light Component", ImGuiTreeNodeFlags_DefaultOpen)){
-        ImGui::Separator();
-        ImGui::TextUnformatted("Light");
+    if(!beginEditorComponentSection(this, "Light Component", ImGuiTreeNodeFlags_DefaultOpen, ecsPtr)){
+        return;
+    }
+    ImGui::Separator();
+    ImGui::TextUnformatted("Light");
 
-        auto self = this;
-        auto entity = self->getParentEntity();
-        if(!ecsPtr || !scene || !entity){
-            return;
-        }
-        auto components = ecsPtr->getComponentManager();
+    auto self = this;
+    auto entity = self->getParentEntity();
+    if(!ecsPtr || !scene || !entity){
+        return;
+    }
+    auto components = ecsPtr->getComponentManager();
 
         static std::unordered_set<std::string> migratedLightSyncTransform;
         static std::unordered_set<std::string> migratedLightDefaults;
@@ -1500,20 +1654,21 @@ void LightComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
             self->light.shadowType = static_cast<ShadowType>(shadowIndex);
         }
         ImGui::DragFloat("Shadow Bias", &self->light.shadowBias, 0.0005f, 0.0f, 0.01f, "%.6f");
-        ImGui::DragFloat("Shadow Normal Bias", &self->light.shadowNormalBias, 0.0005f, 0.0f, 0.01f, "%.6f");
-        ImGui::DragFloat("Shadow Strength", &self->light.shadowStrength, 0.01f, 0.0f, 1.0f);
-    }
+    ImGui::DragFloat("Shadow Normal Bias", &self->light.shadowNormalBias, 0.0005f, 0.0f, 0.01f, "%.6f");
+    ImGui::DragFloat("Shadow Strength", &self->light.shadowStrength, 0.01f, 0.0f, 1.0f);
 }
 
 void BoundsComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     (void)ecsPtr;
     (void)scene;
-    if(ImGui::CollapsingHeader("Bounds Component", ImGuiTreeNodeFlags_DefaultOpen)){
-        const char* typeNames[] = { "Box", "Sphere", "Capsule" };
-        int currentItem = static_cast<int>(type);
-        if(ImGui::Combo("Shape Type", &currentItem, typeNames, IM_ARRAYSIZE(typeNames))){
-            type = static_cast<BoundsType>(currentItem);
-        }
+    if(!beginEditorComponentSection(this, "Bounds Component", ImGuiTreeNodeFlags_DefaultOpen, ecsPtr)){
+        return;
+    }
+    const char* typeNames[] = { "Box", "Sphere", "Capsule" };
+    int currentItem = static_cast<int>(type);
+    if(ImGui::Combo("Shape Type", &currentItem, typeNames, IM_ARRAYSIZE(typeNames))){
+        type = static_cast<BoundsType>(currentItem);
+    }
 
         if(ImGui::DragFloat3("Offset", &offset.x, 0.05f)){
             if(!std::isfinite(offset.x)) offset.x = 0.0f;
@@ -1565,14 +1720,13 @@ void BoundsComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
         if(!canToggleGizmo){
             ImGui::EndDisabled();
         }
-        ImGui::TextDisabled("Viewport handles edit size and offset.");
-    }
-};
+    ImGui::TextDisabled("Viewport handles edit size and offset.");
+}
 
 void ColliderComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     (void)ecsPtr;
     (void)scene;
-    if(!ImGui::CollapsingHeader("Collider Component", ImGuiTreeNodeFlags_DefaultOpen)){
+    if(!beginEditorComponentSection(this, "Collider Component", ImGuiTreeNodeFlags_DefaultOpen, ecsPtr)){
         return;
     }
 
@@ -1661,7 +1815,7 @@ void ColliderComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene)
 void RigidBodyComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     (void)ecsPtr;
     (void)scene;
-    if(!ImGui::CollapsingHeader("Rigid Body Component", ImGuiTreeNodeFlags_DefaultOpen)){
+    if(!beginEditorComponentSection(this, "Rigid Body Component", ImGuiTreeNodeFlags_DefaultOpen, ecsPtr)){
         return;
     }
 
@@ -1726,7 +1880,7 @@ void RigidBodyComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene
 
 void CameraComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     (void)ecsPtr;
-    if(!ImGui::CollapsingHeader("Camera Component", ImGuiTreeNodeFlags_DefaultOpen)){
+    if(!beginEditorComponentSection(this, "Camera Component", ImGuiTreeNodeFlags_DefaultOpen, ecsPtr)){
         return;
     }
 
@@ -1798,7 +1952,7 @@ void CameraComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
 void SkyboxComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     (void)ecsPtr;
     (void)scene;
-    if(!ImGui::CollapsingHeader("Skybox Component", ImGuiTreeNodeFlags_DefaultOpen)){
+    if(!beginEditorComponentSection(this, "Skybox Component", ImGuiTreeNodeFlags_DefaultOpen, ecsPtr)){
         return;
     }
 
@@ -1827,7 +1981,7 @@ void SkyboxComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
 }
 
 Graphics::PostProcessing::PPostProcessingEffect SSAOComponent::getEffectForCamera(const CameraSettings& settings){
-    if(!enabled){
+    if(!IsComponentActive(this)){
         return nullptr;
     }
     if(!runtimeEffect){
@@ -1847,13 +2001,7 @@ Graphics::PostProcessing::PPostProcessingEffect SSAOComponent::getEffectForCamer
 void SSAOComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     (void)ecsPtr;
     (void)scene;
-    if(!ImGui::CollapsingHeader("SSAO / GI Effect")){
-        return;
-    }
-
-    ImGui::Checkbox("Enabled", &enabled);
-    if(!enabled){
-        ImGui::TextDisabled("Effect disabled.");
+    if(!beginEditorComponentSection(this, "SSAO / GI Effect", 0, ecsPtr)){
         return;
     }
 
@@ -1866,7 +2014,7 @@ void SSAOComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
 }
 
 Graphics::PostProcessing::PPostProcessingEffect DepthOfFieldComponent::getEffectForCamera(const CameraSettings& settings){
-    if(!enabled){
+    if(!IsComponentActive(this)){
         return nullptr;
     }
     if(!runtimeEffect){
@@ -1876,9 +2024,14 @@ Graphics::PostProcessing::PPostProcessingEffect DepthOfFieldComponent::getEffect
     runtimeEffect->focusUv = Math3D::Vec2(0.5f, 0.5f);
     runtimeEffect->focusDistance = Math3D::Max(0.01f, focusDistance);
     runtimeEffect->focusRange = Math3D::Max(0.001f, focusRange);
+    runtimeEffect->focusBandWidth = Math3D::Clamp(focusBandWidth, 0.05f, 4.0f);
+    runtimeEffect->blurRamp = Math3D::Clamp(blurRamp, 0.05f, 6.0f);
+    runtimeEffect->blurDistanceLerp = Math3D::Clamp(blurDistanceLerp, 0.0f, 1.0f);
+    runtimeEffect->fallbackFocusRange = Math3D::Max(0.001f, fallbackFocusRange);
     runtimeEffect->blurStrength = Math3D::Clamp(blurStrength, 0.0f, 1.5f);
     runtimeEffect->maxBlurPx = Math3D::Clamp(maxBlurPx, 0.0f, 16.0f);
     runtimeEffect->sampleCount = Math3D::Clamp(sampleCount, 1, 8);
+    runtimeEffect->debugCocView = debugCocView;
     runtimeEffect->nearPlane = Math3D::Max(0.001f, settings.nearPlane);
     runtimeEffect->farPlane = Math3D::Max(runtimeEffect->nearPlane + 0.001f, settings.farPlane);
     return runtimeEffect;
@@ -1887,31 +2040,37 @@ Graphics::PostProcessing::PPostProcessingEffect DepthOfFieldComponent::getEffect
 void DepthOfFieldComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     (void)ecsPtr;
     (void)scene;
-    if(!ImGui::CollapsingHeader("Depth Of Field Effect")){
-        return;
-    }
-
-    ImGui::Checkbox("Enabled", &enabled);
-    if(!enabled){
-        ImGui::TextDisabled("Effect disabled.");
+    if(!beginEditorComponentSection(this, "Depth Of Field Effect", 0, ecsPtr)){
         return;
     }
 
     ImGui::Checkbox("Adaptive Focus", &adaptiveFocus);
     if(adaptiveFocus){
         ImGui::TextDisabled("Uses the center screen depth as the focus target.");
+        ImGui::Checkbox("Debug Adaptive Focus Ray", &adaptiveFocusDebugDraw);
+        ImGui::DragFloat("Fallback Focus Distance", &focusDistance, 0.1f, 0.01f, 10000.0f, "%.2f");
+        ImGui::DragFloat("Adaptive Focus Range", &focusRange, 0.05f, 0.001f, 10000.0f, "%.3f");
+        ImGui::DragFloat("Fallback Focus Range", &fallbackFocusRange, 0.05f, 0.001f, 10000.0f, "%.3f");
+    }else{
+        ImGui::DragFloat("Focus Distance", &focusDistance, 0.1f, 0.01f, 10000.0f, "%.2f");
+        ImGui::DragFloat("Focus Range", &focusRange, 0.05f, 0.001f, 10000.0f, "%.3f");
     }
-
-    ImGui::DragFloat(adaptiveFocus ? "Fallback Focus Distance" : "Focus Distance", &focusDistance, 0.1f, 0.01f, 10000.0f, "%.2f");
-    ImGui::DragFloat("Focus Range", &focusRange, 0.05f, 0.001f, 10000.0f, "%.3f");
+    ImGui::SliderFloat("Focus Band Width", &focusBandWidth, 0.25f, 3.0f, "%.2f");
+    ImGui::SliderFloat("Blur Ramp", &blurRamp, 0.25f, 4.0f, "%.2f");
+    ImGui::SliderFloat("Blur Distance Lerp", &blurDistanceLerp, 0.0f, 1.0f, "%.2f");
     ImGui::SliderFloat("Blur Strength", &blurStrength, 0.0f, 1.5f, "%.2f");
     ImGui::SliderFloat("Max Blur (Px)", &maxBlurPx, 0.0f, 16.0f, "%.1f");
     ImGui::SliderInt("Samples", &sampleCount, 1, 8);
+    ImGui::Checkbox("Debug CoC View", &debugCocView);
+    if(adaptiveFocus && runtimeEffect){
+        ImGui::TextDisabled("Live Focus Distance: %.2f", runtimeEffect->getResolvedFocusDistance());
+        ImGui::TextDisabled("Live Focus Range: %.3f", runtimeEffect->getResolvedFocusRange());
+    }
 }
 
 Graphics::PostProcessing::PPostProcessingEffect BloomComponent::getEffectForCamera(const CameraSettings& settings){
     (void)settings;
-    if(!enabled){
+    if(!IsComponentActive(this)){
         return nullptr;
     }
     if(!runtimeEffect){
@@ -1923,6 +2082,11 @@ Graphics::PostProcessing::PPostProcessingEffect BloomComponent::getEffectForCame
     runtimeEffect->radiusPx = Math3D::Clamp(radiusPx, 0.5f, 24.0f);
     runtimeEffect->sampleCount = Math3D::Clamp(sampleCount, 4, 12);
     runtimeEffect->adaptiveBloom = adaptiveBloom;
+    runtimeEffect->autoExposureIntensityScale = 1.0f;
+    runtimeEffect->autoExposureThresholdScale = 1.0f;
+    liveThreshold = runtimeEffect->threshold;
+    liveIntensity = runtimeEffect->intensity;
+    liveAutoExposureDriven = false;
     runtimeEffect->tint = Math3D::Vec3(
         Math3D::Clamp(tint.x, 0.0f, 4.0f),
         Math3D::Clamp(tint.y, 0.0f, 4.0f),
@@ -1934,19 +2098,13 @@ Graphics::PostProcessing::PPostProcessingEffect BloomComponent::getEffectForCame
 void BloomComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     (void)ecsPtr;
     (void)scene;
-    if(!ImGui::CollapsingHeader("Bloom Effect")){
-        return;
-    }
-
-    ImGui::Checkbox("Enabled", &enabled);
-    if(!enabled){
-        ImGui::TextDisabled("Effect disabled.");
+    if(!beginEditorComponentSection(this, "Bloom Effect", 0, ecsPtr)){
         return;
     }
 
     ImGui::Checkbox("Adaptive Bloom", &adaptiveBloom);
     if(adaptiveBloom){
-        ImGui::TextDisabled("Simulates eye adaptation between dark and bright scenes.");
+        ImGui::TextDisabled("Adjusts bloom response only (separate from camera auto exposure).");
     }
 
     ImGui::SliderFloat("Threshold", &threshold, 0.0f, 2.0f, "%.2f");
@@ -1955,10 +2113,90 @@ void BloomComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     ImGui::SliderFloat("Radius (Px)", &radiusPx, 0.5f, 24.0f, "%.1f");
     ImGui::SliderInt("Samples", &sampleCount, 4, 12);
     ImGui::ColorEdit3("Tint", &tint.x);
+    if(liveAutoExposureDriven){
+        ImGui::Separator();
+        ImGui::TextDisabled("Live Threshold (AE): %.3f", liveThreshold);
+        ImGui::TextDisabled("Live Intensity (AE): %.3f", liveIntensity);
+    }
+}
+
+Graphics::PostProcessing::PPostProcessingEffect AutoExposureComponent::getEffectForCamera(const CameraSettings& settings){
+    (void)settings;
+    if(!IsComponentActive(this)){
+        if(runtimeEffect){
+            runtimeEffect->resetAdaptation();
+        }
+        return nullptr;
+    }
+    if(!runtimeEffect){
+        runtimeEffect = AutoExposureEffect::New();
+    }
+    runtimeEffect->minExposure = Math3D::Clamp(minExposure, 0.01f, 64.0f);
+    runtimeEffect->maxExposure = Math3D::Clamp(maxExposure, runtimeEffect->minExposure, 64.0f);
+    runtimeEffect->exposureCompensation = Math3D::Clamp(exposureCompensation, -8.0f, 8.0f);
+    runtimeEffect->adaptationSpeedUp = Math3D::Clamp(adaptationSpeedUp, 0.01f, 20.0f);
+    runtimeEffect->adaptationSpeedDown = Math3D::Clamp(adaptationSpeedDown, 0.01f, 20.0f);
+    return runtimeEffect;
+}
+
+void AutoExposureComponent::applyBloomCoupling(BloomComponent* bloom){
+    if(!IsComponentActive(this) || !IsComponentActive(bloom)){
+        return;
+    }
+
+    if(!bloom->adaptiveBloom){
+        bloom->adaptiveBloom = true;
+    }
+    if(!bloom->runtimeEffect){
+        return;
+    }
+
+    float exposure = 1.0f;
+    if(runtimeEffect){
+        exposure = Math3D::Clamp(runtimeEffect->getCurrentExposure(), 0.01f, 64.0f);
+    }
+
+    // Couple bloom to exposure conservatively:
+    // lower exposure -> boost bloom slightly, higher exposure -> ease bloom back.
+    float intensityBias = Math3D::Clamp(std::pow(1.0f / exposure, 0.35f), 0.78f, 1.28f);
+    float thresholdBias = Math3D::Clamp(std::pow(exposure, 0.22f), 0.84f, 1.22f);
+
+    bloom->runtimeEffect->adaptiveBloom = true;
+    bloom->runtimeEffect->autoExposureIntensityScale = intensityBias;
+    bloom->runtimeEffect->autoExposureThresholdScale = thresholdBias;
+    bloom->liveIntensity = Math3D::Clamp(bloom->runtimeEffect->intensity * intensityBias, 0.0f, 6.0f);
+    bloom->liveThreshold = Math3D::Clamp(bloom->runtimeEffect->threshold * thresholdBias, 0.0f, 4.0f);
+    bloom->liveAutoExposureDriven = true;
+}
+
+void AutoExposureComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
+    (void)ecsPtr;
+    (void)scene;
+    if(!beginEditorComponentSection(this, "Auto Exposure Effect", 0, ecsPtr)){
+        return;
+    }
+
+    if(ImGui::DragFloat("Min Exposure", &minExposure, 0.01f, 0.01f, 16.0f, "%.2f")){
+        minExposure = Math3D::Clamp(minExposure, 0.01f, 16.0f);
+        maxExposure = Math3D::Max(maxExposure, minExposure);
+    }
+    if(ImGui::DragFloat("Max Exposure", &maxExposure, 0.01f, 0.01f, 16.0f, "%.2f")){
+        maxExposure = Math3D::Clamp(maxExposure, minExposure, 16.0f);
+    }
+    ImGui::SliderFloat("Exposure Compensation (EV)", &exposureCompensation, -4.0f, 4.0f, "%.2f");
+    ImGui::SliderFloat("Adaptation Speed Up", &adaptationSpeedUp, 0.05f, 8.0f, "%.2f");
+    ImGui::SliderFloat("Adaptation Speed Down", &adaptationSpeedDown, 0.05f, 8.0f, "%.2f");
+
+    if(runtimeEffect){
+        ImGui::TextDisabled("Current Exposure: %.3f", runtimeEffect->getCurrentExposure());
+    }
 }
 
 Graphics::PostProcessing::PPostProcessingEffect AntiAliasingComponent::getEffectForCamera(const CameraSettings& settings){
     (void)settings;
+    if(!IsComponentActive(this)){
+        return nullptr;
+    }
     if(preset == AntiAliasingPreset::Off){
         return nullptr;
     }
@@ -1972,7 +2210,7 @@ Graphics::PostProcessing::PPostProcessingEffect AntiAliasingComponent::getEffect
 void AntiAliasingComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     (void)ecsPtr;
     (void)scene;
-    if(!ImGui::CollapsingHeader("Anti-Aliasing Effect")){
+    if(!beginEditorComponentSection(this, "Anti-Aliasing Effect", 0, ecsPtr)){
         return;
     }
 
@@ -2018,7 +2256,7 @@ bool ScriptComponent::addScriptAsset(const std::string& scriptAssetRef){
 void ScriptComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     (void)ecsPtr;
     (void)scene;
-    if(!ImGui::CollapsingHeader("Script Component", ImGuiTreeNodeFlags_DefaultOpen)){
+    if(!beginEditorComponentSection(this, "Script Component", ImGuiTreeNodeFlags_DefaultOpen, ecsPtr)){
         return;
     }
 

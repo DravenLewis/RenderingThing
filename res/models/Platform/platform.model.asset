@@ -1,0 +1,5 @@
+name=platform.model.asset
+@link-parent=@assets/models/Platform/platform.obj
+source_model=@assets/models/Platform/platform.obj
+default_material=
+force_smooth_normals=1

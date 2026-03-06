@@ -1,4 +1,5 @@
 name=NewMaterial.mat.asset
+@link-parent=@assets/sample_materials/NewMaterial.material
 type=PBR
 shader_asset=
 color=1.000000,0.000000,0.000000,1.000000

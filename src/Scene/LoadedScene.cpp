@@ -112,7 +112,7 @@ void LoadedScene::ensureCameraAfterLoad(){
             continue;
         }
         auto* cameraComp = manager->getECSComponent<CameraComponent>(entity);
-        if(cameraComp && cameraComp->camera){
+        if(cameraComp && cameraComp->camera && IsComponentActive(cameraComp)){
             setPreferredCamera(cameraComp->camera, true);
             return;
         }

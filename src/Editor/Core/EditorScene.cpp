@@ -29,6 +29,7 @@
 #include <SDL3/SDL.h>
 #include "neoecs.hpp"
 #include <cctype>
+#include <cstdlib>
 #include <system_error>
 
 namespace {
@@ -224,6 +225,100 @@ EditorScene::EditorScene(RenderWindow* window, PScene targetScene, std::function
       targetFactory(std::move(factory)) {
 }
 
+std::filesystem::path EditorScene::resolveEditorCameraPrefabPath() const{
+    const char* appDataRaw = std::getenv("APPDATA");
+    if(!appDataRaw || !appDataRaw[0]){
+        return {};
+    }
+    return std::filesystem::path(appDataRaw) / "RenderThingy" / "Editor" / "Camera.prefab";
+}
+
+bool EditorScene::saveEditorCameraToPrefab(std::string* outError) const{
+    if(!editorCameraObject || !editorCameraObject->gameobject()){
+        if(outError){
+            *outError = "Editor camera object is missing.";
+        }
+        return false;
+    }
+
+    const std::filesystem::path prefabPath = resolveEditorCameraPrefabPath();
+    if(prefabPath.empty()){
+        if(outError){
+            *outError = "APPDATA is unavailable; editor camera prefab path cannot be resolved.";
+        }
+        return false;
+    }
+
+    PrefabIO::PrefabSaveOptions options;
+    options.metadata.name = "EditorCamera";
+    PScene selfScene(const_cast<EditorScene*>(this), [](Scene*) {});
+    return PrefabIO::SaveEntitySubtreeToAbsolutePath(selfScene, editorCameraObject->gameobject(), prefabPath, options, outError);
+}
+
+bool EditorScene::loadEditorCameraFromPrefab(std::string* outError){
+    const std::filesystem::path prefabPath = resolveEditorCameraPrefabPath();
+    if(prefabPath.empty()){
+        if(outError){
+            *outError = "APPDATA is unavailable; editor camera prefab path cannot be resolved.";
+        }
+        return false;
+    }
+
+    std::error_code ec;
+    if(!std::filesystem::exists(prefabPath, ec) || std::filesystem::is_directory(prefabPath, ec)){
+        if(outError){
+            *outError = "Editor camera prefab does not exist.";
+        }
+        return false;
+    }
+
+    PrefabIO::PrefabInstantiateOptions options;
+    options.parent = getSceneRootGameObject();
+
+    PrefabIO::PrefabInstantiateResult result;
+    PScene selfScene(this, [](Scene*) {});
+    if(!PrefabIO::InstantiateFromAbsolutePath(selfScene, prefabPath, options, &result, outError)){
+        return false;
+    }
+
+    if(result.rootObjects.empty() || !result.rootObjects[0] || !result.rootObjects[0]->gameobject()){
+        if(outError){
+            *outError = "Loaded editor camera prefab produced no root object.";
+        }
+        return false;
+    }
+
+    editorCameraObject = result.rootObjects[0];
+    return true;
+}
+
+bool EditorScene::createDefaultEditorCameraObject(){
+    editorCameraObject = createECSGameObject("EditorCamera");
+    if(!editorCameraObject){
+        return false;
+    }
+
+    editorCameraObject->addComponent<TransformComponent>();
+    editorCameraObject->addComponent<CameraComponent>();
+    editorCameraObject->addComponent<BoundsComponent>();
+    return true;
+}
+
+void EditorScene::setEditorCameraSettingsOpen(bool open){
+    if(showEditorCameraSettings == open){
+        return;
+    }
+
+    if(showEditorCameraSettings && !open){
+        std::string saveError;
+        if(!saveEditorCameraToPrefab(&saveError)){
+            LogBot.Log(LOG_WARN, "Failed to save editor camera prefab on panel close: %s", saveError.c_str());
+        }
+    }
+
+    showEditorCameraSettings = open;
+}
+
 void EditorScene::setActiveScene(PScene scene){
     if(targetScene == scene){
         return;
@@ -290,11 +385,16 @@ void EditorScene::applyActiveSceneState(){
     selectedEntityId = targetScene->getSelectedEntityId();
 
     if(!editorCameraObject){
-        editorCameraObject = createECSGameObject("EditorCamera");
-        if(editorCameraObject){
-            editorCameraObject->addComponent<TransformComponent>();
-            editorCameraObject->addComponent<CameraComponent>();
-            editorCameraObject->addComponent<BoundsComponent>();
+        std::string loadError;
+        if(!loadEditorCameraFromPrefab(&loadError)){
+            if(!createDefaultEditorCameraObject()){
+                LogBot.Log(LOG_ERRO, "Failed to create default editor camera object.");
+            }else{
+                std::string saveError;
+                if(!saveEditorCameraToPrefab(&saveError)){
+                    LogBot.Log(LOG_WARN, "Failed to save default editor camera prefab: %s", saveError.c_str());
+                }
+            }
         }
     }
 
@@ -303,21 +403,36 @@ void EditorScene::applyActiveSceneState(){
         NeoECS::ECSEntity* editorEntity = editorCameraObject->gameobject();
 
         if(manager && editorEntity){
+            if(!manager->getECSComponent<TransformComponent>(editorEntity)){
+                editorCameraObject->addComponent<TransformComponent>();
+            }
+            if(!manager->getECSComponent<CameraComponent>(editorEntity)){
+                editorCameraObject->addComponent<CameraComponent>();
+            }
+            if(!manager->getECSComponent<BoundsComponent>(editorEntity)){
+                editorCameraObject->addComponent<BoundsComponent>();
+            }
+
             // The editor viewport camera always exposes all post-process components,
             // but starts with every effect disabled.
             if(!manager->getECSComponent<SSAOComponent>(editorEntity) && editorCameraObject->addComponent<SSAOComponent>()){
                 if(auto* ssao = manager->getECSComponent<SSAOComponent>(editorEntity)){
-                    ssao->enabled = false;
+                    SetComponentActive(ssao, false);
                 }
             }
             if(!manager->getECSComponent<BloomComponent>(editorEntity) && editorCameraObject->addComponent<BloomComponent>()){
                 if(auto* bloom = manager->getECSComponent<BloomComponent>(editorEntity)){
-                    bloom->enabled = false;
+                    SetComponentActive(bloom, false);
+                }
+            }
+            if(!manager->getECSComponent<AutoExposureComponent>(editorEntity) && editorCameraObject->addComponent<AutoExposureComponent>()){
+                if(auto* autoExposure = manager->getECSComponent<AutoExposureComponent>(editorEntity)){
+                    SetComponentActive(autoExposure, false);
                 }
             }
             if(!manager->getECSComponent<DepthOfFieldComponent>(editorEntity) && editorCameraObject->addComponent<DepthOfFieldComponent>()){
                 if(auto* dof = manager->getECSComponent<DepthOfFieldComponent>(editorEntity)){
-                    dof->enabled = false;
+                    SetComponentActive(dof, false);
                 }
             }
             if(!manager->getECSComponent<AntiAliasingComponent>(editorEntity) && editorCameraObject->addComponent<AntiAliasingComponent>()){
@@ -761,79 +876,16 @@ void EditorScene::render(){
             auto mainScreen = targetScene->getMainScreen();
             NeoECS::ECSEntity* previewEntity = findEntityById(selectedEntityId);
 
-            auto applyCameraEffects = [&](NeoECS::ECSComponentManager* components, NeoECS::ECSEntity* cameraEntity){
-                if(!mainScreen){
+            auto applyCameraEffects = [&](PScene effectScene, NeoECS::ECSEntity* cameraEntity){
+                if(!mainScreen || !effectScene){
                     return;
                 }
-                mainScreen->clearEffects();
-                if(!components || !cameraEntity){
-                    return;
-                }
-                auto* camComponent = components->getECSComponent<CameraComponent>(cameraEntity);
-                if(!camComponent || !camComponent->camera){
-                    return;
-                }
-
-                if(auto* skybox = components->getECSComponent<SkyboxComponent>(cameraEntity)){
-                    if(skybox->skyboxAssetRef.empty()){
-                        skybox->loadedSkyboxAssetRef.clear();
-                        skybox->runtimeSkyBox.reset();
-                        if(auto env = mainScreen->getEnvironment()){
-                            env->setSkyBox(nullptr);
-                        }
-                    }else{
-                        if(!skybox->runtimeSkyBox || skybox->loadedSkyboxAssetRef != skybox->skyboxAssetRef){
-                            std::string error;
-                            auto runtimeSkybox = SkyboxAssetIO::InstantiateSkyBoxFromRef(skybox->skyboxAssetRef, &error);
-                            if(!runtimeSkybox){
-                                if(!error.empty()){
-                                    LogBot.Log(LOG_WARN, "Failed to load skybox '%s': %s", skybox->skyboxAssetRef.c_str(), error.c_str());
-                                }
-                                skybox->loadedSkyboxAssetRef.clear();
-                                skybox->runtimeSkyBox.reset();
-                            }else{
-                                skybox->runtimeSkyBox = runtimeSkybox;
-                                skybox->loadedSkyboxAssetRef = skybox->skyboxAssetRef;
-                            }
-                        }
-
-                        if(auto env = mainScreen->getEnvironment()){
-                            if(skybox->runtimeSkyBox){
-                                env->setSkyBox(skybox->runtimeSkyBox);
-                            }
-                        }
-                    }
-                }
-
-                const CameraSettings& settings = camComponent->camera->getSettings();
-                if(auto* ssao = components->getECSComponent<SSAOComponent>(cameraEntity)){
-                    if(auto effect = ssao->getEffectForCamera(settings)){
-                        mainScreen->addEffect(effect);
-                    }
-                }
-                if(auto* bloom = components->getECSComponent<BloomComponent>(cameraEntity)){
-                    if(auto effect = bloom->getEffectForCamera(settings)){
-                        mainScreen->addEffect(effect);
-                    }
-                }
-                if(auto* dof = components->getECSComponent<DepthOfFieldComponent>(cameraEntity)){
-                    if(auto effect = dof->getEffectForCamera(settings)){
-                        mainScreen->addEffect(effect);
-                    }
-                }
-                if(auto* aa = components->getECSComponent<AntiAliasingComponent>(cameraEntity)){
-                    if(auto effect = aa->getEffectForCamera(settings)){
-                        mainScreen->addEffect(effect);
-                    }
-                }
+                effectScene->applyCameraEffectsToScreen(mainScreen, cameraEntity, true, targetScene.get());
             };
 
             // Render the selected target-scene camera into a small preview texture first.
             if(mainScreen && previewCamera && previewEntity){
-                auto* targetComponents = targetScene && targetScene->getECS()
-                    ? targetScene->getECS()->getComponentManager()
-                    : nullptr;
-                applyCameraEffects(targetComponents, previewEntity);
+                applyCameraEffects(targetScene, previewEntity);
                 mainScreen->setCamera(previewCamera);
                 targetScene->renderViewportContents();
                 auto sourceBuffer = mainScreen->getDisplayBuffer();
@@ -890,18 +942,18 @@ void EditorScene::render(){
             // Keep the editor viewport render driven by the editor camera in edit mode.
             PCamera mainEditCamera = viewportCamera ? viewportCamera : editorCamera;
             if(mainScreen && mainEditCamera){
-                NeoECS::ECSComponentManager* effectManager = nullptr;
+                PScene effectScene = nullptr;
                 NeoECS::ECSEntity* effectEntity = nullptr;
 
                 if(mainEditCamera == editorCamera && editorCameraObject && getECS()){
-                    effectManager = getECS()->getComponentManager();
+                    effectScene = std::static_pointer_cast<Scene>(shared_from_this());
                     effectEntity = editorCameraObject->gameobject();
                 }else if(previewEntity && previewCamera && targetScene && targetScene->getECS()){
-                    effectManager = targetScene->getECS()->getComponentManager();
+                    effectScene = targetScene;
                     effectEntity = previewEntity;
                 }
 
-                applyCameraEffects(effectManager, effectEntity);
+                applyCameraEffects(effectScene, effectEntity);
                 mainScreen->setCamera(mainEditCamera);
             }
             targetScene->renderViewportContents();
@@ -1893,7 +1945,7 @@ void EditorScene::drawToolbar(float width, float height){
             ImGui::MenuItem("Redo", "Ctrl+Y", false, false);
             ImGui::Separator();
             if(ImGui::MenuItem("Editor Camera Settings")){
-                showEditorCameraSettings = true;
+                setEditorCameraSettingsOpen(true);
                 selectedAssetPath.clear();
             }
             ImGui::EndMenu();
@@ -2005,7 +2057,7 @@ void EditorScene::selectEntity(const std::string& id){
         focusOnEntity(id);
         return;
     }
-    showEditorCameraSettings = false;
+    setEditorCameraSettingsOpen(false);
     selectedEntityId = id;
     if(!id.empty()){
         selectedAssetPath.clear();
@@ -2399,6 +2451,162 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
             }
         }
 
+        auto drawAdaptiveFocusDebugOverlay = [&](){
+            if(!viewportCamera){
+                return;
+            }
+
+            PScene componentScene;
+            NeoECS::ECSEntity* cameraEntity = nullptr;
+            if(editorCameraObject && editorCamera && viewportCamera == editorCamera && getECS()){
+                componentScene = PScene(this, [](Scene*) {});
+                cameraEntity = editorCameraObject->gameobject();
+            }else if(targetScene && targetScene->getECS()){
+                auto* targetManager = targetScene->getECS()->getComponentManager();
+                const auto& targetEntities = targetScene->getECS()->getEntityManager()->getEntities();
+                for(const auto& targetEntityPtr : targetEntities){
+                    auto* targetEntity = targetEntityPtr.get();
+                    if(!targetEntity){
+                        continue;
+                    }
+                    auto* targetCameraComp = targetManager->getECSComponent<CameraComponent>(targetEntity);
+                    if(targetCameraComp && targetCameraComp->camera == viewportCamera){
+                        componentScene = targetScene;
+                        cameraEntity = targetEntity;
+                        break;
+                    }
+                }
+            }
+
+            if(!componentScene || !cameraEntity || !componentScene->getECS()){
+                return;
+            }
+
+            auto* componentManager = componentScene->getECS()->getComponentManager();
+            auto* dof = componentManager->getECSComponent<DepthOfFieldComponent>(cameraEntity);
+            if(!dof || !IsComponentActive(dof) || !dof->adaptiveFocus || !dof->adaptiveFocusDebugDraw){
+                return;
+            }
+
+            const Scene* adaptiveFocusSourceScene = targetScene ? targetScene.get() : componentScene.get();
+            if(!adaptiveFocusSourceScene){
+                return;
+            }
+
+            float hitDistance = 0.0f;
+            bool hasHit = adaptiveFocusSourceScene->computeAdaptiveFocusDistanceFromSnapshotForCamera(viewportCamera, hitDistance);
+
+            float resolvedFocusDistance = Math3D::Max(0.01f, dof->focusDistance);
+            float resolvedFocusRange = Math3D::Max(0.001f, dof->focusRange);
+            bool centerDepthValid = false;
+            float centerDepthDistance = 0.0f;
+            bool rayTargetValid = hasHit;
+            float rayTargetDistance = hasHit ? hitDistance : 0.0f;
+            bool usedFallback = !hasHit;
+            float targetFocusDistance = resolvedFocusDistance;
+            float fallbackFocusDistance = Math3D::Max(0.01f, dof->focusDistance);
+            if(dof->runtimeEffect){
+                resolvedFocusDistance = Math3D::Max(0.01f, dof->runtimeEffect->getResolvedFocusDistance());
+                resolvedFocusRange = Math3D::Max(0.001f, dof->runtimeEffect->getResolvedFocusRange());
+                centerDepthValid = dof->runtimeEffect->getDebugAdaptiveCenterValid();
+                centerDepthDistance = dof->runtimeEffect->getDebugAdaptiveCenterDistance();
+                rayTargetValid = dof->runtimeEffect->getDebugAdaptiveRayValid();
+                rayTargetDistance = dof->runtimeEffect->getDebugAdaptiveRayDistance();
+                usedFallback = dof->runtimeEffect->getDebugAdaptiveUsedFallback();
+                targetFocusDistance = dof->runtimeEffect->getDebugAdaptiveTargetDistance();
+                fallbackFocusDistance = dof->runtimeEffect->getDebugAdaptiveFallbackDistance();
+            }
+
+            const CameraSettings cameraSettings = viewportCamera->getSettings();
+            const float farLimit = Math3D::Max(1.0f, cameraSettings.farPlane * 0.95f);
+            const float markerRange = resolvedFocusRange;
+            float lineDistance = hasHit
+                ? hitDistance
+                : (resolvedFocusDistance + markerRange);
+            const float rayStartDistance = Math3D::Max(0.11f, cameraSettings.nearPlane * 1.25f);
+            lineDistance = Math3D::Clamp(lineDistance, rayStartDistance + 0.05f, farLimit);
+
+            Math3D::Transform cameraTransform = viewportCamera->transform();
+            Math3D::Vec3 rayOrigin = cameraTransform.position;
+            Math3D::Vec3 rayDirection = cameraTransform.forward() * -1.0f;
+            if(!std::isfinite(rayDirection.x) || !std::isfinite(rayDirection.y) || !std::isfinite(rayDirection.z) ||
+               rayDirection.length() < 0.0001f){
+                return;
+            }
+            rayDirection = rayDirection.normalize();
+
+            Math3D::Vec3 rayRight = cameraTransform.right();
+            if(!std::isfinite(rayRight.x) || !std::isfinite(rayRight.y) || !std::isfinite(rayRight.z) ||
+               rayRight.length() < 0.0001f){
+                rayRight = Math3D::Vec3(1.0f, 0.0f, 0.0f);
+            }else{
+                rayRight = rayRight.normalize();
+            }
+
+            auto projectToViewport = [&](const Math3D::Vec3& worldPoint, ImVec2& outPoint) -> bool {
+                Math3D::Vec3 screenPoint = worldToScreen(viewportCamera, worldPoint, viewport.x, viewport.y, viewport.w, viewport.h);
+                if(!screenPointInViewport(screenPoint, viewport)){
+                    return false;
+                }
+                outPoint = ImVec2(screenPoint.x, screenPoint.y);
+                return true;
+            };
+
+            Math3D::Vec3 lineStart = rayOrigin + (rayDirection * rayStartDistance);
+            Math3D::Vec3 lineEnd = rayOrigin + (rayDirection * lineDistance);
+            ImVec2 lineStartScreen;
+            ImVec2 lineEndScreen;
+            if(!projectToViewport(lineStart, lineStartScreen) || !projectToViewport(lineEnd, lineEndScreen)){
+                return;
+            }
+
+            const ImU32 missColor = IM_COL32(52, 152, 219, 255); // #3498db
+            const ImU32 hitColor = IM_COL32(46, 204, 113, 255);
+            const ImU32 rayColor = hasHit ? hitColor : missColor;
+            drawList->AddLine(lineStartScreen, lineEndScreen, rayColor, 2.0f);
+            drawList->AddCircleFilled(lineEndScreen, 5.0f, rayColor);
+            drawList->AddCircle(lineEndScreen, 6.0f, IM_COL32(0, 0, 0, 150), 0, 1.0f);
+
+            auto drawDistanceMarker = [&](float distance, ImU32 color, float thickness, float halfWidthWorld){
+                distance = Math3D::Clamp(distance, rayStartDistance, lineDistance);
+                Math3D::Vec3 markerCenter = rayOrigin + (rayDirection * distance);
+                Math3D::Vec3 markerA = markerCenter - (rayRight * halfWidthWorld);
+                Math3D::Vec3 markerB = markerCenter + (rayRight * halfWidthWorld);
+                ImVec2 markerAScreen;
+                ImVec2 markerBScreen;
+                if(projectToViewport(markerA, markerAScreen) && projectToViewport(markerB, markerBScreen)){
+                    drawList->AddLine(markerAScreen, markerBScreen, color, thickness);
+                }
+            };
+
+            const float markerHalfWidthWorld = Math3D::Clamp(lineDistance * 0.02f, 0.12f, 1.0f);
+            drawDistanceMarker(resolvedFocusDistance, IM_COL32(241, 196, 15, 255), 2.2f, markerHalfWidthWorld);
+            drawDistanceMarker(resolvedFocusDistance - markerRange, IM_COL32(255, 255, 255, 220), 1.7f, markerHalfWidthWorld * 0.7f);
+            drawDistanceMarker(resolvedFocusDistance + markerRange, IM_COL32(255, 255, 255, 220), 1.7f, markerHalfWidthWorld * 0.7f);
+
+            const std::string afDebugText = StringUtils::Format(
+                "AF CenterDepth: %s %.2f\nAF RayTapAvg: %s %.2f\nAF Target: %.2f  Resolved: %.2f\nAF Fallback: %s %.2f",
+                centerDepthValid ? "yes" : "no",
+                centerDepthDistance,
+                rayTargetValid ? "yes" : "no",
+                rayTargetDistance,
+                targetFocusDistance,
+                resolvedFocusDistance,
+                usedFallback ? "yes" : "no",
+                fallbackFocusDistance
+            );
+            ImVec2 textPos(viewport.x + 12.0f, viewport.y + 12.0f);
+            ImVec2 textSize = ImGui::CalcTextSize(afDebugText.c_str());
+            drawList->AddRectFilled(
+                textPos,
+                ImVec2(textPos.x + textSize.x + 12.0f, textPos.y + textSize.y + 10.0f),
+                IM_COL32(0, 0, 0, 145),
+                4.0f
+            );
+            drawList->AddText(ImVec2(textPos.x + 6.0f, textPos.y + 5.0f), IM_COL32(255, 255, 255, 235), afDebugText.c_str());
+        };
+        drawAdaptiveFocusDebugOverlay();
+
         if(previewTexture && previewTexture->getID() != 0){
             const float minPreviewW = 220.0f;
             const float minPreviewH = 160.0f;
@@ -2682,6 +2890,7 @@ PCamera EditorScene::resolveSelectedTargetCamera() const{
 
 void EditorScene::dispose(){
     cancelViewportPrefabDragPreview();
+    setEditorCameraSettingsOpen(false);
     if(playViewportMouseRectConstrained){
         if(auto* window = getWindow()){
             SDL_SetWindowMouseRect(window->getWindowPtr(), nullptr);
