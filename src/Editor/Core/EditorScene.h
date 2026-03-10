@@ -135,6 +135,7 @@ class EditorScene : public Scene {
         std::unordered_set<std::string> migratedLightSyncTransform;
         std::unordered_set<std::string> migratedLightDefaults;
         bool editorIconsLoaded = false;
+        bool showSceneGizmos = true;
         PTexture iconCamera;
         PTexture iconLightPoint;
         PTexture iconLightSpot;

@@ -49,9 +49,22 @@ mat3 buildTBN(vec2 uv, vec3 N){
     vec3 dp2 = dFdy(v_fragPos);
     vec2 duv1 = dFdx(uv);
     vec2 duv2 = dFdy(uv);
+    float det = (duv1.x * duv2.y) - (duv1.y * duv2.x);
+    if(abs(det) < 1e-8){
+        // UV derivatives can become degenerate at steep viewing angles; build a stable basis from N.
+        vec3 up = (abs(N.y) < 0.999) ? vec3(0.0, 1.0, 0.0) : vec3(1.0, 0.0, 0.0);
+        vec3 T = safeNormalize(cross(up, N));
+        vec3 B = safeNormalize(cross(N, T));
+        return mat3(T, B, N);
+    }
 
-    vec3 T = safeNormalize(dp1 * duv2.y - dp2 * duv1.y);
-    vec3 B = safeNormalize(-dp1 * duv2.x + dp2 * duv1.x);
+    float invDet = 1.0 / det;
+    vec3 T = (dp1 * duv2.y - dp2 * duv1.y) * invDet;
+    T = safeNormalize(T - N * dot(N, T));
+    vec3 B = safeNormalize(cross(N, T));
+    if(det < 0.0){
+        B = -B;
+    }
     return mat3(T, B, N);
 }
 
@@ -71,10 +84,9 @@ vec2 applyHeightMapParallax(vec2 uv, vec2 duvDx, vec2 duvDy, vec3 viewDirWS, mat
     float edgeFade = smoothstep(0.02, 0.08, edgeDist);
     vec2 hTexSize = vec2(textureSize(u_heightTex, 0));
     float texelFootprint = max(length(duvDx * hTexSize), length(duvDy * hTexSize));
-    float minifyFade = 1.0 - smoothstep(1.0, 4.0, texelFootprint);
-    float viewDist = length(u_viewPos - v_fragPos);
-    float distanceFade = 1.0 - smoothstep(12.0, 45.0, viewDist);
-    float parallaxFade = angleFade * edgeFade * minifyFade * distanceFade;
+    // Continuous footprint attenuation avoids visible distance contour lines on broad surfaces.
+    float detailFade = 1.0 / (1.0 + texelFootprint * 0.35);
+    float parallaxFade = angleFade * edgeFade * detailFade;
     if(parallaxFade <= 1e-4){
         return uv;
     }

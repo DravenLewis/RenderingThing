@@ -20,6 +20,7 @@ int main(int argc, char** argv){
     int id = engine.addState(std::make_shared<EditorScene>(engine.window(), demoScene, demoFactory));
     engine.enterState(id);
 
+    
     /*
     // Optional: manifest-driven bootstrap takeover.
     AppBootstrap::ManifestSceneInstaller installer(engine);

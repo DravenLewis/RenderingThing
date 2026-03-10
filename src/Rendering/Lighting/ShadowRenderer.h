@@ -42,6 +42,7 @@ public:
         std::shared_ptr<Mesh> mesh;
         Math3D::Mat4 model;
         std::shared_ptr<Material> material;
+        bool enableBackfaceCulling = true;
         bool hasBounds = false;
         Math3D::Vec3 boundsMin = Math3D::Vec3(0.0f, 0.0f, 0.0f);
         Math3D::Vec3 boundsMax = Math3D::Vec3(0.0f, 0.0f, 0.0f);
@@ -59,6 +60,17 @@ public:
     static bool GetDebugShadows();
     static void CycleDebugShadows();
     static int GetDebugShadowsMode();
+    static void SetDebugShadowsMode(int mode);
+    static void SetGlobalDebugOverrideEnabled(bool enabled);
+    static bool GetGlobalDebugOverrideEnabled();
+    static void SetGlobalDebugOverrideMode(int mode);
+    static int GetGlobalDebugOverrideMode();
+    static void SetSelectedLightIndex(int index);
+    static int GetSelectedLightIndex();
+    static void SetDirectionalCascadeKernelMarginTexels(float value);
+    static float GetDirectionalCascadeKernelMarginTexels();
+    static void SetShadowReceiverNormalBlend(float value);
+    static float GetShadowReceiverNormalBlend();
     static void SetDebugLogging(bool enabled);
     static bool GetDebugLogging();
 

@@ -11,7 +11,7 @@ struct Light {
     vec4 direction;
     vec4 color;
     vec4 params;             // x=intensity, y=range, z=falloff, w=spotAngle
-    vec4 shadow;             // x=bias, y=normalBias
+    vec4 shadow;             // x=bias, y=normalBias, z=cascadeCount, w=debugMode
     vec4 cascadeSplits;      // view-space split distances
     mat4 lightMatrices[4];   // directional cascades / spot uses [0]
 };
@@ -61,6 +61,7 @@ uniform vec3 u_viewPos;
 uniform mat4 u_view;
 uniform int u_receiveShadows;
 uniform int u_debugShadows; // 0=off,1=visibility,2=cascade index,3=proj bounds
+uniform int u_debugSelectedLightIndex;
 uniform int u_useAlphaClip;
 uniform float u_alphaCutoff;
 
@@ -69,7 +70,7 @@ layout(std140) uniform LightBlock {
     Light u_lights[MAX_LIGHTS];
 };
 
-uniform sampler2DShadow u_shadowMaps2D[MAX_SHADOW_MAPS_2D];
+uniform sampler2D u_shadowMaps2D[MAX_SHADOW_MAPS_2D];
 uniform samplerCubeShadow u_shadowMapsCube[MAX_SHADOW_MAPS_CUBE];
 
 vec3 safeNormalize(vec3 v){
@@ -96,8 +97,12 @@ mat2 rotate2D(float angle){
     return mat2(c, -s, s, c);
 }
 
+float compareShadowDepth2D(int mapIndex, vec2 uv, float compareDepth){
+    float storedDepth = texture(u_shadowMaps2D[mapIndex], uv).r;
+    return (compareDepth <= storedDepth) ? 1.0 : 0.0;
+}
 
-float sampleShadow2D(int shadowType, int mapIndex, vec4 lightSpacePos, float bias) {
+float sampleShadow2D(int shadowType, int mapIndex, vec4 lightSpacePos, float bias, float filterScale, vec3 receiverPos, float receiverGradScale) {
     if(mapIndex < 0 || mapIndex >= MAX_SHADOW_MAPS_2D) return 1.0;
 
     vec3 projCoords = lightSpacePos.xyz / lightSpacePos.w;
@@ -106,20 +111,49 @@ float sampleShadow2D(int shadowType, int mapIndex, vec4 lightSpacePos, float bia
     if(projCoords.x < 0.0 || projCoords.x > 1.0 || projCoords.y < 0.0 || projCoords.y > 1.0) return 1.0;
 
     vec2 texelSize = 1.0 / vec2(textureSize(u_shadowMaps2D[mapIndex], 0));
-    float filterScale = 1.0;
-    vec2 pcfTexel = texelSize * filterScale;
+    float clampedFilterScale = max(filterScale, 0.5);
+    vec2 pcfTexel = texelSize * clampedFilterScale;
     float pcfBias = 0.0;
     if(shadowType == 1){
-        pcfBias = max(texelSize.x, texelSize.y) * filterScale * 0.90;
+        pcfBias = max(0.00012, max(texelSize.x, texelSize.y) * clampedFilterScale * 0.16);
     }else if(shadowType == 2){
-        pcfBias = max(texelSize.x, texelSize.y) * filterScale * 1.60;
+        pcfBias = max(0.00022, max(texelSize.x, texelSize.y) * clampedFilterScale * 0.24);
     }
-    float compareDepth = clamp(projCoords.z - (bias + pcfBias), 0.0, 1.0);
+    // Receiver-plane depth gradient keeps PCF taps on the same surface at grazing angles.
+    vec2 uvDx = dFdx(projCoords.xy);
+    vec2 uvDy = dFdy(projCoords.xy);
+    float zDx = dFdx(projCoords.z);
+    float zDy = dFdy(projCoords.z);
+    float det = uvDx.x * uvDy.y - uvDx.y * uvDy.x;
+    vec2 receiverDepthGrad = vec2(0.0);
+    if(abs(det) > 1e-8){
+        receiverDepthGrad = vec2(
+            (zDx * uvDy.y - zDy * uvDx.y) / det,
+            (zDy * uvDx.x - zDx * uvDy.x) / det
+        );
+    }
+    receiverDepthGrad *= clamp(receiverGradScale, 0.0, 1.0);
+    float receiverSlope = length(receiverDepthGrad);
+    if(receiverSlope > 10.0){
+        receiverDepthGrad *= (10.0 / receiverSlope);
+        receiverSlope = 10.0;
+    }
+    float receiverPlaneBias = 0.0;
+    if(shadowType != 0){
+        float kernelRadius = (shadowType == 1) ? 1.00 : 1.55;
+        float texelRadius = kernelRadius * clampedFilterScale * max(texelSize.x, texelSize.y);
+        float rpScale = (shadowType == 1) ? 0.36 : 0.52;
+        float rpCap = (shadowType == 1) ? 0.00055 : 0.00085;
+        receiverPlaneBias = clamp(receiverSlope * texelRadius * rpScale, 0.0, rpCap);
+    }
+    float compareDepth = clamp(projCoords.z - (bias + pcfBias + receiverPlaneBias), 0.0, 1.0);
     vec2 uvMin = texelSize * 1.5;
     vec2 uvMax = vec2(1.0) - uvMin;
+    float rotation = hash13(floor(receiverPos * 32.0) * 0.754877666 + vec3(float(mapIndex), float(shadowType), 0.0)) * 6.28318530718;
+    mat2 kernelRot = rotate2D(rotation);
 
     if(shadowType == 0){
-        return texture(u_shadowMaps2D[mapIndex], vec3(clamp(projCoords.xy, uvMin, uvMax), compareDepth));
+        return compareShadowDepth2D(mapIndex, clamp(projCoords.xy, uvMin, uvMax), compareDepth);
     }
 
     float shadow = 0.0;
@@ -138,9 +172,12 @@ float sampleShadow2D(int shadowType, int mapIndex, vec4 lightSpacePos, float bia
             vec2( 0.185, -0.893)
         );
         for(int i = 0; i < tapCount; ++i){
-            vec2 sampleUv = clamp(projCoords.xy + (kernel[i] * pcfTexel * 1.15), uvMin, uvMax);
+            vec2 tapOffset = (kernelRot * kernel[i]) * pcfTexel * 1.00;
+            vec2 sampleUv = clamp(projCoords.xy + tapOffset, uvMin, uvMax);
             float weight = 1.0 - smoothstep(0.75, 1.10, length(kernel[i]));
-            shadow += texture(u_shadowMaps2D[mapIndex], vec3(sampleUv, compareDepth)) * weight;
+            float receiverOffset = clamp(dot(receiverDepthGrad, tapOffset), -0.0012 * clampedFilterScale, 0.0012 * clampedFilterScale);
+            float compareDepthTap = clamp(compareDepth + receiverOffset, 0.0, 1.0);
+            shadow += compareShadowDepth2D(mapIndex, sampleUv, compareDepthTap) * weight;
             weightSum += weight;
         }
     }else{
@@ -156,16 +193,19 @@ float sampleShadow2D(int shadowType, int mapIndex, vec4 lightSpacePos, float bia
             vec2(-0.087,  0.553), vec2( 0.091,  0.560)
         );
         for(int i = 0; i < tapCount; ++i){
-            vec2 sampleUv = clamp(projCoords.xy + (kernel[i] * pcfTexel * 1.85), uvMin, uvMax);
+            vec2 tapOffset = (kernelRot * kernel[i]) * pcfTexel * 1.55;
+            vec2 sampleUv = clamp(projCoords.xy + tapOffset, uvMin, uvMax);
             float weight = 1.0 - smoothstep(0.70, 1.15, length(kernel[i]));
-            shadow += texture(u_shadowMaps2D[mapIndex], vec3(sampleUv, compareDepth)) * weight;
+            float receiverOffset = clamp(dot(receiverDepthGrad, tapOffset), -0.0020 * clampedFilterScale, 0.0020 * clampedFilterScale);
+            float compareDepthTap = clamp(compareDepth + receiverOffset, 0.0, 1.0);
+            shadow += compareShadowDepth2D(mapIndex, sampleUv, compareDepthTap) * weight;
             weightSum += weight;
         }
     }
 
     float visibility = shadow / max(weightSum, 0.0001);
     float edge = min(min(projCoords.x, projCoords.y), min(1.0 - projCoords.x, 1.0 - projCoords.y));
-    float edgeFade = smoothstep(0.0, max(texelSize.x, texelSize.y) * 8.0, edge);
+    float edgeFade = smoothstep(0.0, max(texelSize.x, texelSize.y) * (8.0 * clampedFilterScale), edge);
     return mix(1.0, visibility, edgeFade);
 }
 
@@ -250,9 +290,13 @@ float computeShadowBias(Light light, vec3 normal, vec3 fragPos){
     float baseOffset = max(light.shadow.x, 0.0);
     float normalOffset = max(light.shadow.y, 0.0);
     if(lightType == 1){
-        float baseBias = baseOffset * 0.010;
-        float slopeBias = normalOffset * (0.0018 + slope * 0.0080);
-        return clamp(baseBias + slopeBias, 0.00008, 0.00070);
+        float cascadeCount = max(light.shadow.z, 1.0);
+        float singleCascadeScale = (cascadeCount <= 1.5) ? 1.45 : 1.0;
+        float baseBias = baseOffset * 0.010 * singleCascadeScale;
+        float slopeBias = normalOffset * (0.0014 + slope * 0.0120) * singleCascadeScale;
+        float minBias = (cascadeCount <= 1.5) ? 0.00005 : 0.00003;
+        float maxBias = (cascadeCount <= 1.5) ? 0.00078 : 0.00046;
+        return clamp(baseBias + slopeBias, minBias, maxBias);
     }else if(lightType == 2){
         float baseBias = baseOffset * 0.020;
         float slopeBias = normalOffset * (0.0030 + slope * 0.0160);
@@ -270,8 +314,13 @@ vec3 offsetShadowReceiver(Light light, vec3 normal, vec3 fragPos){
     float baseOffset = max(light.shadow.x, 0.0);
     float normalOffset = max(light.shadow.y, 0.0);
     if(lightType == 1){
-        float worldOffset = normalOffset * 0.030 + baseOffset * 0.010;
-        worldOffset = clamp(worldOffset, 0.0, 0.00035);
+        vec3 shadowDir = getShadowDirection(light, fragPos);
+        float grazing = 1.0 - max(dot(normalDir, shadowDir), 0.0);
+        float cascadeCount = max(light.shadow.z, 1.0);
+        float singleCascadeScale = (cascadeCount <= 1.5) ? 1.35 : 1.0;
+        float worldOffset = (normalOffset * (0.0045 + grazing * 0.0150) + baseOffset * 0.0018) * singleCascadeScale;
+        float worldMax = (cascadeCount <= 1.5) ? 0.00058 : 0.00034;
+        worldOffset = clamp(worldOffset, 0.0, worldMax);
         return fragPos + normalDir * worldOffset;
     }
 
@@ -294,9 +343,22 @@ mat3 buildTBN(vec2 uv, vec3 N){
     vec3 dp2 = dFdy(v_fragPos);
     vec2 duv1 = dFdx(uv);
     vec2 duv2 = dFdy(uv);
+    float det = (duv1.x * duv2.y) - (duv1.y * duv2.x);
+    if(abs(det) < 1e-8){
+        // UV derivatives can become degenerate at steep viewing angles; build a stable basis from N.
+        vec3 up = (abs(N.y) < 0.999) ? vec3(0.0, 1.0, 0.0) : vec3(1.0, 0.0, 0.0);
+        vec3 T = safeNormalize(cross(up, N));
+        vec3 B = safeNormalize(cross(N, T));
+        return mat3(T, B, N);
+    }
 
-    vec3 T = safeNormalize(dp1 * duv2.y - dp2 * duv1.y);
-    vec3 B = safeNormalize(-dp1 * duv2.x + dp2 * duv1.x);
+    float invDet = 1.0 / det;
+    vec3 T = (dp1 * duv2.y - dp2 * duv1.y) * invDet;
+    T = safeNormalize(T - N * dot(N, T));
+    vec3 B = safeNormalize(cross(N, T));
+    if(det < 0.0){
+        B = -B;
+    }
     return mat3(T, B, N);
 }
 
@@ -316,10 +378,9 @@ vec2 applyHeightMapParallax(vec2 uv, vec2 duvDx, vec2 duvDy, vec3 viewDirWS, mat
     float edgeFade = smoothstep(0.02, 0.08, edgeDist);
     vec2 hTexSize = vec2(textureSize(u_heightTex, 0));
     float texelFootprint = max(length(duvDx * hTexSize), length(duvDy * hTexSize));
-    float minifyFade = 1.0 - smoothstep(1.0, 4.0, texelFootprint);
-    float viewDist = length(u_viewPos - v_fragPos);
-    float distanceFade = 1.0 - smoothstep(12.0, 45.0, viewDist);
-    float parallaxFade = angleFade * edgeFade * minifyFade * distanceFade;
+    // Continuous footprint attenuation avoids visible distance contour lines on broad surfaces.
+    float detailFade = 1.0 / (1.0 + texelFootprint * 0.35);
+    float parallaxFade = angleFade * edgeFade * detailFade;
     if(parallaxFade <= 1e-4){
         return uv;
     }
@@ -372,6 +433,31 @@ vec3 FresnelSchlick(float cosTheta, vec3 F0){
     return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
 
+int resolveShadowDebugMode(int lightIndex, Light light){
+    if(u_debugShadows > 0){
+        return clamp(u_debugShadows, 0, 3);
+    }
+    if(lightIndex == u_debugSelectedLightIndex){
+        return clamp(int(light.shadow.w + 0.5), 0, 3);
+    }
+    return 0;
+}
+
+vec3 debugLightColor(int lightIndex){
+    float hue = fract(float(lightIndex) * 0.61803398875 + 0.19);
+    vec3 t = abs(fract(vec3(hue) + vec3(0.0, 0.3333333, 0.6666667)) * 6.0 - 3.0) - 1.0;
+    vec3 rgb = clamp(t, 0.0, 1.0);
+    rgb = rgb * rgb * (3.0 - 2.0 * rgb);
+    return mix(vec3(0.22), rgb, 0.90);
+}
+
+vec3 debugCascadeColor(int cascadeIndex){
+    if(cascadeIndex <= 0) return vec3(0.22, 0.72, 1.0);
+    if(cascadeIndex == 1) return vec3(0.28, 1.0, 0.35);
+    if(cascadeIndex == 2) return vec3(1.0, 0.90, 0.25);
+    return vec3(1.0, 0.35, 0.22);
+}
+
 void main() {
     vec2 uvBase = v_uv * u_uvScale + u_uvOffset;
     vec2 duvDx = dFdx(uvBase);
@@ -411,11 +497,13 @@ void main() {
     vec3 F0 = mix(vec3(0.04), albedo, metallic);
 
     vec3 Lo = vec3(0.0);
-    float debugVisibility = 1.0;
+    vec3 debugColorAccum = vec3(0.0);
+    float debugWeight = 0.0;
     int lightCount = int(u_lightHeader.x + 0.5);
     for (int i = 0; i < lightCount && i < MAX_LIGHTS; i++) {
         Light light = u_lights[i];
         int lightType = int(light.meta.x + 0.5);
+        int debugModeForLight = resolveShadowDebugMode(i, light);
 
         vec3 L = vec3(0.0);
         float attenuation = 1.0;
@@ -476,14 +564,29 @@ void main() {
         vec3 lightContribution = (kD * albedo / PI + specular) * radiance * NdotL;
 
         if(u_receiveShadows != 0 && light.meta.z >= 0.0){
-            float bias = computeShadowBias(light, N, v_fragPos);
-            vec3 shadowPos = offsetShadowReceiver(light, N, v_fragPos);
+            vec3 shadowNormal = baseN;
+            float bias = computeShadowBias(light, shadowNormal, v_fragPos);
+            vec3 shadowPos = offsetShadowReceiver(light, shadowNormal, v_fragPos);
             float visibility = 1.0;
             int lType = int(light.meta.x + 0.5);
+            float receiverGradScale = 1.0;
+            if(lType == 1){
+                receiverGradScale = (light.shadow.z <= 1.5) ? 0.42 : 0.24;
+            }
             int sType = int(light.meta.y + 0.5);
             int baseIndex = int(light.meta.z + 0.5);
+            float filterScale = 1.0;
+            if(lType == 1 && sType != 0){
+                float receiverNdotL = max(dot(shadowNormal, getShadowDirection(light, shadowPos)), 0.0);
+                float grazing = 1.0 - receiverNdotL;
+                float grazingFilterMin = (sType == 2) ? 0.55 : 0.70;
+                filterScale = mix(1.0, grazingFilterMin, grazing);
+            }
             int cascadeCount = 1;
             int cascadeIndex = 0;
+            bool hasProjectionBounds = false;
+            bool projectionOutOfBounds = false;
+            float projectionDepth = 0.0;
 
             if(lType == 0){
                 visibility = sampleShadowCube(sType, baseIndex, shadowPos, light.position.xyz, max(light.cascadeSplits.x, 0.1), bias);
@@ -491,32 +594,34 @@ void main() {
                 cascadeCount = clamp(int(light.shadow.z + 0.5), 1, 4);
                 float viewDepth = -(u_view * vec4(shadowPos, 1.0)).z;
                 if(cascadeCount > 1){
-                    if(viewDepth > light.cascadeSplits.x) cascadeIndex = 1;
-                    if(viewDepth > light.cascadeSplits.y) cascadeIndex = 2;
-                    if(viewDepth > light.cascadeSplits.z) cascadeIndex = 3;
-                    cascadeIndex = clamp(cascadeIndex, 0, cascadeCount - 1);
-                }
-                if(lType == 1){
-                    float cascadeBiasScale = (sType == 0) ? 0.02 : 0.05;
-                    bias *= (1.0 + float(cascadeIndex) * cascadeBiasScale);
+                    for(int c = 0; c < 3; ++c){
+                        if(c >= (cascadeCount - 1)){
+                            break;
+                        }
+                        if(viewDepth > light.cascadeSplits[c]){
+                            cascadeIndex = c + 1;
+                        }else{
+                            break;
+                        }
+                    }
                 }
                 vec4 lightSpacePos = light.lightMatrices[cascadeIndex] * vec4(shadowPos, 1.0);
-                if(u_debugShadows == 3){
+                if(debugModeForLight == 3){
                     vec3 projCoords = lightSpacePos.xyz / lightSpacePos.w;
                     projCoords = projCoords * 0.5 + 0.5;
-                    bool outBounds = (projCoords.x < 0.0 || projCoords.x > 1.0 ||
-                                      projCoords.y < 0.0 || projCoords.y > 1.0 ||
-                                      projCoords.z < 0.0 || projCoords.z > 1.0);
-                    FragColor = outBounds ? vec4(1.0, 0.0, 0.0, 1.0) : vec4(vec3(projCoords.z), 1.0);
-                    return;
+                    hasProjectionBounds = true;
+                    projectionOutOfBounds = (projCoords.x < 0.0 || projCoords.x > 1.0 ||
+                                             projCoords.y < 0.0 || projCoords.y > 1.0 ||
+                                             projCoords.z < 0.0 || projCoords.z > 1.0);
+                    projectionDepth = clamp(projCoords.z, 0.0, 1.0);
                 }
-                visibility = sampleShadow2D(sType, baseIndex + cascadeIndex, lightSpacePos, bias);
+                visibility = sampleShadow2D(sType, baseIndex + cascadeIndex, lightSpacePos, bias, filterScale, shadowPos, receiverGradScale);
                 if(lType == 1 && cascadeCount > 1 && cascadeIndex == (cascadeCount - 1) && sType != 0){
                     float prevSplit = (cascadeIndex > 0) ? light.cascadeSplits[cascadeIndex - 1] : 0.0;
                     float splitDist = light.cascadeSplits[cascadeIndex];
                     float cascadeSpan = max(splitDist - prevSplit, 0.001);
                     float localCascadeT = clamp((viewDepth - prevSplit) / cascadeSpan, 0.0, 1.0);
-                    float hardVisibility = sampleShadow2D(0, baseIndex + cascadeIndex, lightSpacePos, bias);
+                    float hardVisibility = sampleShadow2D(0, baseIndex + cascadeIndex, lightSpacePos, bias, 1.0, shadowPos, 0.0);
                     float filterToHard = smoothstep(0.25, 0.95, localCascadeT);
                     visibility = mix(visibility, hardVisibility, filterToHard);
                 }
@@ -524,12 +629,13 @@ void main() {
                     float splitDist = light.cascadeSplits[cascadeIndex];
                     float prevSplit = (cascadeIndex > 0) ? light.cascadeSplits[cascadeIndex - 1] : 0.0;
                     float cascadeSpan = max(splitDist - prevSplit, 0.001);
-                    float blendRange = clamp(cascadeSpan * 0.22, 0.20, 2.50);
+                    float maxBlendRange = max(16.0, splitDist * 0.40);
+                    float blendRange = clamp(cascadeSpan * 0.55, 1.5, maxBlendRange);
                     float blendStart = splitDist - blendRange;
                     float blendT = clamp((viewDepth - blendStart) / blendRange, 0.0, 1.0);
                     if(blendT > 0.0){
                         vec4 nextLightSpacePos = light.lightMatrices[cascadeIndex + 1] * vec4(shadowPos, 1.0);
-                        float nextVisibility = sampleShadow2D(sType, baseIndex + cascadeIndex + 1, nextLightSpacePos, bias);
+                        float nextVisibility = sampleShadow2D(sType, baseIndex + cascadeIndex + 1, nextLightSpacePos, bias, filterScale, shadowPos, receiverGradScale);
                         visibility = mix(visibility, nextVisibility, blendT);
                     }
                 }
@@ -546,11 +652,23 @@ void main() {
 
             visibility = mix(1.0, visibility, clamp(light.meta.w, 0.0, 1.0));
             lightContribution *= visibility;
-            debugVisibility = min(debugVisibility, visibility);
-            if(u_debugShadows == 2 && lType != 0){
-                float t = (cascadeCount > 1) ? (float(cascadeIndex) / float(max(cascadeCount - 1, 1))) : 0.0;
-                FragColor = vec4(vec3(t), 1.0);
-                return;
+            if(debugModeForLight == 1){
+                vec3 debugColor = debugLightColor(i);
+                debugColorAccum += mix(debugColor * 0.15, debugColor, visibility);
+                debugWeight += 1.0;
+            }else if(debugModeForLight == 2 && lType != 0){
+                vec3 debugColor = mix(debugLightColor(i), debugCascadeColor(cascadeIndex), 0.55);
+                debugColorAccum += debugColor;
+                debugWeight += 1.0;
+            }else if(debugModeForLight == 3 && lType != 0 && hasProjectionBounds){
+                vec3 debugColor = debugLightColor(i);
+                if(projectionOutOfBounds){
+                    debugColor = mix(debugColor, vec3(1.0, 0.12, 0.08), 0.75);
+                }else{
+                    debugColor *= (0.4 + (0.6 * projectionDepth));
+                }
+                debugColorAccum += debugColor;
+                debugWeight += 1.0;
             }
         }
 
@@ -572,12 +690,8 @@ void main() {
     }
 
     vec3 color = ambient + Lo + envSpec + emissive;
-    if(u_debugShadows == 1){
-        FragColor = vec4(vec3(debugVisibility), 1.0);
-    }else if(u_debugShadows == 2){
-        FragColor = vec4(1.0);
-    }else if(u_debugShadows == 3){
-        FragColor = vec4(1.0);
+    if(debugWeight > 0.0){
+        FragColor = vec4(clamp(debugColorAccum / debugWeight, 0.0, 1.0), 1.0);
     }else{
         FragColor = vec4(color, baseColor.a);
     }

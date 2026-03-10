@@ -169,7 +169,10 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
 
                 // Scale thresholds with distance and local depth slope for temporal stability.
                 // Avoid derivative-based slope (dFdx/dFdy), which can introduce primitive-edge seams.
-                float depthScale = clamp(centerDepth * 0.08, 1.0, 32.0);
+                float depthScaleTarget = clamp(centerDepth * 0.08, 1.0, 32.0);
+                // Smoothly ramp depth scaling to avoid a visible contour where distance scaling kicks in.
+                float depthScaleBlend = smoothstep(4.0, 28.0, centerDepth);
+                float depthScale = mix(1.0, depthScaleTarget, depthScaleBlend);
                 float adaptiveDepthRadius = depthRadius * depthScale;
                 float depthRightRaw = texture(depthTexture, clamp(TexCoords + vec2(u_texelSize.x, 0.0), vec2(0.0), vec2(1.0))).r;
                 float depthUpRaw = texture(depthTexture, clamp(TexCoords + vec2(0.0, u_texelSize.y), vec2(0.0), vec2(1.0))).r;
@@ -418,8 +421,10 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
                 float weight = 1.0;
                 int loops = clamp(sampleCount, 1, 8);
                 float baseDepthTolerance = max(u_focusRange * 0.35, 0.25);
-                float blurRelax = smoothstep(0.18, 1.0, clamp(blurAmount, 0.0, 1.0));
-                float relaxedDepthTolerance = mix(baseDepthTolerance, max(baseDepthTolerance * 8.0, 2.5), blurRelax);
+                // Keep blur relaxation continuous from the first blur contribution so large flats
+                // do not show a distance "knee" where blur behavior abruptly changes.
+                float blurRelax = smoothstep(0.0, 1.0, clamp(blurAmount, 0.0, 1.0));
+                float relaxedDepthTolerance = mix(baseDepthTolerance, max(baseDepthTolerance * 4.0, 1.5), blurRelax);
                 for(int i = 0; i < loops; ++i){
                     vec2 offset = dirs[i] * radiusPx * u_texelSize;
                     vec2 sampleUv = clamp(uv + offset, vec2(0.0), vec2(1.0));
@@ -427,7 +432,7 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
                     float sampleLinearDepth = linearizeDepth(texture(depthTexture, sampleUv).r);
                     float depthDelta = abs(sampleLinearDepth - centerLinearDepth);
                     float depthWeight = 1.0 - smoothstep(0.0, relaxedDepthTolerance, depthDelta);
-                    depthWeight = mix(depthWeight, 1.0, blurRelax * 0.72);
+                    depthWeight = mix(depthWeight, 1.0, blurRelax * 0.55);
                     accum += sampleColor * depthWeight;
                     weight += depthWeight;
                 }

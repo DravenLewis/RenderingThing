@@ -4,6 +4,7 @@
 #include "ECS/Core/ECSComponents.h"
 #include "Foundation/Logging/Logbot.h"
 #include "Foundation/Util/StringUtils.h"
+#include "Rendering/Lighting/ShadowRenderer.h"
 #include "imgui.h"
 
 #include <algorithm>
@@ -42,6 +43,43 @@ namespace {
     template<typename T>
     bool hasComponent(NeoECS::ECSComponentManager* manager, NeoECS::ECSEntity* entity){
         return manager && entity && (manager->getECSComponent<T>(entity) != nullptr);
+    }
+
+    void drawShadowDebugWidget(){
+        if(!ImGui::CollapsingHeader("Shadow Debug", ImGuiTreeNodeFlags_DefaultOpen)){
+            return;
+        }
+
+        bool globalOverride = ShadowRenderer::GetGlobalDebugOverrideEnabled();
+        if(ImGui::Checkbox("Debug Mode", &globalOverride)){
+            ShadowRenderer::SetGlobalDebugOverrideEnabled(globalOverride);
+        }
+
+        const char* globalModes[] = {"Visibility", "Cascade Index", "Projection Bounds"};
+        int globalMode = std::clamp(ShadowRenderer::GetGlobalDebugOverrideMode(), 1, 3);
+        int globalModeIndex = globalMode - 1;
+        if(!globalOverride){
+            ImGui::BeginDisabled();
+        }
+        if(ImGui::Combo("Global View", &globalModeIndex, globalModes, IM_ARRAYSIZE(globalModes))){
+            ShadowRenderer::SetGlobalDebugOverrideMode(globalModeIndex + 1);
+        }
+        if(!globalOverride){
+            ImGui::EndDisabled();
+        }
+
+        ImGui::TextDisabled("Global override replaces per-light Shadow Debug View.");
+
+        float cascadeMarginTexels = ShadowRenderer::GetDirectionalCascadeKernelMarginTexels();
+        if(ImGui::SliderFloat("Cascade Kernel Margin (Texels)", &cascadeMarginTexels, 0.0f, 32.0f, "%.2f")){
+            ShadowRenderer::SetDirectionalCascadeKernelMarginTexels(cascadeMarginTexels);
+        }
+
+        float receiverNormalBlend = ShadowRenderer::GetShadowReceiverNormalBlend();
+        if(ImGui::SliderFloat("Receiver Normal Blend", &receiverNormalBlend, 0.0f, 1.0f, "%.3f")){
+            ShadowRenderer::SetShadowReceiverNormalBlend(receiverNormalBlend);
+        }
+        ImGui::TextDisabled("0 = shading normal, 1 = geometric normal.");
     }
 
     bool ensureTransformComponent(NeoECS::GameObject* wrapper, NeoECS::ECSComponentManager* manager, NeoECS::ECSEntity* entity){
@@ -355,6 +393,8 @@ void PropertiesPanel::draw(float x,
     }
     if(!entity){
         ImGui::TextUnformatted("No entity selected.");
+        ImGui::Separator();
+        drawShadowDebugWidget();
         ImGui::End();
         return;
     }
@@ -387,6 +427,8 @@ void PropertiesPanel::draw(float x,
             ImGui::PopID();
         }
 
+        ImGui::Separator();
+        drawShadowDebugWidget();
         ImGui::Dummy(ImVec2(0.0f, 20.0f));
         ImGui::Separator();
         ImGui::Dummy(ImVec2(0.0f, 10.0f));

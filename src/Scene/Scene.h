@@ -105,6 +105,7 @@ class Scene : public View {
         DebugStats debugStats{};
         std::atomic<bool> closeRequested{false};
         std::string selectedEntityId;
+        int selectedLightUploadIndex = -1;
         std::shared_ptr<MaterialDefaults::ColorMaterial> outlineMaterial;
         std::shared_ptr<MaterialDefaults::ColorMaterial> deferredIncompatibleMaterial;
         bool outlineEnabled = false;

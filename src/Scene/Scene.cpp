@@ -329,6 +329,7 @@ void Scene::refreshRenderState(){
     NeoECS::ECSEntity* preferredEnabledCameraEntity = nullptr;
     PCamera firstEnabledCamera = nullptr;
     PCamera preferredEnabledCamera = nullptr;
+    int resolvedSelectedLightIndex = -1;
 
     for(const auto& entityPtr : entities){
         auto* entity = entityPtr.get();
@@ -426,6 +427,8 @@ void Scene::refreshRenderState(){
 
         if(lightActive && lightComponent){
             Light light = lightComponent->light;
+            light.shadowDebugMode = Math3D::Clamp(light.shadowDebugMode, 0, 3);
+            lightComponent->light.shadowDebugMode = light.shadowDebugMode;
             if(lightComponent->syncTransform){
                 light.position = world.getPosition();
                 lightComponent->light.position = light.position;
@@ -448,6 +451,9 @@ void Scene::refreshRenderState(){
                     light.direction = light.direction.normalize();
                 }
                 lightComponent->light.direction = light.direction;
+            }
+            if(entity->getNodeUniqueID() == selectedEntityId){
+                resolvedSelectedLightIndex = static_cast<int>(snapshot.lights.size());
             }
             snapshot.lights.push_back(light);
         }
@@ -491,6 +497,7 @@ void Scene::refreshRenderState(){
     }
 
     updateActiveCameraEffects(resolvedCameraEntity, componentManager);
+    selectedLightUploadIndex = resolvedSelectedLightIndex;
 
     renderSnapshotIndex.store(backIndex, std::memory_order_release);
 
@@ -845,10 +852,16 @@ void Scene::updateActiveCameraEffects(NeoECS::ECSEntity* activeCameraEntity, Neo
 
 void Scene::updateSceneLights(){
     auto screen = getMainScreen();
-    if(!screen) return;
+    if(!screen){
+        ShadowRenderer::SetSelectedLightIndex(-1);
+        return;
+    }
 
     auto env = screen->getEnvironment();
-    if(!env) return;
+    if(!env){
+        ShadowRenderer::SetSelectedLightIndex(-1);
+        return;
+    }
 
     auto& lightManager = env->getLightManager();
     lightManager.clearLights();
@@ -857,6 +870,13 @@ void Scene::updateSceneLights(){
     for(const auto& light : snapshot.lights){
         lightManager.addLight(light);
     }
+
+    const int uploadedCount = static_cast<int>(lightManager.getLightCount());
+    const int selectedIndex =
+        (selectedLightUploadIndex >= 0 && selectedLightUploadIndex < uploadedCount)
+            ? selectedLightUploadIndex
+            : -1;
+    ShadowRenderer::SetSelectedLightIndex(selectedIndex);
 }
 
 bool Scene::isMaterialTransparent(const std::shared_ptr<Material>& material) const{
@@ -1530,6 +1550,7 @@ void Scene::drawShadowsPass(){
         drawItem.mesh = item.mesh;
         drawItem.model = item.model;
         drawItem.material = item.material;
+        drawItem.enableBackfaceCulling = item.enableBackfaceCulling;
         drawItem.hasBounds = item.hasBounds;
         drawItem.boundsMin = item.boundsMin;
         drawItem.boundsMax = item.boundsMax;

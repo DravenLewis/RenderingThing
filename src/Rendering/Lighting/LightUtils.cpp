@@ -231,6 +231,7 @@ void LightUniformUploader::UploadLights(std::shared_ptr<ShaderProgram> program, 
         dst.shadow[0] = safeFloat(shadowData.shadowBias, 0.0025f);
         dst.shadow[1] = safeFloat(shadowData.shadowNormalBias, 0.005f);
         dst.shadow[2] = static_cast<float>(shadowData.cascadeCount);
+        dst.shadow[3] = static_cast<float>(Math3D::Clamp(src.shadowDebugMode, 0, 3));
 
         dst.cascadeSplits[0] = shadowData.cascadeSplits.x;
         dst.cascadeSplits[1] = shadowData.cascadeSplits.y;

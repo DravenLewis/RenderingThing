@@ -36,6 +36,7 @@ struct Light {
     float shadowNormalBias;
     float shadowStrength;
     float cascadeLambda;     // Directional CSM split blend: 0=linear, 1=logarithmic
+    int shadowDebugMode;     // 0=off,1=visibility,2=cascade index,3=projection bounds
     
     Light()
         : type(LightType::POINT),
@@ -52,7 +53,8 @@ struct Light {
           shadowBias(0.0025f),
           shadowNormalBias(0.005f),
           shadowStrength(1.0f),
-          cascadeLambda(0.82f)
+          cascadeLambda(0.82f),
+          shadowDebugMode(0)
     {}
     
     static Light CreatePointLight(

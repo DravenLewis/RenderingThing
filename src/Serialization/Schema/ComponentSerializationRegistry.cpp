@@ -952,6 +952,7 @@ bool registerDefaultLightSerializer(Serialization::ComponentSerializationRegistr
                    JsonUtils::MutObjAddFloat(doc, lightObj, "shadowNormalBias", component.light.shadowNormalBias) &&
                    JsonUtils::MutObjAddFloat(doc, lightObj, "cascadeLambda", component.light.cascadeLambda) &&
                    JsonUtils::MutObjAddFloat(doc, lightObj, "shadowStrength", component.light.shadowStrength) &&
+                   JsonUtils::MutObjAddInt(doc, lightObj, "shadowDebugMode", component.light.shadowDebugMode) &&
                    JsonUtils::MutObjAddBool(doc, payload, "syncTransform", component.syncTransform) &&
                    JsonUtils::MutObjAddBool(doc, payload, "syncDirection", component.syncDirection) &&
                    writeEditorComponentStateFields(component, doc, payload, error);
@@ -964,6 +965,7 @@ bool registerDefaultLightSerializer(Serialization::ComponentSerializationRegistr
             if(lightObj){
                 int type = static_cast<int>(component.light.type);
                 int shadowType = static_cast<int>(component.light.shadowType);
+                int shadowDebugMode = component.light.shadowDebugMode;
                 Math3D::Vec3 direction = component.light.direction;
 
                 JsonUtils::TryGetInt(lightObj, "type", type);
@@ -981,9 +983,11 @@ bool registerDefaultLightSerializer(Serialization::ComponentSerializationRegistr
                 JsonUtils::TryGetFloat(lightObj, "shadowNormalBias", component.light.shadowNormalBias);
                 JsonUtils::TryGetFloat(lightObj, "cascadeLambda", component.light.cascadeLambda);
                 JsonUtils::TryGetFloat(lightObj, "shadowStrength", component.light.shadowStrength);
+                JsonUtils::TryGetInt(lightObj, "shadowDebugMode", shadowDebugMode);
 
                 component.light.type = enumFromIntClamped(type, 0, 2, LightType::POINT);
                 component.light.shadowType = enumFromIntClamped(shadowType, 0, 2, ShadowType::Smooth);
+                component.light.shadowDebugMode = Math3D::Clamp(shadowDebugMode, 0, 3);
                 if(!std::isfinite(component.light.cascadeLambda)){
                     component.light.cascadeLambda = 0.82f;
                 }

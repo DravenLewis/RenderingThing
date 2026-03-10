@@ -12,6 +12,7 @@
 #include "Assets/Descriptors/ModelAsset.h"
 #include "Assets/Descriptors/SkyboxAsset.h"
 #include "Rendering/Materials/MaterialRegistry.h"
+#include "Rendering/Lighting/ShadowRenderer.h"
 #include "Foundation/Logging/Logbot.h"
 #include "Editor/Widgets/BoundsEditState.h"
 
@@ -1654,8 +1655,25 @@ void LightComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
             self->light.shadowType = static_cast<ShadowType>(shadowIndex);
         }
         ImGui::DragFloat("Shadow Bias", &self->light.shadowBias, 0.0005f, 0.0f, 0.01f, "%.6f");
-    ImGui::DragFloat("Shadow Normal Bias", &self->light.shadowNormalBias, 0.0005f, 0.0f, 0.01f, "%.6f");
-    ImGui::DragFloat("Shadow Strength", &self->light.shadowStrength, 0.01f, 0.0f, 1.0f);
+        ImGui::DragFloat("Shadow Normal Bias", &self->light.shadowNormalBias, 0.0005f, 0.0f, 0.01f, "%.6f");
+        ImGui::DragFloat("Shadow Strength", &self->light.shadowStrength, 0.01f, 0.0f, 1.0f);
+
+        const char* shadowDebugModes[] = {
+            "Off",
+            "Visibility",
+            "Cascade Index",
+            "Projection Bounds"
+        };
+        self->light.shadowDebugMode = Math3D::Clamp(self->light.shadowDebugMode, 0, IM_ARRAYSIZE(shadowDebugModes) - 1);
+        int shadowDebugMode = self->light.shadowDebugMode;
+        if(ImGui::Combo("Shadow Debug View", &shadowDebugMode, shadowDebugModes, IM_ARRAYSIZE(shadowDebugModes))){
+            self->light.shadowDebugMode = Math3D::Clamp(shadowDebugMode, 0, IM_ARRAYSIZE(shadowDebugModes) - 1);
+        }
+        if(ShadowRenderer::GetGlobalDebugOverrideEnabled()){
+            const char* globalModes[] = {"Visibility", "Cascade Index", "Projection Bounds"};
+            int globalIndex = Math3D::Clamp(ShadowRenderer::GetGlobalDebugOverrideMode() - 1, 0, IM_ARRAYSIZE(globalModes) - 1);
+            ImGui::TextDisabled("Overridden by Global Shadow Debug: %s", globalModes[globalIndex]);
+        }
 }
 
 void BoundsComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){

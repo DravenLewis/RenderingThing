@@ -25,6 +25,7 @@
 #include "Serialization/IO/PrefabIO.h"
 #include "Serialization/IO/SceneIO.h"
 #include "Serialization/Schema/ComponentSerializationRegistry.h"
+#include "Rendering/Lighting/ShadowRenderer.h"
 #include <glad/glad.h>
 #include <SDL3/SDL.h>
 #include "neoecs.hpp"
@@ -1952,6 +1953,34 @@ void EditorScene::drawToolbar(float width, float height){
         }
         if(ImGui::BeginMenu("View")){
             ImGui::MenuItem("Maximize On Play", nullptr, &maximizeOnPlay);
+            if(ImGui::BeginMenu("Scene")){
+                ImGui::MenuItem("Gizmos", nullptr, &showSceneGizmos);
+                ImGui::EndMenu();
+            }
+            if(ImGui::BeginMenu("Debug")){
+                if(ImGui::BeginMenu("Shadows")){
+                    bool shadowDebugEnabled = ShadowRenderer::GetGlobalDebugOverrideEnabled();
+                    if(ImGui::MenuItem("Debug Mode", nullptr, shadowDebugEnabled)){
+                        ShadowRenderer::SetGlobalDebugOverrideEnabled(!shadowDebugEnabled);
+                    }
+                    const char* debugModeLabels[] = {"Visibility", "Cascade Index", "Projection Bounds"};
+                    int globalMode = Math3D::Clamp(ShadowRenderer::GetGlobalDebugOverrideMode(), 1, 3);
+                    if(!shadowDebugEnabled){
+                        ImGui::BeginDisabled();
+                    }
+                    for(int i = 0; i < IM_ARRAYSIZE(debugModeLabels); ++i){
+                        const bool selected = (globalMode == (i + 1));
+                        if(ImGui::MenuItem(debugModeLabels[i], nullptr, selected)){
+                            ShadowRenderer::SetGlobalDebugOverrideMode(i + 1);
+                        }
+                    }
+                    if(!shadowDebugEnabled){
+                        ImGui::EndDisabled();
+                    }
+                    ImGui::EndMenu();
+                }
+                ImGui::EndMenu();
+            }
             ImGui::EndMenu();
         }
         ImGui::EndMenuBar();
@@ -2369,50 +2398,52 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
             return IM_COL32(r, g, b, a);
         };
 
-        // Always render helper icons for invisible scene objects while editing.
-        const auto& entities = ecs->getEntityManager()->getEntities();
-        for(const auto& entityPtr : entities){
-            auto* entity = entityPtr.get();
-            if(!entity){
-                continue;
-            }
-            auto* transformComp = components->getECSComponent<TransformComponent>(entity);
-            if(!transformComp){
-                continue;
-            }
-            auto* rendererComp = components->getECSComponent<MeshRendererComponent>(entity);
-            auto* cameraComp = components->getECSComponent<CameraComponent>(entity);
-            auto* lightComp = components->getECSComponent<LightComponent>(entity);
-            bool isSelected = (entity->getNodeUniqueID() == selectedEntityId);
-            Math3D::Vec3 worldPos = buildWorldMatrix(entity, components).getPosition();
-
-            if(cameraComp && cameraComp->camera && !isSelected){
-                drawBillboardIcon(drawList, worldPos, iconCamera, 56.0f, IM_COL32(255, 255, 255, 255));
-            }
-
-            if(lightComp && !isSelected){
-                PTexture icon = iconLightPoint;
-                if(lightComp->light.type == LightType::SPOT){
-                    icon = iconLightSpot;
-                }else if(lightComp->light.type == LightType::DIRECTIONAL){
-                    icon = iconLightDirectional;
+        if(showSceneGizmos){
+            // Render helper icons for invisible scene objects while editing.
+            const auto& entities = ecs->getEntityManager()->getEntities();
+            for(const auto& entityPtr : entities){
+                auto* entity = entityPtr.get();
+                if(!entity){
+                    continue;
                 }
-                if(icon){
-                    drawBillboardIcon(drawList, worldPos, icon, 56.0f, lightColorTint(lightComp->light.color));
+                auto* transformComp = components->getECSComponent<TransformComponent>(entity);
+                if(!transformComp){
+                    continue;
                 }
-            }
+                auto* rendererComp = components->getECSComponent<MeshRendererComponent>(entity);
+                auto* cameraComp = components->getECSComponent<CameraComponent>(entity);
+                auto* lightComp = components->getECSComponent<LightComponent>(entity);
+                bool isSelected = (entity->getNodeUniqueID() == selectedEntityId);
+                Math3D::Vec3 worldPos = buildWorldMatrix(entity, components).getPosition();
 
-            // Best-effort audio marker: if an entity is an editor-only helper with audio-style naming,
-            // show the audio billboard in the editor viewport.
-            if(iconAudio && !isSelected && !rendererComp && !cameraComp && !lightComp){
-                std::string lowerName = entity->getName();
-                std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(), [](unsigned char c){
-                    return (char)std::tolower(c);
-                });
-                if(lowerName.find("audio") != std::string::npos ||
-                   lowerName.find("sound") != std::string::npos ||
-                   lowerName.find("speaker") != std::string::npos){
-                    drawBillboardIcon(drawList, worldPos, iconAudio, 56.0f, IM_COL32(255, 255, 255, 255));
+                if(cameraComp && cameraComp->camera && !isSelected){
+                    drawBillboardIcon(drawList, worldPos, iconCamera, 56.0f, IM_COL32(255, 255, 255, 255));
+                }
+
+                if(lightComp && !isSelected){
+                    PTexture icon = iconLightPoint;
+                    if(lightComp->light.type == LightType::SPOT){
+                        icon = iconLightSpot;
+                    }else if(lightComp->light.type == LightType::DIRECTIONAL){
+                        icon = iconLightDirectional;
+                    }
+                    if(icon){
+                        drawBillboardIcon(drawList, worldPos, icon, 56.0f, lightColorTint(lightComp->light.color));
+                    }
+                }
+
+                // Best-effort audio marker: if an entity is an editor-only helper with audio-style naming,
+                // show the audio billboard in the editor viewport.
+                if(iconAudio && !isSelected && !rendererComp && !cameraComp && !lightComp){
+                    std::string lowerName = entity->getName();
+                    std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(), [](unsigned char c){
+                        return (char)std::tolower(c);
+                    });
+                    if(lowerName.find("audio") != std::string::npos ||
+                       lowerName.find("sound") != std::string::npos ||
+                       lowerName.find("speaker") != std::string::npos){
+                        drawBillboardIcon(drawList, worldPos, iconAudio, 56.0f, IM_COL32(255, 255, 255, 255));
+                    }
                 }
             }
         }
@@ -2809,7 +2840,7 @@ void EditorScene::drawBillboardIcon(ImDrawList* drawList,
     ImVec2 pmin(screen.x - half, screen.y - half);
     ImVec2 pmax(screen.x + half, screen.y + half);
     ImTextureID texId = (ImTextureID)(intptr_t)texture->getID();
-    drawList->AddImage(texId, pmin, pmax, ImVec2(0, 0), ImVec2(1, 1), tint);
+    drawList->AddImage(texId, pmin, pmax, ImVec2(0, 1), ImVec2(1, 0), tint);
 }
 
 void EditorScene::ensurePointLightBounds(NeoECS::ECSEntity* entity, float radius){
