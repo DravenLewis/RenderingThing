@@ -1,3 +1,8 @@
+/**
+ * @file src/Assets/Descriptors/ModelAsset.cpp
+ * @brief Implementation for ModelAsset.
+ */
+
 #include "Assets/Descriptors/ModelAsset.h"
 
 #include "Assets/Core/Asset.h"

@@ -1,3 +1,8 @@
+/**
+ * @file src/App/Demo/DefaultState.cpp
+ * @brief Implementation for DefaultState.
+ */
+
 #include "App/Demo/DefaultState.h"
 
 #include "Scene/Camera.h"

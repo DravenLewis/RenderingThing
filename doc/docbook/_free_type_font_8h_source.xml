@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__free_type_font_8h_source" xml:lang="en-US">
+<title>FreeTypeFont.h</title>
+<indexterm><primary>src/Rendering/Fonts/FreeTypeFont.h</primary></indexterm>
+Go to the documentation of this file.<programlisting linenumbering="unnumbered">1 
+5 
+6 <emphasis role="preprocessor">#ifndef&#32;FREETYPE_FONT_H</emphasis>
+7 <emphasis role="preprocessor">#define&#32;FREETYPE_FONT_H</emphasis>
+8 
+9 <emphasis role="preprocessor">#include&#32;&lt;ft2build.h&gt;</emphasis>&#32;<emphasis role="comment">//&#32;Free&#32;Type&#32;Headers.</emphasis>
+10 <emphasis role="preprocessor">#include&#32;FT_FREETYPE_H</emphasis>
+11 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__font_8h">Rendering/Fonts/Font.h</link>&quot;</emphasis>
+12 
+14 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_free_type_font_1af5cf9314662b0bb7501c2ad300314abf">FreeTypeFont</link>&#32;:&#32;<emphasis role="keyword">public</emphasis>&#32;<link linkend="_class_font_1a4e6a119206f505522100221c1fafde45">Font</link>&#32;{
+15 &#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+19 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_free_type_font_1af5cf9314662b0bb7501c2ad300314abf">FreeTypeFont</link>()&#32;:&#32;<link linkend="_class_font_1a4e6a119206f505522100221c1fafde45">Font</link>()&#32;{};
+20 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;
+21 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;Override&#32;the&#32;pure&#32;virtual&#32;functions&#32;from&#32;Base&#32;Font</emphasis>
+22 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_free_type_font_1ace8e8942ae61f4df9238bba96ec78b39">_initFont</link>()&#32;<emphasis role="keyword">override</emphasis>;
+23 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;drawText(std::string&#32;text,&#32;Math3D::Vec2&#32;position,&#32;PCamera&#32;camera,&#32;Color&#32;color,&#32;<emphasis role="keywordtype">bool</emphasis>&#32;useCache)&#32;<emphasis role="keyword">override</emphasis>;
+24 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;supportsQueuedDrawing()<emphasis role="keyword">&#32;const&#32;override&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;<emphasis role="keyword">true</emphasis>;&#32;}
+25 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;beginFrame(PCamera&#32;camera)&#32;<emphasis role="keyword">override</emphasis>;
+26 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;flushQueuedText(PCamera&#32;camera)&#32;<emphasis role="keyword">override</emphasis>;
+27 
+28 &#32;&#32;&#32;&#32;<emphasis role="keyword">private</emphasis>:
+30 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">struct&#32;</emphasis>DeferredBatch&#32;{
+31 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;uint32_t&#32;colorKey&#32;=&#32;0;
+32 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Color&#32;color&#32;=&#32;Color::WHITE;
+33 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::vector&lt;Vertex&gt;&#32;vertices;
+34 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::vector&lt;uint32_t&gt;&#32;indices;
+35 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;};
+36 
+37 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;DeferredBatch&amp;&#32;getOrCreateBatch(<emphasis role="keyword">const</emphasis>&#32;Color&amp;&#32;color);
+38 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;ModelPart&gt;&#32;transientTextPart;
+39 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::vector&lt;DeferredBatch&gt;&#32;deferredBatches;
+40 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;frameActive&#32;=&#32;<emphasis role="keyword">false</emphasis>;
+41 };
+42 
+43 <emphasis role="preprocessor">#endif</emphasis>
+</programlisting></section>

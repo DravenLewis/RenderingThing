@@ -1,0 +1,70 @@
+\doxysection{Shader\+Cache Struct Reference}
+\hypertarget{struct_shader_cache}{}\label{struct_shader_cache}\index{ShaderCache@{ShaderCache}}
+
+
+Holds data for \doxylink{struct_shader_cache}{Shader\+Cache}.  
+
+
+
+
+{\ttfamily \+\#include $<$Shader\+Program.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ \doxymbox{\hyperlink{struct_shader_cache_af5f1cbf4ab7956b32d7bd121781705d4}{get\+Or\+Compile}} (std::\+string name, std::\+string vtx="{}"{}, std::\+string frag="{}"{}, std::\+string geom="{}"{}, std::\+string tess="{}"{}, std::\+string compute="{}"{}, std::\+string task="{}"{}, std::\+string srtx="{}"{})
+\begin{DoxyCompactList}\small\item\em Returns a cached shader program, compiling and caching if missing. \end{DoxyCompactList}\item 
+\Hypertarget{struct_shader_cache_ae36ea2f2f11454ea3df20212e3fffd25}\label{struct_shader_cache_ae36ea2f2f11454ea3df20212e3fffd25} 
+void {\bfseries clear} ()
+\begin{DoxyCompactList}\small\item\em Clears the current state. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_shader_cache_a04d6ef8cb95a509dc1b03e65e031bf91}\label{struct_shader_cache_a04d6ef8cb95a509dc1b03e65e031bf91} 
+std::\+map$<$ std::\+string, std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ $>$ {\bfseries program\+Cache}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Holds data for \doxylink{struct_shader_cache}{Shader\+Cache}. 
+
+\label{doc-func-members}
+\Hypertarget{struct_shader_cache_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{struct_shader_cache_af5f1cbf4ab7956b32d7bd121781705d4}\index{ShaderCache@{ShaderCache}!getOrCompile@{getOrCompile}}
+\index{getOrCompile@{getOrCompile}!ShaderCache@{ShaderCache}}
+\doxysubsubsection{\texorpdfstring{getOrCompile()}{getOrCompile()}}
+{\footnotesize\ttfamily \label{struct_shader_cache_af5f1cbf4ab7956b32d7bd121781705d4} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ Shader\+Cache::\+get\+Or\+Compile (\begin{DoxyParamCaption}\item[{std::\+string}]{name}{, }\item[{std::\+string}]{vtx}{ = {\ttfamily "{}"{}}, }\item[{std::\+string}]{frag}{ = {\ttfamily "{}"{}}, }\item[{std::\+string}]{geom}{ = {\ttfamily "{}"{}}, }\item[{std::\+string}]{tess}{ = {\ttfamily "{}"{}}, }\item[{std::\+string}]{compute}{ = {\ttfamily "{}"{}}, }\item[{std::\+string}]{task}{ = {\ttfamily "{}"{}}, }\item[{std::\+string}]{srtx}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns a cached shader program, compiling and caching if missing. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Cache key for the shader program. \\
+\hline
+{\em vtx} & \doxylink{struct_vertex}{Vertex} shader source. \\
+\hline
+{\em frag} & Fragment shader source. \\
+\hline
+{\em geom} & Geometry shader source. \\
+\hline
+{\em tess} & Tessellation shader source. \\
+\hline
+{\em compute} & Compute shader source. \\
+\hline
+{\em task} & Task shader source. \\
+\hline
+{\em srtx} & Ray-\/trace shader source. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Shared pointer to a compiled shader program. 
+\end{DoxyReturn}
+
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Shaders/\+\doxymbox{\hyperlink{_shader_program_8h}{Shader\+Program.\+h}}\end{DoxyCompactItemize}

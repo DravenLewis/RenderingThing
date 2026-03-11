@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Textures/Texture.h
+ * @brief Declarations for Texture.
+ */
+
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
@@ -15,6 +20,7 @@ namespace Graphics { // Hollow Structure of the Graphics Class.
     }
 }
 
+/// @brief Represents the Texture type.
 class Texture{
     private:
         GLuint textureID;
@@ -24,6 +30,9 @@ class Texture{
         std::string sourceAssetRef;
     public:
 
+        /**
+         * @brief Constructs a new Texture instance.
+         */
         Texture() : textureID(0), width(0), height(0){};
         ~Texture();
         Texture(std::shared_ptr<Graphics::Image::Image> image, GLenum imageHint = GL_TEXTURE_2D);

@@ -1,0 +1,21 @@
+\doxysection{Light\+Utils.\+h}
+\hypertarget{_light_utils_8h_source}{}\label{_light_utils_8h_source}\index{src/Rendering/Lighting/LightUtils.h@{src/Rendering/Lighting/LightUtils.h}}
+\doxymbox{\hyperlink{_light_utils_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ LIGHT\_UTILS\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ LIGHT\_UTILS\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_light_8h}{Rendering/Lighting/Light.h}}"{}}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_shader_program_8h}{Rendering/Shaders/ShaderProgram.h}}"{}}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00014\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_light_uniform_uploader}{LightUniformUploader}}\ \{}
+\DoxyCodeLine{00015\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_light_uniform_uploader_a47d11f57dfb8557bd58dd6e9ca1cb51f}{UploadLights}}(std::shared\_ptr<ShaderProgram>\ program,\ \textcolor{keyword}{const}\ std::vector<Light>\&\ lights);}
+\DoxyCodeLine{00022\ \};}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ LIGHT\_UTILS\_H}}
+
+\end{DoxyCode}

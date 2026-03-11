@@ -1,0 +1,144 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_true_type_font" kind="class" language="C++" prot="public">
+    <compoundname>TrueTypeFont</compoundname>
+    <basecompoundref refid="class_font" prot="public" virt="non-virtual">Font</basecompoundref>
+    <includes refid="_s_t_b_true_type_font_8h" local="no">STBTrueTypeFont.h</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_true_type_font_1a16e2319f61337a12f284e8e0add161f3" prot="private" static="no" mutable="no">
+        <type>stbtt_packedchar</type>
+        <definition>stbtt_packedchar TrueTypeFont::cdata[96]</definition>
+        <argsstring>[96]</argsstring>
+        <name>cdata</name>
+        <qualifiedname>TrueTypeFont::cdata</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/STBTrueTypeFont.h" line="15" column="26" bodyfile="src/Rendering/Fonts/STBTrueTypeFont.h" bodystart="15" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_true_type_font_1ad32c45a5111d82794f1d8fe9d3a0f708" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>TrueTypeFont::TrueTypeFont</definition>
+        <argsstring>()</argsstring>
+        <name>TrueTypeFont</name>
+        <qualifiedname>TrueTypeFont::TrueTypeFont</qualifiedname>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_true_type_font" kindref="compound">TrueTypeFont</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/STBTrueTypeFont.h" line="20" column="9" bodyfile="src/Rendering/Fonts/STBTrueTypeFont.h" bodystart="20" bodyend="20"/>
+        <references refid="class_font_1a4e6a119206f505522100221c1fafde45" compoundref="_font_8h" startline="75" endline="75">Font::Font</references>
+      </memberdef>
+      <memberdef kind="function" id="class_true_type_font_1a4af92a8e28331e8a35e1624f98706944" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void TrueTypeFont::_initFont</definition>
+        <argsstring>() override</argsstring>
+        <name>_initFont</name>
+        <qualifiedname>TrueTypeFont::_initFont</qualifiedname>
+        <reimplements refid="class_font_1aa6b8da140518e4282bbe81e7033e0081">_initFont</reimplements>
+        <briefdescription>
+<para>Initializes font resources. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/STBTrueTypeFont.h" line="21" column="14" bodyfile="src/Rendering/Fonts/STBTrueTypeFont.cpp" bodystart="17" bodyend="68"/>
+      </memberdef>
+      <memberdef kind="function" id="class_true_type_font_1a988b328a7c02ab8509e054f9128c9884" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void TrueTypeFont::drawText</definition>
+        <argsstring>(std::string text, Math3D::Vec2 position, PCamera camera, Color color, bool useCache) override</argsstring>
+        <name>drawText</name>
+        <qualifiedname>TrueTypeFont::drawText</qualifiedname>
+        <reimplements refid="class_font_1abd1403ab126a898f00e431b3adde8f48">drawText</reimplements>
+        <param>
+          <type>std::string</type>
+          <declname>text</declname>
+        </param>
+        <param>
+          <type>Math3D::Vec2</type>
+          <declname>position</declname>
+        </param>
+        <param>
+          <type>PCamera</type>
+          <declname>camera</declname>
+        </param>
+        <param>
+          <type>Color</type>
+          <declname>color</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>useCache</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/STBTrueTypeFont.h" line="22" column="14" bodyfile="src/Rendering/Fonts/STBTrueTypeFont.cpp" bodystart="70" bodyend="143"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_true_type_font" kindref="compound">TrueTypeFont</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>Font</label>
+        <link refid="class_font"/>
+      </node>
+      <node id="1">
+        <label>TrueTypeFont</label>
+        <link refid="class_true_type_font"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>Font</label>
+        <link refid="class_font"/>
+      </node>
+      <node id="1">
+        <label>TrueTypeFont</label>
+        <link refid="class_true_type_font"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="src/Rendering/Fonts/STBTrueTypeFont.h" line="13" column="1" bodyfile="src/Rendering/Fonts/STBTrueTypeFont.h" bodystart="13" bodyend="23"/>
+    <listofallmembers>
+      <member refid="class_true_type_font_1a4af92a8e28331e8a35e1624f98706944" prot="public" virt="virtual"><scope>TrueTypeFont</scope><name>_initFont</name></member>
+      <member refid="class_font_1ae722d440cb9bf8ed62b1ce36b1ae1a73" prot="protected" virt="non-virtual"><scope>TrueTypeFont</scope><name>assetPtr</name></member>
+      <member refid="class_font_1a916aaa8940335189a855c32a9736388a" prot="public" virt="virtual"><scope>TrueTypeFont</scope><name>beginFrame</name></member>
+      <member refid="class_true_type_font_1a16e2319f61337a12f284e8e0add161f3" prot="private" virt="non-virtual"><scope>TrueTypeFont</scope><name>cdata</name></member>
+      <member refid="class_font_1afb3941e314ea743a47e9423bafa93385" prot="protected" virt="non-virtual"><scope>TrueTypeFont</scope><name>characters</name></member>
+      <member refid="class_font_1abf7846fb0e62fe8c5132bd67a2fc332a" prot="public" virt="non-virtual"><scope>TrueTypeFont</scope><name>clearCache</name></member>
+      <member refid="class_font_1a23554a9888274dac6143a7a206eb71ef" prot="public" virt="non-virtual"><scope>TrueTypeFont</scope><name>Create</name></member>
+      <member refid="class_true_type_font_1a988b328a7c02ab8509e054f9128c9884" prot="public" virt="virtual"><scope>TrueTypeFont</scope><name>drawText</name></member>
+      <member refid="class_font_1a535034c260677663264cd4971c89ebc2" prot="public" virt="virtual"><scope>TrueTypeFont</scope><name>flushQueuedText</name></member>
+      <member refid="class_font_1a4e6a119206f505522100221c1fafde45" prot="public" virt="non-virtual"><scope>TrueTypeFont</scope><name>Font</name></member>
+      <member refid="class_font_1a6707f3ecdb11b9a99892369650c80568" prot="public" virt="non-virtual"><scope>TrueTypeFont</scope><name>FontLogger</name></member>
+      <member refid="class_font_1a05386ef6c0908902bfd468c8cd03bf3a" prot="protected" virt="non-virtual"><scope>TrueTypeFont</scope><name>fontSize</name></member>
+      <member refid="class_font_1abe9fd046d6125b62151232808b64e855" prot="public" virt="non-virtual"><scope>TrueTypeFont</scope><name>getAssetPointer</name></member>
+      <member refid="class_font_1a3464ec0edc51ad004b5223c87c198136" prot="protected" virt="non-virtual"><scope>TrueTypeFont</scope><name>materialCachePtr</name></member>
+      <member refid="class_font_1a34353d7ac57dd55d339a3f360ecd780c" prot="protected" virt="non-virtual"><scope>TrueTypeFont</scope><name>meshCache</name></member>
+      <member refid="class_font_1a7993238290811753bb502c58a85a79d3" prot="public" virt="virtual"><scope>TrueTypeFont</scope><name>supportsQueuedDrawing</name></member>
+      <member refid="class_font_1a6443ae8ba782461ee9fb0ebfdb89980f" prot="protected" virt="non-virtual"><scope>TrueTypeFont</scope><name>textureAtlasPtr</name></member>
+      <member refid="class_true_type_font_1ad32c45a5111d82794f1d8fe9d3a0f708" prot="public" virt="non-virtual"><scope>TrueTypeFont</scope><name>TrueTypeFont</name></member>
+      <member refid="class_font_1aa6c4353c7fae81039c49b4a4f26086ff" prot="public" virt="virtual"><scope>TrueTypeFont</scope><name>~Font</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

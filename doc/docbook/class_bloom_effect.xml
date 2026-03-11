@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_bloom_effect" xml:lang="en-US">
+<title>BloomEffect Class Reference</title>
+<indexterm><primary>BloomEffect</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_bloom_effect">BloomEffect</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;ScreenEffects.h&gt;</computeroutput>
+</para>
+<para>Inheritance diagram for BloomEffect:    <informalfigure>
+        <mediaobject>
+            <imageobject>
+                <imagedata width="50%" align="center" valign="middle" scalefit="0" fileref="class_bloom_effect.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+    </informalfigure>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_bloom_effect_1ae76d6ede7ad9201f6bf8f4c9927c827b"/><emphasis role="strong">BloomEffect</emphasis> ()</para>
+
+<para>Constructs a new <link linkend="_class_bloom_effect">BloomEffect</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_bloom_effect_1ae4699677bdf89a388fab1912b1abcf67"/><emphasis role="strong">~BloomEffect</emphasis> () override</para>
+
+<para>Destroys this <link linkend="_class_bloom_effect">BloomEffect</link> instance. </para>
+</listitem>
+            <listitem><para>bool <link linkend="_class_bloom_effect_1a0406096e8d58f6e752976df0121dfd64">apply</link> (PTexture tex, PTexture, PFrameBuffer outFbo, std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; quad) override</para>
+
+<para>Applies current settings. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+Public Member Functions inherited from <link linkend="_class_graphics_1_1_post_processing_1_1_post_processing_effect">Graphics::PostProcessing::PostProcessingEffect</link>        <itemizedlist>
+            <listitem><para>virtual <emphasis role="strong">~PostProcessingEffect</emphasis> ()=default</para>
+
+<para>Destroys this <link linkend="_class_graphics_1_1_post_processing_1_1_post_processing_effect">PostProcessingEffect</link> instance. </para>
+</listitem>
+        </itemizedlist>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>static std::shared_ptr&lt; <link linkend="_class_bloom_effect">BloomEffect</link> &gt; <link linkend="_class_bloom_effect_1a3e0a4cd9ff40a8e0caa73d9603299e44">New</link> ()</para>
+
+<para>Creates a new object. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_bloom_effect_1a0be8556c8edebb4c6c0e09fbcf65be79"/>bool <emphasis role="strong">adaptiveBloom</emphasis> = false</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_bloom_effect_1ace8000ba288ba6ca8601c87523b36a8b"/>float <emphasis role="strong">threshold</emphasis> = 0.75f</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_bloom_effect_1a8f8b60469c5920fe6ee2dab335ca3990"/>float <emphasis role="strong">softKnee</emphasis> = 0.5f</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_bloom_effect_1a06b4b4bb24f13de018ed7e4780e79c96"/>float <emphasis role="strong">intensity</emphasis> = 0.65f</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_bloom_effect_1ab9eb15f7ed03d8128b0824d5143f9553"/>float <emphasis role="strong">radiusPx</emphasis> = 6.0f</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_bloom_effect_1ac72dcff5e7ae1a3c73bcbbb42e5deaed"/>int <emphasis role="strong">sampleCount</emphasis> = 8</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_bloom_effect_1af77398b019a2c45daecb17c0ffdc3caa"/>Math3D::Vec3 <emphasis role="strong">tint</emphasis> = Math3D::Vec3(1.0f, 1.0f, 1.0f)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_bloom_effect_1a15792ccc1a754c32a07d9dcfd41e0f13"/>float <emphasis role="strong">autoExposureIntensityScale</emphasis> = 1.0f</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_bloom_effect_1ac007ae8c56a320f5b58899480f17771e"/>float <emphasis role="strong">autoExposureThresholdScale</emphasis> = 1.0f</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_bloom_effect">BloomEffect</link> type. </para>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_bloom_effect_1a0406096e8d58f6e752976df0121dfd64"/><section>
+    <title>apply()</title>
+<indexterm><primary>apply</primary><secondary>BloomEffect</secondary></indexterm>
+<indexterm><primary>BloomEffect</primary><secondary>apply</secondary></indexterm>
+<para><computeroutput>bool BloomEffect::apply (PTexture tex, PTexture , PFrameBuffer outFbo, std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; quad)<computeroutput>[inline]</computeroutput>, <computeroutput>[override]</computeroutput>, <computeroutput>[virtual]</computeroutput></computeroutput></para><para>
+
+<para>Applies current settings. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>tex</entry><entry>
+<para>Value for tex. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>PTexture</entry><entry>
+<para>Value for p texture. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>outFbo</entry><entry>
+<para>Output value for fbo. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>quad</entry><entry>
+<para>Value for quad. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>True when the operation succeeds; otherwise false. </para>
+</formalpara>
+</para>
+<para>
+Implements <link linkend="_class_graphics_1_1_post_processing_1_1_post_processing_effect_1a75b0263b1e53943ceb4f13d4aad0f5e6">Graphics::PostProcessing::PostProcessingEffect</link>.</para>
+</section>
+<anchor xml:id="_class_bloom_effect_1a3e0a4cd9ff40a8e0caa73d9603299e44"/><section>
+    <title>New()</title>
+<indexterm><primary>New</primary><secondary>BloomEffect</secondary></indexterm>
+<indexterm><primary>BloomEffect</primary><secondary>New</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_class_bloom_effect">BloomEffect</link> &gt; BloomEffect::New ( )<computeroutput>[inline]</computeroutput>, <computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Creates a new object. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this class was generated from the following file:</para>
+src/Rendering/PostFX/<link linkend="__screen_effects_8h">ScreenEffects.h</link></section>
+</section>

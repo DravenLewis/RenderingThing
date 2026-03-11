@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_uniform" xml:lang="en-US">
+<title>Uniform&lt; T &gt; Class Template Reference</title>
+<indexterm><primary>Uniform&lt; T &gt;</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_uniform">Uniform</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;ShaderProgram.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_uniform_1a9daad155d7bb1f986b82ca5a7ba22857"/><emphasis role="strong">Uniform</emphasis> ()=default</para>
+
+<para>Constructs a new <link linkend="_class_uniform">Uniform</link> instance. </para>
+</listitem>
+            <listitem><para><link linkend="_class_uniform_1ae5fde7a7bdd68515197cf9fe27e9320b">Uniform</link> (const T &amp;v)</para>
+
+<para>Constructs a new <link linkend="_class_uniform">Uniform</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_uniform_1a02ce7879e904bdc2abbe387b2004f7cf"/>void <emphasis role="strong">set</emphasis> (const T &amp;v)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_uniform_1a7fb2b5d743df511474cbc2b2e8251956"/>const T &amp; <emphasis role="strong">get</emphasis> () const</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+<simplesect><title>template&lt;typename T&gt;<?linebreak?>class Uniform&lt; T &gt;</title></simplesect>
+
+<para>Represents the <link linkend="_class_uniform">Uniform</link> type. </para>
+</section>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_class_uniform_1ae5fde7a7bdd68515197cf9fe27e9320b"/><section>
+    <title>Uniform()</title>
+<indexterm><primary>Uniform</primary><secondary>Uniform&lt; T &gt;</secondary></indexterm>
+<indexterm><primary>Uniform&lt; T &gt;</primary><secondary>Uniform</secondary></indexterm>
+<computeroutput>template&lt;typename T&gt; </computeroutput><para><computeroutput><link linkend="_class_uniform">Uniform</link>&lt; T &gt;::Uniform (const T &amp; v)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Constructs a new <link linkend="_class_uniform">Uniform</link> instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>v</entry><entry>
+<para>Value for v. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<para>
+The documentation for this class was generated from the following file:</para>
+src/Rendering/Shaders/<link linkend="__shader_program_8h">ShaderProgram.h</link></section>
+</section>

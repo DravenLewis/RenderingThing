@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__s_t_b_true_type_font_8h_source" xml:lang="en-US">
+<title>STBTrueTypeFont.h</title>
+<indexterm><primary>src/Rendering/Fonts/STBTrueTypeFont.h</primary></indexterm>
+Go to the documentation of this file.<programlisting linenumbering="unnumbered">1 
+5 
+6 <emphasis role="preprocessor">#ifndef&#32;STB_TTF_H</emphasis>
+7 <emphasis role="preprocessor">#define&#32;STB_TTF_H</emphasis>
+8 
+9 <emphasis role="preprocessor">#include&#32;&quot;STB/stb_truetype.h&quot;</emphasis>&#32;<emphasis role="comment">//&#32;STB&#32;Headers.</emphasis>
+10 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__font_8h">Rendering/Fonts/Font.h</link>&quot;</emphasis>
+11 
+13 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_true_type_font_1ad32c45a5111d82794f1d8fe9d3a0f708">TrueTypeFont</link>&#32;:&#32;<emphasis role="keyword">public</emphasis>&#32;<link linkend="_class_font_1a4e6a119206f505522100221c1fafde45">Font</link>{
+14 &#32;&#32;&#32;&#32;<emphasis role="keyword">private</emphasis>:
+15 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;stbtt_packedchar&#32;cdata[96];
+16 &#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+20 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_true_type_font_1ad32c45a5111d82794f1d8fe9d3a0f708">TrueTypeFont</link>()&#32;:&#32;<link linkend="_class_font_1a4e6a119206f505522100221c1fafde45">Font</link>()&#32;{};
+21 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_true_type_font_1a4af92a8e28331e8a35e1624f98706944">_initFont</link>()&#32;<emphasis role="keyword">override</emphasis>;
+22 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;drawText(std::string&#32;text,&#32;Math3D::Vec2&#32;position,&#32;PCamera&#32;camera,&#32;Color&#32;color,&#32;<emphasis role="keywordtype">bool</emphasis>&#32;useCache)&#32;<emphasis role="keyword">override</emphasis>;
+23 };
+24 
+25 
+26 <emphasis role="preprocessor">#endif&#32;</emphasis><emphasis role="comment">//STB_TTF_H</emphasis>
+</programlisting></section>

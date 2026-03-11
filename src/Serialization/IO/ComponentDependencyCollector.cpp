@@ -1,3 +1,8 @@
+/**
+ * @file src/Serialization/IO/ComponentDependencyCollector.cpp
+ * @brief Implementation for ComponentDependencyCollector.
+ */
+
 #include "Serialization/IO/ComponentDependencyCollector.h"
 
 #include "ECS/Core/ECSComponents.h"

@@ -1,0 +1,115 @@
+.TH "ModelPartFactory" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ModelPartFactory \- Holds data for \fBModelPartFactory\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ModelPart\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBModelPartFactory\fP ()=default"
+.br
+.RI "Constructs a new \fBModelPartFactory\fP instance\&. "
+.ti -1c
+.RI "\fBModelPartFactory\fP & \fBaddVertex\fP (\fBVertex\fP vtx, int *index=nullptr)"
+.br
+.RI "Adds vertex\&. "
+.ti -1c
+.RI "\fBModelPartFactory\fP & \fBdefineFace\fP (int vtx1, int vtx2, int vtx3, int vtx4=\-1)"
+.br
+.RI "Adds a face definition to the model part\&. "
+.ti -1c
+.RI "std::shared_ptr< \fBModelPart\fP > \fBassemble\fP ()"
+.br
+.RI "Builds a model part from accumulated data\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBModelPartFactory\fP \fBCreate\fP (std::shared_ptr< \fBMaterial\fP > material)"
+.br
+.RI "Creates a new object\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Holds data for \fBModelPartFactory\fP\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBModelPartFactory\fP & ModelPartFactory::addVertex (\fBVertex\fP vtx, int * index = \fRnullptr\fP)"
+
+.PP
+Adds vertex\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvtx\fP Value for vtx\&. 
+.br
+\fIindex\fP Identifier or index value\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "std::shared_ptr< \fBModelPart\fP > ModelPartFactory::assemble ()"
+
+.PP
+Builds a model part from accumulated data\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+.SS "\fBModelPartFactory\fP ModelPartFactory::Create (std::shared_ptr< \fBMaterial\fP > material)\fR [static]\fP"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImaterial\fP Value for material\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Result of this operation\&. 
+.RE
+.PP
+
+.SS "\fBModelPartFactory\fP & ModelPartFactory::defineFace (int vtx1, int vtx2, int vtx3, int vtx4 = \fR\-1\fP)"
+
+.PP
+Adds a face definition to the model part\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvtx1\fP Value for vtx 1\&. 
+.br
+\fIvtx2\fP Value for vtx 2\&. 
+.br
+\fIvtx3\fP Value for vtx 3\&. 
+.br
+\fIvtx4\fP Value for vtx 4\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

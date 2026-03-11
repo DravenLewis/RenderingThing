@@ -1,0 +1,332 @@
+.TH "Graphics2D" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Graphics2D \- Represents the \fBGraphics2D\fP type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <Graphics2D\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBGraphics2D\fP (PScreen screenContext)"
+.br
+.RI "Constructs a new \fBGraphics2D\fP instance\&. "
+.ti -1c
+.RI "void \fBresize\fP (int w, int h)"
+.br
+.ti -1c
+.RI "void \fBbegin\fP ()"
+.br
+.RI "Begins a 2D drawing batch\&. "
+.ti -1c
+.RI "void \fBend\fP ()"
+.br
+.RI "Ends the current 2D drawing batch\&. "
+.ti -1c
+.RI "\fBGraphicsContext\fP & \fBgetContext\fP ()"
+.br
+.RI "Returns the context\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBSetForegroundColor\fP (\fBGraphics2D\fP &graphics, const Color &foregroundColor=Color::WHITE)"
+.br
+.ti -1c
+.RI "static void \fBSetBackgroundColor\fP (\fBGraphics2D\fP &graphics, const Color &backgroundColor=Color::BLACK)"
+.br
+.RI "Sets the background color\&. "
+.ti -1c
+.RI "static void \fBSetStrokeWidth\fP (\fBGraphics2D\fP &graphics, float width=1\&.0f)"
+.br
+.RI "Sets the stroke width\&. "
+.ti -1c
+.RI "static void \fBSetFontSize\fP (\fBGraphics2D\fP &graphics, float size=1\&.0f)"
+.br
+.RI "Sets the font size\&. "
+.ti -1c
+.RI "static void \fBSetFont\fP (\fBGraphics2D\fP &graphics, PFont font)"
+.br
+.RI "Sets the font\&. "
+.ti -1c
+.RI "static void \fBDrawLine\fP (\fBGraphics2D\fP &graphics, float x1, float y1, float x2, float y2)"
+.br
+.RI "Draws line\&. "
+.ti -1c
+.RI "static void \fBDrawRect\fP (\fBGraphics2D\fP &graphics, float x, float y, float w, float h)"
+.br
+.RI "Draws rect\&. "
+.ti -1c
+.RI "static void \fBFillRect\fP (\fBGraphics2D\fP &graphics, float x, float y, float w, float h)"
+.br
+.RI "Fills a rectangle\&. "
+.ti -1c
+.RI "static void \fBFillTriangle\fP (\fBGraphics2D\fP &graphics, float x1, float y1, float x2, float y2, float x3, float y3)"
+.br
+.RI "Fills a triangle\&. "
+.ti -1c
+.RI "static void \fBDrawEllipse\fP (\fBGraphics2D\fP &graphics, float x, float y, float w, float h)"
+.br
+.RI "Draws ellipse\&. "
+.ti -1c
+.RI "static void \fBFillEllipse\fP (\fBGraphics2D\fP &graphics, float x, float y, float w, float h)"
+.br
+.RI "Fills an ellipse\&. "
+.ti -1c
+.RI "static void \fBDrawImage\fP (\fBGraphics2D\fP &graphics, PTexture tex, float x, float y, float w=\-1, float h=\-1)"
+.br
+.RI "Draws image\&. "
+.ti -1c
+.RI "static void \fBDrawString\fP (\fBGraphics2D\fP &graphics, std::string text, float x, float y, bool useCache=true)"
+.br
+.RI "Draws string\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the \fBGraphics2D\fP type\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Graphics2D::Graphics2D (PScreen screenContext)"
+
+.PP
+Constructs a new \fBGraphics2D\fP instance\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIscreenContext\fP Value for screen context\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void Graphics2D::DrawEllipse (\fBGraphics2D\fP & graphics, float x, float y, float w, float h)\fR [static]\fP"
+
+.PP
+Draws ellipse\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIgraphics\fP Value for graphics\&. 
+.br
+\fIx\fP Spatial value used by this operation\&. 
+.br
+\fIy\fP Spatial value used by this operation\&. 
+.br
+\fIw\fP Value for w\&. 
+.br
+\fIh\fP Value for h\&. 
+.RE
+.PP
+
+.SS "void Graphics2D::DrawImage (\fBGraphics2D\fP & graphics, PTexture tex, float x, float y, float w = \fR\-1\fP, float h = \fR\-1\fP)\fR [static]\fP"
+
+.PP
+Draws image\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIgraphics\fP Value for graphics\&. 
+.br
+\fItex\fP Value for tex\&. 
+.br
+\fIx\fP Spatial value used by this operation\&. 
+.br
+\fIy\fP Spatial value used by this operation\&. 
+.br
+\fIw\fP Value for w\&. 
+.br
+\fIh\fP Value for h\&. 
+.RE
+.PP
+
+.SS "void Graphics2D::DrawLine (\fBGraphics2D\fP & graphics, float x1, float y1, float x2, float y2)\fR [static]\fP"
+
+.PP
+Draws line\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIgraphics\fP Value for graphics\&. 
+.br
+\fIx1\fP Value for x 1\&. 
+.br
+\fIy1\fP Value for y 1\&. 
+.br
+\fIx2\fP Value for x 2\&. 
+.br
+\fIy2\fP Value for y 2\&. 
+.RE
+.PP
+
+.SS "void Graphics2D::DrawRect (\fBGraphics2D\fP & graphics, float x, float y, float w, float h)\fR [static]\fP"
+
+.PP
+Draws rect\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIgraphics\fP Value for graphics\&. 
+.br
+\fIx\fP Spatial value used by this operation\&. 
+.br
+\fIy\fP Spatial value used by this operation\&. 
+.br
+\fIw\fP Value for w\&. 
+.br
+\fIh\fP Value for h\&. 
+.RE
+.PP
+
+.SS "void Graphics2D::DrawString (\fBGraphics2D\fP & graphics, std::string text, float x, float y, bool useCache = \fRtrue\fP)\fR [static]\fP"
+
+.PP
+Draws string\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIgraphics\fP Value for graphics\&. 
+.br
+\fItext\fP Value for text\&. 
+.br
+\fIx\fP Spatial value used by this operation\&. 
+.br
+\fIy\fP Spatial value used by this operation\&. 
+.br
+\fIuseCache\fP Flag controlling use cache\&. 
+.RE
+.PP
+
+.SS "void Graphics2D::FillEllipse (\fBGraphics2D\fP & graphics, float x, float y, float w, float h)\fR [static]\fP"
+
+.PP
+Fills an ellipse\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIgraphics\fP Value for graphics\&. 
+.br
+\fIx\fP Spatial value used by this operation\&. 
+.br
+\fIy\fP Spatial value used by this operation\&. 
+.br
+\fIw\fP Value for w\&. 
+.br
+\fIh\fP Value for h\&. 
+.RE
+.PP
+
+.SS "void Graphics2D::FillRect (\fBGraphics2D\fP & graphics, float x, float y, float w, float h)\fR [static]\fP"
+
+.PP
+Fills a rectangle\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIgraphics\fP Value for graphics\&. 
+.br
+\fIx\fP Spatial value used by this operation\&. 
+.br
+\fIy\fP Spatial value used by this operation\&. 
+.br
+\fIw\fP Value for w\&. 
+.br
+\fIh\fP Value for h\&. 
+.RE
+.PP
+
+.SS "void Graphics2D::FillTriangle (\fBGraphics2D\fP & graphics, float x1, float y1, float x2, float y2, float x3, float y3)\fR [static]\fP"
+
+.PP
+Fills a triangle\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIgraphics\fP Value for graphics\&. 
+.br
+\fIx1\fP Value for x 1\&. 
+.br
+\fIy1\fP Value for y 1\&. 
+.br
+\fIx2\fP Value for x 2\&. 
+.br
+\fIy2\fP Value for y 2\&. 
+.br
+\fIx3\fP Value for x 3\&. 
+.br
+\fIy3\fP Value for y 3\&. 
+.RE
+.PP
+
+.SS "\fBGraphicsContext\fP & Graphics2D::getContext ()"
+
+.PP
+Returns the context\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "void Graphics2D::SetBackgroundColor (\fBGraphics2D\fP & graphics, const Color & backgroundColor = \fRColor::BLACK\fP)\fR [static]\fP"
+
+.PP
+Sets the background color\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIgraphics\fP Value for graphics\&. 
+.br
+\fIbackgroundColor\fP Color value\&. 
+.RE
+.PP
+
+.SS "void Graphics2D::SetFont (\fBGraphics2D\fP & graphics, PFont font)\fR [static]\fP"
+
+.PP
+Sets the font\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIgraphics\fP Value for graphics\&. 
+.br
+\fIfont\fP Value for font\&. 
+.RE
+.PP
+
+.SS "void Graphics2D::SetFontSize (\fBGraphics2D\fP & graphics, float size = \fR1\&.0f\fP)\fR [static]\fP"
+
+.PP
+Sets the font size\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIgraphics\fP Value for graphics\&. 
+.br
+\fIsize\fP Number of elements or bytes\&. 
+.RE
+.PP
+
+.SS "void Graphics2D::SetStrokeWidth (\fBGraphics2D\fP & graphics, float width = \fR1\&.0f\fP)\fR [static]\fP"
+
+.PP
+Sets the stroke width\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIgraphics\fP Value for graphics\&. 
+.br
+\fIwidth\fP Dimension value\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

@@ -1,0 +1,122 @@
+\doxysection{Bloom\+Effect Class Reference}
+\hypertarget{class_bloom_effect}{}\label{class_bloom_effect}\index{BloomEffect@{BloomEffect}}
+
+
+Represents the \doxylink{class_bloom_effect}{Bloom\+Effect} type.  
+
+
+
+
+{\ttfamily \+\#include $<$Screen\+Effects.\+h$>$}
+
+Inheritance diagram for Bloom\+Effect:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_bloom_effect}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_bloom_effect_ae76d6ede7ad9201f6bf8f4c9927c827b}\label{class_bloom_effect_ae76d6ede7ad9201f6bf8f4c9927c827b} 
+{\bfseries Bloom\+Effect} ()
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_bloom_effect}{Bloom\+Effect} instance. \end{DoxyCompactList}\item 
+\Hypertarget{class_bloom_effect_ae4699677bdf89a388fab1912b1abcf67}\label{class_bloom_effect_ae4699677bdf89a388fab1912b1abcf67} 
+{\bfseries \texorpdfstring{$\sim$}{\string~}\+Bloom\+Effect} () override
+\begin{DoxyCompactList}\small\item\em Destroys this \doxylink{class_bloom_effect}{Bloom\+Effect} instance. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{class_bloom_effect_a0406096e8d58f6e752976df0121dfd64}{apply}} (PTexture tex, PTexture, PFrame\+Buffer out\+Fbo, std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$ quad) override
+\begin{DoxyCompactList}\small\item\em Applies current settings. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{class_graphics_1_1_post_processing_1_1_post_processing_effect}{Graphics::\+\+Post\+Processing::\+\+Post\+Processing\+Effect}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+Post\+Processing\+Effect} ()=default
+\begin{DoxyCompactList}\small\item\em Destroys this \doxylink{class_graphics_1_1_post_processing_1_1_post_processing_effect}{Post\+Processing\+Effect} instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_bloom_effect}{Bloom\+Effect}} $>$ \doxymbox{\hyperlink{class_bloom_effect_a3e0a4cd9ff40a8e0caa73d9603299e44}{New}} ()
+\begin{DoxyCompactList}\small\item\em Creates a new object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_bloom_effect_a0be8556c8edebb4c6c0e09fbcf65be79}\label{class_bloom_effect_a0be8556c8edebb4c6c0e09fbcf65be79} 
+bool {\bfseries adaptive\+Bloom} = false
+\item 
+\Hypertarget{class_bloom_effect_ace8000ba288ba6ca8601c87523b36a8b}\label{class_bloom_effect_ace8000ba288ba6ca8601c87523b36a8b} 
+float {\bfseries threshold} = 0.\+75f
+\item 
+\Hypertarget{class_bloom_effect_a8f8b60469c5920fe6ee2dab335ca3990}\label{class_bloom_effect_a8f8b60469c5920fe6ee2dab335ca3990} 
+float {\bfseries soft\+Knee} = 0.\+5f
+\item 
+\Hypertarget{class_bloom_effect_a06b4b4bb24f13de018ed7e4780e79c96}\label{class_bloom_effect_a06b4b4bb24f13de018ed7e4780e79c96} 
+float {\bfseries intensity} = 0.\+65f
+\item 
+\Hypertarget{class_bloom_effect_ab9eb15f7ed03d8128b0824d5143f9553}\label{class_bloom_effect_ab9eb15f7ed03d8128b0824d5143f9553} 
+float {\bfseries radius\+Px} = 6.\+0f
+\item 
+\Hypertarget{class_bloom_effect_ac72dcff5e7ae1a3c73bcbbb42e5deaed}\label{class_bloom_effect_ac72dcff5e7ae1a3c73bcbbb42e5deaed} 
+int {\bfseries sample\+Count} = 8
+\item 
+\Hypertarget{class_bloom_effect_af77398b019a2c45daecb17c0ffdc3caa}\label{class_bloom_effect_af77398b019a2c45daecb17c0ffdc3caa} 
+Math3\+D::\+\+Vec3 {\bfseries tint} = Math3\+D::\+\+Vec3(1.\+0f, 1.\+0f, 1.\+0f)
+\item 
+\Hypertarget{class_bloom_effect_a15792ccc1a754c32a07d9dcfd41e0f13}\label{class_bloom_effect_a15792ccc1a754c32a07d9dcfd41e0f13} 
+float {\bfseries auto\+Exposure\+Intensity\+Scale} = 1.\+0f
+\item 
+\Hypertarget{class_bloom_effect_ac007ae8c56a320f5b58899480f17771e}\label{class_bloom_effect_ac007ae8c56a320f5b58899480f17771e} 
+float {\bfseries auto\+Exposure\+Threshold\+Scale} = 1.\+0f
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the \doxylink{class_bloom_effect}{Bloom\+Effect} type. 
+
+\label{doc-func-members}
+\Hypertarget{class_bloom_effect_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_bloom_effect_a0406096e8d58f6e752976df0121dfd64}\index{BloomEffect@{BloomEffect}!apply@{apply}}
+\index{apply@{apply}!BloomEffect@{BloomEffect}}
+\doxysubsubsection{\texorpdfstring{apply()}{apply()}}
+{\footnotesize\ttfamily \label{class_bloom_effect_a0406096e8d58f6e752976df0121dfd64} 
+bool Bloom\+Effect::\+apply (\begin{DoxyParamCaption}\item[{PTexture}]{tex}{, }\item[{PTexture}]{}{, }\item[{PFrame\+Buffer}]{out\+Fbo}{, }\item[{std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$}]{quad}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Applies current settings. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tex} & Value for tex. \\
+\hline
+{\em PTexture} & Value for p texture. \\
+\hline
+{\em out\+Fbo} & Output value for fbo. \\
+\hline
+{\em quad} & Value for quad. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True when the operation succeeds; otherwise false. 
+\end{DoxyReturn}
+
+
+Implements \doxymbox{\hyperlink{class_graphics_1_1_post_processing_1_1_post_processing_effect_a75b0263b1e53943ceb4f13d4aad0f5e6}{Graphics::\+\+Post\+Processing::\+\+Post\+Processing\+Effect}}.
+
+\Hypertarget{class_bloom_effect_a3e0a4cd9ff40a8e0caa73d9603299e44}\index{BloomEffect@{BloomEffect}!New@{New}}
+\index{New@{New}!BloomEffect@{BloomEffect}}
+\doxysubsubsection{\texorpdfstring{New()}{New()}}
+{\footnotesize\ttfamily \label{class_bloom_effect_a3e0a4cd9ff40a8e0caa73d9603299e44} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_bloom_effect}{Bloom\+Effect}} $>$ Bloom\+Effect::\+\+New (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Creates a new object. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the resulting object. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Post\+FX/\+\doxymbox{\hyperlink{_screen_effects_8h}{Screen\+Effects.\+h}}\end{DoxyCompactItemize}

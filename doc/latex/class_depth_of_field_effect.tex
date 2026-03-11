@@ -1,0 +1,278 @@
+\doxysection{Depth\+Of\+Field\+Effect Class Reference}
+\hypertarget{class_depth_of_field_effect}{}\label{class_depth_of_field_effect}\index{DepthOfFieldEffect@{DepthOfFieldEffect}}
+
+
+Represents the \doxylink{class_depth_of_field_effect}{Depth\+Of\+Field\+Effect} type.  
+
+
+
+
+{\ttfamily \+\#include $<$Screen\+Effects.\+h$>$}
+
+Inheritance diagram for Depth\+Of\+Field\+Effect:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_depth_of_field_effect}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_depth_of_field_effect_a156dc1b753fbf841b0f8176a26d58b45}\label{class_depth_of_field_effect_a156dc1b753fbf841b0f8176a26d58b45} 
+{\bfseries Depth\+Of\+Field\+Effect} ()
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_depth_of_field_effect}{Depth\+Of\+Field\+Effect} instance. \end{DoxyCompactList}\item 
+\Hypertarget{class_depth_of_field_effect_a71ff3039585ef902e8c5325d9f2c8543}\label{class_depth_of_field_effect_a71ff3039585ef902e8c5325d9f2c8543} 
+{\bfseries \texorpdfstring{$\sim$}{\string~}\+Depth\+Of\+Field\+Effect} () override=default
+\begin{DoxyCompactList}\small\item\em Destroys this \doxylink{class_depth_of_field_effect}{Depth\+Of\+Field\+Effect} instance. \end{DoxyCompactList}\item 
+float \doxymbox{\hyperlink{class_depth_of_field_effect_a89866922b7bfdc7e1b39cd339996afbc}{get\+Resolved\+Focus\+Distance}} () const
+\begin{DoxyCompactList}\small\item\em Returns the resolved focus distance. \end{DoxyCompactList}\item 
+float \doxymbox{\hyperlink{class_depth_of_field_effect_a3b3084c5e7f4fbc0acc22c2d407cba19}{get\+Resolved\+Focus\+Range}} () const
+\begin{DoxyCompactList}\small\item\em Returns the resolved focus range. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{class_depth_of_field_effect_a2b6c470cc2298d4e7f9638ab02fd6339}{get\+Debug\+Adaptive\+Center\+Valid}} () const
+\begin{DoxyCompactList}\small\item\em Returns the debug adaptive center valid. \end{DoxyCompactList}\item 
+float \doxymbox{\hyperlink{class_depth_of_field_effect_a0702ba093291383aec8a394bd58b4da3}{get\+Debug\+Adaptive\+Center\+Distance}} () const
+\begin{DoxyCompactList}\small\item\em Returns the debug adaptive center distance. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{class_depth_of_field_effect_a00464f8858539d0013ea8e9de66f7505}{get\+Debug\+Adaptive\+Ray\+Valid}} () const
+\begin{DoxyCompactList}\small\item\em Returns the debug adaptive ray valid. \end{DoxyCompactList}\item 
+float \doxymbox{\hyperlink{class_depth_of_field_effect_afb17fd27b66d9a68d9cc46d2fbc71f08}{get\+Debug\+Adaptive\+Ray\+Distance}} () const
+\begin{DoxyCompactList}\small\item\em Returns the debug adaptive ray distance. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{class_depth_of_field_effect_a47ced74a994feca82c1628689e9f8cc0}{get\+Debug\+Adaptive\+Used\+Fallback}} () const
+\begin{DoxyCompactList}\small\item\em Returns the debug adaptive used fallback. \end{DoxyCompactList}\item 
+float \doxymbox{\hyperlink{class_depth_of_field_effect_a0651cbdf436d209ce86174cfb9c7884e}{get\+Debug\+Adaptive\+Target\+Distance}} () const
+\begin{DoxyCompactList}\small\item\em Returns the debug adaptive target distance. \end{DoxyCompactList}\item 
+float \doxymbox{\hyperlink{class_depth_of_field_effect_ae7717684c372c1cbc62e7894479d206c}{get\+Debug\+Adaptive\+Fallback\+Distance}} () const
+\begin{DoxyCompactList}\small\item\em Returns the debug adaptive fallback distance. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{class_depth_of_field_effect_a7c28be25a4f335b6cb15282996d50995}{apply}} (PTexture tex, PTexture depth\+Tex, PFrame\+Buffer out\+Fbo, std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$ quad) override
+\begin{DoxyCompactList}\small\item\em Applies current settings. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{class_graphics_1_1_post_processing_1_1_post_processing_effect}{Graphics::\+\+Post\+Processing::\+\+Post\+Processing\+Effect}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+Post\+Processing\+Effect} ()=default
+\begin{DoxyCompactList}\small\item\em Destroys this \doxylink{class_graphics_1_1_post_processing_1_1_post_processing_effect}{Post\+Processing\+Effect} instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_depth_of_field_effect}{Depth\+Of\+Field\+Effect}} $>$ \doxymbox{\hyperlink{class_depth_of_field_effect_a5b2434a9c622430d7fb62cbc305722fe}{New}} ()
+\begin{DoxyCompactList}\small\item\em Creates a new object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_depth_of_field_effect_aed77233b43c93a02caf1c9563b8d8f82}\label{class_depth_of_field_effect_aed77233b43c93a02caf1c9563b8d8f82} 
+float {\bfseries focus\+Distance} = 8.\+0f
+\item 
+\Hypertarget{class_depth_of_field_effect_abff26a84812a982f17b5c3f83472b971}\label{class_depth_of_field_effect_abff26a84812a982f17b5c3f83472b971} 
+float {\bfseries focus\+Range} = 4.\+0f
+\item 
+\Hypertarget{class_depth_of_field_effect_a1b785e3c455c301bdf3967f2f61f8ebc}\label{class_depth_of_field_effect_a1b785e3c455c301bdf3967f2f61f8ebc} 
+float {\bfseries focus\+Band\+Width} = 0.\+85f
+\item 
+\Hypertarget{class_depth_of_field_effect_a97b7f448b8aef83631a8f762ef26597a}\label{class_depth_of_field_effect_a97b7f448b8aef83631a8f762ef26597a} 
+float {\bfseries blur\+Ramp} = 2.\+0f
+\item 
+\Hypertarget{class_depth_of_field_effect_a965b2e6ece1590308f1540d747bcaf8e}\label{class_depth_of_field_effect_a965b2e6ece1590308f1540d747bcaf8e} 
+float {\bfseries blur\+Distance\+Lerp} = 0.\+35f
+\item 
+\Hypertarget{class_depth_of_field_effect_a587e82b68e9b522963570045e1fcfdc3}\label{class_depth_of_field_effect_a587e82b68e9b522963570045e1fcfdc3} 
+float {\bfseries fallback\+Focus\+Range} = 6.\+0f
+\item 
+\Hypertarget{class_depth_of_field_effect_a9aed3ef01808ad4edb83a7b5c66d10e7}\label{class_depth_of_field_effect_a9aed3ef01808ad4edb83a7b5c66d10e7} 
+float {\bfseries blur\+Strength} = 0.\+65f
+\item 
+\Hypertarget{class_depth_of_field_effect_a6e404fae6af94150b1bf2f8b2cec5e0b}\label{class_depth_of_field_effect_a6e404fae6af94150b1bf2f8b2cec5e0b} 
+float {\bfseries max\+Blur\+Px} = 7.\+0f
+\item 
+\Hypertarget{class_depth_of_field_effect_afe6aae8c43a5b42286728935dc0fe9d6}\label{class_depth_of_field_effect_afe6aae8c43a5b42286728935dc0fe9d6} 
+int {\bfseries sample\+Count} = 6
+\item 
+\Hypertarget{class_depth_of_field_effect_aee1361a77b67aca399453db65b563a6a}\label{class_depth_of_field_effect_aee1361a77b67aca399453db65b563a6a} 
+bool {\bfseries debug\+Coc\+View} = false
+\item 
+\Hypertarget{class_depth_of_field_effect_a97f3f5cf3a9c7e909351eebbcc430787}\label{class_depth_of_field_effect_a97f3f5cf3a9c7e909351eebbcc430787} 
+bool {\bfseries adaptive\+Focus} = false
+\item 
+\Hypertarget{class_depth_of_field_effect_a2450651e49854c448f928d084bc94652}\label{class_depth_of_field_effect_a2450651e49854c448f928d084bc94652} 
+Math3\+D::\+\+Vec2 {\bfseries focus\+Uv} = Math3\+D::\+\+Vec2(0.\+5f, 0.\+5f)
+\item 
+\Hypertarget{class_depth_of_field_effect_a7a927b00613ce433ff6c1dfbcb2808d0}\label{class_depth_of_field_effect_a7a927b00613ce433ff6c1dfbcb2808d0} 
+float {\bfseries near\+Plane} = 0.\+1f
+\item 
+\Hypertarget{class_depth_of_field_effect_a889d74f9be28b5a306771abf09b75ec7}\label{class_depth_of_field_effect_a889d74f9be28b5a306771abf09b75ec7} 
+float {\bfseries far\+Plane} = 1000.\+0f
+\item 
+\Hypertarget{class_depth_of_field_effect_a20d4095b74acc71980e59577a46e7288}\label{class_depth_of_field_effect_a20d4095b74acc71980e59577a46e7288} 
+bool {\bfseries external\+Adaptive\+Focus\+Valid} = false
+\item 
+\Hypertarget{class_depth_of_field_effect_a121a586d348ae198dc68d91d86bd04c4}\label{class_depth_of_field_effect_a121a586d348ae198dc68d91d86bd04c4} 
+float {\bfseries external\+Adaptive\+Focus\+Distance} = 0.\+0f
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the \doxylink{class_depth_of_field_effect}{Depth\+Of\+Field\+Effect} type. 
+
+\label{doc-func-members}
+\Hypertarget{class_depth_of_field_effect_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_depth_of_field_effect_a7c28be25a4f335b6cb15282996d50995}\index{DepthOfFieldEffect@{DepthOfFieldEffect}!apply@{apply}}
+\index{apply@{apply}!DepthOfFieldEffect@{DepthOfFieldEffect}}
+\doxysubsubsection{\texorpdfstring{apply()}{apply()}}
+{\footnotesize\ttfamily \label{class_depth_of_field_effect_a7c28be25a4f335b6cb15282996d50995} 
+bool Depth\+Of\+Field\+Effect::\+apply (\begin{DoxyParamCaption}\item[{PTexture}]{tex}{, }\item[{PTexture}]{depth\+Tex}{, }\item[{PFrame\+Buffer}]{out\+Fbo}{, }\item[{std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$}]{quad}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Applies current settings. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tex} & Value for tex. \\
+\hline
+{\em depth\+Tex} & Value for depth tex. \\
+\hline
+{\em out\+Fbo} & Output value for fbo. \\
+\hline
+{\em quad} & Value for quad. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True when the operation succeeds; otherwise false. 
+\end{DoxyReturn}
+
+
+Implements \doxymbox{\hyperlink{class_graphics_1_1_post_processing_1_1_post_processing_effect_a75b0263b1e53943ceb4f13d4aad0f5e6}{Graphics::\+\+Post\+Processing::\+\+Post\+Processing\+Effect}}.
+
+\Hypertarget{class_depth_of_field_effect_a0702ba093291383aec8a394bd58b4da3}\index{DepthOfFieldEffect@{DepthOfFieldEffect}!getDebugAdaptiveCenterDistance@{getDebugAdaptiveCenterDistance}}
+\index{getDebugAdaptiveCenterDistance@{getDebugAdaptiveCenterDistance}!DepthOfFieldEffect@{DepthOfFieldEffect}}
+\doxysubsubsection{\texorpdfstring{getDebugAdaptiveCenterDistance()}{getDebugAdaptiveCenterDistance()}}
+{\footnotesize\ttfamily \label{class_depth_of_field_effect_a0702ba093291383aec8a394bd58b4da3} 
+float Depth\+Of\+Field\+Effect::\+get\+Debug\+Adaptive\+Center\+Distance (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the debug adaptive center distance. 
+
+\begin{DoxyReturn}{Returns}
+Computed numeric result. 
+\end{DoxyReturn}
+\Hypertarget{class_depth_of_field_effect_a2b6c470cc2298d4e7f9638ab02fd6339}\index{DepthOfFieldEffect@{DepthOfFieldEffect}!getDebugAdaptiveCenterValid@{getDebugAdaptiveCenterValid}}
+\index{getDebugAdaptiveCenterValid@{getDebugAdaptiveCenterValid}!DepthOfFieldEffect@{DepthOfFieldEffect}}
+\doxysubsubsection{\texorpdfstring{getDebugAdaptiveCenterValid()}{getDebugAdaptiveCenterValid()}}
+{\footnotesize\ttfamily \label{class_depth_of_field_effect_a2b6c470cc2298d4e7f9638ab02fd6339} 
+bool Depth\+Of\+Field\+Effect::\+get\+Debug\+Adaptive\+Center\+Valid (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the debug adaptive center valid. 
+
+\begin{DoxyReturn}{Returns}
+True when the operation succeeds; otherwise false. 
+\end{DoxyReturn}
+\Hypertarget{class_depth_of_field_effect_ae7717684c372c1cbc62e7894479d206c}\index{DepthOfFieldEffect@{DepthOfFieldEffect}!getDebugAdaptiveFallbackDistance@{getDebugAdaptiveFallbackDistance}}
+\index{getDebugAdaptiveFallbackDistance@{getDebugAdaptiveFallbackDistance}!DepthOfFieldEffect@{DepthOfFieldEffect}}
+\doxysubsubsection{\texorpdfstring{getDebugAdaptiveFallbackDistance()}{getDebugAdaptiveFallbackDistance()}}
+{\footnotesize\ttfamily \label{class_depth_of_field_effect_ae7717684c372c1cbc62e7894479d206c} 
+float Depth\+Of\+Field\+Effect::\+get\+Debug\+Adaptive\+Fallback\+Distance (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the debug adaptive fallback distance. 
+
+\begin{DoxyReturn}{Returns}
+Computed numeric result. 
+\end{DoxyReturn}
+\Hypertarget{class_depth_of_field_effect_afb17fd27b66d9a68d9cc46d2fbc71f08}\index{DepthOfFieldEffect@{DepthOfFieldEffect}!getDebugAdaptiveRayDistance@{getDebugAdaptiveRayDistance}}
+\index{getDebugAdaptiveRayDistance@{getDebugAdaptiveRayDistance}!DepthOfFieldEffect@{DepthOfFieldEffect}}
+\doxysubsubsection{\texorpdfstring{getDebugAdaptiveRayDistance()}{getDebugAdaptiveRayDistance()}}
+{\footnotesize\ttfamily \label{class_depth_of_field_effect_afb17fd27b66d9a68d9cc46d2fbc71f08} 
+float Depth\+Of\+Field\+Effect::\+get\+Debug\+Adaptive\+Ray\+Distance (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the debug adaptive ray distance. 
+
+\begin{DoxyReturn}{Returns}
+Computed numeric result. 
+\end{DoxyReturn}
+\Hypertarget{class_depth_of_field_effect_a00464f8858539d0013ea8e9de66f7505}\index{DepthOfFieldEffect@{DepthOfFieldEffect}!getDebugAdaptiveRayValid@{getDebugAdaptiveRayValid}}
+\index{getDebugAdaptiveRayValid@{getDebugAdaptiveRayValid}!DepthOfFieldEffect@{DepthOfFieldEffect}}
+\doxysubsubsection{\texorpdfstring{getDebugAdaptiveRayValid()}{getDebugAdaptiveRayValid()}}
+{\footnotesize\ttfamily \label{class_depth_of_field_effect_a00464f8858539d0013ea8e9de66f7505} 
+bool Depth\+Of\+Field\+Effect::\+get\+Debug\+Adaptive\+Ray\+Valid (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the debug adaptive ray valid. 
+
+\begin{DoxyReturn}{Returns}
+True when the operation succeeds; otherwise false. 
+\end{DoxyReturn}
+\Hypertarget{class_depth_of_field_effect_a0651cbdf436d209ce86174cfb9c7884e}\index{DepthOfFieldEffect@{DepthOfFieldEffect}!getDebugAdaptiveTargetDistance@{getDebugAdaptiveTargetDistance}}
+\index{getDebugAdaptiveTargetDistance@{getDebugAdaptiveTargetDistance}!DepthOfFieldEffect@{DepthOfFieldEffect}}
+\doxysubsubsection{\texorpdfstring{getDebugAdaptiveTargetDistance()}{getDebugAdaptiveTargetDistance()}}
+{\footnotesize\ttfamily \label{class_depth_of_field_effect_a0651cbdf436d209ce86174cfb9c7884e} 
+float Depth\+Of\+Field\+Effect::\+get\+Debug\+Adaptive\+Target\+Distance (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the debug adaptive target distance. 
+
+\begin{DoxyReturn}{Returns}
+Computed numeric result. 
+\end{DoxyReturn}
+\Hypertarget{class_depth_of_field_effect_a47ced74a994feca82c1628689e9f8cc0}\index{DepthOfFieldEffect@{DepthOfFieldEffect}!getDebugAdaptiveUsedFallback@{getDebugAdaptiveUsedFallback}}
+\index{getDebugAdaptiveUsedFallback@{getDebugAdaptiveUsedFallback}!DepthOfFieldEffect@{DepthOfFieldEffect}}
+\doxysubsubsection{\texorpdfstring{getDebugAdaptiveUsedFallback()}{getDebugAdaptiveUsedFallback()}}
+{\footnotesize\ttfamily \label{class_depth_of_field_effect_a47ced74a994feca82c1628689e9f8cc0} 
+bool Depth\+Of\+Field\+Effect::\+get\+Debug\+Adaptive\+Used\+Fallback (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the debug adaptive used fallback. 
+
+\begin{DoxyReturn}{Returns}
+True when the operation succeeds; otherwise false. 
+\end{DoxyReturn}
+\Hypertarget{class_depth_of_field_effect_a89866922b7bfdc7e1b39cd339996afbc}\index{DepthOfFieldEffect@{DepthOfFieldEffect}!getResolvedFocusDistance@{getResolvedFocusDistance}}
+\index{getResolvedFocusDistance@{getResolvedFocusDistance}!DepthOfFieldEffect@{DepthOfFieldEffect}}
+\doxysubsubsection{\texorpdfstring{getResolvedFocusDistance()}{getResolvedFocusDistance()}}
+{\footnotesize\ttfamily \label{class_depth_of_field_effect_a89866922b7bfdc7e1b39cd339996afbc} 
+float Depth\+Of\+Field\+Effect::\+get\+Resolved\+Focus\+Distance (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the resolved focus distance. 
+
+\begin{DoxyReturn}{Returns}
+Computed numeric result. 
+\end{DoxyReturn}
+\Hypertarget{class_depth_of_field_effect_a3b3084c5e7f4fbc0acc22c2d407cba19}\index{DepthOfFieldEffect@{DepthOfFieldEffect}!getResolvedFocusRange@{getResolvedFocusRange}}
+\index{getResolvedFocusRange@{getResolvedFocusRange}!DepthOfFieldEffect@{DepthOfFieldEffect}}
+\doxysubsubsection{\texorpdfstring{getResolvedFocusRange()}{getResolvedFocusRange()}}
+{\footnotesize\ttfamily \label{class_depth_of_field_effect_a3b3084c5e7f4fbc0acc22c2d407cba19} 
+float Depth\+Of\+Field\+Effect::\+get\+Resolved\+Focus\+Range (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the resolved focus range. 
+
+\begin{DoxyReturn}{Returns}
+Computed numeric result. 
+\end{DoxyReturn}
+\Hypertarget{class_depth_of_field_effect_a5b2434a9c622430d7fb62cbc305722fe}\index{DepthOfFieldEffect@{DepthOfFieldEffect}!New@{New}}
+\index{New@{New}!DepthOfFieldEffect@{DepthOfFieldEffect}}
+\doxysubsubsection{\texorpdfstring{New()}{New()}}
+{\footnotesize\ttfamily \label{class_depth_of_field_effect_a5b2434a9c622430d7fb62cbc305722fe} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_depth_of_field_effect}{Depth\+Of\+Field\+Effect}} $>$ Depth\+Of\+Field\+Effect::\+\+New (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Creates a new object. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the resulting object. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Post\+FX/\+\doxymbox{\hyperlink{_screen_effects_8h}{Screen\+Effects.\+h}}\end{DoxyCompactItemize}

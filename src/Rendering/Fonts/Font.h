@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Fonts/Font.h
+ * @brief Declarations for Font.
+ */
+
 #ifndef FONT_H
 #define FONT_H
 
@@ -26,6 +31,7 @@
 #define FONT_BITMAP_H 1024
 
 
+/// @brief Holds data for TextCacheKey.
 struct TextCacheKey{ // Store mesh of common reused texts, so we dont recreate them each frame, if the text changes.
     std::string text;
     Color color;
@@ -36,6 +42,7 @@ struct TextCacheKey{ // Store mesh of common reused texts, so we dont recreate t
     }
 };
 
+/// @brief Holds data for FontCharacter.
 struct FontCharacter{
     float u0, v0, u1, v1;
     float sizeX, sizeY;
@@ -43,6 +50,7 @@ struct FontCharacter{
     float advance;
 };
 
+/// @brief Represents the Font type.
 class Font{
     protected:
         PAsset assetPtr;
@@ -53,11 +61,17 @@ class Font{
         std::array<FontCharacter, 128> characters;
         std::map<TextCacheKey, std::shared_ptr<ModelPart>> meshCache;
 
+        /**
+         * @brief Initializes font resources.
+         */
         virtual void _initFont() = 0;
     public:
 
         inline static Logbot FontLogger = Logbot::CreateInstance("Font");
 
+        /**
+         * @brief Constructs a new Font instance.
+         */
         Font() : fontSize(0) {};
         virtual ~Font() = default;
 

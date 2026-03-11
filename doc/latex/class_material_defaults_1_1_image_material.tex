@@ -1,0 +1,129 @@
+\doxysection{Material\+Defaults::\+Image\+Material Class Reference}
+\hypertarget{class_material_defaults_1_1_image_material}{}\label{class_material_defaults_1_1_image_material}\index{MaterialDefaults::ImageMaterial@{MaterialDefaults::ImageMaterial}}
+
+
+Represents the \doxylink{class_material_defaults_1_1_image_material}{Image\+Material} type.  
+
+
+
+
+{\ttfamily \+\#include $<$Material\+Defaults.\+h$>$}
+
+Inheritance diagram for Material\+Defaults::\+Image\+Material:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_material_defaults_1_1_image_material}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{class_material_defaults_1_1_image_material_a132cf6ed173fb5c7a62664b5b791b6fe}{Image\+Material}} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ program, std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$ texture)
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_material_defaults_1_1_image_material}{Image\+Material} instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{class_material}{Material}}}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{class_material_ace810a426f4b488d2dc2a53070d85405}{Material}} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ program)
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_material}{Material} instance. \end{DoxyCompactList}\item 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+Material} ()
+\begin{DoxyCompactList}\small\item\em Destroys this \doxylink{class_material}{Material} instance. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T$>$ }\\bool {\bfseries set} (const std::\+string \&name, T value)
+\item 
+virtual void \doxymbox{\hyperlink{class_material_aa9acc36e80cc1874dc69da8dedf54695}{bind}} ()
+\item 
+void {\bfseries unbind} ()
+\item 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ {\bfseries get\+Shader} ()
+\item 
+void {\bfseries set\+Shader} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ program)
+\item 
+void {\bfseries set\+Casts\+Shadows} (bool value)
+\item 
+bool {\bfseries casts\+Shadows} () const
+\item 
+void {\bfseries set\+Receives\+Shadows} (bool value)
+\item 
+bool {\bfseries receives\+Shadows} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material_defaults_1_1_image_material_a132cf6ed173fb5c7a62664b5b791b6fe}{Image\+Material}} $>$ \doxymbox{\hyperlink{class_material_defaults_1_1_image_material_add720d0e294c8a6aaefcce9149d1c97e}{Create}} (PTexture tex, Math3\+D::\+\+Vec4 color=Color::\+\+WHITE, Math3\+D::\+\+Vec2 uv=Math3\+D::\+\+Vec2(0, 0))
+\begin{DoxyCompactList}\small\item\em Creates a new object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \doxymbox{\hyperlink{class_material}{Material}}}
+\begin{DoxyCompactItemize}
+\item 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material}{Material}} $>$ {\bfseries Copy} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material}{Material}} $>$ material)
+\item 
+{\footnotesize template$<$typename T$>$ }\\static std::\+shared\+\_\+ptr$<$ T $>$ {\bfseries Get\+As} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material}{Material}} $>$ mat\+Ptr)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_material_defaults_1_1_image_material_afa8910b9ce8c42d54fdc79dac534813d}\label{class_material_defaults_1_1_image_material_afa8910b9ce8c42d54fdc79dac534813d} 
+Value\+Container$<$ Math3\+D::\+\+Vec4 $>$ {\bfseries Color}
+\item 
+\Hypertarget{class_material_defaults_1_1_image_material_ae75e53b16a84f1091f19350655b86c60}\label{class_material_defaults_1_1_image_material_ae75e53b16a84f1091f19350655b86c60} 
+Value\+Container$<$ std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$ $>$ {\bfseries Tex}
+\item 
+\Hypertarget{class_material_defaults_1_1_image_material_ac41d3d5e16c3ddca0e74da2c1b986e65}\label{class_material_defaults_1_1_image_material_ac41d3d5e16c3ddca0e74da2c1b986e65} 
+Value\+Container$<$ Math3\+D::\+\+Vec2 $>$ {\bfseries UV}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the \doxylink{class_material_defaults_1_1_image_material}{Image\+Material} type. 
+
+\label{doc-constructors}
+\Hypertarget{class_material_defaults_1_1_image_material_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_material_defaults_1_1_image_material_a132cf6ed173fb5c7a62664b5b791b6fe}\index{MaterialDefaults::ImageMaterial@{MaterialDefaults::ImageMaterial}!ImageMaterial@{ImageMaterial}}
+\index{ImageMaterial@{ImageMaterial}!MaterialDefaults::ImageMaterial@{MaterialDefaults::ImageMaterial}}
+\doxysubsubsection{\texorpdfstring{ImageMaterial()}{ImageMaterial()}}
+{\footnotesize\ttfamily \label{class_material_defaults_1_1_image_material_a132cf6ed173fb5c7a62664b5b791b6fe} 
+Image\+Material::\+\+Image\+Material (\begin{DoxyParamCaption}\item[{std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$}]{program}{, }\item[{std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$}]{texture}{}\end{DoxyParamCaption})}
+
+
+
+Constructs a new \doxylink{class_material_defaults_1_1_image_material}{Image\+Material} instance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em program} & Value for program. \\
+\hline
+{\em texture} & Value for texture. \\
+\hline
+\end{DoxyParams}
+
+
+\label{doc-func-members}
+\Hypertarget{class_material_defaults_1_1_image_material_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_material_defaults_1_1_image_material_add720d0e294c8a6aaefcce9149d1c97e}\index{MaterialDefaults::ImageMaterial@{MaterialDefaults::ImageMaterial}!Create@{Create}}
+\index{Create@{Create}!MaterialDefaults::ImageMaterial@{MaterialDefaults::ImageMaterial}}
+\doxysubsubsection{\texorpdfstring{Create()}{Create()}}
+{\footnotesize\ttfamily \label{class_material_defaults_1_1_image_material_add720d0e294c8a6aaefcce9149d1c97e} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material_defaults_1_1_image_material_a132cf6ed173fb5c7a62664b5b791b6fe}{Image\+Material}} $>$ Image\+Material::\+\+Create (\begin{DoxyParamCaption}\item[{PTexture}]{tex}{, }\item[{Math3\+D::\+\+Vec4}]{color}{ = {\ttfamily Color:\+:\+WHITE}, }\item[{Math3\+D::\+\+Vec2}]{uv}{ = {\ttfamily Math3D:\+:\+Vec2(0,0)}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Creates a new object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tex} & Value for tex. \\
+\hline
+{\em color} & Color value. \\
+\hline
+{\em uv} & Value for uv. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the resulting object. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Materials/\+\doxymbox{\hyperlink{_material_defaults_8h}{Material\+Defaults.\+h}}\item 
+src/\+\+Rendering/\+\+Materials/\+\doxymbox{\hyperlink{_material_defaults_8cpp}{Material\+Defaults.\+cpp}}\end{DoxyCompactItemize}

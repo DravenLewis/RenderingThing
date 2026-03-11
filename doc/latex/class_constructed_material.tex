@@ -1,0 +1,461 @@
+\doxysection{Constructed\+Material Class Reference}
+\hypertarget{class_constructed_material}{}\label{class_constructed_material}\index{ConstructedMaterial@{ConstructedMaterial}}
+
+
+Represents the \doxylink{class_constructed_material}{Constructed\+Material} type.  
+
+
+
+
+{\ttfamily \+\#include $<$Constructed\+Material.\+h$>$}
+
+Inheritance diagram for Constructed\+Material:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_constructed_material}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Field}}
+\begin{DoxyCompactList}\small\item\em Holds data for \doxylink{struct_constructed_material_1_1_field}{Field}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_constructed_material_a7944a0525d83161b63f7cef5d90c58cf}\label{class_constructed_material_a7944a0525d83161b63f7cef5d90c58cf} 
+enum class \doxymbox{\hyperlink{class_constructed_material_a7944a0525d83161b63f7cef5d90c58cf}{Field\+Type}} \{ \newline
+{\bfseries Float} = 0
+, {\bfseries Int}
+, {\bfseries Bool}
+, {\bfseries Vec2}
+, \newline
+{\bfseries Vec3}
+, {\bfseries Vec4}
+, {\bfseries Texture2D}
+ \}
+\begin{DoxyCompactList}\small\item\em Enumerates values for \doxylink{class_constructed_material_a7944a0525d83161b63f7cef5d90c58cf}{Field\+Type}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{class_constructed_material_a6e513e5615be7d3b0fa75894b2c58dd1}{Constructed\+Material}} (const std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ \&shader\+Program)
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_constructed_material}{Constructed\+Material} instance. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_constructed_material_a21bc4a9062326ce5c0cd79a8a702a6be}{set\+Source\+Asset\+Ref}} (const std::\+string \&ref)
+\begin{DoxyCompactList}\small\item\em Sets the source asset ref. \end{DoxyCompactList}\item 
+const std::\+string \& \doxymbox{\hyperlink{class_constructed_material_a71a8ad0b3f9b7332cbeb6f83f40b7c9c}{get\+Source\+Asset\+Ref}} () const
+\begin{DoxyCompactList}\small\item\em Returns the source asset ref. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_constructed_material_ac61016aad3fbd3d73ec68b6bbb1ddada}{set\+Source\+Material\+Name}} (const std::\+string \&name)
+\begin{DoxyCompactList}\small\item\em Sets the source material name. \end{DoxyCompactList}\item 
+const std::\+string \& \doxymbox{\hyperlink{class_constructed_material_aa0808c55319a66dcef4948cca0f68a20}{get\+Source\+Material\+Name}} () const
+\begin{DoxyCompactList}\small\item\em Returns the source material name. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Field}} \& \doxymbox{\hyperlink{class_constructed_material_a2f30d4fbf1fdb26e428b33d23dbf10c6}{add\+Float\+Field}} (const std::\+string \&key, const std::\+string \&display\+Name, const std::\+string \&uniform\+Name, float value, const std::\+string \&mirror\+Uniform\+Name="{}"{})
+\begin{DoxyCompactList}\small\item\em Adds a float field definition. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Field}} \& \doxymbox{\hyperlink{class_constructed_material_a284816c36fa3df24c2a4078166d2e542}{add\+Int\+Field}} (const std::\+string \&key, const std::\+string \&display\+Name, const std::\+string \&uniform\+Name, int value, const std::\+string \&mirror\+Uniform\+Name="{}"{})
+\begin{DoxyCompactList}\small\item\em Adds an integer field definition. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Field}} \& \doxymbox{\hyperlink{class_constructed_material_a3aede6f45921adc753bb60b2f312a894}{add\+Bool\+Field}} (const std::\+string \&key, const std::\+string \&display\+Name, const std::\+string \&uniform\+Name, bool value, const std::\+string \&mirror\+Uniform\+Name="{}"{})
+\begin{DoxyCompactList}\small\item\em Adds a boolean field definition. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Field}} \& \doxymbox{\hyperlink{class_constructed_material_a5e730682b49c7d07f4e3213b7c8e936f}{add\+Vec2\+Field}} (const std::\+string \&key, const std::\+string \&display\+Name, const std::\+string \&uniform\+Name, const Math3\+D::\+\+Vec2 \&value, const std::\+string \&mirror\+Uniform\+Name="{}"{})
+\begin{DoxyCompactList}\small\item\em Adds a vec2 field definition. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Field}} \& \doxymbox{\hyperlink{class_constructed_material_afa38f16b02e4428ab401779f626db4bb}{add\+Vec3\+Field}} (const std::\+string \&key, const std::\+string \&display\+Name, const std::\+string \&uniform\+Name, const Math3\+D::\+\+Vec3 \&value, const std::\+string \&mirror\+Uniform\+Name="{}"{})
+\begin{DoxyCompactList}\small\item\em Adds a vec3 field definition. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Field}} \& \doxymbox{\hyperlink{class_constructed_material_acf1ea6cee12a7e291049b2bcd93e418a}{add\+Vec4\+Field}} (const std::\+string \&key, const std::\+string \&display\+Name, const std::\+string \&uniform\+Name, const Math3\+D::\+\+Vec4 \&value, const std::\+string \&mirror\+Uniform\+Name="{}"{})
+\begin{DoxyCompactList}\small\item\em Adds a vec4 field definition. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Field}} \& \doxymbox{\hyperlink{class_constructed_material_a4a1b88134f55b0f679212db40941c87b}{add\+Texture2\+DField}} (const std::\+string \&key, const std::\+string \&display\+Name, const std::\+string \&uniform\+Name, const std::\+string \&texture\+Asset\+Ref, int texture\+Slot, const std::\+string \&presence\+Uniform\+Name="{}"{})
+\begin{DoxyCompactList}\small\item\em Adds a texture field definition. \end{DoxyCompactList}\item 
+std::\+vector$<$ \doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Field}} $>$ \& \doxymbox{\hyperlink{class_constructed_material_a7d29c3cf5ab8b761637884dd53ccb531}{fields}} ()
+\begin{DoxyCompactList}\small\item\em Returns the material field list. \end{DoxyCompactList}\item 
+const std::\+vector$<$ \doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Field}} $>$ \& \doxymbox{\hyperlink{class_constructed_material_ad3325736eb2a48a1546b69dddb779a3c}{fields}} () const
+\begin{DoxyCompactList}\small\item\em Returns the material field list. \end{DoxyCompactList}\item 
+\Hypertarget{class_constructed_material_a1672cf71fcbe34b381fe784c9dcafa5c}\label{class_constructed_material_a1672cf71fcbe34b381fe784c9dcafa5c} 
+void {\bfseries clear\+Fields} ()
+\begin{DoxyCompactList}\small\item\em Clears fields. \end{DoxyCompactList}\item 
+\Hypertarget{class_constructed_material_ad41964516b374f85c9dbe03d70285388}\label{class_constructed_material_ad41964516b374f85c9dbe03d70285388} 
+void {\bfseries mark\+Fields\+Dirty} ()
+\begin{DoxyCompactList}\small\item\em Marks material fields dirty for reapply. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_constructed_material_a0b89ef6b1940504648859f840dd78a4b}{apply\+Field}} (size\+\_\+t index)
+\begin{DoxyCompactList}\small\item\em Applies field. \end{DoxyCompactList}\item 
+\Hypertarget{class_constructed_material_a2d9ac90844fa0e951bdb8a2f90bd1aea}\label{class_constructed_material_a2d9ac90844fa0e951bdb8a2f90bd1aea} 
+void {\bfseries apply\+All\+Fields} ()
+\begin{DoxyCompactList}\small\item\em Applies all fields. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_constructed_material_a20ec1258bcfcd504150134f3d12dbb4a}{bind}} () override
+\begin{DoxyCompactList}\small\item\em Binds this resource. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{class_material}{Material}}}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{class_material_ace810a426f4b488d2dc2a53070d85405}{Material}} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ program)
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_material}{Material} instance. \end{DoxyCompactList}\item 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+Material} ()
+\begin{DoxyCompactList}\small\item\em Destroys this \doxylink{class_material}{Material} instance. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T$>$ }\\bool {\bfseries set} (const std::\+string \&name, T value)
+\item 
+void {\bfseries unbind} ()
+\item 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ {\bfseries get\+Shader} ()
+\item 
+void {\bfseries set\+Shader} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ program)
+\item 
+void {\bfseries set\+Casts\+Shadows} (bool value)
+\item 
+bool {\bfseries casts\+Shadows} () const
+\item 
+void {\bfseries set\+Receives\+Shadows} (bool value)
+\item 
+bool {\bfseries receives\+Shadows} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_constructed_material}{Constructed\+Material}} $>$ \doxymbox{\hyperlink{class_constructed_material_a3a3f4b57dfe35059b73a40e6cac44684}{Create\+With\+PBRShader}} ()
+\begin{DoxyCompactList}\small\item\em Creates with pbr shader. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \doxymbox{\hyperlink{class_material}{Material}}}
+\begin{DoxyCompactItemize}
+\item 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material}{Material}} $>$ {\bfseries Copy} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material}{Material}} $>$ material)
+\item 
+{\footnotesize template$<$typename T$>$ }\\static std::\+shared\+\_\+ptr$<$ T $>$ {\bfseries Get\+As} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material}{Material}} $>$ mat\+Ptr)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the \doxylink{class_constructed_material}{Constructed\+Material} type. 
+
+\label{doc-constructors}
+\Hypertarget{class_constructed_material_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_constructed_material_a6e513e5615be7d3b0fa75894b2c58dd1}\index{ConstructedMaterial@{ConstructedMaterial}!ConstructedMaterial@{ConstructedMaterial}}
+\index{ConstructedMaterial@{ConstructedMaterial}!ConstructedMaterial@{ConstructedMaterial}}
+\doxysubsubsection{\texorpdfstring{ConstructedMaterial()}{ConstructedMaterial()}}
+{\footnotesize\ttfamily \label{class_constructed_material_a6e513e5615be7d3b0fa75894b2c58dd1} 
+Constructed\+Material::\+\+Constructed\+Material (\begin{DoxyParamCaption}\item[{const std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ \&}]{shader\+Program}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+
+
+Constructs a new \doxylink{class_constructed_material}{Constructed\+Material} instance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em shader\+Program} & Value for shader program. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of this operation. 
+\end{DoxyReturn}
+
+
+\label{doc-func-members}
+\Hypertarget{class_constructed_material_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_constructed_material_a3aede6f45921adc753bb60b2f312a894}\index{ConstructedMaterial@{ConstructedMaterial}!addBoolField@{addBoolField}}
+\index{addBoolField@{addBoolField}!ConstructedMaterial@{ConstructedMaterial}}
+\doxysubsubsection{\texorpdfstring{addBoolField()}{addBoolField()}}
+{\footnotesize\ttfamily \label{class_constructed_material_a3aede6f45921adc753bb60b2f312a894} 
+\doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Constructed\+Material::\+\+Field}} \& Constructed\+Material::\+add\+Bool\+Field (\begin{DoxyParamCaption}\item[{const std::\+string \&}]{key}{, }\item[{const std::\+string \&}]{display\+Name}{, }\item[{const std::\+string \&}]{uniform\+Name}{, }\item[{bool}]{value}{, }\item[{const std::\+string \&}]{mirror\+Uniform\+Name}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+
+
+Adds a boolean field definition. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & Value for key. \\
+\hline
+{\em display\+Name} & Name used for display name. \\
+\hline
+{\em uniform\+Name} & Name used for uniform name. \\
+\hline
+{\em value} & Value for value. \\
+\hline
+{\em mirror\+Uniform\+Name} & Name used for mirror uniform name. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+\Hypertarget{class_constructed_material_a2f30d4fbf1fdb26e428b33d23dbf10c6}\index{ConstructedMaterial@{ConstructedMaterial}!addFloatField@{addFloatField}}
+\index{addFloatField@{addFloatField}!ConstructedMaterial@{ConstructedMaterial}}
+\doxysubsubsection{\texorpdfstring{addFloatField()}{addFloatField()}}
+{\footnotesize\ttfamily \label{class_constructed_material_a2f30d4fbf1fdb26e428b33d23dbf10c6} 
+\doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Constructed\+Material::\+\+Field}} \& Constructed\+Material::\+add\+Float\+Field (\begin{DoxyParamCaption}\item[{const std::\+string \&}]{key}{, }\item[{const std::\+string \&}]{display\+Name}{, }\item[{const std::\+string \&}]{uniform\+Name}{, }\item[{float}]{value}{, }\item[{const std::\+string \&}]{mirror\+Uniform\+Name}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+
+
+Adds a float field definition. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & Value for key. \\
+\hline
+{\em display\+Name} & Name used for display name. \\
+\hline
+{\em uniform\+Name} & Name used for uniform name. \\
+\hline
+{\em value} & Value for value. \\
+\hline
+{\em mirror\+Uniform\+Name} & Name used for mirror uniform name. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+\Hypertarget{class_constructed_material_a284816c36fa3df24c2a4078166d2e542}\index{ConstructedMaterial@{ConstructedMaterial}!addIntField@{addIntField}}
+\index{addIntField@{addIntField}!ConstructedMaterial@{ConstructedMaterial}}
+\doxysubsubsection{\texorpdfstring{addIntField()}{addIntField()}}
+{\footnotesize\ttfamily \label{class_constructed_material_a284816c36fa3df24c2a4078166d2e542} 
+\doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Constructed\+Material::\+\+Field}} \& Constructed\+Material::\+add\+Int\+Field (\begin{DoxyParamCaption}\item[{const std::\+string \&}]{key}{, }\item[{const std::\+string \&}]{display\+Name}{, }\item[{const std::\+string \&}]{uniform\+Name}{, }\item[{int}]{value}{, }\item[{const std::\+string \&}]{mirror\+Uniform\+Name}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+
+
+Adds an integer field definition. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & Value for key. \\
+\hline
+{\em display\+Name} & Name used for display name. \\
+\hline
+{\em uniform\+Name} & Name used for uniform name. \\
+\hline
+{\em value} & Value for value. \\
+\hline
+{\em mirror\+Uniform\+Name} & Name used for mirror uniform name. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+\Hypertarget{class_constructed_material_a4a1b88134f55b0f679212db40941c87b}\index{ConstructedMaterial@{ConstructedMaterial}!addTexture2DField@{addTexture2DField}}
+\index{addTexture2DField@{addTexture2DField}!ConstructedMaterial@{ConstructedMaterial}}
+\doxysubsubsection{\texorpdfstring{addTexture2DField()}{addTexture2DField()}}
+{\footnotesize\ttfamily \label{class_constructed_material_a4a1b88134f55b0f679212db40941c87b} 
+\doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Constructed\+Material::\+\+Field}} \& Constructed\+Material::\+add\+Texture2\+DField (\begin{DoxyParamCaption}\item[{const std::\+string \&}]{key}{, }\item[{const std::\+string \&}]{display\+Name}{, }\item[{const std::\+string \&}]{uniform\+Name}{, }\item[{const std::\+string \&}]{texture\+Asset\+Ref}{, }\item[{int}]{texture\+Slot}{, }\item[{const std::\+string \&}]{presence\+Uniform\+Name}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+
+
+Adds a texture field definition. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & Value for key. \\
+\hline
+{\em display\+Name} & Name used for display name. \\
+\hline
+{\em uniform\+Name} & Name used for uniform name. \\
+\hline
+{\em texture\+Asset\+Ref} & Reference to texture asset. \\
+\hline
+{\em texture\+Slot} & Value for texture slot. \\
+\hline
+{\em presence\+Uniform\+Name} & Name used for presence uniform name. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+\Hypertarget{class_constructed_material_a5e730682b49c7d07f4e3213b7c8e936f}\index{ConstructedMaterial@{ConstructedMaterial}!addVec2Field@{addVec2Field}}
+\index{addVec2Field@{addVec2Field}!ConstructedMaterial@{ConstructedMaterial}}
+\doxysubsubsection{\texorpdfstring{addVec2Field()}{addVec2Field()}}
+{\footnotesize\ttfamily \label{class_constructed_material_a5e730682b49c7d07f4e3213b7c8e936f} 
+\doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Constructed\+Material::\+\+Field}} \& Constructed\+Material::\+add\+Vec2\+Field (\begin{DoxyParamCaption}\item[{const std::\+string \&}]{key}{, }\item[{const std::\+string \&}]{display\+Name}{, }\item[{const std::\+string \&}]{uniform\+Name}{, }\item[{const Math3\+D::\+\+Vec2 \&}]{value}{, }\item[{const std::\+string \&}]{mirror\+Uniform\+Name}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+
+
+Adds a vec2 field definition. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & Value for key. \\
+\hline
+{\em display\+Name} & Name used for display name. \\
+\hline
+{\em uniform\+Name} & Name used for uniform name. \\
+\hline
+{\em value} & Value for value. \\
+\hline
+{\em mirror\+Uniform\+Name} & Name used for mirror uniform name. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+\Hypertarget{class_constructed_material_afa38f16b02e4428ab401779f626db4bb}\index{ConstructedMaterial@{ConstructedMaterial}!addVec3Field@{addVec3Field}}
+\index{addVec3Field@{addVec3Field}!ConstructedMaterial@{ConstructedMaterial}}
+\doxysubsubsection{\texorpdfstring{addVec3Field()}{addVec3Field()}}
+{\footnotesize\ttfamily \label{class_constructed_material_afa38f16b02e4428ab401779f626db4bb} 
+\doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Constructed\+Material::\+\+Field}} \& Constructed\+Material::\+add\+Vec3\+Field (\begin{DoxyParamCaption}\item[{const std::\+string \&}]{key}{, }\item[{const std::\+string \&}]{display\+Name}{, }\item[{const std::\+string \&}]{uniform\+Name}{, }\item[{const Math3\+D::\+\+Vec3 \&}]{value}{, }\item[{const std::\+string \&}]{mirror\+Uniform\+Name}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+
+
+Adds a vec3 field definition. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & Value for key. \\
+\hline
+{\em display\+Name} & Name used for display name. \\
+\hline
+{\em uniform\+Name} & Name used for uniform name. \\
+\hline
+{\em value} & Value for value. \\
+\hline
+{\em mirror\+Uniform\+Name} & Name used for mirror uniform name. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+\Hypertarget{class_constructed_material_acf1ea6cee12a7e291049b2bcd93e418a}\index{ConstructedMaterial@{ConstructedMaterial}!addVec4Field@{addVec4Field}}
+\index{addVec4Field@{addVec4Field}!ConstructedMaterial@{ConstructedMaterial}}
+\doxysubsubsection{\texorpdfstring{addVec4Field()}{addVec4Field()}}
+{\footnotesize\ttfamily \label{class_constructed_material_acf1ea6cee12a7e291049b2bcd93e418a} 
+\doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Constructed\+Material::\+\+Field}} \& Constructed\+Material::\+add\+Vec4\+Field (\begin{DoxyParamCaption}\item[{const std::\+string \&}]{key}{, }\item[{const std::\+string \&}]{display\+Name}{, }\item[{const std::\+string \&}]{uniform\+Name}{, }\item[{const Math3\+D::\+\+Vec4 \&}]{value}{, }\item[{const std::\+string \&}]{mirror\+Uniform\+Name}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+
+
+Adds a vec4 field definition. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & Value for key. \\
+\hline
+{\em display\+Name} & Name used for display name. \\
+\hline
+{\em uniform\+Name} & Name used for uniform name. \\
+\hline
+{\em value} & Value for value. \\
+\hline
+{\em mirror\+Uniform\+Name} & Name used for mirror uniform name. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+\Hypertarget{class_constructed_material_a0b89ef6b1940504648859f840dd78a4b}\index{ConstructedMaterial@{ConstructedMaterial}!applyField@{applyField}}
+\index{applyField@{applyField}!ConstructedMaterial@{ConstructedMaterial}}
+\doxysubsubsection{\texorpdfstring{applyField()}{applyField()}}
+{\footnotesize\ttfamily \label{class_constructed_material_a0b89ef6b1940504648859f840dd78a4b} 
+void Constructed\+Material::\+apply\+Field (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{index}{}\end{DoxyParamCaption})}
+
+
+
+Applies field. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & Identifier or index value. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_constructed_material_a20ec1258bcfcd504150134f3d12dbb4a}\index{ConstructedMaterial@{ConstructedMaterial}!bind@{bind}}
+\index{bind@{bind}!ConstructedMaterial@{ConstructedMaterial}}
+\doxysubsubsection{\texorpdfstring{bind()}{bind()}}
+{\footnotesize\ttfamily \label{class_constructed_material_a20ec1258bcfcd504150134f3d12dbb4a} 
+void Constructed\+Material::\+bind (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Binds this resource. 
+
+
+
+Reimplemented from \doxymbox{\hyperlink{class_material}{Material}}.
+
+\Hypertarget{class_constructed_material_a3a3f4b57dfe35059b73a40e6cac44684}\index{ConstructedMaterial@{ConstructedMaterial}!CreateWithPBRShader@{CreateWithPBRShader}}
+\index{CreateWithPBRShader@{CreateWithPBRShader}!ConstructedMaterial@{ConstructedMaterial}}
+\doxysubsubsection{\texorpdfstring{CreateWithPBRShader()}{CreateWithPBRShader()}}
+{\footnotesize\ttfamily \label{class_constructed_material_a3a3f4b57dfe35059b73a40e6cac44684} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_constructed_material}{Constructed\+Material}} $>$ Constructed\+Material::\+\+Create\+With\+PBRShader (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Creates with pbr shader. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the resulting object. 
+\end{DoxyReturn}
+\Hypertarget{class_constructed_material_a7d29c3cf5ab8b761637884dd53ccb531}\index{ConstructedMaterial@{ConstructedMaterial}!fields@{fields}}
+\index{fields@{fields}!ConstructedMaterial@{ConstructedMaterial}}
+\doxysubsubsection{\texorpdfstring{fields()}{fields()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{class_constructed_material_a7d29c3cf5ab8b761637884dd53ccb531} 
+std::\+vector$<$ \doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Constructed\+Material::\+\+Field}} $>$ \& Constructed\+Material::\+fields (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Returns the material field list. 
+
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+\Hypertarget{class_constructed_material_ad3325736eb2a48a1546b69dddb779a3c}\index{ConstructedMaterial@{ConstructedMaterial}!fields@{fields}}
+\index{fields@{fields}!ConstructedMaterial@{ConstructedMaterial}}
+\doxysubsubsection{\texorpdfstring{fields()}{fields()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{class_constructed_material_ad3325736eb2a48a1546b69dddb779a3c} 
+const std::\+vector$<$ \doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Constructed\+Material::\+\+Field}} $>$ \& Constructed\+Material::\+fields (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+
+
+Returns the material field list. 
+
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+\Hypertarget{class_constructed_material_a71a8ad0b3f9b7332cbeb6f83f40b7c9c}\index{ConstructedMaterial@{ConstructedMaterial}!getSourceAssetRef@{getSourceAssetRef}}
+\index{getSourceAssetRef@{getSourceAssetRef}!ConstructedMaterial@{ConstructedMaterial}}
+\doxysubsubsection{\texorpdfstring{getSourceAssetRef()}{getSourceAssetRef()}}
+{\footnotesize\ttfamily \label{class_constructed_material_a71a8ad0b3f9b7332cbeb6f83f40b7c9c} 
+const std::\+string \& Constructed\+Material::\+get\+Source\+Asset\+Ref (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+
+
+Returns the source asset ref. 
+
+\begin{DoxyReturn}{Returns}
+Resulting string value. 
+\end{DoxyReturn}
+\Hypertarget{class_constructed_material_aa0808c55319a66dcef4948cca0f68a20}\index{ConstructedMaterial@{ConstructedMaterial}!getSourceMaterialName@{getSourceMaterialName}}
+\index{getSourceMaterialName@{getSourceMaterialName}!ConstructedMaterial@{ConstructedMaterial}}
+\doxysubsubsection{\texorpdfstring{getSourceMaterialName()}{getSourceMaterialName()}}
+{\footnotesize\ttfamily \label{class_constructed_material_aa0808c55319a66dcef4948cca0f68a20} 
+const std::\+string \& Constructed\+Material::\+get\+Source\+Material\+Name (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+
+
+Returns the source material name. 
+
+\begin{DoxyReturn}{Returns}
+Resulting string value. 
+\end{DoxyReturn}
+\Hypertarget{class_constructed_material_a21bc4a9062326ce5c0cd79a8a702a6be}\index{ConstructedMaterial@{ConstructedMaterial}!setSourceAssetRef@{setSourceAssetRef}}
+\index{setSourceAssetRef@{setSourceAssetRef}!ConstructedMaterial@{ConstructedMaterial}}
+\doxysubsubsection{\texorpdfstring{setSourceAssetRef()}{setSourceAssetRef()}}
+{\footnotesize\ttfamily \label{class_constructed_material_a21bc4a9062326ce5c0cd79a8a702a6be} 
+void Constructed\+Material::\+set\+Source\+Asset\+Ref (\begin{DoxyParamCaption}\item[{const std::\+string \&}]{ref}{}\end{DoxyParamCaption})}
+
+
+
+Sets the source asset ref. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ref} & Reference to reference. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_constructed_material_ac61016aad3fbd3d73ec68b6bbb1ddada}\index{ConstructedMaterial@{ConstructedMaterial}!setSourceMaterialName@{setSourceMaterialName}}
+\index{setSourceMaterialName@{setSourceMaterialName}!ConstructedMaterial@{ConstructedMaterial}}
+\doxysubsubsection{\texorpdfstring{setSourceMaterialName()}{setSourceMaterialName()}}
+{\footnotesize\ttfamily \label{class_constructed_material_ac61016aad3fbd3d73ec68b6bbb1ddada} 
+void Constructed\+Material::\+set\+Source\+Material\+Name (\begin{DoxyParamCaption}\item[{const std::\+string \&}]{name}{}\end{DoxyParamCaption})}
+
+
+
+Sets the source material name. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name used for name. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Materials/\+\doxymbox{\hyperlink{_constructed_material_8h}{Constructed\+Material.\+h}}\item 
+src/\+\+Rendering/\+\+Materials/\+\doxymbox{\hyperlink{_constructed_material_8cpp}{Constructed\+Material.\+cpp}}\end{DoxyCompactItemize}

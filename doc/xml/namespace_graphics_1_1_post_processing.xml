@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="namespace_graphics_1_1_post_processing" kind="namespace" language="C++">
+    <compoundname>Graphics::PostProcessing</compoundname>
+    <innerclass refid="class_graphics_1_1_post_processing_1_1_post_processing_effect" prot="public">Graphics::PostProcessing::PostProcessingEffect</innerclass>
+    <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="_graphics_8h_1aad5714f52ac2b492e6db435b8c62231f" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="class_graphics_1_1_post_processing_1_1_post_processing_effect" kindref="compound">PostProcessingEffect</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;PostProcessingEffect&gt; Graphics::PostProcessing::PPostProcessingEffect</definition>
+        <argsstring></argsstring>
+        <name>PPostProcessingEffect</name>
+        <qualifiedname>Graphics::PostProcessing::PPostProcessingEffect</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics.h" line="143" column="33" bodyfile="src/Rendering/Core/Graphics.h" bodystart="143" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Core/Graphics.h" line="117" column="5"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_shadow_light_data" kind="struct" language="C++" prot="public">
+    <compoundname>ShadowLightData</compoundname>
+    <includes refid="_shadow_renderer_8h" local="no">ShadowRenderer.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_shadow_light_data_1ac702ae146acae8df77f8e23246868f02" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int ShadowLightData::shadowMapIndex</definition>
+        <argsstring></argsstring>
+        <name>shadowMapIndex</name>
+        <qualifiedname>ShadowLightData::shadowMapIndex</qualifiedname>
+        <initializer>= -1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="25" column="9" bodyfile="src/Rendering/Lighting/ShadowRenderer.h" bodystart="25" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_shadow_light_data_1aff377f9a74c61bb3aa681dfaa75917e6" prot="public" static="no" mutable="no">
+        <type><ref refid="_light_8h_1a5c50abf40600ee3c28c7fa04702a8bbc" kindref="member">ShadowType</ref></type>
+        <definition>ShadowType ShadowLightData::shadowType</definition>
+        <argsstring></argsstring>
+        <name>shadowType</name>
+        <qualifiedname>ShadowLightData::shadowType</qualifiedname>
+        <initializer>= ShadowType::Standard</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="26" column="16" bodyfile="src/Rendering/Lighting/ShadowRenderer.h" bodystart="26" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_shadow_light_data_1ac2324b8b78ba3f0edcaef7b926790bcd" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float ShadowLightData::shadowStrength</definition>
+        <argsstring></argsstring>
+        <name>shadowStrength</name>
+        <qualifiedname>ShadowLightData::shadowStrength</qualifiedname>
+        <initializer>= 1.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="27" column="11" bodyfile="src/Rendering/Lighting/ShadowRenderer.h" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_shadow_light_data_1acd237982292f828f6a4577fa18a04679" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float ShadowLightData::shadowBias</definition>
+        <argsstring></argsstring>
+        <name>shadowBias</name>
+        <qualifiedname>ShadowLightData::shadowBias</qualifiedname>
+        <initializer>= 0.0025f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="28" column="11" bodyfile="src/Rendering/Lighting/ShadowRenderer.h" bodystart="28" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_shadow_light_data_1a8b3ea850c47b09d9e9427bbc5d4f620b" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float ShadowLightData::shadowNormalBias</definition>
+        <argsstring></argsstring>
+        <name>shadowNormalBias</name>
+        <qualifiedname>ShadowLightData::shadowNormalBias</qualifiedname>
+        <initializer>= 0.005f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="29" column="11" bodyfile="src/Rendering/Lighting/ShadowRenderer.h" bodystart="29" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_shadow_light_data_1ab20943a984a1a12945d9024812041dfb" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int ShadowLightData::cascadeCount</definition>
+        <argsstring></argsstring>
+        <name>cascadeCount</name>
+        <qualifiedname>ShadowLightData::cascadeCount</qualifiedname>
+        <initializer>= 1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="30" column="9" bodyfile="src/Rendering/Lighting/ShadowRenderer.h" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_shadow_light_data_1ab2e59ee0fbcc6b8f63af23de9a5fe940" prot="public" static="no" mutable="no">
+        <type>Math3D::Vec4</type>
+        <definition>Math3D::Vec4 ShadowLightData::cascadeSplits</definition>
+        <argsstring></argsstring>
+        <name>cascadeSplits</name>
+        <qualifiedname>ShadowLightData::cascadeSplits</qualifiedname>
+        <initializer>= Math3D::Vec4(0,0,0,0)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="31" column="18" bodyfile="src/Rendering/Lighting/ShadowRenderer.h" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_shadow_light_data_1a26d9fea3b61c1c703c8002ac5a72ef69" prot="public" static="no" mutable="no">
+        <type>Math3D::Mat4</type>
+        <definition>Math3D::Mat4 ShadowLightData::lightMatrices[4]</definition>
+        <argsstring>[4]</argsstring>
+        <name>lightMatrices</name>
+        <qualifiedname>ShadowLightData::lightMatrices</qualifiedname>
+        <initializer>                           = {
+    Math3D::Mat4(1.0f),
+    Math3D::Mat4(1.0f),
+    Math3D::Mat4(1.0f),
+    Math3D::Mat4(1.0f)
+}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="32" column="18" bodyfile="src/Rendering/Lighting/ShadowRenderer.h" bodystart="32" bodyend="37"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_shadow_light_data" kindref="compound">ShadowLightData</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Lighting/ShadowRenderer.h" line="24" column="1" bodyfile="src/Rendering/Lighting/ShadowRenderer.h" bodystart="24" bodyend="38"/>
+    <listofallmembers>
+      <member refid="struct_shadow_light_data_1ab20943a984a1a12945d9024812041dfb" prot="public" virt="non-virtual"><scope>ShadowLightData</scope><name>cascadeCount</name></member>
+      <member refid="struct_shadow_light_data_1ab2e59ee0fbcc6b8f63af23de9a5fe940" prot="public" virt="non-virtual"><scope>ShadowLightData</scope><name>cascadeSplits</name></member>
+      <member refid="struct_shadow_light_data_1a26d9fea3b61c1c703c8002ac5a72ef69" prot="public" virt="non-virtual"><scope>ShadowLightData</scope><name>lightMatrices</name></member>
+      <member refid="struct_shadow_light_data_1acd237982292f828f6a4577fa18a04679" prot="public" virt="non-virtual"><scope>ShadowLightData</scope><name>shadowBias</name></member>
+      <member refid="struct_shadow_light_data_1ac702ae146acae8df77f8e23246868f02" prot="public" virt="non-virtual"><scope>ShadowLightData</scope><name>shadowMapIndex</name></member>
+      <member refid="struct_shadow_light_data_1a8b3ea850c47b09d9e9427bbc5d4f620b" prot="public" virt="non-virtual"><scope>ShadowLightData</scope><name>shadowNormalBias</name></member>
+      <member refid="struct_shadow_light_data_1ac2324b8b78ba3f0edcaef7b926790bcd" prot="public" virt="non-virtual"><scope>ShadowLightData</scope><name>shadowStrength</name></member>
+      <member refid="struct_shadow_light_data_1aff377f9a74c61bb3aa681dfaa75917e6" prot="public" virt="non-virtual"><scope>ShadowLightData</scope><name>shadowType</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

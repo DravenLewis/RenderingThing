@@ -1,0 +1,182 @@
+\doxysection{Graphics.\+h}
+\hypertarget{_graphics_8h_source}{}\label{_graphics_8h_source}\index{src/Rendering/Core/Graphics.h@{src/Rendering/Core/Graphics.h}}
+\doxymbox{\hyperlink{_graphics_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ GRAPHICS\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ GRAPHICS\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ <stdexcept>}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ "{}Foundation/Math/Color.h"{}}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_texture_8h}{Rendering/Textures/Texture.h}}"{}}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_frame_buffer_8h}{Rendering/Core/FrameBuffer.h}}"{}}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_model_part_8h}{Rendering/Geometry/ModelPart.h}}"{}}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{keyword}{namespace\ }Graphics\{}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keyword}{namespace\ }Image\{}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image_a86c6d37f21cb1b2c02837c4727e63cc8}{Image}}\{}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<uint32\_t>\ pixelData;}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ width,\ height;}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image_a86c6d37f21cb1b2c02837c4727e63cc8}{Image}}()\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image_af90cfae65c25b2c1aa8336635aa744a4}{Image}}(\textcolor{keywordtype}{int}\ width,\ \textcolor{keywordtype}{int}\ height)\{}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(width\ <=\ 0\ ||\ height\ <=\ 0)\ \textcolor{keywordflow}{throw}\ std::runtime\_error(\textcolor{stringliteral}{"{}Cannot\ have\ 0\ or\ Negative\ Dimension."{}});}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>width\ =\ width;}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>height\ =\ height;}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ pixelData.resize(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(width)\ *\ height);}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image_ac2dbaa50ab4653153402fa98d1b1e145}{Image}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image_a86c6d37f21cb1b2c02837c4727e63cc8}{Image}}\&\ src)\ :\ width(src.width),\ height(src.height)\{}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ pixelData.resize(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(width)\ *\ height);}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>pixelData\ =\ src.pixelData;}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<Image>\ \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image_a361c6bf49cc6cb69edb8bd6273542952}{Create}}(\textcolor{keywordtype}{int}\ width,\ \textcolor{keywordtype}{int}\ height,\ \textcolor{keyword}{const}\ std::vector<uint32\_t>\&\ src\ =\ \{\})\{}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<uint32\_t>\ pixDat(width\ *\ height,\ 0x000000FF);}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!src.empty()\ \&\&\ (src.size()\ ==\ pixDat.size()))\{}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ pixDat\ =\ src;}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ image\ =\ std::make\_shared<Image>(width,height);}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ image-\/>pixelData\ =\ pixDat;}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ image;}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image_a9360b8e858004f05fc0a87f1903bc1b7}{getWidth}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ width;\}}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ getHeight()\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ height;\}}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<uint32\_t>\ getPixelData()\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ pixelData;\}}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_buffered_image_a95c739a0c8fb9150ab27d338819b209f}{BufferedImage}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image_a86c6d37f21cb1b2c02837c4727e63cc8}{Image}}\{}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_buffered_image_a95c739a0c8fb9150ab27d338819b209f}{BufferedImage}}(\textcolor{keywordtype}{int}\ width,\ \textcolor{keywordtype}{int}\ height)\ :\ \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image_a86c6d37f21cb1b2c02837c4727e63cc8}{Image}}(width,\ height)\{\}}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_buffered_image_a95c739a0c8fb9150ab27d338819b209f}{BufferedImage}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image}{Image}}\&\ src)\ :\ \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image}{Image}}(src)\ \{\}}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_buffered_image_a95c739a0c8fb9150ab27d338819b209f}{BufferedImage}}()\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ getValueAt(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y)\ \{}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(x\ <\ 0\ ||\ y\ <\ 0\ ||\ x\ >=\ width\ ||\ y\ >=\ height)\ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ index\ =\ x\ +\ y\ *\ width;}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ pixelData[index];}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_buffered_image_ac29650e2e57885e0b1ad47d0322bf0ee}{setValueAt}}(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y,\ uint32\_t\ value)\{}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(x\ <\ 0\ ||\ y\ <\ 0\ ||\ x\ >=\ width\ ||\ y\ >=\ height\ ||\ value\ <\ 0\ ||\ value\ >\ 0xFFFFFFFF\ )\ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ index\ =\ x\ +\ y\ *\ width;}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ pixelData[index]\ =\ value;}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Color\ getPixelAt(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y)\{}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ Color::fromRGBA32(getValueAt(x,y));}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setPixelAt(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y,\ Color\ col)\{}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_buffered_image_ac29650e2e57885e0b1ad47d0322bf0ee}{setValueAt}}(x,y,col.toRGBA32());}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00115\ \ \ \ \ \}}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \ \ \ \ \textcolor{keyword}{namespace\ }PostProcessing\{}
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_graphics_1_1_post_processing_1_1_post_processing_effect}{PostProcessingEffect}}\{}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \doxymbox{\hyperlink{class_graphics_1_1_post_processing_1_1_post_processing_effect_a956557ebb725734d270dd77ef8e40358}{\string~PostProcessingEffect}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{class_graphics_1_1_post_processing_1_1_post_processing_effect_a75b0263b1e53943ceb4f13d4aad0f5e6}{apply}}(}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ PTexture\ inputTex,}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ PTexture\ depthTex,}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ PFrameBuffer\ frameBuffer,}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::shared\_ptr<ModelPart>\ quad}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ )\ =\ 0;}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typedef}\ std::shared\_ptr<PostProcessingEffect>\ PPostProcessingEffect;}
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00146\ \ \ \ \ \}}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00148\ \ \ \ \ \textcolor{keyword}{namespace\ }ShaderDefaults\{}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\ SCREEN\_VERT\_SRC\ =\ R\textcolor{stringliteral}{"{}(}}
+\DoxyCodeLine{00151\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \#version\ 330\ core}}
+\DoxyCodeLine{00152\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \ \ \ \ layout\ (location\ =\ 0)\ in\ vec3\ aPos;}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \ \ \ \ layout\ (location\ =\ 1)\ in\ vec4\ aColor;\ \ \ \ \ //\ Mesh\ class\ has\ color\ at\ loc\ 1}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ \ \ \ \ layout\ (location\ =\ 2)\ in\ vec3\ aNormal;\ \ \ \ //\ Mesh\ class\ has\ normal\ at\ loc\ 2}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \ \ \ \ layout\ (location\ =\ 3)\ in\ vec2\ aTexCoords;\ //\ Mesh\ class\ has\ UV\ at\ loc\ 3}
+\DoxyCodeLine{00169\ }
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \ \ \ \ out\ vec2\ TexCoords;}
+\DoxyCodeLine{00171\ }
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \ \ \ \ uniform\ mat4\ u\_model;}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \ \ \ \ uniform\ mat4\ u\_view;}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \ \ \ \ uniform\ mat4\ u\_projection;}
+\DoxyCodeLine{00175\ }
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \ \ \ \ void\ main()\ \{}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ TexCoords\ =\ aTexCoords;}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ gl\_Position\ =\ u\_projection\ *\ u\_view\ *\ u\_model\ *\ vec4(aPos,\ 1.0);}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ )"{};}
+\DoxyCodeLine{00184\ }
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\ SCREEN\_FRAG\_SRC\ =\ R\textcolor{stringliteral}{"{}(}}
+\DoxyCodeLine{00186\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \#version\ 330\ core}}
+\DoxyCodeLine{00187\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{00188\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ out\ vec4\ FragColor;}}
+\DoxyCodeLine{00189\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ in\ vec2\ TexCoords;}}
+\DoxyCodeLine{00190\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{00191\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ sampler2D\ screenTexture;}}
+\DoxyCodeLine{00192\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ int\ u\_applyDeband;}}
+\DoxyCodeLine{00193\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ int\ u\_frameIndex;}}
+\DoxyCodeLine{00194\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_debandStrength;}}
+\DoxyCodeLine{00195\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \ \ \ \ float\ luma(vec3\ c)\{}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ return\ dot(c,\ vec3(0.299,\ 0.587,\ 0.114));}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00204\ }
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \ \ \ \ float\ interleavedGradientNoise(vec2\ p,\ float\ frame)\{}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2\ jitter\ =\ vec2(frame\ *\ 0.75487765,\ frame\ *\ 0.56984026);}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ return\ fract(52.9829189\ *\ fract(dot(p\ +\ jitter,\ vec2(0.06711056,\ 0.00583715))));}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00215\ }
+\DoxyCodeLine{00222\ \ \ \ \ \ \ \ \ \ \ \ \ float\ triangularNoise(vec2\ p,\ float\ frame)\{}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ a\ =\ interleavedGradientNoise(p\ +\ vec2(0.5,\ 0.25),\ frame);}
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ b\ =\ interleavedGradientNoise(p\ +\ vec2(1.25,\ 2.75),\ frame\ +\ 17.0);}
+\DoxyCodeLine{00225\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ return\ a\ -\/\ b;}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00227\ }
+\DoxyCodeLine{00231\ \ \ \ \ \ \ \ \ \ \ \ \ void\ main()\ \{}
+\DoxyCodeLine{00232\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec4\ color\ =\ texture(screenTexture,\ TexCoords);}
+\DoxyCodeLine{00233\ }
+\DoxyCodeLine{00234\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ if(u\_applyDeband\ !=\ 0)\{}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2\ texelSize\ =\ 1.0\ /\ vec2(textureSize(screenTexture,\ 0));}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ rightColor\ =\ texture(screenTexture,\ clamp(TexCoords\ +\ vec2(texelSize.x,\ 0.0),\ vec2(0.0),\ vec2(1.0))).rgb;}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ upColor\ =\ texture(screenTexture,\ clamp(TexCoords\ +\ vec2(0.0,\ texelSize.y),\ vec2(0.0),\ vec2(1.0))).rgb;}
+\DoxyCodeLine{00238\ }
+\DoxyCodeLine{00239\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ centerLuma\ =\ luma(color.rgb);}
+\DoxyCodeLine{00240\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ gradient\ =\ abs(centerLuma\ -\/\ luma(rightColor))\ +\ abs(centerLuma\ -\/\ luma(upColor));}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ smoothRegion\ =\ 1.0\ -\/\ smoothstep(0.002,\ 0.030,\ gradient);}
+\DoxyCodeLine{00242\ }
+\DoxyCodeLine{00243\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ frame\ =\ mod(float(u\_frameIndex),\ 1024.0);}
+\DoxyCodeLine{00244\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ noise\ =\ triangularNoise(gl\_FragCoord.xy,\ frame);}
+\DoxyCodeLine{00245\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ strength\ =\ (1.0\ /\ 255.0)\ *\ max(u\_debandStrength,\ 0.0)\ *\ mix(0.35,\ 1.65,\ smoothRegion);}
+\DoxyCodeLine{00246\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ color.rgb\ +=\ vec3(noise\ *\ strength);}
+\DoxyCodeLine{00247\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00248\ }
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FragColor\ =\ vec4(max(color.rgb,\ vec3(0.0)),\ color.a);}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00251\ \ \ \ \ \ \ \ \ )"{};}
+\DoxyCodeLine{00252\ }
+\DoxyCodeLine{00253\ \ \ \ \ \}}
+\DoxyCodeLine{00254\ \}}
+\DoxyCodeLine{00255\ }
+\DoxyCodeLine{00256\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ GRAPHICS\_H}}
+
+\end{DoxyCode}

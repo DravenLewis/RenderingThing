@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_i_drawable" kind="struct" language="C++" prot="public" abstract="yes">
+    <compoundname>IDrawable</compoundname>
+    <derivedcompoundref refid="class_mesh" prot="public" virt="non-virtual">Mesh</derivedcompoundref>
+    <derivedcompoundref refid="struct_model" prot="public" virt="non-virtual">Model</derivedcompoundref>
+    <derivedcompoundref refid="struct_model_part" prot="public" virt="non-virtual">ModelPart</derivedcompoundref>
+    <includes refid="_drawable_8h" local="no">Drawable.h</includes>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="struct_i_drawable_1a9fb10215e48d952bd9f6a4c52656ebb8" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void IDrawable::draw</definition>
+        <argsstring>(const Math3D::Mat4 &amp;parent=Math3D::Mat4(), const Math3D::Mat4 &amp;viewMtx=Math3D::Mat4(), const Math3D::Mat4 &amp;projectionMtx=Math3D::Mat4())=0</argsstring>
+        <name>draw</name>
+        <qualifiedname>IDrawable::draw</qualifiedname>
+        <reimplementedby refid="class_mesh_1abf58756040d4eb2bfe17766af91e3bc6">draw</reimplementedby>
+        <reimplementedby refid="struct_model_1a70a71199719d002f9cd089af3a5c69eb">draw</reimplementedby>
+        <reimplementedby refid="struct_model_part_1a64fc6730fbf1273892e60fd4906beacc">draw</reimplementedby>
+        <param>
+          <type>const Math3D::Mat4 &amp;</type>
+          <declname>parent</declname>
+          <defval>Math3D::Mat4()</defval>
+        </param>
+        <param>
+          <type>const Math3D::Mat4 &amp;</type>
+          <declname>viewMtx</declname>
+          <defval>Math3D::Mat4()</defval>
+        </param>
+        <param>
+          <type>const Math3D::Mat4 &amp;</type>
+          <declname>projectionMtx</declname>
+          <defval>Math3D::Mat4()</defval>
+        </param>
+        <briefdescription>
+<para>Draws this object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>parent</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for parent. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>viewMtx</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for view mtx. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>projectionMtx</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for projection mtx. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/Drawable.h" line="19" column="18"/>
+      </memberdef>
+      <memberdef kind="function" id="struct_i_drawable_1a618506be098b21fe0b9cae2c4219eb57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>IDrawable::~IDrawable</definition>
+        <argsstring>()=default</argsstring>
+        <name>~IDrawable</name>
+        <qualifiedname>IDrawable::~IDrawable</qualifiedname>
+        <briefdescription>
+<para>Destroys this <ref refid="struct_i_drawable" kindref="compound">IDrawable</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/Drawable.h" line="28" column="5"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_i_drawable" kindref="compound">IDrawable</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>IDrawable</label>
+        <link refid="struct_i_drawable"/>
+      </node>
+      <node id="2">
+        <label>Mesh</label>
+        <link refid="class_mesh"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>Model</label>
+        <link refid="struct_model"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>ModelPart</label>
+        <link refid="struct_model_part"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <location file="src/Rendering/Geometry/Drawable.h" line="12" column="1" bodyfile="src/Rendering/Geometry/Drawable.h" bodystart="12" bodyend="29"/>
+    <listofallmembers>
+      <member refid="struct_i_drawable_1a9fb10215e48d952bd9f6a4c52656ebb8" prot="public" virt="pure-virtual"><scope>IDrawable</scope><name>draw</name></member>
+      <member refid="struct_i_drawable_1a618506be098b21fe0b9cae2c4219eb57" prot="public" virt="non-virtual"><scope>IDrawable</scope><name>~IDrawable</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

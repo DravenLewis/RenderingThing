@@ -1,0 +1,235 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_f_x_a_a_effect" kind="class" language="C++" prot="public">
+    <compoundname>FXAAEffect</compoundname>
+    <basecompoundref refid="class_graphics_1_1_post_processing_1_1_post_processing_effect" prot="public" virt="non-virtual">Graphics::PostProcessing::PostProcessingEffect</basecompoundref>
+    <includes refid="_screen_effects_8h" local="no">ScreenEffects.h</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_f_x_a_a_effect_1aac8c75dce97313a39ead33b8eeb1ca0f" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="class_shader_program" kindref="compound">ShaderProgram</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;ShaderProgram&gt; FXAAEffect::shader</definition>
+        <argsstring></argsstring>
+        <name>shader</name>
+        <qualifiedname>FXAAEffect::shader</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1576" column="25" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1576" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_f_x_a_a_effect_1a6127779b882890cc911b94e6fd4dd69a" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool FXAAEffect::compileAttempted</definition>
+        <argsstring></argsstring>
+        <name>compileAttempted</name>
+        <qualifiedname>FXAAEffect::compileAttempted</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1577" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1577" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_f_x_a_a_effect_1afd9b01160c884e9642d5961562140e2a" prot="private" static="no" mutable="no">
+        <type>const std::string</type>
+        <definition>const std::string FXAAEffect::FXAA_FRAG_SHADER</definition>
+        <argsstring></argsstring>
+        <name>FXAA_FRAG_SHADER</name>
+        <qualifiedname>FXAAEffect::FXAA_FRAG_SHADER</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1578" column="27" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1578" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="class_f_x_a_a_effect_1aa62f0e0b34d7d2bbd8b27ba77e11efdd" prot="public" static="no" mutable="no">
+        <type><ref refid="_screen_effects_8h_1a253b4cf4d7c392a00e85057fab843598" kindref="member">AntiAliasingPreset</ref></type>
+        <definition>AntiAliasingPreset FXAAEffect::preset</definition>
+        <argsstring></argsstring>
+        <name>preset</name>
+        <qualifiedname>FXAAEffect::preset</qualifiedname>
+        <initializer>= AntiAliasingPreset::FXAA_Medium</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1673" column="28" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1673" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_f_x_a_a_effect_1a91bf4b9d290d56423acbc171b57758c8" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool FXAAEffect::ensureCompiled</definition>
+        <argsstring>()</argsstring>
+        <name>ensureCompiled</name>
+        <qualifiedname>FXAAEffect::ensureCompiled</qualifiedname>
+        <briefdescription>
+<para>Checks whether ensure compiled. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>True when the operation succeeds; otherwise false. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1654" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1654" bodyend="1670"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_f_x_a_a_effect_1a86127f37cfc0a67e3a96cb7c5a498988" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>FXAAEffect::FXAAEffect</definition>
+        <argsstring>()</argsstring>
+        <name>FXAAEffect</name>
+        <qualifiedname>FXAAEffect::FXAAEffect</qualifiedname>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_f_x_a_a_effect" kindref="compound">FXAAEffect</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1678" column="9" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1678" bodyend="1682"/>
+      </memberdef>
+      <memberdef kind="function" id="class_f_x_a_a_effect_1a350d2e34ca8351fb00fad5a571645f37" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>bool</type>
+        <definition>bool FXAAEffect::apply</definition>
+        <argsstring>(PTexture tex, PTexture, PFrameBuffer outFbo, std::shared_ptr&lt; ModelPart &gt; quad) override</argsstring>
+        <name>apply</name>
+        <qualifiedname>FXAAEffect::apply</qualifiedname>
+        <reimplements refid="class_graphics_1_1_post_processing_1_1_post_processing_effect_1a75b0263b1e53943ceb4f13d4aad0f5e6">apply</reimplements>
+        <param>
+          <type>PTexture</type>
+          <declname>tex</declname>
+        </param>
+        <param>
+          <type>PTexture</type>
+        </param>
+        <param>
+          <type>PFrameBuffer</type>
+          <declname>outFbo</declname>
+        </param>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="struct_model_part" kindref="compound">ModelPart</ref> &gt;</type>
+          <declname>quad</declname>
+        </param>
+        <briefdescription>
+<para>Applies current settings. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>tex</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for tex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>PTexture</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for p texture. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>outFbo</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output value for fbo. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>quad</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for quad. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>True when the operation succeeds; otherwise false. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1692" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1692" bodyend="1743"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_f_x_a_a_effect_1aaa839eb208b74595da76aba25276b6f8" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="class_f_x_a_a_effect" kindref="compound">FXAAEffect</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt; FXAAEffect &gt; FXAAEffect::New</definition>
+        <argsstring>()</argsstring>
+        <name>New</name>
+        <qualifiedname>FXAAEffect::New</qualifiedname>
+        <briefdescription>
+<para>Creates a new object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Pointer to the resulting object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1749" column="32" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1749" bodyend="1751"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_f_x_a_a_effect" kindref="compound">FXAAEffect</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>FXAAEffect</label>
+        <link refid="class_f_x_a_a_effect"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Graphics::PostProcessing::PostProcessingEffect</label>
+        <link refid="class_graphics_1_1_post_processing_1_1_post_processing_effect"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>FXAAEffect</label>
+        <link refid="class_f_x_a_a_effect"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Graphics::PostProcessing::PostProcessingEffect</label>
+        <link refid="class_graphics_1_1_post_processing_1_1_post_processing_effect"/>
+      </node>
+    </collaborationgraph>
+    <location file="src/Rendering/PostFX/ScreenEffects.h" line="1574" column="1" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1574" bodyend="1752"/>
+    <listofallmembers>
+      <member refid="class_f_x_a_a_effect_1a350d2e34ca8351fb00fad5a571645f37" prot="public" virt="virtual"><scope>FXAAEffect</scope><name>apply</name></member>
+      <member refid="class_f_x_a_a_effect_1a6127779b882890cc911b94e6fd4dd69a" prot="private" virt="non-virtual"><scope>FXAAEffect</scope><name>compileAttempted</name></member>
+      <member refid="class_f_x_a_a_effect_1a91bf4b9d290d56423acbc171b57758c8" prot="private" virt="non-virtual"><scope>FXAAEffect</scope><name>ensureCompiled</name></member>
+      <member refid="class_f_x_a_a_effect_1afd9b01160c884e9642d5961562140e2a" prot="private" virt="non-virtual"><scope>FXAAEffect</scope><name>FXAA_FRAG_SHADER</name></member>
+      <member refid="class_f_x_a_a_effect_1a86127f37cfc0a67e3a96cb7c5a498988" prot="public" virt="non-virtual"><scope>FXAAEffect</scope><name>FXAAEffect</name></member>
+      <member refid="class_f_x_a_a_effect_1aaa839eb208b74595da76aba25276b6f8" prot="public" virt="non-virtual"><scope>FXAAEffect</scope><name>New</name></member>
+      <member refid="class_f_x_a_a_effect_1aa62f0e0b34d7d2bbd8b27ba77e11efdd" prot="public" virt="non-virtual"><scope>FXAAEffect</scope><name>preset</name></member>
+      <member refid="class_f_x_a_a_effect_1aac8c75dce97313a39ead33b8eeb1ca0f" prot="private" virt="non-virtual"><scope>FXAAEffect</scope><name>shader</name></member>
+      <member refid="class_graphics_1_1_post_processing_1_1_post_processing_effect_1a956557ebb725734d270dd77ef8e40358" prot="public" virt="virtual"><scope>FXAAEffect</scope><name>~PostProcessingEffect</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

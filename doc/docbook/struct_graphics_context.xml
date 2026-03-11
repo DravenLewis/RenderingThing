@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_graphics_context" xml:lang="en-US">
+<title>GraphicsContext Struct Reference</title>
+<indexterm><primary>GraphicsContext</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_graphics_context">GraphicsContext</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;Graphics2D.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_graphics_context_1a84d5348c6f4e07794b09aae3da43b039"/>ValueContainer&lt; Color &gt; <emphasis role="strong">foregroundColor</emphasis> {Color::WHITE}</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_graphics_context_1a7de64635e4251d2e445f1a2075a58e90"/>ValueContainer&lt; Color &gt; <emphasis role="strong">backgroundColor</emphasis> {Color::BLACK}</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_graphics_context_1a89519c9ea1439b0a9394d937031f2b06"/>ValueContainer&lt; float &gt; <emphasis role="strong">strokeWidth</emphasis> {1.0f}</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_graphics_context_1a85ea9529a521df09c2ee74347c8318c0"/>ValueContainer&lt; PFont &gt; <emphasis role="strong">font</emphasis> {Font::Create&lt;<link linkend="_class_free_type_font">FreeTypeFont</link>&gt;(defaultFontLocation.get(), 18.0f)}</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_graphics_context_1ab410c3213a838dc6d0ae3994f43febb3"/>ValueContainer&lt; int &gt; <emphasis role="strong">fontSize</emphasis> {18}</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_graphics_context">GraphicsContext</link>. </para>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Core/<link linkend="__graphics2_d_8h">Graphics2D.h</link></section>
+</section>

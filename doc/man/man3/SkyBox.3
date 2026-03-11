@@ -1,0 +1,73 @@
+.TH "SkyBox" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+SkyBox \- Represents the \fBSkyBox\fP type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <SkyBox\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBSkyBox\fP (const \fBSkyBox6Face\fP &faceAssetDef)"
+.br
+.RI "Constructs a new \fBSkyBox\fP instance\&. "
+.ti -1c
+.RI "void \fBdraw\fP (PCamera cam, bool depthTested=false)"
+.br
+.RI "Draws this object\&. "
+.ti -1c
+.RI "PCubeMap \fBgetCubeMap\fP () const"
+.br
+.RI "Returns the cube map\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the \fBSkyBox\fP type\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "SkyBox::SkyBox (const \fBSkyBox6Face\fP & faceAssetDef)"
+
+.PP
+Constructs a new \fBSkyBox\fP instance\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfaceAssetDef\fP Value for face asset def\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void SkyBox::draw (PCamera cam, bool depthTested = \fRfalse\fP)"
+
+.PP
+Draws this object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcam\fP Value for cam\&. 
+.br
+\fIdepthTested\fP Value for depth tested\&. 
+.RE
+.PP
+
+.SS "PCubeMap SkyBox::getCubeMap () const\fR [inline]\fP"
+
+.PP
+Returns the cube map\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Result of this operation\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

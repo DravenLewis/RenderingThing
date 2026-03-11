@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__material_8h_source" xml:lang="en-US">
+<title>Material.h</title>
+<indexterm><primary>src/Rendering/Materials/Material.h</primary></indexterm>
+Go to the documentation of this file.<programlisting linenumbering="unnumbered">1 
+5 
+6 <emphasis role="preprocessor">#ifndef&#32;MATERIAL_H</emphasis>
+7 <emphasis role="preprocessor">#define&#32;MATERIAL_H</emphasis>
+8 
+9 <emphasis role="preprocessor">#include&#32;&lt;string&gt;</emphasis>
+10 <emphasis role="preprocessor">#include&#32;&lt;unordered_map&gt;</emphasis>
+11 <emphasis role="preprocessor">#include&#32;&lt;memory&gt;</emphasis>
+12 
+13 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__shader_program_8h">Rendering/Shaders/ShaderProgram.h</link>&quot;</emphasis>
+14 
+16 <emphasis role="keyword">struct&#32;</emphasis><link linkend="_struct_i_material_property">IMaterialProperty</link>{
+23 &#32;&#32;&#32;&#32;<emphasis role="keyword">virtual</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_struct_i_material_property_1a020ed618177d8a68aaa97d691ef6fc66">apply</link>(<link linkend="_class_shader_program">ShaderProgram</link>&amp;&#32;shader,&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;name,&#32;<emphasis role="keywordtype">bool</emphasis>&#32;assumeBound)&#32;=&#32;0;
+27 &#32;&#32;&#32;&#32;<emphasis role="keyword">virtual</emphasis>&#32;<link linkend="_struct_i_material_property_1a7d5f7dbbd5af6e80c3242c553976b02e">~IMaterialProperty</link>()&#32;=&#32;<emphasis role="keywordflow">default</emphasis>;
+28 };
+29 
+31 <emphasis role="keyword">template</emphasis>&#32;&lt;<emphasis role="keyword">typename</emphasis>&#32;T&gt;
+32 <emphasis role="keyword">struct&#32;</emphasis><link linkend="_struct_material_property_1ad18e0b2fc2b7cba4f5a1714ac196e51b">MaterialProperty</link>&#32;:&#32;<emphasis role="keyword">public</emphasis>&#32;<link linkend="_struct_i_material_property">IMaterialProperty</link>{
+33 &#32;&#32;&#32;&#32;T&#32;value;
+38 &#32;&#32;&#32;&#32;<link linkend="_struct_material_property_1ad18e0b2fc2b7cba4f5a1714ac196e51b">MaterialProperty</link>(T&#32;val)&#32;:&#32;value(val)&#32;{};
+39 
+40 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_struct_material_property_1a5645edb77a40c19013dac45a0d21880b">apply</link>(<link linkend="_class_shader_program">ShaderProgram</link>&amp;&#32;shader,&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;name,&#32;<emphasis role="keywordtype">bool</emphasis>&#32;assumeBound)<emphasis role="keyword">&#32;override</emphasis>{
+41 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_uniform">Uniform&lt;T&gt;</link>&#32;uni;
+42 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;uni.set(this-&gt;value);
+43 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(assumeBound){
+44 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;shader.<link linkend="_class_shader_program_1a793652af8a2d1dede36481c8146de003">setUniformFast</link>(name,uni);
+45 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}<emphasis role="keywordflow">else</emphasis>{
+46 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;shader.<link linkend="_class_shader_program_1a2c8a90e6624a306ca146759ae24268dc">setUniform</link>(name,uni);
+47 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+48 &#32;&#32;&#32;&#32;}
+49 };
+50 
+52 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_material_1ace810a426f4b488d2dc2a53070d85405">Material</link>{
+53 &#32;&#32;&#32;&#32;<emphasis role="keyword">private</emphasis>:
+54 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;ShaderProgram&gt;&#32;programObjPtr;
+55 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::unordered_map&lt;std::string,&#32;std::shared_ptr&lt;IMaterialProperty&gt;&gt;&#32;properties;
+56 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;castsShadowsFlag&#32;=&#32;<emphasis role="keyword">true</emphasis>;
+57 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;receivesShadowsFlag&#32;=&#32;<emphasis role="keyword">true</emphasis>;
+58 &#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+63 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_material_1ace810a426f4b488d2dc2a53070d85405">Material</link>(std::shared_ptr&lt;ShaderProgram&gt;&#32;program)&#32;:&#32;programObjPtr(program)&#32;{
+64 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(program){
+65 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(program-&gt;getID()&#32;==&#32;0){
+66 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(program-&gt;compile()&#32;==&#32;0){
+67 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;LogBot.Log(LOG_ERRO,&#32;<emphasis role="stringliteral">&quot;Failed&#32;to&#32;Compile&#32;Shader&#32;/&#32;Shader&#32;Program:&#32;\n\n%s&quot;</emphasis>,program-&gt;getLog().c_str());
+68 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+69 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+70 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+71 
+72 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;set&lt;int&gt;(<emphasis role="stringliteral">&quot;u_receiveShadows&quot;</emphasis>,&#32;receivesShadowsFlag&#32;?&#32;1&#32;:&#32;0);
+73 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;};
+77 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">virtual</emphasis>&#32;<link linkend="_class_material_1a179e16d6a1bd4a0f039b8e4cbf2ade30">~Material</link>(){};
+78 
+79 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">template</emphasis>&lt;<emphasis role="keyword">typename</emphasis>&#32;T&gt;
+80 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;set(<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;name,&#32;T&#32;value){
+81 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">auto</emphasis>&#32;it&#32;=&#32;properties.find(name);
+82 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(it&#32;!=&#32;properties.end()){
+83 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">auto</emphasis>&#32;existing&#32;=&#32;std::dynamic_pointer_cast&lt;MaterialProperty&lt;T&gt;&gt;(it-&gt;second);
+84 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(existing){
+85 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;existing-&gt;value&#32;=&#32;value;
+86 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;<emphasis role="keyword">true</emphasis>;
+87 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+88 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+89 
+90 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;properties[name]&#32;=&#32;std::make_shared&lt;MaterialProperty&lt;T&gt;&gt;(value);
+91 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;<emphasis role="keyword">true</emphasis>;
+92 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+93 
+94 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">virtual</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;bind(){
+95 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(!programObjPtr&#32;||&#32;programObjPtr-&gt;getID()&#32;==&#32;0){
+96 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>;
+97 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+98 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;programObjPtr-&gt;bind();
+99 
+100 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">for</emphasis>(<emphasis role="keyword">auto</emphasis>&#32;<emphasis role="keyword">const</emphasis>&amp;&#32;[name,&#32;prop]&#32;:&#32;properties){
+101 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;prop-&gt;apply(*programObjPtr,&#32;name,&#32;<emphasis role="keyword">true</emphasis>);
+102 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+103 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;};
+104 
+105 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;unbind(){
+106 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(programObjPtr){
+107 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;programObjPtr-&gt;unbind();
+108 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+109 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+110 
+111 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;ShaderProgram&gt;&#32;getShader(){
+112 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;this-&gt;programObjPtr;
+113 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+114 
+115 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;setShader(std::shared_ptr&lt;ShaderProgram&gt;&#32;program){
+116 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;programObjPtr&#32;=&#32;program;
+117 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(programObjPtr&#32;&amp;&amp;&#32;programObjPtr-&gt;getID()&#32;==&#32;0){
+118 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(programObjPtr-&gt;compile()&#32;==&#32;0){
+119 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;LogBot.Log(LOG_ERRO,&#32;<emphasis role="stringliteral">&quot;Failed&#32;to&#32;Compile&#32;Shader&#32;/&#32;Shader&#32;Program:&#32;\n\n%s&quot;</emphasis>,&#32;programObjPtr-&gt;getLog().c_str());
+120 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+121 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+122 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+123 
+124 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;setCastsShadows(<emphasis role="keywordtype">bool</emphasis>&#32;value){&#32;castsShadowsFlag&#32;=&#32;value;&#32;}
+125 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;castsShadows()<emphasis role="keyword">&#32;const&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;castsShadowsFlag;&#32;}
+126 
+127 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;setReceivesShadows(<emphasis role="keywordtype">bool</emphasis>&#32;value){
+128 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;receivesShadowsFlag&#32;=&#32;value;
+129 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;set&lt;int&gt;(<emphasis role="stringliteral">&quot;u_receiveShadows&quot;</emphasis>,&#32;receivesShadowsFlag&#32;?&#32;1&#32;:&#32;0);
+130 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+131 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;receivesShadows()<emphasis role="keyword">&#32;const&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;receivesShadowsFlag;&#32;}
+132 
+133 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;Material&gt;&#32;Copy(std::shared_ptr&lt;Material&gt;&#32;material){
+134 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(!material)&#32;<emphasis role="keywordflow">return</emphasis>&#32;<emphasis role="keyword">nullptr</emphasis>;
+135 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">auto</emphasis>&#32;n_material&#32;=&#32;std::make_shared&lt;Material&gt;(material-&gt;getShader());
+136 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;n_material-&gt;properties&#32;=&#32;material-&gt;properties;
+137 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;n_material;
+138 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+139 
+140 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">template</emphasis>&lt;<emphasis role="keyword">typename</emphasis>&#32;T&gt;
+141 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;T&gt;&#32;GetAs(std::shared_ptr&lt;Material&gt;&#32;matPtr){
+142 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;std::dynamic_pointer_cast&lt;T&gt;(matPtr);
+143 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+144 };
+145 
+146 <emphasis role="keyword">typedef</emphasis>&#32;std::shared_ptr&lt;Material&gt;&#32;PMaterial;
+147 
+148 
+149 
+150 <emphasis role="preprocessor">#endif&#32;</emphasis><emphasis role="comment">//&#32;MATERIAL_H</emphasis>
+</programlisting></section>

@@ -1,0 +1,436 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_model" xml:lang="en-US">
+<title>Model Struct Reference</title>
+<indexterm><primary>Model</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_model">Model</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;Model.h&gt;</computeroutput>
+</para>
+<para>Inheritance diagram for Model:    <informalfigure>
+        <mediaobject>
+            <imageobject>
+                <imagedata width="50%" align="center" valign="middle" scalefit="0" fileref="struct_model.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+    </informalfigure>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_model_1ab5bdabea36b1d1bee80151e2da913373"/><emphasis role="strong">Model</emphasis> ()=default</para>
+
+<para>Constructs a new <link linkend="_struct_model">Model</link> instance. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_model">Model</link> &amp; <link linkend="_struct_model_1a6ca1896be673957f3c333e08d27c3e86">addPart</link> (std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; part)</para>
+
+<para>Adds part. </para>
+</listitem>
+            <listitem><para>const std::vector&lt; std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; &gt; &amp; <link linkend="_struct_model_1aebf1f6007849e52f3864f7af2bbb5e3e">getParts</link> () const</para>
+
+<para>Returns the parts. </para>
+</listitem>
+            <listitem><para>Math3D::Transform &amp; <link linkend="_struct_model_1a57d503051c77f3585f1dc672d925eca9">transform</link> ()</para>
+
+<para>Returns the transform value. </para>
+</listitem>
+            <listitem><para>void <link linkend="_struct_model_1a5966666c7878e08e03ee1b1e201d6828">setBackfaceCulling</link> (bool enabled)</para>
+
+<para>Sets the backface culling. </para>
+</listitem>
+            <listitem><para>bool <link linkend="_struct_model_1a00a24b569d808c3adf5a5f07ec774fa8">isBackfaceCullingEnabled</link> () const</para>
+
+<para>Checks whether backface culling enabled. </para>
+</listitem>
+            <listitem><para>void <link linkend="_struct_model_1ac139238f33a813689a00d63e9fe58aef">setSourceAssetRef</link> (const std::string &amp;sourceRef)</para>
+
+<para>Sets the source asset ref. </para>
+</listitem>
+            <listitem><para>const std::string &amp; <link linkend="_struct_model_1a0a083629248c6964dc26d7d305585058">getSourceAssetRef</link> () const</para>
+
+<para>Returns the source asset ref. </para>
+</listitem>
+            <listitem><para>void <link linkend="_struct_model_1ac2983e7aa824b3feb46232fe57aa9af9">setSourceForceSmoothNormals</link> (bool enabled)</para>
+
+<para>Sets the source force smooth normals. </para>
+</listitem>
+            <listitem><para>bool <link linkend="_struct_model_1a27afa06ccde28393e0563a053819d701">getSourceForceSmoothNormals</link> () const</para>
+
+<para>Returns the source force smooth normals. </para>
+</listitem>
+            <listitem><para>void <link linkend="_struct_model_1a70a71199719d002f9cd089af3a5c69eb">draw</link> (const Math3D::Mat4 &amp;parent=Math3D::Mat4(), const Math3D::Mat4 &amp;view=Math3D::Mat4(), const Math3D::Mat4 &amp;projection=Math3D::Mat4()) override</para>
+
+<para>Draws this object. </para>
+</listitem>
+            <listitem><para>void <link linkend="_struct_model_1aa010c342dc045a0ac5f97ae6f4cdef4c">drawShadows</link> (const Math3D::Mat4 &amp;parent=Math3D::Mat4())</para>
+
+<para>Draws shadows. </para>
+</listitem>
+            <listitem><para>void <link linkend="_struct_model_1ab693c2ae374906f8a19ad2817bd7eceb">draw</link> (PCamera cam, Nullable&lt; Math3D::Transform &gt; parentTransform=nullptr)</para>
+
+<para>Draws this object. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+Public Member Functions inherited from <link linkend="_struct_i_drawable">IDrawable</link>        <itemizedlist>
+            <listitem><para><emphasis role="strong">~IDrawable</emphasis> ()=default</para>
+
+<para>Destroys this <link linkend="_struct_i_drawable">IDrawable</link> instance. </para>
+</listitem>
+        </itemizedlist>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>static std::shared_ptr&lt; <link linkend="_struct_model">Model</link> &gt; <link linkend="_struct_model_1a3f0b711fc427dce1d41b1c2122248482">Create</link> ()</para>
+
+<para>Creates a new object. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_model">Model</link>. </para>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_struct_model_1a6ca1896be673957f3c333e08d27c3e86"/><section>
+    <title>addPart()</title>
+<indexterm><primary>addPart</primary><secondary>Model</secondary></indexterm>
+<indexterm><primary>Model</primary><secondary>addPart</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_model">Model</link> &amp; Model::addPart (std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; part)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Adds part. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>part</entry><entry>
+<para>Value for part. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_model_1a3f0b711fc427dce1d41b1c2122248482"/><section>
+    <title>Create()</title>
+<indexterm><primary>Create</primary><secondary>Model</secondary></indexterm>
+<indexterm><primary>Model</primary><secondary>Create</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_struct_model">Model</link> &gt; Model::Create ( )<computeroutput>[inline]</computeroutput>, <computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Creates a new object. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_model_1a70a71199719d002f9cd089af3a5c69eb"/><section>
+    <title>draw()<computeroutput>[1/2]</computeroutput></title>
+<indexterm><primary>draw</primary><secondary>Model</secondary></indexterm>
+<indexterm><primary>Model</primary><secondary>draw</secondary></indexterm>
+<para><computeroutput>void Model::draw (const Math3D::Mat4 &amp; parent = <computeroutput>Math3D::Mat4()</computeroutput>
+, const Math3D::Mat4 &amp; view = <computeroutput>Math3D::Mat4()</computeroutput>
+, const Math3D::Mat4 &amp; projection = <computeroutput>Math3D::Mat4()</computeroutput>
+)<computeroutput>[inline]</computeroutput>, <computeroutput>[override]</computeroutput>, <computeroutput>[virtual]</computeroutput></computeroutput></para><para>
+
+<para>Draws this object. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>parent</entry><entry>
+<para>Value for parent. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>view</entry><entry>
+<para>Value for view. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>projection</entry><entry>
+<para>Value for projection. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+<para>
+Implements <link linkend="_struct_i_drawable_1a9fb10215e48d952bd9f6a4c52656ebb8">IDrawable</link>.</para>
+</section>
+<anchor xml:id="_struct_model_1ab693c2ae374906f8a19ad2817bd7eceb"/><section>
+    <title>draw()<computeroutput>[2/2]</computeroutput></title>
+<indexterm><primary>draw</primary><secondary>Model</secondary></indexterm>
+<indexterm><primary>Model</primary><secondary>draw</secondary></indexterm>
+<para><computeroutput>void Model::draw (PCamera cam, Nullable&lt; Math3D::Transform &gt; parentTransform = <computeroutput>nullptr</computeroutput>
+)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Draws this object. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>cam</entry><entry>
+<para>Value for cam. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>parentTransform</entry><entry>
+<para>Spatial value used by this operation. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_struct_model_1aa010c342dc045a0ac5f97ae6f4cdef4c"/><section>
+    <title>drawShadows()</title>
+<indexterm><primary>drawShadows</primary><secondary>Model</secondary></indexterm>
+<indexterm><primary>Model</primary><secondary>drawShadows</secondary></indexterm>
+<para><computeroutput>void Model::drawShadows (const Math3D::Mat4 &amp; parent = <computeroutput>Math3D::Mat4()</computeroutput>
+)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Draws shadows. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>parent</entry><entry>
+<para>Value for parent. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_struct_model_1aebf1f6007849e52f3864f7af2bbb5e3e"/><section>
+    <title>getParts()</title>
+<indexterm><primary>getParts</primary><secondary>Model</secondary></indexterm>
+<indexterm><primary>Model</primary><secondary>getParts</secondary></indexterm>
+<para><computeroutput>const std::vector&lt; std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; &gt; &amp; Model::getParts ( ) const<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the parts. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_model_1a0a083629248c6964dc26d7d305585058"/><section>
+    <title>getSourceAssetRef()</title>
+<indexterm><primary>getSourceAssetRef</primary><secondary>Model</secondary></indexterm>
+<indexterm><primary>Model</primary><secondary>getSourceAssetRef</secondary></indexterm>
+<para><computeroutput>const std::string &amp; Model::getSourceAssetRef ( ) const<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the source asset ref. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Resulting string value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_model_1a27afa06ccde28393e0563a053819d701"/><section>
+    <title>getSourceForceSmoothNormals()</title>
+<indexterm><primary>getSourceForceSmoothNormals</primary><secondary>Model</secondary></indexterm>
+<indexterm><primary>Model</primary><secondary>getSourceForceSmoothNormals</secondary></indexterm>
+<para><computeroutput>bool Model::getSourceForceSmoothNormals ( ) const<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the source force smooth normals. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>True when the operation succeeds; otherwise false. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_model_1a00a24b569d808c3adf5a5f07ec774fa8"/><section>
+    <title>isBackfaceCullingEnabled()</title>
+<indexterm><primary>isBackfaceCullingEnabled</primary><secondary>Model</secondary></indexterm>
+<indexterm><primary>Model</primary><secondary>isBackfaceCullingEnabled</secondary></indexterm>
+<para><computeroutput>bool Model::isBackfaceCullingEnabled ( ) const<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Checks whether backface culling enabled. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>True when the condition is satisfied; otherwise false. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_model_1a5966666c7878e08e03ee1b1e201d6828"/><section>
+    <title>setBackfaceCulling()</title>
+<indexterm><primary>setBackfaceCulling</primary><secondary>Model</secondary></indexterm>
+<indexterm><primary>Model</primary><secondary>setBackfaceCulling</secondary></indexterm>
+<para><computeroutput>void Model::setBackfaceCulling (bool enabled)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Sets the backface culling. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>enabled</entry><entry>
+<para>Flag controlling enabled. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_struct_model_1ac139238f33a813689a00d63e9fe58aef"/><section>
+    <title>setSourceAssetRef()</title>
+<indexterm><primary>setSourceAssetRef</primary><secondary>Model</secondary></indexterm>
+<indexterm><primary>Model</primary><secondary>setSourceAssetRef</secondary></indexterm>
+<para><computeroutput>void Model::setSourceAssetRef (const std::string &amp; sourceRef)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Sets the source asset ref. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>sourceRef</entry><entry>
+<para>Reference to source. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_struct_model_1ac2983e7aa824b3feb46232fe57aa9af9"/><section>
+    <title>setSourceForceSmoothNormals()</title>
+<indexterm><primary>setSourceForceSmoothNormals</primary><secondary>Model</secondary></indexterm>
+<indexterm><primary>Model</primary><secondary>setSourceForceSmoothNormals</secondary></indexterm>
+<para><computeroutput>void Model::setSourceForceSmoothNormals (bool enabled)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Sets the source force smooth normals. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>enabled</entry><entry>
+<para>Flag controlling enabled. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_struct_model_1a57d503051c77f3585f1dc672d925eca9"/><section>
+    <title>transform()</title>
+<indexterm><primary>transform</primary><secondary>Model</secondary></indexterm>
+<indexterm><primary>Model</primary><secondary>transform</secondary></indexterm>
+<para><computeroutput>Math3D::Transform &amp; Model::transform ( )<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the transform value. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Geometry/<link linkend="__model_8h">Model.h</link></section>
+</section>

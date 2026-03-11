@@ -1,0 +1,69 @@
+.TH "ShaderCache" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ShaderCache \- Holds data for \fBShaderCache\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ShaderProgram\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "std::shared_ptr< \fBShaderProgram\fP > \fBgetOrCompile\fP (std::string name, std::string vtx='', std::string frag='', std::string geom='', std::string tess='', std::string compute='', std::string task='', std::string srtx='')"
+.br
+.RI "Returns a cached shader program, compiling and caching if missing\&. "
+.ti -1c
+.RI "void \fBclear\fP ()"
+.br
+.RI "Clears the current state\&. "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::map< std::string, std::shared_ptr< \fBShaderProgram\fP > > \fBprogramCache\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Holds data for \fBShaderCache\fP\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "std::shared_ptr< \fBShaderProgram\fP > ShaderCache::getOrCompile (std::string name, std::string vtx = \fR''\fP, std::string frag = \fR''\fP, std::string geom = \fR''\fP, std::string tess = \fR''\fP, std::string compute = \fR''\fP, std::string task = \fR''\fP, std::string srtx = \fR''\fP)\fR [inline]\fP"
+
+.PP
+Returns a cached shader program, compiling and caching if missing\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP Cache key for the shader program\&. 
+.br
+\fIvtx\fP \fBVertex\fP shader source\&. 
+.br
+\fIfrag\fP Fragment shader source\&. 
+.br
+\fIgeom\fP Geometry shader source\&. 
+.br
+\fItess\fP Tessellation shader source\&. 
+.br
+\fIcompute\fP Compute shader source\&. 
+.br
+\fItask\fP Task shader source\&. 
+.br
+\fIsrtx\fP Ray-trace shader source\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Shared pointer to a compiled shader program\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

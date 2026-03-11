@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_material_defaults_1_1_flat_color_material" kind="class" language="C++" prot="public">
+    <compoundname>MaterialDefaults::FlatColorMaterial</compoundname>
+    <basecompoundref refid="class_material" prot="public" virt="non-virtual">Material</basecompoundref>
+    <includes refid="_material_defaults_8h" local="no">MaterialDefaults.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="class_material_defaults_1_1_flat_color_material_1ad46827b8325b3c39f90b3902a8de4acc" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; Math3D::Vec4 &gt;</type>
+        <definition>ValueContainer&lt;Math3D::Vec4&gt; MaterialDefaults::FlatColorMaterial::Color</definition>
+        <argsstring></argsstring>
+        <name>Color</name>
+        <qualifiedname>MaterialDefaults::FlatColorMaterial::Color</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/MaterialDefaults.h" line="124" column="24" bodyfile="src/Rendering/Materials/MaterialDefaults.h" bodystart="124" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_material_defaults_1_1_flat_color_material_1a8a94815318f3c3d07f41dfe136ef8cfe" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; Math3D::Vec3 &gt;</type>
+        <definition>ValueContainer&lt;Math3D::Vec3&gt; MaterialDefaults::FlatColorMaterial::ViewPos</definition>
+        <argsstring></argsstring>
+        <name>ViewPos</name>
+        <qualifiedname>MaterialDefaults::FlatColorMaterial::ViewPos</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/MaterialDefaults.h" line="125" column="24" bodyfile="src/Rendering/Materials/MaterialDefaults.h" bodystart="125" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_material_defaults_1_1_flat_color_material_1ac7dc6be01211acd7b57c3cdc9c66465c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>FlatColorMaterial::FlatColorMaterial</definition>
+        <argsstring>(std::shared_ptr&lt; ShaderProgram &gt; program)</argsstring>
+        <name>FlatColorMaterial</name>
+        <qualifiedname>MaterialDefaults::FlatColorMaterial::FlatColorMaterial</qualifiedname>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="class_shader_program" kindref="compound">ShaderProgram</ref> &gt;</type>
+          <declname>program</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_material_defaults_1_1_flat_color_material" kindref="compound">FlatColorMaterial</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>program</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for program. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/MaterialDefaults.h" line="131" column="9" bodyfile="src/Rendering/Materials/MaterialDefaults.cpp" bodystart="262" bodyend="279"/>
+        <references refid="class_material_1ace810a426f4b488d2dc2a53070d85405" compoundref="_material_8h" startline="63" endline="73">Material::Material</references>
+      </memberdef>
+      <memberdef kind="function" id="class_material_defaults_1_1_flat_color_material_1a3602a1f317d7e37c08e1f2c7e4fd4c2b" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void FlatColorMaterial::bind</definition>
+        <argsstring>() override</argsstring>
+        <name>bind</name>
+        <qualifiedname>MaterialDefaults::FlatColorMaterial::bind</qualifiedname>
+        <reimplements refid="class_material_1aa9acc36e80cc1874dc69da8dedf54695">bind</reimplements>
+        <briefdescription>
+<para>Binds this resource. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/MaterialDefaults.h" line="135" column="14" bodyfile="src/Rendering/Materials/MaterialDefaults.cpp" bodystart="281" bodyend="293"/>
+        <references refid="class_shadow_renderer_1a294d22aa8a61404ca7741fb92179f759" compoundref="_shadow_renderer_8cpp" startline="1366" endline="1495">ShadowRenderer::BindShadowSamplers</references>
+        <references refid="class_light_uniform_uploader_1a47d11f57dfb8557bd58dd6e9ca1cb51f" compoundref="_light_utils_8cpp" startline="107" endline="266">LightUniformUploader::UploadLights</references>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_material_defaults_1_1_flat_color_material_1a4cde023f130787555ffd8f4b322a040e" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="class_material_defaults_1_1_flat_color_material_1ac7dc6be01211acd7b57c3cdc9c66465c" kindref="member">FlatColorMaterial</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; FlatColorMaterial &gt; FlatColorMaterial::Create</definition>
+        <argsstring>(Math3D::Vec4 color=Color::WHITE)</argsstring>
+        <name>Create</name>
+        <qualifiedname>MaterialDefaults::FlatColorMaterial::Create</qualifiedname>
+        <param>
+          <type>Math3D::Vec4</type>
+          <declname>color</declname>
+          <defval>Color::WHITE</defval>
+        </param>
+        <briefdescription>
+<para>Creates a new object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>color</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Color value. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Pointer to the resulting object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/MaterialDefaults.h" line="141" column="32" bodyfile="src/Rendering/Materials/MaterialDefaults.cpp" bodystart="295" bodyend="314"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_material_defaults_1_1_flat_color_material" kindref="compound">FlatColorMaterial</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>Material</label>
+        <link refid="class_material"/>
+      </node>
+      <node id="1">
+        <label>MaterialDefaults::FlatColorMaterial</label>
+        <link refid="class_material_defaults_1_1_flat_color_material"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>Material</label>
+        <link refid="class_material"/>
+      </node>
+      <node id="1">
+        <label>MaterialDefaults::FlatColorMaterial</label>
+        <link refid="class_material_defaults_1_1_flat_color_material"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="src/Rendering/Materials/MaterialDefaults.h" line="122" column="5" bodyfile="src/Rendering/Materials/MaterialDefaults.h" bodystart="122" bodyend="142"/>
+    <listofallmembers>
+      <member refid="class_material_defaults_1_1_flat_color_material_1a3602a1f317d7e37c08e1f2c7e4fd4c2b" prot="public" virt="virtual"><scope>MaterialDefaults::FlatColorMaterial</scope><name>bind</name></member>
+      <member refid="class_material_1aaf9a94eb8335d955b4a58a1f036bb3aa" prot="public" virt="non-virtual"><scope>MaterialDefaults::FlatColorMaterial</scope><name>castsShadows</name></member>
+      <member refid="class_material_defaults_1_1_flat_color_material_1ad46827b8325b3c39f90b3902a8de4acc" prot="public" virt="non-virtual"><scope>MaterialDefaults::FlatColorMaterial</scope><name>Color</name></member>
+      <member refid="class_material_1a55fb7dcfa5f72a8997b6423ac099caa6" prot="public" virt="non-virtual"><scope>MaterialDefaults::FlatColorMaterial</scope><name>Copy</name></member>
+      <member refid="class_material_defaults_1_1_flat_color_material_1a4cde023f130787555ffd8f4b322a040e" prot="public" virt="non-virtual"><scope>MaterialDefaults::FlatColorMaterial</scope><name>Create</name></member>
+      <member refid="class_material_defaults_1_1_flat_color_material_1ac7dc6be01211acd7b57c3cdc9c66465c" prot="public" virt="non-virtual"><scope>MaterialDefaults::FlatColorMaterial</scope><name>FlatColorMaterial</name></member>
+      <member refid="class_material_1a00c4c29d23d53171fa11ccbe1d91f14d" prot="public" virt="non-virtual"><scope>MaterialDefaults::FlatColorMaterial</scope><name>GetAs</name></member>
+      <member refid="class_material_1a3fbc05a83a35eb9e07a7b84cba22eb6e" prot="public" virt="non-virtual"><scope>MaterialDefaults::FlatColorMaterial</scope><name>getShader</name></member>
+      <member refid="class_material_1ace810a426f4b488d2dc2a53070d85405" prot="public" virt="non-virtual"><scope>MaterialDefaults::FlatColorMaterial</scope><name>Material</name></member>
+      <member refid="class_material_1adfd452b4ff41ff6d818278e8adf9b9d5" prot="public" virt="non-virtual"><scope>MaterialDefaults::FlatColorMaterial</scope><name>receivesShadows</name></member>
+      <member refid="class_material_1afebe6792e3275332e491ce2ca396069b" prot="public" virt="non-virtual"><scope>MaterialDefaults::FlatColorMaterial</scope><name>set</name></member>
+      <member refid="class_material_1ab98237e9210f21b7b8600966f6b66c5f" prot="public" virt="non-virtual"><scope>MaterialDefaults::FlatColorMaterial</scope><name>setCastsShadows</name></member>
+      <member refid="class_material_1acef042dc3f4671a78a172aa90a12b694" prot="public" virt="non-virtual"><scope>MaterialDefaults::FlatColorMaterial</scope><name>setReceivesShadows</name></member>
+      <member refid="class_material_1add6d2e03a3dc1ac8dfac431b9641d5cc" prot="public" virt="non-virtual"><scope>MaterialDefaults::FlatColorMaterial</scope><name>setShader</name></member>
+      <member refid="class_material_1a3b4ef589843fde30b1844bde9bcbad19" prot="public" virt="non-virtual"><scope>MaterialDefaults::FlatColorMaterial</scope><name>unbind</name></member>
+      <member refid="class_material_defaults_1_1_flat_color_material_1a8a94815318f3c3d07f41dfe136ef8cfe" prot="public" virt="non-virtual"><scope>MaterialDefaults::FlatColorMaterial</scope><name>ViewPos</name></member>
+      <member refid="class_material_1a179e16d6a1bd4a0f039b8e4cbf2ade30" prot="public" virt="virtual"><scope>MaterialDefaults::FlatColorMaterial</scope><name>~Material</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

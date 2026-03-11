@@ -1,0 +1,43 @@
+.TH "ShadowRenderer::ShadowDrawItem" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ShadowRenderer::ShadowDrawItem \- Holds data for \fBShadowDrawItem\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ShadowRenderer\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::shared_ptr< \fBMesh\fP > \fBmesh\fP"
+.br
+.ti -1c
+.RI "Math3D::Mat4 \fBmodel\fP"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBMaterial\fP > \fBmaterial\fP"
+.br
+.ti -1c
+.RI "bool \fBenableBackfaceCulling\fP = true"
+.br
+.ti -1c
+.RI "bool \fBhasBounds\fP = false"
+.br
+.ti -1c
+.RI "Math3D::Vec3 \fBboundsMin\fP = Math3D::Vec3(0\&.0f, 0\&.0f, 0\&.0f)"
+.br
+.ti -1c
+.RI "Math3D::Vec3 \fBboundsMax\fP = Math3D::Vec3(0\&.0f, 0\&.0f, 0\&.0f)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Holds data for \fBShadowDrawItem\fP\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

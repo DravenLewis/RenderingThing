@@ -1,0 +1,723 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_graphics2_d" xml:lang="en-US">
+<title>Graphics2D Class Reference</title>
+<indexterm><primary>Graphics2D</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_graphics2_d">Graphics2D</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;Graphics2D.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><link linkend="_class_graphics2_d_1a17535ece4965dc0eedad7fa5e5accbff">Graphics2D</link> (PScreen screenContext)</para>
+
+<para>Constructs a new <link linkend="_class_graphics2_d">Graphics2D</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_graphics2_d_1afc5f54d2e36fb1130bafa6ae9a43217f"/>void <emphasis role="strong">resize</emphasis> (int w, int h)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_graphics2_d_1aa47dbfda9d2a9b21f89ce069397683f3"/>void <emphasis role="strong">begin</emphasis> ()</para>
+
+<para>Begins a 2D drawing batch. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_graphics2_d_1a3a6498d0bc740072a5171a9458018e86"/>void <emphasis role="strong">end</emphasis> ()</para>
+
+<para>Ends the current 2D drawing batch. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_graphics_context">GraphicsContext</link> &amp; <link linkend="_class_graphics2_d_1a22cd28ae0cd16c1d603e2cd42c4230b0">getContext</link> ()</para>
+
+<para>Returns the context. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_graphics2_d_1a14a3674ae1be3737e6dfb868e9be3b3f"/>static void <emphasis role="strong">SetForegroundColor</emphasis> (<link linkend="_class_graphics2_d">Graphics2D</link> &amp;graphics, const Color &amp;foregroundColor=Color::WHITE)</para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_graphics2_d_1a9de097cc927aad3bf9c52ffda4a37a2a">SetBackgroundColor</link> (<link linkend="_class_graphics2_d">Graphics2D</link> &amp;graphics, const Color &amp;backgroundColor=Color::BLACK)</para>
+
+<para>Sets the background color. </para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_graphics2_d_1a2efe101242a8dd701a448c29870ccdd2">SetStrokeWidth</link> (<link linkend="_class_graphics2_d">Graphics2D</link> &amp;graphics, float width=1.0f)</para>
+
+<para>Sets the stroke width. </para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_graphics2_d_1a26636c9fbb1be08ef97b5cc4b97811c4">SetFontSize</link> (<link linkend="_class_graphics2_d">Graphics2D</link> &amp;graphics, float size=1.0f)</para>
+
+<para>Sets the font size. </para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_graphics2_d_1a768b518945214fce84a03c574c1a9671">SetFont</link> (<link linkend="_class_graphics2_d">Graphics2D</link> &amp;graphics, PFont font)</para>
+
+<para>Sets the font. </para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_graphics2_d_1a88fe3fbf759c21bd6a4bfaefd5c90d58">DrawLine</link> (<link linkend="_class_graphics2_d">Graphics2D</link> &amp;graphics, float x1, float y1, float x2, float y2)</para>
+
+<para>Draws line. </para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_graphics2_d_1a5095fffb75a1249ee247c0fa73ebca75">DrawRect</link> (<link linkend="_class_graphics2_d">Graphics2D</link> &amp;graphics, float x, float y, float w, float h)</para>
+
+<para>Draws rect. </para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_graphics2_d_1a67fa147d1215bba962230b13154964f8">FillRect</link> (<link linkend="_class_graphics2_d">Graphics2D</link> &amp;graphics, float x, float y, float w, float h)</para>
+
+<para>Fills a rectangle. </para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_graphics2_d_1a5c0cd288e641e8a8242740d2898ac3f2">FillTriangle</link> (<link linkend="_class_graphics2_d">Graphics2D</link> &amp;graphics, float x1, float y1, float x2, float y2, float x3, float y3)</para>
+
+<para>Fills a triangle. </para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_graphics2_d_1adad7605dad2d438339e3179a569c6f28">DrawEllipse</link> (<link linkend="_class_graphics2_d">Graphics2D</link> &amp;graphics, float x, float y, float w, float h)</para>
+
+<para>Draws ellipse. </para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_graphics2_d_1a0843c9a23ec885b7d0fcb0554d559457">FillEllipse</link> (<link linkend="_class_graphics2_d">Graphics2D</link> &amp;graphics, float x, float y, float w, float h)</para>
+
+<para>Fills an ellipse. </para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_graphics2_d_1a4496c5443a7a614690f1a7c4656a3854">DrawImage</link> (<link linkend="_class_graphics2_d">Graphics2D</link> &amp;graphics, PTexture tex, float x, float y, float w=-1, float h=-1)</para>
+
+<para>Draws image. </para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_graphics2_d_1ac7c6ea860d6bca44f1a4247d644d8dce">DrawString</link> (<link linkend="_class_graphics2_d">Graphics2D</link> &amp;graphics, std::string text, float x, float y, bool useCache=true)</para>
+
+<para>Draws string. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_graphics2_d">Graphics2D</link> type. </para>
+</section>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_class_graphics2_d_1a17535ece4965dc0eedad7fa5e5accbff"/><section>
+    <title>Graphics2D()</title>
+<indexterm><primary>Graphics2D</primary><secondary>Graphics2D</secondary></indexterm>
+<indexterm><primary>Graphics2D</primary><secondary>Graphics2D</secondary></indexterm>
+<para><computeroutput>Graphics2D::Graphics2D (PScreen screenContext)</computeroutput></para><para>
+
+<para>Constructs a new <link linkend="_class_graphics2_d">Graphics2D</link> instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>screenContext</entry><entry>
+<para>Value for screen context. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_graphics2_d_1adad7605dad2d438339e3179a569c6f28"/><section>
+    <title>DrawEllipse()</title>
+<indexterm><primary>DrawEllipse</primary><secondary>Graphics2D</secondary></indexterm>
+<indexterm><primary>Graphics2D</primary><secondary>DrawEllipse</secondary></indexterm>
+<para><computeroutput>void Graphics2D::DrawEllipse (<link linkend="_class_graphics2_d">Graphics2D</link> &amp; graphics, float x, float y, float w, float h)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Draws ellipse. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>graphics</entry><entry>
+<para>Value for graphics. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>x</entry><entry>
+<para>Spatial value used by this operation. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>y</entry><entry>
+<para>Spatial value used by this operation. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>w</entry><entry>
+<para>Value for w. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>h</entry><entry>
+<para>Value for h. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_graphics2_d_1a4496c5443a7a614690f1a7c4656a3854"/><section>
+    <title>DrawImage()</title>
+<indexterm><primary>DrawImage</primary><secondary>Graphics2D</secondary></indexterm>
+<indexterm><primary>Graphics2D</primary><secondary>DrawImage</secondary></indexterm>
+<para><computeroutput>void Graphics2D::DrawImage (<link linkend="_class_graphics2_d">Graphics2D</link> &amp; graphics, PTexture tex, float x, float y, float w = <computeroutput>-1</computeroutput>
+, float h = <computeroutput>-1</computeroutput>
+)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Draws image. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>graphics</entry><entry>
+<para>Value for graphics. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>tex</entry><entry>
+<para>Value for tex. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>x</entry><entry>
+<para>Spatial value used by this operation. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>y</entry><entry>
+<para>Spatial value used by this operation. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>w</entry><entry>
+<para>Value for w. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>h</entry><entry>
+<para>Value for h. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_graphics2_d_1a88fe3fbf759c21bd6a4bfaefd5c90d58"/><section>
+    <title>DrawLine()</title>
+<indexterm><primary>DrawLine</primary><secondary>Graphics2D</secondary></indexterm>
+<indexterm><primary>Graphics2D</primary><secondary>DrawLine</secondary></indexterm>
+<para><computeroutput>void Graphics2D::DrawLine (<link linkend="_class_graphics2_d">Graphics2D</link> &amp; graphics, float x1, float y1, float x2, float y2)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Draws line. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>graphics</entry><entry>
+<para>Value for graphics. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>x1</entry><entry>
+<para>Value for x 1. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>y1</entry><entry>
+<para>Value for y 1. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>x2</entry><entry>
+<para>Value for x 2. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>y2</entry><entry>
+<para>Value for y 2. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_graphics2_d_1a5095fffb75a1249ee247c0fa73ebca75"/><section>
+    <title>DrawRect()</title>
+<indexterm><primary>DrawRect</primary><secondary>Graphics2D</secondary></indexterm>
+<indexterm><primary>Graphics2D</primary><secondary>DrawRect</secondary></indexterm>
+<para><computeroutput>void Graphics2D::DrawRect (<link linkend="_class_graphics2_d">Graphics2D</link> &amp; graphics, float x, float y, float w, float h)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Draws rect. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>graphics</entry><entry>
+<para>Value for graphics. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>x</entry><entry>
+<para>Spatial value used by this operation. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>y</entry><entry>
+<para>Spatial value used by this operation. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>w</entry><entry>
+<para>Value for w. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>h</entry><entry>
+<para>Value for h. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_graphics2_d_1ac7c6ea860d6bca44f1a4247d644d8dce"/><section>
+    <title>DrawString()</title>
+<indexterm><primary>DrawString</primary><secondary>Graphics2D</secondary></indexterm>
+<indexterm><primary>Graphics2D</primary><secondary>DrawString</secondary></indexterm>
+<para><computeroutput>void Graphics2D::DrawString (<link linkend="_class_graphics2_d">Graphics2D</link> &amp; graphics, std::string text, float x, float y, bool useCache = <computeroutput>true</computeroutput>
+)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Draws string. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>graphics</entry><entry>
+<para>Value for graphics. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>text</entry><entry>
+<para>Value for text. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>x</entry><entry>
+<para>Spatial value used by this operation. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>y</entry><entry>
+<para>Spatial value used by this operation. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>useCache</entry><entry>
+<para>Flag controlling use cache. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_graphics2_d_1a0843c9a23ec885b7d0fcb0554d559457"/><section>
+    <title>FillEllipse()</title>
+<indexterm><primary>FillEllipse</primary><secondary>Graphics2D</secondary></indexterm>
+<indexterm><primary>Graphics2D</primary><secondary>FillEllipse</secondary></indexterm>
+<para><computeroutput>void Graphics2D::FillEllipse (<link linkend="_class_graphics2_d">Graphics2D</link> &amp; graphics, float x, float y, float w, float h)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Fills an ellipse. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>graphics</entry><entry>
+<para>Value for graphics. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>x</entry><entry>
+<para>Spatial value used by this operation. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>y</entry><entry>
+<para>Spatial value used by this operation. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>w</entry><entry>
+<para>Value for w. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>h</entry><entry>
+<para>Value for h. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_graphics2_d_1a67fa147d1215bba962230b13154964f8"/><section>
+    <title>FillRect()</title>
+<indexterm><primary>FillRect</primary><secondary>Graphics2D</secondary></indexterm>
+<indexterm><primary>Graphics2D</primary><secondary>FillRect</secondary></indexterm>
+<para><computeroutput>void Graphics2D::FillRect (<link linkend="_class_graphics2_d">Graphics2D</link> &amp; graphics, float x, float y, float w, float h)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Fills a rectangle. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>graphics</entry><entry>
+<para>Value for graphics. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>x</entry><entry>
+<para>Spatial value used by this operation. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>y</entry><entry>
+<para>Spatial value used by this operation. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>w</entry><entry>
+<para>Value for w. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>h</entry><entry>
+<para>Value for h. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_graphics2_d_1a5c0cd288e641e8a8242740d2898ac3f2"/><section>
+    <title>FillTriangle()</title>
+<indexterm><primary>FillTriangle</primary><secondary>Graphics2D</secondary></indexterm>
+<indexterm><primary>Graphics2D</primary><secondary>FillTriangle</secondary></indexterm>
+<para><computeroutput>void Graphics2D::FillTriangle (<link linkend="_class_graphics2_d">Graphics2D</link> &amp; graphics, float x1, float y1, float x2, float y2, float x3, float y3)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Fills a triangle. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>graphics</entry><entry>
+<para>Value for graphics. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>x1</entry><entry>
+<para>Value for x 1. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>y1</entry><entry>
+<para>Value for y 1. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>x2</entry><entry>
+<para>Value for x 2. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>y2</entry><entry>
+<para>Value for y 2. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>x3</entry><entry>
+<para>Value for x 3. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>y3</entry><entry>
+<para>Value for y 3. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_graphics2_d_1a22cd28ae0cd16c1d603e2cd42c4230b0"/><section>
+    <title>getContext()</title>
+<indexterm><primary>getContext</primary><secondary>Graphics2D</secondary></indexterm>
+<indexterm><primary>Graphics2D</primary><secondary>getContext</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_graphics_context">GraphicsContext</link> &amp; Graphics2D::getContext ( )</computeroutput></para><para>
+
+<para>Returns the context. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_graphics2_d_1a9de097cc927aad3bf9c52ffda4a37a2a"/><section>
+    <title>SetBackgroundColor()</title>
+<indexterm><primary>SetBackgroundColor</primary><secondary>Graphics2D</secondary></indexterm>
+<indexterm><primary>Graphics2D</primary><secondary>SetBackgroundColor</secondary></indexterm>
+<para><computeroutput>void Graphics2D::SetBackgroundColor (<link linkend="_class_graphics2_d">Graphics2D</link> &amp; graphics, const Color &amp; backgroundColor = <computeroutput>Color::BLACK</computeroutput>
+)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Sets the background color. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>graphics</entry><entry>
+<para>Value for graphics. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>backgroundColor</entry><entry>
+<para>Color value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_graphics2_d_1a768b518945214fce84a03c574c1a9671"/><section>
+    <title>SetFont()</title>
+<indexterm><primary>SetFont</primary><secondary>Graphics2D</secondary></indexterm>
+<indexterm><primary>Graphics2D</primary><secondary>SetFont</secondary></indexterm>
+<para><computeroutput>void Graphics2D::SetFont (<link linkend="_class_graphics2_d">Graphics2D</link> &amp; graphics, PFont font)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Sets the font. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>graphics</entry><entry>
+<para>Value for graphics. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>font</entry><entry>
+<para>Value for font. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_graphics2_d_1a26636c9fbb1be08ef97b5cc4b97811c4"/><section>
+    <title>SetFontSize()</title>
+<indexterm><primary>SetFontSize</primary><secondary>Graphics2D</secondary></indexterm>
+<indexterm><primary>Graphics2D</primary><secondary>SetFontSize</secondary></indexterm>
+<para><computeroutput>void Graphics2D::SetFontSize (<link linkend="_class_graphics2_d">Graphics2D</link> &amp; graphics, float size = <computeroutput>1.0f</computeroutput>
+)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Sets the font size. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>graphics</entry><entry>
+<para>Value for graphics. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>size</entry><entry>
+<para>Number of elements or bytes. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_graphics2_d_1a2efe101242a8dd701a448c29870ccdd2"/><section>
+    <title>SetStrokeWidth()</title>
+<indexterm><primary>SetStrokeWidth</primary><secondary>Graphics2D</secondary></indexterm>
+<indexterm><primary>Graphics2D</primary><secondary>SetStrokeWidth</secondary></indexterm>
+<para><computeroutput>void Graphics2D::SetStrokeWidth (<link linkend="_class_graphics2_d">Graphics2D</link> &amp; graphics, float width = <computeroutput>1.0f</computeroutput>
+)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Sets the stroke width. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>graphics</entry><entry>
+<para>Value for graphics. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>width</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<para>
+The documentation for this class was generated from the following files:</para>
+src/Rendering/Core/<link linkend="__graphics2_d_8h">Graphics2D.h</link>src/Rendering/Core/<link linkend="__graphics2_d_8cpp">Graphics2D.cpp</link></section>
+</section>

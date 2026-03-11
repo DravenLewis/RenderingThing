@@ -1,3 +1,8 @@
+/**
+ * @file src/App/Demo/DemoScene.h
+ * @brief Declarations for DemoScene.
+ */
+
 #ifndef DEMOSCENE_H
 #define DEMOSCENE_H
 
@@ -20,18 +25,50 @@ namespace NeoECS {
 struct CameraComponent;
 struct TransformComponent;
 
+/// @brief Represents the DemoScene type.
 class DemoScene : public Scene3D {
     public:
+        /**
+         * @brief Constructs a new DemoScene instance.
+         * @param window Value for window.
+          * @return Result of this operation.
+         */
         explicit DemoScene(RenderWindow* window);
+        /**
+         * @brief Destroys this DemoScene instance.
+         */
         ~DemoScene() override = default;
 
+        /**
+         * @brief Initializes this object.
+         */
         void init() override;
+        /**
+         * @brief Updates internal state.
+         * @param deltaTime Delta time in seconds.
+         */
         void update(float deltaTime) override;
+        /**
+         * @brief Renders this object.
+         */
         void render() override;
+        /**
+         * @brief Disposes this object.
+         */
         void dispose() override;
+        /**
+         * @brief Sets the input manager.
+         * @param manager Value for manager.
+         */
         void setInputManager(std::shared_ptr<InputManager> manager) override;
 
+        /**
+         * @brief Converts to ggle debug widgets.
+         */
         void toggleDebugWidgets();
+        /**
+         * @brief Converts to ggle debug shadows.
+         */
         void toggleDebugShadows();
 
     private:

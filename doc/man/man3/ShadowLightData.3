@@ -1,0 +1,60 @@
+.TH "ShadowLightData" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ShadowLightData \- Holds data for \fBShadowLightData\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ShadowRenderer\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "int \fBshadowMapIndex\fP = \-1"
+.br
+.ti -1c
+.RI "\fBShadowType\fP \fBshadowType\fP = ShadowType::Standard"
+.br
+.ti -1c
+.RI "float \fBshadowStrength\fP = 1\&.0f"
+.br
+.ti -1c
+.RI "float \fBshadowBias\fP = 0\&.0025f"
+.br
+.ti -1c
+.RI "float \fBshadowNormalBias\fP = 0\&.005f"
+.br
+.ti -1c
+.RI "int \fBcascadeCount\fP = 1"
+.br
+.ti -1c
+.RI "Math3D::Vec4 \fBcascadeSplits\fP = Math3D::Vec4(0,0,0,0)"
+.br
+.ti -1c
+.RI "Math3D::Mat4 \fBlightMatrices\fP [4]"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Holds data for \fBShadowLightData\fP\&. 
+.SH "Member Data Documentation"
+.PP 
+.SS "Math3D::Mat4 ShadowLightData::lightMatrices[4]"
+\fBInitial value:\fP
+.nf
+                           = {
+    Math3D::Mat4(1\&.0f),
+    Math3D::Mat4(1\&.0f),
+    Math3D::Mat4(1\&.0f),
+    Math3D::Mat4(1\&.0f)
+}
+.PP
+.fi
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

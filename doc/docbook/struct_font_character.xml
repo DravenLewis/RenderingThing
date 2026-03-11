@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_font_character" xml:lang="en-US">
+<title>FontCharacter Struct Reference</title>
+<indexterm><primary>FontCharacter</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_font_character">FontCharacter</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;Font.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_font_character_1a2b7d5fdb9191bf5c24a5d5441dbeca33"/>float <emphasis role="strong">u0</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_font_character_1a0affcf0980aab1f7d240bbb1496a8261"/>float <emphasis role="strong">v0</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_font_character_1abd4052e08b1febd4d35e7894a842982e"/>float <emphasis role="strong">u1</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_font_character_1aa54ed12e29c19ba1b9e8a17558c0f0a9"/>float <emphasis role="strong">v1</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_font_character_1a75e6b8b7546bb9b4a27dcff3e7893c2a"/>float <emphasis role="strong">sizeX</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_font_character_1a030eee36143d02f89f9b8e8ffb4fc9d1"/>float <emphasis role="strong">sizeY</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_font_character_1a12ad2f8ac08de0353e1141fe95a63823"/>float <emphasis role="strong">bearingX</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_font_character_1a5e6190257184fc7a9546b43e99045779"/>float <emphasis role="strong">bearingY</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_font_character_1a11e346d51c14094bd3eab7fe08a67dcb"/>float <emphasis role="strong">advance</emphasis></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_font_character">FontCharacter</link>. </para>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Fonts/<link linkend="__font_8h">Font.h</link></section>
+</section>

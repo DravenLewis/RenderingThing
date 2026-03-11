@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Fonts/FreeTypeFont.cpp
+ * @brief Implementation for FreeTypeFont.
+ */
+
 #include "Rendering/Fonts/FreeTypeFont.h"
 #include "Rendering/Materials/MaterialDefaults.h"
 

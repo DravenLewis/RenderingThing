@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Lighting/Light.h
+ * @brief Declarations for Light.
+ */
+
 #ifndef LIGHT_H
 #define LIGHT_H
 
@@ -6,12 +11,14 @@
 #include <vector>
 #include <memory>
 
+/// @brief Enumerates values for LightType.
 enum class LightType {
     POINT,
     DIRECTIONAL,
     SPOT
 };
 
+/// @brief Enumerates values for ShadowType.
 enum class ShadowType {
     Hard,
     Standard,
@@ -20,6 +27,7 @@ enum class ShadowType {
 
 #define MAX_LIGHTS 16
 
+/// @brief Holds data for Light.
 struct Light {
     LightType type;
     Math3D::Vec3 position;
@@ -38,6 +46,9 @@ struct Light {
     float cascadeLambda;     // Directional CSM split blend: 0=linear, 1=logarithmic
     int shadowDebugMode;     // 0=off,1=visibility,2=cascade index,3=projection bounds
     
+    /**
+     * @brief Constructs a new Light instance.
+     */
     Light()
         : type(LightType::POINT),
           position(Math3D::Vec3(0, 0, 0)),
@@ -54,6 +65,9 @@ struct Light {
           shadowNormalBias(0.005f),
           shadowStrength(1.0f),
           cascadeLambda(0.82f),
+          /**
+           * @brief Returns shadow debug mode text.
+           */
           shadowDebugMode(0)
     {}
     
@@ -116,11 +130,15 @@ struct Light {
     }
 };
 
+/// @brief Represents the LightManager type.
 class LightManager {
 private:
     std::vector<Light> lights;
     
 public:
+    /**
+     * @brief Constructs a new LightManager instance.
+     */
     LightManager() : lights() {}
     
     void addLight(const Light& light) {

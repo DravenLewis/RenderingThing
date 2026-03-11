@@ -1,0 +1,178 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_model_part" kind="struct" language="C++" prot="public">
+    <compoundname>ModelPart</compoundname>
+    <basecompoundref refid="struct_i_drawable" prot="public" virt="non-virtual">IDrawable</basecompoundref>
+    <includes refid="_model_part_8h" local="no">ModelPart.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_model_part_1a724316febc411a4b7532ad1362fa705b" prot="public" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="class_mesh" kindref="compound">Mesh</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;Mesh&gt; ModelPart::mesh</definition>
+        <argsstring></argsstring>
+        <name>mesh</name>
+        <qualifiedname>ModelPart::mesh</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/ModelPart.h" line="19" column="21" bodyfile="src/Rendering/Geometry/ModelPart.h" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_model_part_1a750370b63ecafb7c790dcb765252344b" prot="public" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="class_material" kindref="compound">Material</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;Material&gt; ModelPart::material</definition>
+        <argsstring></argsstring>
+        <name>material</name>
+        <qualifiedname>ModelPart::material</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/ModelPart.h" line="20" column="21" bodyfile="src/Rendering/Geometry/ModelPart.h" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_model_part_1a3a116eb13f46ecc7eebc9f348c787738" prot="public" static="no" mutable="no">
+        <type>Math3D::Transform</type>
+        <definition>Math3D::Transform ModelPart::localTransform</definition>
+        <argsstring></argsstring>
+        <name>localTransform</name>
+        <qualifiedname>ModelPart::localTransform</qualifiedname>
+        <initializer>= Math3D::Transform()</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/ModelPart.h" line="21" column="23" bodyfile="src/Rendering/Geometry/ModelPart.h" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_model_part_1afec314356a85fe1d6231c4a7c29de884" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool ModelPart::visible</definition>
+        <argsstring></argsstring>
+        <name>visible</name>
+        <qualifiedname>ModelPart::visible</qualifiedname>
+        <initializer>= true</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/ModelPart.h" line="22" column="10" bodyfile="src/Rendering/Geometry/ModelPart.h" bodystart="22" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_model_part_1a5dfc1f6e0a417be362d4a4f38182c0ff" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool ModelPart::hideInEditorTree</definition>
+        <argsstring></argsstring>
+        <name>hideInEditorTree</name>
+        <qualifiedname>ModelPart::hideInEditorTree</qualifiedname>
+        <initializer>= true</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/ModelPart.h" line="24" column="10" bodyfile="src/Rendering/Geometry/ModelPart.h" bodystart="24" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="struct_model_part_1a64fc6730fbf1273892e60fd4906beacc" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void ModelPart::draw</definition>
+        <argsstring>(const Math3D::Mat4 &amp;parent, const Math3D::Mat4 &amp;view, const Math3D::Mat4 &amp;proj)</argsstring>
+        <name>draw</name>
+        <qualifiedname>ModelPart::draw</qualifiedname>
+        <reimplements refid="struct_i_drawable_1a9fb10215e48d952bd9f6a4c52656ebb8">draw</reimplements>
+        <param>
+          <type>const Math3D::Mat4 &amp;</type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type>const Math3D::Mat4 &amp;</type>
+          <declname>view</declname>
+        </param>
+        <param>
+          <type>const Math3D::Mat4 &amp;</type>
+          <declname>proj</declname>
+        </param>
+        <briefdescription>
+<para>Draws this object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>parent</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for parent. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>view</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for view. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>proj</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for proj. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/ModelPart.h" line="32" column="10" bodyfile="src/Rendering/Geometry/ModelPart.cpp" bodystart="12" bodyend="33"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_model_part" kindref="compound">ModelPart</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>IDrawable</label>
+        <link refid="struct_i_drawable"/>
+      </node>
+      <node id="1">
+        <label>ModelPart</label>
+        <link refid="struct_model_part"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>IDrawable</label>
+        <link refid="struct_i_drawable"/>
+      </node>
+      <node id="1">
+        <label>ModelPart</label>
+        <link refid="struct_model_part"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="src/Rendering/Geometry/ModelPart.h" line="18" column="1" bodyfile="src/Rendering/Geometry/ModelPart.h" bodystart="18" bodyend="33"/>
+    <listofallmembers>
+      <member refid="struct_model_part_1a64fc6730fbf1273892e60fd4906beacc" prot="public" virt="virtual"><scope>ModelPart</scope><name>draw</name></member>
+      <member refid="struct_model_part_1a5dfc1f6e0a417be362d4a4f38182c0ff" prot="public" virt="non-virtual"><scope>ModelPart</scope><name>hideInEditorTree</name></member>
+      <member refid="struct_model_part_1a3a116eb13f46ecc7eebc9f348c787738" prot="public" virt="non-virtual"><scope>ModelPart</scope><name>localTransform</name></member>
+      <member refid="struct_model_part_1a750370b63ecafb7c790dcb765252344b" prot="public" virt="non-virtual"><scope>ModelPart</scope><name>material</name></member>
+      <member refid="struct_model_part_1a724316febc411a4b7532ad1362fa705b" prot="public" virt="non-virtual"><scope>ModelPart</scope><name>mesh</name></member>
+      <member refid="struct_model_part_1afec314356a85fe1d6231c4a7c29de884" prot="public" virt="non-virtual"><scope>ModelPart</scope><name>visible</name></member>
+      <member refid="struct_i_drawable_1a618506be098b21fe0b9cae2c4219eb57" prot="public" virt="non-virtual"><scope>ModelPart</scope><name>~IDrawable</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

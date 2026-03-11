@@ -1,0 +1,117 @@
+.TH "View" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+View \- Represents the \fBView\fP type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <View\&.h>\fP
+.PP
+Inherits std::enable_shared_from_this< View >\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBView\fP ()"
+.br
+.RI "Constructs a new \fBView\fP instance\&. "
+.ti -1c
+.RI "\fBView\fP (RenderWindow *window)"
+.br
+.RI "Constructs a new \fBView\fP instance\&. "
+.ti -1c
+.RI "virtual \fB~View\fP ()=default"
+.br
+.RI "Destroys this \fBView\fP instance\&. "
+.ti -1c
+.RI "void \fBattachWindow\fP (RenderWindow *window)"
+.br
+.RI "Attaches a render window to this view\&. "
+.ti -1c
+.RI "bool \fBhasWindow\fP () const"
+.br
+.RI "Checks whether window\&. "
+.ti -1c
+.RI "void \fBresize\fP (int w, int h)"
+.br
+.ti -1c
+.RI "PScreen \fBgetScreen\fP (size_t index) const"
+.br
+.ti -1c
+.RI "PScreen \fBgetMainScreen\fP () const"
+.br
+.ti -1c
+.RI "PScreen \fBgetUIScreen\fP () const"
+.br
+.ti -1c
+.RI "RenderWindow * \fBgetWindow\fP () const"
+.br
+.ti -1c
+.RI "int \fBgetWidth\fP () const"
+.br
+.ti -1c
+.RI "int \fBgetHeight\fP () const"
+.br
+.ti -1c
+.RI "void \fBaddScreen\fP (PScreen screen)"
+.br
+.ti -1c
+.RI "size_t \fBscreenCount\fP () const"
+.br
+.ti -1c
+.RI "virtual void \fBdrawToWindow\fP (bool clearWindow=true, float x=\-1, float y=\-1, float w=\-1, float h=\-1)"
+.br
+.ti -1c
+.RI "Math3D::Vec3 \fBscreenToWorld\fP (PCamera cam, float x, float y, float depth=0\&.0f, float viewportX=0\&.0f, float viewportY=0\&.0f, float viewportW=\-1\&.0f, float viewportH=\-1\&.0f) const"
+.br
+.ti -1c
+.RI "Math3D::Vec3 \fBworldToScreen\fP (PCamera cam, const Math3D::Vec3 &world, float viewportX=0\&.0f, float viewportY=0\&.0f, float viewportW=\-1\&.0f, float viewportH=\-1\&.0f) const"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the \fBView\fP type\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "View::View (RenderWindow * window)"
+
+.PP
+Constructs a new \fBView\fP instance\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIwindow\fP Value for window\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void View::attachWindow (RenderWindow * window)"
+
+.PP
+Attaches a render window to this view\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIwindow\fP Value for window\&. 
+.RE
+.PP
+
+.SS "bool View::hasWindow () const\fR [inline]\fP"
+
+.PP
+Checks whether window\&. 
+.PP
+\fBReturns\fP
+.RS 4
+True when the condition is satisfied; otherwise false\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

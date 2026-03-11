@@ -1,0 +1,93 @@
+.TH "Texture" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Texture \- Represents the \fBTexture\fP type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <Texture\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBTexture\fP ()"
+.br
+.RI "Constructs a new \fBTexture\fP instance\&. "
+.ti -1c
+.RI "\fBTexture\fP (std::shared_ptr< \fBGraphics::Image::Image\fP > image, GLenum imageHint=GL_TEXTURE_2D)"
+.br
+.ti -1c
+.RI "\fBTexture\fP (const \fBTexture\fP &)=delete"
+.br
+.ti -1c
+.RI "\fBTexture\fP (int width, int height)"
+.br
+.ti -1c
+.RI "void \fBbind\fP (unsigned int slot=0) const"
+.br
+.ti -1c
+.RI "void \fBunbind\fP () const"
+.br
+.ti -1c
+.RI "void \fBdispose\fP ()"
+.br
+.ti -1c
+.RI "int \fBgetWidth\fP ()"
+.br
+.ti -1c
+.RI "int \fBgetHeight\fP ()"
+.br
+.ti -1c
+.RI "GLuint & \fBgetID\fP ()"
+.br
+.ti -1c
+.RI "const std::string & \fBgetSourceAssetRef\fP () const"
+.br
+.ti -1c
+.RI "void \fBsetSourceAssetRef\fP (const std::string &assetRef)"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBGraphics::Image::Image\fP > \fBgetImageData\fP () const"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static std::shared_ptr< \fBTexture\fP > \fBLoad\fP (PAsset asset, GLenum imageHint=GL_TEXTURE_2D, bool flipVertically=true)"
+.br
+.ti -1c
+.RI "static std::shared_ptr< \fBGraphics::Image::Image\fP > \fBLoadImage\fP (PAsset asset, bool flipVertically=true)"
+.br
+.ti -1c
+.RI "static std::shared_ptr< \fBTexture\fP > \fBCreateEmpty\fP (int width, int height)"
+.br
+.ti -1c
+.RI "static std::shared_ptr< \fBTexture\fP > \fBCreateRenderTarget\fP (int width, int height, GLenum internalFormat=GL_RGBA16F, GLenum format=GL_RGBA, GLenum type=GL_FLOAT)"
+.br
+.ti -1c
+.RI "static std::shared_ptr< \fBTexture\fP > \fBCreateFromAlphaBuffer\fP (int width, int height, const unsigned char *alphaData)"
+.br
+.ti -1c
+.RI "static std::shared_ptr< \fBTexture\fP > \fBCreateFromExisting\fP (GLuint id, int width, int height, bool owns=false)"
+.br
+.ti -1c
+.RI "static void \fBFlushPendingDeletes\fP ()"
+.br
+.ti -1c
+.RI "static void \fBUnload\fP (std::shared_ptr< \fBTexture\fP > &tex)"
+.br
+.ti -1c
+.RI "static void \fBFlipVerticallyOnLoad\fP (int i)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the \fBTexture\fP type\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

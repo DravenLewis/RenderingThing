@@ -1,0 +1,359 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_font" kind="class" language="C++" prot="public" abstract="yes">
+    <compoundname>Font</compoundname>
+    <derivedcompoundref refid="class_free_type_font" prot="public" virt="non-virtual">FreeTypeFont</derivedcompoundref>
+    <derivedcompoundref refid="class_true_type_font" prot="public" virt="non-virtual">TrueTypeFont</derivedcompoundref>
+    <includes refid="_font_8h" local="no">Font.h</includes>
+    <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="class_font_1ae722d440cb9bf8ed62b1ce36b1ae1a73" prot="protected" static="no" mutable="no">
+        <type>PAsset</type>
+        <definition>PAsset Font::assetPtr</definition>
+        <argsstring></argsstring>
+        <name>assetPtr</name>
+        <qualifiedname>Font::assetPtr</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="56" column="16" bodyfile="src/Rendering/Fonts/Font.h" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_font_1a6443ae8ba782461ee9fb0ebfdb89980f" prot="protected" static="no" mutable="no">
+        <type>PTexture</type>
+        <definition>PTexture Font::textureAtlasPtr</definition>
+        <argsstring></argsstring>
+        <name>textureAtlasPtr</name>
+        <qualifiedname>Font::textureAtlasPtr</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="57" column="18" bodyfile="src/Rendering/Fonts/Font.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_font_1a3464ec0edc51ad004b5223c87c198136" prot="protected" static="no" mutable="no">
+        <type>PMaterial</type>
+        <definition>PMaterial Font::materialCachePtr</definition>
+        <argsstring></argsstring>
+        <name>materialCachePtr</name>
+        <qualifiedname>Font::materialCachePtr</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="58" column="19" bodyfile="src/Rendering/Fonts/Font.h" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_font_1a05386ef6c0908902bfd468c8cd03bf3a" prot="protected" static="no" mutable="no">
+        <type>float</type>
+        <definition>float Font::fontSize</definition>
+        <argsstring></argsstring>
+        <name>fontSize</name>
+        <qualifiedname>Font::fontSize</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="59" column="15" bodyfile="src/Rendering/Fonts/Font.h" bodystart="59" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_font_1afb3941e314ea743a47e9423bafa93385" prot="protected" static="no" mutable="no">
+        <type>std::array&lt; <ref refid="struct_font_character" kindref="compound">FontCharacter</ref>, 128 &gt;</type>
+        <definition>std::array&lt;FontCharacter, 128&gt; Font::characters</definition>
+        <argsstring></argsstring>
+        <name>characters</name>
+        <qualifiedname>Font::characters</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="61" column="20" bodyfile="src/Rendering/Fonts/Font.h" bodystart="61" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_font_1a34353d7ac57dd55d339a3f360ecd780c" prot="protected" static="no" mutable="no">
+        <type>std::map&lt; <ref refid="struct_text_cache_key" kindref="compound">TextCacheKey</ref>, std::shared_ptr&lt; <ref refid="struct_model_part" kindref="compound">ModelPart</ref> &gt; &gt;</type>
+        <definition>std::map&lt;TextCacheKey, std::shared_ptr&lt;ModelPart&gt; &gt; Font::meshCache</definition>
+        <argsstring></argsstring>
+        <name>meshCache</name>
+        <qualifiedname>Font::meshCache</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="62" column="18" bodyfile="src/Rendering/Fonts/Font.h" bodystart="62" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="class_font_1a6707f3ecdb11b9a99892369650c80568" prot="public" static="yes" mutable="no">
+        <type>Logbot</type>
+        <definition>Logbot Font::FontLogger</definition>
+        <argsstring></argsstring>
+        <name>FontLogger</name>
+        <qualifiedname>Font::FontLogger</qualifiedname>
+        <initializer>= Logbot::CreateInstance(&quot;Font&quot;)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="70" column="30" bodyfile="src/Rendering/Fonts/Font.h" bodystart="70" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="protected-func">
+      <memberdef kind="function" id="class_font_1aa6b8da140518e4282bbe81e7033e0081" prot="protected" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void Font::_initFont</definition>
+        <argsstring>()=0</argsstring>
+        <name>_initFont</name>
+        <qualifiedname>Font::_initFont</qualifiedname>
+        <reimplementedby refid="class_free_type_font_1ace8e8942ae61f4df9238bba96ec78b39">_initFont</reimplementedby>
+        <reimplementedby refid="class_true_type_font_1a4af92a8e28331e8a35e1624f98706944">_initFont</reimplementedby>
+        <briefdescription>
+<para>Initializes font resources. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="67" column="22"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_font_1a4e6a119206f505522100221c1fafde45" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Font::Font</definition>
+        <argsstring>()</argsstring>
+        <name>Font</name>
+        <qualifiedname>Font::Font</qualifiedname>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_font" kindref="compound">Font</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="75" column="9" bodyfile="src/Rendering/Fonts/Font.h" bodystart="75" bodyend="75"/>
+        <referencedby refid="class_free_type_font_1af5cf9314662b0bb7501c2ad300314abf" compoundref="_free_type_font_8h" startline="19" endline="19">FreeTypeFont::FreeTypeFont</referencedby>
+        <referencedby refid="class_true_type_font_1ad32c45a5111d82794f1d8fe9d3a0f708" compoundref="_s_t_b_true_type_font_8h" startline="20" endline="20">TrueTypeFont::TrueTypeFont</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_font_1aa6c4353c7fae81039c49b4a4f26086ff" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual Font::~Font</definition>
+        <argsstring>()=default</argsstring>
+        <name>~Font</name>
+        <qualifiedname>Font::~Font</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="76" column="17"/>
+      </memberdef>
+      <memberdef kind="function" id="class_font_1abd1403ab126a898f00e431b3adde8f48" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void Font::drawText</definition>
+        <argsstring>(std::string text=&quot;&quot;, Math3D::Vec2 position=Math3D::Vec2(0, 0), PCamera camera=nullptr, Color color=Color::WHITE, bool useCache=true)=0</argsstring>
+        <name>drawText</name>
+        <qualifiedname>Font::drawText</qualifiedname>
+        <reimplementedby refid="class_free_type_font_1aabd8450cc9c0f3158ce5ae414c92443f">drawText</reimplementedby>
+        <reimplementedby refid="class_true_type_font_1a988b328a7c02ab8509e054f9128c9884">drawText</reimplementedby>
+        <param>
+          <type>std::string</type>
+          <declname>text</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <param>
+          <type>Math3D::Vec2</type>
+          <declname>position</declname>
+          <defval>Math3D::Vec2(0, 0)</defval>
+        </param>
+        <param>
+          <type>PCamera</type>
+          <declname>camera</declname>
+          <defval>nullptr</defval>
+        </param>
+        <param>
+          <type>Color</type>
+          <declname>color</declname>
+          <defval>Color::WHITE</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>useCache</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="79" column="22"/>
+      </memberdef>
+      <memberdef kind="function" id="class_font_1a7993238290811753bb502c58a85a79d3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>bool</type>
+        <definition>virtual bool Font::supportsQueuedDrawing</definition>
+        <argsstring>() const</argsstring>
+        <name>supportsQueuedDrawing</name>
+        <qualifiedname>Font::supportsQueuedDrawing</qualifiedname>
+        <reimplementedby refid="class_free_type_font_1a409cd5f8a8f6e596fc654ed5f69167f2">supportsQueuedDrawing</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="80" column="22" bodyfile="src/Rendering/Fonts/Font.h" bodystart="80" bodyend="80"/>
+      </memberdef>
+      <memberdef kind="function" id="class_font_1a916aaa8940335189a855c32a9736388a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>virtual void Font::beginFrame</definition>
+        <argsstring>(PCamera camera)</argsstring>
+        <name>beginFrame</name>
+        <qualifiedname>Font::beginFrame</qualifiedname>
+        <reimplementedby refid="class_free_type_font_1a8c52bd0af48e7001a33763ae79723e32">beginFrame</reimplementedby>
+        <param>
+          <type>PCamera</type>
+          <declname>camera</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="81" column="22" bodyfile="src/Rendering/Fonts/Font.h" bodystart="81" bodyend="81"/>
+      </memberdef>
+      <memberdef kind="function" id="class_font_1a535034c260677663264cd4971c89ebc2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>virtual void Font::flushQueuedText</definition>
+        <argsstring>(PCamera camera)</argsstring>
+        <name>flushQueuedText</name>
+        <qualifiedname>Font::flushQueuedText</qualifiedname>
+        <reimplementedby refid="class_free_type_font_1a52a54d9bf92dcfb76bbf5d914d417d76">flushQueuedText</reimplementedby>
+        <param>
+          <type>PCamera</type>
+          <declname>camera</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="82" column="22" bodyfile="src/Rendering/Fonts/Font.h" bodystart="82" bodyend="82"/>
+      </memberdef>
+      <memberdef kind="function" id="class_font_1abf7846fb0e62fe8c5132bd67a2fc332a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void Font::clearCache</definition>
+        <argsstring>()</argsstring>
+        <name>clearCache</name>
+        <qualifiedname>Font::clearCache</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="83" column="14" bodyfile="src/Rendering/Fonts/Font.h" bodystart="83" bodyend="85"/>
+      </memberdef>
+      <memberdef kind="function" id="class_font_1abe9fd046d6125b62151232808b64e855" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>PAsset</type>
+        <definition>PAsset Font::getAssetPointer</definition>
+        <argsstring>()</argsstring>
+        <name>getAssetPointer</name>
+        <qualifiedname>Font::getAssetPointer</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="111" column="16" bodyfile="src/Rendering/Fonts/Font.h" bodystart="111" bodyend="113"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_font_1a23554a9888274dac6143a7a206eb71ef" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>std::shared_ptr&lt; T &gt;</type>
+        <definition>static std::shared_ptr&lt; T &gt; Font::Create</definition>
+        <argsstring>(PAsset asset, float fontSize=18.0f)</argsstring>
+        <name>Create</name>
+        <qualifiedname>Font::Create</qualifiedname>
+        <param>
+          <type>PAsset</type>
+          <declname>asset</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>fontSize</declname>
+          <defval>18.0f</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="90" column="39" bodyfile="src/Rendering/Fonts/Font.h" bodystart="90" bodyend="109"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_font" kindref="compound">Font</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>Font</label>
+        <link refid="class_font"/>
+      </node>
+      <node id="2">
+        <label>FreeTypeFont</label>
+        <link refid="class_free_type_font"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>TrueTypeFont</label>
+        <link refid="class_true_type_font"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <location file="src/Rendering/Fonts/Font.h" line="54" column="1" bodyfile="src/Rendering/Fonts/Font.h" bodystart="54" bodyend="114"/>
+    <listofallmembers>
+      <member refid="class_font_1aa6b8da140518e4282bbe81e7033e0081" prot="protected" virt="pure-virtual"><scope>Font</scope><name>_initFont</name></member>
+      <member refid="class_font_1ae722d440cb9bf8ed62b1ce36b1ae1a73" prot="protected" virt="non-virtual"><scope>Font</scope><name>assetPtr</name></member>
+      <member refid="class_font_1a916aaa8940335189a855c32a9736388a" prot="public" virt="virtual"><scope>Font</scope><name>beginFrame</name></member>
+      <member refid="class_font_1afb3941e314ea743a47e9423bafa93385" prot="protected" virt="non-virtual"><scope>Font</scope><name>characters</name></member>
+      <member refid="class_font_1abf7846fb0e62fe8c5132bd67a2fc332a" prot="public" virt="non-virtual"><scope>Font</scope><name>clearCache</name></member>
+      <member refid="class_font_1a23554a9888274dac6143a7a206eb71ef" prot="public" virt="non-virtual"><scope>Font</scope><name>Create</name></member>
+      <member refid="class_font_1abd1403ab126a898f00e431b3adde8f48" prot="public" virt="pure-virtual"><scope>Font</scope><name>drawText</name></member>
+      <member refid="class_font_1a535034c260677663264cd4971c89ebc2" prot="public" virt="virtual"><scope>Font</scope><name>flushQueuedText</name></member>
+      <member refid="class_font_1a4e6a119206f505522100221c1fafde45" prot="public" virt="non-virtual"><scope>Font</scope><name>Font</name></member>
+      <member refid="class_font_1a6707f3ecdb11b9a99892369650c80568" prot="public" virt="non-virtual"><scope>Font</scope><name>FontLogger</name></member>
+      <member refid="class_font_1a05386ef6c0908902bfd468c8cd03bf3a" prot="protected" virt="non-virtual"><scope>Font</scope><name>fontSize</name></member>
+      <member refid="class_font_1abe9fd046d6125b62151232808b64e855" prot="public" virt="non-virtual"><scope>Font</scope><name>getAssetPointer</name></member>
+      <member refid="class_font_1a3464ec0edc51ad004b5223c87c198136" prot="protected" virt="non-virtual"><scope>Font</scope><name>materialCachePtr</name></member>
+      <member refid="class_font_1a34353d7ac57dd55d339a3f360ecd780c" prot="protected" virt="non-virtual"><scope>Font</scope><name>meshCache</name></member>
+      <member refid="class_font_1a7993238290811753bb502c58a85a79d3" prot="public" virt="virtual"><scope>Font</scope><name>supportsQueuedDrawing</name></member>
+      <member refid="class_font_1a6443ae8ba782461ee9fb0ebfdb89980f" prot="protected" virt="non-virtual"><scope>Font</scope><name>textureAtlasPtr</name></member>
+      <member refid="class_font_1aa6c4353c7fae81039c49b4a4f26086ff" prot="public" virt="virtual"><scope>Font</scope><name>~Font</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

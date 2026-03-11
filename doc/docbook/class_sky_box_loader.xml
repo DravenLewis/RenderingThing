@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_sky_box_loader" xml:lang="en-US">
+<title>SkyBoxLoader Class Reference</title>
+<indexterm><primary>SkyBoxLoader</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_sky_box_loader">SkyBoxLoader</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;SkyBox.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>static std::shared_ptr&lt; <link linkend="_class_sky_box">SkyBox</link> &gt; <link linkend="_class_sky_box_loader_1a7a70cc83351435d79408ef2fbcdab277">CreateSkyBox</link> (const std::string &amp;directoryAssetPath, const std::string &amp;skyboxName)</para>
+
+<para>Creates sky box. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_sky_box_loader">SkyBoxLoader</link> type. </para>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_sky_box_loader_1a7a70cc83351435d79408ef2fbcdab277"/><section>
+    <title>CreateSkyBox()</title>
+<indexterm><primary>CreateSkyBox</primary><secondary>SkyBoxLoader</secondary></indexterm>
+<indexterm><primary>SkyBoxLoader</primary><secondary>CreateSkyBox</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_class_sky_box">SkyBox</link> &gt; SkyBoxLoader::CreateSkyBox (const std::string &amp; directoryAssetPath, const std::string &amp; skyboxName)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Creates sky box. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>directoryAssetPath</entry><entry>
+<para>Filesystem path for directory asset path. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>skyboxName</entry><entry>
+<para>Name used for skybox name. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this class was generated from the following files:</para>
+src/Rendering/Textures/<link linkend="__sky_box_8h">SkyBox.h</link>src/Rendering/Textures/<link linkend="__sky_box_8cpp">SkyBox.cpp</link></section>
+</section>

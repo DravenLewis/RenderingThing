@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_graphics_context" kind="struct" language="C++" prot="public">
+    <compoundname>GraphicsContext</compoundname>
+    <includes refid="_graphics2_d_8h" local="no">Graphics2D.h</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="struct_graphics_context_1a0291fd3e01b5a79716fa4a4b3bc49c64" prot="private" static="no" mutable="no">
+        <type>ValueContainer&lt; PAsset &gt;</type>
+        <definition>ValueContainer&lt;PAsset&gt; GraphicsContext::defaultFontLocation</definition>
+        <argsstring></argsstring>
+        <name>defaultFontLocation</name>
+        <qualifiedname>GraphicsContext::defaultFontLocation</qualifiedname>
+        <initializer>{AssetManager::Instance.getOrLoad(&quot;@assets/fonts/arial.ttf&quot;)}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="26" column="24" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="26" bodyend="26"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_graphics_context_1a84d5348c6f4e07794b09aae3da43b039" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; Color &gt;</type>
+        <definition>ValueContainer&lt;Color&gt; GraphicsContext::foregroundColor</definition>
+        <argsstring></argsstring>
+        <name>foregroundColor</name>
+        <qualifiedname>GraphicsContext::foregroundColor</qualifiedname>
+        <initializer>{Color::WHITE}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="28" column="24" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="28" bodyend="28"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_graphics_context_1a7de64635e4251d2e445f1a2075a58e90" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; Color &gt;</type>
+        <definition>ValueContainer&lt;Color&gt; GraphicsContext::backgroundColor</definition>
+        <argsstring></argsstring>
+        <name>backgroundColor</name>
+        <qualifiedname>GraphicsContext::backgroundColor</qualifiedname>
+        <initializer>{Color::BLACK}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="29" column="24" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="29" bodyend="29"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_graphics_context_1a89519c9ea1439b0a9394d937031f2b06" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; float &gt;</type>
+        <definition>ValueContainer&lt;float&gt; GraphicsContext::strokeWidth</definition>
+        <argsstring></argsstring>
+        <name>strokeWidth</name>
+        <qualifiedname>GraphicsContext::strokeWidth</qualifiedname>
+        <initializer>{1.0f}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="30" column="24" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="30" bodyend="30"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_graphics_context_1a85ea9529a521df09c2ee74347c8318c0" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; PFont &gt;</type>
+        <definition>ValueContainer&lt;PFont&gt; GraphicsContext::font</definition>
+        <argsstring></argsstring>
+        <name>font</name>
+        <qualifiedname>GraphicsContext::font</qualifiedname>
+        <initializer>{Font::Create&lt;<ref refid="class_free_type_font" kindref="compound">FreeTypeFont</ref>&gt;(defaultFontLocation.get(), 18.0f)}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="31" column="24" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="31" bodyend="31"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_graphics_context_1ab410c3213a838dc6d0ae3994f43febb3" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; int &gt;</type>
+        <definition>ValueContainer&lt;int&gt; GraphicsContext::fontSize</definition>
+        <argsstring></argsstring>
+        <name>fontSize</name>
+        <qualifiedname>GraphicsContext::fontSize</qualifiedname>
+        <initializer>{18}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="32" column="24" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="32" bodyend="32"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_graphics_context" kindref="compound">GraphicsContext</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Core/Graphics2D.h" line="24" column="1" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="24" bodyend="33"/>
+    <listofallmembers>
+      <member refid="struct_graphics_context_1a7de64635e4251d2e445f1a2075a58e90" prot="public" virt="non-virtual"><scope>GraphicsContext</scope><name>backgroundColor</name></member>
+      <member refid="struct_graphics_context_1a0291fd3e01b5a79716fa4a4b3bc49c64" prot="private" virt="non-virtual"><scope>GraphicsContext</scope><name>defaultFontLocation</name></member>
+      <member refid="struct_graphics_context_1a85ea9529a521df09c2ee74347c8318c0" prot="public" virt="non-virtual"><scope>GraphicsContext</scope><name>font</name></member>
+      <member refid="struct_graphics_context_1ab410c3213a838dc6d0ae3994f43febb3" prot="public" virt="non-virtual"><scope>GraphicsContext</scope><name>fontSize</name></member>
+      <member refid="struct_graphics_context_1a84d5348c6f4e07794b09aae3da43b039" prot="public" virt="non-virtual"><scope>GraphicsContext</scope><name>foregroundColor</name></member>
+      <member refid="struct_graphics_context_1a89519c9ea1439b0a9394d937031f2b06" prot="public" virt="non-virtual"><scope>GraphicsContext</scope><name>strokeWidth</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

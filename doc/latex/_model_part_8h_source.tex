@@ -1,0 +1,45 @@
+\doxysection{Model\+Part.\+h}
+\hypertarget{_model_part_8h_source}{}\label{_model_part_8h_source}\index{src/Rendering/Geometry/ModelPart.h@{src/Rendering/Geometry/ModelPart.h}}
+\doxymbox{\hyperlink{_model_part_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ MODELPART\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ MODELPART\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_mesh_8h}{Rendering/Geometry/Mesh.h}}"{}}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_material_8h}{Rendering/Materials/Material.h}}"{}}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ "{}Foundation/Math/Math3D.h"{}}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_drawable_8h}{Rendering/Geometry/Drawable.h}}"{}}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00018\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_model_part}{ModelPart}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{struct_i_drawable}{IDrawable}}\{}
+\DoxyCodeLine{00019\ \ \ \ \ std::shared\_ptr<Mesh>\ mesh;}
+\DoxyCodeLine{00020\ \ \ \ \ std::shared\_ptr<Material>\ material;}
+\DoxyCodeLine{00021\ \ \ \ \ Math3D::Transform\ localTransform\ =\ Math3D::Transform();}
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keywordtype}{bool}\ visible\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{comment}{//\ Model\ parts\ are\ hidden\ in\ the\ ECS\ tree\ by\ default\ to\ keep\ entity\ trees\ compact.}}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keywordtype}{bool}\ hideInEditorTree\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00025\ \ \ \ \ }
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{struct_model_part_a64fc6730fbf1273892e60fd4906beacc}{draw}}(\textcolor{keyword}{const}\ Math3D::Mat4\&\ parent,\ \textcolor{keyword}{const}\ Math3D::Mat4\&\ view,\ \textcolor{keyword}{const}\ Math3D::Mat4\&\ proj);}
+\DoxyCodeLine{00033\ \};}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00036\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_model_part_factory_a8b2d0eb06f0a9ade3093831338442085}{ModelPartFactory}}\{}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ std::shared\_ptr<Mesh>\ meshInstancePtr;}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ std::shared\_ptr<Material>\ materialInstancePtr;}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ std::vector<Vertex>\ vertexCache;}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ std::vector<uint32\_t>\ faceCache;}
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_model_part_factory_a8b2d0eb06f0a9ade3093831338442085}{ModelPartFactory}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \doxymbox{\hyperlink{struct_model_part_factory_a8b2d0eb06f0a9ade3093831338442085}{ModelPartFactory}}\ \doxymbox{\hyperlink{struct_model_part_factory_a3ef7855857c9e4a6106485c4d6dc13d1}{Create}}(std::shared\_ptr<Material>\ material);}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_model_part_factory_a8b2d0eb06f0a9ade3093831338442085}{ModelPartFactory}}\&\ \doxymbox{\hyperlink{struct_model_part_factory_a0284fcedc4c25ac5b287327a2d7356f4}{addVertex}}(\doxymbox{\hyperlink{struct_vertex}{Vertex}}\ vtx,\ \textcolor{keywordtype}{int}*\ index\ =\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_model_part_factory_a8b2d0eb06f0a9ade3093831338442085}{ModelPartFactory}}\&\ \doxymbox{\hyperlink{struct_model_part_factory_a4af8f7d0f3a2958529bbe7aab3233f6d}{defineFace}}(\textcolor{keywordtype}{int}\ vtx1,\ \textcolor{keywordtype}{int}\ vtx2,\ \textcolor{keywordtype}{int}\ vtx3,\ \textcolor{keywordtype}{int}\ vtx4\ =\ -\/1);}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ std::shared\_ptr<ModelPart>\ \doxymbox{\hyperlink{struct_model_part_factory_a8f73e9678bb98f92144d6a36ff1bc41f}{assemble}}();}
+\DoxyCodeLine{00074\ \};}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODELPART\_H}}
+
+\end{DoxyCode}

@@ -1,0 +1,169 @@
+\doxysection{Light.\+h}
+\hypertarget{_light_8h_source}{}\label{_light_8h_source}\index{src/Rendering/Lighting/Light.h@{src/Rendering/Lighting/Light.h}}
+\doxymbox{\hyperlink{_light_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ LIGHT\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ LIGHT\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}Foundation/Math/Math3D.h"{}}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}Foundation/Math/Color.h"{}}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00015\ \textcolor{keyword}{enum\ class}\ \doxymbox{\hyperlink{_light_8h_adc3ec8293e6a97ebe43f0196b9a7f638}{LightType}}\ \{}
+\DoxyCodeLine{00016\ \ \ \ \ POINT,}
+\DoxyCodeLine{00017\ \ \ \ \ DIRECTIONAL,}
+\DoxyCodeLine{00018\ \ \ \ \ SPOT}
+\DoxyCodeLine{00019\ \};}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00022\ \textcolor{keyword}{enum\ class}\ \doxymbox{\hyperlink{_light_8h_a5c50abf40600ee3c28c7fa04702a8bbc}{ShadowType}}\ \{}
+\DoxyCodeLine{00023\ \ \ \ \ Hard,}
+\DoxyCodeLine{00024\ \ \ \ \ Standard,}
+\DoxyCodeLine{00025\ \ \ \ \ Smooth}
+\DoxyCodeLine{00026\ \};}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#define\ MAX\_LIGHTS\ 16}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00031\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_light_aeb5df09a25a32f19fdffa761268ba24f}{Light}}\ \{}
+\DoxyCodeLine{00032\ \ \ \ \ \doxymbox{\hyperlink{_light_8h_adc3ec8293e6a97ebe43f0196b9a7f638}{LightType}}\ type;}
+\DoxyCodeLine{00033\ \ \ \ \ Math3D::Vec3\ position;}
+\DoxyCodeLine{00034\ \ \ \ \ Math3D::Vec3\ direction;\ \ \textcolor{comment}{//\ For\ directional\ and\ spot\ lights}}
+\DoxyCodeLine{00035\ \ \ \ \ Math3D::Vec4\ color;\ \ \ \ \ \ \textcolor{comment}{//\ RGB\ +\ Alpha\ for\ intensity}}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keywordtype}{float}\ intensity;}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keywordtype}{float}\ range;\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Maximum\ distance\ for\ point/spot\ lights}}
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keywordtype}{float}\ falloff;\ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 1.0\ =\ linear,\ 2.0\ =\ quadratic,\ 3.0\ =\ cubic,\ etc}}
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keywordtype}{float}\ spotAngle;\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ For\ spot\ lights\ (in\ degrees)}}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keywordtype}{float}\ shadowRange;\ \ \ \ \ \ \ \textcolor{comment}{//\ Shadow\ far\ plane\ for\ point/spot\ (<=0\ uses\ range)}}
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keywordtype}{bool}\ castsShadows;}
+\DoxyCodeLine{00042\ \ \ \ \ \doxymbox{\hyperlink{_light_8h_a5c50abf40600ee3c28c7fa04702a8bbc}{ShadowType}}\ shadowType;}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keywordtype}{float}\ shadowBias;}
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keywordtype}{float}\ shadowNormalBias;}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keywordtype}{float}\ shadowStrength;}
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keywordtype}{float}\ cascadeLambda;\ \ \ \ \ \textcolor{comment}{//\ Directional\ CSM\ split\ blend:\ 0=linear,\ 1=logarithmic}}
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keywordtype}{int}\ shadowDebugMode;\ \ \ \ \ \textcolor{comment}{//\ 0=off,1=visibility,2=cascade\ index,3=projection\ bounds}}
+\DoxyCodeLine{00048\ \ \ \ \ }
+\DoxyCodeLine{00052\ \ \ \ \ \doxymbox{\hyperlink{struct_light_aeb5df09a25a32f19fdffa761268ba24f}{Light}}()}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ :\ type(\doxymbox{\hyperlink{_light_8h_adc3ec8293e6a97ebe43f0196b9a7f638}{LightType}}::POINT),}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \ \ position(Math3D::Vec3(0,\ 0,\ 0)),}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ direction(Math3D::Vec3(0,\ -\/1,\ 0)),}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \ \ color(Color::WHITE),}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \ \ intensity(1.0f),}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \ \ range(20.0f),}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \ \ falloff(2.0f),}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \ \ spotAngle(45.0f),}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \ \ shadowRange(20.0f),}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \ \ castsShadows(false),}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \ \ shadowType(\doxymbox{\hyperlink{_light_8h_a5c50abf40600ee3c28c7fa04702a8bbc}{ShadowType}}::Smooth),}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \ \ shadowBias(0.0025f),}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \ \ shadowNormalBias(0.005f),}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \ \ shadowStrength(1.0f),}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \ \ cascadeLambda(0.82f),}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \ \ shadowDebugMode(0)}
+\DoxyCodeLine{00072\ \ \ \ \ \{\}}
+\DoxyCodeLine{00073\ \ \ \ \ }
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keyword}{static}\ \doxymbox{\hyperlink{struct_light}{Light}}\ CreatePointLight(}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ Math3D::Vec3\ position,}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ Math3D::Vec4\ color\ =\ Color::WHITE,}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ intensity\ =\ 1.0f,}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ range\ =\ 10.0f,}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ falloff\ =\ 1.0f}
+\DoxyCodeLine{00080\ \ \ \ \ )\ \{}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_light}{Light}}\ light;}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ light.type\ =\ LightType::POINT;}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ light.position\ =\ position;}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ light.color\ =\ color;}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ light.intensity\ =\ intensity;}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ light.range\ =\ range;}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ light.falloff\ =\ Math3D::Clamp(falloff,\ 0.1f,\ 3.0f);}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ light.shadowRange\ =\ range;}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ light.castsShadows\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ light;}
+\DoxyCodeLine{00091\ \ \ \ \ \}}
+\DoxyCodeLine{00092\ \ \ \ \ }
+\DoxyCodeLine{00093\ \ \ \ \ \textcolor{keyword}{static}\ \doxymbox{\hyperlink{struct_light_aeb5df09a25a32f19fdffa761268ba24f}{Light}}\ CreateDirectionalLight(}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ Math3D::Vec3\ direction,}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ Math3D::Vec4\ color\ =\ Color::WHITE,}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ intensity\ =\ 1.0f}
+\DoxyCodeLine{00097\ \ \ \ \ )\ \{}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_light_aeb5df09a25a32f19fdffa761268ba24f}{Light}}\ light;}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ light.type\ =\ LightType::DIRECTIONAL;}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ light.direction\ =\ Math3D::Vec3(glm::normalize(glm::vec3(direction.x,\ direction.y,\ direction.z)));}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ light.color\ =\ color;}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ light.intensity\ =\ intensity;}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ light.range\ =\ 20.0f;}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ light.shadowRange\ =\ 300.0f;}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ light.castsShadows\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ light;}
+\DoxyCodeLine{00107\ \ \ \ \ \}}
+\DoxyCodeLine{00108\ \ \ \ \ }
+\DoxyCodeLine{00109\ \ \ \ \ \textcolor{keyword}{static}\ \doxymbox{\hyperlink{struct_light_aeb5df09a25a32f19fdffa761268ba24f}{Light}}\ CreateSpotLight(}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ Math3D::Vec3\ position,}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ Math3D::Vec3\ direction,}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ Math3D::Vec4\ color\ =\ Color::WHITE,}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ intensity\ =\ 1.0f,}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ range\ =\ 10.0f,}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ falloff\ =\ 1.0f,}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ spotAngle\ =\ 45.0f}
+\DoxyCodeLine{00117\ \ \ \ \ )\ \{}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_light_aeb5df09a25a32f19fdffa761268ba24f}{Light}}\ light;}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ light.type\ =\ LightType::SPOT;}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ light.position\ =\ position;}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ light.direction\ =\ Math3D::Vec3(glm::normalize(glm::vec3(direction.x,\ direction.y,\ direction.z)));}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ light.color\ =\ color;}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ light.intensity\ =\ intensity;}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ light.range\ =\ range;}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ light.falloff\ =\ Math3D::Clamp(falloff,\ 0.1f,\ 3.0f);}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ light.spotAngle\ =\ spotAngle;}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ light.shadowRange\ =\ range;}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ light.castsShadows\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ light;}
+\DoxyCodeLine{00130\ \ \ \ \ \}}
+\DoxyCodeLine{00131\ \};}
+\DoxyCodeLine{00132\ }
+\DoxyCodeLine{00134\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_light_manager_a1eee8eb276ec7f041d961a567389754a}{LightManager}}\ \{}
+\DoxyCodeLine{00135\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00136\ \ \ \ \ std::vector<Light>\ lights;}
+\DoxyCodeLine{00137\ \ \ \ \ }
+\DoxyCodeLine{00138\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00142\ \ \ \ \ \doxymbox{\hyperlink{class_light_manager_a1eee8eb276ec7f041d961a567389754a}{LightManager}}()\ :\ lights()\ \{\}}
+\DoxyCodeLine{00143\ \ \ \ \ }
+\DoxyCodeLine{00144\ \ \ \ \ \textcolor{keywordtype}{void}\ addLight(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{struct_light}{Light}}\&\ light)\ \{}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (lights.size()\ <\ MAX\_LIGHTS)\ \{}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \ \ \ \ lights.push\_back(light);}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00148\ \ \ \ \ \}}
+\DoxyCodeLine{00149\ \ \ \ \ }
+\DoxyCodeLine{00150\ \ \ \ \ \textcolor{keywordtype}{void}\ removeLight(\textcolor{keywordtype}{size\_t}\ index)\ \{}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (index\ <\ lights.size())\ \{}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \ \ \ \ lights.erase(lights.begin()\ +\ index);}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00154\ \ \ \ \ \}}
+\DoxyCodeLine{00155\ \ \ \ \ }
+\DoxyCodeLine{00156\ \ \ \ \ \textcolor{keywordtype}{void}\ clearLights()\ \{}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ lights.clear();}
+\DoxyCodeLine{00158\ \ \ \ \ \}}
+\DoxyCodeLine{00159\ \ \ \ \ }
+\DoxyCodeLine{00160\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ getLightCount()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ lights.size();}
+\DoxyCodeLine{00162\ \ \ \ \ \}}
+\DoxyCodeLine{00163\ \ \ \ \ }
+\DoxyCodeLine{00164\ \ \ \ \ Light\&\ getLight(\textcolor{keywordtype}{size\_t}\ index)\ \{}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ lights[index];}
+\DoxyCodeLine{00166\ \ \ \ \ \}}
+\DoxyCodeLine{00167\ \ \ \ \ }
+\DoxyCodeLine{00168\ \ \ \ \ \textcolor{keyword}{const}\ Light\&\ getLight(\textcolor{keywordtype}{size\_t}\ index)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ lights[index];}
+\DoxyCodeLine{00170\ \ \ \ \ \}}
+\DoxyCodeLine{00171\ \ \ \ \ }
+\DoxyCodeLine{00172\ \ \ \ \ \textcolor{keyword}{const}\ std::vector<Light>\&\ getAllLights()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ lights;}
+\DoxyCodeLine{00174\ \ \ \ \ \}}
+\DoxyCodeLine{00175\ \ \ \ \ }
+\DoxyCodeLine{00176\ \ \ \ \ \textcolor{keyword}{static}\ \doxymbox{\hyperlink{class_light_manager_a1eee8eb276ec7f041d961a567389754a}{LightManager}}\ GlobalLightManager;}
+\DoxyCodeLine{00177\ \};}
+\DoxyCodeLine{00178\ }
+\DoxyCodeLine{00179\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ LIGHT\_H}}
+
+\end{DoxyCode}

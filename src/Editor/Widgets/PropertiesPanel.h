@@ -1,3 +1,8 @@
+/**
+ * @file src/Editor/Widgets/PropertiesPanel.h
+ * @brief Declarations for PropertiesPanel.
+ */
+
 #ifndef PROPERTIES_PANEL_H
 #define PROPERTIES_PANEL_H
 
@@ -9,8 +14,21 @@
 #include "neoecs.hpp"
 #include "Editor/Widgets/FilePreviewWidget.h"
 
+/// @brief Represents the PropertiesPanel type.
 class PropertiesPanel {
     public:
+        /**
+         * @brief Draws this object.
+         * @param x Spatial value used by this operation.
+         * @param y Spatial value used by this operation.
+         * @param w Value for w.
+         * @param h Value for h.
+         * @param targetScene Value for target scene.
+         * @param assetRoot Value for asset root.
+         * @param selectedAssetPath Filesystem path for selected asset path.
+         * @param selectedEntityId Identifier or index value.
+         * @param findEntityById Identifier or index value.
+         */
         void draw(
             float x,
             float y,

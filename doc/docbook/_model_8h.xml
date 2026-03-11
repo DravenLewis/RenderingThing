@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__model_8h" xml:lang="en-US">
+<title>src/Rendering/Geometry/Model.h File Reference</title>
+<indexterm><primary>src/Rendering/Geometry/Model.h</primary></indexterm>
+<para>
+
+<para>Declarations for <link linkend="_struct_model">Model</link>. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &quot;Foundation/Util/Types.h&quot;<?linebreak?>#include &quot;Rendering/Geometry/Drawable.h&quot;<?linebreak?>#include &quot;Foundation/Math/Math3D.h&quot;<?linebreak?>#include &quot;Rendering/Geometry/ModelPart.h&quot;<?linebreak?>#include &quot;Scene/Camera.h&quot;<?linebreak?>#include &quot;Rendering/Lighting/ShadowRenderer.h&quot;<?linebreak?>#include &lt;string&gt;<?linebreak?>#include &lt;vector&gt;<?linebreak?>#include &lt;glad/glad.h&gt;<?linebreak?></programlisting><simplesect>
+    <title>Classes    </title>
+        <itemizedlist>
+            <listitem><para>struct <link linkend="_struct_model">Model</link></para>
+
+<para>Holds data for <link linkend="_struct_model">Model</link>. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Typedefs    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="__model_8h_1a30ea18bb82fb793debf5f63740468a19"/>typedef std::shared_ptr&lt; <link linkend="_struct_model">Model</link> &gt; <emphasis role="strong">PModel</emphasis></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Declarations for <link linkend="_struct_model">Model</link>. </para>
+</section>
+</section>

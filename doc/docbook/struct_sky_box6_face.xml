@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_sky_box6_face" xml:lang="en-US">
+<title>SkyBox6Face Struct Reference</title>
+<indexterm><primary>SkyBox6Face</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_sky_box6_face">SkyBox6Face</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;SkyBox.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_sky_box6_face_1ab6f1ce5be59e6d4873e5c09ad56913cc"/>PAsset <emphasis role="strong">topFaceAsset</emphasis> = nullptr</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_sky_box6_face_1a171fc45a05df7e4d879a04eb714cf9a7"/>PAsset <emphasis role="strong">bottomFaceAsset</emphasis> = nullptr</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_sky_box6_face_1a4bf8919a218153bfd1174f86a045dcd5"/>PAsset <emphasis role="strong">leftFaceAsset</emphasis> = nullptr</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_sky_box6_face_1a480e2da0e85450f5f6862aee821305ce"/>PAsset <emphasis role="strong">rightFaceAsset</emphasis> = nullptr</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_sky_box6_face_1abb7ee5f7056c9c4d1cd63e7955f06041"/>PAsset <emphasis role="strong">frontFaceAsset</emphasis> = nullptr</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_sky_box6_face_1a369835ab8dff41effb1178fc2e0fa28f"/>PAsset <emphasis role="strong">backFaceAsset</emphasis> = nullptr</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_sky_box6_face">SkyBox6Face</link>. </para>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Textures/<link linkend="__sky_box_8h">SkyBox.h</link></section>
+</section>

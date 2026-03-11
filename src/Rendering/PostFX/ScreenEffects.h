@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/PostFX/ScreenEffects.h
+ * @brief Declarations for ScreenEffects.
+ */
+
 #ifndef SCREENEFFECTS_H
 #define SCREENEFFECTS_H
 
@@ -11,6 +16,7 @@
 #include <cmath>
 #include <vector>
 
+/// @brief Enumerates values for AntiAliasingPreset.
 enum class AntiAliasingPreset {
     Off = 0,
     FXAA_Low,
@@ -18,6 +24,7 @@ enum class AntiAliasingPreset {
     FXAA_High
 };
 
+/// @brief Represents the GrayscaleEffect type.
 class GrayscaleEffect : public Graphics::PostProcessing::PostProcessingEffect{
     private:
         std::shared_ptr<ShaderProgram> shader;
@@ -30,6 +37,9 @@ class GrayscaleEffect : public Graphics::PostProcessing::PostProcessingEffect{
             in vec2 TexCoords;
             uniform sampler2D screenTexture;
             
+            /**
+             * @brief Executes the main shader pass.
+             */
             void main() {
                 vec4 col = texture(screenTexture, TexCoords);
                 float avg = 0.2126 * col.r + 0.7152 * col.g + 0.0722 * col.b;
@@ -37,6 +47,10 @@ class GrayscaleEffect : public Graphics::PostProcessing::PostProcessingEffect{
             }
         )";
 
+        /**
+         * @brief Checks whether ensure compiled.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool ensureCompiled(){
             if(!shader){
                 return false;
@@ -57,12 +71,23 @@ class GrayscaleEffect : public Graphics::PostProcessing::PostProcessingEffect{
 
     public:
 
+        /**
+         * @brief Constructs a new GrayscaleEffect instance.
+         */
         GrayscaleEffect(){
             shader = std::make_shared<ShaderProgram>();
             shader->setVertexShader(Graphics::ShaderDefaults::SCREEN_VERT_SRC);
             shader->setFragmentShader(GRAYSCALE_SHADER);
         }
 
+        /**
+         * @brief Applies current settings.
+         * @param tex Value for tex.
+         * @param depthTex Value for depth tex.
+         * @param outFbo Output value for fbo.
+         * @param quad Value for quad.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool apply(PTexture tex, PTexture depthTex, PFrameBuffer outFbo, std::shared_ptr<ModelPart> quad) override {
             (void)depthTex;
             if(!tex || !outFbo || !quad){
@@ -91,11 +116,16 @@ class GrayscaleEffect : public Graphics::PostProcessing::PostProcessingEffect{
             return true;
         }
 
+        /**
+         * @brief Creates a new object.
+         * @return Result of this operation.
+         */
         static Graphics::PostProcessing::PPostProcessingEffect New(){
             return std::make_shared<GrayscaleEffect>();
         }
 };
 
+/// @brief Represents the SSAOEffect type.
 class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
     private:
         std::shared_ptr<ShaderProgram> shader;
@@ -134,20 +164,36 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
                 vec2(-0.24188840,  0.99706507),
                 vec2(-0.81409955,  0.91437590),
                 vec2( 0.19984126,  0.78641367),
+                /**
+                 * @brief Builds a 2D vector.
+                 */
                 vec2( 0.14383161, -0.14100790)
             );
 
+            /**
+             * @brief Converts device depth to linear depth.
+             * @param depth Value for depth.
+             * @return Computed numeric result.
+             */
             float linearizeDepth(float depth){
                 float z = depth * 2.0 - 1.0;
                 return (2.0 * u_nearPlane * u_farPlane) / max((u_farPlane + u_nearPlane) - (z * (u_farPlane - u_nearPlane)), 0.0001);
             }
 
+            /**
+             * @brief Checks whether h12.
+             * @param p Value for p.
+             * @return Computed numeric result.
+             */
             float hash12(vec2 p){
                 vec3 p3 = fract(vec3(p.xyx) * 0.1031);
                 p3 += dot(p3, p3.yzx + 33.33);
                 return fract((p3.x + p3.y) * p3.z);
             }
 
+            /**
+             * @brief Executes the main shader pass.
+             */
             void main() {
                 vec4 base = texture(screenTexture, TexCoords);
                 float centerDepthRaw = texture(depthTexture, TexCoords).r;
@@ -231,6 +277,10 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
             }
         )";
 
+        /**
+         * @brief Checks whether ensure compiled.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool ensureCompiled(){
             if(!shader){
                 return false;
@@ -259,12 +309,23 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
         float nearPlane = 0.1f;
         float farPlane = 1000.0f;
 
+        /**
+         * @brief Constructs a new SSAOEffect instance.
+         */
         SSAOEffect() {
             shader = std::make_shared<ShaderProgram>();
             shader->setVertexShader(Graphics::ShaderDefaults::SCREEN_VERT_SRC);
             shader->setFragmentShader(SSAO_FRAG_SHADER);
         }
 
+        /**
+         * @brief Applies current settings.
+         * @param tex Value for tex.
+         * @param depthTex Value for depth tex.
+         * @param outFbo Output value for fbo.
+         * @param quad Value for quad.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool apply(PTexture tex, PTexture depthTex, PFrameBuffer outFbo, std::shared_ptr<ModelPart> quad) override {
             if(!outFbo || !quad || !tex || !depthTex){
                 return false;
@@ -310,11 +371,16 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
             return true;
         }
 
+        /**
+         * @brief Creates a new object.
+         * @return Pointer to the resulting object.
+         */
         static std::shared_ptr<SSAOEffect> New() {
             return std::make_shared<SSAOEffect>();
         }
 };
 
+/// @brief Represents the DepthOfFieldEffect type.
 class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect {
     private:
         std::shared_ptr<ShaderProgram> shader;
@@ -359,11 +425,20 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
             uniform float u_nearPlane;
             uniform float u_farPlane;
 
+            /**
+             * @brief Converts device depth to linear depth.
+             * @param depth Value for depth.
+             * @return Computed numeric result.
+             */
             float linearizeDepth(float depth){
                 float z = depth * 2.0 - 1.0;
                 return (2.0 * u_nearPlane * u_farPlane) / max((u_farPlane + u_nearPlane) - (z * (u_farPlane - u_nearPlane)), 0.0001);
             }
 
+            /**
+             * @brief Resolves focus distance from depth data.
+             * @return Computed numeric result.
+             */
             float resolveFocusDistance(){
                 if(u_adaptiveFocusEnabled == 0){
                     return u_focusDistance;
@@ -405,6 +480,15 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
                 return accum / weight;
             }
 
+            /**
+             * @brief Accumulates blur samples.
+             * @param uv Value for uv.
+             * @param radiusPx Value for radius px.
+             * @param sampleCount Number of elements or bytes.
+             * @param centerLinearDepth Value for center linear depth.
+             * @param blurAmount Value for blur amount.
+             * @return Result of this operation.
+             */
             vec3 gatherBlur(vec2 uv, float radiusPx, int sampleCount, float centerLinearDepth, float blurAmount){
                 vec2 dirs[8] = vec2[](
                     vec2( 1.0,  0.0),
@@ -439,6 +523,9 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
                 return accum / max(weight, 0.0001);
             }
 
+            /**
+             * @brief Executes the main shader pass.
+             */
             void main() {
                 vec4 base = texture(screenTexture, TexCoords);
                 float depth = texture(depthTexture, TexCoords).r;
@@ -480,6 +567,10 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
             }
         )";
 
+        /**
+         * @brief Checks whether ensure compiled.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool ensureCompiled(){
             if(!shader){
                 return false;
@@ -498,12 +589,23 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
             return true;
         }
 
+        /**
+         * @brief Converts device depth to linear depth on CPU.
+         * @param depth Value for depth.
+         * @return Computed numeric result.
+         */
         float linearizeDepthCpu(float depth) const{
             float z = (depth * 2.0f) - 1.0f;
             return (2.0f * nearPlane * farPlane) /
                    Math3D::Max((farPlane + nearPlane) - (z * (farPlane - nearPlane)), 0.0001f);
         }
 
+        /**
+         * @brief Checks whether sample adaptive focus distance.
+         * @param depthTex Value for depth tex.
+         * @param outDistance Output value for distance.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool sampleAdaptiveFocusDistance(PTexture depthTex, float& outDistance){
             if(!depthTex || depthTex->getID() == 0){
                 return false;
@@ -572,50 +674,100 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
         bool externalAdaptiveFocusValid = false;
         float externalAdaptiveFocusDistance = 0.0f;
 
+        /**
+         * @brief Constructs a new DepthOfFieldEffect instance.
+         */
         DepthOfFieldEffect() {
             shader = std::make_shared<ShaderProgram>();
             shader->setVertexShader(Graphics::ShaderDefaults::SCREEN_VERT_SRC);
             shader->setFragmentShader(DOF_FRAG_SHADER);
         }
 
+        /**
+         * @brief Destroys this DepthOfFieldEffect instance.
+         */
         ~DepthOfFieldEffect() override = default;
 
+        /**
+         * @brief Returns the resolved focus distance.
+         * @return Computed numeric result.
+         */
         float getResolvedFocusDistance() const{
             return resolvedFocusDistance;
         }
 
+        /**
+         * @brief Returns the resolved focus range.
+         * @return Computed numeric result.
+         */
         float getResolvedFocusRange() const{
             return resolvedFocusRange;
         }
 
+        /**
+         * @brief Returns the debug adaptive center valid.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool getDebugAdaptiveCenterValid() const{
             return debugAdaptiveCenterValid;
         }
 
+        /**
+         * @brief Returns the debug adaptive center distance.
+         * @return Computed numeric result.
+         */
         float getDebugAdaptiveCenterDistance() const{
             return debugAdaptiveCenterDistance;
         }
 
+        /**
+         * @brief Returns the debug adaptive ray valid.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool getDebugAdaptiveRayValid() const{
             return debugAdaptiveRayValid;
         }
 
+        /**
+         * @brief Returns the debug adaptive ray distance.
+         * @return Computed numeric result.
+         */
         float getDebugAdaptiveRayDistance() const{
             return debugAdaptiveRayDistance;
         }
 
+        /**
+         * @brief Returns the debug adaptive used fallback.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool getDebugAdaptiveUsedFallback() const{
             return debugAdaptiveUsedFallback;
         }
 
+        /**
+         * @brief Returns the debug adaptive target distance.
+         * @return Computed numeric result.
+         */
         float getDebugAdaptiveTargetDistance() const{
             return debugAdaptiveTargetDistance;
         }
 
+        /**
+         * @brief Returns the debug adaptive fallback distance.
+         * @return Computed numeric result.
+         */
         float getDebugAdaptiveFallbackDistance() const{
             return debugAdaptiveFallbackDistance;
         }
 
+        /**
+         * @brief Applies current settings.
+         * @param tex Value for tex.
+         * @param depthTex Value for depth tex.
+         * @param outFbo Output value for fbo.
+         * @param quad Value for quad.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool apply(PTexture tex, PTexture depthTex, PFrameBuffer outFbo, std::shared_ptr<ModelPart> quad) override {
             if(!outFbo || !quad || !tex || !depthTex){
                 return false;
@@ -750,11 +902,16 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
             return true;
         }
 
+        /**
+         * @brief Creates a new object.
+         * @return Pointer to the resulting object.
+         */
         static std::shared_ptr<DepthOfFieldEffect> New() {
             return std::make_shared<DepthOfFieldEffect>();
         }
 };
 
+/// @brief Represents the BloomEffect type.
 class BloomEffect : public Graphics::PostProcessing::PostProcessingEffect {
     private:
         std::shared_ptr<ShaderProgram> shader;
@@ -787,9 +944,17 @@ class BloomEffect : public Graphics::PostProcessing::PostProcessingEffect {
                 vec2( 0.507,  0.064),
                 vec2( 0.896,  0.412),
                 vec2(-0.322,  0.951),
+                /**
+                 * @brief Builds a 2D vector.
+                 */
                 vec2(-0.720,  0.631)
             );
 
+            /**
+             * @brief Filters bright pixels for bloom.
+             * @param color Color value.
+             * @return Result of this operation.
+             */
             vec3 prefilterBright(vec3 color){
                 float brightness = max(color.r, max(color.g, color.b));
                 float threshold = max(u_threshold, 0.0);
@@ -801,6 +966,9 @@ class BloomEffect : public Graphics::PostProcessing::PostProcessingEffect {
                 return color * contribution;
             }
 
+            /**
+             * @brief Executes the main shader pass.
+             */
             void main() {
                 float exposureScale = max(u_exposureScale, 0.0);
                 vec3 base = texture(screenTexture, TexCoords).rgb;
@@ -842,6 +1010,12 @@ class BloomEffect : public Graphics::PostProcessing::PostProcessingEffect {
         float smoothedExposureScale = 1.0f;
         std::chrono::steady_clock::time_point lastAdaptationTime = std::chrono::steady_clock::now();
 
+        /**
+         * @brief Checks whether sample scene luminance.
+         * @param tex Value for tex.
+         * @param outLuminance Output value for luminance.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool sampleSceneLuminance(PTexture tex, float& outLuminance){
             if(!tex || tex->getID() == 0 || tex->getWidth() <= 0 || tex->getHeight() <= 0){
                 return false;
@@ -890,6 +1064,13 @@ class BloomEffect : public Graphics::PostProcessing::PostProcessingEffect {
             return true;
         }
 
+        /**
+         * @brief Computes adaptive scales.
+         * @param tex Value for tex.
+         * @param outThresholdScale Spatial value used by this operation.
+         * @param outIntensityScale Spatial value used by this operation.
+         * @param outExposureScale Spatial value used by this operation.
+         */
         void computeAdaptiveScales(PTexture tex, float& outThresholdScale, float& outIntensityScale, float& outExposureScale){
             outThresholdScale = smoothedThresholdScale;
             outIntensityScale = smoothedIntensityScale;
@@ -959,6 +1140,10 @@ class BloomEffect : public Graphics::PostProcessing::PostProcessingEffect {
             outExposureScale = smoothedExposureScale;
         }
 
+        /**
+         * @brief Checks whether ensure compiled.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool ensureCompiled(){
             if(!shader){
                 return false;
@@ -988,12 +1173,18 @@ class BloomEffect : public Graphics::PostProcessing::PostProcessingEffect {
         float autoExposureIntensityScale = 1.0f;
         float autoExposureThresholdScale = 1.0f;
 
+        /**
+         * @brief Constructs a new BloomEffect instance.
+         */
         BloomEffect() {
             shader = std::make_shared<ShaderProgram>();
             shader->setVertexShader(Graphics::ShaderDefaults::SCREEN_VERT_SRC);
             shader->setFragmentShader(BLOOM_FRAG_SHADER);
         }
 
+        /**
+         * @brief Destroys this BloomEffect instance.
+         */
         ~BloomEffect() override {
             if(adaptationReadFbo != 0){
                 glDeleteFramebuffers(1, &adaptationReadFbo);
@@ -1001,6 +1192,14 @@ class BloomEffect : public Graphics::PostProcessing::PostProcessingEffect {
             }
         }
 
+        /**
+         * @brief Applies current settings.
+         * @param tex Value for tex.
+         * @param PTexture Value for p texture.
+         * @param outFbo Output value for fbo.
+         * @param quad Value for quad.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool apply(PTexture tex, PTexture, PFrameBuffer outFbo, std::shared_ptr<ModelPart> quad) override {
             if(!outFbo || !quad || !tex){
                 return false;
@@ -1054,11 +1253,16 @@ class BloomEffect : public Graphics::PostProcessing::PostProcessingEffect {
             return true;
         }
 
+        /**
+         * @brief Creates a new object.
+         * @return Pointer to the resulting object.
+         */
         static std::shared_ptr<BloomEffect> New() {
             return std::make_shared<BloomEffect>();
         }
 };
 
+/// @brief Represents the AutoExposureEffect type.
 class AutoExposureEffect : public Graphics::PostProcessing::PostProcessingEffect {
     private:
         std::shared_ptr<ShaderProgram> shader;
@@ -1078,12 +1282,20 @@ class AutoExposureEffect : public Graphics::PostProcessing::PostProcessingEffect
             uniform sampler2D screenTexture;
             uniform float u_exposure;
 
+            /**
+             * @brief Converts to nemap aces.
+             * @param color Color value.
+             * @return Result of this operation.
+             */
             vec3 tonemapAces(vec3 color){
                 vec3 a = color * (color * 2.51 + 0.03);
                 vec3 b = color * (color * 2.43 + 0.59) + 0.14;
                 return clamp(a / max(b, vec3(0.0001)), 0.0, 1.0);
             }
 
+            /**
+             * @brief Executes the main shader pass.
+             */
             void main() {
                 vec4 base = texture(screenTexture, TexCoords);
                 vec3 exposed = max(base.rgb, vec3(0.0)) * max(u_exposure, 0.0001);
@@ -1092,6 +1304,12 @@ class AutoExposureEffect : public Graphics::PostProcessing::PostProcessingEffect
             }
         )";
 
+        /**
+         * @brief Checks whether sample scene luminance.
+         * @param tex Value for tex.
+         * @param outLuminance Output value for luminance.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool sampleSceneLuminance(PTexture tex, float& outLuminance){
             if(!tex || tex->getID() == 0 || tex->getWidth() <= 0 || tex->getHeight() <= 0){
                 return false;
@@ -1114,6 +1332,7 @@ class AutoExposureEffect : public Graphics::PostProcessing::PostProcessingEffect
 
             glReadBuffer(GL_COLOR_ATTACHMENT0);
 
+            /// @brief Holds data for MeterTap.
             struct MeterTap {
                 float u;
                 float v;
@@ -1186,6 +1405,10 @@ class AutoExposureEffect : public Graphics::PostProcessing::PostProcessingEffect
             return true;
         }
 
+        /**
+         * @brief Updates adaptation.
+         * @param tex Value for tex.
+         */
         void updateAdaptation(PTexture tex){
             float observedLuminance = 0.18f;
             if(!sampleSceneLuminance(tex, observedLuminance)){
@@ -1236,6 +1459,10 @@ class AutoExposureEffect : public Graphics::PostProcessing::PostProcessingEffect
             adaptedExposure = Math3D::Clamp(steppedExposure, minExp, maxExp);
         }
 
+        /**
+         * @brief Checks whether ensure compiled.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool ensureCompiled(){
             if(!shader){
                 return false;
@@ -1261,12 +1488,18 @@ class AutoExposureEffect : public Graphics::PostProcessing::PostProcessingEffect
         float adaptationSpeedUp = 1.2f;
         float adaptationSpeedDown = 0.7f;
 
+        /**
+         * @brief Constructs a new AutoExposureEffect instance.
+         */
         AutoExposureEffect(){
             shader = std::make_shared<ShaderProgram>();
             shader->setVertexShader(Graphics::ShaderDefaults::SCREEN_VERT_SRC);
             shader->setFragmentShader(AUTO_EXPOSURE_FRAG_SHADER);
         }
 
+        /**
+         * @brief Destroys this AutoExposureEffect instance.
+         */
         ~AutoExposureEffect() override {
             if(meteringReadFbo != 0){
                 glDeleteFramebuffers(1, &meteringReadFbo);
@@ -1274,6 +1507,9 @@ class AutoExposureEffect : public Graphics::PostProcessing::PostProcessingEffect
             }
         }
 
+        /**
+         * @brief Resets adaptation.
+         */
         void resetAdaptation(){
             adaptationInitialized = false;
             adaptedExposure = 1.0f;
@@ -1281,10 +1517,22 @@ class AutoExposureEffect : public Graphics::PostProcessing::PostProcessingEffect
             lastAdaptationTime = std::chrono::steady_clock::now();
         }
 
+        /**
+         * @brief Returns the current exposure.
+         * @return Computed numeric result.
+         */
         float getCurrentExposure() const{
             return adaptedExposure;
         }
 
+        /**
+         * @brief Applies current settings.
+         * @param tex Value for tex.
+         * @param PTexture Value for p texture.
+         * @param outFbo Output value for fbo.
+         * @param quad Value for quad.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool apply(PTexture tex, PTexture, PFrameBuffer outFbo, std::shared_ptr<ModelPart> quad) override {
             if(!outFbo || !quad || !tex){
                 return false;
@@ -1313,11 +1561,16 @@ class AutoExposureEffect : public Graphics::PostProcessing::PostProcessingEffect
             return true;
         }
 
+        /**
+         * @brief Creates a new object.
+         * @return Pointer to the resulting object.
+         */
         static std::shared_ptr<AutoExposureEffect> New(){
             return std::make_shared<AutoExposureEffect>();
         }
 };
 
+/// @brief Represents the FXAAEffect type.
 class FXAAEffect : public Graphics::PostProcessing::PostProcessingEffect {
     private:
         std::shared_ptr<ShaderProgram> shader;
@@ -1334,10 +1587,18 @@ class FXAAEffect : public Graphics::PostProcessing::PostProcessingEffect {
             uniform float u_edgeThreshold;
             uniform float u_edgeThresholdMin;
 
+            /**
+             * @brief Computes luminance.
+             * @param c Value for c.
+             * @return Computed numeric result.
+             */
             float luma(vec3 c){
                 return dot(c, vec3(0.299, 0.587, 0.114));
             }
 
+            /**
+             * @brief Executes the main shader pass.
+             */
             void main() {
                 vec3 rgbNW = texture(screenTexture, TexCoords + vec2(-1.0, -1.0) * u_texelSize).rgb;
                 vec3 rgbNE = texture(screenTexture, TexCoords + vec2( 1.0, -1.0) * u_texelSize).rgb;
@@ -1386,6 +1647,10 @@ class FXAAEffect : public Graphics::PostProcessing::PostProcessingEffect {
             }
         )";
 
+        /**
+         * @brief Checks whether ensure compiled.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool ensureCompiled(){
             if(!shader){
                 return false;
@@ -1407,12 +1672,23 @@ class FXAAEffect : public Graphics::PostProcessing::PostProcessingEffect {
     public:
         AntiAliasingPreset preset = AntiAliasingPreset::FXAA_Medium;
 
+        /**
+         * @brief Constructs a new FXAAEffect instance.
+         */
         FXAAEffect() {
             shader = std::make_shared<ShaderProgram>();
             shader->setVertexShader(Graphics::ShaderDefaults::SCREEN_VERT_SRC);
             shader->setFragmentShader(FXAA_FRAG_SHADER);
         }
 
+        /**
+         * @brief Applies current settings.
+         * @param tex Value for tex.
+         * @param PTexture Value for p texture.
+         * @param outFbo Output value for fbo.
+         * @param quad Value for quad.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool apply(PTexture tex, PTexture, PFrameBuffer outFbo, std::shared_ptr<ModelPart> quad) override {
             if(!outFbo || !quad || !tex || preset == AntiAliasingPreset::Off){
                 return false;
@@ -1466,6 +1742,10 @@ class FXAAEffect : public Graphics::PostProcessing::PostProcessingEffect {
             return true;
         }
 
+        /**
+         * @brief Creates a new object.
+         * @return Pointer to the resulting object.
+         */
         static std::shared_ptr<FXAAEffect> New() {
             return std::make_shared<FXAAEffect>();
         }

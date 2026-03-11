@@ -1,0 +1,234 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_grayscale_effect" kind="class" language="C++" prot="public">
+    <compoundname>GrayscaleEffect</compoundname>
+    <basecompoundref refid="class_graphics_1_1_post_processing_1_1_post_processing_effect" prot="public" virt="non-virtual">Graphics::PostProcessing::PostProcessingEffect</basecompoundref>
+    <includes refid="_screen_effects_8h" local="no">ScreenEffects.h</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_grayscale_effect_1a1d4623731e048f95478fd411cf05185d" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="class_shader_program" kindref="compound">ShaderProgram</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;ShaderProgram&gt; GrayscaleEffect::shader</definition>
+        <argsstring></argsstring>
+        <name>shader</name>
+        <qualifiedname>GrayscaleEffect::shader</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="30" column="25" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_grayscale_effect_1ae8c9a2bbe50e01f0f7c0f14284765273" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool GrayscaleEffect::compileAttempted</definition>
+        <argsstring></argsstring>
+        <name>compileAttempted</name>
+        <qualifiedname>GrayscaleEffect::compileAttempted</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="31" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_grayscale_effect_1a72ff999ea25ac53765139074e1167a7d" prot="private" static="no" mutable="no">
+        <type>const std::string</type>
+        <definition>const std::string GrayscaleEffect::GRAYSCALE_SHADER</definition>
+        <argsstring></argsstring>
+        <name>GRAYSCALE_SHADER</name>
+        <qualifiedname>GrayscaleEffect::GRAYSCALE_SHADER</qualifiedname>
+        <initializer>                                   = R&quot;(
+    #version 330 core
+
+    out vec4 FragColor;
+    in vec2 TexCoords;
+    uniform sampler2D screenTexture;
+    
+    /**
+     * @brief Executes the main shader pass.
+     */
+    void main() {
+        vec4 col = texture(screenTexture, TexCoords);
+        float avg = 0.2126 * col.r + 0.7152 * col.g + 0.0722 * col.b;
+        FragColor = vec4(avg, avg, avg, col.a);
+    }
+)&quot;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="33" column="27" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="33" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_grayscale_effect_1a4940fa449331fc7235b65ad0b6433263" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool GrayscaleEffect::ensureCompiled</definition>
+        <argsstring>()</argsstring>
+        <name>ensureCompiled</name>
+        <qualifiedname>GrayscaleEffect::ensureCompiled</qualifiedname>
+        <briefdescription>
+<para>Checks whether ensure compiled. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>True when the operation succeeds; otherwise false. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="54" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="54" bodyend="70"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_grayscale_effect_1a6c026cfc72b5a3f2bf2674503183452c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>GrayscaleEffect::GrayscaleEffect</definition>
+        <argsstring>()</argsstring>
+        <name>GrayscaleEffect</name>
+        <qualifiedname>GrayscaleEffect::GrayscaleEffect</qualifiedname>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_grayscale_effect" kindref="compound">GrayscaleEffect</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="77" column="9" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="77" bodyend="81"/>
+      </memberdef>
+      <memberdef kind="function" id="class_grayscale_effect_1a5e71990549a216be2b0f6901932c7692" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>bool</type>
+        <definition>bool GrayscaleEffect::apply</definition>
+        <argsstring>(PTexture tex, PTexture depthTex, PFrameBuffer outFbo, std::shared_ptr&lt; ModelPart &gt; quad) override</argsstring>
+        <name>apply</name>
+        <qualifiedname>GrayscaleEffect::apply</qualifiedname>
+        <reimplements refid="class_graphics_1_1_post_processing_1_1_post_processing_effect_1a75b0263b1e53943ceb4f13d4aad0f5e6">apply</reimplements>
+        <param>
+          <type>PTexture</type>
+          <declname>tex</declname>
+        </param>
+        <param>
+          <type>PTexture</type>
+          <declname>depthTex</declname>
+        </param>
+        <param>
+          <type>PFrameBuffer</type>
+          <declname>outFbo</declname>
+        </param>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="struct_model_part" kindref="compound">ModelPart</ref> &gt;</type>
+          <declname>quad</declname>
+        </param>
+        <briefdescription>
+<para>Applies current settings. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>tex</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for tex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>depthTex</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for depth tex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>outFbo</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output value for fbo. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>quad</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for quad. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>True when the operation succeeds; otherwise false. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="91" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="91" bodyend="117"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_grayscale_effect_1acf79b860ba6ab7cd1fbc6bb62fbca723" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Graphics::PostProcessing::PPostProcessingEffect</type>
+        <definition>static Graphics::PostProcessing::PPostProcessingEffect GrayscaleEffect::New</definition>
+        <argsstring>()</argsstring>
+        <name>New</name>
+        <qualifiedname>GrayscaleEffect::New</qualifiedname>
+        <briefdescription>
+<para>Creates a new object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Result of this operation. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="123" column="64" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="123" bodyend="125"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_grayscale_effect" kindref="compound">GrayscaleEffect</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>Graphics::PostProcessing::PostProcessingEffect</label>
+        <link refid="class_graphics_1_1_post_processing_1_1_post_processing_effect"/>
+      </node>
+      <node id="1">
+        <label>GrayscaleEffect</label>
+        <link refid="class_grayscale_effect"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>Graphics::PostProcessing::PostProcessingEffect</label>
+        <link refid="class_graphics_1_1_post_processing_1_1_post_processing_effect"/>
+      </node>
+      <node id="1">
+        <label>GrayscaleEffect</label>
+        <link refid="class_grayscale_effect"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="src/Rendering/PostFX/ScreenEffects.h" line="28" column="1" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="28" bodyend="126"/>
+    <listofallmembers>
+      <member refid="class_grayscale_effect_1a5e71990549a216be2b0f6901932c7692" prot="public" virt="virtual"><scope>GrayscaleEffect</scope><name>apply</name></member>
+      <member refid="class_grayscale_effect_1ae8c9a2bbe50e01f0f7c0f14284765273" prot="private" virt="non-virtual"><scope>GrayscaleEffect</scope><name>compileAttempted</name></member>
+      <member refid="class_grayscale_effect_1a4940fa449331fc7235b65ad0b6433263" prot="private" virt="non-virtual"><scope>GrayscaleEffect</scope><name>ensureCompiled</name></member>
+      <member refid="class_grayscale_effect_1a72ff999ea25ac53765139074e1167a7d" prot="private" virt="non-virtual"><scope>GrayscaleEffect</scope><name>GRAYSCALE_SHADER</name></member>
+      <member refid="class_grayscale_effect_1a6c026cfc72b5a3f2bf2674503183452c" prot="public" virt="non-virtual"><scope>GrayscaleEffect</scope><name>GrayscaleEffect</name></member>
+      <member refid="class_grayscale_effect_1acf79b860ba6ab7cd1fbc6bb62fbca723" prot="public" virt="non-virtual"><scope>GrayscaleEffect</scope><name>New</name></member>
+      <member refid="class_grayscale_effect_1a1d4623731e048f95478fd411cf05185d" prot="private" virt="non-virtual"><scope>GrayscaleEffect</scope><name>shader</name></member>
+      <member refid="class_graphics_1_1_post_processing_1_1_post_processing_effect_1a956557ebb725734d270dd77ef8e40358" prot="public" virt="virtual"><scope>GrayscaleEffect</scope><name>~PostProcessingEffect</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

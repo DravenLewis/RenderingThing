@@ -1,0 +1,212 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__mesh_8h_source" xml:lang="en-US">
+<title>Mesh.h</title>
+<indexterm><primary>src/Rendering/Geometry/Mesh.h</primary></indexterm>
+Go to the documentation of this file.<programlisting linenumbering="unnumbered">1 
+5 
+6 <emphasis role="preprocessor">#ifndef&#32;MESH_H</emphasis>
+7 <emphasis role="preprocessor">#define&#32;MESH_H</emphasis>
+8 
+9 <emphasis role="preprocessor">#include&#32;&lt;glad/glad.h&gt;</emphasis>
+10 <emphasis role="preprocessor">#include&#32;&lt;SDL3/SDL.h&gt;</emphasis>
+11 <emphasis role="preprocessor">#include&#32;&lt;SDL3/SDL_opengl.h&gt;</emphasis>
+12 
+13 <emphasis role="preprocessor">#include&#32;&lt;cstdint&gt;</emphasis>
+14 <emphasis role="preprocessor">#include&#32;&lt;vector&gt;</emphasis>
+15 <emphasis role="preprocessor">#include&#32;&lt;algorithm&gt;</emphasis>
+16 
+17 <emphasis role="preprocessor">#include&#32;&quot;Foundation/Math/Math3D.h&quot;</emphasis>
+18 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__drawable_8h">Rendering/Geometry/Drawable.h</link>&quot;</emphasis>
+19 
+20 <emphasis role="keyword">typedef</emphasis>&#32;<emphasis role="keywordtype">unsigned</emphasis>&#32;<emphasis role="keywordtype">int</emphasis>&#32;VertexBufferObject,&#32;VertexArrayObject,&#32;ElementBufferObject;
+21 
+23 <emphasis role="keyword">struct&#32;</emphasis><link linkend="_struct_vertex">Vertex</link>{
+24 &#32;&#32;&#32;&#32;Math3D::Vec3&#32;Position;
+25 &#32;&#32;&#32;&#32;Math3D::Vec3&#32;Normal;
+26 &#32;&#32;&#32;&#32;Math3D::Vec2&#32;TexCoords;
+27 &#32;&#32;&#32;&#32;Math3D::Vec4&#32;Color;
+28 
+29 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keyword">const</emphasis>&#32;<emphasis role="keywordtype">int</emphasis>&#32;VERTEX_DATA_WIDTH&#32;=&#32;12;
+30 
+36 &#32;&#32;&#32;&#32;<link linkend="_struct_vertex">Vertex</link>&amp;&#32;<link linkend="_struct_vertex_1a7828f036e4c200a53d499102997c2a30">Pos</link>(<emphasis role="keyword">const</emphasis>&#32;Math3D::Vec3&amp;&#32;pos){
+37 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;this-&gt;Position&#32;=&#32;pos;
+38 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;*<emphasis role="keyword">this</emphasis>;
+39 &#32;&#32;&#32;&#32;}
+40 
+48 &#32;&#32;&#32;&#32;<link linkend="_struct_vertex">Vertex</link>&amp;&#32;<link linkend="_struct_vertex_1af1fe2694015b32b90d334bf46820bc04">Pos</link>(<emphasis role="keywordtype">float</emphasis>&#32;x&#32;=&#32;0,&#32;<emphasis role="keywordtype">float</emphasis>&#32;y&#32;=&#32;0,&#32;<emphasis role="keywordtype">float</emphasis>&#32;z&#32;=&#32;0){
+49 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;<link linkend="_struct_vertex_1a7828f036e4c200a53d499102997c2a30">Pos</link>(Math3D::Vec3(x,y,z));
+50 &#32;&#32;&#32;&#32;}
+51 
+57 &#32;&#32;&#32;&#32;<link linkend="_struct_vertex">Vertex</link>&amp;&#32;<link linkend="_struct_vertex_1a85ad46ae0b05f963524684314d19fedd">Norm</link>(<emphasis role="keyword">const</emphasis>&#32;Math3D::Vec3&amp;&#32;nml){
+58 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;this-&gt;Normal&#32;=&#32;nml;
+59 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;*<emphasis role="keyword">this</emphasis>;
+60 &#32;&#32;&#32;&#32;}
+61 
+69 &#32;&#32;&#32;&#32;<link linkend="_struct_vertex">Vertex</link>&amp;&#32;<link linkend="_struct_vertex_1a1380a6d23ae35eb199ae3f41628ec47d">Norm</link>(<emphasis role="keywordtype">float</emphasis>&#32;x&#32;=&#32;0,&#32;<emphasis role="keywordtype">float</emphasis>&#32;y&#32;=&#32;0,&#32;<emphasis role="keywordtype">float</emphasis>&#32;z&#32;=&#32;0){
+70 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;<link linkend="_struct_vertex_1a85ad46ae0b05f963524684314d19fedd">Norm</link>(Math3D::Vec3(x,y,z));
+71 &#32;&#32;&#32;&#32;}
+72 
+78 &#32;&#32;&#32;&#32;<link linkend="_struct_vertex">Vertex</link>&amp;&#32;<link linkend="_struct_vertex_1a7ffc6ba8ee72602e3acbf54a164a031b">UV</link>(<emphasis role="keyword">const</emphasis>&#32;Math3D::Vec2&amp;&#32;pos){
+79 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;this-&gt;TexCoords&#32;=&#32;pos;
+80 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;*<emphasis role="keyword">this</emphasis>;
+81 &#32;&#32;&#32;&#32;}
+82 
+89 &#32;&#32;&#32;&#32;<link linkend="_struct_vertex">Vertex</link>&amp;&#32;<link linkend="_struct_vertex_1aa1fb5d88ca585d9d07b5838dff9d0aff">UV</link>(<emphasis role="keywordtype">float</emphasis>&#32;u&#32;=&#32;0,&#32;<emphasis role="keywordtype">float</emphasis>&#32;v&#32;=&#32;0){
+90 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;<link linkend="_struct_vertex_1a7ffc6ba8ee72602e3acbf54a164a031b">UV</link>(Math3D::Vec2(u,v));
+91 &#32;&#32;&#32;&#32;}
+92 
+98 &#32;&#32;&#32;&#32;<link linkend="_struct_vertex">Vertex</link>&amp;&#32;<link linkend="_struct_vertex_1a5ede97c061c4623a1472f5d11ef81726">Col</link>(<emphasis role="keyword">const</emphasis>&#32;Math3D::Vec4&amp;&#32;col){
+99 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;this-&gt;Color&#32;=&#32;col;
+100 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;*<emphasis role="keyword">this</emphasis>;
+101 &#32;&#32;&#32;&#32;}
+102 
+111 &#32;&#32;&#32;&#32;<link linkend="_struct_vertex">Vertex</link>&amp;&#32;<link linkend="_struct_vertex_1a665c30113d1eb71a87f16e499c3d28a9">Col</link>(<emphasis role="keywordtype">float</emphasis>&#32;r&#32;=&#32;0,&#32;<emphasis role="keywordtype">float</emphasis>&#32;g&#32;=&#32;0,&#32;<emphasis role="keywordtype">float</emphasis>&#32;b&#32;=&#32;0,&#32;<emphasis role="keywordtype">float</emphasis>&#32;a&#32;=&#32;1){
+112 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;<link linkend="_struct_vertex_1a5ede97c061c4623a1472f5d11ef81726">Col</link>(Math3D::Vec4(r,g,b,a));
+113 &#32;&#32;&#32;&#32;}
+114 
+115 
+124 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<link linkend="_struct_vertex">Vertex</link>&#32;<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Build</link>(Math3D::Vec3&#32;pos&#32;=&#32;Math3D::Vec3::zero(),Math3D::Vec4&#32;color&#32;=&#32;Math3D::Vec4(1,1,1,1),&#32;Math3D::Vec3&#32;normal&#32;=&#32;Math3D::Vec3::zero(),&#32;Math3D::Vec2&#32;texcords&#32;=&#32;Math3D::Vec2(0,0)){
+125 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_vertex">Vertex</link>&#32;vtx;
+126 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vtx.Position&#32;=&#32;pos;
+127 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vtx.Normal&#32;=&#32;normal;
+128 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vtx.Color&#32;=&#32;color;
+129 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vtx.TexCoords&#32;=&#32;texcords;
+130 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//Math3D::Random&#32;rand;</emphasis>
+131 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//vtx.id&#32;=&#32;(rand.next&lt;uint16_t&gt;(INT16_MAX));</emphasis>
+132 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;vtx;
+133 &#32;&#32;&#32;&#32;}
+134 
+141 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<link linkend="_struct_vertex">Vertex</link>&#32;<link linkend="_struct_vertex_1a392c050c56cbd414b0e541285ba1222a">Compose</link>(std::vector&lt;float&gt;&amp;&#32;floats,&#32;<emphasis role="keywordtype">int</emphasis>&#32;dataSize&#32;=&#32;VERTEX_DATA_WIDTH&#32;<emphasis role="comment">/*&#32;XYZRGBANNUV&#32;*/</emphasis>){
+142 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::vector&lt;float&gt;&#32;first12;
+143 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">for</emphasis>(<emphasis role="keywordtype">int</emphasis>&#32;i&#32;=&#32;0;&#32;i&#32;&lt;&#32;floats.size();&#32;i++){
+144 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(i&#32;&lt;&#32;dataSize){
+145 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;first12.push_back(floats[i]);
+146 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}<emphasis role="keywordflow">else</emphasis>{
+147 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">break</emphasis>;
+148 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+149 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+150 
+151 
+152 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_vertex">Vertex</link>&#32;vtx;
+153 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(first12.size()&#32;&gt;=&#32;3){
+154 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vtx.Position.x&#32;=&#32;first12[0];
+155 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vtx.Position.y&#32;=&#32;first12[1];
+156 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vtx.Position.z&#32;=&#32;first12[2];
+157 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+158 
+159 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(first12.size()&#32;&gt;=&#32;7){
+160 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vtx.Color.x&#32;=&#32;first12[3];
+161 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vtx.Color.y&#32;=&#32;first12[4];
+162 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vtx.Color.z&#32;=&#32;first12[5];
+163 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vtx.Color.w&#32;=&#32;first12[6];
+164 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+165 
+166 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(first12.size()&#32;&gt;=&#32;10){
+167 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vtx.Normal.x&#32;=&#32;first12[7];
+168 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vtx.Normal.y&#32;=&#32;first12[8];
+169 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vtx.Normal.z&#32;=&#32;first12[9];
+170 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+171 
+172 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(first12.size()&#32;&gt;=&#32;12){
+173 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vtx.TexCoords.x&#32;=&#32;first12[10];
+174 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vtx.TexCoords.y&#32;=&#32;first12[11];
+175 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+176 
+177 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//Math3D::Random&#32;rand;</emphasis>
+178 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//vtx.id&#32;=&#32;(rand.next&lt;uint16_t&gt;(INT16_MAX));</emphasis>
+179 
+180 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;vtx;
+181 &#32;&#32;&#32;&#32;}
+182 
+188 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::vector&lt;float&gt;&#32;<link linkend="_struct_vertex_1a32abbab0c0fd0e6cd90a030ab0812776">Decompose</link>(<link linkend="_struct_vertex">Vertex</link>&#32;&amp;v){
+189 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::vector&lt;float&gt;&#32;vertexVector;
+190 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">/*&#32;XYZRGBANNUV&#32;*/</emphasis>
+191 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vertexVector.push_back(v.Position.x);
+192 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vertexVector.push_back(v.Position.y);
+193 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vertexVector.push_back(v.Position.z);
+194 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vertexVector.push_back(v.Color.x);
+195 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vertexVector.push_back(v.Color.y);
+196 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vertexVector.push_back(v.Color.z);
+197 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vertexVector.push_back(v.Color.w);
+198 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vertexVector.push_back(v.Normal.x);
+199 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vertexVector.push_back(v.Normal.y);
+200 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vertexVector.push_back(v.Normal.z);
+201 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vertexVector.push_back(v.TexCoords.x);
+202 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;vertexVector.push_back(v.TexCoords.y);
+203 
+204 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;vertexVector;
+205 &#32;&#32;&#32;&#32;}
+206 
+207 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;operator==(<emphasis role="keyword">const</emphasis>&#32;<link linkend="_struct_vertex">Vertex</link>&amp;&#32;vtx)<emphasis role="keyword">&#32;const&#32;</emphasis>{
+208 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>
+209 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::AreClose(Position.x,&#32;vtx.Position.x)&#32;&amp;&amp;
+210 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::AreClose(Position.y,&#32;vtx.Position.y)&#32;&amp;&amp;
+211 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::AreClose(Position.z,&#32;vtx.Position.z)&#32;&amp;&amp;
+212 
+213 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::AreClose(Normal.x,&#32;vtx.Normal.x)&#32;&amp;&amp;
+214 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::AreClose(Normal.y,&#32;vtx.Normal.y)&#32;&amp;&amp;
+215 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::AreClose(Normal.z,&#32;vtx.Normal.z)&#32;&amp;&amp;
+216 
+217 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::AreClose(TexCoords.x,&#32;vtx.TexCoords.x)&#32;&amp;&amp;
+218 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::AreClose(TexCoords.y,&#32;vtx.TexCoords.y)&#32;&#32;&amp;&amp;
+219 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::AreClose(Color.x,&#32;vtx.Color.x)&#32;&amp;&amp;
+220 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::AreClose(Color.y,&#32;vtx.Color.y)&#32;&#32;&amp;&amp;
+221 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::AreClose(Color.z,&#32;vtx.Color.z)&#32;&#32;&amp;&amp;
+222 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::AreClose(Color.w,&#32;vtx.Color.w);
+223 &#32;&#32;&#32;&#32;}
+224 
+225 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;operator!=(<emphasis role="keyword">const</emphasis>&#32;Vertex&amp;&#32;vtx)<emphasis role="keyword">&#32;const&#32;</emphasis>{
+226 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;!(*<emphasis role="keyword">this</emphasis>&#32;==&#32;vtx);
+227 &#32;&#32;&#32;&#32;}
+228 };
+229 
+231 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_mesh_1a2af137f1571af89172b9c102302c416b">Mesh</link>&#32;:&#32;<emphasis role="keyword">public</emphasis>&#32;<link linkend="_struct_i_drawable">IDrawable</link>{
+232 &#32;&#32;&#32;&#32;<emphasis role="keyword">private</emphasis>:
+233 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::vector&lt;Vertex&gt;&#32;verticies;
+234 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::vector&lt;uint32_t&gt;&#32;faces;
+235 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;VertexBufferObject&#32;VBO&#32;=&#32;0;
+236 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;VertexArrayObject&#32;VAO&#32;=&#32;0;
+237 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ElementBufferObject&#32;EBO&#32;=&#32;0;
+238 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::Vec3&#32;localBoundsMin&#32;=&#32;Math3D::Vec3(0.0f,&#32;0.0f,&#32;0.0f);
+239 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::Vec3&#32;localBoundsMax&#32;=&#32;Math3D::Vec3(0.0f,&#32;0.0f,&#32;0.0f);
+240 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;hasLocalBounds&#32;=&#32;<emphasis role="keyword">false</emphasis>;
+241 
+246 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;_genBuffers(GLenum&#32;usage&#32;=&#32;GL_STATIC_DRAW);
+251 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;_areBuffersBound();
+255 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;computeLocalBounds();
+256 
+257 &#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+261 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_mesh_1a2af137f1571af89172b9c102302c416b">Mesh</link>(){};
+262 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_mesh_1a2af137f1571af89172b9c102302c416b">Mesh</link>(<emphasis role="keyword">const</emphasis>&#32;<link linkend="_class_mesh">Mesh</link>&amp;)&#32;=&#32;<emphasis role="keyword">delete</emphasis>;
+263 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_mesh_1a2af137f1571af89172b9c102302c416b">Mesh</link>(<link linkend="_class_mesh">Mesh</link>&amp;&amp;&#32;other)&#32;<emphasis role="keyword">noexcept</emphasis>;
+264 
+265 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;upload(<emphasis role="keyword">const</emphasis>&#32;std::vector&lt;Vertex&gt;&amp;&#32;verts,&#32;<emphasis role="keyword">const</emphasis>&#32;std::vector&lt;uint32_t&gt;&amp;&#32;faces,&#32;GLenum&#32;usage&#32;=&#32;GL_STATIC_DRAW);
+266 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;upload(std::vector&lt;Vertex&gt;&amp;&amp;&#32;verts,&#32;std::vector&lt;uint32_t&gt;&amp;&amp;&#32;faces,&#32;GLenum&#32;usage&#32;=&#32;GL_STATIC_DRAW);
+267 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;reload();
+268 
+269 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;bind();
+270 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_mesh_1abf58756040d4eb2bfe17766af91e3bc6">draw</link>(
+271 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;Math3D::Mat4&amp;&#32;parent&#32;=&#32;Math3D::Mat4(),
+272 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;Math3D::Mat4&amp;&#32;view&#32;=&#32;Math3D::Mat4(),
+273 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;Math3D::Mat4&amp;&#32;projection&#32;=&#32;Math3D::Mat4()
+274 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;)&#32;<emphasis role="keyword">override</emphasis>;
+275 
+276 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;dispose();
+277 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;
+278 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::vector&lt;Math3D::Vec3&gt;&#32;getVerticiesVectorArray();
+279 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::vector&lt;float&gt;&#32;getVerticiesAsRawFloatArray();
+280 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::vector&lt;float&gt;&#32;getRawVertexData();
+281 
+282 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;setLocationAttributeOffset(<emphasis role="keywordtype">int</emphasis>&#32;attribute,&#32;<emphasis role="keywordtype">int</emphasis>&#32;dataSize,&#32;<emphasis role="keywordtype">int</emphasis>&#32;dataOffset);
+283 
+284 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::vector&lt;Vertex&gt;&amp;&#32;getVertecies()&#32;{<emphasis role="keywordflow">return</emphasis>&#32;this-&gt;verticies;}
+285 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::vector&lt;uint32_t&gt;&amp;&#32;getFaces()<emphasis role="keyword">&#32;const&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;faces;&#32;}
+286 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;getLocalBounds(Math3D::Vec3&amp;&#32;outMin,&#32;Math3D::Vec3&amp;&#32;outMax)&#32;<emphasis role="keyword">const</emphasis>;
+287 
+288 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;Unbind();
+289 
+290 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_mesh_1a2af137f1571af89172b9c102302c416b">~Mesh</link>();
+291 };
+292 
+293 <emphasis role="preprocessor">#endif&#32;</emphasis><emphasis role="comment">//&#32;MESH_H</emphasis>
+</programlisting></section>

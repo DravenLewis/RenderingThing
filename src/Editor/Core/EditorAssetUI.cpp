@@ -1,3 +1,8 @@
+/**
+ * @file src/Editor/Core/EditorAssetUI.cpp
+ * @brief Implementation for EditorAssetUI.
+ */
+
 #include "Editor/Core/EditorAssetUI.h"
 #include "Assets/Bundles/AssetBundle.h"
 #include "Assets/Core/Asset.h"
@@ -27,6 +32,7 @@ namespace {
     constexpr const char* kAssetPayloadType = "EDITOR_ASSET_DND";
     constexpr size_t kMaxPathChars = 512;
 
+    /// @brief Represents Asset Drag Payload data.
     struct AssetDragPayload {
         int kind = static_cast<int>(EditorAssetUI::AssetKind::Unknown);
         int isDirectory = 0;
@@ -34,6 +40,7 @@ namespace {
         char assetRef[kMaxPathChars] = {};
     };
 
+    /// @brief Represents Thumbnail Cache Entry data.
     struct ThumbnailCacheEntry {
         std::shared_ptr<Texture> texture;
         std::filesystem::file_time_type writeTime{};
@@ -44,6 +51,7 @@ namespace {
 
     std::unordered_map<std::string, ThumbnailCacheEntry> g_imageThumbnailCache;
 
+    /// @brief Represents Material Thumbnail Cache Entry data.
     struct MaterialThumbnailCacheEntry {
         std::shared_ptr<FrameBuffer> framebuffer;
         std::shared_ptr<Texture> texture;
@@ -63,6 +71,7 @@ namespace {
     std::shared_ptr<Material> g_materialThumbnailFallbackMaterial;
     int g_materialThumbnailSize = 0;
 
+    /// @brief Represents Asset Picker State data.
     struct AssetPickerState{
         bool windowOpen = false;
         bool focusRequested = false;
@@ -1069,6 +1078,7 @@ AssetBrowserWidget::DrawResult AssetBrowserWidget::draw(const char* childId, flo
         ImGui::EndDisabled();
     }
 
+    /// @brief Represents Browser Entry data.
     struct BrowserEntry {
         std::filesystem::path path;
         AssetTransaction tx;

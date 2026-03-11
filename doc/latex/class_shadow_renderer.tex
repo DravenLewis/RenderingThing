@@ -1,0 +1,432 @@
+\doxysection{Shadow\+Renderer Class Reference}
+\hypertarget{class_shadow_renderer}{}\label{class_shadow_renderer}\index{ShadowRenderer@{ShadowRenderer}}
+
+
+Represents the \doxylink{class_shadow_renderer}{Shadow\+Renderer} type.  
+
+
+
+
+{\ttfamily \+\#include $<$Shadow\+Renderer.\+h$>$}
+
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \doxymbox{\hyperlink{struct_shadow_renderer_1_1_shadow_draw_item}{Shadow\+Draw\+Item}}
+\begin{DoxyCompactList}\small\item\em Holds data for \doxylink{struct_shadow_renderer_1_1_shadow_draw_item}{Shadow\+Draw\+Item}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void \doxymbox{\hyperlink{class_shadow_renderer_afbb6c273a05d6646ee9705e4bd6b3233}{Begin\+Frame}} (PCamera camera, const std::\+vector$<$ \doxymbox{\hyperlink{struct_shadow_caster_bounds}{Shadow\+Caster\+Bounds}} $>$ \texorpdfstring{$\ast$}{*}casters=nullptr)
+\begin{DoxyCompactList}\small\item\em Begins frame. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{class_shadow_renderer_aab58aceef40d58cbcb99197fb3b0b1c9}{Render\+Shadows}} (const std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_mesh}{Mesh}} $>$ \&mesh, const Math3\+D::\+\+Mat4 \&model, const std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material}{Material}} $>$ \&material)
+\begin{DoxyCompactList}\small\item\em Renders shadows. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{class_shadow_renderer_a3ba920ae87f7206899c27bf206f7b88f}{Render\+Shadows\+Batch}} (const std::\+vector$<$ \doxymbox{\hyperlink{struct_shadow_renderer_1_1_shadow_draw_item}{Shadow\+Draw\+Item}} $>$ \&items)
+\begin{DoxyCompactList}\small\item\em Renders shadows batch. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{class_shadow_renderer_a294d22aa8a61404ca7741fb92179f759}{Bind\+Shadow\+Samplers}} (const std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ \&program)
+\begin{DoxyCompactList}\small\item\em Binds shadow samplers. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{class_shadow_renderer_a2a6a438bcb4909cfe0f049a418ca08a1}{Get\+Shadow\+Data\+For\+Light}} (size\+\_\+t index, const \doxymbox{\hyperlink{struct_light}{Light}} \&light, \doxymbox{\hyperlink{struct_shadow_light_data}{Shadow\+Light\+Data}} \&out\+Data)
+\begin{DoxyCompactList}\small\item\em Returns the shadow data for light. \end{DoxyCompactList}\item 
+static uint64\+\_\+t \doxymbox{\hyperlink{class_shadow_renderer_a5b7b6245485e78e450e4f36511dc6028}{Get\+Frame\+Id}} ()
+\begin{DoxyCompactList}\small\item\em Returns the frame id. \end{DoxyCompactList}\item 
+static bool \doxymbox{\hyperlink{class_shadow_renderer_abbd83290397f84630065b8593c6de72d}{Is\+Enabled}} ()
+\begin{DoxyCompactList}\small\item\em Checks whether enabled. \end{DoxyCompactList}\item 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$ \doxymbox{\hyperlink{class_shadow_renderer_a4968fee5aaeb90ca26b8237a4ad27fda}{Get\+Depth\+Buffer}} ()
+\begin{DoxyCompactList}\small\item\em Returns the depth buffer. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{class_shadow_renderer_aa3cbcea864992880c1e0e93cb2f03c2d}{Set\+Debug\+Shadows}} (bool enabled)
+\begin{DoxyCompactList}\small\item\em Sets the debug shadows. \end{DoxyCompactList}\item 
+static bool \doxymbox{\hyperlink{class_shadow_renderer_a01a2fe136dac80bd65137ddd1163c05c}{Get\+Debug\+Shadows}} ()
+\begin{DoxyCompactList}\small\item\em Returns the debug shadows. \end{DoxyCompactList}\item 
+\Hypertarget{class_shadow_renderer_a4f8885763f78efa60d45121f1bc33e6a}\label{class_shadow_renderer_a4f8885763f78efa60d45121f1bc33e6a} 
+static void {\bfseries Cycle\+Debug\+Shadows} ()
+\begin{DoxyCompactList}\small\item\em Cycles the active debug shadow visualization mode. \end{DoxyCompactList}\item 
+static int \doxymbox{\hyperlink{class_shadow_renderer_ae8e997e98faa8a7dcee38355f0ba3412}{Get\+Debug\+Shadows\+Mode}} ()
+\begin{DoxyCompactList}\small\item\em Returns the debug shadows mode. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{class_shadow_renderer_a1ad93fba9dbece24c39e04dfa0319b84}{Set\+Debug\+Shadows\+Mode}} (int mode)
+\begin{DoxyCompactList}\small\item\em Sets the debug shadows mode. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{class_shadow_renderer_a92326cd13a40ee30ab8c1e41cee0cbd1}{Set\+Global\+Debug\+Override\+Enabled}} (bool enabled)
+\begin{DoxyCompactList}\small\item\em Sets the global debug override enabled. \end{DoxyCompactList}\item 
+static bool \doxymbox{\hyperlink{class_shadow_renderer_aab904aac799df7524a74571d2551ce9c}{Get\+Global\+Debug\+Override\+Enabled}} ()
+\begin{DoxyCompactList}\small\item\em Returns the global debug override enabled. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{class_shadow_renderer_af3e6f272f9f7fafa02a28c1684c43aa3}{Set\+Global\+Debug\+Override\+Mode}} (int mode)
+\begin{DoxyCompactList}\small\item\em Sets the global debug override mode. \end{DoxyCompactList}\item 
+static int \doxymbox{\hyperlink{class_shadow_renderer_ab18542dd44e6199fe8baa8ed4beab5b3}{Get\+Global\+Debug\+Override\+Mode}} ()
+\begin{DoxyCompactList}\small\item\em Returns the global debug override mode. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{class_shadow_renderer_a32ac240ccaf7b0d0d9402754663471c8}{Set\+Selected\+Light\+Index}} (int index)
+\begin{DoxyCompactList}\small\item\em Sets the selected light index. \end{DoxyCompactList}\item 
+static int \doxymbox{\hyperlink{class_shadow_renderer_ae8491189e251451f3803e8a96144188c}{Get\+Selected\+Light\+Index}} ()
+\begin{DoxyCompactList}\small\item\em Returns the selected light index. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{class_shadow_renderer_a8c06fcdbd9d643efd2c1821da281b460}{Set\+Directional\+Cascade\+Kernel\+Margin\+Texels}} (float value)
+\begin{DoxyCompactList}\small\item\em Sets the directional cascade kernel margin texels. \end{DoxyCompactList}\item 
+static float \doxymbox{\hyperlink{class_shadow_renderer_a232a7bb315118202cb6f79cbb49b29dd}{Get\+Directional\+Cascade\+Kernel\+Margin\+Texels}} ()
+\begin{DoxyCompactList}\small\item\em Returns the directional cascade kernel margin texels. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{class_shadow_renderer_aa010995c5c5868ce57940c2533741bff}{Set\+Shadow\+Receiver\+Normal\+Blend}} (float value)
+\begin{DoxyCompactList}\small\item\em Sets the shadow receiver normal blend. \end{DoxyCompactList}\item 
+static float \doxymbox{\hyperlink{class_shadow_renderer_ac7c8e21bfe93f9d7ed4891c9a8e1e480}{Get\+Shadow\+Receiver\+Normal\+Blend}} ()
+\begin{DoxyCompactList}\small\item\em Returns the shadow receiver normal blend. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{class_shadow_renderer_ac292095aa08cd34a52c6d1bd498b9818}{Set\+Debug\+Logging}} (bool enabled)
+\begin{DoxyCompactList}\small\item\em Sets the debug logging. \end{DoxyCompactList}\item 
+static bool \doxymbox{\hyperlink{class_shadow_renderer_ac08a7c94e7678f7c0a7ed17c8970b5dd}{Get\+Debug\+Logging}} ()
+\begin{DoxyCompactList}\small\item\em Returns the debug logging. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the \doxylink{class_shadow_renderer}{Shadow\+Renderer} type. 
+
+\label{doc-func-members}
+\Hypertarget{class_shadow_renderer_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_shadow_renderer_afbb6c273a05d6646ee9705e4bd6b3233}\index{ShadowRenderer@{ShadowRenderer}!BeginFrame@{BeginFrame}}
+\index{BeginFrame@{BeginFrame}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{BeginFrame()}{BeginFrame()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_afbb6c273a05d6646ee9705e4bd6b3233} 
+void Shadow\+Renderer::\+\+Begin\+Frame (\begin{DoxyParamCaption}\item[{PCamera}]{camera}{, }\item[{const std::\+vector$<$ \doxymbox{\hyperlink{struct_shadow_caster_bounds}{Shadow\+Caster\+Bounds}} $>$ \texorpdfstring{$\ast$}{*}}]{casters}{ = {\ttfamily nullptr}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Begins frame. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em camera} & Value for camera. \\
+\hline
+{\em casters} & Value for casters. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_shadow_renderer_a294d22aa8a61404ca7741fb92179f759}\index{ShadowRenderer@{ShadowRenderer}!BindShadowSamplers@{BindShadowSamplers}}
+\index{BindShadowSamplers@{BindShadowSamplers}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{BindShadowSamplers()}{BindShadowSamplers()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_a294d22aa8a61404ca7741fb92179f759} 
+void Shadow\+Renderer::\+\+Bind\+Shadow\+Samplers (\begin{DoxyParamCaption}\item[{const std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ \&}]{program}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Binds shadow samplers. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em program} & Value for program. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_shadow_renderer_ac08a7c94e7678f7c0a7ed17c8970b5dd}\index{ShadowRenderer@{ShadowRenderer}!GetDebugLogging@{GetDebugLogging}}
+\index{GetDebugLogging@{GetDebugLogging}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{GetDebugLogging()}{GetDebugLogging()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_ac08a7c94e7678f7c0a7ed17c8970b5dd} 
+bool Shadow\+Renderer::\+\+Get\+Debug\+Logging (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Returns the debug logging. 
+
+\begin{DoxyReturn}{Returns}
+True when the operation succeeds; otherwise false. 
+\end{DoxyReturn}
+\Hypertarget{class_shadow_renderer_a01a2fe136dac80bd65137ddd1163c05c}\index{ShadowRenderer@{ShadowRenderer}!GetDebugShadows@{GetDebugShadows}}
+\index{GetDebugShadows@{GetDebugShadows}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{GetDebugShadows()}{GetDebugShadows()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_a01a2fe136dac80bd65137ddd1163c05c} 
+bool Shadow\+Renderer::\+\+Get\+Debug\+Shadows (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Returns the debug shadows. 
+
+\begin{DoxyReturn}{Returns}
+True when the operation succeeds; otherwise false. 
+\end{DoxyReturn}
+\Hypertarget{class_shadow_renderer_ae8e997e98faa8a7dcee38355f0ba3412}\index{ShadowRenderer@{ShadowRenderer}!GetDebugShadowsMode@{GetDebugShadowsMode}}
+\index{GetDebugShadowsMode@{GetDebugShadowsMode}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{GetDebugShadowsMode()}{GetDebugShadowsMode()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_ae8e997e98faa8a7dcee38355f0ba3412} 
+int Shadow\+Renderer::\+\+Get\+Debug\+Shadows\+Mode (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Returns the debug shadows mode. 
+
+\begin{DoxyReturn}{Returns}
+Computed numeric result. 
+\end{DoxyReturn}
+\Hypertarget{class_shadow_renderer_a4968fee5aaeb90ca26b8237a4ad27fda}\index{ShadowRenderer@{ShadowRenderer}!GetDepthBuffer@{GetDepthBuffer}}
+\index{GetDepthBuffer@{GetDepthBuffer}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{GetDepthBuffer()}{GetDepthBuffer()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_a4968fee5aaeb90ca26b8237a4ad27fda} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$ Shadow\+Renderer::\+\+Get\+Depth\+Buffer (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Returns the depth buffer. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the resulting object. 
+\end{DoxyReturn}
+\Hypertarget{class_shadow_renderer_a232a7bb315118202cb6f79cbb49b29dd}\index{ShadowRenderer@{ShadowRenderer}!GetDirectionalCascadeKernelMarginTexels@{GetDirectionalCascadeKernelMarginTexels}}
+\index{GetDirectionalCascadeKernelMarginTexels@{GetDirectionalCascadeKernelMarginTexels}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{GetDirectionalCascadeKernelMarginTexels()}{GetDirectionalCascadeKernelMarginTexels()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_a232a7bb315118202cb6f79cbb49b29dd} 
+float Shadow\+Renderer::\+\+Get\+Directional\+Cascade\+Kernel\+Margin\+Texels (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Returns the directional cascade kernel margin texels. 
+
+\begin{DoxyReturn}{Returns}
+Computed numeric result. 
+\end{DoxyReturn}
+\Hypertarget{class_shadow_renderer_a5b7b6245485e78e450e4f36511dc6028}\index{ShadowRenderer@{ShadowRenderer}!GetFrameId@{GetFrameId}}
+\index{GetFrameId@{GetFrameId}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{GetFrameId()}{GetFrameId()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_a5b7b6245485e78e450e4f36511dc6028} 
+uint64\+\_\+t Shadow\+Renderer::\+\+Get\+Frame\+Id (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Returns the frame id. 
+
+\begin{DoxyReturn}{Returns}
+Result of this operation. 
+\end{DoxyReturn}
+\Hypertarget{class_shadow_renderer_aab904aac799df7524a74571d2551ce9c}\index{ShadowRenderer@{ShadowRenderer}!GetGlobalDebugOverrideEnabled@{GetGlobalDebugOverrideEnabled}}
+\index{GetGlobalDebugOverrideEnabled@{GetGlobalDebugOverrideEnabled}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{GetGlobalDebugOverrideEnabled()}{GetGlobalDebugOverrideEnabled()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_aab904aac799df7524a74571d2551ce9c} 
+bool Shadow\+Renderer::\+\+Get\+Global\+Debug\+Override\+Enabled (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Returns the global debug override enabled. 
+
+\begin{DoxyReturn}{Returns}
+True when the operation succeeds; otherwise false. 
+\end{DoxyReturn}
+\Hypertarget{class_shadow_renderer_ab18542dd44e6199fe8baa8ed4beab5b3}\index{ShadowRenderer@{ShadowRenderer}!GetGlobalDebugOverrideMode@{GetGlobalDebugOverrideMode}}
+\index{GetGlobalDebugOverrideMode@{GetGlobalDebugOverrideMode}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{GetGlobalDebugOverrideMode()}{GetGlobalDebugOverrideMode()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_ab18542dd44e6199fe8baa8ed4beab5b3} 
+int Shadow\+Renderer::\+\+Get\+Global\+Debug\+Override\+Mode (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Returns the global debug override mode. 
+
+\begin{DoxyReturn}{Returns}
+Computed numeric result. 
+\end{DoxyReturn}
+\Hypertarget{class_shadow_renderer_ae8491189e251451f3803e8a96144188c}\index{ShadowRenderer@{ShadowRenderer}!GetSelectedLightIndex@{GetSelectedLightIndex}}
+\index{GetSelectedLightIndex@{GetSelectedLightIndex}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{GetSelectedLightIndex()}{GetSelectedLightIndex()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_ae8491189e251451f3803e8a96144188c} 
+int Shadow\+Renderer::\+\+Get\+Selected\+Light\+Index (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Returns the selected light index. 
+
+\begin{DoxyReturn}{Returns}
+Computed numeric result. 
+\end{DoxyReturn}
+\Hypertarget{class_shadow_renderer_a2a6a438bcb4909cfe0f049a418ca08a1}\index{ShadowRenderer@{ShadowRenderer}!GetShadowDataForLight@{GetShadowDataForLight}}
+\index{GetShadowDataForLight@{GetShadowDataForLight}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{GetShadowDataForLight()}{GetShadowDataForLight()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_a2a6a438bcb4909cfe0f049a418ca08a1} 
+void Shadow\+Renderer::\+\+Get\+Shadow\+Data\+For\+Light (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{index}{, }\item[{const \doxymbox{\hyperlink{struct_light}{Light}} \&}]{light}{, }\item[{\doxymbox{\hyperlink{struct_shadow_light_data}{Shadow\+Light\+Data}} \&}]{out\+Data}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Returns the shadow data for light. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & Identifier or index value. \\
+\hline
+{\em light} & Value for light. \\
+\hline
+{\em out\+Data} & Buffer that receives data data. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_shadow_renderer_ac7c8e21bfe93f9d7ed4891c9a8e1e480}\index{ShadowRenderer@{ShadowRenderer}!GetShadowReceiverNormalBlend@{GetShadowReceiverNormalBlend}}
+\index{GetShadowReceiverNormalBlend@{GetShadowReceiverNormalBlend}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{GetShadowReceiverNormalBlend()}{GetShadowReceiverNormalBlend()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_ac7c8e21bfe93f9d7ed4891c9a8e1e480} 
+float Shadow\+Renderer::\+\+Get\+Shadow\+Receiver\+Normal\+Blend (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Returns the shadow receiver normal blend. 
+
+\begin{DoxyReturn}{Returns}
+Computed numeric result. 
+\end{DoxyReturn}
+\Hypertarget{class_shadow_renderer_abbd83290397f84630065b8593c6de72d}\index{ShadowRenderer@{ShadowRenderer}!IsEnabled@{IsEnabled}}
+\index{IsEnabled@{IsEnabled}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{IsEnabled()}{IsEnabled()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_abbd83290397f84630065b8593c6de72d} 
+bool Shadow\+Renderer::\+\+Is\+Enabled (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Checks whether enabled. 
+
+\begin{DoxyReturn}{Returns}
+True when the condition is satisfied; otherwise false. 
+\end{DoxyReturn}
+\Hypertarget{class_shadow_renderer_aab58aceef40d58cbcb99197fb3b0b1c9}\index{ShadowRenderer@{ShadowRenderer}!RenderShadows@{RenderShadows}}
+\index{RenderShadows@{RenderShadows}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{RenderShadows()}{RenderShadows()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_aab58aceef40d58cbcb99197fb3b0b1c9} 
+void Shadow\+Renderer::\+\+Render\+Shadows (\begin{DoxyParamCaption}\item[{const std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_mesh}{Mesh}} $>$ \&}]{mesh}{, }\item[{const Math3\+D::\+\+Mat4 \&}]{model}{, }\item[{const std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material}{Material}} $>$ \&}]{material}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Renders shadows. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mesh} & Value for mesh. \\
+\hline
+{\em model} & Mode or type selector. \\
+\hline
+{\em material} & Value for material. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_shadow_renderer_a3ba920ae87f7206899c27bf206f7b88f}\index{ShadowRenderer@{ShadowRenderer}!RenderShadowsBatch@{RenderShadowsBatch}}
+\index{RenderShadowsBatch@{RenderShadowsBatch}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{RenderShadowsBatch()}{RenderShadowsBatch()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_a3ba920ae87f7206899c27bf206f7b88f} 
+void Shadow\+Renderer::\+\+Render\+Shadows\+Batch (\begin{DoxyParamCaption}\item[{const std::\+vector$<$ \doxymbox{\hyperlink{struct_shadow_renderer_1_1_shadow_draw_item}{Shadow\+Draw\+Item}} $>$ \&}]{items}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Renders shadows batch. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em items} & Value for items. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_shadow_renderer_ac292095aa08cd34a52c6d1bd498b9818}\index{ShadowRenderer@{ShadowRenderer}!SetDebugLogging@{SetDebugLogging}}
+\index{SetDebugLogging@{SetDebugLogging}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{SetDebugLogging()}{SetDebugLogging()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_ac292095aa08cd34a52c6d1bd498b9818} 
+void Shadow\+Renderer::\+\+Set\+Debug\+Logging (\begin{DoxyParamCaption}\item[{bool}]{enabled}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Sets the debug logging. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em enabled} & Flag controlling enabled. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_shadow_renderer_aa3cbcea864992880c1e0e93cb2f03c2d}\index{ShadowRenderer@{ShadowRenderer}!SetDebugShadows@{SetDebugShadows}}
+\index{SetDebugShadows@{SetDebugShadows}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{SetDebugShadows()}{SetDebugShadows()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_aa3cbcea864992880c1e0e93cb2f03c2d} 
+void Shadow\+Renderer::\+\+Set\+Debug\+Shadows (\begin{DoxyParamCaption}\item[{bool}]{enabled}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Sets the debug shadows. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em enabled} & Flag controlling enabled. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_shadow_renderer_a1ad93fba9dbece24c39e04dfa0319b84}\index{ShadowRenderer@{ShadowRenderer}!SetDebugShadowsMode@{SetDebugShadowsMode}}
+\index{SetDebugShadowsMode@{SetDebugShadowsMode}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{SetDebugShadowsMode()}{SetDebugShadowsMode()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_a1ad93fba9dbece24c39e04dfa0319b84} 
+void Shadow\+Renderer::\+\+Set\+Debug\+Shadows\+Mode (\begin{DoxyParamCaption}\item[{int}]{mode}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Sets the debug shadows mode. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mode} & Mode or type selector. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_shadow_renderer_a8c06fcdbd9d643efd2c1821da281b460}\index{ShadowRenderer@{ShadowRenderer}!SetDirectionalCascadeKernelMarginTexels@{SetDirectionalCascadeKernelMarginTexels}}
+\index{SetDirectionalCascadeKernelMarginTexels@{SetDirectionalCascadeKernelMarginTexels}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{SetDirectionalCascadeKernelMarginTexels()}{SetDirectionalCascadeKernelMarginTexels()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_a8c06fcdbd9d643efd2c1821da281b460} 
+void Shadow\+Renderer::\+\+Set\+Directional\+Cascade\+Kernel\+Margin\+Texels (\begin{DoxyParamCaption}\item[{float}]{value}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Sets the directional cascade kernel margin texels. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em value} & Value for value. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_shadow_renderer_a92326cd13a40ee30ab8c1e41cee0cbd1}\index{ShadowRenderer@{ShadowRenderer}!SetGlobalDebugOverrideEnabled@{SetGlobalDebugOverrideEnabled}}
+\index{SetGlobalDebugOverrideEnabled@{SetGlobalDebugOverrideEnabled}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{SetGlobalDebugOverrideEnabled()}{SetGlobalDebugOverrideEnabled()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_a92326cd13a40ee30ab8c1e41cee0cbd1} 
+void Shadow\+Renderer::\+\+Set\+Global\+Debug\+Override\+Enabled (\begin{DoxyParamCaption}\item[{bool}]{enabled}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Sets the global debug override enabled. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em enabled} & Flag controlling enabled. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_shadow_renderer_af3e6f272f9f7fafa02a28c1684c43aa3}\index{ShadowRenderer@{ShadowRenderer}!SetGlobalDebugOverrideMode@{SetGlobalDebugOverrideMode}}
+\index{SetGlobalDebugOverrideMode@{SetGlobalDebugOverrideMode}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{SetGlobalDebugOverrideMode()}{SetGlobalDebugOverrideMode()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_af3e6f272f9f7fafa02a28c1684c43aa3} 
+void Shadow\+Renderer::\+\+Set\+Global\+Debug\+Override\+Mode (\begin{DoxyParamCaption}\item[{int}]{mode}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Sets the global debug override mode. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mode} & Mode or type selector. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_shadow_renderer_a32ac240ccaf7b0d0d9402754663471c8}\index{ShadowRenderer@{ShadowRenderer}!SetSelectedLightIndex@{SetSelectedLightIndex}}
+\index{SetSelectedLightIndex@{SetSelectedLightIndex}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{SetSelectedLightIndex()}{SetSelectedLightIndex()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_a32ac240ccaf7b0d0d9402754663471c8} 
+void Shadow\+Renderer::\+\+Set\+Selected\+Light\+Index (\begin{DoxyParamCaption}\item[{int}]{index}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Sets the selected light index. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & Identifier or index value. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_shadow_renderer_aa010995c5c5868ce57940c2533741bff}\index{ShadowRenderer@{ShadowRenderer}!SetShadowReceiverNormalBlend@{SetShadowReceiverNormalBlend}}
+\index{SetShadowReceiverNormalBlend@{SetShadowReceiverNormalBlend}!ShadowRenderer@{ShadowRenderer}}
+\doxysubsubsection{\texorpdfstring{SetShadowReceiverNormalBlend()}{SetShadowReceiverNormalBlend()}}
+{\footnotesize\ttfamily \label{class_shadow_renderer_aa010995c5c5868ce57940c2533741bff} 
+void Shadow\+Renderer::\+\+Set\+Shadow\+Receiver\+Normal\+Blend (\begin{DoxyParamCaption}\item[{float}]{value}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Sets the shadow receiver normal blend. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em value} & Value for value. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Lighting/\+\doxymbox{\hyperlink{_shadow_renderer_8h}{Shadow\+Renderer.\+h}}\item 
+src/\+\+Rendering/\+\+Lighting/\+\doxymbox{\hyperlink{_shadow_renderer_8cpp}{Shadow\+Renderer.\+cpp}}\end{DoxyCompactItemize}

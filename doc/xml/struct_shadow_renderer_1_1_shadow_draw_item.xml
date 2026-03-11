@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_shadow_renderer_1_1_shadow_draw_item" kind="struct" language="C++" prot="public">
+    <compoundname>ShadowRenderer::ShadowDrawItem</compoundname>
+    <includes refid="_shadow_renderer_8h" local="no">ShadowRenderer.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_shadow_renderer_1_1_shadow_draw_item_1af5fea58c6b2f3908820b0a0c7d639eca" prot="public" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="class_mesh" kindref="compound">Mesh</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;Mesh&gt; ShadowRenderer::ShadowDrawItem::mesh</definition>
+        <argsstring></argsstring>
+        <name>mesh</name>
+        <qualifiedname>ShadowRenderer::ShadowDrawItem::mesh</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="51" column="25" bodyfile="src/Rendering/Lighting/ShadowRenderer.h" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_shadow_renderer_1_1_shadow_draw_item_1aa66d16752463a53f37a09631a8d63bc2" prot="public" static="no" mutable="no">
+        <type>Math3D::Mat4</type>
+        <definition>Math3D::Mat4 ShadowRenderer::ShadowDrawItem::model</definition>
+        <argsstring></argsstring>
+        <name>model</name>
+        <qualifiedname>ShadowRenderer::ShadowDrawItem::model</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="52" column="22" bodyfile="src/Rendering/Lighting/ShadowRenderer.h" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_shadow_renderer_1_1_shadow_draw_item_1a4604e56df262031ac26c3d91fb022c2d" prot="public" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="class_material" kindref="compound">Material</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;Material&gt; ShadowRenderer::ShadowDrawItem::material</definition>
+        <argsstring></argsstring>
+        <name>material</name>
+        <qualifiedname>ShadowRenderer::ShadowDrawItem::material</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="53" column="25" bodyfile="src/Rendering/Lighting/ShadowRenderer.h" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_shadow_renderer_1_1_shadow_draw_item_1a4bdd0c523914d6951104544e2a194a4f" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool ShadowRenderer::ShadowDrawItem::enableBackfaceCulling</definition>
+        <argsstring></argsstring>
+        <name>enableBackfaceCulling</name>
+        <qualifiedname>ShadowRenderer::ShadowDrawItem::enableBackfaceCulling</qualifiedname>
+        <initializer>= true</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="54" column="14" bodyfile="src/Rendering/Lighting/ShadowRenderer.h" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_shadow_renderer_1_1_shadow_draw_item_1aace360d7eac49a5c4a960fb7724ef2dd" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool ShadowRenderer::ShadowDrawItem::hasBounds</definition>
+        <argsstring></argsstring>
+        <name>hasBounds</name>
+        <qualifiedname>ShadowRenderer::ShadowDrawItem::hasBounds</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="55" column="14" bodyfile="src/Rendering/Lighting/ShadowRenderer.h" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_shadow_renderer_1_1_shadow_draw_item_1a825af210d5eab63b7914d18472560cb5" prot="public" static="no" mutable="no">
+        <type>Math3D::Vec3</type>
+        <definition>Math3D::Vec3 ShadowRenderer::ShadowDrawItem::boundsMin</definition>
+        <argsstring></argsstring>
+        <name>boundsMin</name>
+        <qualifiedname>ShadowRenderer::ShadowDrawItem::boundsMin</qualifiedname>
+        <initializer>= Math3D::Vec3(0.0f, 0.0f, 0.0f)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="56" column="22" bodyfile="src/Rendering/Lighting/ShadowRenderer.h" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_shadow_renderer_1_1_shadow_draw_item_1a8e4ac268e1e55d7370982bbf4847df57" prot="public" static="no" mutable="no">
+        <type>Math3D::Vec3</type>
+        <definition>Math3D::Vec3 ShadowRenderer::ShadowDrawItem::boundsMax</definition>
+        <argsstring></argsstring>
+        <name>boundsMax</name>
+        <qualifiedname>ShadowRenderer::ShadowDrawItem::boundsMax</qualifiedname>
+        <initializer>= Math3D::Vec3(0.0f, 0.0f, 0.0f)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="57" column="22" bodyfile="src/Rendering/Lighting/ShadowRenderer.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_shadow_renderer_1_1_shadow_draw_item" kindref="compound">ShadowDrawItem</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Lighting/ShadowRenderer.h" line="50" column="5" bodyfile="src/Rendering/Lighting/ShadowRenderer.h" bodystart="50" bodyend="58"/>
+    <listofallmembers>
+      <member refid="struct_shadow_renderer_1_1_shadow_draw_item_1a8e4ac268e1e55d7370982bbf4847df57" prot="public" virt="non-virtual"><scope>ShadowRenderer::ShadowDrawItem</scope><name>boundsMax</name></member>
+      <member refid="struct_shadow_renderer_1_1_shadow_draw_item_1a825af210d5eab63b7914d18472560cb5" prot="public" virt="non-virtual"><scope>ShadowRenderer::ShadowDrawItem</scope><name>boundsMin</name></member>
+      <member refid="struct_shadow_renderer_1_1_shadow_draw_item_1a4bdd0c523914d6951104544e2a194a4f" prot="public" virt="non-virtual"><scope>ShadowRenderer::ShadowDrawItem</scope><name>enableBackfaceCulling</name></member>
+      <member refid="struct_shadow_renderer_1_1_shadow_draw_item_1aace360d7eac49a5c4a960fb7724ef2dd" prot="public" virt="non-virtual"><scope>ShadowRenderer::ShadowDrawItem</scope><name>hasBounds</name></member>
+      <member refid="struct_shadow_renderer_1_1_shadow_draw_item_1a4604e56df262031ac26c3d91fb022c2d" prot="public" virt="non-virtual"><scope>ShadowRenderer::ShadowDrawItem</scope><name>material</name></member>
+      <member refid="struct_shadow_renderer_1_1_shadow_draw_item_1af5fea58c6b2f3908820b0a0c7d639eca" prot="public" virt="non-virtual"><scope>ShadowRenderer::ShadowDrawItem</scope><name>mesh</name></member>
+      <member refid="struct_shadow_renderer_1_1_shadow_draw_item_1aa66d16752463a53f37a09631a8d63bc2" prot="public" virt="non-virtual"><scope>ShadowRenderer::ShadowDrawItem</scope><name>model</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

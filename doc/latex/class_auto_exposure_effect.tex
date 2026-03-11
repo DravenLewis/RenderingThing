@@ -1,0 +1,128 @@
+\doxysection{Auto\+Exposure\+Effect Class Reference}
+\hypertarget{class_auto_exposure_effect}{}\label{class_auto_exposure_effect}\index{AutoExposureEffect@{AutoExposureEffect}}
+
+
+Represents the \doxylink{class_auto_exposure_effect}{Auto\+Exposure\+Effect} type.  
+
+
+
+
+{\ttfamily \+\#include $<$Screen\+Effects.\+h$>$}
+
+Inheritance diagram for Auto\+Exposure\+Effect:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_auto_exposure_effect}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_auto_exposure_effect_a47347afe30cc06c30cc94ce7bd9bc28e}\label{class_auto_exposure_effect_a47347afe30cc06c30cc94ce7bd9bc28e} 
+{\bfseries Auto\+Exposure\+Effect} ()
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_auto_exposure_effect}{Auto\+Exposure\+Effect} instance. \end{DoxyCompactList}\item 
+\Hypertarget{class_auto_exposure_effect_ab7f60c587637d4528d2742459ca0b0bb}\label{class_auto_exposure_effect_ab7f60c587637d4528d2742459ca0b0bb} 
+{\bfseries \texorpdfstring{$\sim$}{\string~}\+Auto\+Exposure\+Effect} () override
+\begin{DoxyCompactList}\small\item\em Destroys this \doxylink{class_auto_exposure_effect}{Auto\+Exposure\+Effect} instance. \end{DoxyCompactList}\item 
+\Hypertarget{class_auto_exposure_effect_ab72cd49d8c43c7ea6dc10c71891f8320}\label{class_auto_exposure_effect_ab72cd49d8c43c7ea6dc10c71891f8320} 
+void {\bfseries reset\+Adaptation} ()
+\begin{DoxyCompactList}\small\item\em Resets adaptation. \end{DoxyCompactList}\item 
+float \doxymbox{\hyperlink{class_auto_exposure_effect_a7b5e8266e87eb3b70992a02335b87ce7}{get\+Current\+Exposure}} () const
+\begin{DoxyCompactList}\small\item\em Returns the current exposure. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{class_auto_exposure_effect_addcac25d10d86ac96887736dcf750e40}{apply}} (PTexture tex, PTexture, PFrame\+Buffer out\+Fbo, std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$ quad) override
+\begin{DoxyCompactList}\small\item\em Applies current settings. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{class_graphics_1_1_post_processing_1_1_post_processing_effect}{Graphics::\+\+Post\+Processing::\+\+Post\+Processing\+Effect}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+Post\+Processing\+Effect} ()=default
+\begin{DoxyCompactList}\small\item\em Destroys this \doxylink{class_graphics_1_1_post_processing_1_1_post_processing_effect}{Post\+Processing\+Effect} instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_auto_exposure_effect}{Auto\+Exposure\+Effect}} $>$ \doxymbox{\hyperlink{class_auto_exposure_effect_a3ea1f05e72ecd506feff02ec9ec3fb24}{New}} ()
+\begin{DoxyCompactList}\small\item\em Creates a new object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_auto_exposure_effect_a3aa0cb468abac292b01662f622f1beaf}\label{class_auto_exposure_effect_a3aa0cb468abac292b01662f622f1beaf} 
+float {\bfseries min\+Exposure} = 0.\+6f
+\item 
+\Hypertarget{class_auto_exposure_effect_a8f51263e0edecd2ef05444e5ca468755}\label{class_auto_exposure_effect_a8f51263e0edecd2ef05444e5ca468755} 
+float {\bfseries max\+Exposure} = 2.\+4f
+\item 
+\Hypertarget{class_auto_exposure_effect_ab143c327307826b8eacf5a024ec5a827}\label{class_auto_exposure_effect_ab143c327307826b8eacf5a024ec5a827} 
+float {\bfseries exposure\+Compensation} = 0.\+0f
+\item 
+\Hypertarget{class_auto_exposure_effect_a7967e743d11b714431a2200eb9babaec}\label{class_auto_exposure_effect_a7967e743d11b714431a2200eb9babaec} 
+float {\bfseries adaptation\+Speed\+Up} = 1.\+2f
+\item 
+\Hypertarget{class_auto_exposure_effect_a8f57d4f60965436e3263d3e9fbdad930}\label{class_auto_exposure_effect_a8f57d4f60965436e3263d3e9fbdad930} 
+float {\bfseries adaptation\+Speed\+Down} = 0.\+7f
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the \doxylink{class_auto_exposure_effect}{Auto\+Exposure\+Effect} type. 
+
+\label{doc-func-members}
+\Hypertarget{class_auto_exposure_effect_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_auto_exposure_effect_addcac25d10d86ac96887736dcf750e40}\index{AutoExposureEffect@{AutoExposureEffect}!apply@{apply}}
+\index{apply@{apply}!AutoExposureEffect@{AutoExposureEffect}}
+\doxysubsubsection{\texorpdfstring{apply()}{apply()}}
+{\footnotesize\ttfamily \label{class_auto_exposure_effect_addcac25d10d86ac96887736dcf750e40} 
+bool Auto\+Exposure\+Effect::\+apply (\begin{DoxyParamCaption}\item[{PTexture}]{tex}{, }\item[{PTexture}]{}{, }\item[{PFrame\+Buffer}]{out\+Fbo}{, }\item[{std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$}]{quad}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Applies current settings. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tex} & Value for tex. \\
+\hline
+{\em PTexture} & Value for p texture. \\
+\hline
+{\em out\+Fbo} & Output value for fbo. \\
+\hline
+{\em quad} & Value for quad. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True when the operation succeeds; otherwise false. 
+\end{DoxyReturn}
+
+
+Implements \doxymbox{\hyperlink{class_graphics_1_1_post_processing_1_1_post_processing_effect_a75b0263b1e53943ceb4f13d4aad0f5e6}{Graphics::\+\+Post\+Processing::\+\+Post\+Processing\+Effect}}.
+
+\Hypertarget{class_auto_exposure_effect_a7b5e8266e87eb3b70992a02335b87ce7}\index{AutoExposureEffect@{AutoExposureEffect}!getCurrentExposure@{getCurrentExposure}}
+\index{getCurrentExposure@{getCurrentExposure}!AutoExposureEffect@{AutoExposureEffect}}
+\doxysubsubsection{\texorpdfstring{getCurrentExposure()}{getCurrentExposure()}}
+{\footnotesize\ttfamily \label{class_auto_exposure_effect_a7b5e8266e87eb3b70992a02335b87ce7} 
+float Auto\+Exposure\+Effect::\+get\+Current\+Exposure (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the current exposure. 
+
+\begin{DoxyReturn}{Returns}
+Computed numeric result. 
+\end{DoxyReturn}
+\Hypertarget{class_auto_exposure_effect_a3ea1f05e72ecd506feff02ec9ec3fb24}\index{AutoExposureEffect@{AutoExposureEffect}!New@{New}}
+\index{New@{New}!AutoExposureEffect@{AutoExposureEffect}}
+\doxysubsubsection{\texorpdfstring{New()}{New()}}
+{\footnotesize\ttfamily \label{class_auto_exposure_effect_a3ea1f05e72ecd506feff02ec9ec3fb24} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_auto_exposure_effect}{Auto\+Exposure\+Effect}} $>$ Auto\+Exposure\+Effect::\+\+New (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Creates a new object. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the resulting object. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Post\+FX/\+\doxymbox{\hyperlink{_screen_effects_8h}{Screen\+Effects.\+h}}\end{DoxyCompactItemize}

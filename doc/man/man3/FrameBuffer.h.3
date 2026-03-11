@@ -1,0 +1,58 @@
+.TH "src/Rendering/Core/FrameBuffer.h" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+src/Rendering/Core/FrameBuffer.h \- Declarations for \fBFrameBuffer\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <memory>\fP
+.br
+\fR#include <vector>\fP
+.br
+\fR#include <cstdlib>\fP
+.br
+\fR#include 'Rendering/Textures/Texture\&.h'\fP
+.br
+\fR#include 'Foundation/Math/Math3D\&.h'\fP
+.br
+\fR#include 'Foundation/Math/Color\&.h'\fP
+.br
+\fR#include 'Foundation/Logging/Logbot\&.h'\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBFrameBuffer\fP"
+.br
+.RI "Holds data for \fBFrameBuffer\fP\&. "
+.ti -1c
+.RI "struct \fBFrameBufferChain\fP"
+.br
+.RI "Holds data for \fBFrameBufferChain\fP\&. "
+.ti -1c
+.RI "struct \fBTrippleBuffer\fP"
+.br
+.RI "Holds data for \fBTrippleBuffer\fP\&. "
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef GLuint \fBFrameBufferObject\fP"
+.br
+.ti -1c
+.RI "typedef std::shared_ptr< \fBFrameBuffer\fP > \fBPFrameBuffer\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Declarations for \fBFrameBuffer\fP\&. 
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

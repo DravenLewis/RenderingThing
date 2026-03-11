@@ -1,0 +1,54 @@
+.TH "LightManager" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+LightManager \- Represents the \fBLightManager\fP type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <Light\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBLightManager\fP ()"
+.br
+.RI "Constructs a new \fBLightManager\fP instance\&. "
+.ti -1c
+.RI "void \fBaddLight\fP (const \fBLight\fP &light)"
+.br
+.ti -1c
+.RI "void \fBremoveLight\fP (size_t index)"
+.br
+.ti -1c
+.RI "void \fBclearLights\fP ()"
+.br
+.ti -1c
+.RI "size_t \fBgetLightCount\fP () const"
+.br
+.ti -1c
+.RI "\fBLight\fP & \fBgetLight\fP (size_t index)"
+.br
+.ti -1c
+.RI "const \fBLight\fP & \fBgetLight\fP (size_t index) const"
+.br
+.ti -1c
+.RI "const std::vector< \fBLight\fP > & \fBgetAllLights\fP () const"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBLightManager\fP \fBGlobalLightManager\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the \fBLightManager\fP type\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

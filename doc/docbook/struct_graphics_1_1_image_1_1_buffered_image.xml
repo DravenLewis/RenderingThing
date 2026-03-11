@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_graphics_1_1_image_1_1_buffered_image" xml:lang="en-US">
+<title>Graphics::Image::BufferedImage Struct Reference</title>
+<indexterm><primary>Graphics::Image::BufferedImage</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_graphics_1_1_image_1_1_buffered_image">BufferedImage</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;Graphics.h&gt;</computeroutput>
+</para>
+<para>Inheritance diagram for Graphics::Image::BufferedImage:    <informalfigure>
+        <mediaobject>
+            <imageobject>
+                <imagedata width="50%" align="center" valign="middle" scalefit="0" fileref="struct_graphics_1_1_image_1_1_buffered_image.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+    </informalfigure>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><link linkend="_struct_graphics_1_1_image_1_1_buffered_image_1a95c739a0c8fb9150ab27d338819b209f">BufferedImage</link> (int width, int height)</para>
+
+<para>Constructs a new <link linkend="_struct_graphics_1_1_image_1_1_buffered_image">BufferedImage</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_graphics_1_1_image_1_1_buffered_image_1a5980611f951eec88180757b9f1718c6d"/><emphasis role="strong">BufferedImage</emphasis> (const <link linkend="_struct_graphics_1_1_image_1_1_image_1a86c6d37f21cb1b2c02837c4727e63cc8">Image</link> &amp;src)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_graphics_1_1_image_1_1_buffered_image_1afcf9ecd99a3771364918b46d135909af"/>uint32_t <emphasis role="strong">getValueAt</emphasis> (int x, int y)</para>
+</listitem>
+            <listitem><para>void <link linkend="_struct_graphics_1_1_image_1_1_buffered_image_1ac29650e2e57885e0b1ad47d0322bf0ee">setValueAt</link> (int x, int y, uint32_t value)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_graphics_1_1_image_1_1_buffered_image_1a7f616c547a78bd7de90d25fd62348849"/>Color <emphasis role="strong">getPixelAt</emphasis> (int x, int y)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_graphics_1_1_image_1_1_buffered_image_1a43de2adb4fed4cd6d6b7cb1648137a26"/>void <emphasis role="strong">setPixelAt</emphasis> (int x, int y, Color col)</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+Public Member Functions inherited from <link linkend="_struct_graphics_1_1_image_1_1_image">Graphics::Image::Image</link>        <itemizedlist>
+            <listitem><para><emphasis role="strong">Image</emphasis> ()=delete</para>
+
+<para>Constructs a new <link linkend="_struct_graphics_1_1_image_1_1_image">Image</link> instance. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_graphics_1_1_image_1_1_image_1af90cfae65c25b2c1aa8336635aa744a4">Image</link> (int width, int height)</para>
+
+<para>Constructs a new <link linkend="_struct_graphics_1_1_image_1_1_image">Image</link> instance. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_graphics_1_1_image_1_1_image_1ac2dbaa50ab4653153402fa98d1b1e145">Image</link> (const Image &amp;src)</para>
+
+<para>Constructs a new <link linkend="_struct_graphics_1_1_image_1_1_image">Image</link> instance. </para>
+</listitem>
+            <listitem><para>int <link linkend="_struct_graphics_1_1_image_1_1_image_1a9360b8e858004f05fc0a87f1903bc1b7">getWidth</link> () const</para>
+
+<para>Returns the width. </para>
+</listitem>
+            <listitem><para>int <emphasis role="strong">getHeight</emphasis> () const</para>
+</listitem>
+            <listitem><para>std::vector&lt; uint32_t &gt; <emphasis role="strong">getPixelData</emphasis> () const</para>
+</listitem>
+        </itemizedlist>
+<simplesect>
+    <title>Additional Inherited Members    </title>
+Static Public Member Functions inherited from <link linkend="_struct_graphics_1_1_image_1_1_image">Graphics::Image::Image</link>        <itemizedlist>
+            <listitem><para>static std::shared_ptr&lt; <link linkend="_struct_graphics_1_1_image_1_1_image_1a86c6d37f21cb1b2c02837c4727e63cc8">Image</link> &gt; <link linkend="_struct_graphics_1_1_image_1_1_image_1a361c6bf49cc6cb69edb8bd6273542952">Create</link> (int width, int height, const std::vector&lt; uint32_t &gt; &amp;src={})</para>
+
+<para>Creates a new object. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+Public Attributes inherited from <link linkend="_struct_graphics_1_1_image_1_1_image">Graphics::Image::Image</link>        <itemizedlist>
+            <listitem><para>std::vector&lt; uint32_t &gt; <emphasis role="strong">pixelData</emphasis></para>
+</listitem>
+            <listitem><para>int <emphasis role="strong">width</emphasis></para>
+</listitem>
+            <listitem><para>int <emphasis role="strong">height</emphasis></para>
+</listitem>
+        </itemizedlist>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_graphics_1_1_image_1_1_buffered_image">BufferedImage</link>. </para>
+</section>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_struct_graphics_1_1_image_1_1_buffered_image_1a95c739a0c8fb9150ab27d338819b209f"/><section>
+    <title>BufferedImage()</title>
+<indexterm><primary>BufferedImage</primary><secondary>Graphics::Image::BufferedImage</secondary></indexterm>
+<indexterm><primary>Graphics::Image::BufferedImage</primary><secondary>BufferedImage</secondary></indexterm>
+<para><computeroutput>Graphics::Image::BufferedImage::BufferedImage (int width, int height)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Constructs a new <link linkend="_struct_graphics_1_1_image_1_1_buffered_image">BufferedImage</link> instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>width</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>height</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_struct_graphics_1_1_image_1_1_buffered_image_1ac29650e2e57885e0b1ad47d0322bf0ee"/><section>
+    <title>setValueAt()</title>
+<indexterm><primary>setValueAt</primary><secondary>Graphics::Image::BufferedImage</secondary></indexterm>
+<indexterm><primary>Graphics::Image::BufferedImage</primary><secondary>setValueAt</secondary></indexterm>
+<para><computeroutput>void Graphics::Image::BufferedImage::setValueAt (int x, int y, uint32_t value)<computeroutput>[inline]</computeroutput></computeroutput></para>
+<para>MAX RGBA value</para>
+</section>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Core/<link linkend="__graphics_8h">Graphics.h</link></section>
+</section>

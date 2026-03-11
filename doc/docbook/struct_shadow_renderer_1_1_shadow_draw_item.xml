@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_shadow_renderer_1_1_shadow_draw_item" xml:lang="en-US">
+<title>ShadowRenderer::ShadowDrawItem Struct Reference</title>
+<indexterm><primary>ShadowRenderer::ShadowDrawItem</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_shadow_renderer_1_1_shadow_draw_item">ShadowDrawItem</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;ShadowRenderer.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_shadow_renderer_1_1_shadow_draw_item_1af5fea58c6b2f3908820b0a0c7d639eca"/>std::shared_ptr&lt; <link linkend="_class_mesh">Mesh</link> &gt; <emphasis role="strong">mesh</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_shadow_renderer_1_1_shadow_draw_item_1aa66d16752463a53f37a09631a8d63bc2"/>Math3D::Mat4 <emphasis role="strong">model</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_shadow_renderer_1_1_shadow_draw_item_1a4604e56df262031ac26c3d91fb022c2d"/>std::shared_ptr&lt; <link linkend="_class_material">Material</link> &gt; <emphasis role="strong">material</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_shadow_renderer_1_1_shadow_draw_item_1a4bdd0c523914d6951104544e2a194a4f"/>bool <emphasis role="strong">enableBackfaceCulling</emphasis> = true</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_shadow_renderer_1_1_shadow_draw_item_1aace360d7eac49a5c4a960fb7724ef2dd"/>bool <emphasis role="strong">hasBounds</emphasis> = false</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_shadow_renderer_1_1_shadow_draw_item_1a825af210d5eab63b7914d18472560cb5"/>Math3D::Vec3 <emphasis role="strong">boundsMin</emphasis> = Math3D::Vec3(0.0f, 0.0f, 0.0f)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_shadow_renderer_1_1_shadow_draw_item_1a8e4ac268e1e55d7370982bbf4847df57"/>Math3D::Vec3 <emphasis role="strong">boundsMax</emphasis> = Math3D::Vec3(0.0f, 0.0f, 0.0f)</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_shadow_renderer_1_1_shadow_draw_item">ShadowDrawItem</link>. </para>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Lighting/<link linkend="__shadow_renderer_8h">ShadowRenderer.h</link></section>
+</section>

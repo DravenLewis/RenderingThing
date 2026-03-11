@@ -1,0 +1,92 @@
+\doxysection{Texture Class Reference}
+\hypertarget{class_texture}{}\label{class_texture}\index{Texture@{Texture}}
+
+
+Represents the \doxylink{class_texture}{Texture} type.  
+
+
+
+
+{\ttfamily \+\#include $<$Texture.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_texture_a6c275e3f186675ff6ed73ccf970e552f}\label{class_texture_a6c275e3f186675ff6ed73ccf970e552f} 
+{\bfseries Texture} ()
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_texture}{Texture} instance. \end{DoxyCompactList}\item 
+\Hypertarget{class_texture_a7de3bf257aace7b8785bc7e31c4be3b8}\label{class_texture_a7de3bf257aace7b8785bc7e31c4be3b8} 
+{\bfseries Texture} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image}{Graphics::\+\+Image::\+\+Image}} $>$ image, GLenum image\+Hint=GL\+\_\+\+TEXTURE\+\_\+2D)
+\item 
+\Hypertarget{class_texture_a6f37ee9dc7bb5e960660df07200de426}\label{class_texture_a6f37ee9dc7bb5e960660df07200de426} 
+{\bfseries Texture} (const \doxymbox{\hyperlink{class_texture}{Texture}} \&)=delete
+\item 
+\Hypertarget{class_texture_a197b839d8525505209f4288071cc7185}\label{class_texture_a197b839d8525505209f4288071cc7185} 
+{\bfseries Texture} (int width, int height)
+\item 
+\Hypertarget{class_texture_a71ec7e2582cc0005fa47f78087d4a539}\label{class_texture_a71ec7e2582cc0005fa47f78087d4a539} 
+void {\bfseries bind} (unsigned int slot=0) const
+\item 
+\Hypertarget{class_texture_a451d7afac3848417bb1007d39ee7d545}\label{class_texture_a451d7afac3848417bb1007d39ee7d545} 
+void {\bfseries unbind} () const
+\item 
+\Hypertarget{class_texture_af1051a541f02fd9cae35ac9403d4a0cd}\label{class_texture_af1051a541f02fd9cae35ac9403d4a0cd} 
+void {\bfseries dispose} ()
+\item 
+\Hypertarget{class_texture_a91a6fd3355bc870194851514194daaab}\label{class_texture_a91a6fd3355bc870194851514194daaab} 
+int {\bfseries get\+Width} ()
+\item 
+\Hypertarget{class_texture_a80e143905655b173df5994300088ce35}\label{class_texture_a80e143905655b173df5994300088ce35} 
+int {\bfseries get\+Height} ()
+\item 
+\Hypertarget{class_texture_ac6b8580d3734f0121b23ccd6ed1f3a08}\label{class_texture_ac6b8580d3734f0121b23ccd6ed1f3a08} 
+GLuint \& {\bfseries get\+ID} ()
+\item 
+\Hypertarget{class_texture_ae23d6b21a3cd5bc2e4fa915379d8bbc2}\label{class_texture_ae23d6b21a3cd5bc2e4fa915379d8bbc2} 
+const std::\+string \& {\bfseries get\+Source\+Asset\+Ref} () const
+\item 
+\Hypertarget{class_texture_ab62281b7d9b433e467903f492547b9ac}\label{class_texture_ab62281b7d9b433e467903f492547b9ac} 
+void {\bfseries set\+Source\+Asset\+Ref} (const std::\+string \&asset\+Ref)
+\item 
+\Hypertarget{class_texture_adeb8d948f7d2e881a8c7cc10702eaade}\label{class_texture_adeb8d948f7d2e881a8c7cc10702eaade} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image}{Graphics::\+\+Image::\+\+Image}} $>$ {\bfseries get\+Image\+Data} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_texture_a1113f45b4e14a368d3484046a522096d}\label{class_texture_a1113f45b4e14a368d3484046a522096d} 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$ {\bfseries Load} (PAsset asset, GLenum image\+Hint=GL\+\_\+\+TEXTURE\+\_\+2D, bool flip\+Vertically=true)
+\item 
+\Hypertarget{class_texture_aa743aa51da6bad8cee443fdae0ef35d8}\label{class_texture_aa743aa51da6bad8cee443fdae0ef35d8} 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image}{Graphics::\+\+Image::\+\+Image}} $>$ {\bfseries Load\+Image} (PAsset asset, bool flip\+Vertically=true)
+\item 
+\Hypertarget{class_texture_a8c0831e6a2717ddd3433cc830f793bbb}\label{class_texture_a8c0831e6a2717ddd3433cc830f793bbb} 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$ {\bfseries Create\+Empty} (int width, int height)
+\item 
+\Hypertarget{class_texture_a6e2c7079768a4bc6e109d663d310256b}\label{class_texture_a6e2c7079768a4bc6e109d663d310256b} 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$ {\bfseries Create\+Render\+Target} (int width, int height, GLenum internal\+Format=GL\+\_\+\+RGBA16F, GLenum format=GL\+\_\+\+RGBA, GLenum type=GL\+\_\+\+FLOAT)
+\item 
+\Hypertarget{class_texture_a429d7cbc7525bfa2b8e8f43c37c1aeea}\label{class_texture_a429d7cbc7525bfa2b8e8f43c37c1aeea} 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$ {\bfseries Create\+From\+Alpha\+Buffer} (int width, int height, const unsigned char \texorpdfstring{$\ast$}{*}alpha\+Data)
+\item 
+\Hypertarget{class_texture_a8cf4c2ef5fa9f1b479c79f0cf3a0da2c}\label{class_texture_a8cf4c2ef5fa9f1b479c79f0cf3a0da2c} 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$ {\bfseries Create\+From\+Existing} (GLuint id, int width, int height, bool owns=false)
+\item 
+\Hypertarget{class_texture_aac19b195dbfd2a2b818dd7e36199e8db}\label{class_texture_aac19b195dbfd2a2b818dd7e36199e8db} 
+static void {\bfseries Flush\+Pending\+Deletes} ()
+\item 
+\Hypertarget{class_texture_ab09e5434e9a5b60446a052c9ca204968}\label{class_texture_ab09e5434e9a5b60446a052c9ca204968} 
+static void {\bfseries Unload} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$ \&tex)
+\item 
+\Hypertarget{class_texture_a18efdc2f379cac376b6bad2c75fd2fab}\label{class_texture_a18efdc2f379cac376b6bad2c75fd2fab} 
+static void {\bfseries Flip\+Vertically\+On\+Load} (int i)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the \doxylink{class_texture}{Texture} type. 
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Textures/\+\doxymbox{\hyperlink{_texture_8h}{Texture.\+h}}\item 
+src/\+\+Rendering/\+\+Textures/\+\doxymbox{\hyperlink{_texture_8cpp}{Texture.\+cpp}}\end{DoxyCompactItemize}

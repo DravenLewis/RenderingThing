@@ -1,0 +1,487 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_p_b_r_material" kind="class" language="C++" prot="public">
+    <compoundname>PBRMaterial</compoundname>
+    <basecompoundref refid="class_material" prot="public" virt="non-virtual">Material</basecompoundref>
+    <includes refid="_p_b_r_material_8h" local="no">PBRMaterial.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="class_p_b_r_material_1aceadfc9d5272d87388c1139a900c5dc5" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; Math3D::Vec4 &gt;</type>
+        <definition>ValueContainer&lt;Math3D::Vec4&gt; PBRMaterial::BaseColor</definition>
+        <argsstring></argsstring>
+        <name>BaseColor</name>
+        <qualifiedname>PBRMaterial::BaseColor</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="20" column="24" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_p_b_r_material_1a554713fd5b2b272244887f7e6c8170f0" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; std::shared_ptr&lt; <ref refid="class_texture" kindref="compound">Texture</ref> &gt; &gt;</type>
+        <definition>ValueContainer&lt;std::shared_ptr&lt;Texture&gt; &gt; PBRMaterial::BaseColorTex</definition>
+        <argsstring></argsstring>
+        <name>BaseColorTex</name>
+        <qualifiedname>PBRMaterial::BaseColorTex</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="21" column="24" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_p_b_r_material_1a09ce716134fd081ae25bb63a46e9b907" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; float &gt;</type>
+        <definition>ValueContainer&lt;float&gt; PBRMaterial::Metallic</definition>
+        <argsstring></argsstring>
+        <name>Metallic</name>
+        <qualifiedname>PBRMaterial::Metallic</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="22" column="24" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="22" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_p_b_r_material_1a2ef8c1065bd047f102140426894c7954" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; float &gt;</type>
+        <definition>ValueContainer&lt;float&gt; PBRMaterial::Roughness</definition>
+        <argsstring></argsstring>
+        <name>Roughness</name>
+        <qualifiedname>PBRMaterial::Roughness</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="23" column="24" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_p_b_r_material_1ab9f974c13a97a14510cf5b7f5acff9ff" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; std::shared_ptr&lt; <ref refid="class_texture" kindref="compound">Texture</ref> &gt; &gt;</type>
+        <definition>ValueContainer&lt;std::shared_ptr&lt;Texture&gt; &gt; PBRMaterial::RoughnessTex</definition>
+        <argsstring></argsstring>
+        <name>RoughnessTex</name>
+        <qualifiedname>PBRMaterial::RoughnessTex</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="24" column="24" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_p_b_r_material_1a9cbfd6085711037cff3578c967976d71" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; std::shared_ptr&lt; <ref refid="class_texture" kindref="compound">Texture</ref> &gt; &gt;</type>
+        <definition>ValueContainer&lt;std::shared_ptr&lt;Texture&gt; &gt; PBRMaterial::MetallicRoughnessTex</definition>
+        <argsstring></argsstring>
+        <name>MetallicRoughnessTex</name>
+        <qualifiedname>PBRMaterial::MetallicRoughnessTex</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="25" column="24" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="25" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_p_b_r_material_1a06282a8995ad8c24f578cfeda071ff21" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; std::shared_ptr&lt; <ref refid="class_texture" kindref="compound">Texture</ref> &gt; &gt;</type>
+        <definition>ValueContainer&lt;std::shared_ptr&lt;Texture&gt; &gt; PBRMaterial::NormalTex</definition>
+        <argsstring></argsstring>
+        <name>NormalTex</name>
+        <qualifiedname>PBRMaterial::NormalTex</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="26" column="24" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="26" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_p_b_r_material_1a0b76aab4d122040de8b4f51f9e842619" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; float &gt;</type>
+        <definition>ValueContainer&lt;float&gt; PBRMaterial::NormalScale</definition>
+        <argsstring></argsstring>
+        <name>NormalScale</name>
+        <qualifiedname>PBRMaterial::NormalScale</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="27" column="24" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_p_b_r_material_1a8869ab4f3e0a14afbd1742b5d1966c96" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; std::shared_ptr&lt; <ref refid="class_texture" kindref="compound">Texture</ref> &gt; &gt;</type>
+        <definition>ValueContainer&lt;std::shared_ptr&lt;Texture&gt; &gt; PBRMaterial::HeightTex</definition>
+        <argsstring></argsstring>
+        <name>HeightTex</name>
+        <qualifiedname>PBRMaterial::HeightTex</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="28" column="24" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="28" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_p_b_r_material_1ad3283b93fb82302a6944a367d23f4f78" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; float &gt;</type>
+        <definition>ValueContainer&lt;float&gt; PBRMaterial::HeightScale</definition>
+        <argsstring></argsstring>
+        <name>HeightScale</name>
+        <qualifiedname>PBRMaterial::HeightScale</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="29" column="24" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="29" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_p_b_r_material_1a3f730409b9806bac6976b31b09f5aee3" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; std::shared_ptr&lt; <ref refid="class_texture" kindref="compound">Texture</ref> &gt; &gt;</type>
+        <definition>ValueContainer&lt;std::shared_ptr&lt;Texture&gt; &gt; PBRMaterial::EmissiveTex</definition>
+        <argsstring></argsstring>
+        <name>EmissiveTex</name>
+        <qualifiedname>PBRMaterial::EmissiveTex</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="30" column="24" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_p_b_r_material_1a6b75b41513664cba45750cfd3d511b09" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; Math3D::Vec3 &gt;</type>
+        <definition>ValueContainer&lt;Math3D::Vec3&gt; PBRMaterial::EmissiveColor</definition>
+        <argsstring></argsstring>
+        <name>EmissiveColor</name>
+        <qualifiedname>PBRMaterial::EmissiveColor</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="31" column="24" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_p_b_r_material_1a561aaaf91f221fedad7c516bacaf8028" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; float &gt;</type>
+        <definition>ValueContainer&lt;float&gt; PBRMaterial::EmissiveStrength</definition>
+        <argsstring></argsstring>
+        <name>EmissiveStrength</name>
+        <qualifiedname>PBRMaterial::EmissiveStrength</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="32" column="24" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_p_b_r_material_1a0259fb2a84584f677d42b9243b018c4c" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; std::shared_ptr&lt; <ref refid="class_texture" kindref="compound">Texture</ref> &gt; &gt;</type>
+        <definition>ValueContainer&lt;std::shared_ptr&lt;Texture&gt; &gt; PBRMaterial::OcclusionTex</definition>
+        <argsstring></argsstring>
+        <name>OcclusionTex</name>
+        <qualifiedname>PBRMaterial::OcclusionTex</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="33" column="24" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_p_b_r_material_1a08e589d6f14c84c24e82efd9b7ca2656" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; float &gt;</type>
+        <definition>ValueContainer&lt;float&gt; PBRMaterial::OcclusionStrength</definition>
+        <argsstring></argsstring>
+        <name>OcclusionStrength</name>
+        <qualifiedname>PBRMaterial::OcclusionStrength</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="34" column="24" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_p_b_r_material_1a2a80cfcdca578ead8304fcd4ad5a5ea5" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; std::shared_ptr&lt; <ref refid="class_cube_map" kindref="compound">CubeMap</ref> &gt; &gt;</type>
+        <definition>ValueContainer&lt;std::shared_ptr&lt;CubeMap&gt; &gt; PBRMaterial::EnvMap</definition>
+        <argsstring></argsstring>
+        <name>EnvMap</name>
+        <qualifiedname>PBRMaterial::EnvMap</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="35" column="24" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_p_b_r_material_1ae402b765161c57dd6d10cdbf82ce83c1" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; float &gt;</type>
+        <definition>ValueContainer&lt;float&gt; PBRMaterial::EnvStrength</definition>
+        <argsstring></argsstring>
+        <name>EnvStrength</name>
+        <qualifiedname>PBRMaterial::EnvStrength</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="36" column="24" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_p_b_r_material_1a6fba5827bb23b0e63044a0bbbc6970c4" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; int &gt;</type>
+        <definition>ValueContainer&lt;int&gt; PBRMaterial::UseEnvMap</definition>
+        <argsstring></argsstring>
+        <name>UseEnvMap</name>
+        <qualifiedname>PBRMaterial::UseEnvMap</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="37" column="24" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_p_b_r_material_1a40a3b2b384fce5cb177e860bbfc4a6fd" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; Math3D::Vec2 &gt;</type>
+        <definition>ValueContainer&lt;Math3D::Vec2&gt; PBRMaterial::UVScale</definition>
+        <argsstring></argsstring>
+        <name>UVScale</name>
+        <qualifiedname>PBRMaterial::UVScale</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="38" column="24" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_p_b_r_material_1adea8484440177fa1036b3801f3ba60b0" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; Math3D::Vec2 &gt;</type>
+        <definition>ValueContainer&lt;Math3D::Vec2&gt; PBRMaterial::UVOffset</definition>
+        <argsstring></argsstring>
+        <name>UVOffset</name>
+        <qualifiedname>PBRMaterial::UVOffset</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="39" column="24" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_p_b_r_material_1a1b33d53a2febf1f2f982dd78ee803654" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; float &gt;</type>
+        <definition>ValueContainer&lt;float&gt; PBRMaterial::AlphaCutoff</definition>
+        <argsstring></argsstring>
+        <name>AlphaCutoff</name>
+        <qualifiedname>PBRMaterial::AlphaCutoff</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="40" column="24" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_p_b_r_material_1ae26d427d389914c55beec601ddb27d9d" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; int &gt;</type>
+        <definition>ValueContainer&lt;int&gt; PBRMaterial::UseAlphaClip</definition>
+        <argsstring></argsstring>
+        <name>UseAlphaClip</name>
+        <qualifiedname>PBRMaterial::UseAlphaClip</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="41" column="24" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_p_b_r_material_1a23b5acddbf3484d77c7aff0820abcb5a" prot="public" static="no" mutable="no">
+        <type>ValueContainer&lt; Math3D::Vec3 &gt;</type>
+        <definition>ValueContainer&lt;Math3D::Vec3&gt; PBRMaterial::ViewPos</definition>
+        <argsstring></argsstring>
+        <name>ViewPos</name>
+        <qualifiedname>PBRMaterial::ViewPos</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="42" column="24" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="42" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_p_b_r_material_1aa95501f255a91cf9c2572ed4ea38fe27" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>PBRMaterial::PBRMaterial</definition>
+        <argsstring>(std::shared_ptr&lt; ShaderProgram &gt; program)</argsstring>
+        <name>PBRMaterial</name>
+        <qualifiedname>PBRMaterial::PBRMaterial</qualifiedname>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="class_shader_program" kindref="compound">ShaderProgram</ref> &gt;</type>
+          <declname>program</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_p_b_r_material" kindref="compound">PBRMaterial</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>program</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for program. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="48" column="9" bodyfile="src/Rendering/Materials/PBRMaterial.cpp" bodystart="54" bodyend="226"/>
+        <references refid="class_material_1ace810a426f4b488d2dc2a53070d85405" compoundref="_material_8h" startline="63" endline="73">Material::Material</references>
+      </memberdef>
+      <memberdef kind="function" id="class_p_b_r_material_1a30db1aa8fdf92f2a7310b864d79ee159" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void PBRMaterial::bind</definition>
+        <argsstring>() override</argsstring>
+        <name>bind</name>
+        <qualifiedname>PBRMaterial::bind</qualifiedname>
+        <reimplements refid="class_material_1aa9acc36e80cc1874dc69da8dedf54695">bind</reimplements>
+        <briefdescription>
+<para>Binds this resource. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="52" column="14" bodyfile="src/Rendering/Materials/PBRMaterial.cpp" bodystart="228" bodyend="238"/>
+        <references refid="class_shadow_renderer_1a294d22aa8a61404ca7741fb92179f759" compoundref="_shadow_renderer_8cpp" startline="1366" endline="1495">ShadowRenderer::BindShadowSamplers</references>
+        <references refid="class_light_uniform_uploader_1a47d11f57dfb8557bd58dd6e9ca1cb51f" compoundref="_light_utils_8cpp" startline="107" endline="266">LightUniformUploader::UploadLights</references>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_p_b_r_material_1aa0579a45ec0d6fa8c1203c0bc582fe39" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="class_p_b_r_material" kindref="compound">PBRMaterial</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; PBRMaterial &gt; PBRMaterial::Create</definition>
+        <argsstring>(Math3D::Vec4 baseColor=Color::WHITE)</argsstring>
+        <name>Create</name>
+        <qualifiedname>PBRMaterial::Create</qualifiedname>
+        <param>
+          <type>Math3D::Vec4</type>
+          <declname>baseColor</declname>
+          <defval>Color::WHITE</defval>
+        </param>
+        <briefdescription>
+<para>Creates a new object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>baseColor</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Color value. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Pointer to the resulting object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/PBRMaterial.h" line="59" column="32" bodyfile="src/Rendering/Materials/PBRMaterial.cpp" bodystart="240" bodyend="271"/>
+        <referencedby refid="class_constructed_material_1a3a3f4b57dfe35059b73a40e6cac44684" compoundref="_constructed_material_8cpp" startline="18" endline="22">ConstructedMaterial::CreateWithPBRShader</referencedby>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_p_b_r_material" kindref="compound">PBRMaterial</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>Material</label>
+        <link refid="class_material"/>
+      </node>
+      <node id="1">
+        <label>PBRMaterial</label>
+        <link refid="class_p_b_r_material"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>Material</label>
+        <link refid="class_material"/>
+      </node>
+      <node id="1">
+        <label>PBRMaterial</label>
+        <link refid="class_p_b_r_material"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="src/Rendering/Materials/PBRMaterial.h" line="18" column="1" bodyfile="src/Rendering/Materials/PBRMaterial.h" bodystart="18" bodyend="60"/>
+    <listofallmembers>
+      <member refid="class_p_b_r_material_1a1b33d53a2febf1f2f982dd78ee803654" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>AlphaCutoff</name></member>
+      <member refid="class_p_b_r_material_1aceadfc9d5272d87388c1139a900c5dc5" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>BaseColor</name></member>
+      <member refid="class_p_b_r_material_1a554713fd5b2b272244887f7e6c8170f0" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>BaseColorTex</name></member>
+      <member refid="class_p_b_r_material_1a30db1aa8fdf92f2a7310b864d79ee159" prot="public" virt="virtual"><scope>PBRMaterial</scope><name>bind</name></member>
+      <member refid="class_material_1aaf9a94eb8335d955b4a58a1f036bb3aa" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>castsShadows</name></member>
+      <member refid="class_material_1a55fb7dcfa5f72a8997b6423ac099caa6" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>Copy</name></member>
+      <member refid="class_p_b_r_material_1aa0579a45ec0d6fa8c1203c0bc582fe39" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>Create</name></member>
+      <member refid="class_p_b_r_material_1a6b75b41513664cba45750cfd3d511b09" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>EmissiveColor</name></member>
+      <member refid="class_p_b_r_material_1a561aaaf91f221fedad7c516bacaf8028" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>EmissiveStrength</name></member>
+      <member refid="class_p_b_r_material_1a3f730409b9806bac6976b31b09f5aee3" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>EmissiveTex</name></member>
+      <member refid="class_p_b_r_material_1a2a80cfcdca578ead8304fcd4ad5a5ea5" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>EnvMap</name></member>
+      <member refid="class_p_b_r_material_1ae402b765161c57dd6d10cdbf82ce83c1" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>EnvStrength</name></member>
+      <member refid="class_material_1a00c4c29d23d53171fa11ccbe1d91f14d" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>GetAs</name></member>
+      <member refid="class_material_1a3fbc05a83a35eb9e07a7b84cba22eb6e" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>getShader</name></member>
+      <member refid="class_p_b_r_material_1ad3283b93fb82302a6944a367d23f4f78" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>HeightScale</name></member>
+      <member refid="class_p_b_r_material_1a8869ab4f3e0a14afbd1742b5d1966c96" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>HeightTex</name></member>
+      <member refid="class_material_1ace810a426f4b488d2dc2a53070d85405" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>Material</name></member>
+      <member refid="class_p_b_r_material_1a09ce716134fd081ae25bb63a46e9b907" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>Metallic</name></member>
+      <member refid="class_p_b_r_material_1a9cbfd6085711037cff3578c967976d71" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>MetallicRoughnessTex</name></member>
+      <member refid="class_p_b_r_material_1a0b76aab4d122040de8b4f51f9e842619" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>NormalScale</name></member>
+      <member refid="class_p_b_r_material_1a06282a8995ad8c24f578cfeda071ff21" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>NormalTex</name></member>
+      <member refid="class_p_b_r_material_1a08e589d6f14c84c24e82efd9b7ca2656" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>OcclusionStrength</name></member>
+      <member refid="class_p_b_r_material_1a0259fb2a84584f677d42b9243b018c4c" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>OcclusionTex</name></member>
+      <member refid="class_p_b_r_material_1aa95501f255a91cf9c2572ed4ea38fe27" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>PBRMaterial</name></member>
+      <member refid="class_material_1adfd452b4ff41ff6d818278e8adf9b9d5" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>receivesShadows</name></member>
+      <member refid="class_p_b_r_material_1a2ef8c1065bd047f102140426894c7954" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>Roughness</name></member>
+      <member refid="class_p_b_r_material_1ab9f974c13a97a14510cf5b7f5acff9ff" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>RoughnessTex</name></member>
+      <member refid="class_material_1afebe6792e3275332e491ce2ca396069b" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>set</name></member>
+      <member refid="class_material_1ab98237e9210f21b7b8600966f6b66c5f" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>setCastsShadows</name></member>
+      <member refid="class_material_1acef042dc3f4671a78a172aa90a12b694" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>setReceivesShadows</name></member>
+      <member refid="class_material_1add6d2e03a3dc1ac8dfac431b9641d5cc" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>setShader</name></member>
+      <member refid="class_material_1a3b4ef589843fde30b1844bde9bcbad19" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>unbind</name></member>
+      <member refid="class_p_b_r_material_1ae26d427d389914c55beec601ddb27d9d" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>UseAlphaClip</name></member>
+      <member refid="class_p_b_r_material_1a6fba5827bb23b0e63044a0bbbc6970c4" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>UseEnvMap</name></member>
+      <member refid="class_p_b_r_material_1adea8484440177fa1036b3801f3ba60b0" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>UVOffset</name></member>
+      <member refid="class_p_b_r_material_1a40a3b2b384fce5cb177e860bbfc4a6fd" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>UVScale</name></member>
+      <member refid="class_p_b_r_material_1a23b5acddbf3484d77c7aff0820abcb5a" prot="public" virt="non-virtual"><scope>PBRMaterial</scope><name>ViewPos</name></member>
+      <member refid="class_material_1a179e16d6a1bd4a0f039b8e4cbf2ade30" prot="public" virt="virtual"><scope>PBRMaterial</scope><name>~Material</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,17 @@
+digraph "MaterialDefaults::LitImageMaterial::bind"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="LR";
+  Node1 [id="Node000001",label="MaterialDefaults::LitImage\lMaterial::bind",height=0.2,width=0.4,color="gray40", fillcolor="grey60", style="filled", fontcolor="black",tooltip="Binds this resource."];
+  Node1 -> Node2 [id="edge9_Node000001_Node000002",color="steelblue1",style="solid",tooltip=" "];
+  Node2 [id="Node000002",label="ShadowRenderer::BindShadow\lSamplers",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$class_shadow_renderer.html#a294d22aa8a61404ca7741fb92179f759",tooltip="Binds shadow samplers."];
+  Node1 -> Node3 [id="edge10_Node000001_Node000003",color="steelblue1",style="solid",tooltip=" "];
+  Node3 [id="Node000003",label="LightUniformUploader\l::UploadLights",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$class_light_uniform_uploader.html#a47d11f57dfb8557bd58dd6e9ca1cb51f",tooltip="Uploads light data to shader uniforms."];
+  Node3 -> Node4 [id="edge11_Node000003_Node000004",color="steelblue1",style="solid",tooltip=" "];
+  Node4 [id="Node000004",label="ShadowRenderer::GetFrameId",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$class_shadow_renderer.html#a5b7b6245485e78e450e4f36511dc6028",tooltip="Returns the frame id."];
+  Node3 -> Node5 [id="edge12_Node000003_Node000005",color="steelblue1",style="solid",tooltip=" "];
+  Node5 [id="Node000005",label="ShadowRenderer::GetShadow\lDataForLight",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$class_shadow_renderer.html#a2a6a438bcb4909cfe0f049a418ca08a1",tooltip="Returns the shadow data for light."];
+}

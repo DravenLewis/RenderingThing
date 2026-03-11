@@ -1,0 +1,1115 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_constructed_material" kind="class" language="C++" prot="public">
+    <compoundname>ConstructedMaterial</compoundname>
+    <basecompoundref refid="class_material" prot="public" virt="non-virtual">Material</basecompoundref>
+    <includes refid="_constructed_material_8h" local="no">ConstructedMaterial.h</includes>
+    <innerclass refid="struct_constructed_material_1_1_field" prot="public">ConstructedMaterial::Field</innerclass>
+    <sectiondef kind="public-type">
+      <memberdef kind="enum" id="class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cf" prot="public" static="no" strong="yes">
+        <type></type>
+        <name>FieldType</name>
+        <qualifiedname>ConstructedMaterial::FieldType</qualifiedname>
+        <enumvalue id="class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cfa22ae0e2b89e5e3d477f988cc36d3272b" prot="public">
+          <name>Float</name>
+          <initializer>= 0</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cfa1686a6c336b71b36d77354cea19a8b52" prot="public">
+          <name>Int</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cfac26f15e86e3de4c398a8273272aba034" prot="public">
+          <name>Bool</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cfafe98032d4f1c52a2f0b617f9205d5f80" prot="public">
+          <name>Vec2</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cfa01b2dc1a2922d9be9e12ef0709600977" prot="public">
+          <name>Vec3</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cfaf67402842935c0240e8109e7312def66" prot="public">
+          <name>Vec4</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cfaa6e2bae752d3bf4e34cb392bca789995" prot="public">
+          <name>Texture2D</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Enumerates values for <ref refid="class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cf" kindref="member">FieldType</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="20" column="9" bodyfile="src/Rendering/Materials/ConstructedMaterial.h" bodystart="20" bodyend="28"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_constructed_material_1a599788bdf457761688969591f528b0e2" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; <ref refid="struct_constructed_material_1_1_field" kindref="compound">Field</ref> &gt;</type>
+        <definition>std::vector&lt;Field&gt; ConstructedMaterial::dynamicFields</definition>
+        <argsstring></argsstring>
+        <name>dynamicFields</name>
+        <qualifiedname>ConstructedMaterial::dynamicFields</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="235" column="21" bodyfile="src/Rendering/Materials/ConstructedMaterial.h" bodystart="235" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_constructed_material_1aec9612525068b8eaf241dc78cfd9f9f5" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool ConstructedMaterial::fieldsDirty</definition>
+        <argsstring></argsstring>
+        <name>fieldsDirty</name>
+        <qualifiedname>ConstructedMaterial::fieldsDirty</qualifiedname>
+        <initializer>= true</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="236" column="14" bodyfile="src/Rendering/Materials/ConstructedMaterial.h" bodystart="236" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_constructed_material_1a736e07f78c200b7a21b33165d6cb5719" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string ConstructedMaterial::sourceAssetRef</definition>
+        <argsstring></argsstring>
+        <name>sourceAssetRef</name>
+        <qualifiedname>ConstructedMaterial::sourceAssetRef</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="237" column="21" bodyfile="src/Rendering/Materials/ConstructedMaterial.h" bodystart="237" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_constructed_material_1a2d3ff88802fb3d101d66e16a39bbe939" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string ConstructedMaterial::sourceMaterialName</definition>
+        <argsstring></argsstring>
+        <name>sourceMaterialName</name>
+        <qualifiedname>ConstructedMaterial::sourceMaterialName</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="238" column="21" bodyfile="src/Rendering/Materials/ConstructedMaterial.h" bodystart="238" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_constructed_material_1a6e513e5615be7d3b0fa75894b2c58dd1" prot="public" static="no" const="no" explicit="yes" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>ConstructedMaterial::ConstructedMaterial</definition>
+        <argsstring>(const std::shared_ptr&lt; ShaderProgram &gt; &amp;shaderProgram)</argsstring>
+        <name>ConstructedMaterial</name>
+        <qualifiedname>ConstructedMaterial::ConstructedMaterial</qualifiedname>
+        <param>
+          <type>const std::shared_ptr&lt; <ref refid="class_shader_program" kindref="compound">ShaderProgram</ref> &gt; &amp;</type>
+          <declname>shaderProgram</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_constructed_material" kindref="compound">ConstructedMaterial</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>shaderProgram</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for shader program. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Result of this operation. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="57" column="18" bodyfile="src/Rendering/Materials/ConstructedMaterial.cpp" bodystart="14" bodyend="16"/>
+        <references refid="class_material_1ace810a426f4b488d2dc2a53070d85405" compoundref="_material_8h" startline="63" endline="73">Material::Material</references>
+      </memberdef>
+      <memberdef kind="function" id="class_constructed_material_1a21bc4a9062326ce5c0cd79a8a702a6be" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ConstructedMaterial::setSourceAssetRef</definition>
+        <argsstring>(const std::string &amp;ref)</argsstring>
+        <name>setSourceAssetRef</name>
+        <qualifiedname>ConstructedMaterial::setSourceAssetRef</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>ref</declname>
+        </param>
+        <briefdescription>
+<para>Sets the source asset ref. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ref</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Reference to reference. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="69" column="14" bodyfile="src/Rendering/Materials/ConstructedMaterial.cpp" bodystart="24" bodyend="26"/>
+      </memberdef>
+      <memberdef kind="function" id="class_constructed_material_1a71a8ad0b3f9b7332cbeb6f83f40b7c9c" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const std::string &amp;</type>
+        <definition>const std::string &amp; ConstructedMaterial::getSourceAssetRef</definition>
+        <argsstring>() const</argsstring>
+        <name>getSourceAssetRef</name>
+        <qualifiedname>ConstructedMaterial::getSourceAssetRef</qualifiedname>
+        <briefdescription>
+<para>Returns the source asset ref. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Resulting string value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="74" column="27" bodyfile="src/Rendering/Materials/ConstructedMaterial.cpp" bodystart="28" bodyend="30"/>
+      </memberdef>
+      <memberdef kind="function" id="class_constructed_material_1ac61016aad3fbd3d73ec68b6bbb1ddada" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ConstructedMaterial::setSourceMaterialName</definition>
+        <argsstring>(const std::string &amp;name)</argsstring>
+        <name>setSourceMaterialName</name>
+        <qualifiedname>ConstructedMaterial::setSourceMaterialName</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+<para>Sets the source material name. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>name</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for name. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="80" column="14" bodyfile="src/Rendering/Materials/ConstructedMaterial.cpp" bodystart="32" bodyend="34"/>
+      </memberdef>
+      <memberdef kind="function" id="class_constructed_material_1aa0808c55319a66dcef4948cca0f68a20" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const std::string &amp;</type>
+        <definition>const std::string &amp; ConstructedMaterial::getSourceMaterialName</definition>
+        <argsstring>() const</argsstring>
+        <name>getSourceMaterialName</name>
+        <qualifiedname>ConstructedMaterial::getSourceMaterialName</qualifiedname>
+        <briefdescription>
+<para>Returns the source material name. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Resulting string value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="85" column="27" bodyfile="src/Rendering/Materials/ConstructedMaterial.cpp" bodystart="36" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="class_constructed_material_1a2f30d4fbf1fdb26e428b33d23dbf10c6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_constructed_material_1_1_field" kindref="compound">Field</ref> &amp;</type>
+        <definition>ConstructedMaterial::Field &amp; ConstructedMaterial::addFloatField</definition>
+        <argsstring>(const std::string &amp;key, const std::string &amp;displayName, const std::string &amp;uniformName, float value, const std::string &amp;mirrorUniformName=&quot;&quot;)</argsstring>
+        <name>addFloatField</name>
+        <qualifiedname>ConstructedMaterial::addFloatField</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>displayName</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>uniformName</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>mirrorUniformName</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <briefdescription>
+<para>Adds a float field definition. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>key</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for key. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>displayName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for display name. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>uniformName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for uniform name. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for value. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>mirrorUniformName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for mirror uniform name. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="96" column="15" bodyfile="src/Rendering/Materials/ConstructedMaterial.cpp" bodystart="46" bodyend="59"/>
+      </memberdef>
+      <memberdef kind="function" id="class_constructed_material_1a284816c36fa3df24c2a4078166d2e542" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_constructed_material_1_1_field" kindref="compound">Field</ref> &amp;</type>
+        <definition>ConstructedMaterial::Field &amp; ConstructedMaterial::addIntField</definition>
+        <argsstring>(const std::string &amp;key, const std::string &amp;displayName, const std::string &amp;uniformName, int value, const std::string &amp;mirrorUniformName=&quot;&quot;)</argsstring>
+        <name>addIntField</name>
+        <qualifiedname>ConstructedMaterial::addIntField</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>displayName</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>uniformName</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>mirrorUniformName</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <briefdescription>
+<para>Adds an integer field definition. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>key</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for key. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>displayName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for display name. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>uniformName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for uniform name. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for value. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>mirrorUniformName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for mirror uniform name. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="110" column="15" bodyfile="src/Rendering/Materials/ConstructedMaterial.cpp" bodystart="61" bodyend="74"/>
+      </memberdef>
+      <memberdef kind="function" id="class_constructed_material_1a3aede6f45921adc753bb60b2f312a894" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_constructed_material_1_1_field" kindref="compound">Field</ref> &amp;</type>
+        <definition>ConstructedMaterial::Field &amp; ConstructedMaterial::addBoolField</definition>
+        <argsstring>(const std::string &amp;key, const std::string &amp;displayName, const std::string &amp;uniformName, bool value, const std::string &amp;mirrorUniformName=&quot;&quot;)</argsstring>
+        <name>addBoolField</name>
+        <qualifiedname>ConstructedMaterial::addBoolField</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>displayName</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>uniformName</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>mirrorUniformName</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <briefdescription>
+<para>Adds a boolean field definition. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>key</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for key. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>displayName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for display name. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>uniformName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for uniform name. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for value. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>mirrorUniformName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for mirror uniform name. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="124" column="15" bodyfile="src/Rendering/Materials/ConstructedMaterial.cpp" bodystart="76" bodyend="89"/>
+      </memberdef>
+      <memberdef kind="function" id="class_constructed_material_1a5e730682b49c7d07f4e3213b7c8e936f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_constructed_material_1_1_field" kindref="compound">Field</ref> &amp;</type>
+        <definition>ConstructedMaterial::Field &amp; ConstructedMaterial::addVec2Field</definition>
+        <argsstring>(const std::string &amp;key, const std::string &amp;displayName, const std::string &amp;uniformName, const Math3D::Vec2 &amp;value, const std::string &amp;mirrorUniformName=&quot;&quot;)</argsstring>
+        <name>addVec2Field</name>
+        <qualifiedname>ConstructedMaterial::addVec2Field</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>displayName</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>uniformName</declname>
+        </param>
+        <param>
+          <type>const Math3D::Vec2 &amp;</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>mirrorUniformName</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <briefdescription>
+<para>Adds a vec2 field definition. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>key</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for key. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>displayName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for display name. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>uniformName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for uniform name. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for value. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>mirrorUniformName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for mirror uniform name. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="138" column="15" bodyfile="src/Rendering/Materials/ConstructedMaterial.cpp" bodystart="91" bodyend="104"/>
+      </memberdef>
+      <memberdef kind="function" id="class_constructed_material_1afa38f16b02e4428ab401779f626db4bb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_constructed_material_1_1_field" kindref="compound">Field</ref> &amp;</type>
+        <definition>ConstructedMaterial::Field &amp; ConstructedMaterial::addVec3Field</definition>
+        <argsstring>(const std::string &amp;key, const std::string &amp;displayName, const std::string &amp;uniformName, const Math3D::Vec3 &amp;value, const std::string &amp;mirrorUniformName=&quot;&quot;)</argsstring>
+        <name>addVec3Field</name>
+        <qualifiedname>ConstructedMaterial::addVec3Field</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>displayName</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>uniformName</declname>
+        </param>
+        <param>
+          <type>const Math3D::Vec3 &amp;</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>mirrorUniformName</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <briefdescription>
+<para>Adds a vec3 field definition. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>key</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for key. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>displayName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for display name. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>uniformName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for uniform name. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for value. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>mirrorUniformName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for mirror uniform name. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="152" column="15" bodyfile="src/Rendering/Materials/ConstructedMaterial.cpp" bodystart="106" bodyend="119"/>
+      </memberdef>
+      <memberdef kind="function" id="class_constructed_material_1acf1ea6cee12a7e291049b2bcd93e418a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_constructed_material_1_1_field" kindref="compound">Field</ref> &amp;</type>
+        <definition>ConstructedMaterial::Field &amp; ConstructedMaterial::addVec4Field</definition>
+        <argsstring>(const std::string &amp;key, const std::string &amp;displayName, const std::string &amp;uniformName, const Math3D::Vec4 &amp;value, const std::string &amp;mirrorUniformName=&quot;&quot;)</argsstring>
+        <name>addVec4Field</name>
+        <qualifiedname>ConstructedMaterial::addVec4Field</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>displayName</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>uniformName</declname>
+        </param>
+        <param>
+          <type>const Math3D::Vec4 &amp;</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>mirrorUniformName</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <briefdescription>
+<para>Adds a vec4 field definition. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>key</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for key. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>displayName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for display name. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>uniformName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for uniform name. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for value. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>mirrorUniformName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for mirror uniform name. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="166" column="15" bodyfile="src/Rendering/Materials/ConstructedMaterial.cpp" bodystart="121" bodyend="134"/>
+      </memberdef>
+      <memberdef kind="function" id="class_constructed_material_1a4a1b88134f55b0f679212db40941c87b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_constructed_material_1_1_field" kindref="compound">Field</ref> &amp;</type>
+        <definition>ConstructedMaterial::Field &amp; ConstructedMaterial::addTexture2DField</definition>
+        <argsstring>(const std::string &amp;key, const std::string &amp;displayName, const std::string &amp;uniformName, const std::string &amp;textureAssetRef, int textureSlot, const std::string &amp;presenceUniformName=&quot;&quot;)</argsstring>
+        <name>addTexture2DField</name>
+        <qualifiedname>ConstructedMaterial::addTexture2DField</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>displayName</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>uniformName</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>textureAssetRef</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>textureSlot</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>presenceUniformName</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <briefdescription>
+<para>Adds a texture field definition. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>key</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for key. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>displayName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for display name. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>uniformName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for uniform name. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>textureAssetRef</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Reference to texture asset. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>textureSlot</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for texture slot. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>presenceUniformName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for presence uniform name. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="181" column="15" bodyfile="src/Rendering/Materials/ConstructedMaterial.cpp" bodystart="136" bodyend="151"/>
+      </memberdef>
+      <memberdef kind="function" id="class_constructed_material_1a7d29c3cf5ab8b761637884dd53ccb531" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::vector&lt; <ref refid="struct_constructed_material_1_1_field" kindref="compound">Field</ref> &gt; &amp;</type>
+        <definition>std::vector&lt; ConstructedMaterial::Field &gt; &amp; ConstructedMaterial::fields</definition>
+        <argsstring>()</argsstring>
+        <name>fields</name>
+        <qualifiedname>ConstructedMaterial::fields</qualifiedname>
+        <briefdescription>
+<para>Returns the material field list. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="192" column="21" bodyfile="src/Rendering/Materials/ConstructedMaterial.cpp" bodystart="153" bodyend="155"/>
+      </memberdef>
+      <memberdef kind="function" id="class_constructed_material_1ad3325736eb2a48a1546b69dddb779a3c" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const std::vector&lt; <ref refid="struct_constructed_material_1_1_field" kindref="compound">Field</ref> &gt; &amp;</type>
+        <definition>const std::vector&lt; ConstructedMaterial::Field &gt; &amp; ConstructedMaterial::fields</definition>
+        <argsstring>() const</argsstring>
+        <name>fields</name>
+        <qualifiedname>ConstructedMaterial::fields</qualifiedname>
+        <briefdescription>
+<para>Returns the material field list. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="197" column="27" bodyfile="src/Rendering/Materials/ConstructedMaterial.cpp" bodystart="157" bodyend="159"/>
+      </memberdef>
+      <memberdef kind="function" id="class_constructed_material_1a1672cf71fcbe34b381fe784c9dcafa5c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ConstructedMaterial::clearFields</definition>
+        <argsstring>()</argsstring>
+        <name>clearFields</name>
+        <qualifiedname>ConstructedMaterial::clearFields</qualifiedname>
+        <briefdescription>
+<para>Clears fields. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="202" column="14" bodyfile="src/Rendering/Materials/ConstructedMaterial.cpp" bodystart="161" bodyend="164"/>
+      </memberdef>
+      <memberdef kind="function" id="class_constructed_material_1ad41964516b374f85c9dbe03d70285388" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ConstructedMaterial::markFieldsDirty</definition>
+        <argsstring>()</argsstring>
+        <name>markFieldsDirty</name>
+        <qualifiedname>ConstructedMaterial::markFieldsDirty</qualifiedname>
+        <briefdescription>
+<para>Marks material fields dirty for reapply. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="206" column="14" bodyfile="src/Rendering/Materials/ConstructedMaterial.cpp" bodystart="166" bodyend="168"/>
+      </memberdef>
+      <memberdef kind="function" id="class_constructed_material_1a0b89ef6b1940504648859f840dd78a4b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ConstructedMaterial::applyField</definition>
+        <argsstring>(size_t index)</argsstring>
+        <name>applyField</name>
+        <qualifiedname>ConstructedMaterial::applyField</qualifiedname>
+        <param>
+          <type>size_t</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+<para>Applies field. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>index</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Identifier or index value. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="211" column="14" bodyfile="src/Rendering/Materials/ConstructedMaterial.cpp" bodystart="253" bodyend="258"/>
+      </memberdef>
+      <memberdef kind="function" id="class_constructed_material_1a2d9ac90844fa0e951bdb8a2f90bd1aea" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ConstructedMaterial::applyAllFields</definition>
+        <argsstring>()</argsstring>
+        <name>applyAllFields</name>
+        <qualifiedname>ConstructedMaterial::applyAllFields</qualifiedname>
+        <briefdescription>
+<para>Applies all fields. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="215" column="14" bodyfile="src/Rendering/Materials/ConstructedMaterial.cpp" bodystart="260" bodyend="264"/>
+        <referencedby refid="class_constructed_material_1a20ec1258bcfcd504150134f3d12dbb4a" compoundref="_constructed_material_8cpp" startline="266" endline="272">bind</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_constructed_material_1a20ec1258bcfcd504150134f3d12dbb4a" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void ConstructedMaterial::bind</definition>
+        <argsstring>() override</argsstring>
+        <name>bind</name>
+        <qualifiedname>ConstructedMaterial::bind</qualifiedname>
+        <reimplements refid="class_material_1aa9acc36e80cc1874dc69da8dedf54695">bind</reimplements>
+        <briefdescription>
+<para>Binds this resource. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="220" column="14" bodyfile="src/Rendering/Materials/ConstructedMaterial.cpp" bodystart="266" bodyend="272"/>
+        <references refid="class_constructed_material_1a2d9ac90844fa0e951bdb8a2f90bd1aea" compoundref="_constructed_material_8cpp" startline="260" endline="264">applyAllFields</references>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_constructed_material_1a3a3f4b57dfe35059b73a40e6cac44684" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="class_constructed_material" kindref="compound">ConstructedMaterial</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; ConstructedMaterial &gt; ConstructedMaterial::CreateWithPBRShader</definition>
+        <argsstring>()</argsstring>
+        <name>CreateWithPBRShader</name>
+        <qualifiedname>ConstructedMaterial::CreateWithPBRShader</qualifiedname>
+        <briefdescription>
+<para>Creates with pbr shader. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Pointer to the resulting object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="63" column="32" bodyfile="src/Rendering/Materials/ConstructedMaterial.cpp" bodystart="18" bodyend="22"/>
+        <references refid="class_p_b_r_material_1aa0579a45ec0d6fa8c1203c0bc582fe39" compoundref="_p_b_r_material_8cpp" startline="240" endline="271">PBRMaterial::Create</references>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_constructed_material_1a51ca7f0b48acff58c6bf189149f59705" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_constructed_material_1_1_field" kindref="compound">Field</ref> &amp;</type>
+        <definition>ConstructedMaterial::Field &amp; ConstructedMaterial::emplaceField</definition>
+        <argsstring>(Field &amp;&amp;field)</argsstring>
+        <name>emplaceField</name>
+        <qualifiedname>ConstructedMaterial::emplaceField</qualifiedname>
+        <param>
+          <type><ref refid="struct_constructed_material_1_1_field" kindref="compound">Field</ref> &amp;&amp;</type>
+          <declname>field</declname>
+        </param>
+        <briefdescription>
+<para>Inserts a material field definition. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>field</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for field. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="228" column="15" bodyfile="src/Rendering/Materials/ConstructedMaterial.cpp" bodystart="40" bodyend="44"/>
+      </memberdef>
+      <memberdef kind="function" id="class_constructed_material_1afc564769f572357c0787ec31f257b419" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ConstructedMaterial::applyFieldInternal</definition>
+        <argsstring>(Field &amp;field)</argsstring>
+        <name>applyFieldInternal</name>
+        <qualifiedname>ConstructedMaterial::applyFieldInternal</qualifiedname>
+        <param>
+          <type><ref refid="struct_constructed_material_1_1_field" kindref="compound">Field</ref> &amp;</type>
+          <declname>field</declname>
+        </param>
+        <briefdescription>
+<para>Applies field internal. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>field</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for field. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="233" column="14" bodyfile="src/Rendering/Materials/ConstructedMaterial.cpp" bodystart="170" bodyend="251"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_constructed_material" kindref="compound">ConstructedMaterial</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>ConstructedMaterial</label>
+        <link refid="class_constructed_material"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Material</label>
+        <link refid="class_material"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>ConstructedMaterial</label>
+        <link refid="class_constructed_material"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Material</label>
+        <link refid="class_material"/>
+      </node>
+    </collaborationgraph>
+    <location file="src/Rendering/Materials/ConstructedMaterial.h" line="17" column="1" bodyfile="src/Rendering/Materials/ConstructedMaterial.h" bodystart="17" bodyend="239"/>
+    <listofallmembers>
+      <member refid="class_constructed_material_1a3aede6f45921adc753bb60b2f312a894" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>addBoolField</name></member>
+      <member refid="class_constructed_material_1a2f30d4fbf1fdb26e428b33d23dbf10c6" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>addFloatField</name></member>
+      <member refid="class_constructed_material_1a284816c36fa3df24c2a4078166d2e542" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>addIntField</name></member>
+      <member refid="class_constructed_material_1a4a1b88134f55b0f679212db40941c87b" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>addTexture2DField</name></member>
+      <member refid="class_constructed_material_1a5e730682b49c7d07f4e3213b7c8e936f" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>addVec2Field</name></member>
+      <member refid="class_constructed_material_1afa38f16b02e4428ab401779f626db4bb" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>addVec3Field</name></member>
+      <member refid="class_constructed_material_1acf1ea6cee12a7e291049b2bcd93e418a" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>addVec4Field</name></member>
+      <member refid="class_constructed_material_1a2d9ac90844fa0e951bdb8a2f90bd1aea" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>applyAllFields</name></member>
+      <member refid="class_constructed_material_1a0b89ef6b1940504648859f840dd78a4b" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>applyField</name></member>
+      <member refid="class_constructed_material_1afc564769f572357c0787ec31f257b419" prot="private" virt="non-virtual"><scope>ConstructedMaterial</scope><name>applyFieldInternal</name></member>
+      <member refid="class_constructed_material_1a20ec1258bcfcd504150134f3d12dbb4a" prot="public" virt="virtual"><scope>ConstructedMaterial</scope><name>bind</name></member>
+      <member refid="class_material_1aaf9a94eb8335d955b4a58a1f036bb3aa" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>castsShadows</name></member>
+      <member refid="class_constructed_material_1a1672cf71fcbe34b381fe784c9dcafa5c" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>clearFields</name></member>
+      <member refid="class_constructed_material_1a6e513e5615be7d3b0fa75894b2c58dd1" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>ConstructedMaterial</name></member>
+      <member refid="class_material_1a55fb7dcfa5f72a8997b6423ac099caa6" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>Copy</name></member>
+      <member refid="class_constructed_material_1a3a3f4b57dfe35059b73a40e6cac44684" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>CreateWithPBRShader</name></member>
+      <member refid="class_constructed_material_1a599788bdf457761688969591f528b0e2" prot="private" virt="non-virtual"><scope>ConstructedMaterial</scope><name>dynamicFields</name></member>
+      <member refid="class_constructed_material_1a51ca7f0b48acff58c6bf189149f59705" prot="private" virt="non-virtual"><scope>ConstructedMaterial</scope><name>emplaceField</name></member>
+      <member refid="class_constructed_material_1a7d29c3cf5ab8b761637884dd53ccb531" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>fields</name></member>
+      <member refid="class_constructed_material_1ad3325736eb2a48a1546b69dddb779a3c" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>fields</name></member>
+      <member refid="class_constructed_material_1aec9612525068b8eaf241dc78cfd9f9f5" prot="private" virt="non-virtual"><scope>ConstructedMaterial</scope><name>fieldsDirty</name></member>
+      <member refid="class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cf" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>FieldType</name></member>
+      <member refid="class_material_1a00c4c29d23d53171fa11ccbe1d91f14d" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>GetAs</name></member>
+      <member refid="class_material_1a3fbc05a83a35eb9e07a7b84cba22eb6e" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>getShader</name></member>
+      <member refid="class_constructed_material_1a71a8ad0b3f9b7332cbeb6f83f40b7c9c" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>getSourceAssetRef</name></member>
+      <member refid="class_constructed_material_1aa0808c55319a66dcef4948cca0f68a20" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>getSourceMaterialName</name></member>
+      <member refid="class_constructed_material_1ad41964516b374f85c9dbe03d70285388" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>markFieldsDirty</name></member>
+      <member refid="class_material_1ace810a426f4b488d2dc2a53070d85405" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>Material</name></member>
+      <member refid="class_material_1adfd452b4ff41ff6d818278e8adf9b9d5" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>receivesShadows</name></member>
+      <member refid="class_material_1afebe6792e3275332e491ce2ca396069b" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>set</name></member>
+      <member refid="class_material_1ab98237e9210f21b7b8600966f6b66c5f" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>setCastsShadows</name></member>
+      <member refid="class_material_1acef042dc3f4671a78a172aa90a12b694" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>setReceivesShadows</name></member>
+      <member refid="class_material_1add6d2e03a3dc1ac8dfac431b9641d5cc" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>setShader</name></member>
+      <member refid="class_constructed_material_1a21bc4a9062326ce5c0cd79a8a702a6be" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>setSourceAssetRef</name></member>
+      <member refid="class_constructed_material_1ac61016aad3fbd3d73ec68b6bbb1ddada" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>setSourceMaterialName</name></member>
+      <member refid="class_constructed_material_1a736e07f78c200b7a21b33165d6cb5719" prot="private" virt="non-virtual"><scope>ConstructedMaterial</scope><name>sourceAssetRef</name></member>
+      <member refid="class_constructed_material_1a2d3ff88802fb3d101d66e16a39bbe939" prot="private" virt="non-virtual"><scope>ConstructedMaterial</scope><name>sourceMaterialName</name></member>
+      <member refid="class_material_1a3b4ef589843fde30b1844bde9bcbad19" prot="public" virt="non-virtual"><scope>ConstructedMaterial</scope><name>unbind</name></member>
+      <member refid="class_material_1a179e16d6a1bd4a0f039b8e4cbf2ade30" prot="public" virt="virtual"><scope>ConstructedMaterial</scope><name>~Material</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

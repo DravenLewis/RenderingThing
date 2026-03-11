@@ -1,0 +1,113 @@
+.TH "SSAOEffect" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+SSAOEffect \- Represents the \fBSSAOEffect\fP type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ScreenEffects\&.h>\fP
+.PP
+Inherits \fBGraphics::PostProcessing::PostProcessingEffect\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBSSAOEffect\fP ()"
+.br
+.RI "Constructs a new \fBSSAOEffect\fP instance\&. "
+.ti -1c
+.RI "bool \fBapply\fP (PTexture tex, PTexture depthTex, PFrameBuffer outFbo, std::shared_ptr< \fBModelPart\fP > quad) override"
+.br
+.RI "Applies current settings\&. "
+.in -1c
+
+Public Member Functions inherited from \fBGraphics::PostProcessing::PostProcessingEffect\fP
+.in +1c
+.ti -1c
+.RI "virtual \fB~PostProcessingEffect\fP ()=default"
+.br
+.RI "Destroys this \fBPostProcessingEffect\fP instance\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static std::shared_ptr< \fBSSAOEffect\fP > \fBNew\fP ()"
+.br
+.RI "Creates a new object\&. "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "float \fBradiusPx\fP = 3\&.0f"
+.br
+.ti -1c
+.RI "float \fBdepthRadius\fP = 0\&.025f"
+.br
+.ti -1c
+.RI "float \fBbias\fP = 0\&.001f"
+.br
+.ti -1c
+.RI "float \fBintensity\fP = 1\&.0f"
+.br
+.ti -1c
+.RI "float \fBgiBoost\fP = 0\&.12f"
+.br
+.ti -1c
+.RI "int \fBsampleCount\fP = 8"
+.br
+.ti -1c
+.RI "float \fBnearPlane\fP = 0\&.1f"
+.br
+.ti -1c
+.RI "float \fBfarPlane\fP = 1000\&.0f"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the \fBSSAOEffect\fP type\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "bool SSAOEffect::apply (PTexture tex, PTexture depthTex, PFrameBuffer outFbo, std::shared_ptr< \fBModelPart\fP > quad)\fR [inline]\fP, \fR [override]\fP, \fR [virtual]\fP"
+
+.PP
+Applies current settings\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItex\fP Value for tex\&. 
+.br
+\fIdepthTex\fP Value for depth tex\&. 
+.br
+\fIoutFbo\fP Output value for fbo\&. 
+.br
+\fIquad\fP Value for quad\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True when the operation succeeds; otherwise false\&. 
+.RE
+.PP
+
+.PP
+Implements \fBGraphics::PostProcessing::PostProcessingEffect\fP\&.
+.SS "std::shared_ptr< \fBSSAOEffect\fP > SSAOEffect::New ()\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

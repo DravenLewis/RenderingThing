@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_i_material_property" kind="struct" language="C++" prot="public" abstract="yes">
+    <compoundname>IMaterialProperty</compoundname>
+    <derivedcompoundref refid="struct_material_property" prot="public" virt="non-virtual">MaterialProperty&lt; T &gt;</derivedcompoundref>
+    <includes refid="_material_8h" local="no">Material.h</includes>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="struct_i_material_property_1a020ed618177d8a68aaa97d691ef6fc66" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void IMaterialProperty::apply</definition>
+        <argsstring>(ShaderProgram &amp;shader, const std::string &amp;name, bool assumeBound)=0</argsstring>
+        <name>apply</name>
+        <qualifiedname>IMaterialProperty::apply</qualifiedname>
+        <reimplementedby refid="struct_material_property_1a5645edb77a40c19013dac45a0d21880b">apply</reimplementedby>
+        <param>
+          <type><ref refid="class_shader_program" kindref="compound">ShaderProgram</ref> &amp;</type>
+          <declname>shader</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>assumeBound</declname>
+        </param>
+        <briefdescription>
+<para>Applies current settings. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>shader</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for shader. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>name</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for name. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>assumeBound</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for assume bound. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/Material.h" line="23" column="18"/>
+      </memberdef>
+      <memberdef kind="function" id="struct_i_material_property_1a7d5f7dbbd5af6e80c3242c553976b02e" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual IMaterialProperty::~IMaterialProperty</definition>
+        <argsstring>()=default</argsstring>
+        <name>~IMaterialProperty</name>
+        <qualifiedname>IMaterialProperty::~IMaterialProperty</qualifiedname>
+        <briefdescription>
+<para>Destroys this <ref refid="struct_i_material_property" kindref="compound">IMaterialProperty</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/Material.h" line="27" column="13"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_i_material_property" kindref="compound">IMaterialProperty</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>IMaterialProperty</label>
+        <link refid="struct_i_material_property"/>
+      </node>
+      <node id="2">
+        <label>MaterialProperty&lt; T &gt;</label>
+        <link refid="struct_material_property"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <location file="src/Rendering/Materials/Material.h" line="16" column="1" bodyfile="src/Rendering/Materials/Material.h" bodystart="16" bodyend="28"/>
+    <listofallmembers>
+      <member refid="struct_i_material_property_1a020ed618177d8a68aaa97d691ef6fc66" prot="public" virt="pure-virtual"><scope>IMaterialProperty</scope><name>apply</name></member>
+      <member refid="struct_i_material_property_1a7d5f7dbbd5af6e80c3242c553976b02e" prot="public" virt="virtual"><scope>IMaterialProperty</scope><name>~IMaterialProperty</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

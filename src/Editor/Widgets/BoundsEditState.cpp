@@ -1,3 +1,8 @@
+/**
+ * @file src/Editor/Widgets/BoundsEditState.cpp
+ * @brief Implementation for BoundsEditState.
+ */
+
 #include "Editor/Widgets/BoundsEditState.h"
 
 namespace {

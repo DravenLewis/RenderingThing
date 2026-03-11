@@ -1,0 +1,338 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_depth_of_field_effect" xml:lang="en-US">
+<title>DepthOfFieldEffect Class Reference</title>
+<indexterm><primary>DepthOfFieldEffect</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_depth_of_field_effect">DepthOfFieldEffect</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;ScreenEffects.h&gt;</computeroutput>
+</para>
+<para>Inheritance diagram for DepthOfFieldEffect:    <informalfigure>
+        <mediaobject>
+            <imageobject>
+                <imagedata width="50%" align="center" valign="middle" scalefit="0" fileref="class_depth_of_field_effect.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+    </informalfigure>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_depth_of_field_effect_1a156dc1b753fbf841b0f8176a26d58b45"/><emphasis role="strong">DepthOfFieldEffect</emphasis> ()</para>
+
+<para>Constructs a new <link linkend="_class_depth_of_field_effect">DepthOfFieldEffect</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_depth_of_field_effect_1a71ff3039585ef902e8c5325d9f2c8543"/><emphasis role="strong">~DepthOfFieldEffect</emphasis> () override=default</para>
+
+<para>Destroys this <link linkend="_class_depth_of_field_effect">DepthOfFieldEffect</link> instance. </para>
+</listitem>
+            <listitem><para>float <link linkend="_class_depth_of_field_effect_1a89866922b7bfdc7e1b39cd339996afbc">getResolvedFocusDistance</link> () const</para>
+
+<para>Returns the resolved focus distance. </para>
+</listitem>
+            <listitem><para>float <link linkend="_class_depth_of_field_effect_1a3b3084c5e7f4fbc0acc22c2d407cba19">getResolvedFocusRange</link> () const</para>
+
+<para>Returns the resolved focus range. </para>
+</listitem>
+            <listitem><para>bool <link linkend="_class_depth_of_field_effect_1a2b6c470cc2298d4e7f9638ab02fd6339">getDebugAdaptiveCenterValid</link> () const</para>
+
+<para>Returns the debug adaptive center valid. </para>
+</listitem>
+            <listitem><para>float <link linkend="_class_depth_of_field_effect_1a0702ba093291383aec8a394bd58b4da3">getDebugAdaptiveCenterDistance</link> () const</para>
+
+<para>Returns the debug adaptive center distance. </para>
+</listitem>
+            <listitem><para>bool <link linkend="_class_depth_of_field_effect_1a00464f8858539d0013ea8e9de66f7505">getDebugAdaptiveRayValid</link> () const</para>
+
+<para>Returns the debug adaptive ray valid. </para>
+</listitem>
+            <listitem><para>float <link linkend="_class_depth_of_field_effect_1afb17fd27b66d9a68d9cc46d2fbc71f08">getDebugAdaptiveRayDistance</link> () const</para>
+
+<para>Returns the debug adaptive ray distance. </para>
+</listitem>
+            <listitem><para>bool <link linkend="_class_depth_of_field_effect_1a47ced74a994feca82c1628689e9f8cc0">getDebugAdaptiveUsedFallback</link> () const</para>
+
+<para>Returns the debug adaptive used fallback. </para>
+</listitem>
+            <listitem><para>float <link linkend="_class_depth_of_field_effect_1a0651cbdf436d209ce86174cfb9c7884e">getDebugAdaptiveTargetDistance</link> () const</para>
+
+<para>Returns the debug adaptive target distance. </para>
+</listitem>
+            <listitem><para>float <link linkend="_class_depth_of_field_effect_1ae7717684c372c1cbc62e7894479d206c">getDebugAdaptiveFallbackDistance</link> () const</para>
+
+<para>Returns the debug adaptive fallback distance. </para>
+</listitem>
+            <listitem><para>bool <link linkend="_class_depth_of_field_effect_1a7c28be25a4f335b6cb15282996d50995">apply</link> (PTexture tex, PTexture depthTex, PFrameBuffer outFbo, std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; quad) override</para>
+
+<para>Applies current settings. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+Public Member Functions inherited from <link linkend="_class_graphics_1_1_post_processing_1_1_post_processing_effect">Graphics::PostProcessing::PostProcessingEffect</link>        <itemizedlist>
+            <listitem><para>virtual <emphasis role="strong">~PostProcessingEffect</emphasis> ()=default</para>
+
+<para>Destroys this <link linkend="_class_graphics_1_1_post_processing_1_1_post_processing_effect">PostProcessingEffect</link> instance. </para>
+</listitem>
+        </itemizedlist>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>static std::shared_ptr&lt; <link linkend="_class_depth_of_field_effect">DepthOfFieldEffect</link> &gt; <link linkend="_class_depth_of_field_effect_1a5b2434a9c622430d7fb62cbc305722fe">New</link> ()</para>
+
+<para>Creates a new object. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_depth_of_field_effect_1aed77233b43c93a02caf1c9563b8d8f82"/>float <emphasis role="strong">focusDistance</emphasis> = 8.0f</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_depth_of_field_effect_1abff26a84812a982f17b5c3f83472b971"/>float <emphasis role="strong">focusRange</emphasis> = 4.0f</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_depth_of_field_effect_1a1b785e3c455c301bdf3967f2f61f8ebc"/>float <emphasis role="strong">focusBandWidth</emphasis> = 0.85f</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_depth_of_field_effect_1a97b7f448b8aef83631a8f762ef26597a"/>float <emphasis role="strong">blurRamp</emphasis> = 2.0f</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_depth_of_field_effect_1a965b2e6ece1590308f1540d747bcaf8e"/>float <emphasis role="strong">blurDistanceLerp</emphasis> = 0.35f</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_depth_of_field_effect_1a587e82b68e9b522963570045e1fcfdc3"/>float <emphasis role="strong">fallbackFocusRange</emphasis> = 6.0f</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_depth_of_field_effect_1a9aed3ef01808ad4edb83a7b5c66d10e7"/>float <emphasis role="strong">blurStrength</emphasis> = 0.65f</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_depth_of_field_effect_1a6e404fae6af94150b1bf2f8b2cec5e0b"/>float <emphasis role="strong">maxBlurPx</emphasis> = 7.0f</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_depth_of_field_effect_1afe6aae8c43a5b42286728935dc0fe9d6"/>int <emphasis role="strong">sampleCount</emphasis> = 6</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_depth_of_field_effect_1aee1361a77b67aca399453db65b563a6a"/>bool <emphasis role="strong">debugCocView</emphasis> = false</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_depth_of_field_effect_1a97f3f5cf3a9c7e909351eebbcc430787"/>bool <emphasis role="strong">adaptiveFocus</emphasis> = false</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_depth_of_field_effect_1a2450651e49854c448f928d084bc94652"/>Math3D::Vec2 <emphasis role="strong">focusUv</emphasis> = Math3D::Vec2(0.5f, 0.5f)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_depth_of_field_effect_1a7a927b00613ce433ff6c1dfbcb2808d0"/>float <emphasis role="strong">nearPlane</emphasis> = 0.1f</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_depth_of_field_effect_1a889d74f9be28b5a306771abf09b75ec7"/>float <emphasis role="strong">farPlane</emphasis> = 1000.0f</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_depth_of_field_effect_1a20d4095b74acc71980e59577a46e7288"/>bool <emphasis role="strong">externalAdaptiveFocusValid</emphasis> = false</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_depth_of_field_effect_1a121a586d348ae198dc68d91d86bd04c4"/>float <emphasis role="strong">externalAdaptiveFocusDistance</emphasis> = 0.0f</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_depth_of_field_effect">DepthOfFieldEffect</link> type. </para>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_depth_of_field_effect_1a7c28be25a4f335b6cb15282996d50995"/><section>
+    <title>apply()</title>
+<indexterm><primary>apply</primary><secondary>DepthOfFieldEffect</secondary></indexterm>
+<indexterm><primary>DepthOfFieldEffect</primary><secondary>apply</secondary></indexterm>
+<para><computeroutput>bool DepthOfFieldEffect::apply (PTexture tex, PTexture depthTex, PFrameBuffer outFbo, std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; quad)<computeroutput>[inline]</computeroutput>, <computeroutput>[override]</computeroutput>, <computeroutput>[virtual]</computeroutput></computeroutput></para><para>
+
+<para>Applies current settings. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>tex</entry><entry>
+<para>Value for tex. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>depthTex</entry><entry>
+<para>Value for depth tex. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>outFbo</entry><entry>
+<para>Output value for fbo. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>quad</entry><entry>
+<para>Value for quad. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>True when the operation succeeds; otherwise false. </para>
+</formalpara>
+</para>
+<para>
+Implements <link linkend="_class_graphics_1_1_post_processing_1_1_post_processing_effect_1a75b0263b1e53943ceb4f13d4aad0f5e6">Graphics::PostProcessing::PostProcessingEffect</link>.</para>
+</section>
+<anchor xml:id="_class_depth_of_field_effect_1a0702ba093291383aec8a394bd58b4da3"/><section>
+    <title>getDebugAdaptiveCenterDistance()</title>
+<indexterm><primary>getDebugAdaptiveCenterDistance</primary><secondary>DepthOfFieldEffect</secondary></indexterm>
+<indexterm><primary>DepthOfFieldEffect</primary><secondary>getDebugAdaptiveCenterDistance</secondary></indexterm>
+<para><computeroutput>float DepthOfFieldEffect::getDebugAdaptiveCenterDistance ( ) const<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the debug adaptive center distance. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Computed numeric result. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_depth_of_field_effect_1a2b6c470cc2298d4e7f9638ab02fd6339"/><section>
+    <title>getDebugAdaptiveCenterValid()</title>
+<indexterm><primary>getDebugAdaptiveCenterValid</primary><secondary>DepthOfFieldEffect</secondary></indexterm>
+<indexterm><primary>DepthOfFieldEffect</primary><secondary>getDebugAdaptiveCenterValid</secondary></indexterm>
+<para><computeroutput>bool DepthOfFieldEffect::getDebugAdaptiveCenterValid ( ) const<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the debug adaptive center valid. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>True when the operation succeeds; otherwise false. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_depth_of_field_effect_1ae7717684c372c1cbc62e7894479d206c"/><section>
+    <title>getDebugAdaptiveFallbackDistance()</title>
+<indexterm><primary>getDebugAdaptiveFallbackDistance</primary><secondary>DepthOfFieldEffect</secondary></indexterm>
+<indexterm><primary>DepthOfFieldEffect</primary><secondary>getDebugAdaptiveFallbackDistance</secondary></indexterm>
+<para><computeroutput>float DepthOfFieldEffect::getDebugAdaptiveFallbackDistance ( ) const<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the debug adaptive fallback distance. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Computed numeric result. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_depth_of_field_effect_1afb17fd27b66d9a68d9cc46d2fbc71f08"/><section>
+    <title>getDebugAdaptiveRayDistance()</title>
+<indexterm><primary>getDebugAdaptiveRayDistance</primary><secondary>DepthOfFieldEffect</secondary></indexterm>
+<indexterm><primary>DepthOfFieldEffect</primary><secondary>getDebugAdaptiveRayDistance</secondary></indexterm>
+<para><computeroutput>float DepthOfFieldEffect::getDebugAdaptiveRayDistance ( ) const<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the debug adaptive ray distance. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Computed numeric result. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_depth_of_field_effect_1a00464f8858539d0013ea8e9de66f7505"/><section>
+    <title>getDebugAdaptiveRayValid()</title>
+<indexterm><primary>getDebugAdaptiveRayValid</primary><secondary>DepthOfFieldEffect</secondary></indexterm>
+<indexterm><primary>DepthOfFieldEffect</primary><secondary>getDebugAdaptiveRayValid</secondary></indexterm>
+<para><computeroutput>bool DepthOfFieldEffect::getDebugAdaptiveRayValid ( ) const<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the debug adaptive ray valid. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>True when the operation succeeds; otherwise false. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_depth_of_field_effect_1a0651cbdf436d209ce86174cfb9c7884e"/><section>
+    <title>getDebugAdaptiveTargetDistance()</title>
+<indexterm><primary>getDebugAdaptiveTargetDistance</primary><secondary>DepthOfFieldEffect</secondary></indexterm>
+<indexterm><primary>DepthOfFieldEffect</primary><secondary>getDebugAdaptiveTargetDistance</secondary></indexterm>
+<para><computeroutput>float DepthOfFieldEffect::getDebugAdaptiveTargetDistance ( ) const<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the debug adaptive target distance. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Computed numeric result. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_depth_of_field_effect_1a47ced74a994feca82c1628689e9f8cc0"/><section>
+    <title>getDebugAdaptiveUsedFallback()</title>
+<indexterm><primary>getDebugAdaptiveUsedFallback</primary><secondary>DepthOfFieldEffect</secondary></indexterm>
+<indexterm><primary>DepthOfFieldEffect</primary><secondary>getDebugAdaptiveUsedFallback</secondary></indexterm>
+<para><computeroutput>bool DepthOfFieldEffect::getDebugAdaptiveUsedFallback ( ) const<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the debug adaptive used fallback. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>True when the operation succeeds; otherwise false. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_depth_of_field_effect_1a89866922b7bfdc7e1b39cd339996afbc"/><section>
+    <title>getResolvedFocusDistance()</title>
+<indexterm><primary>getResolvedFocusDistance</primary><secondary>DepthOfFieldEffect</secondary></indexterm>
+<indexterm><primary>DepthOfFieldEffect</primary><secondary>getResolvedFocusDistance</secondary></indexterm>
+<para><computeroutput>float DepthOfFieldEffect::getResolvedFocusDistance ( ) const<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the resolved focus distance. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Computed numeric result. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_depth_of_field_effect_1a3b3084c5e7f4fbc0acc22c2d407cba19"/><section>
+    <title>getResolvedFocusRange()</title>
+<indexterm><primary>getResolvedFocusRange</primary><secondary>DepthOfFieldEffect</secondary></indexterm>
+<indexterm><primary>DepthOfFieldEffect</primary><secondary>getResolvedFocusRange</secondary></indexterm>
+<para><computeroutput>float DepthOfFieldEffect::getResolvedFocusRange ( ) const<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the resolved focus range. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Computed numeric result. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_depth_of_field_effect_1a5b2434a9c622430d7fb62cbc305722fe"/><section>
+    <title>New()</title>
+<indexterm><primary>New</primary><secondary>DepthOfFieldEffect</secondary></indexterm>
+<indexterm><primary>DepthOfFieldEffect</primary><secondary>New</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_class_depth_of_field_effect">DepthOfFieldEffect</link> &gt; DepthOfFieldEffect::New ( )<computeroutput>[inline]</computeroutput>, <computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Creates a new object. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this class was generated from the following file:</para>
+src/Rendering/PostFX/<link linkend="__screen_effects_8h">ScreenEffects.h</link></section>
+</section>

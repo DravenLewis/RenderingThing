@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__material_registry_8h_source" xml:lang="en-US">
+<title>MaterialRegistry.h</title>
+<indexterm><primary>src/Rendering/Materials/MaterialRegistry.h</primary></indexterm>
+Go to the documentation of this file.<programlisting linenumbering="unnumbered">1 
+5 
+6 <emphasis role="preprocessor">#ifndef&#32;MATERIAL_REGISTRY_H</emphasis>
+7 <emphasis role="preprocessor">#define&#32;MATERIAL_REGISTRY_H</emphasis>
+8 
+9 <emphasis role="preprocessor">#include&#32;&lt;functional&gt;</emphasis>
+10 <emphasis role="preprocessor">#include&#32;&lt;memory&gt;</emphasis>
+11 <emphasis role="preprocessor">#include&#32;&lt;string&gt;</emphasis>
+12 <emphasis role="preprocessor">#include&#32;&lt;vector&gt;</emphasis>
+13 <emphasis role="preprocessor">#include&#32;&lt;chrono&gt;</emphasis>
+14 
+15 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__material_8h">Rendering/Materials/Material.h</link>&quot;</emphasis>
+16 
+18 <emphasis role="keyword">struct&#32;</emphasis><link linkend="_struct_material_registry_entry">MaterialRegistryEntry</link>&#32;{
+19 &#32;&#32;&#32;&#32;std::string&#32;id;
+20 &#32;&#32;&#32;&#32;std::string&#32;displayName;
+21 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;isBuiltIn&#32;=&#32;<emphasis role="keyword">false</emphasis>;
+22 &#32;&#32;&#32;&#32;std::string&#32;assetRef;
+23 };
+24 
+26 <emphasis role="keyword">class&#32;</emphasis>MaterialRegistry&#32;{
+27 &#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+32 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;MaterialRegistry&amp;&#32;<link linkend="_class_material_registry_1a5ac1ab1993ba87006a53205026a7e289">Instance</link>();
+33 
+38 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_material_registry_1adc43e36965c220ba15527a3d8ac9526f">Refresh</link>(<emphasis role="keywordtype">bool</emphasis>&#32;force&#32;=&#32;<emphasis role="keyword">false</emphasis>);
+43 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::vector&lt;MaterialRegistryEntry&gt;&amp;&#32;<link linkend="_class_material_registry_1a4c66f055d3c843419a613f70729ea276">GetEntries</link>()&#32;<emphasis role="keyword">const</emphasis>;
+50 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;Material&gt;&#32;<link linkend="_class_material_registry_1a4e4f6ae18d50428c1352b197aaa4161b">CreateById</link>(<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;<emphasis role="keywordtype">id</emphasis>,&#32;std::string*&#32;outError&#32;=&#32;<emphasis role="keyword">nullptr</emphasis>)&#32;<emphasis role="keyword">const</emphasis>;
+51 
+52 &#32;&#32;&#32;&#32;<emphasis role="keyword">private</emphasis>:
+56 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;MaterialRegistry()&#32;=&#32;<emphasis role="keywordflow">default</emphasis>;
+57 
+61 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;ensureBuiltIns();
+65 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;rebuildEntries();
+66 
+67 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;builtInsInitialized&#32;=&#32;<emphasis role="keyword">false</emphasis>;
+68 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">mutable</emphasis>&#32;std::vector&lt;MaterialRegistryEntry&gt;&#32;entries;
+69 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">mutable</emphasis>&#32;std::vector&lt;std::pair&lt;std::string,&#32;std::function&lt;std::shared_ptr&lt;Material&gt;()&gt;&gt;&gt;&#32;builtInFactories;
+70 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::chrono::steady_clock::time_point&#32;nextRefreshTime&#32;=&#32;std::chrono::steady_clock::time_point::min();
+71 };
+72 
+73 <emphasis role="preprocessor">#endif&#32;</emphasis><emphasis role="comment">//&#32;MATERIAL_REGISTRY_H</emphasis>
+</programlisting></section>

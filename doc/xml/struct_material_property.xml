@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_material_property" kind="struct" language="C++" prot="public">
+    <compoundname>MaterialProperty</compoundname>
+    <basecompoundref refid="struct_i_material_property" prot="public" virt="non-virtual">IMaterialProperty</basecompoundref>
+    <includes refid="_material_8h" local="no">Material.h</includes>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_material_property_1a617debd35f666ac8999f0e927d40ec9b" prot="public" static="no" mutable="no">
+        <type>T</type>
+        <definition>T MaterialProperty&lt; T &gt;::value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <qualifiedname>MaterialProperty::value</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/Material.h" line="33" column="7" bodyfile="src/Rendering/Materials/Material.h" bodystart="33" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="struct_material_property_1ad18e0b2fc2b7cba4f5a1714ac196e51b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>MaterialProperty&lt; T &gt;::MaterialProperty</definition>
+        <argsstring>(T val)</argsstring>
+        <name>MaterialProperty</name>
+        <qualifiedname>MaterialProperty::MaterialProperty</qualifiedname>
+        <param>
+          <type>T</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="struct_material_property" kindref="compound">MaterialProperty</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>val</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for val. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/Material.h" line="38" column="5" bodyfile="src/Rendering/Materials/Material.h" bodystart="38" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="struct_material_property_1a5645edb77a40c19013dac45a0d21880b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void MaterialProperty&lt; T &gt;::apply</definition>
+        <argsstring>(ShaderProgram &amp;shader, const std::string &amp;name, bool assumeBound) override</argsstring>
+        <name>apply</name>
+        <qualifiedname>MaterialProperty::apply</qualifiedname>
+        <reimplements refid="struct_i_material_property_1a020ed618177d8a68aaa97d691ef6fc66">apply</reimplements>
+        <param>
+          <type><ref refid="class_shader_program" kindref="compound">ShaderProgram</ref> &amp;</type>
+          <declname>shader</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>assumeBound</declname>
+        </param>
+        <briefdescription>
+<para>Applies current settings. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>shader</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for shader. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>name</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for name. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>assumeBound</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for assume bound. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/Material.h" line="40" column="10" bodyfile="src/Rendering/Materials/Material.h" bodystart="40" bodyend="48"/>
+        <references refid="class_shader_program_1a2c8a90e6624a306ca146759ae24268dc" compoundref="_shader_program_8h" startline="455" endline="462">ShaderProgram::setUniform</references>
+        <references refid="class_shader_program_1a793652af8a2d1dede36481c8146de003" compoundref="_shader_program_8h" startline="470" endline="475">ShaderProgram::setUniformFast</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_material_property" kindref="compound">MaterialProperty</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>IMaterialProperty</label>
+        <link refid="struct_i_material_property"/>
+      </node>
+      <node id="1">
+        <label>MaterialProperty&lt; T &gt;</label>
+        <link refid="struct_material_property"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>IMaterialProperty</label>
+        <link refid="struct_i_material_property"/>
+      </node>
+      <node id="1">
+        <label>MaterialProperty&lt; T &gt;</label>
+        <link refid="struct_material_property"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="src/Rendering/Materials/Material.h" line="32" column="1" bodyfile="src/Rendering/Materials/Material.h" bodystart="32" bodyend="49"/>
+    <listofallmembers>
+      <member refid="struct_material_property_1a5645edb77a40c19013dac45a0d21880b" prot="public" virt="virtual"><scope>MaterialProperty</scope><name>apply</name></member>
+      <member refid="struct_material_property_1ad18e0b2fc2b7cba4f5a1714ac196e51b" prot="public" virt="non-virtual"><scope>MaterialProperty</scope><name>MaterialProperty</name></member>
+      <member refid="struct_material_property_1a617debd35f666ac8999f0e927d40ec9b" prot="public" virt="non-virtual"><scope>MaterialProperty</scope><name>value</name></member>
+      <member refid="struct_i_material_property_1a7d5f7dbbd5af6e80c3242c553976b02e" prot="public" virt="virtual"><scope>MaterialProperty</scope><name>~IMaterialProperty</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_font" xml:lang="en-US">
+<title>Font Class Reference</title>
+<indexterm><primary>Font</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_font">Font</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;Font.h&gt;</computeroutput>
+</para>
+<para>Inheritance diagram for Font:    <informalfigure>
+        <mediaobject>
+            <imageobject>
+                <imagedata width="50%" align="center" valign="middle" scalefit="0" fileref="class_font.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+    </informalfigure>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_font_1a4e6a119206f505522100221c1fafde45"/><emphasis role="strong">Font</emphasis> ()</para>
+
+<para>Constructs a new <link linkend="_class_font">Font</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_font_1abd1403ab126a898f00e431b3adde8f48"/>virtual void <emphasis role="strong">drawText</emphasis> (std::string text=&quot;&quot;, Math3D::Vec2 position=Math3D::Vec2(0, 0), PCamera camera=nullptr, Color color=Color::WHITE, bool useCache=true)=0</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_font_1a7993238290811753bb502c58a85a79d3"/>virtual bool <emphasis role="strong">supportsQueuedDrawing</emphasis> () const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_font_1a916aaa8940335189a855c32a9736388a"/>virtual void <emphasis role="strong">beginFrame</emphasis> (PCamera camera)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_font_1a535034c260677663264cd4971c89ebc2"/>virtual void <emphasis role="strong">flushQueuedText</emphasis> (PCamera camera)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_font_1abf7846fb0e62fe8c5132bd67a2fc332a"/>void <emphasis role="strong">clearCache</emphasis> ()</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_font_1abe9fd046d6125b62151232808b64e855"/>PAsset <emphasis role="strong">getAssetPointer</emphasis> ()</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_font_1a23554a9888274dac6143a7a206eb71ef"/>template&lt;typename T&gt; </para><para>static std::shared_ptr&lt; T &gt; <emphasis role="strong">Create</emphasis> (PAsset asset, float fontSize=18.0f)</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Static Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_font_1a6707f3ecdb11b9a99892369650c80568"/>static Logbot <emphasis role="strong">FontLogger</emphasis> = Logbot::CreateInstance(&quot;Font&quot;)</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Protected Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>virtual void <link linkend="_class_font_1aa6b8da140518e4282bbe81e7033e0081">_initFont</link> ()=0</para>
+
+<para>Initializes font resources. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Protected Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_font_1ae722d440cb9bf8ed62b1ce36b1ae1a73"/>PAsset <emphasis role="strong">assetPtr</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_font_1a6443ae8ba782461ee9fb0ebfdb89980f"/>PTexture <emphasis role="strong">textureAtlasPtr</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_font_1a3464ec0edc51ad004b5223c87c198136"/>PMaterial <emphasis role="strong">materialCachePtr</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_font_1a05386ef6c0908902bfd468c8cd03bf3a"/>float <emphasis role="strong">fontSize</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_font_1afb3941e314ea743a47e9423bafa93385"/>std::array&lt; <link linkend="_struct_font_character">FontCharacter</link>, 128 &gt; <emphasis role="strong">characters</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_font_1a34353d7ac57dd55d339a3f360ecd780c"/>std::map&lt; <link linkend="_struct_text_cache_key">TextCacheKey</link>, std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; &gt; <emphasis role="strong">meshCache</emphasis></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_font">Font</link> type. </para>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_font_1aa6b8da140518e4282bbe81e7033e0081"/><section>
+    <title>_initFont()</title>
+<indexterm><primary>_initFont</primary><secondary>Font</secondary></indexterm>
+<indexterm><primary>Font</primary><secondary>_initFont</secondary></indexterm>
+<para><computeroutput>virtual void Font::_initFont ( )<computeroutput>[protected]</computeroutput>, <computeroutput>[pure virtual]</computeroutput></computeroutput></para><para>
+
+<para>Initializes font resources. </para>
+</para>
+<para>
+Implemented in <link linkend="_class_free_type_font_1ace8e8942ae61f4df9238bba96ec78b39">FreeTypeFont</link>, and <link linkend="_class_true_type_font_1a4af92a8e28331e8a35e1624f98706944">TrueTypeFont</link>.</para>
+</section>
+<para>
+The documentation for this class was generated from the following file:</para>
+src/Rendering/Fonts/<link linkend="__font_8h">Font.h</link></section>
+</section>

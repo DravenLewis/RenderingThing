@@ -1,3 +1,8 @@
+/**
+ * @file src/Debug/ProfilerPieChart.h
+ * @brief Declarations for ProfilerPieChart.
+ */
+
 #ifndef PROFILERPIECHART_H
 #define PROFILERPIECHART_H
 
@@ -10,8 +15,13 @@
 #include <cmath>
 #include <cstdio>
 
+/// @brief Represents the ProfilerPieChart type.
 class ProfilerPieChart {
     public:
+        /**
+         * @brief Sets the capture enabled.
+         * @param enabled Flag controlling enabled.
+         */
         void setCaptureEnabled(bool enabled){
             if(captureEnabled == enabled){
                 return;
@@ -20,6 +30,12 @@ class ProfilerPieChart {
             sampleAccumSec = enabled ? sampleIntervalSec : 0.0f; // force immediate refresh on enable
         }
 
+        /**
+         * @brief Updates from sources.
+         * @param deltaTime Delta time in seconds.
+         * @param stats Value for stats.
+         * @param engine Value for engine.
+         */
         void updateFromSources(float deltaTime, const Scene::DebugStats& stats, const GameEngine* engine){
             if(!captureEnabled || !engine){
                 return;
@@ -59,6 +75,15 @@ class ProfilerPieChart {
             sample.swapMs = blend(sample.swapMs, raw.swapMs);
         }
 
+        /**
+         * @brief Draws this object.
+         * @param g Value for g.
+         * @param x Spatial value used by this operation.
+         * @param y Spatial value used by this operation.
+         * @param w Value for w.
+         * @param h Value for h.
+         * @param engine Value for engine.
+         */
         void draw(Graphics2D& g, float x, float y, float w, float h, const GameEngine* engine = nullptr){
             if(!captureEnabled || !hasSample || w <= 0.0f || h <= 0.0f){
                 return;
@@ -242,6 +267,7 @@ class ProfilerPieChart {
     private:
         static constexpr int kSliceCount = 6;
 
+        /// @brief Holds data for Sample.
         struct Sample {
             float shadowMs = 0.0f;
             float drawMs = 0.0f;
@@ -254,6 +280,7 @@ class ProfilerPieChart {
             float swapMs = 0.0f;
         };
 
+        /// @brief Holds data for Slice.
         struct Slice {
             const char* label;
             float ms;
@@ -267,14 +294,31 @@ class ProfilerPieChart {
         float sampleIntervalSec = 0.0f;
         float smoothing = 0.35f;
 
+        /**
+         * @brief Clamps the value to a non-negative range.
+         * @param value Value for value.
+         * @return Computed numeric result.
+         */
         static float clampNonNegative(float value){
             return std::max(0.0f, value);
         }
 
+        /**
+         * @brief Blends two values.
+         * @param current Value for current.
+         * @param target Value for target.
+         * @return Computed numeric result.
+         */
         float blend(float current, float target) const{
             return current + ((target - current) * smoothing);
         }
 
+        /**
+         * @brief Scales a color by intensity.
+         * @param color Color value.
+         * @param factor Value for factor.
+         * @return Result of this operation.
+         */
         static Math3D::Vec4 scaleColor(const Math3D::Vec4& color, float factor){
             return Math3D::Vec4(
                 Math3D::Clamp<float>(color.x * factor, 0.0f, 1.0f),
@@ -284,6 +328,11 @@ class ProfilerPieChart {
             );
         }
 
+        /**
+         * @brief Converts a VSync mode value to text.
+         * @param mode Mode or type selector.
+         * @return Pointer to the resulting object.
+         */
         static const char* vsyncModeToString(VSyncMode mode){
             switch(mode){
                 case VSyncMode::On: return "on";

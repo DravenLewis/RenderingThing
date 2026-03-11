@@ -1,3 +1,8 @@
+/**
+ * @file src/Platform/Input/InputManager.cpp
+ * @brief Implementation for InputManager.
+ */
+
 #include "Platform/Input/InputManager.h"
 
 InputManager::InputManager(std::shared_ptr<RenderWindow> window, bool attachHandlers){

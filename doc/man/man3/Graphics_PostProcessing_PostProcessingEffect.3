@@ -1,0 +1,58 @@
+.TH "Graphics::PostProcessing::PostProcessingEffect" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Graphics::PostProcessing::PostProcessingEffect \- Represents the \fBPostProcessingEffect\fP type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <Graphics\&.h>\fP
+.PP
+Inherited by \fBAutoExposureEffect\fP, \fBBloomEffect\fP, \fBDepthOfFieldEffect\fP, \fBFXAAEffect\fP, \fBGrayscaleEffect\fP, and \fBSSAOEffect\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual \fB~PostProcessingEffect\fP ()=default"
+.br
+.RI "Destroys this \fBPostProcessingEffect\fP instance\&. "
+.ti -1c
+.RI "virtual bool \fBapply\fP (PTexture inputTex, PTexture depthTex, PFrameBuffer frameBuffer, std::shared_ptr< \fBModelPart\fP > quad)=0"
+.br
+.RI "Applies current settings\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the \fBPostProcessingEffect\fP type\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual bool Graphics::PostProcessing::PostProcessingEffect::apply (PTexture inputTex, PTexture depthTex, PFrameBuffer frameBuffer, std::shared_ptr< \fBModelPart\fP > quad)\fR [pure virtual]\fP"
+
+.PP
+Applies current settings\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIinputTex\fP Value for put tex\&. 
+.br
+\fIdepthTex\fP Value for depth tex\&. 
+.br
+\fIframeBuffer\fP Value for frame buffer\&. 
+.br
+\fIquad\fP Value for quad\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True when the operation succeeds; otherwise false\&. 
+.RE
+.PP
+
+.PP
+Implemented in \fBAutoExposureEffect\fP, \fBBloomEffect\fP, \fBDepthOfFieldEffect\fP, \fBFXAAEffect\fP, \fBGrayscaleEffect\fP, and \fBSSAOEffect\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

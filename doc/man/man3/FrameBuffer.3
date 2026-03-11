@@ -1,0 +1,251 @@
+.TH "FrameBuffer" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+FrameBuffer \- Holds data for \fBFrameBuffer\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <FrameBuffer\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBFrameBuffer\fP (int width, int height)"
+.br
+.RI "Constructs a new \fBFrameBuffer\fP instance\&. "
+.ti -1c
+.RI "\fB~FrameBuffer\fP ()"
+.br
+.RI "Destroys this \fBFrameBuffer\fP instance\&. "
+.ti -1c
+.RI "void \fBbind\fP ()"
+.br
+.RI "Binds this resource\&. "
+.ti -1c
+.RI "void \fBunbind\fP ()"
+.br
+.RI "Unbinds this resource\&. "
+.ti -1c
+.RI "void \fBresize\fP (int width, int height)"
+.br
+.RI "Resizes internal resources\&. "
+.ti -1c
+.RI "void \fBattachTexture\fP (PTexture tex)"
+.br
+.RI "Attaches a texture to the framebuffer\&. "
+.ti -1c
+.RI "bool \fBvalidate\fP ()"
+.br
+.RI "Checks whether validate\&. "
+.ti -1c
+.RI "void \fBclear\fP (Color clearColor=Color::BLACK)"
+.br
+.RI "Clears the current state\&. "
+.ti -1c
+.RI "PTexture \fBgetTexture\fP ()"
+.br
+.RI "Returns the texture\&. "
+.ti -1c
+.RI "PTexture \fBgetDepthTexture\fP ()"
+.br
+.RI "Returns the depth texture\&. "
+.ti -1c
+.RI "PTexture \fBgetGBufferTexture\fP (size_t index) const"
+.br
+.RI "Returns the g buffer texture\&. "
+.ti -1c
+.RI "size_t \fBgetGBufferCount\fP () const"
+.br
+.RI "Returns the g buffer count\&. "
+.ti -1c
+.RI "FrameBufferObject \fBgetID\fP () const"
+.br
+.RI "Returns the id\&. "
+.ti -1c
+.RI "int \fBgetWidth\fP () const"
+.br
+.ti -1c
+.RI "int \fBgetHeight\fP () const"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static std::shared_ptr< \fBFrameBuffer\fP > \fBCreate\fP (int width, int height)"
+.br
+.RI "Creates a new object\&. "
+.ti -1c
+.RI "static std::shared_ptr< \fBFrameBuffer\fP > \fBCreateGBuffer\fP (int width, int height)"
+.br
+.RI "Creates g buffer\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Holds data for \fBFrameBuffer\fP\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "FrameBuffer::FrameBuffer (int width, int height)\fR [inline]\fP"
+
+.PP
+Constructs a new \fBFrameBuffer\fP instance\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIwidth\fP Dimension value\&. 
+.br
+\fIheight\fP Dimension value\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void FrameBuffer::attachTexture (PTexture tex)\fR [inline]\fP"
+
+.PP
+Attaches a texture to the framebuffer\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItex\fP Value for tex\&. 
+.RE
+.PP
+
+.SS "void FrameBuffer::clear (Color clearColor = \fRColor::BLACK\fP)\fR [inline]\fP"
+
+.PP
+Clears the current state\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIclearColor\fP Color value\&. 
+.RE
+.PP
+
+.SS "std::shared_ptr< \fBFrameBuffer\fP > FrameBuffer::Create (int width, int height)\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIwidth\fP Dimension value\&. 
+.br
+\fIheight\fP Dimension value\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+.SS "std::shared_ptr< \fBFrameBuffer\fP > FrameBuffer::CreateGBuffer (int width, int height)\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+Creates g buffer\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIwidth\fP Dimension value\&. 
+.br
+\fIheight\fP Dimension value\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+.SS "PTexture FrameBuffer::getDepthTexture ()\fR [inline]\fP"
+
+.PP
+Returns the depth texture\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Result of this operation\&. 
+.RE
+.PP
+
+.SS "size_t FrameBuffer::getGBufferCount () const\fR [inline]\fP"
+
+.PP
+Returns the g buffer count\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Computed numeric result\&. 
+.RE
+.PP
+
+.SS "PTexture FrameBuffer::getGBufferTexture (size_t index) const\fR [inline]\fP"
+
+.PP
+Returns the g buffer texture\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP Identifier or index value\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Result of this operation\&. 
+.RE
+.PP
+
+.SS "FrameBufferObject FrameBuffer::getID () const\fR [inline]\fP"
+
+.PP
+Returns the id\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Result of this operation\&. 
+.RE
+.PP
+
+.SS "PTexture FrameBuffer::getTexture ()\fR [inline]\fP"
+
+.PP
+Returns the texture\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Result of this operation\&. 
+.RE
+.PP
+
+.SS "void FrameBuffer::resize (int width, int height)\fR [inline]\fP"
+
+.PP
+Resizes internal resources\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIwidth\fP Dimension value\&. 
+.br
+\fIheight\fP Dimension value\&. 
+.RE
+.PP
+
+.SS "bool FrameBuffer::validate ()\fR [inline]\fP"
+
+.PP
+Checks whether validate\&. 
+.PP
+\fBReturns\fP
+.RS 4
+True when the operation succeeds; otherwise false\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

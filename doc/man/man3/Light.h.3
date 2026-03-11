@@ -1,0 +1,57 @@
+.TH "src/Rendering/Lighting/Light.h" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+src/Rendering/Lighting/Light.h \- Declarations for \fBLight\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'Foundation/Math/Math3D\&.h'\fP
+.br
+\fR#include 'Foundation/Math/Color\&.h'\fP
+.br
+\fR#include <vector>\fP
+.br
+\fR#include <memory>\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBLight\fP"
+.br
+.RI "Holds data for \fBLight\fP\&. "
+.ti -1c
+.RI "class \fBLightManager\fP"
+.br
+.RI "Represents the \fBLightManager\fP type\&. "
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBMAX_LIGHTS\fP   16"
+.br
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBLightType\fP { \fBPOINT\fP, \fBDIRECTIONAL\fP, \fBSPOT\fP }"
+.br
+.RI "Enumerates values for \fBLightType\fP\&. "
+.ti -1c
+.RI "enum class \fBShadowType\fP { \fBHard\fP, \fBStandard\fP, \fBSmooth\fP }"
+.br
+.RI "Enumerates values for \fBShadowType\fP\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Declarations for \fBLight\fP\&. 
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

@@ -1,0 +1,66 @@
+\doxysection{Shadow\+Light\+Data Struct Reference}
+\hypertarget{struct_shadow_light_data}{}\label{struct_shadow_light_data}\index{ShadowLightData@{ShadowLightData}}
+
+
+Holds data for \doxylink{struct_shadow_light_data}{Shadow\+Light\+Data}.  
+
+
+
+
+{\ttfamily \+\#include $<$Shadow\+Renderer.\+h$>$}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_shadow_light_data_ac702ae146acae8df77f8e23246868f02}\label{struct_shadow_light_data_ac702ae146acae8df77f8e23246868f02} 
+int {\bfseries shadow\+Map\+Index} = -\/1
+\item 
+\Hypertarget{struct_shadow_light_data_aff377f9a74c61bb3aa681dfaa75917e6}\label{struct_shadow_light_data_aff377f9a74c61bb3aa681dfaa75917e6} 
+\doxymbox{\hyperlink{_light_8h_a5c50abf40600ee3c28c7fa04702a8bbc}{Shadow\+Type}} {\bfseries shadow\+Type} = Shadow\+Type::\+\+Standard
+\item 
+\Hypertarget{struct_shadow_light_data_ac2324b8b78ba3f0edcaef7b926790bcd}\label{struct_shadow_light_data_ac2324b8b78ba3f0edcaef7b926790bcd} 
+float {\bfseries shadow\+Strength} = 1.\+0f
+\item 
+\Hypertarget{struct_shadow_light_data_acd237982292f828f6a4577fa18a04679}\label{struct_shadow_light_data_acd237982292f828f6a4577fa18a04679} 
+float {\bfseries shadow\+Bias} = 0.\+0025f
+\item 
+\Hypertarget{struct_shadow_light_data_a8b3ea850c47b09d9e9427bbc5d4f620b}\label{struct_shadow_light_data_a8b3ea850c47b09d9e9427bbc5d4f620b} 
+float {\bfseries shadow\+Normal\+Bias} = 0.\+005f
+\item 
+\Hypertarget{struct_shadow_light_data_ab20943a984a1a12945d9024812041dfb}\label{struct_shadow_light_data_ab20943a984a1a12945d9024812041dfb} 
+int {\bfseries cascade\+Count} = 1
+\item 
+\Hypertarget{struct_shadow_light_data_ab2e59ee0fbcc6b8f63af23de9a5fe940}\label{struct_shadow_light_data_ab2e59ee0fbcc6b8f63af23de9a5fe940} 
+Math3\+D::\+\+Vec4 {\bfseries cascade\+Splits} = Math3\+D::\+\+Vec4(0,0,0,0)
+\item 
+Math3\+D::\+\+Mat4 \doxymbox{\hyperlink{struct_shadow_light_data_a26d9fea3b61c1c703c8002ac5a72ef69}{light\+Matrices}} \+[4]\+
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Holds data for \doxylink{struct_shadow_light_data}{Shadow\+Light\+Data}. 
+
+\label{doc-variable-members}
+\Hypertarget{struct_shadow_light_data_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{struct_shadow_light_data_a26d9fea3b61c1c703c8002ac5a72ef69}\index{ShadowLightData@{ShadowLightData}!lightMatrices@{lightMatrices}}
+\index{lightMatrices@{lightMatrices}!ShadowLightData@{ShadowLightData}}
+\doxysubsubsection{\texorpdfstring{lightMatrices}{lightMatrices}}
+{\footnotesize\ttfamily \label{struct_shadow_light_data_a26d9fea3b61c1c703c8002ac5a72ef69} 
+Math3\+D::\+\+Mat4 Shadow\+Light\+Data::\+light\+Matrices\+[4]\+}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ \{}
+\DoxyCodeLine{\ \ \ \ Math3D::Mat4(1.0f),}
+\DoxyCodeLine{\ \ \ \ Math3D::Mat4(1.0f),}
+\DoxyCodeLine{\ \ \ \ Math3D::Mat4(1.0f),}
+\DoxyCodeLine{\ \ \ \ Math3D::Mat4(1.0f)}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Lighting/\+\doxymbox{\hyperlink{_shadow_renderer_8h}{Shadow\+Renderer.\+h}}\end{DoxyCompactItemize}

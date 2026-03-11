@@ -1,0 +1,120 @@
+.TH "CubeMap" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+CubeMap \- Represents the \fBCubeMap\fP type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <CubeMap\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCubeMap\fP ()=default"
+.br
+.RI "Constructs a new \fBCubeMap\fP instance\&. "
+.ti -1c
+.RI "\fB~CubeMap\fP ()"
+.br
+.RI "Destroys this \fBCubeMap\fP instance\&. "
+.ti -1c
+.RI "\fBCubeMap\fP (const \fBCubeMap\fP &)=delete"
+.br
+.RI "Constructs a new \fBCubeMap\fP instance\&. "
+.ti -1c
+.RI "\fBCubeMap\fP & \fBoperator=\fP (const \fBCubeMap\fP &)=delete"
+.br
+.RI "Assigns from another instance\&. "
+.ti -1c
+.RI "\fBCubeMap\fP (\fBCubeMap\fP &&other) noexcept"
+.br
+.RI "Constructs a new \fBCubeMap\fP instance\&. "
+.ti -1c
+.RI "\fBCubeMap\fP & \fBoperator=\fP (\fBCubeMap\fP &&other) noexcept"
+.br
+.RI "Assigns from another instance\&. "
+.ti -1c
+.RI "void \fBbind\fP (unsigned int slot=0) const"
+.br
+.RI "Binds this resource\&. "
+.ti -1c
+.RI "void \fBunbind\fP () const"
+.br
+.RI "Unbinds this resource\&. "
+.ti -1c
+.RI "void \fBdispose\fP ()"
+.br
+.RI "Disposes this object\&. "
+.ti -1c
+.RI "int \fBgetSize\fP () const"
+.br
+.RI "Returns the size\&. "
+.ti -1c
+.RI "GLuint \fBgetID\fP () const"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static std::shared_ptr< \fBCubeMap\fP > \fBLoad\fP (PAsset posX, PAsset negX, PAsset posY, PAsset negY, PAsset posZ, PAsset negZ)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the \fBCubeMap\fP type\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "CubeMap::CubeMap (\fBCubeMap\fP && other)\fR [noexcept]\fP"
+
+.PP
+Constructs a new \fBCubeMap\fP instance\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIother\fP Value for other\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void CubeMap::bind (unsigned int slot = \fR0\fP) const"
+
+.PP
+Binds this resource\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIslot\fP Value for slot\&. 
+.RE
+.PP
+
+.SS "int CubeMap::getSize () const\fR [inline]\fP"
+
+.PP
+Returns the size\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Computed numeric result\&. 
+.RE
+.PP
+
+.SS "\fBCubeMap\fP & CubeMap::operator= (\fBCubeMap\fP && other)\fR [noexcept]\fP"
+
+.PP
+Assigns from another instance\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIother\fP Value for other\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

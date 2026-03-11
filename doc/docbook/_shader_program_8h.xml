@@ -1,0 +1,443 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__shader_program_8h" xml:lang="en-US">
+<title>src/Rendering/Shaders/ShaderProgram.h File Reference</title>
+<indexterm><primary>src/Rendering/Shaders/ShaderProgram.h</primary></indexterm>
+<para>
+
+<para>Declarations for <link linkend="_class_shader_program">ShaderProgram</link>. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &lt;string&gt;<?linebreak?>#include &lt;vector&gt;<?linebreak?>#include &lt;glad/glad.h&gt;<?linebreak?>#include &lt;SDL3/SDL_opengl.h&gt;<?linebreak?>#include &lt;memory&gt;<?linebreak?>#include &lt;map&gt;<?linebreak?>#include &lt;unordered_map&gt;<?linebreak?>#include &quot;Foundation/Math/Math3D.h&quot;<?linebreak?>#include &quot;Rendering/Textures/Texture.h&quot;<?linebreak?>#include &quot;Rendering/Textures/CubeMap.h&quot;<?linebreak?></programlisting><simplesect>
+    <title>Classes    </title>
+        <itemizedlist>
+            <listitem><para>class <link linkend="_class_uniform">Uniform&lt; T &gt;</link></para>
+
+<para>Represents the <link linkend="_class_uniform">Uniform</link> type. </para>
+</listitem>
+            <listitem><para>struct <link linkend="_struct_g_l_uniform_upload_1_1_texture_slot">GLUniformUpload::TextureSlot</link></para>
+
+<para>Holds data for <link linkend="_struct_g_l_uniform_upload_1_1_texture_slot">TextureSlot</link>. </para>
+</listitem>
+            <listitem><para>struct <link linkend="_struct_g_l_uniform_upload_1_1_cube_map_slot">GLUniformUpload::CubeMapSlot</link></para>
+
+<para>Holds data for <link linkend="_struct_g_l_uniform_upload_1_1_cube_map_slot">CubeMapSlot</link>. </para>
+</listitem>
+            <listitem><para>struct <link linkend="_struct_shader_bundle">ShaderBundle</link></para>
+
+<para>Holds data for <link linkend="_struct_shader_bundle">ShaderBundle</link>. </para>
+</listitem>
+            <listitem><para>class <link linkend="_class_shader_program">ShaderProgram</link></para>
+
+<para>Represents the <link linkend="_class_shader_program">ShaderProgram</link> type. </para>
+</listitem>
+            <listitem><para>struct <link linkend="_struct_shader_cache">ShaderCache</link></para>
+
+<para>Holds data for <link linkend="_struct_shader_cache">ShaderCache</link>. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Typedefs    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="__shader_program_8h_1a628acddf9216b5e00424607a3f76ccde"/>typedef unsigned int <emphasis role="strong">Shader</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="__shader_program_8h_1a674040327ddd18c70c0dd831c8f8aece"/>typedef unsigned int <emphasis role="strong">Program</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="__shader_program_8h_1ade8b92f95573f1fad883fc0c57b13ce4"/>typedef unsigned int <emphasis role="strong">Buffer</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="__shader_program_8h_1a5b731b0d2c129b1d4abd740553375f91"/>typedef unsigned int <emphasis role="strong">Array</emphasis></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Enumerations    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="__shader_program_8h_1a6230e1b9ecbf2d82d10856fd7e1fde46"/>enum <link linkend="__shader_program_8h_1a6230e1b9ecbf2d82d10856fd7e1fde46">ShaderType</link> { <?linebreak?><emphasis role="strong">FRAGMENT</emphasis> = 0
+, <emphasis role="strong">VERTEX</emphasis>
+, <emphasis role="strong">GEOMETRY</emphasis>
+, <emphasis role="strong">TESSELATION</emphasis>
+, <?linebreak?><emphasis role="strong">COMPUTE</emphasis>
+, <emphasis role="strong">TASK</emphasis>
+, <emphasis role="strong">RAYTRACE</emphasis>
+ }</para>
+
+<para>Enumerates values for <link linkend="__shader_program_8h_1a6230e1b9ecbf2d82d10856fd7e1fde46">ShaderType</link>. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Functions    </title>
+        <itemizedlist>
+            <listitem><para>void <link linkend="__shader_program_8h_1a40dd1eef82109d54de6c4c994bfcb00f">GLUniformUpload::upload</link> (GLint loc, int v)</para>
+
+<para>Uploads an integer uniform value. </para>
+</listitem>
+            <listitem><para>void <link linkend="__shader_program_8h_1a1719a7829b7f536b0c65d54be0b64948">GLUniformUpload::upload</link> (GLint loc, float v)</para>
+
+<para>Uploads a float uniform value. </para>
+</listitem>
+            <listitem><para>void <link linkend="__shader_program_8h_1a0a1f6b4923c4b25a20dcd6ad1cce1781">GLUniformUpload::upload</link> (GLint loc, const Math3D::Vec2 &amp;v)</para>
+
+<para>Uploads a <computeroutput>vec2</computeroutput> uniform value. </para>
+</listitem>
+            <listitem><para>void <link linkend="__shader_program_8h_1a61bec12b86c8a389cabdd26a3be8c6ac">GLUniformUpload::upload</link> (GLint loc, const Math3D::Vec3 &amp;v)</para>
+
+<para>Uploads a <computeroutput>vec3</computeroutput> uniform value. </para>
+</listitem>
+            <listitem><para>void <link linkend="__shader_program_8h_1a84023ab5fba8436663d337b273fd994c">GLUniformUpload::upload</link> (GLint loc, const Math3D::Vec4 &amp;v)</para>
+
+<para>Uploads a <computeroutput>vec4</computeroutput> uniform value. </para>
+</listitem>
+            <listitem><para>void <link linkend="__shader_program_8h_1a09c5d4b7c6caded27743e2b2f10f9f10">GLUniformUpload::upload</link> (GLint loc, const Math3D::Quat &amp;q)</para>
+
+<para>Uploads a quaternion uniform value. </para>
+</listitem>
+            <listitem><para>void <link linkend="__shader_program_8h_1ae094e61805f2d87dda7bcf8a508ffd4b">GLUniformUpload::upload</link> (GLint loc, const Math3D::Mat4 &amp;m)</para>
+
+<para>Uploads a 4x4 matrix uniform value. </para>
+</listitem>
+            <listitem><para><anchor xml:id="__shader_program_8h_1a8b04f5fd6f057bffa562e9b7f9cf332c"/>void <emphasis role="strong">GLUniformUpload::upload</emphasis> (GLint loc, std::shared_ptr&lt; <link linkend="_class_texture">Texture</link> &gt; tex, int slot=0)</para>
+</listitem>
+            <listitem><para>void <link linkend="__shader_program_8h_1a9ca31c0cc52ea03cede335da9f4bb4a1">GLUniformUpload::upload</link> (GLint loc, const <link linkend="_struct_g_l_uniform_upload_1_1_texture_slot">TextureSlot</link> &amp;texSlot)</para>
+
+<para>Uploads a texture slot uniform. </para>
+</listitem>
+            <listitem><para>void <link linkend="__shader_program_8h_1a18485998541e12d87ff9e87b917f76dc">GLUniformUpload::upload</link> (GLint loc, const <link linkend="_struct_g_l_uniform_upload_1_1_cube_map_slot">CubeMapSlot</link> &amp;mapSlot)</para>
+
+<para>Uploads a cube-map slot uniform. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Declarations for <link linkend="_class_shader_program">ShaderProgram</link>. </para>
+</section>
+<section>
+<title>Function Documentation</title>
+<anchor xml:id="__shader_program_8h_1a18485998541e12d87ff9e87b917f76dc"/><section>
+    <title>upload()<computeroutput>[1/9]</computeroutput></title>
+<indexterm><primary>upload</primary><secondary>ShaderProgram.h</secondary></indexterm>
+<indexterm><primary>ShaderProgram.h</primary><secondary>upload</secondary></indexterm>
+<para><computeroutput>void GLUniformUpload::upload (GLint loc, const <link linkend="_struct_g_l_uniform_upload_1_1_cube_map_slot">CubeMapSlot</link> &amp; mapSlot)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Uploads a cube-map slot uniform. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>loc</entry><entry>
+<para><link linkend="_class_uniform">Uniform</link> location. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>mapSlot</entry><entry>
+<para>Cube-map and slot binding information. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="__shader_program_8h_1ae094e61805f2d87dda7bcf8a508ffd4b"/><section>
+    <title>upload()<computeroutput>[2/9]</computeroutput></title>
+<indexterm><primary>upload</primary><secondary>ShaderProgram.h</secondary></indexterm>
+<indexterm><primary>ShaderProgram.h</primary><secondary>upload</secondary></indexterm>
+<para><computeroutput>void GLUniformUpload::upload (GLint loc, const Math3D::Mat4 &amp; m)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Uploads a 4x4 matrix uniform value. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>loc</entry><entry>
+<para><link linkend="_class_uniform">Uniform</link> location. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>m</entry><entry>
+<para>Matrix value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="__shader_program_8h_1a09c5d4b7c6caded27743e2b2f10f9f10"/><section>
+    <title>upload()<computeroutput>[3/9]</computeroutput></title>
+<indexterm><primary>upload</primary><secondary>ShaderProgram.h</secondary></indexterm>
+<indexterm><primary>ShaderProgram.h</primary><secondary>upload</secondary></indexterm>
+<para><computeroutput>void GLUniformUpload::upload (GLint loc, const Math3D::Quat &amp; q)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Uploads a quaternion uniform value. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>loc</entry><entry>
+<para><link linkend="_class_uniform">Uniform</link> location. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>q</entry><entry>
+<para>Quaternion value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="__shader_program_8h_1a0a1f6b4923c4b25a20dcd6ad1cce1781"/><section>
+    <title>upload()<computeroutput>[4/9]</computeroutput></title>
+<indexterm><primary>upload</primary><secondary>ShaderProgram.h</secondary></indexterm>
+<indexterm><primary>ShaderProgram.h</primary><secondary>upload</secondary></indexterm>
+<para><computeroutput>void GLUniformUpload::upload (GLint loc, const Math3D::Vec2 &amp; v)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Uploads a <computeroutput>vec2</computeroutput> uniform value. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>loc</entry><entry>
+<para><link linkend="_class_uniform">Uniform</link> location. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>v</entry><entry>
+<para>Vector value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="__shader_program_8h_1a61bec12b86c8a389cabdd26a3be8c6ac"/><section>
+    <title>upload()<computeroutput>[5/9]</computeroutput></title>
+<indexterm><primary>upload</primary><secondary>ShaderProgram.h</secondary></indexterm>
+<indexterm><primary>ShaderProgram.h</primary><secondary>upload</secondary></indexterm>
+<para><computeroutput>void GLUniformUpload::upload (GLint loc, const Math3D::Vec3 &amp; v)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Uploads a <computeroutput>vec3</computeroutput> uniform value. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>loc</entry><entry>
+<para><link linkend="_class_uniform">Uniform</link> location. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>v</entry><entry>
+<para>Vector value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="__shader_program_8h_1a84023ab5fba8436663d337b273fd994c"/><section>
+    <title>upload()<computeroutput>[6/9]</computeroutput></title>
+<indexterm><primary>upload</primary><secondary>ShaderProgram.h</secondary></indexterm>
+<indexterm><primary>ShaderProgram.h</primary><secondary>upload</secondary></indexterm>
+<para><computeroutput>void GLUniformUpload::upload (GLint loc, const Math3D::Vec4 &amp; v)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Uploads a <computeroutput>vec4</computeroutput> uniform value. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>loc</entry><entry>
+<para><link linkend="_class_uniform">Uniform</link> location. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>v</entry><entry>
+<para>Vector value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="__shader_program_8h_1a9ca31c0cc52ea03cede335da9f4bb4a1"/><section>
+    <title>upload()<computeroutput>[7/9]</computeroutput></title>
+<indexterm><primary>upload</primary><secondary>ShaderProgram.h</secondary></indexterm>
+<indexterm><primary>ShaderProgram.h</primary><secondary>upload</secondary></indexterm>
+<para><computeroutput>void GLUniformUpload::upload (GLint loc, const <link linkend="_struct_g_l_uniform_upload_1_1_texture_slot">TextureSlot</link> &amp; texSlot)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Uploads a texture slot uniform. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>loc</entry><entry>
+<para><link linkend="_class_uniform">Uniform</link> location. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>texSlot</entry><entry>
+<para><link linkend="_class_texture">Texture</link> and slot binding information. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="__shader_program_8h_1a1719a7829b7f536b0c65d54be0b64948"/><section>
+    <title>upload()<computeroutput>[8/9]</computeroutput></title>
+<indexterm><primary>upload</primary><secondary>ShaderProgram.h</secondary></indexterm>
+<indexterm><primary>ShaderProgram.h</primary><secondary>upload</secondary></indexterm>
+<para><computeroutput>void GLUniformUpload::upload (GLint loc, float v)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Uploads a float uniform value. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>loc</entry><entry>
+<para><link linkend="_class_uniform">Uniform</link> location. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>v</entry><entry>
+<para>Float value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="__shader_program_8h_1a40dd1eef82109d54de6c4c994bfcb00f"/><section>
+    <title>upload()<computeroutput>[9/9]</computeroutput></title>
+<indexterm><primary>upload</primary><secondary>ShaderProgram.h</secondary></indexterm>
+<indexterm><primary>ShaderProgram.h</primary><secondary>upload</secondary></indexterm>
+<para><computeroutput>void GLUniformUpload::upload (GLint loc, int v)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Uploads an integer uniform value. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>loc</entry><entry>
+<para><link linkend="_class_uniform">Uniform</link> location. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>v</entry><entry>
+<para>Integer value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+</section>
+</section>

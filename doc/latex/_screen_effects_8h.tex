@@ -1,0 +1,46 @@
+\doxysection{src/\+\+Rendering/\+\+Post\+FX/\+\+Screen\+Effects.h File Reference}
+\hypertarget{_screen_effects_8h}{}\label{_screen_effects_8h}\index{src/Rendering/PostFX/ScreenEffects.h@{src/Rendering/PostFX/ScreenEffects.h}}
+
+
+Declarations for Screen\+Effects.  
+
+
+{\ttfamily \+\#include "{}Rendering/\+\+Core/\+\+Graphics.\+h"{}}\newline
+{\ttfamily \+\#include "{}Rendering/\+\+Shaders/\+\+Shader\+Program.\+h"{}}\newline
+{\ttfamily \+\#include "{}Foundation/\+\+Math/\+\+Color.\+h"{}}\newline
+{\ttfamily \+\#include "{}Foundation/\+\+Logging/\+\+Logbot.\+h"{}}\newline
+{\ttfamily \+\#include $<$algorithm$>$}\newline
+{\ttfamily \+\#include $<$array$>$}\newline
+{\ttfamily \+\#include $<$chrono$>$}\newline
+{\ttfamily \+\#include $<$cmath$>$}\newline
+{\ttfamily \+\#include $<$vector$>$}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \doxymbox{\hyperlink{class_grayscale_effect}{Grayscale\+Effect}}
+\begin{DoxyCompactList}\small\item\em Represents the \doxylink{class_grayscale_effect}{Grayscale\+Effect} type. \end{DoxyCompactList}\item 
+class \doxymbox{\hyperlink{class_s_s_a_o_effect}{SSAOEffect}}
+\begin{DoxyCompactList}\small\item\em Represents the \doxylink{class_s_s_a_o_effect}{SSAOEffect} type. \end{DoxyCompactList}\item 
+class \doxymbox{\hyperlink{class_depth_of_field_effect}{Depth\+Of\+Field\+Effect}}
+\begin{DoxyCompactList}\small\item\em Represents the \doxylink{class_depth_of_field_effect}{Depth\+Of\+Field\+Effect} type. \end{DoxyCompactList}\item 
+class \doxymbox{\hyperlink{class_bloom_effect}{Bloom\+Effect}}
+\begin{DoxyCompactList}\small\item\em Represents the \doxylink{class_bloom_effect}{Bloom\+Effect} type. \end{DoxyCompactList}\item 
+class \doxymbox{\hyperlink{class_auto_exposure_effect}{Auto\+Exposure\+Effect}}
+\begin{DoxyCompactList}\small\item\em Represents the \doxylink{class_auto_exposure_effect}{Auto\+Exposure\+Effect} type. \end{DoxyCompactList}\item 
+class \doxymbox{\hyperlink{class_f_x_a_a_effect}{FXAAEffect}}
+\begin{DoxyCompactList}\small\item\em Represents the \doxylink{class_f_x_a_a_effect}{FXAAEffect} type. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{_screen_effects_8h_a253b4cf4d7c392a00e85057fab843598}\label{_screen_effects_8h_a253b4cf4d7c392a00e85057fab843598} 
+enum class \doxymbox{\hyperlink{_screen_effects_8h_a253b4cf4d7c392a00e85057fab843598}{Anti\+Aliasing\+Preset}} \{ {\bfseries Off} = 0
+, {\bfseries FXAA\+\_\+\+Low}
+, {\bfseries FXAA\+\_\+\+Medium}
+, {\bfseries FXAA\+\_\+\+High}
+ \}
+\begin{DoxyCompactList}\small\item\em Enumerates values for \doxylink{_screen_effects_8h_a253b4cf4d7c392a00e85057fab843598}{Anti\+Aliasing\+Preset}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Declarations for Screen\+Effects. 
+

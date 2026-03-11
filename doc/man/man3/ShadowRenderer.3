@@ -1,0 +1,406 @@
+.TH "ShadowRenderer" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ShadowRenderer \- Represents the \fBShadowRenderer\fP type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ShadowRenderer\&.h>\fP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBShadowDrawItem\fP"
+.br
+.RI "Holds data for \fBShadowDrawItem\fP\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBBeginFrame\fP (PCamera camera, const std::vector< \fBShadowCasterBounds\fP > *casters=nullptr)"
+.br
+.RI "Begins frame\&. "
+.ti -1c
+.RI "static void \fBRenderShadows\fP (const std::shared_ptr< \fBMesh\fP > &mesh, const Math3D::Mat4 &model, const std::shared_ptr< \fBMaterial\fP > &material)"
+.br
+.RI "Renders shadows\&. "
+.ti -1c
+.RI "static void \fBRenderShadowsBatch\fP (const std::vector< \fBShadowDrawItem\fP > &items)"
+.br
+.RI "Renders shadows batch\&. "
+.ti -1c
+.RI "static void \fBBindShadowSamplers\fP (const std::shared_ptr< \fBShaderProgram\fP > &program)"
+.br
+.RI "Binds shadow samplers\&. "
+.ti -1c
+.RI "static void \fBGetShadowDataForLight\fP (size_t index, const \fBLight\fP &light, \fBShadowLightData\fP &outData)"
+.br
+.RI "Returns the shadow data for light\&. "
+.ti -1c
+.RI "static uint64_t \fBGetFrameId\fP ()"
+.br
+.RI "Returns the frame id\&. "
+.ti -1c
+.RI "static bool \fBIsEnabled\fP ()"
+.br
+.RI "Checks whether enabled\&. "
+.ti -1c
+.RI "static std::shared_ptr< \fBTexture\fP > \fBGetDepthBuffer\fP ()"
+.br
+.RI "Returns the depth buffer\&. "
+.ti -1c
+.RI "static void \fBSetDebugShadows\fP (bool enabled)"
+.br
+.RI "Sets the debug shadows\&. "
+.ti -1c
+.RI "static bool \fBGetDebugShadows\fP ()"
+.br
+.RI "Returns the debug shadows\&. "
+.ti -1c
+.RI "static void \fBCycleDebugShadows\fP ()"
+.br
+.RI "Cycles the active debug shadow visualization mode\&. "
+.ti -1c
+.RI "static int \fBGetDebugShadowsMode\fP ()"
+.br
+.RI "Returns the debug shadows mode\&. "
+.ti -1c
+.RI "static void \fBSetDebugShadowsMode\fP (int mode)"
+.br
+.RI "Sets the debug shadows mode\&. "
+.ti -1c
+.RI "static void \fBSetGlobalDebugOverrideEnabled\fP (bool enabled)"
+.br
+.RI "Sets the global debug override enabled\&. "
+.ti -1c
+.RI "static bool \fBGetGlobalDebugOverrideEnabled\fP ()"
+.br
+.RI "Returns the global debug override enabled\&. "
+.ti -1c
+.RI "static void \fBSetGlobalDebugOverrideMode\fP (int mode)"
+.br
+.RI "Sets the global debug override mode\&. "
+.ti -1c
+.RI "static int \fBGetGlobalDebugOverrideMode\fP ()"
+.br
+.RI "Returns the global debug override mode\&. "
+.ti -1c
+.RI "static void \fBSetSelectedLightIndex\fP (int index)"
+.br
+.RI "Sets the selected light index\&. "
+.ti -1c
+.RI "static int \fBGetSelectedLightIndex\fP ()"
+.br
+.RI "Returns the selected light index\&. "
+.ti -1c
+.RI "static void \fBSetDirectionalCascadeKernelMarginTexels\fP (float value)"
+.br
+.RI "Sets the directional cascade kernel margin texels\&. "
+.ti -1c
+.RI "static float \fBGetDirectionalCascadeKernelMarginTexels\fP ()"
+.br
+.RI "Returns the directional cascade kernel margin texels\&. "
+.ti -1c
+.RI "static void \fBSetShadowReceiverNormalBlend\fP (float value)"
+.br
+.RI "Sets the shadow receiver normal blend\&. "
+.ti -1c
+.RI "static float \fBGetShadowReceiverNormalBlend\fP ()"
+.br
+.RI "Returns the shadow receiver normal blend\&. "
+.ti -1c
+.RI "static void \fBSetDebugLogging\fP (bool enabled)"
+.br
+.RI "Sets the debug logging\&. "
+.ti -1c
+.RI "static bool \fBGetDebugLogging\fP ()"
+.br
+.RI "Returns the debug logging\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the \fBShadowRenderer\fP type\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "void ShadowRenderer::BeginFrame (PCamera camera, const std::vector< \fBShadowCasterBounds\fP > * casters = \fRnullptr\fP)\fR [static]\fP"
+
+.PP
+Begins frame\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcamera\fP Value for camera\&. 
+.br
+\fIcasters\fP Value for casters\&. 
+.RE
+.PP
+
+.SS "void ShadowRenderer::BindShadowSamplers (const std::shared_ptr< \fBShaderProgram\fP > & program)\fR [static]\fP"
+
+.PP
+Binds shadow samplers\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIprogram\fP Value for program\&. 
+.RE
+.PP
+
+.SS "bool ShadowRenderer::GetDebugLogging ()\fR [static]\fP"
+
+.PP
+Returns the debug logging\&. 
+.PP
+\fBReturns\fP
+.RS 4
+True when the operation succeeds; otherwise false\&. 
+.RE
+.PP
+
+.SS "bool ShadowRenderer::GetDebugShadows ()\fR [static]\fP"
+
+.PP
+Returns the debug shadows\&. 
+.PP
+\fBReturns\fP
+.RS 4
+True when the operation succeeds; otherwise false\&. 
+.RE
+.PP
+
+.SS "int ShadowRenderer::GetDebugShadowsMode ()\fR [static]\fP"
+
+.PP
+Returns the debug shadows mode\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Computed numeric result\&. 
+.RE
+.PP
+
+.SS "std::shared_ptr< \fBTexture\fP > ShadowRenderer::GetDepthBuffer ()\fR [static]\fP"
+
+.PP
+Returns the depth buffer\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+.SS "float ShadowRenderer::GetDirectionalCascadeKernelMarginTexels ()\fR [static]\fP"
+
+.PP
+Returns the directional cascade kernel margin texels\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Computed numeric result\&. 
+.RE
+.PP
+
+.SS "uint64_t ShadowRenderer::GetFrameId ()\fR [static]\fP"
+
+.PP
+Returns the frame id\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Result of this operation\&. 
+.RE
+.PP
+
+.SS "bool ShadowRenderer::GetGlobalDebugOverrideEnabled ()\fR [static]\fP"
+
+.PP
+Returns the global debug override enabled\&. 
+.PP
+\fBReturns\fP
+.RS 4
+True when the operation succeeds; otherwise false\&. 
+.RE
+.PP
+
+.SS "int ShadowRenderer::GetGlobalDebugOverrideMode ()\fR [static]\fP"
+
+.PP
+Returns the global debug override mode\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Computed numeric result\&. 
+.RE
+.PP
+
+.SS "int ShadowRenderer::GetSelectedLightIndex ()\fR [static]\fP"
+
+.PP
+Returns the selected light index\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Computed numeric result\&. 
+.RE
+.PP
+
+.SS "void ShadowRenderer::GetShadowDataForLight (size_t index, const \fBLight\fP & light, \fBShadowLightData\fP & outData)\fR [static]\fP"
+
+.PP
+Returns the shadow data for light\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP Identifier or index value\&. 
+.br
+\fIlight\fP Value for light\&. 
+.br
+\fIoutData\fP Buffer that receives data data\&. 
+.RE
+.PP
+
+.SS "float ShadowRenderer::GetShadowReceiverNormalBlend ()\fR [static]\fP"
+
+.PP
+Returns the shadow receiver normal blend\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Computed numeric result\&. 
+.RE
+.PP
+
+.SS "bool ShadowRenderer::IsEnabled ()\fR [static]\fP"
+
+.PP
+Checks whether enabled\&. 
+.PP
+\fBReturns\fP
+.RS 4
+True when the condition is satisfied; otherwise false\&. 
+.RE
+.PP
+
+.SS "void ShadowRenderer::RenderShadows (const std::shared_ptr< \fBMesh\fP > & mesh, const Math3D::Mat4 & model, const std::shared_ptr< \fBMaterial\fP > & material)\fR [static]\fP"
+
+.PP
+Renders shadows\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImesh\fP Value for mesh\&. 
+.br
+\fImodel\fP Mode or type selector\&. 
+.br
+\fImaterial\fP Value for material\&. 
+.RE
+.PP
+
+.SS "void ShadowRenderer::RenderShadowsBatch (const std::vector< \fBShadowDrawItem\fP > & items)\fR [static]\fP"
+
+.PP
+Renders shadows batch\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIitems\fP Value for items\&. 
+.RE
+.PP
+
+.SS "void ShadowRenderer::SetDebugLogging (bool enabled)\fR [static]\fP"
+
+.PP
+Sets the debug logging\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIenabled\fP Flag controlling enabled\&. 
+.RE
+.PP
+
+.SS "void ShadowRenderer::SetDebugShadows (bool enabled)\fR [static]\fP"
+
+.PP
+Sets the debug shadows\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIenabled\fP Flag controlling enabled\&. 
+.RE
+.PP
+
+.SS "void ShadowRenderer::SetDebugShadowsMode (int mode)\fR [static]\fP"
+
+.PP
+Sets the debug shadows mode\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImode\fP Mode or type selector\&. 
+.RE
+.PP
+
+.SS "void ShadowRenderer::SetDirectionalCascadeKernelMarginTexels (float value)\fR [static]\fP"
+
+.PP
+Sets the directional cascade kernel margin texels\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP Value for value\&. 
+.RE
+.PP
+
+.SS "void ShadowRenderer::SetGlobalDebugOverrideEnabled (bool enabled)\fR [static]\fP"
+
+.PP
+Sets the global debug override enabled\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIenabled\fP Flag controlling enabled\&. 
+.RE
+.PP
+
+.SS "void ShadowRenderer::SetGlobalDebugOverrideMode (int mode)\fR [static]\fP"
+
+.PP
+Sets the global debug override mode\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImode\fP Mode or type selector\&. 
+.RE
+.PP
+
+.SS "void ShadowRenderer::SetSelectedLightIndex (int index)\fR [static]\fP"
+
+.PP
+Sets the selected light index\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP Identifier or index value\&. 
+.RE
+.PP
+
+.SS "void ShadowRenderer::SetShadowReceiverNormalBlend (float value)\fR [static]\fP"
+
+.PP
+Sets the shadow receiver normal blend\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP Value for value\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

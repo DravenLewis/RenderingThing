@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__cube_map_8h" xml:lang="en-US">
+<title>src/Rendering/Textures/CubeMap.h File Reference</title>
+<indexterm><primary>src/Rendering/Textures/CubeMap.h</primary></indexterm>
+<para>
+
+<para>Declarations for <link linkend="_class_cube_map">CubeMap</link>. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &lt;glad/glad.h&gt;<?linebreak?>#include &lt;memory&gt;<?linebreak?>#include &quot;Assets/Core/Asset.h&quot;<?linebreak?></programlisting><simplesect>
+    <title>Classes    </title>
+        <itemizedlist>
+            <listitem><para>class <link linkend="_class_cube_map">CubeMap</link></para>
+
+<para>Represents the <link linkend="_class_cube_map">CubeMap</link> type. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Typedefs    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="__cube_map_8h_1a562a673e7cf146444d0968502003899e"/>typedef std::shared_ptr&lt; <link linkend="_class_cube_map">CubeMap</link> &gt; <emphasis role="strong">PCubeMap</emphasis></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Declarations for <link linkend="_class_cube_map">CubeMap</link>. </para>
+</section>
+</section>

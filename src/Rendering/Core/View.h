@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Core/View.h
+ * @brief Declarations for View.
+ */
+
 #ifndef VIEW_H
 #define VIEW_H
 
@@ -7,6 +12,7 @@
 #include "Rendering/Core/Screen.h"
 #include "Platform/Window/RenderWindow.h"
 
+/// @brief Represents the View type.
 class View : public std::enable_shared_from_this<View> {
     private:
         int width = 0;
@@ -15,11 +21,29 @@ class View : public std::enable_shared_from_this<View> {
         std::vector<PScreen> screens;
 
     public:
+        /**
+         * @brief Constructs a new View instance.
+         */
         View();
+        /**
+         * @brief Constructs a new View instance.
+         * @param window Value for window.
+         */
         View(RenderWindow* window);
+        /**
+         * @brief Destroys this View instance.
+         */
         virtual ~View() = default;
 
+        /**
+         * @brief Attaches a render window to this view.
+         * @param window Value for window.
+         */
         void attachWindow(RenderWindow* window);
+        /**
+         * @brief Checks whether window.
+         * @return True when the condition is satisfied; otherwise false.
+         */
         bool hasWindow() const { return window != nullptr; }
 
         void resize(int w, int h);

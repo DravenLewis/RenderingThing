@@ -1,0 +1,391 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__frame_buffer_8h_source" xml:lang="en-US">
+<title>FrameBuffer.h</title>
+<indexterm><primary>src/Rendering/Core/FrameBuffer.h</primary></indexterm>
+Go to the documentation of this file.<programlisting linenumbering="unnumbered">1 
+5 
+6 <emphasis role="preprocessor">#ifndef&#32;FRAMEBUFFER_H</emphasis>
+7 <emphasis role="preprocessor">#define&#32;FRAMEBUFFER_H</emphasis>
+8 
+9 <emphasis role="preprocessor">#include&#32;&lt;memory&gt;</emphasis>
+10 <emphasis role="preprocessor">#include&#32;&lt;vector&gt;</emphasis>
+11 <emphasis role="preprocessor">#include&#32;&lt;cstdlib&gt;</emphasis>
+12 
+13 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__texture_8h">Rendering/Textures/Texture.h</link>&quot;</emphasis>
+14 <emphasis role="preprocessor">#include&#32;&quot;Foundation/Math/Math3D.h&quot;</emphasis>
+15 <emphasis role="preprocessor">#include&#32;&quot;Foundation/Math/Color.h&quot;</emphasis>
+16 
+17 <emphasis role="preprocessor">#include&#32;&quot;Foundation/Logging/Logbot.h&quot;</emphasis>
+18 
+19 <emphasis role="keyword">typedef</emphasis>&#32;GLuint&#32;FrameBufferObject;
+20 
+22 <emphasis role="keyword">struct&#32;</emphasis><link linkend="_struct_frame_buffer_1aab4c897d360f51c5a96b4782e67e98a9">FrameBuffer</link>{
+23 &#32;&#32;&#32;&#32;<emphasis role="keyword">private</emphasis>:
+24 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;FrameBufferObject&#32;fboID;
+25 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;width,&#32;height;
+26 
+27 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PTexture&#32;texturePtr;
+28 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PTexture&#32;depthTexture;
+29 
+31 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">struct&#32;</emphasis>GBufferAttachment{
+32 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PTexture&#32;texture;
+33 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;GLenum&#32;internalFormat&#32;=&#32;GL_RGBA8;
+34 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;GLenum&#32;format&#32;=&#32;GL_RGBA;
+35 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;GLenum&#32;type&#32;=&#32;GL_UNSIGNED_BYTE;
+36 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;};
+37 
+38 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::vector&lt;GBufferAttachment&gt;&#32;gbufferAttachments;
+39 &#32;&#32;&#32;&#32;
+40 &#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+46 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_frame_buffer_1aab4c897d360f51c5a96b4782e67e98a9">FrameBuffer</link>(<emphasis role="keywordtype">int</emphasis>&#32;width,&#32;<emphasis role="keywordtype">int</emphasis>&#32;height)&#32;:&#32;width(width),&#32;height(height)&#32;{
+47 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glGenFramebuffers(1,&#32;&amp;fboID);
+48 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;
+49 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;1.&#32;Create&#32;the&#32;Depth&#32;Texture</emphasis>
+50 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;We&#32;do&#32;this&#32;manually&#32;here&#32;(or&#32;you&#32;could&#32;add&#32;a&#32;helper&#32;in&#32;Texture.h)</emphasis>
+51 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;depthTexture&#32;=&#32;std::make_shared&lt;Texture&gt;();
+52 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;Note:&#32;We&#32;don&apos;t&#32;set&#32;width/height&#32;on&#32;the&#32;Texture&#32;object&#32;here&#32;manually&#32;</emphasis>
+53 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;unless&#32;your&#32;Texture&#32;class&#32;requires&#32;it.</emphasis>
+54 
+55 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;GLuint&#32;tid;
+56 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glGenTextures(1,&#32;&amp;tid);
+57 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;depthTexture-&gt;getID()&#32;=&#32;tid;
+58 
+59 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;DEBUG&#32;CHECK</emphasis>
+60 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(depthTexture-&gt;getID()&#32;==&#32;0)&#32;{
+61 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;LogBot.Log(LOG_FATL,&#32;<emphasis role="stringliteral">&quot;[FrameBuffer]&#32;CRITICAL:&#32;glGenTextures&#32;failed&#32;for&#32;Depth&#32;Texture!&quot;</emphasis>);
+62 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+63 
+64 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glBindTexture(GL_TEXTURE_2D,&#32;depthTexture-&gt;getID());
+65 
+66 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;GL_DEPTH_COMPONENT24&#32;is&#32;standard&#32;for&#32;precision</emphasis>
+67 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glTexImage2D(GL_TEXTURE_2D,&#32;0,&#32;GL_DEPTH_COMPONENT24,&#32;width,&#32;height,&#32;0,&#32;GL_DEPTH_COMPONENT,&#32;GL_FLOAT,&#32;NULL);
+68 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;
+69 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;Essential&#32;Texture&#32;Parameters&#32;for&#32;Depth</emphasis>
+70 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;Linear&#32;filtering&#32;keeps&#32;post-process&#32;depth&#32;lookups&#32;(SSAO/DOF)&#32;stable&#32;across&#32;pixel&#32;edges.</emphasis>
+71 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glTexParameteri(GL_TEXTURE_2D,&#32;GL_TEXTURE_MIN_FILTER,&#32;GL_LINEAR);
+72 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glTexParameteri(GL_TEXTURE_2D,&#32;GL_TEXTURE_MAG_FILTER,&#32;GL_LINEAR);
+73 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glTexParameteri(GL_TEXTURE_2D,&#32;GL_TEXTURE_WRAP_S,&#32;GL_CLAMP_TO_BORDER);&#32;
+74 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glTexParameteri(GL_TEXTURE_2D,&#32;GL_TEXTURE_WRAP_T,&#32;GL_CLAMP_TO_BORDER);
+75 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;
+76 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;Border&#32;color&#32;for&#32;depth&#32;(white&#32;=&#32;far&#32;away)&#32;prevents&#32;artifacts&#32;at&#32;screen&#32;edges</emphasis>
+77 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;borderColor[]&#32;=&#32;{&#32;1.0f,&#32;1.0f,&#32;1.0f,&#32;1.0f&#32;};
+78 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glTexParameterfv(GL_TEXTURE_2D,&#32;GL_TEXTURE_BORDER_COLOR,&#32;borderColor);
+79 
+80 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;2.&#32;Attach&#32;Depth&#32;Texture&#32;to&#32;FBO</emphasis>
+81 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_frame_buffer_1a16fa30984714c6070f4c5bde5b5b87f7">bind</link>();
+82 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glFramebufferTexture2D(GL_FRAMEBUFFER,&#32;GL_DEPTH_ATTACHMENT,&#32;GL_TEXTURE_2D,&#32;depthTexture-&gt;getID(),&#32;0);
+83 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;
+84 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;Note:&#32;We&#32;are&#32;currently&#32;NOT&#32;complete&#32;because&#32;we&#32;have&#32;no&#32;Color&#32;buffer&#32;yet.</emphasis>
+85 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;Screen&#32;class&#32;attaches&#32;color&#32;later&#32;via&#32;attachTexture().</emphasis>
+86 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;If&#32;you&#32;want&#32;to&#32;use&#32;this&#32;for&#32;Shadow&#32;Mapping&#32;(Depth&#32;Only),&#32;you&#32;need&#32;to&#32;tell&#32;GL&#32;to&#32;draw&#32;no&#32;color:</emphasis>
+87 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;glDrawBuffer(GL_NONE);&#32;glReadBuffer(GL_NONE);</emphasis>
+88 
+89 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;Crucial:&#32;Tell&#32;OpenGL&#32;we&#32;aren&apos;t&#32;drawing&#32;to&#32;color&#32;YET</emphasis>
+90 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glDrawBuffer(GL_NONE);
+91 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glReadBuffer(GL_NONE);
+92 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;
+93 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_frame_buffer_1a3b82af89f1c0c0f4c0140e41863256c0">unbind</link>();
+94 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+95 
+99 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_frame_buffer_1aef8be9884e8cc0fc3f3692e6c6968fa1">~FrameBuffer</link>(){
+100 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glDeleteFramebuffers(1,&#32;&amp;fboID);
+101 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+102 
+106 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_struct_frame_buffer_1a16fa30984714c6070f4c5bde5b5b87f7">bind</link>(){
+107 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glBindFramebuffer(GL_FRAMEBUFFER,&#32;fboID);
+108 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glViewport(0,0,width,&#32;height);
+109 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+110 
+114 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_struct_frame_buffer_1a3b82af89f1c0c0f4c0140e41863256c0">unbind</link>(){
+115 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glBindFramebuffer(GL_FRAMEBUFFER,&#32;0);
+116 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+117 
+123 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_struct_frame_buffer_1a9d024ca8640a15ba5bc1b57bea53f520">resize</link>(<emphasis role="keywordtype">int</emphasis>&#32;width,&#32;<emphasis role="keywordtype">int</emphasis>&#32;height){
+124 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;this-&gt;width&#32;=&#32;width;
+125 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;this-&gt;height&#32;=&#32;height;
+126 
+127 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;Resize&#32;Depth&#32;Texture</emphasis>
+128 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(depthTexture){
+129 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glBindTexture(GL_TEXTURE_2D,&#32;depthTexture-&gt;getID());
+130 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glTexImage2D(GL_TEXTURE_2D,&#32;0,&#32;GL_DEPTH_COMPONENT24,&#32;width,&#32;height,&#32;0,&#32;GL_DEPTH_COMPONENT,&#32;GL_FLOAT,&#32;NULL);
+131 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glBindTexture(GL_TEXTURE_2D,&#32;0);
+132 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+133 
+134 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(!gbufferAttachments.empty()){
+135 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">for</emphasis>(<emphasis role="keyword">auto</emphasis>&amp;&#32;attachment&#32;:&#32;gbufferAttachments){
+136 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(!attachment.texture)&#32;<emphasis role="keywordflow">continue</emphasis>;
+137 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glBindTexture(GL_TEXTURE_2D,&#32;attachment.texture-&gt;getID());
+138 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glTexImage2D(
+139 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;GL_TEXTURE_2D,
+140 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;0,
+141 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;attachment.internalFormat,
+142 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;width,
+143 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;height,
+144 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;0,
+145 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;attachment.format,
+146 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;attachment.type,
+147 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;NULL
+148 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;);
+149 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+150 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glBindTexture(GL_TEXTURE_2D,&#32;0);
+151 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+152 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+153 
+158 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_struct_frame_buffer_1a0c4622e1392380ac5f445ca896b8cfaf">attachTexture</link>(PTexture&#32;tex){
+159 
+160 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;this-&gt;texturePtr&#32;=&#32;tex;
+161 
+162 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_frame_buffer_1a16fa30984714c6070f4c5bde5b5b87f7">bind</link>();
+163 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glFramebufferTexture2D(GL_FRAMEBUFFER,&#32;GL_COLOR_ATTACHMENT0,&#32;GL_TEXTURE_2D,&#32;tex-&gt;getID(),&#32;0);
+164 
+165 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;GLenum&#32;drawBuffers[1]&#32;=&#32;{GL_COLOR_ATTACHMENT0};
+166 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glDrawBuffers(1,&#32;drawBuffers);
+167 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glReadBuffer(GL_COLOR_ATTACHMENT0);
+168 
+169 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;GLenum&#32;status&#32;=&#32;glCheckFramebufferStatus(GL_FRAMEBUFFER);
+170 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>&#32;(status&#32;!=&#32;GL_FRAMEBUFFER_COMPLETE)&#32;{
+171 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::string&#32;error;
+172 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">switch</emphasis>&#32;(status)&#32;{
+173 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">case</emphasis>&#32;GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;error&#32;=&#32;<emphasis role="stringliteral">&quot;Incomplete&#32;Attachment&quot;</emphasis>;&#32;<emphasis role="keywordflow">break</emphasis>;
+174 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">case</emphasis>&#32;GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:&#32;error&#32;=&#32;<emphasis role="stringliteral">&quot;Missing&#32;Attachment&quot;</emphasis>;&#32;<emphasis role="keywordflow">break</emphasis>;
+175 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">case</emphasis>&#32;GL_FRAMEBUFFER_UNSUPPORTED:&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;error&#32;=&#32;<emphasis role="stringliteral">&quot;Unsupported&#32;Format&quot;</emphasis>;&#32;<emphasis role="keywordflow">break</emphasis>;
+176 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">default</emphasis>:&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;error&#32;=&#32;<emphasis role="stringliteral">&quot;Unknown&#32;Error&quot;</emphasis>;&#32;<emphasis role="keywordflow">break</emphasis>;
+177 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+178 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;LogBot.Log(LOG_ERRO,&#32;<emphasis role="stringliteral">&quot;[FrameBuffer]&#32;FBO&#32;Error:&#32;%s&#32;(Code:&#32;%u)&quot;</emphasis>,&#32;error.c_str(),&#32;status);
+179 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+180 
+181 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_frame_buffer_1a3b82af89f1c0c0f4c0140e41863256c0">unbind</link>();
+182 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+183 
+188 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;<link linkend="_struct_frame_buffer_1a0cd55ff0fbb64f384e420ee01747baa9">validate</link>(){
+189 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_frame_buffer_1a16fa30984714c6070f4c5bde5b5b87f7">bind</link>();
+190 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;complete&#32;=&#32;(glCheckFramebufferStatus(GL_FRAMEBUFFER)&#32;==&#32;GL_FRAMEBUFFER_COMPLETE);
+191 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_frame_buffer_1a3b82af89f1c0c0f4c0140e41863256c0">unbind</link>();
+192 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;complete;
+193 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+194 
+199 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_struct_frame_buffer_1a97b10220144ae378552526387dd74063">clear</link>(Color&#32;clearColor&#32;=&#32;Color::BLACK){
+200 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glClearColor(
+201 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;clearColor.getRed(),
+202 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;clearColor.getGreen(),
+203 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;clearColor.getBlue(),
+204 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;clearColor.getAlpha()
+205 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;);
+206 
+207 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glClear(GL_COLOR_BUFFER_BIT&#32;|&#32;GL_DEPTH_BUFFER_BIT);
+208 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+209 
+216 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;FrameBuffer&gt;&#32;<link linkend="_struct_frame_buffer_1ac9d501ed7d2c3065d73ab4bb3ac79aaa">Create</link>(<emphasis role="keywordtype">int</emphasis>&#32;width,&#32;<emphasis role="keywordtype">int</emphasis>&#32;height){
+217 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">auto</emphasis>&#32;fbuffer&#32;=&#32;std::make_shared&lt;FrameBuffer&gt;(width,&#32;height);
+218 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;fbuffer;
+219 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+220 
+227 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;FrameBuffer&gt;&#32;<link linkend="_struct_frame_buffer_1ac84282b82629c78a650e7cb0aa653392">CreateGBuffer</link>(<emphasis role="keywordtype">int</emphasis>&#32;width,&#32;<emphasis role="keywordtype">int</emphasis>&#32;height){
+228 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">auto</emphasis>&#32;fbuffer&#32;=&#32;std::make_shared&lt;FrameBuffer&gt;(width,&#32;height);
+229 
+230 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;fbuffer-&gt;gbufferAttachments.clear();
+231 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;fbuffer-&gt;gbufferAttachments.reserve(3);
+232 
+233 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">auto</emphasis>&#32;createAttachment&#32;=&#32;[&amp;](GLenum&#32;internalFormat,&#32;GLenum&#32;format,&#32;GLenum&#32;type)&#32;-&gt;&#32;PTexture&#32;{
+234 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;GLuint&#32;texId&#32;=&#32;0;
+235 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glGenTextures(1,&#32;&amp;texId);
+236 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glBindTexture(GL_TEXTURE_2D,&#32;texId);
+237 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glTexImage2D(GL_TEXTURE_2D,&#32;0,&#32;internalFormat,&#32;width,&#32;height,&#32;0,&#32;format,&#32;type,&#32;NULL);
+238 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glTexParameteri(GL_TEXTURE_2D,&#32;GL_TEXTURE_MIN_FILTER,&#32;GL_NEAREST);
+239 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glTexParameteri(GL_TEXTURE_2D,&#32;GL_TEXTURE_MAG_FILTER,&#32;GL_NEAREST);
+240 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glTexParameteri(GL_TEXTURE_2D,&#32;GL_TEXTURE_WRAP_S,&#32;GL_CLAMP_TO_EDGE);
+241 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glTexParameteri(GL_TEXTURE_2D,&#32;GL_TEXTURE_WRAP_T,&#32;GL_CLAMP_TO_EDGE);
+242 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glBindTexture(GL_TEXTURE_2D,&#32;0);
+243 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;Texture::CreateFromExisting(texId,&#32;width,&#32;height,&#32;<emphasis role="keyword">true</emphasis>);
+244 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;};
+245 
+246 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;fbuffer-&gt;bind();
+247 
+248 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;{
+249 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;GBufferAttachment&#32;albedo;
+250 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;albedo.internalFormat&#32;=&#32;GL_RGBA8;
+251 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;albedo.format&#32;=&#32;GL_RGBA;
+252 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;albedo.type&#32;=&#32;GL_UNSIGNED_BYTE;
+253 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;albedo.texture&#32;=&#32;createAttachment(albedo.internalFormat,&#32;albedo.format,&#32;albedo.type);
+254 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glFramebufferTexture2D(GL_FRAMEBUFFER,&#32;GL_COLOR_ATTACHMENT0,&#32;GL_TEXTURE_2D,&#32;albedo.texture-&gt;getID(),&#32;0);
+255 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;fbuffer-&gt;gbufferAttachments.push_back(albedo);
+256 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+257 
+258 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;{
+259 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;GBufferAttachment&#32;normal;
+260 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;normal.internalFormat&#32;=&#32;GL_RGBA16F;
+261 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;normal.format&#32;=&#32;GL_RGBA;
+262 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;normal.type&#32;=&#32;GL_FLOAT;
+263 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;normal.texture&#32;=&#32;createAttachment(normal.internalFormat,&#32;normal.format,&#32;normal.type);
+264 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glFramebufferTexture2D(GL_FRAMEBUFFER,&#32;GL_COLOR_ATTACHMENT1,&#32;GL_TEXTURE_2D,&#32;normal.texture-&gt;getID(),&#32;0);
+265 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;fbuffer-&gt;gbufferAttachments.push_back(normal);
+266 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+267 
+268 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;{
+269 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;GBufferAttachment&#32;position;
+270 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;Large&#32;receivers&#32;(e.g.&#32;200x200&#32;ground&#32;planes)&#32;need&#32;full&#32;precision&#32;to&#32;avoid&#32;deferred-light&#32;banding.</emphasis>
+271 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;position.internalFormat&#32;=&#32;GL_RGBA32F;
+272 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;position.format&#32;=&#32;GL_RGBA;
+273 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;position.type&#32;=&#32;GL_FLOAT;
+274 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;position.texture&#32;=&#32;createAttachment(position.internalFormat,&#32;position.format,&#32;position.type);
+275 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glFramebufferTexture2D(GL_FRAMEBUFFER,&#32;GL_COLOR_ATTACHMENT2,&#32;GL_TEXTURE_2D,&#32;position.texture-&gt;getID(),&#32;0);
+276 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;fbuffer-&gt;gbufferAttachments.push_back(position);
+277 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+278 
+279 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;GLenum&#32;drawBuffers[3]&#32;=&#32;{&#32;GL_COLOR_ATTACHMENT0,&#32;GL_COLOR_ATTACHMENT1,&#32;GL_COLOR_ATTACHMENT2&#32;};
+280 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glDrawBuffers(3,&#32;drawBuffers);
+281 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;glReadBuffer(GL_COLOR_ATTACHMENT0);
+282 
+283 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;GLenum&#32;status&#32;=&#32;glCheckFramebufferStatus(GL_FRAMEBUFFER);
+284 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(status&#32;!=&#32;GL_FRAMEBUFFER_COMPLETE){
+285 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::string&#32;error;
+286 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">switch</emphasis>(status){
+287 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">case</emphasis>&#32;GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;error&#32;=&#32;<emphasis role="stringliteral">&quot;Incomplete&#32;Attachment&quot;</emphasis>;&#32;<emphasis role="keywordflow">break</emphasis>;
+288 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">case</emphasis>&#32;GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:&#32;error&#32;=&#32;<emphasis role="stringliteral">&quot;Missing&#32;Attachment&quot;</emphasis>;&#32;<emphasis role="keywordflow">break</emphasis>;
+289 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">case</emphasis>&#32;GL_FRAMEBUFFER_UNSUPPORTED:&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;error&#32;=&#32;<emphasis role="stringliteral">&quot;Unsupported&#32;Format&quot;</emphasis>;&#32;<emphasis role="keywordflow">break</emphasis>;
+290 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">default</emphasis>:&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;error&#32;=&#32;<emphasis role="stringliteral">&quot;Unknown&#32;Error&quot;</emphasis>;&#32;<emphasis role="keywordflow">break</emphasis>;
+291 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+292 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;LogBot.Log(LOG_ERRO,&#32;<emphasis role="stringliteral">&quot;[FrameBuffer]&#32;GBuffer&#32;Error:&#32;%s&#32;(Code:&#32;%u)&quot;</emphasis>,&#32;error.c_str(),&#32;status);
+293 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+294 
+295 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;fbuffer-&gt;unbind();
+296 
+297 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;fbuffer;
+298 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+299 
+304 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PTexture&#32;<link linkend="_struct_frame_buffer_1a7ccdbe4ef2127c1d95a6855326a411e8">getTexture</link>(){
+305 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;texturePtr;
+306 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+307 
+312 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PTexture&#32;<link linkend="_struct_frame_buffer_1ae1bb1d29cead16f8ed5bc3243ce670a7">getDepthTexture</link>(){
+313 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;depthTexture;
+314 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+315 
+321 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PTexture&#32;<link linkend="_struct_frame_buffer_1a90a260aa56cc237856abc3ccd2e4db3a">getGBufferTexture</link>(<emphasis role="keywordtype">size_t</emphasis>&#32;index)<emphasis role="keyword">&#32;const</emphasis>{
+322 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(index&#32;&gt;=&#32;gbufferAttachments.size()){
+323 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;<emphasis role="keyword">nullptr</emphasis>;
+324 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+325 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;gbufferAttachments[index].texture;
+326 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+327 
+332 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">size_t</emphasis>&#32;<link linkend="_struct_frame_buffer_1aa79c4835cb0975e916fae02fb38370b6">getGBufferCount</link>()<emphasis role="keyword">&#32;const</emphasis>{
+333 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;gbufferAttachments.size();
+334 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+335 
+340 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;FrameBufferObject&#32;<link linkend="_struct_frame_buffer_1ade3f6891bef5507f4efeeed8031674ee">getID</link>()<emphasis role="keyword">&#32;const&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;fboID;&#32;}
+341 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;getWidth()<emphasis role="keyword">&#32;const&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;width;&#32;}
+342 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;getHeight()<emphasis role="keyword">&#32;const&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;height;&#32;}
+343 };
+344 
+346 <emphasis role="keyword">struct&#32;</emphasis>FrameBufferChain{
+347 &#32;&#32;&#32;&#32;<emphasis role="keyword">private</emphasis>:
+351 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;FrameBufferChain()&#32;=&#32;<emphasis role="keyword">delete</emphasis>;
+352 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;size&#32;=&#32;0;
+353 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::vector&lt;std::shared_ptr&lt;FrameBuffer&gt;&gt;&#32;frameBufferPtrArray;
+354 &#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+359 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_frame_buffer_chain_1a43ca39ab87494b584ffd2c3c20d421ed">FrameBufferChain</link>(<emphasis role="keywordtype">int</emphasis>&#32;s)&#32;:&#32;size(s)&#32;{
+360 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;frameBufferPtrArray.resize(s);
+361 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;};
+362 
+368 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;FrameBuffer&gt;&#32;<link linkend="_struct_frame_buffer_chain_1aa952a5f3795b96066b498e1ca7fa9f74">getAtIndex</link>(<emphasis role="keywordtype">int</emphasis>&#32;index){
+369 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(index&#32;&lt;&#32;0&#32;||&#32;index&#32;&gt;=&#32;size)&#32;<emphasis role="keywordflow">return</emphasis>&#32;<emphasis role="keyword">nullptr</emphasis>;
+370 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;frameBufferPtrArray[index];
+371 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+372 
+378 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_struct_frame_buffer_chain_1a90a985cb4b6b820d2d2ed09f33042e02">setAtIndex</link>(<emphasis role="keywordtype">int</emphasis>&#32;index,&#32;std::shared_ptr&lt;FrameBuffer&gt;&#32;fbPtr){
+379 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(index&#32;&lt;&#32;0&#32;||&#32;index&#32;&gt;=&#32;size)&#32;<emphasis role="keywordflow">return</emphasis>;
+380 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;frameBufferPtrArray[index]&#32;=&#32;fbPtr;
+381 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+382 
+387 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;<link linkend="_struct_frame_buffer_chain_1a8457c99bcb3c3f8528241e3944b2a136">getSize</link>(){
+388 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;size;
+389 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+390 
+395 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_struct_frame_buffer_chain_1a6a1c1c03350c99f6c487b6175d6c7a8a">resize</link>(<emphasis role="keywordtype">int</emphasis>&#32;newSize){
+396 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(newSize&#32;&lt;=&#32;0)&#32;<emphasis role="keywordflow">return</emphasis>;
+397 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;frameBufferPtrArray.resize(newSize);
+398 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;size&#32;=&#32;newSize;
+399 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+400 
+406 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_struct_frame_buffer_chain_1aa3a1aab9cd6f4bdb0dbbf89c9c993320">resizeBuffers</link>(<emphasis role="keywordtype">int</emphasis>&#32;width,&#32;<emphasis role="keywordtype">int</emphasis>&#32;height){
+407 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">for</emphasis>(<emphasis role="keyword">auto</emphasis>&#32;buffer&#32;:&#32;frameBufferPtrArray){
+408 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(buffer)&#32;{
+409 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;buffer-&gt;resize(width,height);
+410 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+411 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+412 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+413 };
+414 
+416 <emphasis role="keyword">struct&#32;</emphasis>TrippleBuffer{
+417 &#32;&#32;&#32;&#32;<emphasis role="keyword">private</emphasis>:
+418 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_frame_buffer_chain">FrameBufferChain</link>&#32;chain&#32;=&#32;<link linkend="_struct_frame_buffer_chain">FrameBufferChain</link>(3);
+419 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;width,&#32;height;
+423 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;TrippleBuffer()&#32;=&#32;<emphasis role="keyword">delete</emphasis>;
+424 &#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+425 
+431 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_tripple_buffer_1ade5ad21dfd69dd617dc59c35adddf8c9">TrippleBuffer</link>(<emphasis role="keywordtype">int</emphasis>&#32;width,&#32;<emphasis role="keywordtype">int</emphasis>&#32;height)&#32;:&#32;width(width),&#32;height(height)&#32;{
+432 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;chain.setAtIndex(0,&#32;<link linkend="_struct_frame_buffer_1ac9d501ed7d2c3065d73ab4bb3ac79aaa">FrameBuffer::Create</link>(width,&#32;height));
+433 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;chain.setAtIndex(1,&#32;<link linkend="_struct_frame_buffer_1ac9d501ed7d2c3065d73ab4bb3ac79aaa">FrameBuffer::Create</link>(width,&#32;height));
+434 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;chain.setAtIndex(2,&#32;<link linkend="_struct_frame_buffer_1ac9d501ed7d2c3065d73ab4bb3ac79aaa">FrameBuffer::Create</link>(width,&#32;height));
+435 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+436 
+441 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;FrameBuffer&gt;&#32;<link linkend="_struct_tripple_buffer_1aa1580b077ee4b77e4cf0293e5fce37af">getFront</link>(){
+442 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;chain.getAtIndex(0);
+443 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+444 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;
+449 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;FrameBuffer&gt;&#32;<link linkend="_struct_tripple_buffer_1a27e3d899dc5c66e38fb6d240ad8ac0e6">getMiddle</link>(){
+450 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;chain.getAtIndex(1);
+451 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+452 
+457 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;FrameBuffer&gt;&#32;<link linkend="_struct_tripple_buffer_1a841ad487a95331a841cd26ede3b8358d">getBack</link>(){
+458 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;chain.getAtIndex(2);
+459 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+460 
+461 
+462 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;Helper&#32;functions&#32;for&#32;understanding&#32;the&#32;order.</emphasis>
+463 
+464 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;FrameBuffer&gt;&#32;getDisplayBuffer(){
+465 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;<link linkend="_struct_tripple_buffer_1aa1580b077ee4b77e4cf0293e5fce37af">getFront</link>();
+466 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+467 
+472 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;FrameBuffer&gt;&#32;<link linkend="_struct_tripple_buffer_1a53cf73b5efe7ab4e33b47b4d1ef5f099">getEditBuffer</link>(){
+473 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;<link linkend="_struct_tripple_buffer_1a27e3d899dc5c66e38fb6d240ad8ac0e6">getMiddle</link>();
+474 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+475 
+480 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;FrameBuffer&gt;&#32;<link linkend="_struct_tripple_buffer_1aaadfe8298e9fdbab9177084bf5bbc648">getDrawBuffer</link>(){
+481 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;<link linkend="_struct_tripple_buffer_1a841ad487a95331a841cd26ede3b8358d">getBack</link>();
+482 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+483 
+484 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;===================================================</emphasis>
+485 
+486 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;setFront(std::shared_ptr&lt;FrameBuffer&gt;&#32;framePtr){
+487 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;chain.<link linkend="_struct_frame_buffer_chain_1a90a985cb4b6b820d2d2ed09f33042e02">setAtIndex</link>(0,framePtr);
+488 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+489 
+494 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_struct_tripple_buffer_1a21607aceb5b3dc8dbf987a595e67c567">setMiddle</link>(std::shared_ptr&lt;FrameBuffer&gt;&#32;framePtr){
+495 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;chain.setAtIndex(1,framePtr);
+496 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+497 
+502 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_struct_tripple_buffer_1a807d0eac379ba76f82f0dda42f36100d">setBack</link>(std::shared_ptr&lt;FrameBuffer&gt;&#32;framePtr){
+503 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;chain.setAtIndex(2,framePtr);
+504 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+505 
+509 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_struct_tripple_buffer_1a2fe9ea51bbfae49182b81360da39b5df">swapBuffers</link>(){
+510 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">auto</emphasis>&#32;frontBuffer&#32;=&#32;<link linkend="_struct_tripple_buffer_1aa1580b077ee4b77e4cf0293e5fce37af">getFront</link>();
+511 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">auto</emphasis>&#32;middleBuffer&#32;=&#32;<link linkend="_struct_tripple_buffer_1a27e3d899dc5c66e38fb6d240ad8ac0e6">getMiddle</link>();
+512 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">auto</emphasis>&#32;backBuffer&#32;=&#32;<link linkend="_struct_tripple_buffer_1a841ad487a95331a841cd26ede3b8358d">getBack</link>();
+513 
+514 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;setFront(middleBuffer);
+515 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_tripple_buffer_1a21607aceb5b3dc8dbf987a595e67c567">setMiddle</link>(backBuffer);
+516 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_tripple_buffer_1a807d0eac379ba76f82f0dda42f36100d">setBack</link>(frontBuffer);
+517 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+518 
+524 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_struct_tripple_buffer_1a3e121c9862627d785ba325e00e7aa3d7">resizeBuffers</link>(<emphasis role="keywordtype">int</emphasis>&#32;width,&#32;<emphasis role="keywordtype">int</emphasis>&#32;height){
+525 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;chain.resizeBuffers(width,&#32;height);
+526 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+527 };
+528 
+529 <emphasis role="keyword">typedef</emphasis>&#32;std::shared_ptr&lt;FrameBuffer&gt;&#32;PFrameBuffer;
+530 
+531 <emphasis role="preprocessor">#endif&#32;</emphasis><emphasis role="comment">//&#32;FRAMEBUFFER_H</emphasis>
+</programlisting></section>

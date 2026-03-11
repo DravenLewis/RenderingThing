@@ -1,0 +1,792 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_constructed_material" xml:lang="en-US">
+<title>ConstructedMaterial Class Reference</title>
+<indexterm><primary>ConstructedMaterial</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_constructed_material">ConstructedMaterial</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;ConstructedMaterial.h&gt;</computeroutput>
+</para>
+<para>Inheritance diagram for ConstructedMaterial:    <informalfigure>
+        <mediaobject>
+            <imageobject>
+                <imagedata width="50%" align="center" valign="middle" scalefit="0" fileref="class_constructed_material.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+    </informalfigure>
+</para>
+<simplesect>
+    <title>Classes    </title>
+        <itemizedlist>
+            <listitem><para>struct <link linkend="_struct_constructed_material_1_1_field">Field</link></para>
+
+<para>Holds data for <link linkend="_struct_constructed_material_1_1_field">Field</link>. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Public Types    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cf"/>enum class <link linkend="_class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cf">FieldType</link> { <?linebreak?><emphasis role="strong">Float</emphasis> = 0
+, <emphasis role="strong">Int</emphasis>
+, <emphasis role="strong">Bool</emphasis>
+, <emphasis role="strong">Vec2</emphasis>
+, <?linebreak?><emphasis role="strong">Vec3</emphasis>
+, <emphasis role="strong">Vec4</emphasis>
+, <emphasis role="strong">Texture2D</emphasis>
+ }</para>
+
+<para>Enumerates values for <link linkend="_class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cf">FieldType</link>. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><link linkend="_class_constructed_material_1a6e513e5615be7d3b0fa75894b2c58dd1">ConstructedMaterial</link> (const std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; &amp;shaderProgram)</para>
+
+<para>Constructs a new <link linkend="_class_constructed_material">ConstructedMaterial</link> instance. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_constructed_material_1a21bc4a9062326ce5c0cd79a8a702a6be">setSourceAssetRef</link> (const std::string &amp;ref)</para>
+
+<para>Sets the source asset ref. </para>
+</listitem>
+            <listitem><para>const std::string &amp; <link linkend="_class_constructed_material_1a71a8ad0b3f9b7332cbeb6f83f40b7c9c">getSourceAssetRef</link> () const</para>
+
+<para>Returns the source asset ref. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_constructed_material_1ac61016aad3fbd3d73ec68b6bbb1ddada">setSourceMaterialName</link> (const std::string &amp;name)</para>
+
+<para>Sets the source material name. </para>
+</listitem>
+            <listitem><para>const std::string &amp; <link linkend="_class_constructed_material_1aa0808c55319a66dcef4948cca0f68a20">getSourceMaterialName</link> () const</para>
+
+<para>Returns the source material name. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_constructed_material_1_1_field">Field</link> &amp; <link linkend="_class_constructed_material_1a2f30d4fbf1fdb26e428b33d23dbf10c6">addFloatField</link> (const std::string &amp;key, const std::string &amp;displayName, const std::string &amp;uniformName, float value, const std::string &amp;mirrorUniformName=&quot;&quot;)</para>
+
+<para>Adds a float field definition. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_constructed_material_1_1_field">Field</link> &amp; <link linkend="_class_constructed_material_1a284816c36fa3df24c2a4078166d2e542">addIntField</link> (const std::string &amp;key, const std::string &amp;displayName, const std::string &amp;uniformName, int value, const std::string &amp;mirrorUniformName=&quot;&quot;)</para>
+
+<para>Adds an integer field definition. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_constructed_material_1_1_field">Field</link> &amp; <link linkend="_class_constructed_material_1a3aede6f45921adc753bb60b2f312a894">addBoolField</link> (const std::string &amp;key, const std::string &amp;displayName, const std::string &amp;uniformName, bool value, const std::string &amp;mirrorUniformName=&quot;&quot;)</para>
+
+<para>Adds a boolean field definition. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_constructed_material_1_1_field">Field</link> &amp; <link linkend="_class_constructed_material_1a5e730682b49c7d07f4e3213b7c8e936f">addVec2Field</link> (const std::string &amp;key, const std::string &amp;displayName, const std::string &amp;uniformName, const Math3D::Vec2 &amp;value, const std::string &amp;mirrorUniformName=&quot;&quot;)</para>
+
+<para>Adds a vec2 field definition. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_constructed_material_1_1_field">Field</link> &amp; <link linkend="_class_constructed_material_1afa38f16b02e4428ab401779f626db4bb">addVec3Field</link> (const std::string &amp;key, const std::string &amp;displayName, const std::string &amp;uniformName, const Math3D::Vec3 &amp;value, const std::string &amp;mirrorUniformName=&quot;&quot;)</para>
+
+<para>Adds a vec3 field definition. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_constructed_material_1_1_field">Field</link> &amp; <link linkend="_class_constructed_material_1acf1ea6cee12a7e291049b2bcd93e418a">addVec4Field</link> (const std::string &amp;key, const std::string &amp;displayName, const std::string &amp;uniformName, const Math3D::Vec4 &amp;value, const std::string &amp;mirrorUniformName=&quot;&quot;)</para>
+
+<para>Adds a vec4 field definition. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_constructed_material_1_1_field">Field</link> &amp; <link linkend="_class_constructed_material_1a4a1b88134f55b0f679212db40941c87b">addTexture2DField</link> (const std::string &amp;key, const std::string &amp;displayName, const std::string &amp;uniformName, const std::string &amp;textureAssetRef, int textureSlot, const std::string &amp;presenceUniformName=&quot;&quot;)</para>
+
+<para>Adds a texture field definition. </para>
+</listitem>
+            <listitem><para>std::vector&lt; <link linkend="_struct_constructed_material_1_1_field">Field</link> &gt; &amp; <link linkend="_class_constructed_material_1a7d29c3cf5ab8b761637884dd53ccb531">fields</link> ()</para>
+
+<para>Returns the material field list. </para>
+</listitem>
+            <listitem><para>const std::vector&lt; <link linkend="_struct_constructed_material_1_1_field">Field</link> &gt; &amp; <link linkend="_class_constructed_material_1ad3325736eb2a48a1546b69dddb779a3c">fields</link> () const</para>
+
+<para>Returns the material field list. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_constructed_material_1a1672cf71fcbe34b381fe784c9dcafa5c"/>void <emphasis role="strong">clearFields</emphasis> ()</para>
+
+<para>Clears fields. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_constructed_material_1ad41964516b374f85c9dbe03d70285388"/>void <emphasis role="strong">markFieldsDirty</emphasis> ()</para>
+
+<para>Marks material fields dirty for reapply. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_constructed_material_1a0b89ef6b1940504648859f840dd78a4b">applyField</link> (size_t index)</para>
+
+<para>Applies field. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_constructed_material_1a2d9ac90844fa0e951bdb8a2f90bd1aea"/>void <emphasis role="strong">applyAllFields</emphasis> ()</para>
+
+<para>Applies all fields. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_constructed_material_1a20ec1258bcfcd504150134f3d12dbb4a">bind</link> () override</para>
+
+<para>Binds this resource. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+Public Member Functions inherited from <link linkend="_class_material">Material</link>        <itemizedlist>
+            <listitem><para><link linkend="_class_material_1ace810a426f4b488d2dc2a53070d85405">Material</link> (std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; program)</para>
+
+<para>Constructs a new <link linkend="_class_material">Material</link> instance. </para>
+</listitem>
+            <listitem><para>virtual <emphasis role="strong">~Material</emphasis> ()</para>
+
+<para>Destroys this <link linkend="_class_material">Material</link> instance. </para>
+</listitem>
+            <listitem><para>template&lt;typename T&gt; </para><para>bool <emphasis role="strong">set</emphasis> (const std::string &amp;name, T value)</para>
+</listitem>
+            <listitem><para>void <emphasis role="strong">unbind</emphasis> ()</para>
+</listitem>
+            <listitem><para>std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; <emphasis role="strong">getShader</emphasis> ()</para>
+</listitem>
+            <listitem><para>void <emphasis role="strong">setShader</emphasis> (std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; program)</para>
+</listitem>
+            <listitem><para>void <emphasis role="strong">setCastsShadows</emphasis> (bool value)</para>
+</listitem>
+            <listitem><para>bool <emphasis role="strong">castsShadows</emphasis> () const</para>
+</listitem>
+            <listitem><para>void <emphasis role="strong">setReceivesShadows</emphasis> (bool value)</para>
+</listitem>
+            <listitem><para>bool <emphasis role="strong">receivesShadows</emphasis> () const</para>
+</listitem>
+        </itemizedlist>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>static std::shared_ptr&lt; <link linkend="_class_constructed_material">ConstructedMaterial</link> &gt; <link linkend="_class_constructed_material_1a3a3f4b57dfe35059b73a40e6cac44684">CreateWithPBRShader</link> ()</para>
+
+<para>Creates with pbr shader. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+Static Public Member Functions inherited from <link linkend="_class_material">Material</link>        <itemizedlist>
+            <listitem><para>static std::shared_ptr&lt; <link linkend="_class_material">Material</link> &gt; <emphasis role="strong">Copy</emphasis> (std::shared_ptr&lt; <link linkend="_class_material">Material</link> &gt; material)</para>
+</listitem>
+            <listitem><para>template&lt;typename T&gt; </para><para>static std::shared_ptr&lt; T &gt; <emphasis role="strong">GetAs</emphasis> (std::shared_ptr&lt; <link linkend="_class_material">Material</link> &gt; matPtr)</para>
+</listitem>
+        </itemizedlist>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_constructed_material">ConstructedMaterial</link> type. </para>
+</section>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_class_constructed_material_1a6e513e5615be7d3b0fa75894b2c58dd1"/><section>
+    <title>ConstructedMaterial()</title>
+<indexterm><primary>ConstructedMaterial</primary><secondary>ConstructedMaterial</secondary></indexterm>
+<indexterm><primary>ConstructedMaterial</primary><secondary>ConstructedMaterial</secondary></indexterm>
+<para><computeroutput>ConstructedMaterial::ConstructedMaterial (const std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; &amp; shaderProgram)<computeroutput>[explicit]</computeroutput></computeroutput></para><para>
+
+<para>Constructs a new <link linkend="_class_constructed_material">ConstructedMaterial</link> instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>shaderProgram</entry><entry>
+<para>Value for shader program. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Result of this operation. </para>
+</formalpara>
+</para>
+</section>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_constructed_material_1a3aede6f45921adc753bb60b2f312a894"/><section>
+    <title>addBoolField()</title>
+<indexterm><primary>addBoolField</primary><secondary>ConstructedMaterial</secondary></indexterm>
+<indexterm><primary>ConstructedMaterial</primary><secondary>addBoolField</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_constructed_material_1_1_field">ConstructedMaterial::Field</link> &amp; ConstructedMaterial::addBoolField (const std::string &amp; key, const std::string &amp; displayName, const std::string &amp; uniformName, bool value, const std::string &amp; mirrorUniformName = <computeroutput>&quot;&quot;</computeroutput>
+)</computeroutput></para><para>
+
+<para>Adds a boolean field definition. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>key</entry><entry>
+<para>Value for key. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>displayName</entry><entry>
+<para>Name used for display name. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>uniformName</entry><entry>
+<para>Name used for uniform name. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>value</entry><entry>
+<para>Value for value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>mirrorUniformName</entry><entry>
+<para>Name used for mirror uniform name. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_constructed_material_1a2f30d4fbf1fdb26e428b33d23dbf10c6"/><section>
+    <title>addFloatField()</title>
+<indexterm><primary>addFloatField</primary><secondary>ConstructedMaterial</secondary></indexterm>
+<indexterm><primary>ConstructedMaterial</primary><secondary>addFloatField</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_constructed_material_1_1_field">ConstructedMaterial::Field</link> &amp; ConstructedMaterial::addFloatField (const std::string &amp; key, const std::string &amp; displayName, const std::string &amp; uniformName, float value, const std::string &amp; mirrorUniformName = <computeroutput>&quot;&quot;</computeroutput>
+)</computeroutput></para><para>
+
+<para>Adds a float field definition. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>key</entry><entry>
+<para>Value for key. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>displayName</entry><entry>
+<para>Name used for display name. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>uniformName</entry><entry>
+<para>Name used for uniform name. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>value</entry><entry>
+<para>Value for value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>mirrorUniformName</entry><entry>
+<para>Name used for mirror uniform name. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_constructed_material_1a284816c36fa3df24c2a4078166d2e542"/><section>
+    <title>addIntField()</title>
+<indexterm><primary>addIntField</primary><secondary>ConstructedMaterial</secondary></indexterm>
+<indexterm><primary>ConstructedMaterial</primary><secondary>addIntField</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_constructed_material_1_1_field">ConstructedMaterial::Field</link> &amp; ConstructedMaterial::addIntField (const std::string &amp; key, const std::string &amp; displayName, const std::string &amp; uniformName, int value, const std::string &amp; mirrorUniformName = <computeroutput>&quot;&quot;</computeroutput>
+)</computeroutput></para><para>
+
+<para>Adds an integer field definition. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>key</entry><entry>
+<para>Value for key. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>displayName</entry><entry>
+<para>Name used for display name. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>uniformName</entry><entry>
+<para>Name used for uniform name. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>value</entry><entry>
+<para>Value for value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>mirrorUniformName</entry><entry>
+<para>Name used for mirror uniform name. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_constructed_material_1a4a1b88134f55b0f679212db40941c87b"/><section>
+    <title>addTexture2DField()</title>
+<indexterm><primary>addTexture2DField</primary><secondary>ConstructedMaterial</secondary></indexterm>
+<indexterm><primary>ConstructedMaterial</primary><secondary>addTexture2DField</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_constructed_material_1_1_field">ConstructedMaterial::Field</link> &amp; ConstructedMaterial::addTexture2DField (const std::string &amp; key, const std::string &amp; displayName, const std::string &amp; uniformName, const std::string &amp; textureAssetRef, int textureSlot, const std::string &amp; presenceUniformName = <computeroutput>&quot;&quot;</computeroutput>
+)</computeroutput></para><para>
+
+<para>Adds a texture field definition. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>key</entry><entry>
+<para>Value for key. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>displayName</entry><entry>
+<para>Name used for display name. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>uniformName</entry><entry>
+<para>Name used for uniform name. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>textureAssetRef</entry><entry>
+<para>Reference to texture asset. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>textureSlot</entry><entry>
+<para>Value for texture slot. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>presenceUniformName</entry><entry>
+<para>Name used for presence uniform name. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_constructed_material_1a5e730682b49c7d07f4e3213b7c8e936f"/><section>
+    <title>addVec2Field()</title>
+<indexterm><primary>addVec2Field</primary><secondary>ConstructedMaterial</secondary></indexterm>
+<indexterm><primary>ConstructedMaterial</primary><secondary>addVec2Field</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_constructed_material_1_1_field">ConstructedMaterial::Field</link> &amp; ConstructedMaterial::addVec2Field (const std::string &amp; key, const std::string &amp; displayName, const std::string &amp; uniformName, const Math3D::Vec2 &amp; value, const std::string &amp; mirrorUniformName = <computeroutput>&quot;&quot;</computeroutput>
+)</computeroutput></para><para>
+
+<para>Adds a vec2 field definition. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>key</entry><entry>
+<para>Value for key. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>displayName</entry><entry>
+<para>Name used for display name. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>uniformName</entry><entry>
+<para>Name used for uniform name. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>value</entry><entry>
+<para>Value for value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>mirrorUniformName</entry><entry>
+<para>Name used for mirror uniform name. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_constructed_material_1afa38f16b02e4428ab401779f626db4bb"/><section>
+    <title>addVec3Field()</title>
+<indexterm><primary>addVec3Field</primary><secondary>ConstructedMaterial</secondary></indexterm>
+<indexterm><primary>ConstructedMaterial</primary><secondary>addVec3Field</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_constructed_material_1_1_field">ConstructedMaterial::Field</link> &amp; ConstructedMaterial::addVec3Field (const std::string &amp; key, const std::string &amp; displayName, const std::string &amp; uniformName, const Math3D::Vec3 &amp; value, const std::string &amp; mirrorUniformName = <computeroutput>&quot;&quot;</computeroutput>
+)</computeroutput></para><para>
+
+<para>Adds a vec3 field definition. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>key</entry><entry>
+<para>Value for key. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>displayName</entry><entry>
+<para>Name used for display name. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>uniformName</entry><entry>
+<para>Name used for uniform name. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>value</entry><entry>
+<para>Value for value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>mirrorUniformName</entry><entry>
+<para>Name used for mirror uniform name. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_constructed_material_1acf1ea6cee12a7e291049b2bcd93e418a"/><section>
+    <title>addVec4Field()</title>
+<indexterm><primary>addVec4Field</primary><secondary>ConstructedMaterial</secondary></indexterm>
+<indexterm><primary>ConstructedMaterial</primary><secondary>addVec4Field</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_constructed_material_1_1_field">ConstructedMaterial::Field</link> &amp; ConstructedMaterial::addVec4Field (const std::string &amp; key, const std::string &amp; displayName, const std::string &amp; uniformName, const Math3D::Vec4 &amp; value, const std::string &amp; mirrorUniformName = <computeroutput>&quot;&quot;</computeroutput>
+)</computeroutput></para><para>
+
+<para>Adds a vec4 field definition. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>key</entry><entry>
+<para>Value for key. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>displayName</entry><entry>
+<para>Name used for display name. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>uniformName</entry><entry>
+<para>Name used for uniform name. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>value</entry><entry>
+<para>Value for value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>mirrorUniformName</entry><entry>
+<para>Name used for mirror uniform name. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_constructed_material_1a0b89ef6b1940504648859f840dd78a4b"/><section>
+    <title>applyField()</title>
+<indexterm><primary>applyField</primary><secondary>ConstructedMaterial</secondary></indexterm>
+<indexterm><primary>ConstructedMaterial</primary><secondary>applyField</secondary></indexterm>
+<para><computeroutput>void ConstructedMaterial::applyField (size_t index)</computeroutput></para><para>
+
+<para>Applies field. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>index</entry><entry>
+<para>Identifier or index value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_constructed_material_1a20ec1258bcfcd504150134f3d12dbb4a"/><section>
+    <title>bind()</title>
+<indexterm><primary>bind</primary><secondary>ConstructedMaterial</secondary></indexterm>
+<indexterm><primary>ConstructedMaterial</primary><secondary>bind</secondary></indexterm>
+<para><computeroutput>void ConstructedMaterial::bind ( )<computeroutput>[override]</computeroutput>, <computeroutput>[virtual]</computeroutput></computeroutput></para><para>
+
+<para>Binds this resource. </para>
+</para>
+<para>
+Reimplemented from <link linkend="_class_material">Material</link>.</para>
+</section>
+<anchor xml:id="_class_constructed_material_1a3a3f4b57dfe35059b73a40e6cac44684"/><section>
+    <title>CreateWithPBRShader()</title>
+<indexterm><primary>CreateWithPBRShader</primary><secondary>ConstructedMaterial</secondary></indexterm>
+<indexterm><primary>ConstructedMaterial</primary><secondary>CreateWithPBRShader</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_class_constructed_material">ConstructedMaterial</link> &gt; ConstructedMaterial::CreateWithPBRShader ( )<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Creates with pbr shader. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_constructed_material_1a7d29c3cf5ab8b761637884dd53ccb531"/><section>
+    <title>fields()<computeroutput>[1/2]</computeroutput></title>
+<indexterm><primary>fields</primary><secondary>ConstructedMaterial</secondary></indexterm>
+<indexterm><primary>ConstructedMaterial</primary><secondary>fields</secondary></indexterm>
+<para><computeroutput>std::vector&lt; <link linkend="_struct_constructed_material_1_1_field">ConstructedMaterial::Field</link> &gt; &amp; ConstructedMaterial::fields ( )</computeroutput></para><para>
+
+<para>Returns the material field list. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_constructed_material_1ad3325736eb2a48a1546b69dddb779a3c"/><section>
+    <title>fields()<computeroutput>[2/2]</computeroutput></title>
+<indexterm><primary>fields</primary><secondary>ConstructedMaterial</secondary></indexterm>
+<indexterm><primary>ConstructedMaterial</primary><secondary>fields</secondary></indexterm>
+<para><computeroutput>const std::vector&lt; <link linkend="_struct_constructed_material_1_1_field">ConstructedMaterial::Field</link> &gt; &amp; ConstructedMaterial::fields ( ) const</computeroutput></para><para>
+
+<para>Returns the material field list. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_constructed_material_1a71a8ad0b3f9b7332cbeb6f83f40b7c9c"/><section>
+    <title>getSourceAssetRef()</title>
+<indexterm><primary>getSourceAssetRef</primary><secondary>ConstructedMaterial</secondary></indexterm>
+<indexterm><primary>ConstructedMaterial</primary><secondary>getSourceAssetRef</secondary></indexterm>
+<para><computeroutput>const std::string &amp; ConstructedMaterial::getSourceAssetRef ( ) const</computeroutput></para><para>
+
+<para>Returns the source asset ref. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Resulting string value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_constructed_material_1aa0808c55319a66dcef4948cca0f68a20"/><section>
+    <title>getSourceMaterialName()</title>
+<indexterm><primary>getSourceMaterialName</primary><secondary>ConstructedMaterial</secondary></indexterm>
+<indexterm><primary>ConstructedMaterial</primary><secondary>getSourceMaterialName</secondary></indexterm>
+<para><computeroutput>const std::string &amp; ConstructedMaterial::getSourceMaterialName ( ) const</computeroutput></para><para>
+
+<para>Returns the source material name. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Resulting string value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_constructed_material_1a21bc4a9062326ce5c0cd79a8a702a6be"/><section>
+    <title>setSourceAssetRef()</title>
+<indexterm><primary>setSourceAssetRef</primary><secondary>ConstructedMaterial</secondary></indexterm>
+<indexterm><primary>ConstructedMaterial</primary><secondary>setSourceAssetRef</secondary></indexterm>
+<para><computeroutput>void ConstructedMaterial::setSourceAssetRef (const std::string &amp; ref)</computeroutput></para><para>
+
+<para>Sets the source asset ref. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>ref</entry><entry>
+<para>Reference to reference. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_constructed_material_1ac61016aad3fbd3d73ec68b6bbb1ddada"/><section>
+    <title>setSourceMaterialName()</title>
+<indexterm><primary>setSourceMaterialName</primary><secondary>ConstructedMaterial</secondary></indexterm>
+<indexterm><primary>ConstructedMaterial</primary><secondary>setSourceMaterialName</secondary></indexterm>
+<para><computeroutput>void ConstructedMaterial::setSourceMaterialName (const std::string &amp; name)</computeroutput></para><para>
+
+<para>Sets the source material name. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>name</entry><entry>
+<para>Name used for name. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<para>
+The documentation for this class was generated from the following files:</para>
+src/Rendering/Materials/<link linkend="__constructed_material_8h">ConstructedMaterial.h</link>src/Rendering/Materials/<link linkend="__constructed_material_8cpp">ConstructedMaterial.cpp</link></section>
+</section>

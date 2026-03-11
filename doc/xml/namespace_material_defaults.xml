@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="namespace_material_defaults" kind="namespace" language="C++">
+    <compoundname>MaterialDefaults</compoundname>
+    <innerclass refid="class_material_defaults_1_1_color_material" prot="public">MaterialDefaults::ColorMaterial</innerclass>
+    <innerclass refid="class_material_defaults_1_1_image_material" prot="public">MaterialDefaults::ImageMaterial</innerclass>
+    <innerclass refid="class_material_defaults_1_1_lit_color_material" prot="public">MaterialDefaults::LitColorMaterial</innerclass>
+    <innerclass refid="class_material_defaults_1_1_lit_image_material" prot="public">MaterialDefaults::LitImageMaterial</innerclass>
+    <innerclass refid="class_material_defaults_1_1_flat_color_material" prot="public">MaterialDefaults::FlatColorMaterial</innerclass>
+    <innerclass refid="class_material_defaults_1_1_flat_image_material" prot="public">MaterialDefaults::FlatImageMaterial</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Materials/MaterialDefaults.h" line="27" column="1"/>
+  </compounddef>
+</doxygen>

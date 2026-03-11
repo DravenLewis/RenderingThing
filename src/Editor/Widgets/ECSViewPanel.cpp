@@ -1,3 +1,8 @@
+/**
+ * @file src/Editor/Widgets/ECSViewPanel.cpp
+ * @brief Implementation for ECSViewPanel.
+ */
+
 #include "Editor/Widgets/ECSViewPanel.h"
 
 #include "Editor/Core/EditorAssetUI.h"
@@ -15,6 +20,7 @@ namespace {
         ImGuiWindowFlags_NoResize |
         ImGuiWindowFlags_NoCollapse;
 
+    /// @brief Represents Entity Drag Payload data.
     struct EntityDragPayload {
         char entityId[64] = {};
     };

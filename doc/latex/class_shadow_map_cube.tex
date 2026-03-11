@@ -1,0 +1,157 @@
+\doxysection{Shadow\+Map\+Cube Class Reference}
+\hypertarget{class_shadow_map_cube}{}\label{class_shadow_map_cube}\index{ShadowMapCube@{ShadowMapCube}}
+
+
+Represents the \doxylink{class_shadow_map_cube}{Shadow\+Map\+Cube} type.  
+
+
+
+
+{\ttfamily \+\#include $<$Shadow\+Map.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_shadow_map_cube_ad6bb31f5d7cc939a0c91a1b1d434a76a}\label{class_shadow_map_cube_ad6bb31f5d7cc939a0c91a1b1d434a76a} 
+{\bfseries Shadow\+Map\+Cube} ()=default
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_shadow_map_cube}{Shadow\+Map\+Cube} instance. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{class_shadow_map_cube_ae8b1dbe11963788d9f2661d7b57801e4}{Shadow\+Map\+Cube}} (int size)
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_shadow_map_cube}{Shadow\+Map\+Cube} instance. \end{DoxyCompactList}\item 
+\Hypertarget{class_shadow_map_cube_a35eb630aeabf2272a312f6a4a49f6712}\label{class_shadow_map_cube_a35eb630aeabf2272a312f6a4a49f6712} 
+{\bfseries \texorpdfstring{$\sim$}{\string~}\+Shadow\+Map\+Cube} ()
+\begin{DoxyCompactList}\small\item\em Destroys this \doxylink{class_shadow_map_cube}{Shadow\+Map\+Cube} instance. \end{DoxyCompactList}\item 
+\Hypertarget{class_shadow_map_cube_a0aaaefa1c4de0b8da0ef9f4b37d619db}\label{class_shadow_map_cube_a0aaaefa1c4de0b8da0ef9f4b37d619db} 
+{\bfseries Shadow\+Map\+Cube} (const \doxymbox{\hyperlink{class_shadow_map_cube}{Shadow\+Map\+Cube}} \&)=delete
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_shadow_map_cube}{Shadow\+Map\+Cube} instance. \end{DoxyCompactList}\item 
+\Hypertarget{class_shadow_map_cube_aa901c0f61f181dcaf8eeaf2aca97cc9f}\label{class_shadow_map_cube_aa901c0f61f181dcaf8eeaf2aca97cc9f} 
+\doxymbox{\hyperlink{class_shadow_map_cube}{Shadow\+Map\+Cube}} \& {\bfseries operator=} (const \doxymbox{\hyperlink{class_shadow_map_cube}{Shadow\+Map\+Cube}} \&)=delete
+\begin{DoxyCompactList}\small\item\em Assigns from another instance. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{class_shadow_map_cube_acf4f6dc81cb39059f2df7352e667cc9a}{Shadow\+Map\+Cube}} (\doxymbox{\hyperlink{class_shadow_map_cube}{Shadow\+Map\+Cube}} \&\&other) noexcept
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_shadow_map_cube}{Shadow\+Map\+Cube} instance. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{class_shadow_map_cube}{Shadow\+Map\+Cube}} \& \doxymbox{\hyperlink{class_shadow_map_cube_a9ec157dfb27a1e0f183fad95d0ee128c}{operator=}} (\doxymbox{\hyperlink{class_shadow_map_cube}{Shadow\+Map\+Cube}} \&\&other) noexcept
+\begin{DoxyCompactList}\small\item\em Assigns from another instance. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_shadow_map_cube_a2b4bc34daef25168c05eb6a853919afc}{resize}} (int new\+Size)
+\begin{DoxyCompactList}\small\item\em Resizes internal resources. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_shadow_map_cube_aa8bbe52175ec103726b6aa2e4dd4645b}{bind\+Face}} (GLenum face) const
+\begin{DoxyCompactList}\small\item\em Binds face. \end{DoxyCompactList}\item 
+\Hypertarget{class_shadow_map_cube_aa977176a7596a0ba2baa70cb78dcfebf}\label{class_shadow_map_cube_aa977176a7596a0ba2baa70cb78dcfebf} 
+void {\bfseries unbind} () const
+\begin{DoxyCompactList}\small\item\em Unbinds this resource. \end{DoxyCompactList}\item 
+\Hypertarget{class_shadow_map_cube_a7d6e4c1116e8e0827ead05a08c70de5c}\label{class_shadow_map_cube_a7d6e4c1116e8e0827ead05a08c70de5c} 
+void {\bfseries clear} () const
+\begin{DoxyCompactList}\small\item\em Clears the current state. \end{DoxyCompactList}\item 
+GLuint \doxymbox{\hyperlink{class_shadow_map_cube_ad1fcf694238173cea98f59fb0f3f1efe}{get\+Depth\+Texture}} () const
+\begin{DoxyCompactList}\small\item\em Returns the depth texture. \end{DoxyCompactList}\item 
+\Hypertarget{class_shadow_map_cube_ab22b92b416ce0fcf00cd93863958a955}\label{class_shadow_map_cube_ab22b92b416ce0fcf00cd93863958a955} 
+int {\bfseries get\+Size} () const
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the \doxylink{class_shadow_map_cube}{Shadow\+Map\+Cube} type. 
+
+\label{doc-constructors}
+\Hypertarget{class_shadow_map_cube_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_shadow_map_cube_ae8b1dbe11963788d9f2661d7b57801e4}\index{ShadowMapCube@{ShadowMapCube}!ShadowMapCube@{ShadowMapCube}}
+\index{ShadowMapCube@{ShadowMapCube}!ShadowMapCube@{ShadowMapCube}}
+\doxysubsubsection{\texorpdfstring{ShadowMapCube()}{ShadowMapCube()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{class_shadow_map_cube_ae8b1dbe11963788d9f2661d7b57801e4} 
+Shadow\+Map\+Cube::\+\+Shadow\+Map\+Cube (\begin{DoxyParamCaption}\item[{int}]{size}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+
+
+Constructs a new \doxylink{class_shadow_map_cube}{Shadow\+Map\+Cube} instance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em size} & Number of elements or bytes. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of this operation. 
+\end{DoxyReturn}
+\Hypertarget{class_shadow_map_cube_acf4f6dc81cb39059f2df7352e667cc9a}\index{ShadowMapCube@{ShadowMapCube}!ShadowMapCube@{ShadowMapCube}}
+\index{ShadowMapCube@{ShadowMapCube}!ShadowMapCube@{ShadowMapCube}}
+\doxysubsubsection{\texorpdfstring{ShadowMapCube()}{ShadowMapCube()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{class_shadow_map_cube_acf4f6dc81cb39059f2df7352e667cc9a} 
+Shadow\+Map\+Cube::\+\+Shadow\+Map\+Cube (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_shadow_map_cube}{Shadow\+Map\+Cube}} \&\&}]{other}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+
+
+Constructs a new \doxylink{class_shadow_map_cube}{Shadow\+Map\+Cube} instance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em other} & Value for other. \\
+\hline
+\end{DoxyParams}
+
+
+\label{doc-func-members}
+\Hypertarget{class_shadow_map_cube_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_shadow_map_cube_aa8bbe52175ec103726b6aa2e4dd4645b}\index{ShadowMapCube@{ShadowMapCube}!bindFace@{bindFace}}
+\index{bindFace@{bindFace}!ShadowMapCube@{ShadowMapCube}}
+\doxysubsubsection{\texorpdfstring{bindFace()}{bindFace()}}
+{\footnotesize\ttfamily \label{class_shadow_map_cube_aa8bbe52175ec103726b6aa2e4dd4645b} 
+void Shadow\+Map\+Cube::\+bind\+Face (\begin{DoxyParamCaption}\item[{GLenum}]{face}{}\end{DoxyParamCaption}) const}
+
+
+
+Binds face. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em face} & Value for face. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_shadow_map_cube_ad1fcf694238173cea98f59fb0f3f1efe}\index{ShadowMapCube@{ShadowMapCube}!getDepthTexture@{getDepthTexture}}
+\index{getDepthTexture@{getDepthTexture}!ShadowMapCube@{ShadowMapCube}}
+\doxysubsubsection{\texorpdfstring{getDepthTexture()}{getDepthTexture()}}
+{\footnotesize\ttfamily \label{class_shadow_map_cube_ad1fcf694238173cea98f59fb0f3f1efe} 
+GLuint Shadow\+Map\+Cube::\+get\+Depth\+Texture (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the depth texture. 
+
+\begin{DoxyReturn}{Returns}
+Result of this operation. 
+\end{DoxyReturn}
+\Hypertarget{class_shadow_map_cube_a9ec157dfb27a1e0f183fad95d0ee128c}\index{ShadowMapCube@{ShadowMapCube}!operator=@{operator=}}
+\index{operator=@{operator=}!ShadowMapCube@{ShadowMapCube}}
+\doxysubsubsection{\texorpdfstring{operator=()}{operator=()}}
+{\footnotesize\ttfamily \label{class_shadow_map_cube_a9ec157dfb27a1e0f183fad95d0ee128c} 
+\doxymbox{\hyperlink{class_shadow_map_cube}{Shadow\+Map\+Cube}} \& Shadow\+Map\+Cube::\+operator= (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_shadow_map_cube}{Shadow\+Map\+Cube}} \&\&}]{other}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+
+
+Assigns from another instance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em other} & Value for other. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_shadow_map_cube_a2b4bc34daef25168c05eb6a853919afc}\index{ShadowMapCube@{ShadowMapCube}!resize@{resize}}
+\index{resize@{resize}!ShadowMapCube@{ShadowMapCube}}
+\doxysubsubsection{\texorpdfstring{resize()}{resize()}}
+{\footnotesize\ttfamily \label{class_shadow_map_cube_a2b4bc34daef25168c05eb6a853919afc} 
+void Shadow\+Map\+Cube::\+resize (\begin{DoxyParamCaption}\item[{int}]{new\+Size}{}\end{DoxyParamCaption})}
+
+
+
+Resizes internal resources. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em new\+Size} & Number of elements or bytes. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Lighting/\+\doxymbox{\hyperlink{_shadow_map_8h}{Shadow\+Map.\+h}}\item 
+src/\+\+Rendering/\+\+Lighting/\+\doxymbox{\hyperlink{_shadow_map_8cpp}{Shadow\+Map.\+cpp}}\end{DoxyCompactItemize}

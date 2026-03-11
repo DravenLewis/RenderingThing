@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_free_type_font_1_1_deferred_batch" kind="struct" language="C++" prot="private">
+    <compoundname>FreeTypeFont::DeferredBatch</compoundname>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_free_type_font_1_1_deferred_batch_1ace1eb8abc592705b636450fb0d8a20c2" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t FreeTypeFont::DeferredBatch::colorKey</definition>
+        <argsstring></argsstring>
+        <name>colorKey</name>
+        <qualifiedname>FreeTypeFont::DeferredBatch::colorKey</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/FreeTypeFont.h" line="31" column="22" bodyfile="src/Rendering/Fonts/FreeTypeFont.h" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_free_type_font_1_1_deferred_batch_1a3b8f4160ae3e8cacce54555010d38837" prot="public" static="no" mutable="no">
+        <type>Color</type>
+        <definition>Color FreeTypeFont::DeferredBatch::color</definition>
+        <argsstring></argsstring>
+        <name>color</name>
+        <qualifiedname>FreeTypeFont::DeferredBatch::color</qualifiedname>
+        <initializer>= Color::WHITE</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/FreeTypeFont.h" line="32" column="19" bodyfile="src/Rendering/Fonts/FreeTypeFont.h" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_free_type_font_1_1_deferred_batch_1a786977188827c0af264de8bce6356c10" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; <ref refid="struct_vertex" kindref="compound">Vertex</ref> &gt;</type>
+        <definition>std::vector&lt;Vertex&gt; FreeTypeFont::DeferredBatch::vertices</definition>
+        <argsstring></argsstring>
+        <name>vertices</name>
+        <qualifiedname>FreeTypeFont::DeferredBatch::vertices</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/FreeTypeFont.h" line="33" column="25" bodyfile="src/Rendering/Fonts/FreeTypeFont.h" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_free_type_font_1_1_deferred_batch_1a1f1065cc3f5ac8f4adaaea7bf7a6fd7e" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; uint32_t &gt;</type>
+        <definition>std::vector&lt;uint32_t&gt; FreeTypeFont::DeferredBatch::indices</definition>
+        <argsstring></argsstring>
+        <name>indices</name>
+        <qualifiedname>FreeTypeFont::DeferredBatch::indices</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/FreeTypeFont.h" line="34" column="25" bodyfile="src/Rendering/Fonts/FreeTypeFont.h" bodystart="34" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for DeferredBatch. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Fonts/FreeTypeFont.h" line="30" column="9" bodyfile="src/Rendering/Fonts/FreeTypeFont.h" bodystart="30" bodyend="35"/>
+    <listofallmembers>
+      <member refid="struct_free_type_font_1_1_deferred_batch_1a3b8f4160ae3e8cacce54555010d38837" prot="public" virt="non-virtual"><scope>FreeTypeFont::DeferredBatch</scope><name>color</name></member>
+      <member refid="struct_free_type_font_1_1_deferred_batch_1ace1eb8abc592705b636450fb0d8a20c2" prot="public" virt="non-virtual"><scope>FreeTypeFont::DeferredBatch</scope><name>colorKey</name></member>
+      <member refid="struct_free_type_font_1_1_deferred_batch_1a1f1065cc3f5ac8f4adaaea7bf7a6fd7e" prot="public" virt="non-virtual"><scope>FreeTypeFont::DeferredBatch</scope><name>indices</name></member>
+      <member refid="struct_free_type_font_1_1_deferred_batch_1a786977188827c0af264de8bce6356c10" prot="public" virt="non-virtual"><scope>FreeTypeFont::DeferredBatch</scope><name>vertices</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

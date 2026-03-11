@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_model_prefabs" xml:lang="en-US">
+<title>ModelPrefabs Struct Reference</title>
+<indexterm><primary>ModelPrefabs</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_model_prefabs">ModelPrefabs</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;ModelPrefabs.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Classes    </title>
+        <itemizedlist>
+            <listitem><para>struct <link linkend="_struct_model_prefabs_1_1_cube_material_definition">CubeMaterialDefinition</link></para>
+
+<para>Holds data for <link linkend="_struct_model_prefabs_1_1_cube_material_definition">CubeMaterialDefinition</link>. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>static std::shared_ptr&lt; <link linkend="_struct_model">Model</link> &gt; <link linkend="_struct_model_prefabs_1ad5d5f5c2c36f3c39db66281afd4713ee">MakeCube</link> (float scale=1.0f, std::shared_ptr&lt; <link linkend="_struct_model_prefabs_1_1_cube_material_definition">CubeMaterialDefinition</link> &gt; matDef=<link linkend="_struct_model_prefabs_1_1_cube_material_definition_1aba705d4394d425991f04fbfb85500839">CubeMaterialDefinition::Create</link>())</para>
+
+<para>Creates cube. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_model_prefabs">ModelPrefabs</link>. </para>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_struct_model_prefabs_1ad5d5f5c2c36f3c39db66281afd4713ee"/><section>
+    <title>MakeCube()</title>
+<indexterm><primary>MakeCube</primary><secondary>ModelPrefabs</secondary></indexterm>
+<indexterm><primary>ModelPrefabs</primary><secondary>MakeCube</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_struct_model">Model</link> &gt; ModelPrefabs::MakeCube (float scale = <computeroutput>1.0f</computeroutput>
+, std::shared_ptr&lt; <link linkend="_struct_model_prefabs_1_1_cube_material_definition">CubeMaterialDefinition</link> &gt; matDef = <computeroutput><link linkend="_struct_model_prefabs_1_1_cube_material_definition_1aba705d4394d425991f04fbfb85500839">CubeMaterialDefinition::Create</link>()</computeroutput>
+)<computeroutput>[inline]</computeroutput>, <computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Creates cube. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>scale</entry><entry>
+<para>Spatial value used by this operation. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>matDef</entry><entry>
+<para>Value for mat def. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Geometry/<link linkend="__model_prefabs_8h">ModelPrefabs.h</link></section>
+</section>

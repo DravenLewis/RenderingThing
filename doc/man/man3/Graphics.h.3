@@ -1,0 +1,67 @@
+.TH "src/Rendering/Core/Graphics.h" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+src/Rendering/Core/Graphics.h \- Declarations for Graphics\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <vector>\fP
+.br
+\fR#include <cstdint>\fP
+.br
+\fR#include <memory>\fP
+.br
+\fR#include <stdexcept>\fP
+.br
+\fR#include 'Foundation/Math/Color\&.h'\fP
+.br
+\fR#include 'Rendering/Textures/Texture\&.h'\fP
+.br
+\fR#include 'Rendering/Core/FrameBuffer\&.h'\fP
+.br
+\fR#include 'Rendering/Geometry/ModelPart\&.h'\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBGraphics::Image::Image\fP"
+.br
+.RI "Holds data for \fBImage\fP\&. "
+.ti -1c
+.RI "struct \fBGraphics::Image::BufferedImage\fP"
+.br
+.RI "Holds data for \fBBufferedImage\fP\&. "
+.ti -1c
+.RI "class \fBGraphics::PostProcessing::PostProcessingEffect\fP"
+.br
+.RI "Represents the \fBPostProcessingEffect\fP type\&. "
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef std::shared_ptr< \fBPostProcessingEffect\fP > \fBGraphics::PostProcessing::PPostProcessingEffect\fP"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "const std::string \fBGraphics::ShaderDefaults::SCREEN_VERT_SRC\fP"
+.br
+.ti -1c
+.RI "const std::string \fBGraphics::ShaderDefaults::SCREEN_FRAG_SRC\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Declarations for Graphics\&. 
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

@@ -1,3 +1,8 @@
+/**
+ * @file src/ECS/Core/ECSComponents.cpp
+ * @brief Implementation for ECSComponents.
+ */
+
 #include "ECS/Core/ECSComponents.h"
 #include "imgui.h"
 #include "Engine/Core/GameEngine.h"
@@ -51,6 +56,7 @@ namespace {
         return (Material::GetAs<PBRMaterial>(material) != nullptr);
     }
 
+    /// @brief Represents Shader Picker State data.
     struct ShaderPickerState{
         int selectedCacheIndex = -1;
         char cacheName[96] = "UserMaterialShader";
@@ -61,6 +67,7 @@ namespace {
         bool hasAppliedShaderAsset = false;
     };
 
+    /// @brief Represents Material Asset Field State data.
     struct MaterialAssetFieldState{
         char baseColorTex[256] = "";
         char roughnessTex[256] = "";
@@ -74,11 +81,13 @@ namespace {
 
     std::unordered_map<uintptr_t, ShaderPickerState> g_shaderPickerStates;
     std::unordered_map<uintptr_t, MaterialAssetFieldState> g_materialAssetStates;
+    /// @brief Represents Material Selector State data.
     struct MaterialSelectorState{
         int selectedRegistryIndex = -1;
         char materialAssetPath[256] = "";
     };
     std::unordered_map<std::string, MaterialSelectorState> g_materialSelectorStates;
+    /// @brief Represents Model Selector State data.
     struct ModelSelectorState{
         char modelAssetPath[256] = "";
     };

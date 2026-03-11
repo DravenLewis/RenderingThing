@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_texture" xml:lang="en-US">
+<title>Texture Class Reference</title>
+<indexterm><primary>Texture</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_texture">Texture</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;Texture.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_texture_1a6c275e3f186675ff6ed73ccf970e552f"/><emphasis role="strong">Texture</emphasis> ()</para>
+
+<para>Constructs a new <link linkend="_class_texture">Texture</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_texture_1a7de3bf257aace7b8785bc7e31c4be3b8"/><emphasis role="strong">Texture</emphasis> (std::shared_ptr&lt; <link linkend="_struct_graphics_1_1_image_1_1_image">Graphics::Image::Image</link> &gt; image, GLenum imageHint=GL_TEXTURE_2D)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_texture_1a6f37ee9dc7bb5e960660df07200de426"/><emphasis role="strong">Texture</emphasis> (const <link linkend="_class_texture">Texture</link> &amp;)=delete</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_texture_1a197b839d8525505209f4288071cc7185"/><emphasis role="strong">Texture</emphasis> (int width, int height)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_texture_1a71ec7e2582cc0005fa47f78087d4a539"/>void <emphasis role="strong">bind</emphasis> (unsigned int slot=0) const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_texture_1a451d7afac3848417bb1007d39ee7d545"/>void <emphasis role="strong">unbind</emphasis> () const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_texture_1af1051a541f02fd9cae35ac9403d4a0cd"/>void <emphasis role="strong">dispose</emphasis> ()</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_texture_1a91a6fd3355bc870194851514194daaab"/>int <emphasis role="strong">getWidth</emphasis> ()</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_texture_1a80e143905655b173df5994300088ce35"/>int <emphasis role="strong">getHeight</emphasis> ()</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_texture_1ac6b8580d3734f0121b23ccd6ed1f3a08"/>GLuint &amp; <emphasis role="strong">getID</emphasis> ()</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_texture_1ae23d6b21a3cd5bc2e4fa915379d8bbc2"/>const std::string &amp; <emphasis role="strong">getSourceAssetRef</emphasis> () const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_texture_1ab62281b7d9b433e467903f492547b9ac"/>void <emphasis role="strong">setSourceAssetRef</emphasis> (const std::string &amp;assetRef)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_texture_1adeb8d948f7d2e881a8c7cc10702eaade"/>std::shared_ptr&lt; <link linkend="_struct_graphics_1_1_image_1_1_image">Graphics::Image::Image</link> &gt; <emphasis role="strong">getImageData</emphasis> () const</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_texture_1a1113f45b4e14a368d3484046a522096d"/>static std::shared_ptr&lt; <link linkend="_class_texture">Texture</link> &gt; <emphasis role="strong">Load</emphasis> (PAsset asset, GLenum imageHint=GL_TEXTURE_2D, bool flipVertically=true)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_texture_1aa743aa51da6bad8cee443fdae0ef35d8"/>static std::shared_ptr&lt; <link linkend="_struct_graphics_1_1_image_1_1_image">Graphics::Image::Image</link> &gt; <emphasis role="strong">LoadImage</emphasis> (PAsset asset, bool flipVertically=true)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_texture_1a8c0831e6a2717ddd3433cc830f793bbb"/>static std::shared_ptr&lt; <link linkend="_class_texture">Texture</link> &gt; <emphasis role="strong">CreateEmpty</emphasis> (int width, int height)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_texture_1a6e2c7079768a4bc6e109d663d310256b"/>static std::shared_ptr&lt; <link linkend="_class_texture">Texture</link> &gt; <emphasis role="strong">CreateRenderTarget</emphasis> (int width, int height, GLenum internalFormat=GL_RGBA16F, GLenum format=GL_RGBA, GLenum type=GL_FLOAT)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_texture_1a429d7cbc7525bfa2b8e8f43c37c1aeea"/>static std::shared_ptr&lt; <link linkend="_class_texture">Texture</link> &gt; <emphasis role="strong">CreateFromAlphaBuffer</emphasis> (int width, int height, const unsigned char *alphaData)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_texture_1a8cf4c2ef5fa9f1b479c79f0cf3a0da2c"/>static std::shared_ptr&lt; <link linkend="_class_texture">Texture</link> &gt; <emphasis role="strong">CreateFromExisting</emphasis> (GLuint id, int width, int height, bool owns=false)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_texture_1aac19b195dbfd2a2b818dd7e36199e8db"/>static void <emphasis role="strong">FlushPendingDeletes</emphasis> ()</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_texture_1ab09e5434e9a5b60446a052c9ca204968"/>static void <emphasis role="strong">Unload</emphasis> (std::shared_ptr&lt; <link linkend="_class_texture">Texture</link> &gt; &amp;tex)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_texture_1a18efdc2f379cac376b6bad2c75fd2fab"/>static void <emphasis role="strong">FlipVerticallyOnLoad</emphasis> (int i)</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_texture">Texture</link> type. </para>
+<para>
+The documentation for this class was generated from the following files:</para>
+src/Rendering/Textures/<link linkend="__texture_8h">Texture.h</link>src/Rendering/Textures/<link linkend="__texture_8cpp">Texture.cpp</link></section>
+</section>

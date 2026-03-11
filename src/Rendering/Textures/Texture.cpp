@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Textures/Texture.cpp
+ * @brief Implementation for Texture.
+ */
+
 #include "Rendering/Textures/Texture.h"
 
 #include "Assets/Core/AssetDescriptorUtils.h"

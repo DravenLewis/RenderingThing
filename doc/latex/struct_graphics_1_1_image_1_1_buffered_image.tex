@@ -1,0 +1,107 @@
+\doxysection{Graphics::\+Image::\+Buffered\+Image Struct Reference}
+\hypertarget{struct_graphics_1_1_image_1_1_buffered_image}{}\label{struct_graphics_1_1_image_1_1_buffered_image}\index{Graphics::Image::BufferedImage@{Graphics::Image::BufferedImage}}
+
+
+Holds data for \doxylink{struct_graphics_1_1_image_1_1_buffered_image}{Buffered\+Image}.  
+
+
+
+
+{\ttfamily \+\#include $<$Graphics.\+h$>$}
+
+Inheritance diagram for Graphics::\+Image::\+Buffered\+Image:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{struct_graphics_1_1_image_1_1_buffered_image}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_buffered_image_a95c739a0c8fb9150ab27d338819b209f}{Buffered\+Image}} (int width, int height)
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{struct_graphics_1_1_image_1_1_buffered_image}{Buffered\+Image} instance. \end{DoxyCompactList}\item 
+\Hypertarget{struct_graphics_1_1_image_1_1_buffered_image_a5980611f951eec88180757b9f1718c6d}\label{struct_graphics_1_1_image_1_1_buffered_image_a5980611f951eec88180757b9f1718c6d} 
+{\bfseries Buffered\+Image} (const \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image_a86c6d37f21cb1b2c02837c4727e63cc8}{Image}} \&src)
+\item 
+\Hypertarget{struct_graphics_1_1_image_1_1_buffered_image_afcf9ecd99a3771364918b46d135909af}\label{struct_graphics_1_1_image_1_1_buffered_image_afcf9ecd99a3771364918b46d135909af} 
+uint32\+\_\+t {\bfseries get\+Value\+At} (int x, int y)
+\item 
+void \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_buffered_image_ac29650e2e57885e0b1ad47d0322bf0ee}{set\+Value\+At}} (int x, int y, uint32\+\_\+t value)
+\item 
+\Hypertarget{struct_graphics_1_1_image_1_1_buffered_image_a7f616c547a78bd7de90d25fd62348849}\label{struct_graphics_1_1_image_1_1_buffered_image_a7f616c547a78bd7de90d25fd62348849} 
+Color {\bfseries get\+Pixel\+At} (int x, int y)
+\item 
+\Hypertarget{struct_graphics_1_1_image_1_1_buffered_image_a43de2adb4fed4cd6d6b7cb1648137a26}\label{struct_graphics_1_1_image_1_1_buffered_image_a43de2adb4fed4cd6d6b7cb1648137a26} 
+void {\bfseries set\+Pixel\+At} (int x, int y, Color col)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image}{Graphics::\+\+Image::\+\+Image}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Image} ()=delete
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{struct_graphics_1_1_image_1_1_image}{Image} instance. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image_af90cfae65c25b2c1aa8336635aa744a4}{Image}} (int width, int height)
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{struct_graphics_1_1_image_1_1_image}{Image} instance. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image_ac2dbaa50ab4653153402fa98d1b1e145}{Image}} (const Image \&src)
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{struct_graphics_1_1_image_1_1_image}{Image} instance. \end{DoxyCompactList}\item 
+int \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image_a9360b8e858004f05fc0a87f1903bc1b7}{get\+Width}} () const
+\begin{DoxyCompactList}\small\item\em Returns the width. \end{DoxyCompactList}\item 
+int {\bfseries get\+Height} () const
+\item 
+std::\+vector$<$ uint32\+\_\+t $>$ {\bfseries get\+Pixel\+Data} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Static Public Member Functions inherited from \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image}{Graphics::\+\+Image::\+\+Image}}}
+\begin{DoxyCompactItemize}
+\item 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image_a86c6d37f21cb1b2c02837c4727e63cc8}{Image}} $>$ \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image_a361c6bf49cc6cb69edb8bd6273542952}{Create}} (int width, int height, const std::\+vector$<$ uint32\+\_\+t $>$ \&src=\{\})
+\begin{DoxyCompactList}\small\item\em Creates a new object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes inherited from \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image}{Graphics::\+\+Image::\+\+Image}}}
+\begin{DoxyCompactItemize}
+\item 
+std::\+vector$<$ uint32\+\_\+t $>$ {\bfseries pixel\+Data}
+\item 
+int {\bfseries width}
+\item 
+int {\bfseries height}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Holds data for \doxylink{struct_graphics_1_1_image_1_1_buffered_image}{Buffered\+Image}. 
+
+\label{doc-constructors}
+\Hypertarget{struct_graphics_1_1_image_1_1_buffered_image_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{struct_graphics_1_1_image_1_1_buffered_image_a95c739a0c8fb9150ab27d338819b209f}\index{Graphics::Image::BufferedImage@{Graphics::Image::BufferedImage}!BufferedImage@{BufferedImage}}
+\index{BufferedImage@{BufferedImage}!Graphics::Image::BufferedImage@{Graphics::Image::BufferedImage}}
+\doxysubsubsection{\texorpdfstring{BufferedImage()}{BufferedImage()}}
+{\footnotesize\ttfamily \label{struct_graphics_1_1_image_1_1_buffered_image_a95c739a0c8fb9150ab27d338819b209f} 
+Graphics::\+\+Image::\+\+Buffered\+Image::\+\+Buffered\+Image (\begin{DoxyParamCaption}\item[{int}]{width}{, }\item[{int}]{height}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Constructs a new \doxylink{struct_graphics_1_1_image_1_1_buffered_image}{Buffered\+Image} instance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em width} & Dimension value. \\
+\hline
+{\em height} & Dimension value. \\
+\hline
+\end{DoxyParams}
+
+
+\label{doc-func-members}
+\Hypertarget{struct_graphics_1_1_image_1_1_buffered_image_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{struct_graphics_1_1_image_1_1_buffered_image_ac29650e2e57885e0b1ad47d0322bf0ee}\index{Graphics::Image::BufferedImage@{Graphics::Image::BufferedImage}!setValueAt@{setValueAt}}
+\index{setValueAt@{setValueAt}!Graphics::Image::BufferedImage@{Graphics::Image::BufferedImage}}
+\doxysubsubsection{\texorpdfstring{setValueAt()}{setValueAt()}}
+{\footnotesize\ttfamily \label{struct_graphics_1_1_image_1_1_buffered_image_ac29650e2e57885e0b1ad47d0322bf0ee} 
+void Graphics::\+\+Image::\+\+Buffered\+Image::\+set\+Value\+At (\begin{DoxyParamCaption}\item[{int}]{x}{, }\item[{int}]{y}{, }\item[{uint32\+\_\+t}]{value}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+MAX RGBA value
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Core/\+\doxymbox{\hyperlink{_graphics_8h}{Graphics.\+h}}\end{DoxyCompactItemize}

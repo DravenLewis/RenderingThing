@@ -1,3 +1,8 @@
+/**
+ * @file src/Serialization/Schema/PrefabSceneSchemas.cpp
+ * @brief Implementation for PrefabSceneSchemas.
+ */
+
 #include "Serialization/Schema/PrefabSceneSchemas.h"
 
 #include <cstdlib>

@@ -1,3 +1,8 @@
+/**
+ * @file src/Editor/Widgets/FilePreviewWidget.cpp
+ * @brief Implementation for FilePreviewWidget.
+ */
+
 #include "Editor/Widgets/FilePreviewWidget.h"
 
 #include "Editor/Core/EditorAssetUI.h"
@@ -34,6 +39,7 @@ namespace {
     constexpr bool kEnableRaytraceShaderStage = false;
     constexpr float kMaterialPreviewMinDistance = 2.2f;
     std::shared_ptr<Material> g_previewFallbackMaterial;
+    /// @brief Represents Texture Preview Cache Entry data.
     struct TexturePreviewCacheEntry{
         std::shared_ptr<Texture> texture;
         std::filesystem::file_time_type writeTime{};

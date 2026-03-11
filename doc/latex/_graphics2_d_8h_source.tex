@@ -1,0 +1,113 @@
+\doxysection{Graphics2\+D.\+h}
+\hypertarget{_graphics2_d_8h_source}{}\label{_graphics2_d_8h_source}\index{src/Rendering/Core/Graphics2D.h@{src/Rendering/Core/Graphics2D.h}}
+\doxymbox{\hyperlink{_graphics2_d_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ GRAPHICS2D\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ GRAPHICS2D\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}Foundation/Math/Math3D.h"{}}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_screen_8h}{Rendering/Core/Screen.h}}"{}}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ "{}Scene/Camera.h"{}}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_texture_8h}{Rendering/Textures/Texture.h}}"{}}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_model_part_prefabs_8h}{Rendering/Geometry/ModelPartPrefabs.h}}"{}}\ \textcolor{comment}{//\ Also\ includes\ ModelPart.h}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_material_defaults_8h}{Rendering/Materials/MaterialDefaults.h}}"{}}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}Foundation/Util/ValueContainer.h"{}}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ "{}Foundation/Math/Color.h"{}}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_font_8h}{Rendering/Fonts/Font.h}}"{}}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ We\ Need\ FreeTypeFont\ and\ Asset\ for\ the\ default\ font\ to\ work.}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_free_type_font_8h}{Rendering/Fonts/FreeTypeFont.h}}"{}}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ "{}Assets/Core/Asset.h"{}}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_graphics_context}{GraphicsContext}}\{}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ ValueContainer<PAsset>\ defaultFontLocation\{AssetManager::Instance.getOrLoad(\textcolor{stringliteral}{"{}@assets/fonts/arial.ttf"{}})\};}
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ ValueContainer<Color>\ foregroundColor\{Color::WHITE\};}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ ValueContainer<Color>\ backgroundColor\{Color::BLACK\};}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ ValueContainer<float>\ strokeWidth\{1.0f\};}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ ValueContainer<PFont>\ font\{Font::Create<FreeTypeFont>(defaultFontLocation.get(),\ 18.0f)\};}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ ValueContainer<int>\ fontSize\{18\};}
+\DoxyCodeLine{00033\ \};}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00036\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_graphics2_d_a17535ece4965dc0eedad7fa5e5accbff}{Graphics2D}}\{}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum\ class}\ BatchMode2D\ \{}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \ \ \ \ None\ =\ 0,}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \ \ \ \ Solid,}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \ \ \ \ Textured}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Graphics\ Context.}}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_graphics_context}{GraphicsContext}}\ context;}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ PScreen\ target;}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ PCamera\ uiCamera;}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Reusable\ Items.\ Are\ Null\ just\ used\ so\ we\ can\ modify\ things.}}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ std::shared\_ptr<ModelPart>\ unitQuad\ =\ \textcolor{keyword}{nullptr};\ }
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ std::shared\_ptr<ModelPart>\ unitCircle\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ PMaterial\ colorMaterial\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ PMaterial\ imageMaterial\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ std::shared\_ptr<ModelPart>\ batchPart\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ PMaterial\ batchMaterial\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ std::vector<Vertex>\ batchVertices;}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ std::vector<uint32\_t>\ batchIndices;}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ BatchMode2D\ batchMode\ =\ BatchMode2D::None;}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ PTexture\ batchTexture\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ maxBatchQuads\ =\ 4096;}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ std::vector<PFont>\ queuedFonts;}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Internal\ Helpers.}}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ drawMesh(std::shared\_ptr<ModelPart>\ part,\ \textcolor{keyword}{const}\ Math3D::Mat4\&\ modelMatrix,\ PTexture\ tex\ =\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ ensureBatchResources();}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ resetBatch();}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ flushBatch();}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ queueFontForFlush(PFont\ font);}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ flushQueuedFonts();}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ beginBatch(BatchMode2D\ mode,\ PTexture\ texture\ =\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ submitQuad(}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ Math3D::Vec3\&\ p0,\ \textcolor{keyword}{const}\ Math3D::Vec3\&\ p1,\ \textcolor{keyword}{const}\ Math3D::Vec3\&\ p2,\ \textcolor{keyword}{const}\ Math3D::Vec3\&\ p3,}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ Math3D::Vec2\&\ uv0,\ \textcolor{keyword}{const}\ Math3D::Vec2\&\ uv1,\ \textcolor{keyword}{const}\ Math3D::Vec2\&\ uv2,\ \textcolor{keyword}{const}\ Math3D::Vec2\&\ uv3,}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ Math3D::Vec4\&\ color,}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ BatchMode2D\ mode,}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \ \ \ \ PTexture\ texture\ =\ \textcolor{keyword}{nullptr}}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00116\ \ \ \ \ }
+\DoxyCodeLine{00117\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_graphics2_d_a17535ece4965dc0eedad7fa5e5accbff}{Graphics2D}}(PScreen\ screenContext);}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ lifecycle}}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ resize(\textcolor{keywordtype}{int}\ w,\ \textcolor{keywordtype}{int}\ h);}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_graphics2_d_aa47dbfda9d2a9b21f89ce069397683f3}{begin}}();}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_graphics2_d_a3a6498d0bc740072a5171a9458018e86}{end}}();}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_graphics_context}{GraphicsContext}}\&\ \doxymbox{\hyperlink{class_graphics2_d_a22cd28ae0cd16c1d603e2cd42c4230b0}{getContext}}();}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Static\ Helper\ Methods\ to\ Change\ the\ Graphics\ Context,\ or\ draw\ things\ like\ "{}DrawLine"{}}}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Setters}}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ SetForegroundColor(\doxymbox{\hyperlink{class_graphics2_d_a17535ece4965dc0eedad7fa5e5accbff}{Graphics2D}}\&\ graphics,\ \textcolor{keyword}{const}\ Color\&\ foregroundColor\ =\ Color::WHITE);}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_graphics2_d_a9de097cc927aad3bf9c52ffda4a37a2a}{SetBackgroundColor}}(\doxymbox{\hyperlink{class_graphics2_d_a17535ece4965dc0eedad7fa5e5accbff}{Graphics2D}}\&\ graphics,\ \textcolor{keyword}{const}\ Color\&\ backgroundColor\ =\ Color::BLACK);}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_graphics2_d_a2efe101242a8dd701a448c29870ccdd2}{SetStrokeWidth}}(\doxymbox{\hyperlink{class_graphics2_d_a17535ece4965dc0eedad7fa5e5accbff}{Graphics2D}}\&\ graphics,\ \textcolor{keywordtype}{float}\ width\ =\ 1.0f);}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_graphics2_d_a26636c9fbb1be08ef97b5cc4b97811c4}{SetFontSize}}(\doxymbox{\hyperlink{class_graphics2_d_a17535ece4965dc0eedad7fa5e5accbff}{Graphics2D}}\&\ graphics,\ \textcolor{keywordtype}{float}\ size\ =\ 1.0f);}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_graphics2_d_a768b518945214fce84a03c574c1a9671}{SetFont}}(\doxymbox{\hyperlink{class_graphics2_d_a17535ece4965dc0eedad7fa5e5accbff}{Graphics2D}}\&\ graphics,\ PFont\ font);}
+\DoxyCodeLine{00169\ }
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_graphics2_d_a88fe3fbf759c21bd6a4bfaefd5c90d58}{DrawLine}}(\doxymbox{\hyperlink{class_graphics2_d_a17535ece4965dc0eedad7fa5e5accbff}{Graphics2D}}\&\ graphics,\ \textcolor{keywordtype}{float}\ x1,\ \textcolor{keywordtype}{float}\ y1,\ \textcolor{keywordtype}{float}\ x2,\ \textcolor{keywordtype}{float}\ y2);}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_graphics2_d_a5095fffb75a1249ee247c0fa73ebca75}{DrawRect}}(\doxymbox{\hyperlink{class_graphics2_d_a17535ece4965dc0eedad7fa5e5accbff}{Graphics2D}}\&\ graphics,\ \textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{float}\ w,\ \textcolor{keywordtype}{float}\ h);}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_graphics2_d_a67fa147d1215bba962230b13154964f8}{FillRect}}(\doxymbox{\hyperlink{class_graphics2_d_a17535ece4965dc0eedad7fa5e5accbff}{Graphics2D}}\&\ graphics,\ \textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{float}\ w,\ \textcolor{keywordtype}{float}\ h);}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_graphics2_d_a5c0cd288e641e8a8242740d2898ac3f2}{FillTriangle}}(\doxymbox{\hyperlink{class_graphics2_d_a17535ece4965dc0eedad7fa5e5accbff}{Graphics2D}}\&\ graphics,\ \textcolor{keywordtype}{float}\ x1,\ \textcolor{keywordtype}{float}\ y1,\ \textcolor{keywordtype}{float}\ x2,\ \textcolor{keywordtype}{float}\ y2,\ \textcolor{keywordtype}{float}\ x3,\ \textcolor{keywordtype}{float}\ y3);}
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_graphics2_d_adad7605dad2d438339e3179a569c6f28}{DrawEllipse}}(\doxymbox{\hyperlink{class_graphics2_d_a17535ece4965dc0eedad7fa5e5accbff}{Graphics2D}}\&\ graphics,\ \textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{float}\ w,\ \textcolor{keywordtype}{float}\ h);}
+\DoxyCodeLine{00225\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_graphics2_d_a0843c9a23ec885b7d0fcb0554d559457}{FillEllipse}}(\doxymbox{\hyperlink{class_graphics2_d_a17535ece4965dc0eedad7fa5e5accbff}{Graphics2D}}\&\ graphics,\ \textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{float}\ w,\ \textcolor{keywordtype}{float}\ h);}
+\DoxyCodeLine{00226\ }
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_graphics2_d_a4496c5443a7a614690f1a7c4656a3854}{DrawImage}}(\doxymbox{\hyperlink{class_graphics2_d_a17535ece4965dc0eedad7fa5e5accbff}{Graphics2D}}\&\ graphics,\ PTexture\ tex,\ \textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{float}\ w\ =\ -\/1,\ \textcolor{keywordtype}{float}\ h\ =\ -\/1);\ \textcolor{comment}{//\ if\ w\ or\ h\ is\ -\/1\ use\ default\ texture\ size\ from\ file.}}
+\DoxyCodeLine{00237\ }
+\DoxyCodeLine{00246\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_graphics2_d_ac7c6ea860d6bca44f1a4247d644d8dce}{DrawString}}(\doxymbox{\hyperlink{class_graphics2_d_a17535ece4965dc0eedad7fa5e5accbff}{Graphics2D}}\&\ graphics,\ std::string\ text,\ \textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{bool}\ useCache\ =\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00247\ \};}
+\DoxyCodeLine{00248\ }
+\DoxyCodeLine{00249\ \textcolor{preprocessor}{\#endif}\textcolor{comment}{//GRAPHICS2D\_H}}
+
+\end{DoxyCode}

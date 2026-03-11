@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="dir_1aa8c55c493a0d0e1495c103be011e33" kind="dir">
+    <compoundname>src/Rendering/Fonts</compoundname>
+    <innerfile refid="_font_8h">Font.h</innerfile>
+    <innerfile refid="_free_type_font_8cpp">FreeTypeFont.cpp</innerfile>
+    <innerfile refid="_free_type_font_8h">FreeTypeFont.h</innerfile>
+    <innerfile refid="_s_t_b_true_type_font_8cpp">STBTrueTypeFont.cpp</innerfile>
+    <innerfile refid="_s_t_b_true_type_font_8h">STBTrueTypeFont.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Fonts/"/>
+  </compounddef>
+</doxygen>

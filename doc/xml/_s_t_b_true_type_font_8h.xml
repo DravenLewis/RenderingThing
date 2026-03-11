@@ -1,0 +1,240 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="_s_t_b_true_type_font_8h" kind="file" language="C++">
+    <compoundname>STBTrueTypeFont.h</compoundname>
+    <includes local="yes">STB/stb_truetype.h</includes>
+    <includes refid="_font_8h" local="yes">Rendering/Fonts/Font.h</includes>
+    <includedby refid="_s_t_b_true_type_font_8cpp" local="yes">src/Rendering/Fonts/STBTrueTypeFont.cpp</includedby>
+    <incdepgraph>
+      <node id="8">
+        <label>Assets/Core/Asset.h</label>
+      </node>
+      <node id="3">
+        <label>Rendering/Fonts/Font.h</label>
+        <link refid="_font_8h"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>src/Rendering/Fonts/STBTrueTypeFont.h</label>
+        <link refid="_s_t_b_true_type_font_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>Rendering/Geometry/Drawable.h</label>
+        <link refid="_drawable_8h"/>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="12">
+        <label>Rendering/Geometry/Mesh.h</label>
+        <link refid="_mesh_8h"/>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="11">
+        <label>Rendering/Geometry/ModelPart.h</label>
+        <link refid="_model_part_8h"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="18">
+        <label>Rendering/Materials/Material.h</label>
+        <link refid="_material_8h"/>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+      </node>
+      <node id="21">
+        <label>Rendering/Shaders/ShaderProgram.h</label>
+        <link refid="_shader_program_8h"/>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>Rendering/Textures/CubeMap.h</label>
+        <link refid="_cube_map_8h"/>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="22">
+        <label>Rendering/Textures/Texture.h</label>
+        <link refid="_texture_8h"/>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>Foundation/Logging/Logbot.h</label>
+      </node>
+      <node id="24">
+        <label>Foundation/Math/Color.h</label>
+      </node>
+      <node id="9">
+        <label>Foundation/Math/Math3D.h</label>
+      </node>
+      <node id="14">
+        <label>SDL3/SDL.h</label>
+      </node>
+      <node id="15">
+        <label>SDL3/SDL_opengl.h</label>
+      </node>
+      <node id="2">
+        <label>STB/stb_truetype.h</label>
+      </node>
+      <node id="25">
+        <label>Scene/Camera.h</label>
+      </node>
+      <node id="17">
+        <label>algorithm</label>
+      </node>
+      <node id="6">
+        <label>array</label>
+      </node>
+      <node id="16">
+        <label>cstdint</label>
+      </node>
+      <node id="13">
+        <label>glad/glad.h</label>
+      </node>
+      <node id="5">
+        <label>map</label>
+      </node>
+      <node id="4">
+        <label>memory</label>
+      </node>
+      <node id="19">
+        <label>string</label>
+      </node>
+      <node id="20">
+        <label>unordered_map</label>
+      </node>
+      <node id="7">
+        <label>vector</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="2">
+        <label>src/Rendering/Fonts/STBTrueTypeFont.cpp</label>
+        <link refid="_s_t_b_true_type_font_8cpp"/>
+      </node>
+      <node id="1">
+        <label>src/Rendering/Fonts/STBTrueTypeFont.h</label>
+        <link refid="_s_t_b_true_type_font_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="class_true_type_font" prot="public">TrueTypeFont</innerclass>
+    <briefdescription>
+<para>Declarations for STBTrueTypeFont. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>STB_TTF_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>STB_TTF_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;STB/stb_truetype.h&quot;</highlight><highlight class="normal"><sp/></highlight><highlight class="comment">//<sp/>STB<sp/>Headers.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_font_8h" kindref="compound">Rendering/Fonts/Font.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight></codeline>
+<codeline lineno="13" refid="class_true_type_font" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="class_true_type_font_1ad32c45a5111d82794f1d8fe9d3a0f708" kindref="member">TrueTypeFont</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="class_font_1a4e6a119206f505522100221c1fafde45" kindref="member">Font</ref>{</highlight></codeline>
+<codeline lineno="14"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>stbtt_packedchar<sp/>cdata[96];</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="20" refid="class_true_type_font_1ad32c45a5111d82794f1d8fe9d3a0f708" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="class_true_type_font_1ad32c45a5111d82794f1d8fe9d3a0f708" kindref="member">TrueTypeFont</ref>()<sp/>:<sp/><ref refid="class_font_1a4e6a119206f505522100221c1fafde45" kindref="member">Font</ref>()<sp/>{};</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="class_true_type_font_1a4af92a8e28331e8a35e1624f98706944" kindref="member">_initFont</ref>()<sp/></highlight><highlight class="keyword">override</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>drawText(std::string<sp/>text,<sp/>Math3D::Vec2<sp/>position,<sp/>PCamera<sp/>camera,<sp/>Color<sp/>color,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>useCache)<sp/></highlight><highlight class="keyword">override</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="23"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">//STB_TTF_H</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="src/Rendering/Fonts/STBTrueTypeFont.h"/>
+  </compounddef>
+</doxygen>

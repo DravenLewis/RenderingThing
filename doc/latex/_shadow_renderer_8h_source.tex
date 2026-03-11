@@ -1,0 +1,92 @@
+\doxysection{Shadow\+Renderer.\+h}
+\hypertarget{_shadow_renderer_8h_source}{}\label{_shadow_renderer_8h_source}\index{src/Rendering/Lighting/ShadowRenderer.h@{src/Rendering/Lighting/ShadowRenderer.h}}
+\doxymbox{\hyperlink{_shadow_renderer_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ SHADOW\_RENDERER\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ SHADOW\_RENDERER\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_light_8h}{Rendering/Lighting/Light.h}}"{}}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ "{}Scene/Camera.h"{}}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}Foundation/Math/Math3D.h"{}}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_shadow_map_8h}{Rendering/Lighting/ShadowMap.h}}"{}}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_texture_8h}{Rendering/Textures/Texture.h}}"{}}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_material}{Material}};}
+\DoxyCodeLine{00020\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_shader_program}{ShaderProgram}};}
+\DoxyCodeLine{00021\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_mesh}{Mesh}};}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_shadow_light_data}{ShadowLightData}}\ \{}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keywordtype}{int}\ shadowMapIndex\ =\ -\/1;\ \ \ \ \ \ \ \textcolor{comment}{//\ Index\ into\ 2D\ or\ cube\ shadow\ arrays}}
+\DoxyCodeLine{00026\ \ \ \ \ \doxymbox{\hyperlink{_light_8h_a5c50abf40600ee3c28c7fa04702a8bbc}{ShadowType}}\ shadowType\ =\ ShadowType::Standard;}
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keywordtype}{float}\ shadowStrength\ =\ 1.0f;}
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keywordtype}{float}\ shadowBias\ =\ 0.0025f;}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keywordtype}{float}\ shadowNormalBias\ =\ 0.005f;}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keywordtype}{int}\ cascadeCount\ =\ 1;}
+\DoxyCodeLine{00031\ \ \ \ \ Math3D::Vec4\ cascadeSplits\ =\ Math3D::Vec4(0,0,0,0);}
+\DoxyCodeLine{00032\ \ \ \ \ Math3D::Mat4\ lightMatrices[4]\ =\ \{}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ Math3D::Mat4(1.0f),}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ Math3D::Mat4(1.0f),}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ Math3D::Mat4(1.0f),}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ Math3D::Mat4(1.0f)}
+\DoxyCodeLine{00037\ \ \ \ \ \};}
+\DoxyCodeLine{00038\ \};}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00041\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_shadow_caster_bounds}{ShadowCasterBounds}}\ \{}
+\DoxyCodeLine{00042\ \ \ \ \ Math3D::Vec3\ min;}
+\DoxyCodeLine{00043\ \ \ \ \ Math3D::Vec3\ max;}
+\DoxyCodeLine{00044\ \};}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00047\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_shadow_renderer}{ShadowRenderer}}\ \{}
+\DoxyCodeLine{00048\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_shadow_renderer_1_1_shadow_draw_item}{ShadowDrawItem}}\ \{}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ std::shared\_ptr<Mesh>\ mesh;}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ Math3D::Mat4\ model;}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ std::shared\_ptr<Material>\ material;}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ enableBackfaceCulling\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ hasBounds\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ Math3D::Vec3\ boundsMin\ =\ Math3D::Vec3(0.0f,\ 0.0f,\ 0.0f);}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ Math3D::Vec3\ boundsMax\ =\ Math3D::Vec3(0.0f,\ 0.0f,\ 0.0f);}
+\DoxyCodeLine{00058\ \ \ \ \ \};}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shadow_renderer_afbb6c273a05d6646ee9705e4bd6b3233}{BeginFrame}}(PCamera\ camera,\ \textcolor{keyword}{const}\ std::vector<ShadowCasterBounds>*\ casters\ =\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shadow_renderer_aab58aceef40d58cbcb99197fb3b0b1c9}{RenderShadows}}(\textcolor{keyword}{const}\ std::shared\_ptr<Mesh>\&\ mesh,\ \textcolor{keyword}{const}\ Math3D::Mat4\&\ model,\ \textcolor{keyword}{const}\ std::shared\_ptr<Material>\&\ material);}
+\DoxyCodeLine{00077\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shadow_renderer_a3ba920ae87f7206899c27bf206f7b88f}{RenderShadowsBatch}}(\textcolor{keyword}{const}\ std::vector<ShadowDrawItem>\&\ items);}
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shadow_renderer_a294d22aa8a61404ca7741fb92179f759}{BindShadowSamplers}}(\textcolor{keyword}{const}\ std::shared\_ptr<ShaderProgram>\&\ program);}
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shadow_renderer_a2a6a438bcb4909cfe0f049a418ca08a1}{GetShadowDataForLight}}(\textcolor{keywordtype}{size\_t}\ index,\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{struct_light}{Light}}\&\ light,\ \doxymbox{\hyperlink{struct_shadow_light_data}{ShadowLightData}}\&\ outData);}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keyword}{static}\ uint64\_t\ \doxymbox{\hyperlink{class_shadow_renderer_a5b7b6245485e78e450e4f36511dc6028}{GetFrameId}}();}
+\DoxyCodeLine{00099\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{class_shadow_renderer_abbd83290397f84630065b8593c6de72d}{IsEnabled}}();}
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<Texture>\ \doxymbox{\hyperlink{class_shadow_renderer_a4968fee5aaeb90ca26b8237a4ad27fda}{GetDepthBuffer}}();}
+\DoxyCodeLine{00109\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shadow_renderer_aa3cbcea864992880c1e0e93cb2f03c2d}{SetDebugShadows}}(\textcolor{keywordtype}{bool}\ enabled);}
+\DoxyCodeLine{00114\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{class_shadow_renderer_a01a2fe136dac80bd65137ddd1163c05c}{GetDebugShadows}}();}
+\DoxyCodeLine{00118\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shadow_renderer_a4f8885763f78efa60d45121f1bc33e6a}{CycleDebugShadows}}();}
+\DoxyCodeLine{00123\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{class_shadow_renderer_ae8e997e98faa8a7dcee38355f0ba3412}{GetDebugShadowsMode}}();}
+\DoxyCodeLine{00128\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shadow_renderer_a1ad93fba9dbece24c39e04dfa0319b84}{SetDebugShadowsMode}}(\textcolor{keywordtype}{int}\ mode);}
+\DoxyCodeLine{00133\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shadow_renderer_a92326cd13a40ee30ab8c1e41cee0cbd1}{SetGlobalDebugOverrideEnabled}}(\textcolor{keywordtype}{bool}\ enabled);}
+\DoxyCodeLine{00138\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{class_shadow_renderer_aab904aac799df7524a74571d2551ce9c}{GetGlobalDebugOverrideEnabled}}();}
+\DoxyCodeLine{00143\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shadow_renderer_af3e6f272f9f7fafa02a28c1684c43aa3}{SetGlobalDebugOverrideMode}}(\textcolor{keywordtype}{int}\ mode);}
+\DoxyCodeLine{00148\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{class_shadow_renderer_ab18542dd44e6199fe8baa8ed4beab5b3}{GetGlobalDebugOverrideMode}}();}
+\DoxyCodeLine{00153\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shadow_renderer_a32ac240ccaf7b0d0d9402754663471c8}{SetSelectedLightIndex}}(\textcolor{keywordtype}{int}\ index);}
+\DoxyCodeLine{00158\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{class_shadow_renderer_ae8491189e251451f3803e8a96144188c}{GetSelectedLightIndex}}();}
+\DoxyCodeLine{00163\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shadow_renderer_a8c06fcdbd9d643efd2c1821da281b460}{SetDirectionalCascadeKernelMarginTexels}}(\textcolor{keywordtype}{float}\ value);}
+\DoxyCodeLine{00168\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{float}\ \doxymbox{\hyperlink{class_shadow_renderer_a232a7bb315118202cb6f79cbb49b29dd}{GetDirectionalCascadeKernelMarginTexels}}();}
+\DoxyCodeLine{00173\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shadow_renderer_aa010995c5c5868ce57940c2533741bff}{SetShadowReceiverNormalBlend}}(\textcolor{keywordtype}{float}\ value);}
+\DoxyCodeLine{00178\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{float}\ \doxymbox{\hyperlink{class_shadow_renderer_ac7c8e21bfe93f9d7ed4891c9a8e1e480}{GetShadowReceiverNormalBlend}}();}
+\DoxyCodeLine{00183\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shadow_renderer_ac292095aa08cd34a52c6d1bd498b9818}{SetDebugLogging}}(\textcolor{keywordtype}{bool}\ enabled);}
+\DoxyCodeLine{00188\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{class_shadow_renderer_ac08a7c94e7678f7c0a7ed17c8970b5dd}{GetDebugLogging}}();}
+\DoxyCodeLine{00189\ }
+\DoxyCodeLine{00190\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00194\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ ensureShadowPrograms();}
+\DoxyCodeLine{00201\ \ \ \ \ \textcolor{keyword}{static}\ Math3D::Mat4\ computeDirectionalMatrix(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{struct_light}{Light}}\&\ light,\ PCamera\ camera);}
+\DoxyCodeLine{00207\ \ \ \ \ \textcolor{keyword}{static}\ Math3D::Mat4\ computeSpotMatrix(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{struct_light}{Light}}\&\ light);}
+\DoxyCodeLine{00213\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ computePointMatrices(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{struct_light}{Light}}\&\ light,\ std::vector<Math3D::Mat4>\&\ outMatrices);}
+\DoxyCodeLine{00214\ \};}
+\DoxyCodeLine{00215\ }
+\DoxyCodeLine{00216\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ SHADOW\_RENDERER\_H}}
+
+\end{DoxyCode}

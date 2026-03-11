@@ -1,0 +1,117 @@
+\doxysection{Model\+Part\+Factory Struct Reference}
+\hypertarget{struct_model_part_factory}{}\label{struct_model_part_factory}\index{ModelPartFactory@{ModelPartFactory}}
+
+
+Holds data for \doxylink{struct_model_part_factory}{Model\+Part\+Factory}.  
+
+
+
+
+{\ttfamily \+\#include $<$Model\+Part.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_model_part_factory_a8b2d0eb06f0a9ade3093831338442085}\label{struct_model_part_factory_a8b2d0eb06f0a9ade3093831338442085} 
+{\bfseries Model\+Part\+Factory} ()=default
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{struct_model_part_factory}{Model\+Part\+Factory} instance. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{struct_model_part_factory}{Model\+Part\+Factory}} \& \doxymbox{\hyperlink{struct_model_part_factory_a0284fcedc4c25ac5b287327a2d7356f4}{add\+Vertex}} (\doxymbox{\hyperlink{struct_vertex}{Vertex}} vtx, int \texorpdfstring{$\ast$}{*}index=nullptr)
+\begin{DoxyCompactList}\small\item\em Adds vertex. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{struct_model_part_factory}{Model\+Part\+Factory}} \& \doxymbox{\hyperlink{struct_model_part_factory_a4af8f7d0f3a2958529bbe7aab3233f6d}{define\+Face}} (int vtx1, int vtx2, int vtx3, int vtx4=-\/1)
+\begin{DoxyCompactList}\small\item\em Adds a face definition to the model part. \end{DoxyCompactList}\item 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$ \doxymbox{\hyperlink{struct_model_part_factory_a8f73e9678bb98f92144d6a36ff1bc41f}{assemble}} ()
+\begin{DoxyCompactList}\small\item\em Builds a model part from accumulated data. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \doxymbox{\hyperlink{struct_model_part_factory}{Model\+Part\+Factory}} \doxymbox{\hyperlink{struct_model_part_factory_a3ef7855857c9e4a6106485c4d6dc13d1}{Create}} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material}{Material}} $>$ material)
+\begin{DoxyCompactList}\small\item\em Creates a new object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Holds data for \doxylink{struct_model_part_factory}{Model\+Part\+Factory}. 
+
+\label{doc-func-members}
+\Hypertarget{struct_model_part_factory_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{struct_model_part_factory_a0284fcedc4c25ac5b287327a2d7356f4}\index{ModelPartFactory@{ModelPartFactory}!addVertex@{addVertex}}
+\index{addVertex@{addVertex}!ModelPartFactory@{ModelPartFactory}}
+\doxysubsubsection{\texorpdfstring{addVertex()}{addVertex()}}
+{\footnotesize\ttfamily \label{struct_model_part_factory_a0284fcedc4c25ac5b287327a2d7356f4} 
+\doxymbox{\hyperlink{struct_model_part_factory}{Model\+Part\+Factory}} \& Model\+Part\+Factory::\+add\+Vertex (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{struct_vertex}{Vertex}}}]{vtx}{, }\item[{int \texorpdfstring{$\ast$}{*}}]{index}{ = {\ttfamily nullptr}}\end{DoxyParamCaption})}
+
+
+
+Adds vertex. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em vtx} & Value for vtx. \\
+\hline
+{\em index} & Identifier or index value. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+\Hypertarget{struct_model_part_factory_a8f73e9678bb98f92144d6a36ff1bc41f}\index{ModelPartFactory@{ModelPartFactory}!assemble@{assemble}}
+\index{assemble@{assemble}!ModelPartFactory@{ModelPartFactory}}
+\doxysubsubsection{\texorpdfstring{assemble()}{assemble()}}
+{\footnotesize\ttfamily \label{struct_model_part_factory_a8f73e9678bb98f92144d6a36ff1bc41f} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$ Model\+Part\+Factory::\+assemble (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Builds a model part from accumulated data. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the resulting object. 
+\end{DoxyReturn}
+\Hypertarget{struct_model_part_factory_a3ef7855857c9e4a6106485c4d6dc13d1}\index{ModelPartFactory@{ModelPartFactory}!Create@{Create}}
+\index{Create@{Create}!ModelPartFactory@{ModelPartFactory}}
+\doxysubsubsection{\texorpdfstring{Create()}{Create()}}
+{\footnotesize\ttfamily \label{struct_model_part_factory_a3ef7855857c9e4a6106485c4d6dc13d1} 
+\doxymbox{\hyperlink{struct_model_part_factory}{Model\+Part\+Factory}} Model\+Part\+Factory::\+\+Create (\begin{DoxyParamCaption}\item[{std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material}{Material}} $>$}]{material}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Creates a new object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em material} & Value for material. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of this operation. 
+\end{DoxyReturn}
+\Hypertarget{struct_model_part_factory_a4af8f7d0f3a2958529bbe7aab3233f6d}\index{ModelPartFactory@{ModelPartFactory}!defineFace@{defineFace}}
+\index{defineFace@{defineFace}!ModelPartFactory@{ModelPartFactory}}
+\doxysubsubsection{\texorpdfstring{defineFace()}{defineFace()}}
+{\footnotesize\ttfamily \label{struct_model_part_factory_a4af8f7d0f3a2958529bbe7aab3233f6d} 
+\doxymbox{\hyperlink{struct_model_part_factory}{Model\+Part\+Factory}} \& Model\+Part\+Factory::\+define\+Face (\begin{DoxyParamCaption}\item[{int}]{vtx1}{, }\item[{int}]{vtx2}{, }\item[{int}]{vtx3}{, }\item[{int}]{vtx4}{ = {\ttfamily -\/1}}\end{DoxyParamCaption})}
+
+
+
+Adds a face definition to the model part. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em vtx1} & Value for vtx 1. \\
+\hline
+{\em vtx2} & Value for vtx 2. \\
+\hline
+{\em vtx3} & Value for vtx 3. \\
+\hline
+{\em vtx4} & Value for vtx 4. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+
+
+The documentation for this struct was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Geometry/\+\doxymbox{\hyperlink{_model_part_8h}{Model\+Part.\+h}}\item 
+src/\+\+Rendering/\+\+Geometry/\+\doxymbox{\hyperlink{_model_part_8cpp}{Model\+Part.\+cpp}}\end{DoxyCompactItemize}

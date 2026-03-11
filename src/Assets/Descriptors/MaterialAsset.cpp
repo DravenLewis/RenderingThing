@@ -1,3 +1,8 @@
+/**
+ * @file src/Assets/Descriptors/MaterialAsset.cpp
+ * @brief Implementation for MaterialAsset.
+ */
+
 #include "Assets/Descriptors/MaterialAsset.h"
 
 #include "Assets/Core/Asset.h"

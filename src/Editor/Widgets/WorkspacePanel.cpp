@@ -1,3 +1,8 @@
+/**
+ * @file src/Editor/Widgets/WorkspacePanel.cpp
+ * @brief Implementation for WorkspacePanel.
+ */
+
 #include "Editor/Widgets/WorkspacePanel.h"
 
 #include "Editor/Core/EditorAssetUI.h"
@@ -482,6 +487,7 @@ void WorkspacePanel::draw(float x,
         assetDir = assetRoot;
     }
 
+    /// @brief Represents Browser Entry data.
     struct BrowserEntry{
         std::filesystem::path path;
         bool isDirectory = false;

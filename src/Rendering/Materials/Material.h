@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Materials/Material.h
+ * @brief Declarations for Material.
+ */
+
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
@@ -7,14 +12,29 @@
 
 #include "Rendering/Shaders/ShaderProgram.h"
 
+/// @brief Holds data for IMaterialProperty.
 struct IMaterialProperty{
+    /**
+     * @brief Applies current settings.
+     * @param shader Value for shader.
+     * @param name Name used for name.
+     * @param assumeBound Value for assume bound.
+     */
     virtual void apply(ShaderProgram& shader, const std::string& name, bool assumeBound) = 0;
+    /**
+     * @brief Destroys this IMaterialProperty instance.
+     */
     virtual ~IMaterialProperty() = default;
 };
 
+/// @brief Holds data for MaterialProperty.
 template <typename T>
 struct MaterialProperty : public IMaterialProperty{
     T value;
+    /**
+     * @brief Constructs a new MaterialProperty instance.
+     * @param val Value for val.
+     */
     MaterialProperty(T val) : value(val) {};
 
     void apply(ShaderProgram& shader, const std::string& name, bool assumeBound) override{
@@ -28,6 +48,7 @@ struct MaterialProperty : public IMaterialProperty{
     }
 };
 
+/// @brief Represents the Material type.
 class Material{
     private:
         std::shared_ptr<ShaderProgram> programObjPtr;
@@ -35,6 +56,10 @@ class Material{
         bool castsShadowsFlag = true;
         bool receivesShadowsFlag = true;
     public:
+        /**
+         * @brief Constructs a new Material instance.
+         * @param program Value for program.
+         */
         Material(std::shared_ptr<ShaderProgram> program) : programObjPtr(program) {
             if(program){
                 if(program->getID() == 0){
@@ -46,6 +71,9 @@ class Material{
 
             set<int>("u_receiveShadows", receivesShadowsFlag ? 1 : 0);
         };
+        /**
+         * @brief Destroys this Material instance.
+         */
         virtual ~Material(){};
 
         template<typename T>

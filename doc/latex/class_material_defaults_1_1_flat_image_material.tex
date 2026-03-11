@@ -1,0 +1,141 @@
+\doxysection{Material\+Defaults::\+Flat\+Image\+Material Class Reference}
+\hypertarget{class_material_defaults_1_1_flat_image_material}{}\label{class_material_defaults_1_1_flat_image_material}\index{MaterialDefaults::FlatImageMaterial@{MaterialDefaults::FlatImageMaterial}}
+
+
+Represents the \doxylink{class_material_defaults_1_1_flat_image_material}{Flat\+Image\+Material} type.  
+
+
+
+
+{\ttfamily \+\#include $<$Material\+Defaults.\+h$>$}
+
+Inheritance diagram for Material\+Defaults::\+Flat\+Image\+Material:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_material_defaults_1_1_flat_image_material}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{class_material_defaults_1_1_flat_image_material_a9c3f9e57b779bf7b98422cb07f9fb5f2}{Flat\+Image\+Material}} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ program, std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$ texture)
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_material_defaults_1_1_flat_image_material}{Flat\+Image\+Material} instance. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_material_defaults_1_1_flat_image_material_a61b269b2721d94022945e0bf31bbd6fc}{bind}} () override
+\begin{DoxyCompactList}\small\item\em Binds this resource. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{class_material}{Material}}}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{class_material_ace810a426f4b488d2dc2a53070d85405}{Material}} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ program)
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_material}{Material} instance. \end{DoxyCompactList}\item 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+Material} ()
+\begin{DoxyCompactList}\small\item\em Destroys this \doxylink{class_material}{Material} instance. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T$>$ }\\bool {\bfseries set} (const std::\+string \&name, T value)
+\item 
+void {\bfseries unbind} ()
+\item 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ {\bfseries get\+Shader} ()
+\item 
+void {\bfseries set\+Shader} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ program)
+\item 
+void {\bfseries set\+Casts\+Shadows} (bool value)
+\item 
+bool {\bfseries casts\+Shadows} () const
+\item 
+void {\bfseries set\+Receives\+Shadows} (bool value)
+\item 
+bool {\bfseries receives\+Shadows} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material_defaults_1_1_flat_image_material_a9c3f9e57b779bf7b98422cb07f9fb5f2}{Flat\+Image\+Material}} $>$ \doxymbox{\hyperlink{class_material_defaults_1_1_flat_image_material_a501a86e2432c06f23aae2b5f027c4e52}{Create}} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$ tex, Math3\+D::\+\+Vec4 color=Color::\+\+WHITE)
+\begin{DoxyCompactList}\small\item\em Creates a new object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \doxymbox{\hyperlink{class_material}{Material}}}
+\begin{DoxyCompactItemize}
+\item 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material}{Material}} $>$ {\bfseries Copy} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material}{Material}} $>$ material)
+\item 
+{\footnotesize template$<$typename T$>$ }\\static std::\+shared\+\_\+ptr$<$ T $>$ {\bfseries Get\+As} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material}{Material}} $>$ mat\+Ptr)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_material_defaults_1_1_flat_image_material_a731316d8c4c9fcd09c25ffa459b14907}\label{class_material_defaults_1_1_flat_image_material_a731316d8c4c9fcd09c25ffa459b14907} 
+Value\+Container$<$ Math3\+D::\+\+Vec4 $>$ {\bfseries Color}
+\item 
+\Hypertarget{class_material_defaults_1_1_flat_image_material_a5d8a6cb9230e2ee32275805347512d64}\label{class_material_defaults_1_1_flat_image_material_a5d8a6cb9230e2ee32275805347512d64} 
+Value\+Container$<$ std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$ $>$ {\bfseries Tex}
+\item 
+\Hypertarget{class_material_defaults_1_1_flat_image_material_a575057775176b074c508d1d483ef908c}\label{class_material_defaults_1_1_flat_image_material_a575057775176b074c508d1d483ef908c} 
+Value\+Container$<$ Math3\+D::\+\+Vec3 $>$ {\bfseries View\+Pos}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the \doxylink{class_material_defaults_1_1_flat_image_material}{Flat\+Image\+Material} type. 
+
+\label{doc-constructors}
+\Hypertarget{class_material_defaults_1_1_flat_image_material_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_material_defaults_1_1_flat_image_material_a9c3f9e57b779bf7b98422cb07f9fb5f2}\index{MaterialDefaults::FlatImageMaterial@{MaterialDefaults::FlatImageMaterial}!FlatImageMaterial@{FlatImageMaterial}}
+\index{FlatImageMaterial@{FlatImageMaterial}!MaterialDefaults::FlatImageMaterial@{MaterialDefaults::FlatImageMaterial}}
+\doxysubsubsection{\texorpdfstring{FlatImageMaterial()}{FlatImageMaterial()}}
+{\footnotesize\ttfamily \label{class_material_defaults_1_1_flat_image_material_a9c3f9e57b779bf7b98422cb07f9fb5f2} 
+Flat\+Image\+Material::\+\+Flat\+Image\+Material (\begin{DoxyParamCaption}\item[{std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$}]{program}{, }\item[{std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$}]{texture}{}\end{DoxyParamCaption})}
+
+
+
+Constructs a new \doxylink{class_material_defaults_1_1_flat_image_material}{Flat\+Image\+Material} instance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em program} & Value for program. \\
+\hline
+{\em texture} & Value for texture. \\
+\hline
+\end{DoxyParams}
+
+
+\label{doc-func-members}
+\Hypertarget{class_material_defaults_1_1_flat_image_material_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_material_defaults_1_1_flat_image_material_a61b269b2721d94022945e0bf31bbd6fc}\index{MaterialDefaults::FlatImageMaterial@{MaterialDefaults::FlatImageMaterial}!bind@{bind}}
+\index{bind@{bind}!MaterialDefaults::FlatImageMaterial@{MaterialDefaults::FlatImageMaterial}}
+\doxysubsubsection{\texorpdfstring{bind()}{bind()}}
+{\footnotesize\ttfamily \label{class_material_defaults_1_1_flat_image_material_a61b269b2721d94022945e0bf31bbd6fc} 
+void Flat\+Image\+Material::\+bind (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Binds this resource. 
+
+
+
+Reimplemented from \doxymbox{\hyperlink{class_material}{Material}}.
+
+\Hypertarget{class_material_defaults_1_1_flat_image_material_a501a86e2432c06f23aae2b5f027c4e52}\index{MaterialDefaults::FlatImageMaterial@{MaterialDefaults::FlatImageMaterial}!Create@{Create}}
+\index{Create@{Create}!MaterialDefaults::FlatImageMaterial@{MaterialDefaults::FlatImageMaterial}}
+\doxysubsubsection{\texorpdfstring{Create()}{Create()}}
+{\footnotesize\ttfamily \label{class_material_defaults_1_1_flat_image_material_a501a86e2432c06f23aae2b5f027c4e52} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material_defaults_1_1_flat_image_material_a9c3f9e57b779bf7b98422cb07f9fb5f2}{Flat\+Image\+Material}} $>$ Flat\+Image\+Material::\+\+Create (\begin{DoxyParamCaption}\item[{std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$}]{tex}{, }\item[{Math3\+D::\+\+Vec4}]{color}{ = {\ttfamily Color:\+:\+WHITE}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Creates a new object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tex} & Value for tex. \\
+\hline
+{\em color} & Color value. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the resulting object. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Materials/\+\doxymbox{\hyperlink{_material_defaults_8h}{Material\+Defaults.\+h}}\item 
+src/\+\+Rendering/\+\+Materials/\+\doxymbox{\hyperlink{_material_defaults_8cpp}{Material\+Defaults.\+cpp}}\end{DoxyCompactItemize}

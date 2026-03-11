@@ -1,3 +1,8 @@
+/**
+ * @file src/Editor/Core/EditorScene.cpp
+ * @brief Implementation for EditorScene.
+ */
+
 #include "Editor/Core/EditorScene.h"
 
 // EditorScene is an editor host/wrapper scene: it renders and edits a contained target scene.
@@ -167,6 +172,7 @@ namespace {
         return StringUtils::Trim(value);
     }
 
+    /// @brief Represents Editor Input Blocker behavior.
     class EditorInputBlocker : public IEventHandler {
         public:
             explicit EditorInputBlocker(EditorScene* owner, std::function<bool()> shouldBlock)
@@ -1510,6 +1516,7 @@ void EditorScene::drawSceneFileDialog(){
     const float footerReserve = ImGui::GetFrameHeight() * (isSaveMode ? 4.8f : 4.0f);
     ImGui::BeginChild("SceneFileDialogEntries", ImVec2(0.0f, -footerReserve), true);
     if(std::filesystem::exists(sceneFileDialogState.currentDirectory)){
+        /// @brief Represents Entry data.
         struct Entry {
             std::filesystem::path path;
             bool isDirectory = false;

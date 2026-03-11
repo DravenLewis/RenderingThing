@@ -1,0 +1,905 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_shader_program" kind="class" language="C++" prot="public">
+    <compoundname>ShaderProgram</compoundname>
+    <includes refid="_shader_program_8h" local="no">ShaderProgram.h</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_shader_program_1a415fd15e73067265673b70ae8230d2f1" prot="private" static="no" mutable="no">
+        <type><ref refid="struct_shader_bundle" kindref="compound">ShaderBundle</ref></type>
+        <definition>ShaderBundle ShaderProgram::sh_vert</definition>
+        <argsstring></argsstring>
+        <name>sh_vert</name>
+        <qualifiedname>ShaderProgram::sh_vert</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="245" column="22" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="245" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_shader_program_1ac1437500e212eebab2d9bfb3d25126d7" prot="private" static="no" mutable="no">
+        <type><ref refid="struct_shader_bundle" kindref="compound">ShaderBundle</ref></type>
+        <definition>ShaderBundle ShaderProgram::sh_frag</definition>
+        <argsstring></argsstring>
+        <name>sh_frag</name>
+        <qualifiedname>ShaderProgram::sh_frag</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="246" column="22" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="246" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_shader_program_1a5e2be0af3af07700421df6b67c4970ff" prot="private" static="no" mutable="no">
+        <type><ref refid="struct_shader_bundle" kindref="compound">ShaderBundle</ref></type>
+        <definition>ShaderBundle ShaderProgram::sh_geom</definition>
+        <argsstring></argsstring>
+        <name>sh_geom</name>
+        <qualifiedname>ShaderProgram::sh_geom</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="247" column="22" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="247" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_shader_program_1a79d90b6ba739408d161adc26ad9450f3" prot="private" static="no" mutable="no">
+        <type><ref refid="struct_shader_bundle" kindref="compound">ShaderBundle</ref></type>
+        <definition>ShaderBundle ShaderProgram::sh_tess</definition>
+        <argsstring></argsstring>
+        <name>sh_tess</name>
+        <qualifiedname>ShaderProgram::sh_tess</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="248" column="22" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="248" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_shader_program_1a635605839d5c71694cf90b160ed7a662" prot="private" static="no" mutable="no">
+        <type><ref refid="struct_shader_bundle" kindref="compound">ShaderBundle</ref></type>
+        <definition>ShaderBundle ShaderProgram::sh_comp</definition>
+        <argsstring></argsstring>
+        <name>sh_comp</name>
+        <qualifiedname>ShaderProgram::sh_comp</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="249" column="22" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="249" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_shader_program_1a1fcd1aa6ef5f89c284d4b1617bf00a2e" prot="private" static="no" mutable="no">
+        <type><ref refid="struct_shader_bundle" kindref="compound">ShaderBundle</ref></type>
+        <definition>ShaderBundle ShaderProgram::sh_task</definition>
+        <argsstring></argsstring>
+        <name>sh_task</name>
+        <qualifiedname>ShaderProgram::sh_task</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="250" column="22" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="250" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_shader_program_1a5b99b8adc409c4939ffa2fe3fc7d15db" prot="private" static="no" mutable="no">
+        <type><ref refid="struct_shader_bundle" kindref="compound">ShaderBundle</ref></type>
+        <definition>ShaderBundle ShaderProgram::sh_srtx</definition>
+        <argsstring></argsstring>
+        <name>sh_srtx</name>
+        <qualifiedname>ShaderProgram::sh_srtx</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="251" column="22" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="251" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_shader_program_1aa2abac31c5ffdf0f094522bac396e9d3" prot="private" static="no" mutable="no">
+        <type>Shader</type>
+        <definition>Shader ShaderProgram::programHandle</definition>
+        <argsstring></argsstring>
+        <name>programHandle</name>
+        <qualifiedname>ShaderProgram::programHandle</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="253" column="16" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="253" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_shader_program_1a6fd937ad9e22b5f7aa3129d1040bf609" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string ShaderProgram::shaderLog</definition>
+        <argsstring></argsstring>
+        <name>shaderLog</name>
+        <qualifiedname>ShaderProgram::shaderLog</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="254" column="21" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="254" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_shader_program_1a18d1cf6d41f162f19cb9551f4dd5beec" prot="private" static="no" mutable="no">
+        <type>std::unordered_map&lt; std::string, GLint &gt;</type>
+        <definition>std::unordered_map&lt;std::string, GLint&gt; ShaderProgram::uniformLocationCache</definition>
+        <argsstring></argsstring>
+        <name>uniformLocationCache</name>
+        <qualifiedname>ShaderProgram::uniformLocationCache</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="255" column="28" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="255" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_shader_program_1a27f9e1f1679c6a937a4bd33d7b699436" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>GLint</type>
+        <definition>GLint ShaderProgram::getUniformLocationCached</definition>
+        <argsstring>(const std::string &amp;name)</argsstring>
+        <name>getUniformLocationCached</name>
+        <qualifiedname>ShaderProgram::getUniformLocationCached</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+<para>Returns a cached uniform location, querying OpenGL if needed. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>name</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="class_uniform" kindref="compound">Uniform</ref> name. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="class_uniform" kindref="compound">Uniform</ref> location, or <computeroutput>-1</computeroutput> when missing. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="262" column="15" bodyfile="src/Rendering/Shaders/ShaderProgram.cpp" bodystart="149" bodyend="164"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1ad0bff867e001f70e4d67cc34d2585296" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string ShaderProgram::_generateShaderLog</definition>
+        <argsstring>(Shader shader)</argsstring>
+        <name>_generateShaderLog</name>
+        <qualifiedname>ShaderProgram::_generateShaderLog</qualifiedname>
+        <param>
+          <type>Shader</type>
+          <declname>shader</declname>
+        </param>
+        <briefdescription>
+<para>Builds a compile log string for a shader object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>shader</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Shader handle. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Shader compile log text. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="269" column="21" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="269" bodyend="278"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1af8a8e3be93789036cd7c73981203ac99" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string ShaderProgram::_generateProgramLog</definition>
+        <argsstring>(Program shader)</argsstring>
+        <name>_generateProgramLog</name>
+        <qualifiedname>ShaderProgram::_generateProgramLog</qualifiedname>
+        <param>
+          <type>Program</type>
+          <declname>shader</declname>
+        </param>
+        <briefdescription>
+<para>Builds a link log string for a program object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>shader</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Program handle. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Program link log text. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="285" column="21" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="285" bodyend="294"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1a8fe422d0e6dc9bba4087f9e3407db532" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Shader</type>
+        <definition>Shader ShaderProgram::_createShader</definition>
+        <argsstring>(std::string glsl, ShaderType type)</argsstring>
+        <name>_createShader</name>
+        <qualifiedname>ShaderProgram::_createShader</qualifiedname>
+        <param>
+          <type>std::string</type>
+          <declname>glsl</declname>
+        </param>
+        <param>
+          <type><ref refid="_shader_program_8h_1a6230e1b9ecbf2d82d10856fd7e1fde46" kindref="member">ShaderType</ref></type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+<para>Creates shader. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>glsl</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>GLSL source code. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Shader stage type. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Shader handle, or <computeroutput>0</computeroutput> on failure. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="302" column="16" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="302" bodyend="338"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1ac1e76d7303a44d63a879333209fa48e4" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::vector&lt; <ref refid="struct_shader_bundle" kindref="compound">ShaderBundle</ref> &gt;</type>
+        <definition>std::vector&lt; ShaderBundle &gt; ShaderProgram::_getShaderBundles</definition>
+        <argsstring>()</argsstring>
+        <name>_getShaderBundles</name>
+        <qualifiedname>ShaderProgram::_getShaderBundles</qualifiedname>
+        <briefdescription>
+<para>Returns all stage bundles as a flat list. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Shader bundle list. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="344" column="21" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="344" bodyend="356"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_shader_program_1a1fbce854a5384c6d74425eaff64910f2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShaderProgram::setVertexShader</definition>
+        <argsstring>(std::string glsl)</argsstring>
+        <name>setVertexShader</name>
+        <qualifiedname>ShaderProgram::setVertexShader</qualifiedname>
+        <param>
+          <type>std::string</type>
+          <declname>glsl</declname>
+        </param>
+        <briefdescription>
+<para>Sets the vertex shader. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>glsl</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>GLSL source code. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="362" column="14" bodyfile="src/Rendering/Shaders/ShaderProgram.cpp" bodystart="17" bodyend="22"/>
+        <references refid="struct_shader_bundle_1a5cd28b8d8719d853d9201f0f35d2f695" compoundref="_shader_program_8h" startline="225" endline="229">ShaderBundle::Create</references>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1aa8c62c838e859d5368a98d0314d43d7f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShaderProgram::setFragmentShader</definition>
+        <argsstring>(std::string glsl)</argsstring>
+        <name>setFragmentShader</name>
+        <qualifiedname>ShaderProgram::setFragmentShader</qualifiedname>
+        <param>
+          <type>std::string</type>
+          <declname>glsl</declname>
+        </param>
+        <briefdescription>
+<para>Sets the fragment shader. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>glsl</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>GLSL source code. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="367" column="14" bodyfile="src/Rendering/Shaders/ShaderProgram.cpp" bodystart="23" bodyend="28"/>
+        <references refid="struct_shader_bundle_1a5cd28b8d8719d853d9201f0f35d2f695" compoundref="_shader_program_8h" startline="225" endline="229">ShaderBundle::Create</references>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1adf9c56429772966970584e6f10043db1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShaderProgram::setGeometryShader</definition>
+        <argsstring>(std::string glsl)</argsstring>
+        <name>setGeometryShader</name>
+        <qualifiedname>ShaderProgram::setGeometryShader</qualifiedname>
+        <param>
+          <type>std::string</type>
+          <declname>glsl</declname>
+        </param>
+        <briefdescription>
+<para>Sets the geometry shader. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>glsl</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>GLSL source code. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="372" column="14" bodyfile="src/Rendering/Shaders/ShaderProgram.cpp" bodystart="29" bodyend="34"/>
+        <references refid="struct_shader_bundle_1a5cd28b8d8719d853d9201f0f35d2f695" compoundref="_shader_program_8h" startline="225" endline="229">ShaderBundle::Create</references>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1afcc0424f8d20bf2fef3293a029db46cd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShaderProgram::setTesselationShader</definition>
+        <argsstring>(std::string glsl)</argsstring>
+        <name>setTesselationShader</name>
+        <qualifiedname>ShaderProgram::setTesselationShader</qualifiedname>
+        <param>
+          <type>std::string</type>
+          <declname>glsl</declname>
+        </param>
+        <briefdescription>
+<para>Sets the tesselation shader. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>glsl</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>GLSL source code. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="377" column="14" bodyfile="src/Rendering/Shaders/ShaderProgram.cpp" bodystart="35" bodyend="40"/>
+        <references refid="struct_shader_bundle_1a5cd28b8d8719d853d9201f0f35d2f695" compoundref="_shader_program_8h" startline="225" endline="229">ShaderBundle::Create</references>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1a678c9074bbfe1304c471dfc3b1691249" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShaderProgram::setComputeShader</definition>
+        <argsstring>(std::string glsl)</argsstring>
+        <name>setComputeShader</name>
+        <qualifiedname>ShaderProgram::setComputeShader</qualifiedname>
+        <param>
+          <type>std::string</type>
+          <declname>glsl</declname>
+        </param>
+        <briefdescription>
+<para>Sets the compute shader. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>glsl</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>GLSL source code. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="382" column="14" bodyfile="src/Rendering/Shaders/ShaderProgram.cpp" bodystart="41" bodyend="46"/>
+        <references refid="struct_shader_bundle_1a5cd28b8d8719d853d9201f0f35d2f695" compoundref="_shader_program_8h" startline="225" endline="229">ShaderBundle::Create</references>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1a4db8cf4f7428ddd35bde1c89571f853e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShaderProgram::setTaskShader</definition>
+        <argsstring>(std::string glsl)</argsstring>
+        <name>setTaskShader</name>
+        <qualifiedname>ShaderProgram::setTaskShader</qualifiedname>
+        <param>
+          <type>std::string</type>
+          <declname>glsl</declname>
+        </param>
+        <briefdescription>
+<para>Sets the task shader. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>glsl</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>GLSL source code. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="387" column="14" bodyfile="src/Rendering/Shaders/ShaderProgram.cpp" bodystart="47" bodyend="52"/>
+        <references refid="struct_shader_bundle_1a5cd28b8d8719d853d9201f0f35d2f695" compoundref="_shader_program_8h" startline="225" endline="229">ShaderBundle::Create</references>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1a329ce6ce72892eb7356f8f52bd6d83dd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShaderProgram::setRTXShader</definition>
+        <argsstring>(std::string glsl)</argsstring>
+        <name>setRTXShader</name>
+        <qualifiedname>ShaderProgram::setRTXShader</qualifiedname>
+        <param>
+          <type>std::string</type>
+          <declname>glsl</declname>
+        </param>
+        <briefdescription>
+<para>Sets the rtx shader. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>glsl</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>GLSL source code. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="392" column="14" bodyfile="src/Rendering/Shaders/ShaderProgram.cpp" bodystart="53" bodyend="58"/>
+        <references refid="struct_shader_bundle_1a5cd28b8d8719d853d9201f0f35d2f695" compoundref="_shader_program_8h" startline="225" endline="229">ShaderBundle::Create</references>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1a8e8f135b343c8de2ef8b93345dce51e2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_shader_bundle" kindref="compound">ShaderBundle</ref> &amp;</type>
+        <definition>ShaderBundle &amp; ShaderProgram::getVertexShader</definition>
+        <argsstring>()</argsstring>
+        <name>getVertexShader</name>
+        <qualifiedname>ShaderProgram::getVertexShader</qualifiedname>
+        <briefdescription>
+<para>Returns the vertex shader. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="398" column="22" bodyfile="src/Rendering/Shaders/ShaderProgram.cpp" bodystart="60" bodyend="62"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1ac0af058463af00f5951b7393322ada78" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_shader_bundle" kindref="compound">ShaderBundle</ref> &amp;</type>
+        <definition>ShaderBundle &amp; ShaderProgram::getFragmentShader</definition>
+        <argsstring>()</argsstring>
+        <name>getFragmentShader</name>
+        <qualifiedname>ShaderProgram::getFragmentShader</qualifiedname>
+        <briefdescription>
+<para>Returns the fragment shader. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="403" column="22" bodyfile="src/Rendering/Shaders/ShaderProgram.cpp" bodystart="63" bodyend="65"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1ac0a7fd97206d529bd045ee5ed13336e7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_shader_bundle" kindref="compound">ShaderBundle</ref> &amp;</type>
+        <definition>ShaderBundle &amp; ShaderProgram::getGeometryShader</definition>
+        <argsstring>()</argsstring>
+        <name>getGeometryShader</name>
+        <qualifiedname>ShaderProgram::getGeometryShader</qualifiedname>
+        <briefdescription>
+<para>Returns the geometry shader. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="408" column="22" bodyfile="src/Rendering/Shaders/ShaderProgram.cpp" bodystart="66" bodyend="68"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1a49eaef37b8e67cb852549758d0d8668f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_shader_bundle" kindref="compound">ShaderBundle</ref> &amp;</type>
+        <definition>ShaderBundle &amp; ShaderProgram::getTesselationShader</definition>
+        <argsstring>()</argsstring>
+        <name>getTesselationShader</name>
+        <qualifiedname>ShaderProgram::getTesselationShader</qualifiedname>
+        <briefdescription>
+<para>Returns the tesselation shader. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="413" column="22" bodyfile="src/Rendering/Shaders/ShaderProgram.cpp" bodystart="69" bodyend="71"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1a6c3e875914b744e360f728c6c4326a16" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_shader_bundle" kindref="compound">ShaderBundle</ref> &amp;</type>
+        <definition>ShaderBundle &amp; ShaderProgram::getComputeShader</definition>
+        <argsstring>()</argsstring>
+        <name>getComputeShader</name>
+        <qualifiedname>ShaderProgram::getComputeShader</qualifiedname>
+        <briefdescription>
+<para>Returns the compute shader. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="418" column="22" bodyfile="src/Rendering/Shaders/ShaderProgram.cpp" bodystart="72" bodyend="74"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1a611d55ef08eff2e7dc5a6acec08b0881" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_shader_bundle" kindref="compound">ShaderBundle</ref> &amp;</type>
+        <definition>ShaderBundle &amp; ShaderProgram::getTaskShader</definition>
+        <argsstring>()</argsstring>
+        <name>getTaskShader</name>
+        <qualifiedname>ShaderProgram::getTaskShader</qualifiedname>
+        <briefdescription>
+<para>Returns the task shader. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="423" column="22" bodyfile="src/Rendering/Shaders/ShaderProgram.cpp" bodystart="75" bodyend="77"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1abc9cb3056b3625883f16472767ee5df6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_shader_bundle" kindref="compound">ShaderBundle</ref> &amp;</type>
+        <definition>ShaderBundle &amp; ShaderProgram::getRTXShader</definition>
+        <argsstring>()</argsstring>
+        <name>getRTXShader</name>
+        <qualifiedname>ShaderProgram::getRTXShader</qualifiedname>
+        <briefdescription>
+<para>Returns the rtx shader. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="428" column="22" bodyfile="src/Rendering/Shaders/ShaderProgram.cpp" bodystart="78" bodyend="80"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1a47a8190cccad34baedeafe7e672123ab" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string ShaderProgram::getLog</definition>
+        <argsstring>()</argsstring>
+        <name>getLog</name>
+        <qualifiedname>ShaderProgram::getLog</qualifiedname>
+        <briefdescription>
+<para>Returns the last compile/link log message. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Log message text. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="434" column="21" bodyfile="src/Rendering/Shaders/ShaderProgram.cpp" bodystart="82" bodyend="84"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1a2b248c28a509a559831cb86253a13a2c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>Shader</type>
+        <definition>Shader ShaderProgram::compile</definition>
+        <argsstring>()</argsstring>
+        <name>compile</name>
+        <qualifiedname>ShaderProgram::compile</qualifiedname>
+        <briefdescription>
+<para>Compiles and links all configured shader stages. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Program handle, or <computeroutput>0</computeroutput> on failure. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="439" column="16" bodyfile="src/Rendering/Shaders/ShaderProgram.cpp" bodystart="86" bodyend="131"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1ab3c3e75ddf54504b5e9f53bf85c34736" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShaderProgram::bind</definition>
+        <argsstring>()</argsstring>
+        <name>bind</name>
+        <qualifiedname>ShaderProgram::bind</qualifiedname>
+        <briefdescription>
+<para>Binds this resource. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="443" column="14" bodyfile="src/Rendering/Shaders/ShaderProgram.cpp" bodystart="139" bodyend="143"/>
+        <referencedby refid="class_shader_program_1a2c8a90e6624a306ca146759ae24268dc" compoundref="_shader_program_8h" startline="455" endline="462">setUniform</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1aeb6df1f103db0e67efbb37ab31983e7f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShaderProgram::unbind</definition>
+        <argsstring>()</argsstring>
+        <name>unbind</name>
+        <qualifiedname>ShaderProgram::unbind</qualifiedname>
+        <briefdescription>
+<para>Unbinds this resource. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="447" column="14" bodyfile="src/Rendering/Shaders/ShaderProgram.cpp" bodystart="166" bodyend="172"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1a2c8a90e6624a306ca146759ae24268dc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void ShaderProgram::setUniform</definition>
+        <argsstring>(const std::string &amp;name, const Uniform&lt; T &gt; &amp;uniform)</argsstring>
+        <name>setUniform</name>
+        <qualifiedname>ShaderProgram::setUniform</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>const <ref refid="class_uniform" kindref="compound">Uniform</ref>&lt; T &gt; &amp;</type>
+          <declname>uniform</declname>
+        </param>
+        <briefdescription>
+<para>Sets the uniform. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>name</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="class_uniform" kindref="compound">Uniform</ref> name. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>uniform</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="class_uniform" kindref="compound">Uniform</ref> wrapper containing the value. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="455" column="14" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="455" bodyend="462"/>
+        <references refid="class_shader_program_1ab3c3e75ddf54504b5e9f53bf85c34736" compoundref="_shader_program_8cpp" startline="139" endline="143">bind</references>
+        <referencedby refid="struct_material_property_1a5645edb77a40c19013dac45a0d21880b" compoundref="_material_8h" startline="40" endline="48">MaterialProperty&lt; T &gt;::apply</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1a793652af8a2d1dede36481c8146de003" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void ShaderProgram::setUniformFast</definition>
+        <argsstring>(const std::string &amp;name, const Uniform&lt; T &gt; &amp;uniform)</argsstring>
+        <name>setUniformFast</name>
+        <qualifiedname>ShaderProgram::setUniformFast</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>const <ref refid="class_uniform" kindref="compound">Uniform</ref>&lt; T &gt; &amp;</type>
+          <declname>uniform</declname>
+        </param>
+        <briefdescription>
+<para>Sets the uniform fast. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>name</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="class_uniform" kindref="compound">Uniform</ref> name. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>uniform</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="class_uniform" kindref="compound">Uniform</ref> wrapper containing the value. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="470" column="14" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="470" bodyend="475"/>
+        <referencedby refid="struct_material_property_1a5645edb77a40c19013dac45a0d21880b" compoundref="_material_8h" startline="40" endline="48">MaterialProperty&lt; T &gt;::apply</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1a7b464da4889af38a911e52a4dc496f29" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>Shader</type>
+        <definition>Shader ShaderProgram::getID</definition>
+        <argsstring>()</argsstring>
+        <name>getID</name>
+        <qualifiedname>ShaderProgram::getID</qualifiedname>
+        <briefdescription>
+<para>Returns the OpenGL program id. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Program handle. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="481" column="16" bodyfile="src/Rendering/Shaders/ShaderProgram.cpp" bodystart="145" bodyend="147"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shader_program_1a2d2eadcfc48cc2e2ddb82aba70553a9f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ShaderProgram::~ShaderProgram</definition>
+        <argsstring>()</argsstring>
+        <name>~ShaderProgram</name>
+        <qualifiedname>ShaderProgram::~ShaderProgram</qualifiedname>
+        <briefdescription>
+<para>Destroys this <ref refid="class_shader_program" kindref="compound">ShaderProgram</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="492" column="9" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="492" bodyend="494"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_shader_program_1a5f0fd68887a4e8228467d85efca7c286" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>Shader</type>
+        <definition>Shader ShaderProgram::GetCurrentShaderProgram</definition>
+        <argsstring>()</argsstring>
+        <name>GetCurrentShaderProgram</name>
+        <qualifiedname>ShaderProgram::GetCurrentShaderProgram</qualifiedname>
+        <briefdescription>
+<para>Returns the currently bound OpenGL program id. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Active program handle. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="487" column="23" bodyfile="src/Rendering/Shaders/ShaderProgram.cpp" bodystart="133" bodyend="137"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_shader_program" kindref="compound">ShaderProgram</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Shaders/ShaderProgram.h" line="243" column="1" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="243" bodyend="495"/>
+    <listofallmembers>
+      <member refid="class_shader_program_1a8fe422d0e6dc9bba4087f9e3407db532" prot="private" virt="non-virtual"><scope>ShaderProgram</scope><name>_createShader</name></member>
+      <member refid="class_shader_program_1af8a8e3be93789036cd7c73981203ac99" prot="private" virt="non-virtual"><scope>ShaderProgram</scope><name>_generateProgramLog</name></member>
+      <member refid="class_shader_program_1ad0bff867e001f70e4d67cc34d2585296" prot="private" virt="non-virtual"><scope>ShaderProgram</scope><name>_generateShaderLog</name></member>
+      <member refid="class_shader_program_1ac1e76d7303a44d63a879333209fa48e4" prot="private" virt="non-virtual"><scope>ShaderProgram</scope><name>_getShaderBundles</name></member>
+      <member refid="class_shader_program_1ab3c3e75ddf54504b5e9f53bf85c34736" prot="public" virt="non-virtual"><scope>ShaderProgram</scope><name>bind</name></member>
+      <member refid="class_shader_program_1a2b248c28a509a559831cb86253a13a2c" prot="public" virt="non-virtual"><scope>ShaderProgram</scope><name>compile</name></member>
+      <member refid="class_shader_program_1a6c3e875914b744e360f728c6c4326a16" prot="public" virt="non-virtual"><scope>ShaderProgram</scope><name>getComputeShader</name></member>
+      <member refid="class_shader_program_1a5f0fd68887a4e8228467d85efca7c286" prot="public" virt="non-virtual"><scope>ShaderProgram</scope><name>GetCurrentShaderProgram</name></member>
+      <member refid="class_shader_program_1ac0af058463af00f5951b7393322ada78" prot="public" virt="non-virtual"><scope>ShaderProgram</scope><name>getFragmentShader</name></member>
+      <member refid="class_shader_program_1ac0a7fd97206d529bd045ee5ed13336e7" prot="public" virt="non-virtual"><scope>ShaderProgram</scope><name>getGeometryShader</name></member>
+      <member refid="class_shader_program_1a7b464da4889af38a911e52a4dc496f29" prot="public" virt="non-virtual"><scope>ShaderProgram</scope><name>getID</name></member>
+      <member refid="class_shader_program_1a47a8190cccad34baedeafe7e672123ab" prot="public" virt="non-virtual"><scope>ShaderProgram</scope><name>getLog</name></member>
+      <member refid="class_shader_program_1abc9cb3056b3625883f16472767ee5df6" prot="public" virt="non-virtual"><scope>ShaderProgram</scope><name>getRTXShader</name></member>
+      <member refid="class_shader_program_1a611d55ef08eff2e7dc5a6acec08b0881" prot="public" virt="non-virtual"><scope>ShaderProgram</scope><name>getTaskShader</name></member>
+      <member refid="class_shader_program_1a49eaef37b8e67cb852549758d0d8668f" prot="public" virt="non-virtual"><scope>ShaderProgram</scope><name>getTesselationShader</name></member>
+      <member refid="class_shader_program_1a27f9e1f1679c6a937a4bd33d7b699436" prot="private" virt="non-virtual"><scope>ShaderProgram</scope><name>getUniformLocationCached</name></member>
+      <member refid="class_shader_program_1a8e8f135b343c8de2ef8b93345dce51e2" prot="public" virt="non-virtual"><scope>ShaderProgram</scope><name>getVertexShader</name></member>
+      <member refid="class_shader_program_1aa2abac31c5ffdf0f094522bac396e9d3" prot="private" virt="non-virtual"><scope>ShaderProgram</scope><name>programHandle</name></member>
+      <member refid="class_shader_program_1a678c9074bbfe1304c471dfc3b1691249" prot="public" virt="non-virtual"><scope>ShaderProgram</scope><name>setComputeShader</name></member>
+      <member refid="class_shader_program_1aa8c62c838e859d5368a98d0314d43d7f" prot="public" virt="non-virtual"><scope>ShaderProgram</scope><name>setFragmentShader</name></member>
+      <member refid="class_shader_program_1adf9c56429772966970584e6f10043db1" prot="public" virt="non-virtual"><scope>ShaderProgram</scope><name>setGeometryShader</name></member>
+      <member refid="class_shader_program_1a329ce6ce72892eb7356f8f52bd6d83dd" prot="public" virt="non-virtual"><scope>ShaderProgram</scope><name>setRTXShader</name></member>
+      <member refid="class_shader_program_1a4db8cf4f7428ddd35bde1c89571f853e" prot="public" virt="non-virtual"><scope>ShaderProgram</scope><name>setTaskShader</name></member>
+      <member refid="class_shader_program_1afcc0424f8d20bf2fef3293a029db46cd" prot="public" virt="non-virtual"><scope>ShaderProgram</scope><name>setTesselationShader</name></member>
+      <member refid="class_shader_program_1a2c8a90e6624a306ca146759ae24268dc" prot="public" virt="non-virtual"><scope>ShaderProgram</scope><name>setUniform</name></member>
+      <member refid="class_shader_program_1a793652af8a2d1dede36481c8146de003" prot="public" virt="non-virtual"><scope>ShaderProgram</scope><name>setUniformFast</name></member>
+      <member refid="class_shader_program_1a1fbce854a5384c6d74425eaff64910f2" prot="public" virt="non-virtual"><scope>ShaderProgram</scope><name>setVertexShader</name></member>
+      <member refid="class_shader_program_1a635605839d5c71694cf90b160ed7a662" prot="private" virt="non-virtual"><scope>ShaderProgram</scope><name>sh_comp</name></member>
+      <member refid="class_shader_program_1ac1437500e212eebab2d9bfb3d25126d7" prot="private" virt="non-virtual"><scope>ShaderProgram</scope><name>sh_frag</name></member>
+      <member refid="class_shader_program_1a5e2be0af3af07700421df6b67c4970ff" prot="private" virt="non-virtual"><scope>ShaderProgram</scope><name>sh_geom</name></member>
+      <member refid="class_shader_program_1a5b99b8adc409c4939ffa2fe3fc7d15db" prot="private" virt="non-virtual"><scope>ShaderProgram</scope><name>sh_srtx</name></member>
+      <member refid="class_shader_program_1a1fcd1aa6ef5f89c284d4b1617bf00a2e" prot="private" virt="non-virtual"><scope>ShaderProgram</scope><name>sh_task</name></member>
+      <member refid="class_shader_program_1a79d90b6ba739408d161adc26ad9450f3" prot="private" virt="non-virtual"><scope>ShaderProgram</scope><name>sh_tess</name></member>
+      <member refid="class_shader_program_1a415fd15e73067265673b70ae8230d2f1" prot="private" virt="non-virtual"><scope>ShaderProgram</scope><name>sh_vert</name></member>
+      <member refid="class_shader_program_1a6fd937ad9e22b5f7aa3129d1040bf609" prot="private" virt="non-virtual"><scope>ShaderProgram</scope><name>shaderLog</name></member>
+      <member refid="class_shader_program_1aeb6df1f103db0e67efbb37ab31983e7f" prot="public" virt="non-virtual"><scope>ShaderProgram</scope><name>unbind</name></member>
+      <member refid="class_shader_program_1a18d1cf6d41f162f19cb9551f4dd5beec" prot="private" virt="non-virtual"><scope>ShaderProgram</scope><name>uniformLocationCache</name></member>
+      <member refid="class_shader_program_1a2d2eadcfc48cc2e2ddb82aba70553a9f" prot="public" virt="non-virtual"><scope>ShaderProgram</scope><name>~ShaderProgram</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

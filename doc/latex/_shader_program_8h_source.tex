@@ -1,0 +1,354 @@
+\doxysection{Shader\+Program.\+h}
+\hypertarget{_shader_program_8h_source}{}\label{_shader_program_8h_source}\index{src/Rendering/Shaders/ShaderProgram.h@{src/Rendering/Shaders/ShaderProgram.h}}
+\doxymbox{\hyperlink{_shader_program_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ SHADER\_PROGRAM\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ SHADER\_PROGRAM\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <glad/glad.h>}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ <SDL3/SDL\_opengl.h>}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ <map>}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ <unordered\_map>}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ "{}Foundation/Math/Math3D.h"{}}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_texture_8h}{Rendering/Textures/Texture.h}}"{}}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_cube_map_8h}{Rendering/Textures/CubeMap.h}}"{}}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00025\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_uniform_a9daad155d7bb1f986b82ca5a7ba22857}{Uniform}}\ \{}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ T\ value;}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_uniform_a9daad155d7bb1f986b82ca5a7ba22857}{Uniform}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_uniform_ae5fde7a7bdd68515197cf9fe27e9320b}{Uniform}}(\textcolor{keyword}{const}\ T\&\ v)\ :\ value(v)\ \{\}}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ set(\textcolor{keyword}{const}\ T\&\ v)\ \{\ value\ =\ v;\ \}}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T\&\ get()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ value;\ \}}
+\DoxyCodeLine{00042\ \};}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \textcolor{keyword}{namespace\ }GLUniformUpload\ \{}
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_g_l_uniform_upload_1_1_texture_slot_adb577d818d2eb350952f0fa05386ce89}{TextureSlot}}\ \{}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ std::shared\_ptr<Texture>\ texture;}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ slot\ =\ 0;}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_g_l_uniform_upload_1_1_texture_slot_adb577d818d2eb350952f0fa05386ce89}{TextureSlot}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_g_l_uniform_upload_1_1_texture_slot_a23c7092a8763c531ee97288674086c1a}{TextureSlot}}(std::shared\_ptr<Texture>\ tex,\ \textcolor{keywordtype}{int}\ s\ =\ 0)\ :\ texture(tex),\ slot(s)\ \{\}}
+\DoxyCodeLine{00060\ \ \ \ \ \};}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_g_l_uniform_upload_1_1_cube_map_slot_aecea70a50c59eb990a8b3ff98030ce2a}{CubeMapSlot}}\ \{}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ std::shared\_ptr<CubeMap>\ cubemap;}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ slot\ =\ 0;}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_g_l_uniform_upload_1_1_cube_map_slot_aecea70a50c59eb990a8b3ff98030ce2a}{CubeMapSlot}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_g_l_uniform_upload_1_1_cube_map_slot_a6c512f6b525bb9cdb8a90393370b0bda}{CubeMapSlot}}(std::shared\_ptr<CubeMap>\ map,\ \textcolor{keywordtype}{int}\ s\ =\ 0)\ :\ cubemap(map),\ slot(s)\ \{\}}
+\DoxyCodeLine{00077\ \ \ \ \ \};}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00084\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{_shader_program_8h_a40dd1eef82109d54de6c4c994bfcb00f}{upload}}(GLint\ loc,\ \textcolor{keywordtype}{int}\ v)\ \{}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ glUniform1i(loc,\ v);}
+\DoxyCodeLine{00086\ \ \ \ \ \}}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00093\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{_shader_program_8h_a40dd1eef82109d54de6c4c994bfcb00f}{upload}}(GLint\ loc,\ \textcolor{keywordtype}{float}\ v)\ \{}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ glUniform1f(loc,\ v);}
+\DoxyCodeLine{00095\ \ \ \ \ \}}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00102\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{_shader_program_8h_a40dd1eef82109d54de6c4c994bfcb00f}{upload}}(GLint\ loc,\ \textcolor{keyword}{const}\ Math3D::Vec2\&\ v)\ \{}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ glUniform2f(loc,\ v.x,\ v.y);}
+\DoxyCodeLine{00104\ \ \ \ \ \}}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00111\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{_shader_program_8h_a40dd1eef82109d54de6c4c994bfcb00f}{upload}}(GLint\ loc,\ \textcolor{keyword}{const}\ Math3D::Vec3\&\ v)\ \{}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ glUniform3f(loc,\ v.x,\ v.y,\ v.z);}
+\DoxyCodeLine{00113\ \ \ \ \ \}}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{_shader_program_8h_a40dd1eef82109d54de6c4c994bfcb00f}{upload}}(GLint\ loc,\ \textcolor{keyword}{const}\ Math3D::Vec4\&\ v)\ \{}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ glUniform4f(loc,\ v.x,\ v.y,\ v.z,\ v.w);}
+\DoxyCodeLine{00122\ \ \ \ \ \}}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{_shader_program_8h_a40dd1eef82109d54de6c4c994bfcb00f}{upload}}(GLint\ loc,\ \textcolor{keyword}{const}\ Math3D::Quat\&\ q)\ \{}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ glUniform4f(loc,\ q.x,\ q.y,\ q.z,\ q.w);}
+\DoxyCodeLine{00131\ \ \ \ \ \}}
+\DoxyCodeLine{00132\ }
+\DoxyCodeLine{00138\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{_shader_program_8h_a40dd1eef82109d54de6c4c994bfcb00f}{upload}}(GLint\ loc,\ \textcolor{keyword}{const}\ Math3D::Mat4\&\ m)\ \{}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ glUniformMatrix4fv(}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \ \ \ \ loc,}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \ \ \ \ 1,}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \ \ \ \ GL\_FALSE,}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \ \ \ \ glm::value\_ptr(m.data)}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00145\ \ \ \ \ \}}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \ \ \ \ \textcolor{comment}{//\ TODO\ WE\ NEED\ A\ TEXTURE\ UNIFORM\ AS\ WELL.}}
+\DoxyCodeLine{00148\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ upload(GLint\ loc,std::shared\_ptr<Texture>\ tex,\ \textcolor{keywordtype}{int}\ slot\ =\ 0)\{}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(tex)\{}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \ \ \ \ tex-\/>bind(slot);}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \ \ \ \ glUniform1i(loc,\ slot);}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00154\ }
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ glActiveTexture(GL\_TEXTURE0\ +\ slot);}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ glBindTexture(GL\_TEXTURE\_2D,\ 0);}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ glUniform1i(loc,\ slot);}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00159\ \ \ \ \ \}}
+\DoxyCodeLine{00160\ }
+\DoxyCodeLine{00166\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{_shader_program_8h_a40dd1eef82109d54de6c4c994bfcb00f}{upload}}(GLint\ loc,\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{struct_g_l_uniform_upload_1_1_texture_slot}{TextureSlot}}\&\ texSlot)\{}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(texSlot.texture)\{}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \ \ \ \ texSlot.texture-\/>bind(texSlot.slot);}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \ \ \ \ glUniform1i(loc,\ texSlot.slot);}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ glActiveTexture(GL\_TEXTURE0\ +\ texSlot.slot);}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ glBindTexture(GL\_TEXTURE\_2D,\ 0);}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ glUniform1i(loc,\ texSlot.slot);}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00177\ \ \ \ \ \}}
+\DoxyCodeLine{00178\ }
+\DoxyCodeLine{00184\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{_shader_program_8h_a40dd1eef82109d54de6c4c994bfcb00f}{upload}}(GLint\ loc,\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{struct_g_l_uniform_upload_1_1_cube_map_slot}{CubeMapSlot}}\&\ mapSlot)\{}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(mapSlot.cubemap)\{}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ \ \ \ \ mapSlot.cubemap-\/>bind(mapSlot.slot);}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ \ \ \ \ glUniform1i(loc,\ mapSlot.slot);}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00190\ }
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ glActiveTexture(GL\_TEXTURE0\ +\ mapSlot.slot);}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ glBindTexture(GL\_TEXTURE\_CUBE\_MAP,\ 0);}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ glUniform1i(loc,\ mapSlot.slot);}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00195\ \ \ \ \ \}}
+\DoxyCodeLine{00196\ \}}
+\DoxyCodeLine{00197\ }
+\DoxyCodeLine{00198\ }
+\DoxyCodeLine{00199\ \textcolor{keyword}{typedef}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ Shader,\ Program,\ Buffer,\ Array;}
+\DoxyCodeLine{00200\ }
+\DoxyCodeLine{00202\ \textcolor{keyword}{enum}\ \doxymbox{\hyperlink{_shader_program_8h_a6230e1b9ecbf2d82d10856fd7e1fde46}{ShaderType}}\{}
+\DoxyCodeLine{00203\ \ \ \ \ FRAGMENT\ =\ 0,}
+\DoxyCodeLine{00204\ \ \ \ \ VERTEX,}
+\DoxyCodeLine{00205\ \ \ \ \ GEOMETRY,}
+\DoxyCodeLine{00206\ \ \ \ \ TESSELATION,}
+\DoxyCodeLine{00207\ \ \ \ \ COMPUTE,}
+\DoxyCodeLine{00208\ \ \ \ \ TASK,}
+\DoxyCodeLine{00209\ \ \ \ \ RAYTRACE}
+\DoxyCodeLine{00210\ \};}
+\DoxyCodeLine{00211\ }
+\DoxyCodeLine{00213\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_shader_bundle}{ShaderBundle}}\{}
+\DoxyCodeLine{00214\ }
+\DoxyCodeLine{00215\ \ \ \ \ Shader\ shaderHandle\ =\ 0;}
+\DoxyCodeLine{00216\ \ \ \ \ std::string\ shader\_code;}
+\DoxyCodeLine{00217\ \ \ \ \ \doxymbox{\hyperlink{_shader_program_8h_a6230e1b9ecbf2d82d10856fd7e1fde46}{ShaderType}}\ type;}
+\DoxyCodeLine{00218\ \ \ \ \ \textcolor{keywordtype}{bool}\ valid\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00219\ }
+\DoxyCodeLine{00225\ \ \ \ \ \textcolor{keyword}{static}\ \doxymbox{\hyperlink{struct_shader_bundle}{ShaderBundle}}\ \doxymbox{\hyperlink{struct_shader_bundle_a5cd28b8d8719d853d9201f0f35d2f695}{Create}}(std::string\&\ glsl)\{}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_shader_bundle}{ShaderBundle}}\ bundle;}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ bundle.shader\_code\ =\ glsl;}
+\DoxyCodeLine{00228\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ bundle;}
+\DoxyCodeLine{00229\ \ \ \ \ \}}
+\DoxyCodeLine{00230\ }
+\DoxyCodeLine{00234\ \ \ \ \ \doxymbox{\hyperlink{struct_shader_bundle_a56b986ba4b5b35f47e227087c0035ba2}{\string~ShaderBundle}}()\{}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(shaderHandle\ !=\ 0)\{}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ \ \ \ \ glDeleteShader(shaderHandle);}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ \ \ \ \ shaderHandle\ =\ 0;}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00239\ \ \ \ \ \}}
+\DoxyCodeLine{00240\ \};}
+\DoxyCodeLine{00241\ }
+\DoxyCodeLine{00243\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_shader_program}{ShaderProgram}}\{}
+\DoxyCodeLine{00244\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00245\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_shader_bundle}{ShaderBundle}}\ sh\_vert;}
+\DoxyCodeLine{00246\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_shader_bundle}{ShaderBundle}}\ sh\_frag;}
+\DoxyCodeLine{00247\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_shader_bundle}{ShaderBundle}}\ sh\_geom;}
+\DoxyCodeLine{00248\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_shader_bundle}{ShaderBundle}}\ sh\_tess;}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_shader_bundle}{ShaderBundle}}\ sh\_comp;}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_shader_bundle}{ShaderBundle}}\ sh\_task;}
+\DoxyCodeLine{00251\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_shader_bundle}{ShaderBundle}}\ sh\_srtx;}
+\DoxyCodeLine{00252\ \ \ \ \ }
+\DoxyCodeLine{00253\ \ \ \ \ \ \ \ \ Shader\ programHandle\ =\ 0;}
+\DoxyCodeLine{00254\ \ \ \ \ \ \ \ \ std::string\ shaderLog;}
+\DoxyCodeLine{00255\ \ \ \ \ \ \ \ \ std::unordered\_map<std::string,\ GLint>\ uniformLocationCache;}
+\DoxyCodeLine{00256\ }
+\DoxyCodeLine{00262\ \ \ \ \ \ \ \ \ GLint\ getUniformLocationCached(\textcolor{keyword}{const}\ std::string\&\ name);}
+\DoxyCodeLine{00263\ }
+\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ std::string\ \_generateShaderLog(Shader\ shader)\{}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ \ \ \ \ GLint\ success;}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \ \ \ \ \ \ glGetShaderiv(shader,\ GL\_COMPILE\_STATUS,\ \&success);}
+\DoxyCodeLine{00272\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!success)\{}
+\DoxyCodeLine{00273\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ infoLog[1024]\ =\ \{0\};}
+\DoxyCodeLine{00274\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glGetShaderInfoLog(shader,\ 512,\ 0,\ infoLog);}
+\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::string(infoLog);}
+\DoxyCodeLine{00276\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00277\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::string(\textcolor{stringliteral}{"{}Successful\ Compilation."{}});}
+\DoxyCodeLine{00278\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00279\ }
+\DoxyCodeLine{00285\ \ \ \ \ \ \ \ \ std::string\ \_generateProgramLog(Program\ shader)\{}
+\DoxyCodeLine{00286\ \ \ \ \ \ \ \ \ \ \ \ \ GLint\ success;}
+\DoxyCodeLine{00287\ \ \ \ \ \ \ \ \ \ \ \ \ glGetProgramiv(shader,\ GL\_LINK\_STATUS,\ \&success);}
+\DoxyCodeLine{00288\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!success)\ \{}
+\DoxyCodeLine{00289\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ infoLog[1024]\ =\ \{0\};}
+\DoxyCodeLine{00290\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glGetProgramInfoLog(shader,\ 1024,\ NULL,\ infoLog);}
+\DoxyCodeLine{00291\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}Linker\ Error:\ "{}}\ +\ std::string(infoLog);}
+\DoxyCodeLine{00292\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00293\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}Program\ Linked\ Successfully."{}};}
+\DoxyCodeLine{00294\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00295\ }
+\DoxyCodeLine{00302\ \ \ \ \ \ \ \ \ Shader\ \_createShader(std::string\ glsl,\ \doxymbox{\hyperlink{_shader_program_8h_a6230e1b9ecbf2d82d10856fd7e1fde46}{ShaderType}}\ type)\{}
+\DoxyCodeLine{00303\ \ \ \ \ \ \ \ \ \ \ \ \ Shader\ value\ =\ 0;}
+\DoxyCodeLine{00304\ }
+\DoxyCodeLine{00305\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *\ str\ =\ glsl.c\_str();}
+\DoxyCodeLine{00306\ }
+\DoxyCodeLine{00307\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (type)\{}
+\DoxyCodeLine{00308\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ ShaderType::VERTEX:}
+\DoxyCodeLine{00309\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ value\ =\ glCreateShader(GL\_VERTEX\_SHADER);}
+\DoxyCodeLine{00310\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00311\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ ShaderType::FRAGMENT:}
+\DoxyCodeLine{00312\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ value\ =\ glCreateShader(GL\_FRAGMENT\_SHADER);}
+\DoxyCodeLine{00313\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00314\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ ShaderType::GEOMETRY:}
+\DoxyCodeLine{00315\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ value\ =\ glCreateShader(GL\_GEOMETRY\_SHADER);}
+\DoxyCodeLine{00316\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00317\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ ShaderType::TESSELATION:}
+\DoxyCodeLine{00318\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ value\ =\ glCreateShader(GL\_TESS\_CONTROL\_SHADER);}
+\DoxyCodeLine{00319\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00320\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ ShaderType::COMPUTE:}
+\DoxyCodeLine{00321\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ value\ =\ glCreateShader(GL\_COMPUTE\_SHADER);}
+\DoxyCodeLine{00322\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00323\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ ShaderType::TASK:}
+\DoxyCodeLine{00324\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ value\ =\ glCreateShader(GL\_TESS\_EVALUATION\_SHADER);}
+\DoxyCodeLine{00325\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00326\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ ShaderType::RAYTRACE:}
+\DoxyCodeLine{00327\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{00328\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ value\ =\ 0;}
+\DoxyCodeLine{00329\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00330\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00331\ }
+\DoxyCodeLine{00332\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(value\ !=\ 0)\{}
+\DoxyCodeLine{00333\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glShaderSource(value,1,\&str,\ NULL);}
+\DoxyCodeLine{00334\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glCompileShader(value);}
+\DoxyCodeLine{00335\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00336\ }
+\DoxyCodeLine{00337\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ value;}
+\DoxyCodeLine{00338\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00339\ }
+\DoxyCodeLine{00344\ \ \ \ \ \ \ \ \ std::vector<ShaderBundle>\ \_getShaderBundles()\{}
+\DoxyCodeLine{00345\ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<ShaderBundle>\ BUNDLES\ =\ \{}
+\DoxyCodeLine{00346\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ sh\_vert,}
+\DoxyCodeLine{00347\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ sh\_frag,}
+\DoxyCodeLine{00348\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ sh\_geom,}
+\DoxyCodeLine{00349\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ sh\_tess,}
+\DoxyCodeLine{00350\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ sh\_comp,}
+\DoxyCodeLine{00351\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ sh\_task,}
+\DoxyCodeLine{00352\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ sh\_srtx}
+\DoxyCodeLine{00353\ \ \ \ \ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00354\ }
+\DoxyCodeLine{00355\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ BUNDLES;}
+\DoxyCodeLine{00356\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00357\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00362\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shader_program_a1fbce854a5384c6d74425eaff64910f2}{setVertexShader}}(std::string\ glsl);}
+\DoxyCodeLine{00367\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shader_program_aa8c62c838e859d5368a98d0314d43d7f}{setFragmentShader}}(std::string\ glsl);}
+\DoxyCodeLine{00372\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shader_program_adf9c56429772966970584e6f10043db1}{setGeometryShader}}(std::string\ glsl);}
+\DoxyCodeLine{00377\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shader_program_afcc0424f8d20bf2fef3293a029db46cd}{setTesselationShader}}(std::string\ glsl);}
+\DoxyCodeLine{00382\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shader_program_a678c9074bbfe1304c471dfc3b1691249}{setComputeShader}}(std::string\ glsl);}
+\DoxyCodeLine{00387\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shader_program_a4db8cf4f7428ddd35bde1c89571f853e}{setTaskShader}}(std::string\ glsl);}
+\DoxyCodeLine{00392\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shader_program_a329ce6ce72892eb7356f8f52bd6d83dd}{setRTXShader}}(std::string\ glsl);}
+\DoxyCodeLine{00393\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00398\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_shader_bundle}{ShaderBundle}}\&\ \doxymbox{\hyperlink{class_shader_program_a8e8f135b343c8de2ef8b93345dce51e2}{getVertexShader}}();}
+\DoxyCodeLine{00403\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_shader_bundle}{ShaderBundle}}\&\ \doxymbox{\hyperlink{class_shader_program_ac0af058463af00f5951b7393322ada78}{getFragmentShader}}();}
+\DoxyCodeLine{00408\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_shader_bundle}{ShaderBundle}}\&\ \doxymbox{\hyperlink{class_shader_program_ac0a7fd97206d529bd045ee5ed13336e7}{getGeometryShader}}();}
+\DoxyCodeLine{00413\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_shader_bundle}{ShaderBundle}}\&\ \doxymbox{\hyperlink{class_shader_program_a49eaef37b8e67cb852549758d0d8668f}{getTesselationShader}}();}
+\DoxyCodeLine{00418\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_shader_bundle}{ShaderBundle}}\&\ \doxymbox{\hyperlink{class_shader_program_a6c3e875914b744e360f728c6c4326a16}{getComputeShader}}();}
+\DoxyCodeLine{00423\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_shader_bundle}{ShaderBundle}}\&\ \doxymbox{\hyperlink{class_shader_program_a611d55ef08eff2e7dc5a6acec08b0881}{getTaskShader}}();}
+\DoxyCodeLine{00428\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_shader_bundle}{ShaderBundle}}\&\ \doxymbox{\hyperlink{class_shader_program_abc9cb3056b3625883f16472767ee5df6}{getRTXShader}}();}
+\DoxyCodeLine{00429\ }
+\DoxyCodeLine{00434\ \ \ \ \ \ \ \ \ std::string\ \doxymbox{\hyperlink{class_shader_program_a47a8190cccad34baedeafe7e672123ab}{getLog}}();}
+\DoxyCodeLine{00439\ \ \ \ \ \ \ \ \ Shader\ \doxymbox{\hyperlink{class_shader_program_a2b248c28a509a559831cb86253a13a2c}{compile}}();}
+\DoxyCodeLine{00443\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shader_program_ab3c3e75ddf54504b5e9f53bf85c34736}{bind}}();}
+\DoxyCodeLine{00447\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shader_program_aeb6df1f103db0e67efbb37ab31983e7f}{unbind}}();}
+\DoxyCodeLine{00448\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00454\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00455\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shader_program_a2c8a90e6624a306ca146759ae24268dc}{setUniform}}(\textcolor{keyword}{const}\ std::string\&\ name,\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{class_uniform}{Uniform<T>}}\&\ uniform)\{}
+\DoxyCodeLine{00456\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_shader_program_ab3c3e75ddf54504b5e9f53bf85c34736}{bind}}();}
+\DoxyCodeLine{00457\ \ \ \ \ \ \ \ \ \ \ \ \ GLint\ loc\ =\ getUniformLocationCached(name);}
+\DoxyCodeLine{00458\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(loc\ !=\ -\/1)\{}
+\DoxyCodeLine{00459\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{_shader_program_8h_a40dd1eef82109d54de6c4c994bfcb00f}{GLUniformUpload::upload}}(loc,\ uniform.get());}
+\DoxyCodeLine{00460\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00461\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//unbind();}}
+\DoxyCodeLine{00462\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00463\ }
+\DoxyCodeLine{00469\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00470\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shader_program_a793652af8a2d1dede36481c8146de003}{setUniformFast}}(\textcolor{keyword}{const}\ std::string\&\ name,\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{class_uniform}{Uniform<T>}}\&\ uniform)\{}
+\DoxyCodeLine{00471\ \ \ \ \ \ \ \ \ \ \ \ \ GLint\ loc\ =\ getUniformLocationCached(name);}
+\DoxyCodeLine{00472\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(loc\ !=\ -\/1)\{}
+\DoxyCodeLine{00473\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{_shader_program_8h_a40dd1eef82109d54de6c4c994bfcb00f}{GLUniformUpload::upload}}(loc,\ uniform.get());}
+\DoxyCodeLine{00474\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00475\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00476\ }
+\DoxyCodeLine{00481\ \ \ \ \ \ \ \ \ Shader\ \doxymbox{\hyperlink{class_shader_program_a7b464da4889af38a911e52a4dc496f29}{getID}}();}
+\DoxyCodeLine{00482\ }
+\DoxyCodeLine{00487\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ Shader\ \doxymbox{\hyperlink{class_shader_program_a5f0fd68887a4e8228467d85efca7c286}{GetCurrentShaderProgram}}();}
+\DoxyCodeLine{00488\ }
+\DoxyCodeLine{00492\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_shader_program_a2d2eadcfc48cc2e2ddb82aba70553a9f}{\string~ShaderProgram}}()\{}
+\DoxyCodeLine{00493\ \ \ \ \ \ \ \ \ \ \ \ \ glDeleteProgram(programHandle);}
+\DoxyCodeLine{00494\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00495\ \};}
+\DoxyCodeLine{00496\ }
+\DoxyCodeLine{00497\ }
+\DoxyCodeLine{00499\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_shader_cache}{ShaderCache}}\{}
+\DoxyCodeLine{00500\ \ \ \ \ std::map<std::string,\ std::shared\_ptr<ShaderProgram>>\ programCache;}
+\DoxyCodeLine{00501\ }
+\DoxyCodeLine{00514\ \ \ \ \ std::shared\_ptr<ShaderProgram>\ \doxymbox{\hyperlink{struct_shader_cache_af5f1cbf4ab7956b32d7bd121781705d4}{getOrCompile}}(}
+\DoxyCodeLine{00515\ \ \ \ \ \ \ \ \ std::string\ name,\ }
+\DoxyCodeLine{00516\ \ \ \ \ \ \ \ \ std::string\ vtx\ =\ \textcolor{stringliteral}{"{}"{}},\ }
+\DoxyCodeLine{00517\ \ \ \ \ \ \ \ \ std::string\ frag\ =\ \textcolor{stringliteral}{"{}"{}},}
+\DoxyCodeLine{00518\ \ \ \ \ \ \ \ \ std::string\ geom\ =\ \textcolor{stringliteral}{"{}"{}},}
+\DoxyCodeLine{00519\ \ \ \ \ \ \ \ \ std::string\ tess\ =\ \textcolor{stringliteral}{"{}"{}},}
+\DoxyCodeLine{00520\ \ \ \ \ \ \ \ \ std::string\ compute\ =\ \textcolor{stringliteral}{"{}"{}},}
+\DoxyCodeLine{00521\ \ \ \ \ \ \ \ \ std::string\ task\ =\ \textcolor{stringliteral}{"{}"{}},}
+\DoxyCodeLine{00522\ \ \ \ \ \ \ \ \ std::string\ srtx\ =\ \textcolor{stringliteral}{"{}"{}}}
+\DoxyCodeLine{00523\ \ \ \ \ )\{}
+\DoxyCodeLine{00524\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Check\ if\ the\ file\ is\ in\ the\ cache;}}
+\DoxyCodeLine{00525\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ it\ =\ programCache.find(name);}
+\DoxyCodeLine{00526\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(it\ !=\ programCache.end())\{}
+\DoxyCodeLine{00527\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(it-\/>second\ \&\&\ it-\/>second-\/>getID()\ !=\ 0)\{}
+\DoxyCodeLine{00528\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ it-\/>second;}
+\DoxyCodeLine{00529\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00530\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Recover\ from\ failed\ cached\ programs\ (ID==0)\ by\ recompiling.}}
+\DoxyCodeLine{00531\ \ \ \ \ \ \ \ \ \ \ \ \ programCache.erase(it);}
+\DoxyCodeLine{00532\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00533\ }
+\DoxyCodeLine{00534\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ program\ =\ std::make\_shared<ShaderProgram>();}
+\DoxyCodeLine{00535\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(vtx.size()\ !=\ 0)\ program-\/>setVertexShader(vtx);}
+\DoxyCodeLine{00536\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(frag.size()\ !=\ 0)\ program-\/>setFragmentShader(frag);}
+\DoxyCodeLine{00537\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(geom.size()\ !=\ 0)\ program-\/>setGeometryShader(geom);}
+\DoxyCodeLine{00538\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(tess.size()\ !=\ 0)\ program-\/>setTesselationShader(tess);}
+\DoxyCodeLine{00539\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(compute.size()\ !=\ 0)\ program-\/>setComputeShader(compute);}
+\DoxyCodeLine{00540\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(task.size()\ !=\ 0)\ program-\/>setTaskShader(task);}
+\DoxyCodeLine{00541\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(srtx.size()\ !=\ 0)\ program-\/>setRTXShader(srtx);}
+\DoxyCodeLine{00542\ }
+\DoxyCodeLine{00543\ }
+\DoxyCodeLine{00544\ \ \ \ \ \ \ \ \ program-\/>compile();}
+\DoxyCodeLine{00545\ }
+\DoxyCodeLine{00546\ \ \ \ \ \ \ \ \ programCache[name]\ =\ program;}
+\DoxyCodeLine{00547\ }
+\DoxyCodeLine{00548\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ program;}
+\DoxyCodeLine{00549\ \ \ \ \ \}}
+\DoxyCodeLine{00550\ }
+\DoxyCodeLine{00554\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{struct_shader_cache_ae36ea2f2f11454ea3df20212e3fffd25}{clear}}()\{}
+\DoxyCodeLine{00555\ \ \ \ \ \ \ \ \ programCache.clear();}
+\DoxyCodeLine{00556\ \ \ \ \ \}}
+\DoxyCodeLine{00557\ \};}
+\DoxyCodeLine{00558\ }
+\DoxyCodeLine{00559\ \textcolor{keyword}{namespace\ }ShaderCacheManager\{}
+\DoxyCodeLine{00560\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ ShaderCache\ INSTANCE\ =\ ShaderCache();}
+\DoxyCodeLine{00561\ \}}
+\DoxyCodeLine{00562\ }
+\DoxyCodeLine{00563\ }
+\DoxyCodeLine{00564\ }
+\DoxyCodeLine{00565\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ SHADER\_PROGRAM\_H}}
+
+\end{DoxyCode}

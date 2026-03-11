@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_model_prefabs_1_1_cube_material_definition" kind="struct" language="C++" prot="public">
+    <compoundname>ModelPrefabs::CubeMaterialDefinition</compoundname>
+    <includes refid="_model_prefabs_8h" local="no">ModelPrefabs.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_model_prefabs_1_1_cube_material_definition_1ace62f45e214a39530f1d170774d42587" prot="public" static="no" mutable="no">
+        <type>PMaterial</type>
+        <definition>PMaterial ModelPrefabs::CubeMaterialDefinition::matTop</definition>
+        <argsstring></argsstring>
+        <name>matTop</name>
+        <qualifiedname>ModelPrefabs::CubeMaterialDefinition::matTop</qualifiedname>
+        <initializer>= <ref refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" kindref="member">MaterialDefaults::ColorMaterial::Create</ref>(Color::MAGENTA)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/ModelPrefabs.h" line="19" column="19" bodyfile="src/Rendering/Geometry/ModelPrefabs.h" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_model_prefabs_1_1_cube_material_definition_1a4513afc8b732a96d033351f56f75b175" prot="public" static="no" mutable="no">
+        <type>PMaterial</type>
+        <definition>PMaterial ModelPrefabs::CubeMaterialDefinition::matBottom</definition>
+        <argsstring></argsstring>
+        <name>matBottom</name>
+        <qualifiedname>ModelPrefabs::CubeMaterialDefinition::matBottom</qualifiedname>
+        <initializer>= <ref refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" kindref="member">MaterialDefaults::ColorMaterial::Create</ref>(Color::MAGENTA)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/ModelPrefabs.h" line="20" column="19" bodyfile="src/Rendering/Geometry/ModelPrefabs.h" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_model_prefabs_1_1_cube_material_definition_1a2cdc64fdec71091be8bf57aa9a332036" prot="public" static="no" mutable="no">
+        <type>PMaterial</type>
+        <definition>PMaterial ModelPrefabs::CubeMaterialDefinition::matLeft</definition>
+        <argsstring></argsstring>
+        <name>matLeft</name>
+        <qualifiedname>ModelPrefabs::CubeMaterialDefinition::matLeft</qualifiedname>
+        <initializer>= <ref refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" kindref="member">MaterialDefaults::ColorMaterial::Create</ref>(Color::MAGENTA)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/ModelPrefabs.h" line="21" column="19" bodyfile="src/Rendering/Geometry/ModelPrefabs.h" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_model_prefabs_1_1_cube_material_definition_1a08e8349a7878f593c484630a6f39cc12" prot="public" static="no" mutable="no">
+        <type>PMaterial</type>
+        <definition>PMaterial ModelPrefabs::CubeMaterialDefinition::matRight</definition>
+        <argsstring></argsstring>
+        <name>matRight</name>
+        <qualifiedname>ModelPrefabs::CubeMaterialDefinition::matRight</qualifiedname>
+        <initializer>= <ref refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" kindref="member">MaterialDefaults::ColorMaterial::Create</ref>(Color::MAGENTA)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/ModelPrefabs.h" line="22" column="19" bodyfile="src/Rendering/Geometry/ModelPrefabs.h" bodystart="22" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_model_prefabs_1_1_cube_material_definition_1a47d3d332738b0cf2ca0b045daf988f94" prot="public" static="no" mutable="no">
+        <type>PMaterial</type>
+        <definition>PMaterial ModelPrefabs::CubeMaterialDefinition::matFront</definition>
+        <argsstring></argsstring>
+        <name>matFront</name>
+        <qualifiedname>ModelPrefabs::CubeMaterialDefinition::matFront</qualifiedname>
+        <initializer>= <ref refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" kindref="member">MaterialDefaults::ColorMaterial::Create</ref>(Color::MAGENTA)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/ModelPrefabs.h" line="23" column="19" bodyfile="src/Rendering/Geometry/ModelPrefabs.h" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_model_prefabs_1_1_cube_material_definition_1af7ef9c5379fdaffdc31652504f9c3d9d" prot="public" static="no" mutable="no">
+        <type>PMaterial</type>
+        <definition>PMaterial ModelPrefabs::CubeMaterialDefinition::matBack</definition>
+        <argsstring></argsstring>
+        <name>matBack</name>
+        <qualifiedname>ModelPrefabs::CubeMaterialDefinition::matBack</qualifiedname>
+        <initializer>= <ref refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" kindref="member">MaterialDefaults::ColorMaterial::Create</ref>(Color::MAGENTA)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/ModelPrefabs.h" line="24" column="19" bodyfile="src/Rendering/Geometry/ModelPrefabs.h" bodystart="24" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="struct_model_prefabs_1_1_cube_material_definition_1aba705d4394d425991f04fbfb85500839" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="struct_model_prefabs_1_1_cube_material_definition" kindref="compound">CubeMaterialDefinition</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt; CubeMaterialDefinition &gt; ModelPrefabs::CubeMaterialDefinition::Create</definition>
+        <argsstring>()</argsstring>
+        <name>Create</name>
+        <qualifiedname>ModelPrefabs::CubeMaterialDefinition::Create</qualifiedname>
+        <briefdescription>
+<para>Creates a new object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Pointer to the resulting object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/ModelPrefabs.h" line="31" column="32" bodyfile="src/Rendering/Geometry/ModelPrefabs.h" bodystart="31" bodyend="31"/>
+        <referencedby refid="struct_model_prefabs_1ad5d5f5c2c36f3c39db66281afd4713ee" compoundref="_model_prefabs_8h" startline="50" endline="81">ModelPrefabs::MakeCube</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="struct_model_prefabs_1_1_cube_material_definition_1a51f34850b6c532b1679083ac3065bca7" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="struct_model_prefabs_1_1_cube_material_definition" kindref="compound">CubeMaterialDefinition</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt; CubeMaterialDefinition &gt; ModelPrefabs::CubeMaterialDefinition::CreateSame</definition>
+        <argsstring>(PMaterial mat)</argsstring>
+        <name>CreateSame</name>
+        <qualifiedname>ModelPrefabs::CubeMaterialDefinition::CreateSame</qualifiedname>
+        <param>
+          <type>PMaterial</type>
+          <declname>mat</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/ModelPrefabs.h" line="32" column="32" bodyfile="src/Rendering/Geometry/ModelPrefabs.h" bodystart="32" bodyend="41"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_model_prefabs_1_1_cube_material_definition" kindref="compound">CubeMaterialDefinition</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Geometry/ModelPrefabs.h" line="18" column="5" bodyfile="src/Rendering/Geometry/ModelPrefabs.h" bodystart="18" bodyend="42"/>
+    <listofallmembers>
+      <member refid="struct_model_prefabs_1_1_cube_material_definition_1aba705d4394d425991f04fbfb85500839" prot="public" virt="non-virtual"><scope>ModelPrefabs::CubeMaterialDefinition</scope><name>Create</name></member>
+      <member refid="struct_model_prefabs_1_1_cube_material_definition_1a51f34850b6c532b1679083ac3065bca7" prot="public" virt="non-virtual"><scope>ModelPrefabs::CubeMaterialDefinition</scope><name>CreateSame</name></member>
+      <member refid="struct_model_prefabs_1_1_cube_material_definition_1af7ef9c5379fdaffdc31652504f9c3d9d" prot="public" virt="non-virtual"><scope>ModelPrefabs::CubeMaterialDefinition</scope><name>matBack</name></member>
+      <member refid="struct_model_prefabs_1_1_cube_material_definition_1a4513afc8b732a96d033351f56f75b175" prot="public" virt="non-virtual"><scope>ModelPrefabs::CubeMaterialDefinition</scope><name>matBottom</name></member>
+      <member refid="struct_model_prefabs_1_1_cube_material_definition_1a47d3d332738b0cf2ca0b045daf988f94" prot="public" virt="non-virtual"><scope>ModelPrefabs::CubeMaterialDefinition</scope><name>matFront</name></member>
+      <member refid="struct_model_prefabs_1_1_cube_material_definition_1a2cdc64fdec71091be8bf57aa9a332036" prot="public" virt="non-virtual"><scope>ModelPrefabs::CubeMaterialDefinition</scope><name>matLeft</name></member>
+      <member refid="struct_model_prefabs_1_1_cube_material_definition_1a08e8349a7878f593c484630a6f39cc12" prot="public" virt="non-virtual"><scope>ModelPrefabs::CubeMaterialDefinition</scope><name>matRight</name></member>
+      <member refid="struct_model_prefabs_1_1_cube_material_definition_1ace62f45e214a39530f1d170774d42587" prot="public" virt="non-virtual"><scope>ModelPrefabs::CubeMaterialDefinition</scope><name>matTop</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

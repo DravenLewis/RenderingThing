@@ -1,0 +1,82 @@
+\doxysection{Model\+Part Struct Reference}
+\hypertarget{struct_model_part}{}\label{struct_model_part}\index{ModelPart@{ModelPart}}
+
+
+Holds data for \doxylink{struct_model_part}{Model\+Part}.  
+
+
+
+
+{\ttfamily \+\#include $<$Model\+Part.\+h$>$}
+
+Inheritance diagram for Model\+Part:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{struct_model_part}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \doxymbox{\hyperlink{struct_model_part_a64fc6730fbf1273892e60fd4906beacc}{draw}} (const Math3\+D::\+\+Mat4 \&parent, const Math3\+D::\+\+Mat4 \&view, const Math3\+D::\+\+Mat4 \&proj)
+\begin{DoxyCompactList}\small\item\em Draws this object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{struct_i_drawable}{IDrawable}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries \texorpdfstring{$\sim$}{\string~}\+IDrawable} ()=default
+\begin{DoxyCompactList}\small\item\em Destroys this \doxylink{struct_i_drawable}{IDrawable} instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_model_part_a724316febc411a4b7532ad1362fa705b}\label{struct_model_part_a724316febc411a4b7532ad1362fa705b} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_mesh}{Mesh}} $>$ {\bfseries mesh}
+\item 
+\Hypertarget{struct_model_part_a750370b63ecafb7c790dcb765252344b}\label{struct_model_part_a750370b63ecafb7c790dcb765252344b} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material}{Material}} $>$ {\bfseries material}
+\item 
+\Hypertarget{struct_model_part_a3a116eb13f46ecc7eebc9f348c787738}\label{struct_model_part_a3a116eb13f46ecc7eebc9f348c787738} 
+Math3\+D::\+\+Transform {\bfseries local\+Transform} = Math3\+D::\+\+Transform()
+\item 
+\Hypertarget{struct_model_part_afec314356a85fe1d6231c4a7c29de884}\label{struct_model_part_afec314356a85fe1d6231c4a7c29de884} 
+bool {\bfseries visible} = true
+\item 
+\Hypertarget{struct_model_part_a5dfc1f6e0a417be362d4a4f38182c0ff}\label{struct_model_part_a5dfc1f6e0a417be362d4a4f38182c0ff} 
+bool {\bfseries hide\+In\+Editor\+Tree} = true
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Holds data for \doxylink{struct_model_part}{Model\+Part}. 
+
+\label{doc-func-members}
+\Hypertarget{struct_model_part_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{struct_model_part_a64fc6730fbf1273892e60fd4906beacc}\index{ModelPart@{ModelPart}!draw@{draw}}
+\index{draw@{draw}!ModelPart@{ModelPart}}
+\doxysubsubsection{\texorpdfstring{draw()}{draw()}}
+{\footnotesize\ttfamily \label{struct_model_part_a64fc6730fbf1273892e60fd4906beacc} 
+void Model\+Part::\+draw (\begin{DoxyParamCaption}\item[{const Math3\+D::\+\+Mat4 \&}]{parent}{, }\item[{const Math3\+D::\+\+Mat4 \&}]{view}{, }\item[{const Math3\+D::\+\+Mat4 \&}]{proj}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Draws this object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parent} & Value for parent. \\
+\hline
+{\em view} & Value for view. \\
+\hline
+{\em proj} & Value for proj. \\
+\hline
+\end{DoxyParams}
+
+
+Implements \doxymbox{\hyperlink{struct_i_drawable_a9fb10215e48d952bd9f6a4c52656ebb8}{IDrawable}}.
+
+
+
+The documentation for this struct was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Geometry/\+\doxymbox{\hyperlink{_model_part_8h}{Model\+Part.\+h}}\item 
+src/\+\+Rendering/\+\+Geometry/\+\doxymbox{\hyperlink{_model_part_8cpp}{Model\+Part.\+cpp}}\end{DoxyCompactItemize}

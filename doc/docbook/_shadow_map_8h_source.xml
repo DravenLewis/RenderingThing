@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__shadow_map_8h_source" xml:lang="en-US">
+<title>ShadowMap.h</title>
+<indexterm><primary>src/Rendering/Lighting/ShadowMap.h</primary></indexterm>
+Go to the documentation of this file.<programlisting linenumbering="unnumbered">1 
+5 
+6 <emphasis role="preprocessor">#ifndef&#32;SHADOW_MAP_H</emphasis>
+7 <emphasis role="preprocessor">#define&#32;SHADOW_MAP_H</emphasis>
+8 
+9 <emphasis role="preprocessor">#include&#32;&lt;glad/glad.h&gt;</emphasis>
+10 
+12 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_shadow_map2_d_1ac0fefac84ac4594eee54eb4816c5177f">ShadowMap2D</link>&#32;{
+13 <emphasis role="keyword">private</emphasis>:
+14 &#32;&#32;&#32;&#32;GLuint&#32;fbo&#32;=&#32;0;
+15 &#32;&#32;&#32;&#32;GLuint&#32;depthTex&#32;=&#32;0;
+16 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;size&#32;=&#32;0;
+17 
+21 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;init();
+22 
+23 <emphasis role="keyword">public</emphasis>:
+27 &#32;&#32;&#32;&#32;<link linkend="_class_shadow_map2_d_1ac0fefac84ac4594eee54eb4816c5177f">ShadowMap2D</link>()&#32;=&#32;<emphasis role="keywordflow">default</emphasis>;
+33 &#32;&#32;&#32;&#32;<emphasis role="keyword">explicit</emphasis>&#32;<link linkend="_class_shadow_map2_d_1ac0fefac84ac4594eee54eb4816c5177f">ShadowMap2D</link>(<emphasis role="keywordtype">int</emphasis>&#32;size);
+37 &#32;&#32;&#32;&#32;<link linkend="_class_shadow_map2_d_1a3c8d343b4c0347f1fcbfd0ae19f455f5">~ShadowMap2D</link>();
+41 &#32;&#32;&#32;&#32;<link linkend="_class_shadow_map2_d_1a9bcfb71d8cf1700c94eafbe92e1c50bc">ShadowMap2D</link>(<emphasis role="keyword">const</emphasis>&#32;<link linkend="_class_shadow_map2_d_1ac0fefac84ac4594eee54eb4816c5177f">ShadowMap2D</link>&amp;)&#32;=&#32;<emphasis role="keyword">delete</emphasis>;
+45 &#32;&#32;&#32;&#32;<link linkend="_class_shadow_map2_d_1ac0fefac84ac4594eee54eb4816c5177f">ShadowMap2D</link>&amp;&#32;<link linkend="_class_shadow_map2_d_1a94dbf35ee38821106ba3e40e54dfb3dd">operator=</link>(<emphasis role="keyword">const</emphasis>&#32;<link linkend="_class_shadow_map2_d_1ac0fefac84ac4594eee54eb4816c5177f">ShadowMap2D</link>&amp;)&#32;=&#32;<emphasis role="keyword">delete</emphasis>;
+50 &#32;&#32;&#32;&#32;<link linkend="_class_shadow_map2_d_1ac0fefac84ac4594eee54eb4816c5177f">ShadowMap2D</link>(<link linkend="_class_shadow_map2_d_1ac0fefac84ac4594eee54eb4816c5177f">ShadowMap2D</link>&amp;&amp;&#32;other)&#32;<emphasis role="keyword">noexcept</emphasis>;
+55 &#32;&#32;&#32;&#32;<link linkend="_class_shadow_map2_d_1ac0fefac84ac4594eee54eb4816c5177f">ShadowMap2D</link>&amp;&#32;<link linkend="_class_shadow_map2_d_1a94dbf35ee38821106ba3e40e54dfb3dd">operator=</link>(<link linkend="_class_shadow_map2_d_1ac0fefac84ac4594eee54eb4816c5177f">ShadowMap2D</link>&amp;&amp;&#32;other)&#32;<emphasis role="keyword">noexcept</emphasis>;
+56 
+61 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_shadow_map2_d_1a7e6362d7da8dba35cfae660444cc9b49">resize</link>(<emphasis role="keywordtype">int</emphasis>&#32;newSize);
+65 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_shadow_map2_d_1a2a1d259a6fc56389a7996ef4d952a38e">bind</link>()&#32;<emphasis role="keyword">const</emphasis>;
+69 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_shadow_map2_d_1a9118211e5edc5f01537850738383d7ee">unbind</link>()&#32;<emphasis role="keyword">const</emphasis>;
+73 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_shadow_map2_d_1a5a0718c2493e2a4c9d149dad17424355">clear</link>()&#32;<emphasis role="keyword">const</emphasis>;
+74 
+79 &#32;&#32;&#32;&#32;GLuint&#32;<link linkend="_class_shadow_map2_d_1a8d54d8cb2578ea60d037d75ee14dfdcc">getDepthTexture</link>()<emphasis role="keyword">&#32;const&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;depthTex;&#32;}
+80 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;getSize()<emphasis role="keyword">&#32;const&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;size;&#32;}
+81 };
+82 
+84 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_shadow_map_cube_1ad6bb31f5d7cc939a0c91a1b1d434a76a">ShadowMapCube</link>&#32;{
+85 <emphasis role="keyword">private</emphasis>:
+86 &#32;&#32;&#32;&#32;GLuint&#32;fbo&#32;=&#32;0;
+87 &#32;&#32;&#32;&#32;GLuint&#32;depthCube&#32;=&#32;0;
+88 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;size&#32;=&#32;0;
+89 
+93 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;init();
+94 
+95 <emphasis role="keyword">public</emphasis>:
+99 &#32;&#32;&#32;&#32;<link linkend="_class_shadow_map_cube_1ad6bb31f5d7cc939a0c91a1b1d434a76a">ShadowMapCube</link>()&#32;=&#32;<emphasis role="keywordflow">default</emphasis>;
+105 &#32;&#32;&#32;&#32;<emphasis role="keyword">explicit</emphasis>&#32;<link linkend="_class_shadow_map_cube_1ad6bb31f5d7cc939a0c91a1b1d434a76a">ShadowMapCube</link>(<emphasis role="keywordtype">int</emphasis>&#32;size);
+109 &#32;&#32;&#32;&#32;<link linkend="_class_shadow_map_cube_1a35eb630aeabf2272a312f6a4a49f6712">~ShadowMapCube</link>();
+113 &#32;&#32;&#32;&#32;<link linkend="_class_shadow_map_cube_1a0aaaefa1c4de0b8da0ef9f4b37d619db">ShadowMapCube</link>(<emphasis role="keyword">const</emphasis>&#32;<link linkend="_class_shadow_map_cube_1ad6bb31f5d7cc939a0c91a1b1d434a76a">ShadowMapCube</link>&amp;)&#32;=&#32;<emphasis role="keyword">delete</emphasis>;
+117 &#32;&#32;&#32;&#32;<link linkend="_class_shadow_map_cube_1ad6bb31f5d7cc939a0c91a1b1d434a76a">ShadowMapCube</link>&amp;&#32;<link linkend="_class_shadow_map_cube_1aa901c0f61f181dcaf8eeaf2aca97cc9f">operator=</link>(<emphasis role="keyword">const</emphasis>&#32;<link linkend="_class_shadow_map_cube_1ad6bb31f5d7cc939a0c91a1b1d434a76a">ShadowMapCube</link>&amp;)&#32;=&#32;<emphasis role="keyword">delete</emphasis>;
+122 &#32;&#32;&#32;&#32;<link linkend="_class_shadow_map_cube_1ad6bb31f5d7cc939a0c91a1b1d434a76a">ShadowMapCube</link>(<link linkend="_class_shadow_map_cube_1ad6bb31f5d7cc939a0c91a1b1d434a76a">ShadowMapCube</link>&amp;&amp;&#32;other)&#32;<emphasis role="keyword">noexcept</emphasis>;
+127 &#32;&#32;&#32;&#32;<link linkend="_class_shadow_map_cube_1ad6bb31f5d7cc939a0c91a1b1d434a76a">ShadowMapCube</link>&amp;&#32;<link linkend="_class_shadow_map_cube_1aa901c0f61f181dcaf8eeaf2aca97cc9f">operator=</link>(<link linkend="_class_shadow_map_cube_1ad6bb31f5d7cc939a0c91a1b1d434a76a">ShadowMapCube</link>&amp;&amp;&#32;other)&#32;<emphasis role="keyword">noexcept</emphasis>;
+128 
+133 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_shadow_map_cube_1a2b4bc34daef25168c05eb6a853919afc">resize</link>(<emphasis role="keywordtype">int</emphasis>&#32;newSize);
+138 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_shadow_map_cube_1aa8bbe52175ec103726b6aa2e4dd4645b">bindFace</link>(GLenum&#32;face)&#32;<emphasis role="keyword">const</emphasis>;
+142 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_shadow_map_cube_1aa977176a7596a0ba2baa70cb78dcfebf">unbind</link>()&#32;<emphasis role="keyword">const</emphasis>;
+146 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_shadow_map_cube_1a7d6e4c1116e8e0827ead05a08c70de5c">clear</link>()&#32;<emphasis role="keyword">const</emphasis>;
+147 
+152 &#32;&#32;&#32;&#32;GLuint&#32;<link linkend="_class_shadow_map_cube_1ad1fcf694238173cea98f59fb0f3f1efe">getDepthTexture</link>()<emphasis role="keyword">&#32;const&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;depthCube;&#32;}
+153 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;getSize()<emphasis role="keyword">&#32;const&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;size;&#32;}
+154 };
+155 
+156 <emphasis role="preprocessor">#endif&#32;</emphasis><emphasis role="comment">//&#32;SHADOW_MAP_H</emphasis>
+</programlisting></section>

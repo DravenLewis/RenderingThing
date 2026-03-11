@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_i_drawable" xml:lang="en-US">
+<title>IDrawable Struct Reference</title>
+<indexterm><primary>IDrawable</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_i_drawable">IDrawable</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;Drawable.h&gt;</computeroutput>
+</para>
+<para>Inheritance diagram for IDrawable:    <informalfigure>
+        <mediaobject>
+            <imageobject>
+                <imagedata width="50%" align="center" valign="middle" scalefit="0" fileref="struct_i_drawable.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+    </informalfigure>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>virtual void <link linkend="_struct_i_drawable_1a9fb10215e48d952bd9f6a4c52656ebb8">draw</link> (const Math3D::Mat4 &amp;parent=Math3D::Mat4(), const Math3D::Mat4 &amp;viewMtx=Math3D::Mat4(), const Math3D::Mat4 &amp;projectionMtx=Math3D::Mat4())=0</para>
+
+<para>Draws this object. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_i_drawable_1a618506be098b21fe0b9cae2c4219eb57"/><emphasis role="strong">~IDrawable</emphasis> ()=default</para>
+
+<para>Destroys this <link linkend="_struct_i_drawable">IDrawable</link> instance. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_i_drawable">IDrawable</link>. </para>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_struct_i_drawable_1a9fb10215e48d952bd9f6a4c52656ebb8"/><section>
+    <title>draw()</title>
+<indexterm><primary>draw</primary><secondary>IDrawable</secondary></indexterm>
+<indexterm><primary>IDrawable</primary><secondary>draw</secondary></indexterm>
+<para><computeroutput>virtual void IDrawable::draw (const Math3D::Mat4 &amp; parent = <computeroutput>Math3D::Mat4()</computeroutput>
+, const Math3D::Mat4 &amp; viewMtx = <computeroutput>Math3D::Mat4()</computeroutput>
+, const Math3D::Mat4 &amp; projectionMtx = <computeroutput>Math3D::Mat4()</computeroutput>
+)<computeroutput>[pure virtual]</computeroutput></computeroutput></para><para>
+
+<para>Draws this object. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>parent</entry><entry>
+<para>Value for parent. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>viewMtx</entry><entry>
+<para>Value for view mtx. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>projectionMtx</entry><entry>
+<para>Value for projection mtx. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+<para>
+Implemented in <link linkend="_class_mesh_1abf58756040d4eb2bfe17766af91e3bc6">Mesh</link>, <link linkend="_struct_model_1a70a71199719d002f9cd089af3a5c69eb">Model</link>, and <link linkend="_struct_model_part_1a64fc6730fbf1273892e60fd4906beacc">ModelPart</link>.</para>
+</section>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Geometry/<link linkend="__drawable_8h">Drawable.h</link></section>
+</section>

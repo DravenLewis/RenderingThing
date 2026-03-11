@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__material_defaults_8h" xml:lang="en-US">
+<title>src/Rendering/Materials/MaterialDefaults.h File Reference</title>
+<indexterm><primary>src/Rendering/Materials/MaterialDefaults.h</primary></indexterm>
+<para>
+
+<para>Declarations for MaterialDefaults. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &lt;string&gt;<?linebreak?>#include &lt;map&gt;<?linebreak?>#include &lt;memory&gt;<?linebreak?>#include &quot;Foundation/Logging/Logbot.h&quot;<?linebreak?>#include &quot;Rendering/Materials/Material.h&quot;<?linebreak?>#include &quot;Rendering/Shaders/ShaderProgram.h&quot;<?linebreak?>#include &quot;Assets/Core/Asset.h&quot;<?linebreak?>#include &quot;Foundation/Math/Color.h&quot;<?linebreak?>#include &quot;Rendering/Textures/Texture.h&quot;<?linebreak?>#include &quot;Rendering/Lighting/Light.h&quot;<?linebreak?>#include &quot;Rendering/Lighting/LightUtils.h&quot;<?linebreak?>#include &quot;Foundation/Util/ValueContainer.h&quot;<?linebreak?></programlisting><simplesect>
+    <title>Classes    </title>
+        <itemizedlist>
+            <listitem><para>class <link linkend="_class_material_defaults_1_1_color_material">MaterialDefaults::ColorMaterial</link></para>
+
+<para>Represents the <link linkend="_class_material_defaults_1_1_color_material">ColorMaterial</link> type. </para>
+</listitem>
+            <listitem><para>class <link linkend="_class_material_defaults_1_1_image_material">MaterialDefaults::ImageMaterial</link></para>
+
+<para>Represents the <link linkend="_class_material_defaults_1_1_image_material">ImageMaterial</link> type. </para>
+</listitem>
+            <listitem><para>class <link linkend="_class_material_defaults_1_1_lit_color_material">MaterialDefaults::LitColorMaterial</link></para>
+
+<para>Represents the <link linkend="_class_material_defaults_1_1_lit_color_material">LitColorMaterial</link> type. </para>
+</listitem>
+            <listitem><para>class <link linkend="_class_material_defaults_1_1_lit_image_material">MaterialDefaults::LitImageMaterial</link></para>
+
+<para>Represents the <link linkend="_class_material_defaults_1_1_lit_image_material">LitImageMaterial</link> type. </para>
+</listitem>
+            <listitem><para>class <link linkend="_class_material_defaults_1_1_flat_color_material">MaterialDefaults::FlatColorMaterial</link></para>
+
+<para>Represents the <link linkend="_class_material_defaults_1_1_flat_color_material">FlatColorMaterial</link> type. </para>
+</listitem>
+            <listitem><para>class <link linkend="_class_material_defaults_1_1_flat_image_material">MaterialDefaults::FlatImageMaterial</link></para>
+
+<para>Represents the <link linkend="_class_material_defaults_1_1_flat_image_material">FlatImageMaterial</link> type. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Declarations for MaterialDefaults. </para>
+</section>
+</section>

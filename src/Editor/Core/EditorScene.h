@@ -1,3 +1,8 @@
+/**
+ * @file src/Editor/Core/EditorScene.h
+ * @brief Declarations for EditorScene.
+ */
+
 #ifndef EDITOR_SCENE_H
 #define EDITOR_SCENE_H
 
@@ -26,37 +31,89 @@
 // EditorScene is a wrapper/editor-host scene that contains and edits another scene instance.
 // It must keep its own editor camera for viewport navigation, while target-scene cameras are
 // edited/previewed and can be marked current for the target scene's runtime/play camera.
+/// @brief Represents the EditorScene type.
 class EditorScene : public Scene {
     public:
+        /**
+         * @brief Constructs a new EditorScene instance.
+         * @param window Value for window.
+         * @param targetScene Value for target scene.
+          * @return Result of this operation.
+         */
         explicit EditorScene(RenderWindow* window, PScene targetScene);
+        /**
+         * @brief Constructs a new EditorScene instance.
+         * @param window Value for window.
+         * @param targetScene Value for target scene.
+         * @param factory Value for factory.
+         */
         EditorScene(RenderWindow* window, PScene targetScene, std::function<PScene(RenderWindow*)> factory);
 
+        /**
+         * @brief Initializes this object.
+         */
         void init() override;
+        /**
+         * @brief Updates internal state.
+         * @param deltaTime Delta time in seconds.
+         */
         void update(float deltaTime) override;
+        /**
+         * @brief Renders this object.
+         */
         void render() override;
+        /**
+         * @brief Draws to window.
+         * @param clearWindow Flag controlling clear window.
+         * @param x Spatial value used by this operation.
+         * @param y Spatial value used by this operation.
+         * @param w Value for w.
+         * @param h Value for h.
+         */
         void drawToWindow(bool clearWindow = true, float x = -1, float y = -1, float w = -1, float h = -1) override;
+        /**
+         * @brief Disposes this object.
+         */
         void dispose() override;
+        /**
+         * @brief Sets the input manager.
+         * @param manager Value for manager.
+         */
         void setInputManager(std::shared_ptr<InputManager> manager) override;
+        /**
+         * @brief Requests close.
+         */
         void requestClose() override;
+        /**
+         * @brief Checks whether consume close request.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool consumeCloseRequest() override;
+        /**
+         * @brief Checks whether tick on render thread.
+         * @return True when the condition is satisfied; otherwise false.
+         */
         bool shouldTickOnRenderThread() const override { return true; }
         bool handleQuitRequest();
         void setActiveScene(PScene scene);
         PScene getActiveScene() const { return targetScene; }
 
     private:
+        /// @brief Enumerates values for PlayState.
         enum class PlayState {
             Edit = 0,
             Play,
             Pause
         };
 
+        /// @brief Enumerates values for SceneFileDialogMode.
         enum class SceneFileDialogMode {
             None = 0,
             SaveAs,
             Load
         };
 
+        /// @brief Holds data for ViewportRect.
         struct ViewportRect {
             float x = 0.0f;
             float y = 0.0f;
@@ -106,6 +163,7 @@ class EditorScene : public Scene {
         CameraComponent* editorCameraComponent = nullptr;
         std::atomic<bool> resetRequested{false};
         std::atomic<bool> resetCompleted{false};
+        /// @brief Holds data for ResetContext.
         struct ResetContext {
             std::string selectedId;
             bool hadSelection = false;
@@ -148,6 +206,7 @@ class EditorScene : public Scene {
         bool previewWindowInitialized = false;
         Math3D::Vec2 previewWindowLocalPos = Math3D::Vec2(0.0f, 0.0f);
         Math3D::Vec2 previewWindowSize = Math3D::Vec2(280.0f, 210.0f);
+        /// @brief Holds data for ViewportPrefabDragState.
         struct ViewportPrefabDragState {
             bool active = false;
             std::filesystem::path prefabPath;
@@ -156,6 +215,7 @@ class EditorScene : public Scene {
             float placementPlaneY = 0.0f;
         };
         ViewportPrefabDragState viewportPrefabDragState;
+        /// @brief Holds data for SceneFileDialogState.
         struct SceneFileDialogState {
             bool openRequested = false;
             bool focusNameInput = false;

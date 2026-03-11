@@ -1,0 +1,284 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_tripple_buffer" xml:lang="en-US">
+<title>TrippleBuffer Struct Reference</title>
+<indexterm><primary>TrippleBuffer</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_tripple_buffer">TrippleBuffer</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;FrameBuffer.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><link linkend="_struct_tripple_buffer_1ade5ad21dfd69dd617dc59c35adddf8c9">TrippleBuffer</link> (int width, int height)</para>
+
+<para>Constructs a new <link linkend="_struct_tripple_buffer">TrippleBuffer</link> instance. </para>
+</listitem>
+            <listitem><para>std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; <link linkend="_struct_tripple_buffer_1aa1580b077ee4b77e4cf0293e5fce37af">getFront</link> ()</para>
+
+<para>Returns the front. </para>
+</listitem>
+            <listitem><para>std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; <link linkend="_struct_tripple_buffer_1a27e3d899dc5c66e38fb6d240ad8ac0e6">getMiddle</link> ()</para>
+
+<para>Returns the middle. </para>
+</listitem>
+            <listitem><para>std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; <link linkend="_struct_tripple_buffer_1a841ad487a95331a841cd26ede3b8358d">getBack</link> ()</para>
+
+<para>Returns the back. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_tripple_buffer_1a0b60b6f1e7e12dc0fd41287f66b6523c"/>std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; <emphasis role="strong">getDisplayBuffer</emphasis> ()</para>
+</listitem>
+            <listitem><para>std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; <link linkend="_struct_tripple_buffer_1a53cf73b5efe7ab4e33b47b4d1ef5f099">getEditBuffer</link> ()</para>
+
+<para>Returns the edit buffer. </para>
+</listitem>
+            <listitem><para>std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; <link linkend="_struct_tripple_buffer_1aaadfe8298e9fdbab9177084bf5bbc648">getDrawBuffer</link> ()</para>
+
+<para>Returns the draw buffer. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_tripple_buffer_1afa919e8a8ca329dd8b86ddb15e5a8bcb"/>void <emphasis role="strong">setFront</emphasis> (std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; framePtr)</para>
+</listitem>
+            <listitem><para>void <link linkend="_struct_tripple_buffer_1a21607aceb5b3dc8dbf987a595e67c567">setMiddle</link> (std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; framePtr)</para>
+
+<para>Sets the middle. </para>
+</listitem>
+            <listitem><para>void <link linkend="_struct_tripple_buffer_1a807d0eac379ba76f82f0dda42f36100d">setBack</link> (std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; framePtr)</para>
+
+<para>Sets the back. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_tripple_buffer_1a2fe9ea51bbfae49182b81360da39b5df"/>void <emphasis role="strong">swapBuffers</emphasis> ()</para>
+
+<para>Swaps buffers. </para>
+</listitem>
+            <listitem><para>void <link linkend="_struct_tripple_buffer_1a3e121c9862627d785ba325e00e7aa3d7">resizeBuffers</link> (int width, int height)</para>
+
+<para>Resizes backing GPU buffers. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_tripple_buffer">TrippleBuffer</link>. </para>
+</section>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_struct_tripple_buffer_1ade5ad21dfd69dd617dc59c35adddf8c9"/><section>
+    <title>TrippleBuffer()</title>
+<indexterm><primary>TrippleBuffer</primary><secondary>TrippleBuffer</secondary></indexterm>
+<indexterm><primary>TrippleBuffer</primary><secondary>TrippleBuffer</secondary></indexterm>
+<para><computeroutput>TrippleBuffer::TrippleBuffer (int width, int height)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Constructs a new <link linkend="_struct_tripple_buffer">TrippleBuffer</link> instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>width</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>height</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_struct_tripple_buffer_1a841ad487a95331a841cd26ede3b8358d"/><section>
+    <title>getBack()</title>
+<indexterm><primary>getBack</primary><secondary>TrippleBuffer</secondary></indexterm>
+<indexterm><primary>TrippleBuffer</primary><secondary>getBack</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; TrippleBuffer::getBack ( )<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the back. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_tripple_buffer_1aaadfe8298e9fdbab9177084bf5bbc648"/><section>
+    <title>getDrawBuffer()</title>
+<indexterm><primary>getDrawBuffer</primary><secondary>TrippleBuffer</secondary></indexterm>
+<indexterm><primary>TrippleBuffer</primary><secondary>getDrawBuffer</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; TrippleBuffer::getDrawBuffer ( )<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the draw buffer. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_tripple_buffer_1a53cf73b5efe7ab4e33b47b4d1ef5f099"/><section>
+    <title>getEditBuffer()</title>
+<indexterm><primary>getEditBuffer</primary><secondary>TrippleBuffer</secondary></indexterm>
+<indexterm><primary>TrippleBuffer</primary><secondary>getEditBuffer</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; TrippleBuffer::getEditBuffer ( )<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the edit buffer. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_tripple_buffer_1aa1580b077ee4b77e4cf0293e5fce37af"/><section>
+    <title>getFront()</title>
+<indexterm><primary>getFront</primary><secondary>TrippleBuffer</secondary></indexterm>
+<indexterm><primary>TrippleBuffer</primary><secondary>getFront</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; TrippleBuffer::getFront ( )<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the front. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_tripple_buffer_1a27e3d899dc5c66e38fb6d240ad8ac0e6"/><section>
+    <title>getMiddle()</title>
+<indexterm><primary>getMiddle</primary><secondary>TrippleBuffer</secondary></indexterm>
+<indexterm><primary>TrippleBuffer</primary><secondary>getMiddle</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; TrippleBuffer::getMiddle ( )<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the middle. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_tripple_buffer_1a3e121c9862627d785ba325e00e7aa3d7"/><section>
+    <title>resizeBuffers()</title>
+<indexterm><primary>resizeBuffers</primary><secondary>TrippleBuffer</secondary></indexterm>
+<indexterm><primary>TrippleBuffer</primary><secondary>resizeBuffers</secondary></indexterm>
+<para><computeroutput>void TrippleBuffer::resizeBuffers (int width, int height)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Resizes backing GPU buffers. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>width</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>height</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_struct_tripple_buffer_1a807d0eac379ba76f82f0dda42f36100d"/><section>
+    <title>setBack()</title>
+<indexterm><primary>setBack</primary><secondary>TrippleBuffer</secondary></indexterm>
+<indexterm><primary>TrippleBuffer</primary><secondary>setBack</secondary></indexterm>
+<para><computeroutput>void TrippleBuffer::setBack (std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; framePtr)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Sets the back. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>framePtr</entry><entry>
+<para>Pointer to frame. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_struct_tripple_buffer_1a21607aceb5b3dc8dbf987a595e67c567"/><section>
+    <title>setMiddle()</title>
+<indexterm><primary>setMiddle</primary><secondary>TrippleBuffer</secondary></indexterm>
+<indexterm><primary>TrippleBuffer</primary><secondary>setMiddle</secondary></indexterm>
+<para><computeroutput>void TrippleBuffer::setMiddle (std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; framePtr)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Sets the middle. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>framePtr</entry><entry>
+<para>Pointer to frame. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Core/<link linkend="__frame_buffer_8h">FrameBuffer.h</link></section>
+</section>

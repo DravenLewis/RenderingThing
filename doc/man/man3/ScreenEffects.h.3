@@ -1,0 +1,72 @@
+.TH "src/Rendering/PostFX/ScreenEffects.h" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+src/Rendering/PostFX/ScreenEffects.h \- Declarations for ScreenEffects\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'Rendering/Core/Graphics\&.h'\fP
+.br
+\fR#include 'Rendering/Shaders/ShaderProgram\&.h'\fP
+.br
+\fR#include 'Foundation/Math/Color\&.h'\fP
+.br
+\fR#include 'Foundation/Logging/Logbot\&.h'\fP
+.br
+\fR#include <algorithm>\fP
+.br
+\fR#include <array>\fP
+.br
+\fR#include <chrono>\fP
+.br
+\fR#include <cmath>\fP
+.br
+\fR#include <vector>\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBGrayscaleEffect\fP"
+.br
+.RI "Represents the \fBGrayscaleEffect\fP type\&. "
+.ti -1c
+.RI "class \fBSSAOEffect\fP"
+.br
+.RI "Represents the \fBSSAOEffect\fP type\&. "
+.ti -1c
+.RI "class \fBDepthOfFieldEffect\fP"
+.br
+.RI "Represents the \fBDepthOfFieldEffect\fP type\&. "
+.ti -1c
+.RI "class \fBBloomEffect\fP"
+.br
+.RI "Represents the \fBBloomEffect\fP type\&. "
+.ti -1c
+.RI "class \fBAutoExposureEffect\fP"
+.br
+.RI "Represents the \fBAutoExposureEffect\fP type\&. "
+.ti -1c
+.RI "class \fBFXAAEffect\fP"
+.br
+.RI "Represents the \fBFXAAEffect\fP type\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBAntiAliasingPreset\fP { \fBOff\fP = 0, \fBFXAA_Low\fP, \fBFXAA_Medium\fP, \fBFXAA_High\fP }"
+.br
+.RI "Enumerates values for \fBAntiAliasingPreset\fP\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Declarations for ScreenEffects\&. 
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

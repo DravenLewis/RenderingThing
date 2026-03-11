@@ -1,0 +1,51 @@
+.TH "IDrawable" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+IDrawable \- Holds data for \fBIDrawable\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <Drawable\&.h>\fP
+.PP
+Inherited by \fBMesh\fP, \fBModel\fP, and \fBModelPart\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void \fBdraw\fP (const Math3D::Mat4 &parent=Math3D::Mat4(), const Math3D::Mat4 &viewMtx=Math3D::Mat4(), const Math3D::Mat4 &projectionMtx=Math3D::Mat4())=0"
+.br
+.RI "Draws this object\&. "
+.ti -1c
+.RI "\fB~IDrawable\fP ()=default"
+.br
+.RI "Destroys this \fBIDrawable\fP instance\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Holds data for \fBIDrawable\fP\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual void IDrawable::draw (const Math3D::Mat4 & parent = \fRMath3D::Mat4()\fP, const Math3D::Mat4 & viewMtx = \fRMath3D::Mat4()\fP, const Math3D::Mat4 & projectionMtx = \fRMath3D::Mat4()\fP)\fR [pure virtual]\fP"
+
+.PP
+Draws this object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIparent\fP Value for parent\&. 
+.br
+\fIviewMtx\fP Value for view mtx\&. 
+.br
+\fIprojectionMtx\fP Value for projection mtx\&. 
+.RE
+.PP
+
+.PP
+Implemented in \fBMesh\fP, \fBModel\fP, and \fBModelPart\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

@@ -1,0 +1,88 @@
+.TH "Material" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Material \- Represents the \fBMaterial\fP type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <Material\&.h>\fP
+.PP
+Inherited by \fBConstructedMaterial\fP, \fBMaterialDefaults::ColorMaterial\fP, \fBMaterialDefaults::FlatColorMaterial\fP, \fBMaterialDefaults::FlatImageMaterial\fP, \fBMaterialDefaults::ImageMaterial\fP, \fBMaterialDefaults::LitColorMaterial\fP, \fBMaterialDefaults::LitImageMaterial\fP, \fBPBRMaterial\fP, and \fBSkyboxMaterial\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBMaterial\fP (std::shared_ptr< \fBShaderProgram\fP > program)"
+.br
+.RI "Constructs a new \fBMaterial\fP instance\&. "
+.ti -1c
+.RI "virtual \fB~Material\fP ()"
+.br
+.RI "Destroys this \fBMaterial\fP instance\&. "
+.ti -1c
+.RI "template<typename T> bool \fBset\fP (const std::string &name, T value)"
+.br
+.ti -1c
+.RI "virtual void \fBbind\fP ()"
+.br
+.ti -1c
+.RI "void \fBunbind\fP ()"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBShaderProgram\fP > \fBgetShader\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetShader\fP (std::shared_ptr< \fBShaderProgram\fP > program)"
+.br
+.ti -1c
+.RI "void \fBsetCastsShadows\fP (bool value)"
+.br
+.ti -1c
+.RI "bool \fBcastsShadows\fP () const"
+.br
+.ti -1c
+.RI "void \fBsetReceivesShadows\fP (bool value)"
+.br
+.ti -1c
+.RI "bool \fBreceivesShadows\fP () const"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static std::shared_ptr< \fBMaterial\fP > \fBCopy\fP (std::shared_ptr< \fBMaterial\fP > material)"
+.br
+.ti -1c
+.RI "template<typename T> static std::shared_ptr< T > \fBGetAs\fP (std::shared_ptr< \fBMaterial\fP > matPtr)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the \fBMaterial\fP type\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Material::Material (std::shared_ptr< \fBShaderProgram\fP > program)\fR [inline]\fP"
+
+.PP
+Constructs a new \fBMaterial\fP instance\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIprogram\fP Value for program\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual void Material::bind ()\fR [inline]\fP, \fR [virtual]\fP"
+
+.PP
+Reimplemented in \fBConstructedMaterial\fP, \fBMaterialDefaults::FlatColorMaterial\fP, \fBMaterialDefaults::FlatImageMaterial\fP, \fBMaterialDefaults::LitColorMaterial\fP, \fBMaterialDefaults::LitImageMaterial\fP, \fBPBRMaterial\fP, and \fBSkyboxMaterial\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

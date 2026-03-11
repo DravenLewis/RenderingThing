@@ -1,0 +1,250 @@
+.TH "Model" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Model \- Holds data for \fBModel\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <Model\&.h>\fP
+.PP
+Inherits \fBIDrawable\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBModel\fP ()=default"
+.br
+.RI "Constructs a new \fBModel\fP instance\&. "
+.ti -1c
+.RI "\fBModel\fP & \fBaddPart\fP (std::shared_ptr< \fBModelPart\fP > part)"
+.br
+.RI "Adds part\&. "
+.ti -1c
+.RI "const std::vector< std::shared_ptr< \fBModelPart\fP > > & \fBgetParts\fP () const"
+.br
+.RI "Returns the parts\&. "
+.ti -1c
+.RI "Math3D::Transform & \fBtransform\fP ()"
+.br
+.RI "Returns the transform value\&. "
+.ti -1c
+.RI "void \fBsetBackfaceCulling\fP (bool enabled)"
+.br
+.RI "Sets the backface culling\&. "
+.ti -1c
+.RI "bool \fBisBackfaceCullingEnabled\fP () const"
+.br
+.RI "Checks whether backface culling enabled\&. "
+.ti -1c
+.RI "void \fBsetSourceAssetRef\fP (const std::string &sourceRef)"
+.br
+.RI "Sets the source asset ref\&. "
+.ti -1c
+.RI "const std::string & \fBgetSourceAssetRef\fP () const"
+.br
+.RI "Returns the source asset ref\&. "
+.ti -1c
+.RI "void \fBsetSourceForceSmoothNormals\fP (bool enabled)"
+.br
+.RI "Sets the source force smooth normals\&. "
+.ti -1c
+.RI "bool \fBgetSourceForceSmoothNormals\fP () const"
+.br
+.RI "Returns the source force smooth normals\&. "
+.ti -1c
+.RI "void \fBdraw\fP (const Math3D::Mat4 &parent=Math3D::Mat4(), const Math3D::Mat4 &view=Math3D::Mat4(), const Math3D::Mat4 &projection=Math3D::Mat4()) override"
+.br
+.RI "Draws this object\&. "
+.ti -1c
+.RI "void \fBdrawShadows\fP (const Math3D::Mat4 &parent=Math3D::Mat4())"
+.br
+.RI "Draws shadows\&. "
+.ti -1c
+.RI "void \fBdraw\fP (PCamera cam, Nullable< Math3D::Transform > parentTransform=nullptr)"
+.br
+.RI "Draws this object\&. "
+.in -1c
+
+Public Member Functions inherited from \fBIDrawable\fP
+.in +1c
+.ti -1c
+.RI "\fB~IDrawable\fP ()=default"
+.br
+.RI "Destroys this \fBIDrawable\fP instance\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static std::shared_ptr< \fBModel\fP > \fBCreate\fP ()"
+.br
+.RI "Creates a new object\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Holds data for \fBModel\fP\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBModel\fP & Model::addPart (std::shared_ptr< \fBModelPart\fP > part)\fR [inline]\fP"
+
+.PP
+Adds part\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpart\fP Value for part\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "std::shared_ptr< \fBModel\fP > Model::Create ()\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+.SS "void Model::draw (const Math3D::Mat4 & parent = \fRMath3D::Mat4()\fP, const Math3D::Mat4 & view = \fRMath3D::Mat4()\fP, const Math3D::Mat4 & projection = \fRMath3D::Mat4()\fP)\fR [inline]\fP, \fR [override]\fP, \fR [virtual]\fP"
+
+.PP
+Draws this object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIparent\fP Value for parent\&. 
+.br
+\fIview\fP Value for view\&. 
+.br
+\fIprojection\fP Value for projection\&. 
+.RE
+.PP
+
+.PP
+Implements \fBIDrawable\fP\&.
+.SS "void Model::draw (PCamera cam, Nullable< Math3D::Transform > parentTransform = \fRnullptr\fP)\fR [inline]\fP"
+
+.PP
+Draws this object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcam\fP Value for cam\&. 
+.br
+\fIparentTransform\fP Spatial value used by this operation\&. 
+.RE
+.PP
+
+.SS "void Model::drawShadows (const Math3D::Mat4 & parent = \fRMath3D::Mat4()\fP)\fR [inline]\fP"
+
+.PP
+Draws shadows\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIparent\fP Value for parent\&. 
+.RE
+.PP
+
+.SS "const std::vector< std::shared_ptr< \fBModelPart\fP > > & Model::getParts () const\fR [inline]\fP"
+
+.PP
+Returns the parts\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "const std::string & Model::getSourceAssetRef () const\fR [inline]\fP"
+
+.PP
+Returns the source asset ref\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Resulting string value\&. 
+.RE
+.PP
+
+.SS "bool Model::getSourceForceSmoothNormals () const\fR [inline]\fP"
+
+.PP
+Returns the source force smooth normals\&. 
+.PP
+\fBReturns\fP
+.RS 4
+True when the operation succeeds; otherwise false\&. 
+.RE
+.PP
+
+.SS "bool Model::isBackfaceCullingEnabled () const\fR [inline]\fP"
+
+.PP
+Checks whether backface culling enabled\&. 
+.PP
+\fBReturns\fP
+.RS 4
+True when the condition is satisfied; otherwise false\&. 
+.RE
+.PP
+
+.SS "void Model::setBackfaceCulling (bool enabled)\fR [inline]\fP"
+
+.PP
+Sets the backface culling\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIenabled\fP Flag controlling enabled\&. 
+.RE
+.PP
+
+.SS "void Model::setSourceAssetRef (const std::string & sourceRef)\fR [inline]\fP"
+
+.PP
+Sets the source asset ref\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsourceRef\fP Reference to source\&. 
+.RE
+.PP
+
+.SS "void Model::setSourceForceSmoothNormals (bool enabled)\fR [inline]\fP"
+
+.PP
+Sets the source force smooth normals\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIenabled\fP Flag controlling enabled\&. 
+.RE
+.PP
+
+.SS "Math3D::Transform & Model::transform ()\fR [inline]\fP"
+
+.PP
+Returns the transform value\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

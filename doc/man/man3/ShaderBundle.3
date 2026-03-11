@@ -1,0 +1,68 @@
+.TH "ShaderBundle" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ShaderBundle \- Holds data for \fBShaderBundle\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ShaderProgram\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fB~ShaderBundle\fP ()"
+.br
+.RI "Destroys this \fBShaderBundle\fP instance\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBShaderBundle\fP \fBCreate\fP (std::string &glsl)"
+.br
+.RI "Creates a new object\&. "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "Shader \fBshaderHandle\fP = 0"
+.br
+.ti -1c
+.RI "std::string \fBshader_code\fP"
+.br
+.ti -1c
+.RI "\fBShaderType\fP \fBtype\fP"
+.br
+.ti -1c
+.RI "bool \fBvalid\fP = false"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Holds data for \fBShaderBundle\fP\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBShaderBundle\fP ShaderBundle::Create (std::string & glsl)\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIglsl\fP Shader source code\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Initialized shader bundle\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

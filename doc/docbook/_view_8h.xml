@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__view_8h" xml:lang="en-US">
+<title>src/Rendering/Core/View.h File Reference</title>
+<indexterm><primary>src/Rendering/Core/View.h</primary></indexterm>
+<para>
+
+<para>Declarations for <link linkend="_class_view">View</link>. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &lt;memory&gt;<?linebreak?>#include &lt;vector&gt;<?linebreak?>#include &quot;Rendering/Core/Screen.h&quot;<?linebreak?>#include &quot;Platform/Window/RenderWindow.h&quot;<?linebreak?></programlisting><simplesect>
+    <title>Classes    </title>
+        <itemizedlist>
+            <listitem><para>class <link linkend="_class_view">View</link></para>
+
+<para>Represents the <link linkend="_class_view">View</link> type. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Typedefs    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="__view_8h_1a530d0aaae041af7a43828a01520f47eb"/>typedef std::shared_ptr&lt; <link linkend="_class_view">View</link> &gt; <emphasis role="strong">PView</emphasis></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Declarations for <link linkend="_class_view">View</link>. </para>
+</section>
+</section>

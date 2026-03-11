@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_frame_buffer_1_1_g_buffer_attachment" kind="struct" language="C++" prot="private">
+    <compoundname>FrameBuffer::GBufferAttachment</compoundname>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_frame_buffer_1_1_g_buffer_attachment_1ac0df9ddfa4f0757579ea8f40a43f60ff" prot="public" static="no" mutable="no">
+        <type>PTexture</type>
+        <definition>PTexture FrameBuffer::GBufferAttachment::texture</definition>
+        <argsstring></argsstring>
+        <name>texture</name>
+        <qualifiedname>FrameBuffer::GBufferAttachment::texture</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/FrameBuffer.h" line="32" column="22" bodyfile="src/Rendering/Core/FrameBuffer.h" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_frame_buffer_1_1_g_buffer_attachment_1a8b01b3ce2f315c4d4817cf217fa4a918" prot="public" static="no" mutable="no">
+        <type>GLenum</type>
+        <definition>GLenum FrameBuffer::GBufferAttachment::internalFormat</definition>
+        <argsstring></argsstring>
+        <name>internalFormat</name>
+        <qualifiedname>FrameBuffer::GBufferAttachment::internalFormat</qualifiedname>
+        <initializer>= GL_RGBA8</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/FrameBuffer.h" line="33" column="20" bodyfile="src/Rendering/Core/FrameBuffer.h" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_frame_buffer_1_1_g_buffer_attachment_1ae865ae036d7752e8a7b24614648863e1" prot="public" static="no" mutable="no">
+        <type>GLenum</type>
+        <definition>GLenum FrameBuffer::GBufferAttachment::format</definition>
+        <argsstring></argsstring>
+        <name>format</name>
+        <qualifiedname>FrameBuffer::GBufferAttachment::format</qualifiedname>
+        <initializer>= GL_RGBA</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/FrameBuffer.h" line="34" column="20" bodyfile="src/Rendering/Core/FrameBuffer.h" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_frame_buffer_1_1_g_buffer_attachment_1a72d07725fa65ad154b1da32bf8b92df7" prot="public" static="no" mutable="no">
+        <type>GLenum</type>
+        <definition>GLenum FrameBuffer::GBufferAttachment::type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <qualifiedname>FrameBuffer::GBufferAttachment::type</qualifiedname>
+        <initializer>= GL_UNSIGNED_BYTE</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/FrameBuffer.h" line="35" column="20" bodyfile="src/Rendering/Core/FrameBuffer.h" bodystart="35" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for GBufferAttachment. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Core/FrameBuffer.h" line="31" column="9" bodyfile="src/Rendering/Core/FrameBuffer.h" bodystart="31" bodyend="36"/>
+    <listofallmembers>
+      <member refid="struct_frame_buffer_1_1_g_buffer_attachment_1ae865ae036d7752e8a7b24614648863e1" prot="public" virt="non-virtual"><scope>FrameBuffer::GBufferAttachment</scope><name>format</name></member>
+      <member refid="struct_frame_buffer_1_1_g_buffer_attachment_1a8b01b3ce2f315c4d4817cf217fa4a918" prot="public" virt="non-virtual"><scope>FrameBuffer::GBufferAttachment</scope><name>internalFormat</name></member>
+      <member refid="struct_frame_buffer_1_1_g_buffer_attachment_1ac0df9ddfa4f0757579ea8f40a43f60ff" prot="public" virt="non-virtual"><scope>FrameBuffer::GBufferAttachment</scope><name>texture</name></member>
+      <member refid="struct_frame_buffer_1_1_g_buffer_attachment_1a72d07725fa65ad154b1da32bf8b92df7" prot="public" virt="non-virtual"><scope>FrameBuffer::GBufferAttachment</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

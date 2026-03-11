@@ -1,0 +1,276 @@
+.TH "DepthOfFieldEffect" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+DepthOfFieldEffect \- Represents the \fBDepthOfFieldEffect\fP type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ScreenEffects\&.h>\fP
+.PP
+Inherits \fBGraphics::PostProcessing::PostProcessingEffect\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBDepthOfFieldEffect\fP ()"
+.br
+.RI "Constructs a new \fBDepthOfFieldEffect\fP instance\&. "
+.ti -1c
+.RI "\fB~DepthOfFieldEffect\fP () override=default"
+.br
+.RI "Destroys this \fBDepthOfFieldEffect\fP instance\&. "
+.ti -1c
+.RI "float \fBgetResolvedFocusDistance\fP () const"
+.br
+.RI "Returns the resolved focus distance\&. "
+.ti -1c
+.RI "float \fBgetResolvedFocusRange\fP () const"
+.br
+.RI "Returns the resolved focus range\&. "
+.ti -1c
+.RI "bool \fBgetDebugAdaptiveCenterValid\fP () const"
+.br
+.RI "Returns the debug adaptive center valid\&. "
+.ti -1c
+.RI "float \fBgetDebugAdaptiveCenterDistance\fP () const"
+.br
+.RI "Returns the debug adaptive center distance\&. "
+.ti -1c
+.RI "bool \fBgetDebugAdaptiveRayValid\fP () const"
+.br
+.RI "Returns the debug adaptive ray valid\&. "
+.ti -1c
+.RI "float \fBgetDebugAdaptiveRayDistance\fP () const"
+.br
+.RI "Returns the debug adaptive ray distance\&. "
+.ti -1c
+.RI "bool \fBgetDebugAdaptiveUsedFallback\fP () const"
+.br
+.RI "Returns the debug adaptive used fallback\&. "
+.ti -1c
+.RI "float \fBgetDebugAdaptiveTargetDistance\fP () const"
+.br
+.RI "Returns the debug adaptive target distance\&. "
+.ti -1c
+.RI "float \fBgetDebugAdaptiveFallbackDistance\fP () const"
+.br
+.RI "Returns the debug adaptive fallback distance\&. "
+.ti -1c
+.RI "bool \fBapply\fP (PTexture tex, PTexture depthTex, PFrameBuffer outFbo, std::shared_ptr< \fBModelPart\fP > quad) override"
+.br
+.RI "Applies current settings\&. "
+.in -1c
+
+Public Member Functions inherited from \fBGraphics::PostProcessing::PostProcessingEffect\fP
+.in +1c
+.ti -1c
+.RI "virtual \fB~PostProcessingEffect\fP ()=default"
+.br
+.RI "Destroys this \fBPostProcessingEffect\fP instance\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static std::shared_ptr< \fBDepthOfFieldEffect\fP > \fBNew\fP ()"
+.br
+.RI "Creates a new object\&. "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "float \fBfocusDistance\fP = 8\&.0f"
+.br
+.ti -1c
+.RI "float \fBfocusRange\fP = 4\&.0f"
+.br
+.ti -1c
+.RI "float \fBfocusBandWidth\fP = 0\&.85f"
+.br
+.ti -1c
+.RI "float \fBblurRamp\fP = 2\&.0f"
+.br
+.ti -1c
+.RI "float \fBblurDistanceLerp\fP = 0\&.35f"
+.br
+.ti -1c
+.RI "float \fBfallbackFocusRange\fP = 6\&.0f"
+.br
+.ti -1c
+.RI "float \fBblurStrength\fP = 0\&.65f"
+.br
+.ti -1c
+.RI "float \fBmaxBlurPx\fP = 7\&.0f"
+.br
+.ti -1c
+.RI "int \fBsampleCount\fP = 6"
+.br
+.ti -1c
+.RI "bool \fBdebugCocView\fP = false"
+.br
+.ti -1c
+.RI "bool \fBadaptiveFocus\fP = false"
+.br
+.ti -1c
+.RI "Math3D::Vec2 \fBfocusUv\fP = Math3D::Vec2(0\&.5f, 0\&.5f)"
+.br
+.ti -1c
+.RI "float \fBnearPlane\fP = 0\&.1f"
+.br
+.ti -1c
+.RI "float \fBfarPlane\fP = 1000\&.0f"
+.br
+.ti -1c
+.RI "bool \fBexternalAdaptiveFocusValid\fP = false"
+.br
+.ti -1c
+.RI "float \fBexternalAdaptiveFocusDistance\fP = 0\&.0f"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the \fBDepthOfFieldEffect\fP type\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "bool DepthOfFieldEffect::apply (PTexture tex, PTexture depthTex, PFrameBuffer outFbo, std::shared_ptr< \fBModelPart\fP > quad)\fR [inline]\fP, \fR [override]\fP, \fR [virtual]\fP"
+
+.PP
+Applies current settings\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItex\fP Value for tex\&. 
+.br
+\fIdepthTex\fP Value for depth tex\&. 
+.br
+\fIoutFbo\fP Output value for fbo\&. 
+.br
+\fIquad\fP Value for quad\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True when the operation succeeds; otherwise false\&. 
+.RE
+.PP
+
+.PP
+Implements \fBGraphics::PostProcessing::PostProcessingEffect\fP\&.
+.SS "float DepthOfFieldEffect::getDebugAdaptiveCenterDistance () const\fR [inline]\fP"
+
+.PP
+Returns the debug adaptive center distance\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Computed numeric result\&. 
+.RE
+.PP
+
+.SS "bool DepthOfFieldEffect::getDebugAdaptiveCenterValid () const\fR [inline]\fP"
+
+.PP
+Returns the debug adaptive center valid\&. 
+.PP
+\fBReturns\fP
+.RS 4
+True when the operation succeeds; otherwise false\&. 
+.RE
+.PP
+
+.SS "float DepthOfFieldEffect::getDebugAdaptiveFallbackDistance () const\fR [inline]\fP"
+
+.PP
+Returns the debug adaptive fallback distance\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Computed numeric result\&. 
+.RE
+.PP
+
+.SS "float DepthOfFieldEffect::getDebugAdaptiveRayDistance () const\fR [inline]\fP"
+
+.PP
+Returns the debug adaptive ray distance\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Computed numeric result\&. 
+.RE
+.PP
+
+.SS "bool DepthOfFieldEffect::getDebugAdaptiveRayValid () const\fR [inline]\fP"
+
+.PP
+Returns the debug adaptive ray valid\&. 
+.PP
+\fBReturns\fP
+.RS 4
+True when the operation succeeds; otherwise false\&. 
+.RE
+.PP
+
+.SS "float DepthOfFieldEffect::getDebugAdaptiveTargetDistance () const\fR [inline]\fP"
+
+.PP
+Returns the debug adaptive target distance\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Computed numeric result\&. 
+.RE
+.PP
+
+.SS "bool DepthOfFieldEffect::getDebugAdaptiveUsedFallback () const\fR [inline]\fP"
+
+.PP
+Returns the debug adaptive used fallback\&. 
+.PP
+\fBReturns\fP
+.RS 4
+True when the operation succeeds; otherwise false\&. 
+.RE
+.PP
+
+.SS "float DepthOfFieldEffect::getResolvedFocusDistance () const\fR [inline]\fP"
+
+.PP
+Returns the resolved focus distance\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Computed numeric result\&. 
+.RE
+.PP
+
+.SS "float DepthOfFieldEffect::getResolvedFocusRange () const\fR [inline]\fP"
+
+.PP
+Returns the resolved focus range\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Computed numeric result\&. 
+.RE
+.PP
+
+.SS "std::shared_ptr< \fBDepthOfFieldEffect\fP > DepthOfFieldEffect::New ()\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

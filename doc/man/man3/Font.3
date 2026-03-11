@@ -1,0 +1,98 @@
+.TH "Font" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Font \- Represents the \fBFont\fP type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <Font\&.h>\fP
+.PP
+Inherited by \fBFreeTypeFont\fP, and \fBTrueTypeFont\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBFont\fP ()"
+.br
+.RI "Constructs a new \fBFont\fP instance\&. "
+.ti -1c
+.RI "virtual void \fBdrawText\fP (std::string text='', Math3D::Vec2 position=Math3D::Vec2(0, 0), PCamera camera=nullptr, Color color=Color::WHITE, bool useCache=true)=0"
+.br
+.ti -1c
+.RI "virtual bool \fBsupportsQueuedDrawing\fP () const"
+.br
+.ti -1c
+.RI "virtual void \fBbeginFrame\fP (PCamera camera)"
+.br
+.ti -1c
+.RI "virtual void \fBflushQueuedText\fP (PCamera camera)"
+.br
+.ti -1c
+.RI "void \fBclearCache\fP ()"
+.br
+.ti -1c
+.RI "PAsset \fBgetAssetPointer\fP ()"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "template<typename T> static std::shared_ptr< T > \fBCreate\fP (PAsset asset, float fontSize=18\&.0f)"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static Logbot \fBFontLogger\fP = Logbot::CreateInstance('Font')"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void \fB_initFont\fP ()=0"
+.br
+.RI "Initializes font resources\&. "
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "PAsset \fBassetPtr\fP"
+.br
+.ti -1c
+.RI "PTexture \fBtextureAtlasPtr\fP"
+.br
+.ti -1c
+.RI "PMaterial \fBmaterialCachePtr\fP"
+.br
+.ti -1c
+.RI "float \fBfontSize\fP"
+.br
+.ti -1c
+.RI "std::array< \fBFontCharacter\fP, 128 > \fBcharacters\fP"
+.br
+.ti -1c
+.RI "std::map< \fBTextCacheKey\fP, std::shared_ptr< \fBModelPart\fP > > \fBmeshCache\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the \fBFont\fP type\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual void Font::_initFont ()\fR [protected]\fP, \fR [pure virtual]\fP"
+
+.PP
+Initializes font resources\&. 
+.PP
+Implemented in \fBFreeTypeFont\fP, and \fBTrueTypeFont\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

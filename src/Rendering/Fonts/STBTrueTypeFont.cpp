@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Fonts/STBTrueTypeFont.cpp
+ * @brief Implementation for STBTrueTypeFont.
+ */
+
 #include "Rendering/Fonts/STBTrueTypeFont.h"
 
 #include "Foundation/Logging/Logbot.h"

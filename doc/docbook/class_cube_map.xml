@@ -1,0 +1,189 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_cube_map" xml:lang="en-US">
+<title>CubeMap Class Reference</title>
+<indexterm><primary>CubeMap</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_cube_map">CubeMap</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;CubeMap.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_cube_map_1abafcc08996f6f10f5c0cdcd34c0c68d3"/><emphasis role="strong">CubeMap</emphasis> ()=default</para>
+
+<para>Constructs a new <link linkend="_class_cube_map">CubeMap</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_cube_map_1ac4c453248cd7022d3b268755b2dd218e"/><emphasis role="strong">~CubeMap</emphasis> ()</para>
+
+<para>Destroys this <link linkend="_class_cube_map">CubeMap</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_cube_map_1ab580566fd193af8a9b1ec59bb0bef307"/><emphasis role="strong">CubeMap</emphasis> (const <link linkend="_class_cube_map">CubeMap</link> &amp;)=delete</para>
+
+<para>Constructs a new <link linkend="_class_cube_map">CubeMap</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_cube_map_1a4258cd7b4b21d93ebf4438684e6b5689"/><link linkend="_class_cube_map">CubeMap</link> &amp; <emphasis role="strong">operator=</emphasis> (const <link linkend="_class_cube_map">CubeMap</link> &amp;)=delete</para>
+
+<para>Assigns from another instance. </para>
+</listitem>
+            <listitem><para><link linkend="_class_cube_map_1ab33a6cc349723eec527b7499f883de2d">CubeMap</link> (<link linkend="_class_cube_map">CubeMap</link> &amp;&amp;other) noexcept</para>
+
+<para>Constructs a new <link linkend="_class_cube_map">CubeMap</link> instance. </para>
+</listitem>
+            <listitem><para><link linkend="_class_cube_map">CubeMap</link> &amp; <link linkend="_class_cube_map_1a60528a083c9443cf1d33bcdd3e4e57a4">operator=</link> (<link linkend="_class_cube_map">CubeMap</link> &amp;&amp;other) noexcept</para>
+
+<para>Assigns from another instance. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_cube_map_1a60762e1cc3859756d5f63b71d147f83c">bind</link> (unsigned int slot=0) const</para>
+
+<para>Binds this resource. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_cube_map_1ae1991169c4fb0bddf66ab9b7a6fd9d1d"/>void <emphasis role="strong">unbind</emphasis> () const</para>
+
+<para>Unbinds this resource. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_cube_map_1a1257f0ccf0fc38c412ea4e3eb5303e3a"/>void <emphasis role="strong">dispose</emphasis> ()</para>
+
+<para>Disposes this object. </para>
+</listitem>
+            <listitem><para>int <link linkend="_class_cube_map_1ae9d52b975e1d891d4f3084ee36185dea">getSize</link> () const</para>
+
+<para>Returns the size. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_cube_map_1a38d1149c94c10c888b4671a6f5bb9937"/>GLuint <emphasis role="strong">getID</emphasis> () const</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_cube_map_1a281d34b324b830dc56f7e177bff1cb78"/>static std::shared_ptr&lt; <link linkend="_class_cube_map">CubeMap</link> &gt; <emphasis role="strong">Load</emphasis> (PAsset posX, PAsset negX, PAsset posY, PAsset negY, PAsset posZ, PAsset negZ)</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_cube_map">CubeMap</link> type. </para>
+</section>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_class_cube_map_1ab33a6cc349723eec527b7499f883de2d"/><section>
+    <title>CubeMap()</title>
+<indexterm><primary>CubeMap</primary><secondary>CubeMap</secondary></indexterm>
+<indexterm><primary>CubeMap</primary><secondary>CubeMap</secondary></indexterm>
+<para><computeroutput>CubeMap::CubeMap (<link linkend="_class_cube_map">CubeMap</link> &amp;&amp; other)<computeroutput>[noexcept]</computeroutput></computeroutput></para><para>
+
+<para>Constructs a new <link linkend="_class_cube_map">CubeMap</link> instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>other</entry><entry>
+<para>Value for other. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_cube_map_1a60762e1cc3859756d5f63b71d147f83c"/><section>
+    <title>bind()</title>
+<indexterm><primary>bind</primary><secondary>CubeMap</secondary></indexterm>
+<indexterm><primary>CubeMap</primary><secondary>bind</secondary></indexterm>
+<para><computeroutput>void CubeMap::bind (unsigned int slot = <computeroutput>0</computeroutput>
+) const</computeroutput></para><para>
+
+<para>Binds this resource. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>slot</entry><entry>
+<para>Value for slot. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_cube_map_1ae9d52b975e1d891d4f3084ee36185dea"/><section>
+    <title>getSize()</title>
+<indexterm><primary>getSize</primary><secondary>CubeMap</secondary></indexterm>
+<indexterm><primary>CubeMap</primary><secondary>getSize</secondary></indexterm>
+<para><computeroutput>int CubeMap::getSize ( ) const<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the size. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Computed numeric result. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_cube_map_1a60528a083c9443cf1d33bcdd3e4e57a4"/><section>
+    <title>operator=()</title>
+<indexterm><primary>operator=</primary><secondary>CubeMap</secondary></indexterm>
+<indexterm><primary>CubeMap</primary><secondary>operator=</secondary></indexterm>
+<para><computeroutput><link linkend="_class_cube_map">CubeMap</link> &amp; CubeMap::operator= (<link linkend="_class_cube_map">CubeMap</link> &amp;&amp; other)<computeroutput>[noexcept]</computeroutput></computeroutput></para><para>
+
+<para>Assigns from another instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>other</entry><entry>
+<para>Value for other. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<para>
+The documentation for this class was generated from the following files:</para>
+src/Rendering/Textures/<link linkend="__cube_map_8h">CubeMap.h</link>src/Rendering/Textures/<link linkend="__cube_map_8cpp">CubeMap.cpp</link></section>
+</section>

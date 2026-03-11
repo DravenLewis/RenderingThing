@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__free_type_font_8cpp" xml:lang="en-US">
+<title>src/Rendering/Fonts/FreeTypeFont.cpp File Reference</title>
+<indexterm><primary>src/Rendering/Fonts/FreeTypeFont.cpp</primary></indexterm>
+<para>
+
+<para>Implementation for <link linkend="_class_free_type_font">FreeTypeFont</link>. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &quot;Rendering/Fonts/FreeTypeFont.h&quot;<?linebreak?>#include &quot;Rendering/Materials/MaterialDefaults.h&quot;<?linebreak?>#include &lt;cmath&gt;<?linebreak?></programlisting><section>
+<title>Detailed Description</title>
+
+<para>Implementation for <link linkend="_class_free_type_font">FreeTypeFont</link>. </para>
+</section>
+</section>

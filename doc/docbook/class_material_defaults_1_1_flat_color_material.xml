@@ -1,0 +1,175 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_material_defaults_1_1_flat_color_material" xml:lang="en-US">
+<title>MaterialDefaults::FlatColorMaterial Class Reference</title>
+<indexterm><primary>MaterialDefaults::FlatColorMaterial</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_material_defaults_1_1_flat_color_material">FlatColorMaterial</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;MaterialDefaults.h&gt;</computeroutput>
+</para>
+<para>Inheritance diagram for MaterialDefaults::FlatColorMaterial:    <informalfigure>
+        <mediaobject>
+            <imageobject>
+                <imagedata width="50%" align="center" valign="middle" scalefit="0" fileref="class_material_defaults_1_1_flat_color_material.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+    </informalfigure>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><link linkend="_class_material_defaults_1_1_flat_color_material_1ac7dc6be01211acd7b57c3cdc9c66465c">FlatColorMaterial</link> (std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; program)</para>
+
+<para>Constructs a new <link linkend="_class_material_defaults_1_1_flat_color_material">FlatColorMaterial</link> instance. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_material_defaults_1_1_flat_color_material_1a3602a1f317d7e37c08e1f2c7e4fd4c2b">bind</link> () override</para>
+
+<para>Binds this resource. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+Public Member Functions inherited from <link linkend="_class_material">Material</link>        <itemizedlist>
+            <listitem><para><link linkend="_class_material_1ace810a426f4b488d2dc2a53070d85405">Material</link> (std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; program)</para>
+
+<para>Constructs a new <link linkend="_class_material">Material</link> instance. </para>
+</listitem>
+            <listitem><para>virtual <emphasis role="strong">~Material</emphasis> ()</para>
+
+<para>Destroys this <link linkend="_class_material">Material</link> instance. </para>
+</listitem>
+            <listitem><para>template&lt;typename T&gt; </para><para>bool <emphasis role="strong">set</emphasis> (const std::string &amp;name, T value)</para>
+</listitem>
+            <listitem><para>void <emphasis role="strong">unbind</emphasis> ()</para>
+</listitem>
+            <listitem><para>std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; <emphasis role="strong">getShader</emphasis> ()</para>
+</listitem>
+            <listitem><para>void <emphasis role="strong">setShader</emphasis> (std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; program)</para>
+</listitem>
+            <listitem><para>void <emphasis role="strong">setCastsShadows</emphasis> (bool value)</para>
+</listitem>
+            <listitem><para>bool <emphasis role="strong">castsShadows</emphasis> () const</para>
+</listitem>
+            <listitem><para>void <emphasis role="strong">setReceivesShadows</emphasis> (bool value)</para>
+</listitem>
+            <listitem><para>bool <emphasis role="strong">receivesShadows</emphasis> () const</para>
+</listitem>
+        </itemizedlist>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>static std::shared_ptr&lt; <link linkend="_class_material_defaults_1_1_flat_color_material_1ac7dc6be01211acd7b57c3cdc9c66465c">FlatColorMaterial</link> &gt; <link linkend="_class_material_defaults_1_1_flat_color_material_1a4cde023f130787555ffd8f4b322a040e">Create</link> (Math3D::Vec4 color=Color::WHITE)</para>
+
+<para>Creates a new object. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+Static Public Member Functions inherited from <link linkend="_class_material">Material</link>        <itemizedlist>
+            <listitem><para>static std::shared_ptr&lt; <link linkend="_class_material">Material</link> &gt; <emphasis role="strong">Copy</emphasis> (std::shared_ptr&lt; <link linkend="_class_material">Material</link> &gt; material)</para>
+</listitem>
+            <listitem><para>template&lt;typename T&gt; </para><para>static std::shared_ptr&lt; T &gt; <emphasis role="strong">GetAs</emphasis> (std::shared_ptr&lt; <link linkend="_class_material">Material</link> &gt; matPtr)</para>
+</listitem>
+        </itemizedlist>
+<simplesect>
+    <title>Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_material_defaults_1_1_flat_color_material_1ad46827b8325b3c39f90b3902a8de4acc"/>ValueContainer&lt; Math3D::Vec4 &gt; <emphasis role="strong">Color</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_material_defaults_1_1_flat_color_material_1a8a94815318f3c3d07f41dfe136ef8cfe"/>ValueContainer&lt; Math3D::Vec3 &gt; <emphasis role="strong">ViewPos</emphasis></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_material_defaults_1_1_flat_color_material">FlatColorMaterial</link> type. </para>
+</section>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_class_material_defaults_1_1_flat_color_material_1ac7dc6be01211acd7b57c3cdc9c66465c"/><section>
+    <title>FlatColorMaterial()</title>
+<indexterm><primary>FlatColorMaterial</primary><secondary>MaterialDefaults::FlatColorMaterial</secondary></indexterm>
+<indexterm><primary>MaterialDefaults::FlatColorMaterial</primary><secondary>FlatColorMaterial</secondary></indexterm>
+<para><computeroutput>FlatColorMaterial::FlatColorMaterial (std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; program)</computeroutput></para><para>
+
+<para>Constructs a new <link linkend="_class_material_defaults_1_1_flat_color_material">FlatColorMaterial</link> instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>program</entry><entry>
+<para>Value for program. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_material_defaults_1_1_flat_color_material_1a3602a1f317d7e37c08e1f2c7e4fd4c2b"/><section>
+    <title>bind()</title>
+<indexterm><primary>bind</primary><secondary>MaterialDefaults::FlatColorMaterial</secondary></indexterm>
+<indexterm><primary>MaterialDefaults::FlatColorMaterial</primary><secondary>bind</secondary></indexterm>
+<para><computeroutput>void FlatColorMaterial::bind ( )<computeroutput>[override]</computeroutput>, <computeroutput>[virtual]</computeroutput></computeroutput></para><para>
+
+<para>Binds this resource. </para>
+</para>
+<para>
+Reimplemented from <link linkend="_class_material">Material</link>.</para>
+</section>
+<anchor xml:id="_class_material_defaults_1_1_flat_color_material_1a4cde023f130787555ffd8f4b322a040e"/><section>
+    <title>Create()</title>
+<indexterm><primary>Create</primary><secondary>MaterialDefaults::FlatColorMaterial</secondary></indexterm>
+<indexterm><primary>MaterialDefaults::FlatColorMaterial</primary><secondary>Create</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_class_material_defaults_1_1_flat_color_material_1ac7dc6be01211acd7b57c3cdc9c66465c">FlatColorMaterial</link> &gt; FlatColorMaterial::Create (Math3D::Vec4 color = <computeroutput>Color::WHITE</computeroutput>
+)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Creates a new object. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>color</entry><entry>
+<para>Color value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this class was generated from the following files:</para>
+src/Rendering/Materials/<link linkend="__material_defaults_8h">MaterialDefaults.h</link>src/Rendering/Materials/<link linkend="__material_defaults_8cpp">MaterialDefaults.cpp</link></section>
+</section>

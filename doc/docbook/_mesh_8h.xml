@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__mesh_8h" xml:lang="en-US">
+<title>src/Rendering/Geometry/Mesh.h File Reference</title>
+<indexterm><primary>src/Rendering/Geometry/Mesh.h</primary></indexterm>
+<para>
+
+<para>Declarations for <link linkend="_class_mesh">Mesh</link>. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &lt;glad/glad.h&gt;<?linebreak?>#include &lt;SDL3/SDL.h&gt;<?linebreak?>#include &lt;SDL3/SDL_opengl.h&gt;<?linebreak?>#include &lt;cstdint&gt;<?linebreak?>#include &lt;vector&gt;<?linebreak?>#include &lt;algorithm&gt;<?linebreak?>#include &quot;Foundation/Math/Math3D.h&quot;<?linebreak?>#include &quot;Rendering/Geometry/Drawable.h&quot;<?linebreak?></programlisting><simplesect>
+    <title>Classes    </title>
+        <itemizedlist>
+            <listitem><para>struct <link linkend="_struct_vertex">Vertex</link></para>
+
+<para>Holds data for <link linkend="_struct_vertex">Vertex</link>. </para>
+</listitem>
+            <listitem><para>class <link linkend="_class_mesh">Mesh</link></para>
+
+<para>Represents the <link linkend="_class_mesh">Mesh</link> type. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Typedefs    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="__mesh_8h_1af22cd59fba09a4de62b4991b4ce81642"/>typedef unsigned int <emphasis role="strong">VertexBufferObject</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="__mesh_8h_1aed3df4aa000ffa1185ececbadd4c9b8c"/>typedef unsigned int <emphasis role="strong">VertexArrayObject</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="__mesh_8h_1ad314ad2f019b75fa831f2919161371e0"/>typedef unsigned int <emphasis role="strong">ElementBufferObject</emphasis></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Declarations for <link linkend="_class_mesh">Mesh</link>. </para>
+</section>
+</section>

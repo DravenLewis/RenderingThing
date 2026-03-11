@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_material" xml:lang="en-US">
+<title>Material Class Reference</title>
+<indexterm><primary>Material</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_material">Material</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;Material.h&gt;</computeroutput>
+</para>
+<para>Inheritance diagram for Material:    <informalfigure>
+        <mediaobject>
+            <imageobject>
+                <imagedata width="50%" align="center" valign="middle" scalefit="0" fileref="class_material.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+    </informalfigure>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><link linkend="_class_material_1ace810a426f4b488d2dc2a53070d85405">Material</link> (std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; program)</para>
+
+<para>Constructs a new <link linkend="_class_material">Material</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_material_1a179e16d6a1bd4a0f039b8e4cbf2ade30"/>virtual <emphasis role="strong">~Material</emphasis> ()</para>
+
+<para>Destroys this <link linkend="_class_material">Material</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_material_1afebe6792e3275332e491ce2ca396069b"/>template&lt;typename T&gt; </para><para>bool <emphasis role="strong">set</emphasis> (const std::string &amp;name, T value)</para>
+</listitem>
+            <listitem><para>virtual void <link linkend="_class_material_1aa9acc36e80cc1874dc69da8dedf54695">bind</link> ()</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_material_1a3b4ef589843fde30b1844bde9bcbad19"/>void <emphasis role="strong">unbind</emphasis> ()</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_material_1a3fbc05a83a35eb9e07a7b84cba22eb6e"/>std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; <emphasis role="strong">getShader</emphasis> ()</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_material_1add6d2e03a3dc1ac8dfac431b9641d5cc"/>void <emphasis role="strong">setShader</emphasis> (std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; program)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_material_1ab98237e9210f21b7b8600966f6b66c5f"/>void <emphasis role="strong">setCastsShadows</emphasis> (bool value)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_material_1aaf9a94eb8335d955b4a58a1f036bb3aa"/>bool <emphasis role="strong">castsShadows</emphasis> () const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_material_1acef042dc3f4671a78a172aa90a12b694"/>void <emphasis role="strong">setReceivesShadows</emphasis> (bool value)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_material_1adfd452b4ff41ff6d818278e8adf9b9d5"/>bool <emphasis role="strong">receivesShadows</emphasis> () const</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_material_1a55fb7dcfa5f72a8997b6423ac099caa6"/>static std::shared_ptr&lt; <link linkend="_class_material">Material</link> &gt; <emphasis role="strong">Copy</emphasis> (std::shared_ptr&lt; <link linkend="_class_material">Material</link> &gt; material)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_material_1a00c4c29d23d53171fa11ccbe1d91f14d"/>template&lt;typename T&gt; </para><para>static std::shared_ptr&lt; T &gt; <emphasis role="strong">GetAs</emphasis> (std::shared_ptr&lt; <link linkend="_class_material">Material</link> &gt; matPtr)</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_material">Material</link> type. </para>
+</section>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_class_material_1ace810a426f4b488d2dc2a53070d85405"/><section>
+    <title>Material()</title>
+<indexterm><primary>Material</primary><secondary>Material</secondary></indexterm>
+<indexterm><primary>Material</primary><secondary>Material</secondary></indexterm>
+<para><computeroutput>Material::Material (std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; program)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Constructs a new <link linkend="_class_material">Material</link> instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>program</entry><entry>
+<para>Value for program. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_material_1aa9acc36e80cc1874dc69da8dedf54695"/><section>
+    <title>bind()</title>
+<indexterm><primary>bind</primary><secondary>Material</secondary></indexterm>
+<indexterm><primary>Material</primary><secondary>bind</secondary></indexterm>
+<para><computeroutput>virtual void Material::bind ( )<computeroutput>[inline]</computeroutput>, <computeroutput>[virtual]</computeroutput></computeroutput></para><para>
+Reimplemented in <link linkend="_class_constructed_material_1a20ec1258bcfcd504150134f3d12dbb4a">ConstructedMaterial</link>, <link linkend="_class_material_defaults_1_1_flat_color_material_1a3602a1f317d7e37c08e1f2c7e4fd4c2b">MaterialDefaults::FlatColorMaterial</link>, <link linkend="_class_material_defaults_1_1_flat_image_material_1a61b269b2721d94022945e0bf31bbd6fc">MaterialDefaults::FlatImageMaterial</link>, <link linkend="_class_material_defaults_1_1_lit_color_material_1a80c1908b825477e38e320f838708fac9">MaterialDefaults::LitColorMaterial</link>, <link linkend="_class_material_defaults_1_1_lit_image_material_1ab48290d5a6ba088db4337a1b9f3c2137">MaterialDefaults::LitImageMaterial</link>, <link linkend="_class_p_b_r_material_1a30db1aa8fdf92f2a7310b864d79ee159">PBRMaterial</link>, and <link linkend="_class_skybox_material_1acc843c2b1152fda9d10fbd964e7e9473">SkyboxMaterial</link>.</para>
+</section>
+<para>
+The documentation for this class was generated from the following file:</para>
+src/Rendering/Materials/<link linkend="__material_8h">Material.h</link></section>
+</section>

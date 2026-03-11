@@ -1,0 +1,37 @@
+.TH "GraphicsContext" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+GraphicsContext \- Holds data for \fBGraphicsContext\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <Graphics2D\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "ValueContainer< Color > \fBforegroundColor\fP {Color::WHITE}"
+.br
+.ti -1c
+.RI "ValueContainer< Color > \fBbackgroundColor\fP {Color::BLACK}"
+.br
+.ti -1c
+.RI "ValueContainer< float > \fBstrokeWidth\fP {1\&.0f}"
+.br
+.ti -1c
+.RI "ValueContainer< PFont > \fBfont\fP {Font::Create<\fBFreeTypeFont\fP>(defaultFontLocation\&.get(), 18\&.0f)}"
+.br
+.ti -1c
+.RI "ValueContainer< int > \fBfontSize\fP {18}"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Holds data for \fBGraphicsContext\fP\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

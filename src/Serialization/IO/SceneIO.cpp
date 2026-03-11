@@ -1,3 +1,8 @@
+/**
+ * @file src/Serialization/IO/SceneIO.cpp
+ * @brief Implementation for SceneIO.
+ */
+
 #include "Serialization/IO/SceneIO.h"
 
 #include <algorithm>

@@ -1,0 +1,1218 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.16.1" xml:lang="en-US">
+  <compound refid="class_auto_exposure_effect" kind="class"><name>AutoExposureEffect</name>
+    <member refid="class_auto_exposure_effect_1a30a4c380602a406a8a18784e7d671e31" kind="variable"><name>shader</name></member>
+    <member refid="class_auto_exposure_effect_1a70a5cce66c309592eda1f92b5b3c365c" kind="variable"><name>compileAttempted</name></member>
+    <member refid="class_auto_exposure_effect_1a0e0398017f5d9a2b400c675baf81fb1d" kind="variable"><name>meteringReadFbo</name></member>
+    <member refid="class_auto_exposure_effect_1ade83301b0cdcacc5e29daa8339b4de08" kind="variable"><name>adaptationInitialized</name></member>
+    <member refid="class_auto_exposure_effect_1a904e08126ca7fa6d362bbb938e249857" kind="variable"><name>adaptedExposure</name></member>
+    <member refid="class_auto_exposure_effect_1a976e6df989329777faa743463871f5af" kind="variable"><name>filteredLogLuminance</name></member>
+    <member refid="class_auto_exposure_effect_1ad9a3c269b93c8dd6b885e147d6f7a9c9" kind="variable"><name>lastAdaptationTime</name></member>
+    <member refid="class_auto_exposure_effect_1acf2811de372cfcdf82a247b7e8fc897b" kind="variable"><name>AUTO_EXPOSURE_FRAG_SHADER</name></member>
+    <member refid="class_auto_exposure_effect_1a3aa0cb468abac292b01662f622f1beaf" kind="variable"><name>minExposure</name></member>
+    <member refid="class_auto_exposure_effect_1a8f51263e0edecd2ef05444e5ca468755" kind="variable"><name>maxExposure</name></member>
+    <member refid="class_auto_exposure_effect_1ab143c327307826b8eacf5a024ec5a827" kind="variable"><name>exposureCompensation</name></member>
+    <member refid="class_auto_exposure_effect_1a7967e743d11b714431a2200eb9babaec" kind="variable"><name>adaptationSpeedUp</name></member>
+    <member refid="class_auto_exposure_effect_1a8f57d4f60965436e3263d3e9fbdad930" kind="variable"><name>adaptationSpeedDown</name></member>
+    <member refid="class_auto_exposure_effect_1a85d7d4e97a93c15b1e44aefb1c78df1d" kind="function"><name>sampleSceneLuminance</name></member>
+    <member refid="class_auto_exposure_effect_1a91e7346af9e3e503d85f2aa8c0629a6d" kind="function"><name>updateAdaptation</name></member>
+    <member refid="class_auto_exposure_effect_1a986c9a284ee97889add7898f1e85e96b" kind="function"><name>ensureCompiled</name></member>
+    <member refid="class_auto_exposure_effect_1a47347afe30cc06c30cc94ce7bd9bc28e" kind="function"><name>AutoExposureEffect</name></member>
+    <member refid="class_auto_exposure_effect_1ab7f60c587637d4528d2742459ca0b0bb" kind="function"><name>~AutoExposureEffect</name></member>
+    <member refid="class_auto_exposure_effect_1ab72cd49d8c43c7ea6dc10c71891f8320" kind="function"><name>resetAdaptation</name></member>
+    <member refid="class_auto_exposure_effect_1a7b5e8266e87eb3b70992a02335b87ce7" kind="function"><name>getCurrentExposure</name></member>
+    <member refid="class_auto_exposure_effect_1addcac25d10d86ac96887736dcf750e40" kind="function"><name>apply</name></member>
+    <member refid="class_auto_exposure_effect_1a3ea1f05e72ecd506feff02ec9ec3fb24" kind="function"><name>New</name></member>
+  </compound>
+  <compound refid="class_bloom_effect" kind="class"><name>BloomEffect</name>
+    <member refid="class_bloom_effect_1aaa968308f80fd92fe91417f8e50e235b" kind="variable"><name>shader</name></member>
+    <member refid="class_bloom_effect_1a950d5a52d44db0bb1c43c6309c4286fc" kind="variable"><name>compileAttempted</name></member>
+    <member refid="class_bloom_effect_1a14562c1839f3f9ed2b2cf7246083e8fc" kind="variable"><name>BLOOM_FRAG_SHADER</name></member>
+    <member refid="class_bloom_effect_1a6ec25beb86184d532d940a8277216c7d" kind="variable"><name>adaptationReadFbo</name></member>
+    <member refid="class_bloom_effect_1a38deefa8c5cdbfdf21431e9b31c7dd66" kind="variable"><name>adaptationInitialized</name></member>
+    <member refid="class_bloom_effect_1a693b0180733225e6b0d4d36b10243b51" kind="variable"><name>adaptedLuminance</name></member>
+    <member refid="class_bloom_effect_1a1cc4c9d4917c71799cadceccfc743345" kind="variable"><name>filteredLuminance</name></member>
+    <member refid="class_bloom_effect_1ae5d4c0108efe8ff36c25c4f80de05cee" kind="variable"><name>smoothedThresholdScale</name></member>
+    <member refid="class_bloom_effect_1ab852faa5367a46dd3aa359c1440ffe0f" kind="variable"><name>smoothedIntensityScale</name></member>
+    <member refid="class_bloom_effect_1a704c1b7fd024c3e08032d018aa130267" kind="variable"><name>smoothedExposureScale</name></member>
+    <member refid="class_bloom_effect_1a2734288c6df08695d19d94a7859a897c" kind="variable"><name>lastAdaptationTime</name></member>
+    <member refid="class_bloom_effect_1a0be8556c8edebb4c6c0e09fbcf65be79" kind="variable"><name>adaptiveBloom</name></member>
+    <member refid="class_bloom_effect_1ace8000ba288ba6ca8601c87523b36a8b" kind="variable"><name>threshold</name></member>
+    <member refid="class_bloom_effect_1a8f8b60469c5920fe6ee2dab335ca3990" kind="variable"><name>softKnee</name></member>
+    <member refid="class_bloom_effect_1a06b4b4bb24f13de018ed7e4780e79c96" kind="variable"><name>intensity</name></member>
+    <member refid="class_bloom_effect_1ab9eb15f7ed03d8128b0824d5143f9553" kind="variable"><name>radiusPx</name></member>
+    <member refid="class_bloom_effect_1ac72dcff5e7ae1a3c73bcbbb42e5deaed" kind="variable"><name>sampleCount</name></member>
+    <member refid="class_bloom_effect_1af77398b019a2c45daecb17c0ffdc3caa" kind="variable"><name>tint</name></member>
+    <member refid="class_bloom_effect_1a15792ccc1a754c32a07d9dcfd41e0f13" kind="variable"><name>autoExposureIntensityScale</name></member>
+    <member refid="class_bloom_effect_1ac007ae8c56a320f5b58899480f17771e" kind="variable"><name>autoExposureThresholdScale</name></member>
+    <member refid="class_bloom_effect_1a80c9c12fbba335f732898fe34687220f" kind="function"><name>sampleSceneLuminance</name></member>
+    <member refid="class_bloom_effect_1a7578ef357086ed97e4cc84f4b6f0ff43" kind="function"><name>computeAdaptiveScales</name></member>
+    <member refid="class_bloom_effect_1a98cb679eb8f14817cef77f54c1e835e3" kind="function"><name>ensureCompiled</name></member>
+    <member refid="class_bloom_effect_1ae76d6ede7ad9201f6bf8f4c9927c827b" kind="function"><name>BloomEffect</name></member>
+    <member refid="class_bloom_effect_1ae4699677bdf89a388fab1912b1abcf67" kind="function"><name>~BloomEffect</name></member>
+    <member refid="class_bloom_effect_1a0406096e8d58f6e752976df0121dfd64" kind="function"><name>apply</name></member>
+    <member refid="class_bloom_effect_1a3e0a4cd9ff40a8e0caa73d9603299e44" kind="function"><name>New</name></member>
+  </compound>
+  <compound refid="struct_graphics_1_1_image_1_1_buffered_image" kind="struct"><name>Graphics::Image::BufferedImage</name>
+    <member refid="struct_graphics_1_1_image_1_1_buffered_image_1a95c739a0c8fb9150ab27d338819b209f" kind="function"><name>BufferedImage</name></member>
+    <member refid="struct_graphics_1_1_image_1_1_buffered_image_1a5980611f951eec88180757b9f1718c6d" kind="function"><name>BufferedImage</name></member>
+    <member refid="struct_graphics_1_1_image_1_1_buffered_image_1ac9a86a189f06d2a5f4fab51ed21b7bbc" kind="function"><name>BufferedImage</name></member>
+    <member refid="struct_graphics_1_1_image_1_1_buffered_image_1afcf9ecd99a3771364918b46d135909af" kind="function"><name>getValueAt</name></member>
+    <member refid="struct_graphics_1_1_image_1_1_buffered_image_1ac29650e2e57885e0b1ad47d0322bf0ee" kind="function"><name>setValueAt</name></member>
+    <member refid="struct_graphics_1_1_image_1_1_buffered_image_1a7f616c547a78bd7de90d25fd62348849" kind="function"><name>getPixelAt</name></member>
+    <member refid="struct_graphics_1_1_image_1_1_buffered_image_1a43de2adb4fed4cd6d6b7cb1648137a26" kind="function"><name>setPixelAt</name></member>
+  </compound>
+  <compound refid="class_material_defaults_1_1_color_material" kind="class"><name>MaterialDefaults::ColorMaterial</name>
+    <member refid="class_material_defaults_1_1_color_material_1a5991fb1fe219559d5cfdac92d7412d75" kind="variable"><name>Color</name></member>
+    <member refid="class_material_defaults_1_1_color_material_1af4201c21c18e146bd0b1a4f707d89b5e" kind="function"><name>ColorMaterial</name></member>
+    <member refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" kind="function"><name>Create</name></member>
+  </compound>
+  <compound refid="class_constructed_material" kind="class"><name>ConstructedMaterial</name>
+    <member refid="class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cf" kind="enum"><name>FieldType</name></member>
+    <member refid="class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cfa22ae0e2b89e5e3d477f988cc36d3272b" kind="enumvalue"><name>Float</name></member>
+    <member refid="class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cfa1686a6c336b71b36d77354cea19a8b52" kind="enumvalue"><name>Int</name></member>
+    <member refid="class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cfac26f15e86e3de4c398a8273272aba034" kind="enumvalue"><name>Bool</name></member>
+    <member refid="class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cfafe98032d4f1c52a2f0b617f9205d5f80" kind="enumvalue"><name>Vec2</name></member>
+    <member refid="class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cfa01b2dc1a2922d9be9e12ef0709600977" kind="enumvalue"><name>Vec3</name></member>
+    <member refid="class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cfaf67402842935c0240e8109e7312def66" kind="enumvalue"><name>Vec4</name></member>
+    <member refid="class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cfaa6e2bae752d3bf4e34cb392bca789995" kind="enumvalue"><name>Texture2D</name></member>
+    <member refid="class_constructed_material_1a599788bdf457761688969591f528b0e2" kind="variable"><name>dynamicFields</name></member>
+    <member refid="class_constructed_material_1aec9612525068b8eaf241dc78cfd9f9f5" kind="variable"><name>fieldsDirty</name></member>
+    <member refid="class_constructed_material_1a736e07f78c200b7a21b33165d6cb5719" kind="variable"><name>sourceAssetRef</name></member>
+    <member refid="class_constructed_material_1a2d3ff88802fb3d101d66e16a39bbe939" kind="variable"><name>sourceMaterialName</name></member>
+    <member refid="class_constructed_material_1a6e513e5615be7d3b0fa75894b2c58dd1" kind="function"><name>ConstructedMaterial</name></member>
+    <member refid="class_constructed_material_1a21bc4a9062326ce5c0cd79a8a702a6be" kind="function"><name>setSourceAssetRef</name></member>
+    <member refid="class_constructed_material_1a71a8ad0b3f9b7332cbeb6f83f40b7c9c" kind="function"><name>getSourceAssetRef</name></member>
+    <member refid="class_constructed_material_1ac61016aad3fbd3d73ec68b6bbb1ddada" kind="function"><name>setSourceMaterialName</name></member>
+    <member refid="class_constructed_material_1aa0808c55319a66dcef4948cca0f68a20" kind="function"><name>getSourceMaterialName</name></member>
+    <member refid="class_constructed_material_1a2f30d4fbf1fdb26e428b33d23dbf10c6" kind="function"><name>addFloatField</name></member>
+    <member refid="class_constructed_material_1a284816c36fa3df24c2a4078166d2e542" kind="function"><name>addIntField</name></member>
+    <member refid="class_constructed_material_1a3aede6f45921adc753bb60b2f312a894" kind="function"><name>addBoolField</name></member>
+    <member refid="class_constructed_material_1a5e730682b49c7d07f4e3213b7c8e936f" kind="function"><name>addVec2Field</name></member>
+    <member refid="class_constructed_material_1afa38f16b02e4428ab401779f626db4bb" kind="function"><name>addVec3Field</name></member>
+    <member refid="class_constructed_material_1acf1ea6cee12a7e291049b2bcd93e418a" kind="function"><name>addVec4Field</name></member>
+    <member refid="class_constructed_material_1a4a1b88134f55b0f679212db40941c87b" kind="function"><name>addTexture2DField</name></member>
+    <member refid="class_constructed_material_1a7d29c3cf5ab8b761637884dd53ccb531" kind="function"><name>fields</name></member>
+    <member refid="class_constructed_material_1ad3325736eb2a48a1546b69dddb779a3c" kind="function"><name>fields</name></member>
+    <member refid="class_constructed_material_1a1672cf71fcbe34b381fe784c9dcafa5c" kind="function"><name>clearFields</name></member>
+    <member refid="class_constructed_material_1ad41964516b374f85c9dbe03d70285388" kind="function"><name>markFieldsDirty</name></member>
+    <member refid="class_constructed_material_1a0b89ef6b1940504648859f840dd78a4b" kind="function"><name>applyField</name></member>
+    <member refid="class_constructed_material_1a2d9ac90844fa0e951bdb8a2f90bd1aea" kind="function"><name>applyAllFields</name></member>
+    <member refid="class_constructed_material_1a20ec1258bcfcd504150134f3d12dbb4a" kind="function"><name>bind</name></member>
+    <member refid="class_constructed_material_1a3a3f4b57dfe35059b73a40e6cac44684" kind="function"><name>CreateWithPBRShader</name></member>
+    <member refid="class_constructed_material_1a51ca7f0b48acff58c6bf189149f59705" kind="function"><name>emplaceField</name></member>
+    <member refid="class_constructed_material_1afc564769f572357c0787ec31f257b419" kind="function"><name>applyFieldInternal</name></member>
+  </compound>
+  <compound refid="class_cube_map" kind="class"><name>CubeMap</name>
+    <member refid="class_cube_map_1a3bb99a4d6d1c438738cd519363aa8f95" kind="variable"><name>textureID</name></member>
+    <member refid="class_cube_map_1ae74d3b76f6f7fe0386201ec7d57e336e" kind="variable"><name>size</name></member>
+    <member refid="class_cube_map_1a2b70cf1c6e42fff9606592b722562c81" kind="variable"><name>ownsTexture</name></member>
+    <member refid="class_cube_map_1abafcc08996f6f10f5c0cdcd34c0c68d3" kind="function"><name>CubeMap</name></member>
+    <member refid="class_cube_map_1ac4c453248cd7022d3b268755b2dd218e" kind="function"><name>~CubeMap</name></member>
+    <member refid="class_cube_map_1ab580566fd193af8a9b1ec59bb0bef307" kind="function"><name>CubeMap</name></member>
+    <member refid="class_cube_map_1a4258cd7b4b21d93ebf4438684e6b5689" kind="function"><name>operator=</name></member>
+    <member refid="class_cube_map_1ab33a6cc349723eec527b7499f883de2d" kind="function"><name>CubeMap</name></member>
+    <member refid="class_cube_map_1a60528a083c9443cf1d33bcdd3e4e57a4" kind="function"><name>operator=</name></member>
+    <member refid="class_cube_map_1a60762e1cc3859756d5f63b71d147f83c" kind="function"><name>bind</name></member>
+    <member refid="class_cube_map_1ae1991169c4fb0bddf66ab9b7a6fd9d1d" kind="function"><name>unbind</name></member>
+    <member refid="class_cube_map_1a1257f0ccf0fc38c412ea4e3eb5303e3a" kind="function"><name>dispose</name></member>
+    <member refid="class_cube_map_1ae9d52b975e1d891d4f3084ee36185dea" kind="function"><name>getSize</name></member>
+    <member refid="class_cube_map_1a38d1149c94c10c888b4671a6f5bb9937" kind="function"><name>getID</name></member>
+    <member refid="class_cube_map_1a281d34b324b830dc56f7e177bff1cb78" kind="function"><name>Load</name></member>
+  </compound>
+  <compound refid="struct_g_l_uniform_upload_1_1_cube_map_slot" kind="struct"><name>GLUniformUpload::CubeMapSlot</name>
+    <member refid="struct_g_l_uniform_upload_1_1_cube_map_slot_1aaf430c1b18833f4d705751c79e53e6f1" kind="variable"><name>cubemap</name></member>
+    <member refid="struct_g_l_uniform_upload_1_1_cube_map_slot_1a37b56833bdca0f8b53cd7b2e3f832087" kind="variable"><name>slot</name></member>
+    <member refid="struct_g_l_uniform_upload_1_1_cube_map_slot_1aecea70a50c59eb990a8b3ff98030ce2a" kind="function"><name>CubeMapSlot</name></member>
+    <member refid="struct_g_l_uniform_upload_1_1_cube_map_slot_1a6c512f6b525bb9cdb8a90393370b0bda" kind="function"><name>CubeMapSlot</name></member>
+  </compound>
+  <compound refid="struct_model_prefabs_1_1_cube_material_definition" kind="struct"><name>ModelPrefabs::CubeMaterialDefinition</name>
+    <member refid="struct_model_prefabs_1_1_cube_material_definition_1ace62f45e214a39530f1d170774d42587" kind="variable"><name>matTop</name></member>
+    <member refid="struct_model_prefabs_1_1_cube_material_definition_1a4513afc8b732a96d033351f56f75b175" kind="variable"><name>matBottom</name></member>
+    <member refid="struct_model_prefabs_1_1_cube_material_definition_1a2cdc64fdec71091be8bf57aa9a332036" kind="variable"><name>matLeft</name></member>
+    <member refid="struct_model_prefabs_1_1_cube_material_definition_1a08e8349a7878f593c484630a6f39cc12" kind="variable"><name>matRight</name></member>
+    <member refid="struct_model_prefabs_1_1_cube_material_definition_1a47d3d332738b0cf2ca0b045daf988f94" kind="variable"><name>matFront</name></member>
+    <member refid="struct_model_prefabs_1_1_cube_material_definition_1af7ef9c5379fdaffdc31652504f9c3d9d" kind="variable"><name>matBack</name></member>
+    <member refid="struct_model_prefabs_1_1_cube_material_definition_1aba705d4394d425991f04fbfb85500839" kind="function"><name>Create</name></member>
+    <member refid="struct_model_prefabs_1_1_cube_material_definition_1a51f34850b6c532b1679083ac3065bca7" kind="function"><name>CreateSame</name></member>
+  </compound>
+  <compound refid="struct_free_type_font_1_1_deferred_batch" kind="struct"><name>FreeTypeFont::DeferredBatch</name>
+    <member refid="struct_free_type_font_1_1_deferred_batch_1ace1eb8abc592705b636450fb0d8a20c2" kind="variable"><name>colorKey</name></member>
+    <member refid="struct_free_type_font_1_1_deferred_batch_1a3b8f4160ae3e8cacce54555010d38837" kind="variable"><name>color</name></member>
+    <member refid="struct_free_type_font_1_1_deferred_batch_1a786977188827c0af264de8bce6356c10" kind="variable"><name>vertices</name></member>
+    <member refid="struct_free_type_font_1_1_deferred_batch_1a1f1065cc3f5ac8f4adaaea7bf7a6fd7e" kind="variable"><name>indices</name></member>
+  </compound>
+  <compound refid="class_depth_of_field_effect" kind="class"><name>DepthOfFieldEffect</name>
+    <member refid="class_depth_of_field_effect_1a8c8686b2bf67cfdd23323eba03fde27b" kind="variable"><name>shader</name></member>
+    <member refid="class_depth_of_field_effect_1a68cb567793deea48fc5a40dcf69639db" kind="variable"><name>compileAttempted</name></member>
+    <member refid="class_depth_of_field_effect_1a4ab83c07318569e2bc03d16cd329efc9" kind="variable"><name>resolvedFocusDistance</name></member>
+    <member refid="class_depth_of_field_effect_1ad1c7224b3e935e4352713208a35d3ec5" kind="variable"><name>resolvedFocusRange</name></member>
+    <member refid="class_depth_of_field_effect_1a4764fb2fec17f67c34a59681a2c9c657" kind="variable"><name>focusAdaptationInitialized</name></member>
+    <member refid="class_depth_of_field_effect_1aaa44254149463dd8c5c1ca97c3502556" kind="variable"><name>smoothedFocusDistance</name></member>
+    <member refid="class_depth_of_field_effect_1a0d286e481dc9d8008f7db6581a39f19b" kind="variable"><name>smoothedFocusRange</name></member>
+    <member refid="class_depth_of_field_effect_1a5e571bc13953a7cf6bd716c366ecaf72" kind="variable"><name>focusPullBackRate</name></member>
+    <member refid="class_depth_of_field_effect_1a32307568884fa683484635efb9247051" kind="variable"><name>focusPushOutRate</name></member>
+    <member refid="class_depth_of_field_effect_1a28a7fa777fe02a1683746c5cd887eaf9" kind="variable"><name>focusFallbackRate</name></member>
+    <member refid="class_depth_of_field_effect_1a5d6d417a72b60646057b0c4d1f5ccbd0" kind="variable"><name>debugAdaptiveCenterValid</name></member>
+    <member refid="class_depth_of_field_effect_1ad5ffb03096c2dd1500050039c2847b25" kind="variable"><name>debugAdaptiveCenterDistance</name></member>
+    <member refid="class_depth_of_field_effect_1a8879223b3ce4c1f516197ddc9459b4fb" kind="variable"><name>debugAdaptiveRayValid</name></member>
+    <member refid="class_depth_of_field_effect_1a106f150896e340e745d50acbad771488" kind="variable"><name>debugAdaptiveRayDistance</name></member>
+    <member refid="class_depth_of_field_effect_1a5fb6654f4f0f3308c48832e8fb559d7a" kind="variable"><name>debugAdaptiveUsedFallback</name></member>
+    <member refid="class_depth_of_field_effect_1ae25191c12c75e32fe7db3186b47ca72e" kind="variable"><name>debugAdaptiveTargetDistance</name></member>
+    <member refid="class_depth_of_field_effect_1ab00f8bb9ecf5431fe36e535dd7b9e251" kind="variable"><name>debugAdaptiveFallbackDistance</name></member>
+    <member refid="class_depth_of_field_effect_1a9ed7ecf6797168b4574f8ffc52997a23" kind="variable"><name>lastFocusAdaptationTime</name></member>
+    <member refid="class_depth_of_field_effect_1adca6be1552b5ea715d69afbcc10dd705" kind="variable"><name>adaptiveFocusDepthCpu</name></member>
+    <member refid="class_depth_of_field_effect_1a7d1b3bf76fa093e109c9a1fff1568fbc" kind="variable"><name>DOF_FRAG_SHADER</name></member>
+    <member refid="class_depth_of_field_effect_1aed77233b43c93a02caf1c9563b8d8f82" kind="variable"><name>focusDistance</name></member>
+    <member refid="class_depth_of_field_effect_1abff26a84812a982f17b5c3f83472b971" kind="variable"><name>focusRange</name></member>
+    <member refid="class_depth_of_field_effect_1a1b785e3c455c301bdf3967f2f61f8ebc" kind="variable"><name>focusBandWidth</name></member>
+    <member refid="class_depth_of_field_effect_1a97b7f448b8aef83631a8f762ef26597a" kind="variable"><name>blurRamp</name></member>
+    <member refid="class_depth_of_field_effect_1a965b2e6ece1590308f1540d747bcaf8e" kind="variable"><name>blurDistanceLerp</name></member>
+    <member refid="class_depth_of_field_effect_1a587e82b68e9b522963570045e1fcfdc3" kind="variable"><name>fallbackFocusRange</name></member>
+    <member refid="class_depth_of_field_effect_1a9aed3ef01808ad4edb83a7b5c66d10e7" kind="variable"><name>blurStrength</name></member>
+    <member refid="class_depth_of_field_effect_1a6e404fae6af94150b1bf2f8b2cec5e0b" kind="variable"><name>maxBlurPx</name></member>
+    <member refid="class_depth_of_field_effect_1afe6aae8c43a5b42286728935dc0fe9d6" kind="variable"><name>sampleCount</name></member>
+    <member refid="class_depth_of_field_effect_1aee1361a77b67aca399453db65b563a6a" kind="variable"><name>debugCocView</name></member>
+    <member refid="class_depth_of_field_effect_1a97f3f5cf3a9c7e909351eebbcc430787" kind="variable"><name>adaptiveFocus</name></member>
+    <member refid="class_depth_of_field_effect_1a2450651e49854c448f928d084bc94652" kind="variable"><name>focusUv</name></member>
+    <member refid="class_depth_of_field_effect_1a7a927b00613ce433ff6c1dfbcb2808d0" kind="variable"><name>nearPlane</name></member>
+    <member refid="class_depth_of_field_effect_1a889d74f9be28b5a306771abf09b75ec7" kind="variable"><name>farPlane</name></member>
+    <member refid="class_depth_of_field_effect_1a20d4095b74acc71980e59577a46e7288" kind="variable"><name>externalAdaptiveFocusValid</name></member>
+    <member refid="class_depth_of_field_effect_1a121a586d348ae198dc68d91d86bd04c4" kind="variable"><name>externalAdaptiveFocusDistance</name></member>
+    <member refid="class_depth_of_field_effect_1a806703000076b0f289124d635b3869ee" kind="function"><name>ensureCompiled</name></member>
+    <member refid="class_depth_of_field_effect_1a2150e696121542896b3e6d37dc59f629" kind="function"><name>linearizeDepthCpu</name></member>
+    <member refid="class_depth_of_field_effect_1a550776bb252f35924fb2b2ea5c8be869" kind="function"><name>sampleAdaptiveFocusDistance</name></member>
+    <member refid="class_depth_of_field_effect_1a156dc1b753fbf841b0f8176a26d58b45" kind="function"><name>DepthOfFieldEffect</name></member>
+    <member refid="class_depth_of_field_effect_1a71ff3039585ef902e8c5325d9f2c8543" kind="function"><name>~DepthOfFieldEffect</name></member>
+    <member refid="class_depth_of_field_effect_1a89866922b7bfdc7e1b39cd339996afbc" kind="function"><name>getResolvedFocusDistance</name></member>
+    <member refid="class_depth_of_field_effect_1a3b3084c5e7f4fbc0acc22c2d407cba19" kind="function"><name>getResolvedFocusRange</name></member>
+    <member refid="class_depth_of_field_effect_1a2b6c470cc2298d4e7f9638ab02fd6339" kind="function"><name>getDebugAdaptiveCenterValid</name></member>
+    <member refid="class_depth_of_field_effect_1a0702ba093291383aec8a394bd58b4da3" kind="function"><name>getDebugAdaptiveCenterDistance</name></member>
+    <member refid="class_depth_of_field_effect_1a00464f8858539d0013ea8e9de66f7505" kind="function"><name>getDebugAdaptiveRayValid</name></member>
+    <member refid="class_depth_of_field_effect_1afb17fd27b66d9a68d9cc46d2fbc71f08" kind="function"><name>getDebugAdaptiveRayDistance</name></member>
+    <member refid="class_depth_of_field_effect_1a47ced74a994feca82c1628689e9f8cc0" kind="function"><name>getDebugAdaptiveUsedFallback</name></member>
+    <member refid="class_depth_of_field_effect_1a0651cbdf436d209ce86174cfb9c7884e" kind="function"><name>getDebugAdaptiveTargetDistance</name></member>
+    <member refid="class_depth_of_field_effect_1ae7717684c372c1cbc62e7894479d206c" kind="function"><name>getDebugAdaptiveFallbackDistance</name></member>
+    <member refid="class_depth_of_field_effect_1a7c28be25a4f335b6cb15282996d50995" kind="function"><name>apply</name></member>
+    <member refid="class_depth_of_field_effect_1a5b2434a9c622430d7fb62cbc305722fe" kind="function"><name>New</name></member>
+  </compound>
+  <compound refid="class_environment" kind="class"><name>Environment</name>
+    <member refid="class_environment_1a9b28c461c6073d1cd7e67a430e474383" kind="variable"><name>lightManager</name></member>
+    <member refid="class_environment_1a52cb1d4023c430b48db9e5382d51fda5" kind="variable"><name>skybox</name></member>
+    <member refid="class_environment_1a4ca2c8196a094e5e43b68cd1e5179e92" kind="variable"><name>lightingEnabled</name></member>
+    <member refid="class_environment_1a5ec60bc420d1c8837fa0c429c7da7eef" kind="function"><name>Environment</name></member>
+    <member refid="class_environment_1ac4805d9a4e1da4f43d8f6cc7964cda38" kind="function"><name>getLightManager</name></member>
+    <member refid="class_environment_1ace273e545c41b6049f6b843e49c07aba" kind="function"><name>getLightManager</name></member>
+    <member refid="class_environment_1a10e711206e9abe20f8c29c2f45be21a9" kind="function"><name>setSkyBox</name></member>
+    <member refid="class_environment_1ae9a844c9bb23fde0f9143275a30e686c" kind="function"><name>getSkyBox</name></member>
+    <member refid="class_environment_1a438f229c453941923e7a4e6e20901dae" kind="function"><name>setLightingEnabled</name></member>
+    <member refid="class_environment_1a3ecb71afed64e8a5b3a9502494fa92c8" kind="function"><name>isLightingEnabled</name></member>
+    <member refid="class_environment_1ac3e818fd64b523cefccf84d082141bf2" kind="function"><name>getLightsForUpload</name></member>
+  </compound>
+  <compound refid="struct_constructed_material_1_1_field" kind="struct"><name>ConstructedMaterial::Field</name>
+    <member refid="struct_constructed_material_1_1_field_1aea1b90ed2ac0fe5de9e0a621201f0de9" kind="variable"><name>key</name></member>
+    <member refid="struct_constructed_material_1_1_field_1ae405ee0ef9675ae06d507aab0f283688" kind="variable"><name>displayName</name></member>
+    <member refid="struct_constructed_material_1_1_field_1ab5df4e3a55fde3b53d143589624f0b1f" kind="variable"><name>uniformName</name></member>
+    <member refid="struct_constructed_material_1_1_field_1a7b44889db8619b7baa3256f0ba041d0e" kind="variable"><name>mirrorUniformName</name></member>
+    <member refid="struct_constructed_material_1_1_field_1a23e61dbecabc9437441853665e92cf2c" kind="variable"><name>presenceUniformName</name></member>
+    <member refid="struct_constructed_material_1_1_field_1ac14f7a5aa053c48d0d900b223ea88254" kind="variable"><name>type</name></member>
+    <member refid="struct_constructed_material_1_1_field_1a56a6a73b0e5400dad95b5517a81e3af7" kind="variable"><name>floatValue</name></member>
+    <member refid="struct_constructed_material_1_1_field_1af27efb334454d4ea12dfe9af6c084006" kind="variable"><name>intValue</name></member>
+    <member refid="struct_constructed_material_1_1_field_1a018f2d065f4894bdcf4cfad8553139fe" kind="variable"><name>boolValue</name></member>
+    <member refid="struct_constructed_material_1_1_field_1ac2bfb1bae96030da2ba422f95e946589" kind="variable"><name>vec2Value</name></member>
+    <member refid="struct_constructed_material_1_1_field_1ade83ca486b4a4aba7317c29a971cae73" kind="variable"><name>vec3Value</name></member>
+    <member refid="struct_constructed_material_1_1_field_1ae6d6329dc69a039a9ba1db500f95894a" kind="variable"><name>vec4Value</name></member>
+    <member refid="struct_constructed_material_1_1_field_1a4ff93fdebe30b55f3296f8cbb5ce6495" kind="variable"><name>textureAssetRef</name></member>
+    <member refid="struct_constructed_material_1_1_field_1a17698bf08499c28b16489aee03b31a82" kind="variable"><name>texturePtr</name></member>
+    <member refid="struct_constructed_material_1_1_field_1af96b1e10a7ec184a8c19d9ca6d8129c0" kind="variable"><name>loadedTextureRef</name></member>
+    <member refid="struct_constructed_material_1_1_field_1a8653f76acd8f779bd48027574a36597f" kind="variable"><name>textureSlot</name></member>
+  </compound>
+  <compound refid="class_material_defaults_1_1_flat_color_material" kind="class"><name>MaterialDefaults::FlatColorMaterial</name>
+    <member refid="class_material_defaults_1_1_flat_color_material_1ad46827b8325b3c39f90b3902a8de4acc" kind="variable"><name>Color</name></member>
+    <member refid="class_material_defaults_1_1_flat_color_material_1a8a94815318f3c3d07f41dfe136ef8cfe" kind="variable"><name>ViewPos</name></member>
+    <member refid="class_material_defaults_1_1_flat_color_material_1ac7dc6be01211acd7b57c3cdc9c66465c" kind="function"><name>FlatColorMaterial</name></member>
+    <member refid="class_material_defaults_1_1_flat_color_material_1a3602a1f317d7e37c08e1f2c7e4fd4c2b" kind="function"><name>bind</name></member>
+    <member refid="class_material_defaults_1_1_flat_color_material_1a4cde023f130787555ffd8f4b322a040e" kind="function"><name>Create</name></member>
+  </compound>
+  <compound refid="class_material_defaults_1_1_flat_image_material" kind="class"><name>MaterialDefaults::FlatImageMaterial</name>
+    <member refid="class_material_defaults_1_1_flat_image_material_1a731316d8c4c9fcd09c25ffa459b14907" kind="variable"><name>Color</name></member>
+    <member refid="class_material_defaults_1_1_flat_image_material_1a5d8a6cb9230e2ee32275805347512d64" kind="variable"><name>Tex</name></member>
+    <member refid="class_material_defaults_1_1_flat_image_material_1a575057775176b074c508d1d483ef908c" kind="variable"><name>ViewPos</name></member>
+    <member refid="class_material_defaults_1_1_flat_image_material_1a9c3f9e57b779bf7b98422cb07f9fb5f2" kind="function"><name>FlatImageMaterial</name></member>
+    <member refid="class_material_defaults_1_1_flat_image_material_1a61b269b2721d94022945e0bf31bbd6fc" kind="function"><name>bind</name></member>
+    <member refid="class_material_defaults_1_1_flat_image_material_1a501a86e2432c06f23aae2b5f027c4e52" kind="function"><name>Create</name></member>
+  </compound>
+  <compound refid="class_font" kind="class"><name>Font</name>
+    <member refid="class_font_1ae722d440cb9bf8ed62b1ce36b1ae1a73" kind="variable"><name>assetPtr</name></member>
+    <member refid="class_font_1a6443ae8ba782461ee9fb0ebfdb89980f" kind="variable"><name>textureAtlasPtr</name></member>
+    <member refid="class_font_1a3464ec0edc51ad004b5223c87c198136" kind="variable"><name>materialCachePtr</name></member>
+    <member refid="class_font_1a05386ef6c0908902bfd468c8cd03bf3a" kind="variable"><name>fontSize</name></member>
+    <member refid="class_font_1afb3941e314ea743a47e9423bafa93385" kind="variable"><name>characters</name></member>
+    <member refid="class_font_1a34353d7ac57dd55d339a3f360ecd780c" kind="variable"><name>meshCache</name></member>
+    <member refid="class_font_1a6707f3ecdb11b9a99892369650c80568" kind="variable"><name>FontLogger</name></member>
+    <member refid="class_font_1aa6b8da140518e4282bbe81e7033e0081" kind="function"><name>_initFont</name></member>
+    <member refid="class_font_1a4e6a119206f505522100221c1fafde45" kind="function"><name>Font</name></member>
+    <member refid="class_font_1aa6c4353c7fae81039c49b4a4f26086ff" kind="function"><name>~Font</name></member>
+    <member refid="class_font_1abd1403ab126a898f00e431b3adde8f48" kind="function"><name>drawText</name></member>
+    <member refid="class_font_1a7993238290811753bb502c58a85a79d3" kind="function"><name>supportsQueuedDrawing</name></member>
+    <member refid="class_font_1a916aaa8940335189a855c32a9736388a" kind="function"><name>beginFrame</name></member>
+    <member refid="class_font_1a535034c260677663264cd4971c89ebc2" kind="function"><name>flushQueuedText</name></member>
+    <member refid="class_font_1abf7846fb0e62fe8c5132bd67a2fc332a" kind="function"><name>clearCache</name></member>
+    <member refid="class_font_1abe9fd046d6125b62151232808b64e855" kind="function"><name>getAssetPointer</name></member>
+    <member refid="class_font_1a23554a9888274dac6143a7a206eb71ef" kind="function"><name>Create</name></member>
+  </compound>
+  <compound refid="struct_font_character" kind="struct"><name>FontCharacter</name>
+    <member refid="struct_font_character_1a2b7d5fdb9191bf5c24a5d5441dbeca33" kind="variable"><name>u0</name></member>
+    <member refid="struct_font_character_1a0affcf0980aab1f7d240bbb1496a8261" kind="variable"><name>v0</name></member>
+    <member refid="struct_font_character_1abd4052e08b1febd4d35e7894a842982e" kind="variable"><name>u1</name></member>
+    <member refid="struct_font_character_1aa54ed12e29c19ba1b9e8a17558c0f0a9" kind="variable"><name>v1</name></member>
+    <member refid="struct_font_character_1a75e6b8b7546bb9b4a27dcff3e7893c2a" kind="variable"><name>sizeX</name></member>
+    <member refid="struct_font_character_1a030eee36143d02f89f9b8e8ffb4fc9d1" kind="variable"><name>sizeY</name></member>
+    <member refid="struct_font_character_1a12ad2f8ac08de0353e1141fe95a63823" kind="variable"><name>bearingX</name></member>
+    <member refid="struct_font_character_1a5e6190257184fc7a9546b43e99045779" kind="variable"><name>bearingY</name></member>
+    <member refid="struct_font_character_1a11e346d51c14094bd3eab7fe08a67dcb" kind="variable"><name>advance</name></member>
+  </compound>
+  <compound refid="struct_frame_buffer" kind="struct"><name>FrameBuffer</name>
+    <member refid="struct_frame_buffer_1a5c97baa1244eede827595d7ccb682b4b" kind="variable"><name>fboID</name></member>
+    <member refid="struct_frame_buffer_1ac09ee7577229126ecb519c0d9efb284b" kind="variable"><name>width</name></member>
+    <member refid="struct_frame_buffer_1a4bba1e0559f4a1cb66676b3dbbdd367f" kind="variable"><name>height</name></member>
+    <member refid="struct_frame_buffer_1ae638f96c9a3f5665cba9457d5aa328d3" kind="variable"><name>texturePtr</name></member>
+    <member refid="struct_frame_buffer_1adebccf05f3138c86c3a64d36c16e39eb" kind="variable"><name>depthTexture</name></member>
+    <member refid="struct_frame_buffer_1aa8382714a16645bd167456e2b175a8f6" kind="variable"><name>gbufferAttachments</name></member>
+    <member refid="struct_frame_buffer_1aab4c897d360f51c5a96b4782e67e98a9" kind="function"><name>FrameBuffer</name></member>
+    <member refid="struct_frame_buffer_1aef8be9884e8cc0fc3f3692e6c6968fa1" kind="function"><name>~FrameBuffer</name></member>
+    <member refid="struct_frame_buffer_1a16fa30984714c6070f4c5bde5b5b87f7" kind="function"><name>bind</name></member>
+    <member refid="struct_frame_buffer_1a3b82af89f1c0c0f4c0140e41863256c0" kind="function"><name>unbind</name></member>
+    <member refid="struct_frame_buffer_1a9d024ca8640a15ba5bc1b57bea53f520" kind="function"><name>resize</name></member>
+    <member refid="struct_frame_buffer_1a0c4622e1392380ac5f445ca896b8cfaf" kind="function"><name>attachTexture</name></member>
+    <member refid="struct_frame_buffer_1a0cd55ff0fbb64f384e420ee01747baa9" kind="function"><name>validate</name></member>
+    <member refid="struct_frame_buffer_1a97b10220144ae378552526387dd74063" kind="function"><name>clear</name></member>
+    <member refid="struct_frame_buffer_1a7ccdbe4ef2127c1d95a6855326a411e8" kind="function"><name>getTexture</name></member>
+    <member refid="struct_frame_buffer_1ae1bb1d29cead16f8ed5bc3243ce670a7" kind="function"><name>getDepthTexture</name></member>
+    <member refid="struct_frame_buffer_1a90a260aa56cc237856abc3ccd2e4db3a" kind="function"><name>getGBufferTexture</name></member>
+    <member refid="struct_frame_buffer_1aa79c4835cb0975e916fae02fb38370b6" kind="function"><name>getGBufferCount</name></member>
+    <member refid="struct_frame_buffer_1ade3f6891bef5507f4efeeed8031674ee" kind="function"><name>getID</name></member>
+    <member refid="struct_frame_buffer_1a40c194d2dd9435c8094be569bb6602a8" kind="function"><name>getWidth</name></member>
+    <member refid="struct_frame_buffer_1a0b7c691dd5b08a9506bc2b52626f6b1d" kind="function"><name>getHeight</name></member>
+    <member refid="struct_frame_buffer_1ac9d501ed7d2c3065d73ab4bb3ac79aaa" kind="function"><name>Create</name></member>
+    <member refid="struct_frame_buffer_1ac84282b82629c78a650e7cb0aa653392" kind="function"><name>CreateGBuffer</name></member>
+  </compound>
+  <compound refid="struct_frame_buffer_chain" kind="struct"><name>FrameBufferChain</name>
+    <member refid="struct_frame_buffer_chain_1af94734c28a160c9ceb723be21688622d" kind="variable"><name>size</name></member>
+    <member refid="struct_frame_buffer_chain_1add912059d148271f0177caa40f92933f" kind="variable"><name>frameBufferPtrArray</name></member>
+    <member refid="struct_frame_buffer_chain_1ab6725d5b5f36e1f9fb388c9d5e9e0d50" kind="function"><name>FrameBufferChain</name></member>
+    <member refid="struct_frame_buffer_chain_1a43ca39ab87494b584ffd2c3c20d421ed" kind="function"><name>FrameBufferChain</name></member>
+    <member refid="struct_frame_buffer_chain_1aa952a5f3795b96066b498e1ca7fa9f74" kind="function"><name>getAtIndex</name></member>
+    <member refid="struct_frame_buffer_chain_1a90a985cb4b6b820d2d2ed09f33042e02" kind="function"><name>setAtIndex</name></member>
+    <member refid="struct_frame_buffer_chain_1a8457c99bcb3c3f8528241e3944b2a136" kind="function"><name>getSize</name></member>
+    <member refid="struct_frame_buffer_chain_1a6a1c1c03350c99f6c487b6175d6c7a8a" kind="function"><name>resize</name></member>
+    <member refid="struct_frame_buffer_chain_1aa3a1aab9cd6f4bdb0dbbf89c9c993320" kind="function"><name>resizeBuffers</name></member>
+  </compound>
+  <compound refid="class_free_type_font" kind="class"><name>FreeTypeFont</name>
+    <member refid="class_free_type_font_1accdd3ddc608ad2e2de9f10f9e9455d8b" kind="variable"><name>transientTextPart</name></member>
+    <member refid="class_free_type_font_1a8bf23491d5a4a8944c54f25ced748243" kind="variable"><name>deferredBatches</name></member>
+    <member refid="class_free_type_font_1afca406a2118aa4f57cd6592736e733bb" kind="variable"><name>frameActive</name></member>
+    <member refid="class_free_type_font_1af5cf9314662b0bb7501c2ad300314abf" kind="function"><name>FreeTypeFont</name></member>
+    <member refid="class_free_type_font_1ace8e8942ae61f4df9238bba96ec78b39" kind="function"><name>_initFont</name></member>
+    <member refid="class_free_type_font_1aabd8450cc9c0f3158ce5ae414c92443f" kind="function"><name>drawText</name></member>
+    <member refid="class_free_type_font_1a409cd5f8a8f6e596fc654ed5f69167f2" kind="function"><name>supportsQueuedDrawing</name></member>
+    <member refid="class_free_type_font_1a8c52bd0af48e7001a33763ae79723e32" kind="function"><name>beginFrame</name></member>
+    <member refid="class_free_type_font_1a52a54d9bf92dcfb76bbf5d914d417d76" kind="function"><name>flushQueuedText</name></member>
+    <member refid="class_free_type_font_1ac92213f4b84969326ed8e2b9a879d1b0" kind="function"><name>getOrCreateBatch</name></member>
+  </compound>
+  <compound refid="class_f_x_a_a_effect" kind="class"><name>FXAAEffect</name>
+    <member refid="class_f_x_a_a_effect_1aac8c75dce97313a39ead33b8eeb1ca0f" kind="variable"><name>shader</name></member>
+    <member refid="class_f_x_a_a_effect_1a6127779b882890cc911b94e6fd4dd69a" kind="variable"><name>compileAttempted</name></member>
+    <member refid="class_f_x_a_a_effect_1afd9b01160c884e9642d5961562140e2a" kind="variable"><name>FXAA_FRAG_SHADER</name></member>
+    <member refid="class_f_x_a_a_effect_1aa62f0e0b34d7d2bbd8b27ba77e11efdd" kind="variable"><name>preset</name></member>
+    <member refid="class_f_x_a_a_effect_1a91bf4b9d290d56423acbc171b57758c8" kind="function"><name>ensureCompiled</name></member>
+    <member refid="class_f_x_a_a_effect_1a86127f37cfc0a67e3a96cb7c5a498988" kind="function"><name>FXAAEffect</name></member>
+    <member refid="class_f_x_a_a_effect_1a350d2e34ca8351fb00fad5a571645f37" kind="function"><name>apply</name></member>
+    <member refid="class_f_x_a_a_effect_1aaa839eb208b74595da76aba25276b6f8" kind="function"><name>New</name></member>
+  </compound>
+  <compound refid="struct_frame_buffer_1_1_g_buffer_attachment" kind="struct"><name>FrameBuffer::GBufferAttachment</name>
+    <member refid="struct_frame_buffer_1_1_g_buffer_attachment_1ac0df9ddfa4f0757579ea8f40a43f60ff" kind="variable"><name>texture</name></member>
+    <member refid="struct_frame_buffer_1_1_g_buffer_attachment_1a8b01b3ce2f315c4d4817cf217fa4a918" kind="variable"><name>internalFormat</name></member>
+    <member refid="struct_frame_buffer_1_1_g_buffer_attachment_1ae865ae036d7752e8a7b24614648863e1" kind="variable"><name>format</name></member>
+    <member refid="struct_frame_buffer_1_1_g_buffer_attachment_1a72d07725fa65ad154b1da32bf8b92df7" kind="variable"><name>type</name></member>
+  </compound>
+  <compound refid="class_graphics2_d" kind="class"><name>Graphics2D</name>
+    <member refid="class_graphics2_d_1a560ba855e5351d6c7bb904692867441d" kind="enum"><name>BatchMode2D</name></member>
+    <member refid="class_graphics2_d_1a560ba855e5351d6c7bb904692867441da6adf97f83acf6453d4a6a4b1070f3754" kind="enumvalue"><name>None</name></member>
+    <member refid="class_graphics2_d_1a560ba855e5351d6c7bb904692867441dae41480b6bbfbf7407974a88d3d34f4fa" kind="enumvalue"><name>Solid</name></member>
+    <member refid="class_graphics2_d_1a560ba855e5351d6c7bb904692867441da727faf49bd334ad8c6692934ff652843" kind="enumvalue"><name>Textured</name></member>
+    <member refid="class_graphics2_d_1a949b05c390f224404fde2639739e2b9e" kind="variable"><name>context</name></member>
+    <member refid="class_graphics2_d_1abedaa5759b87ff14313c9600753024df" kind="variable"><name>target</name></member>
+    <member refid="class_graphics2_d_1aec9dbb2eba29e747deaa7ed1a318b1cb" kind="variable"><name>uiCamera</name></member>
+    <member refid="class_graphics2_d_1ad7f1546dcb147d9b1e1945fbebd81967" kind="variable"><name>unitQuad</name></member>
+    <member refid="class_graphics2_d_1a53aa65e391ad9a3e05e4d0c4bbb6e5e4" kind="variable"><name>unitCircle</name></member>
+    <member refid="class_graphics2_d_1a9ea279eca78c3a017312afddfefca056" kind="variable"><name>colorMaterial</name></member>
+    <member refid="class_graphics2_d_1ae3c8a24a99d30388a2e02955c09e1223" kind="variable"><name>imageMaterial</name></member>
+    <member refid="class_graphics2_d_1aeb7762e72e210e6657d916ca90530afd" kind="variable"><name>batchPart</name></member>
+    <member refid="class_graphics2_d_1a71b99464de372c2841cd64f55148cab4" kind="variable"><name>batchMaterial</name></member>
+    <member refid="class_graphics2_d_1a7e3465c0325264c00ff779ae80eee926" kind="variable"><name>batchVertices</name></member>
+    <member refid="class_graphics2_d_1a29acbdbde1597966551487dc23f1a72d" kind="variable"><name>batchIndices</name></member>
+    <member refid="class_graphics2_d_1a6f5f63a3b80f7e3f6315240d06c12d17" kind="variable"><name>batchMode</name></member>
+    <member refid="class_graphics2_d_1aad6bb55edd5a92f78f25a0788e1de4ef" kind="variable"><name>batchTexture</name></member>
+    <member refid="class_graphics2_d_1ae21528c87cedf3d35f47af4dac090740" kind="variable"><name>maxBatchQuads</name></member>
+    <member refid="class_graphics2_d_1a4e81b67a8dd2193aa0bccf5e038c192c" kind="variable"><name>queuedFonts</name></member>
+    <member refid="class_graphics2_d_1a4d8b59040cf6156e5e7a24ae80944f24" kind="function"><name>drawMesh</name></member>
+    <member refid="class_graphics2_d_1a59c896cccc7d033058017af389cb9bf7" kind="function"><name>ensureBatchResources</name></member>
+    <member refid="class_graphics2_d_1ab21dc4feb0c026e24780a0fa9a25ec0f" kind="function"><name>resetBatch</name></member>
+    <member refid="class_graphics2_d_1a7da48834b5f17f81b7ba148b9a7905de" kind="function"><name>flushBatch</name></member>
+    <member refid="class_graphics2_d_1acb8423ea2d41720e6597ce01268648e6" kind="function"><name>queueFontForFlush</name></member>
+    <member refid="class_graphics2_d_1a98ad7a002b84e8699acaec88fdc33c63" kind="function"><name>flushQueuedFonts</name></member>
+    <member refid="class_graphics2_d_1a218f0c7d817e04d9c4156bd5cb6e4a69" kind="function"><name>beginBatch</name></member>
+    <member refid="class_graphics2_d_1a2a32c721330681e1e49541606319c027" kind="function"><name>submitQuad</name></member>
+    <member refid="class_graphics2_d_1a17535ece4965dc0eedad7fa5e5accbff" kind="function"><name>Graphics2D</name></member>
+    <member refid="class_graphics2_d_1afc5f54d2e36fb1130bafa6ae9a43217f" kind="function"><name>resize</name></member>
+    <member refid="class_graphics2_d_1aa47dbfda9d2a9b21f89ce069397683f3" kind="function"><name>begin</name></member>
+    <member refid="class_graphics2_d_1a3a6498d0bc740072a5171a9458018e86" kind="function"><name>end</name></member>
+    <member refid="class_graphics2_d_1a22cd28ae0cd16c1d603e2cd42c4230b0" kind="function"><name>getContext</name></member>
+    <member refid="class_graphics2_d_1a14a3674ae1be3737e6dfb868e9be3b3f" kind="function"><name>SetForegroundColor</name></member>
+    <member refid="class_graphics2_d_1a9de097cc927aad3bf9c52ffda4a37a2a" kind="function"><name>SetBackgroundColor</name></member>
+    <member refid="class_graphics2_d_1a2efe101242a8dd701a448c29870ccdd2" kind="function"><name>SetStrokeWidth</name></member>
+    <member refid="class_graphics2_d_1a26636c9fbb1be08ef97b5cc4b97811c4" kind="function"><name>SetFontSize</name></member>
+    <member refid="class_graphics2_d_1a768b518945214fce84a03c574c1a9671" kind="function"><name>SetFont</name></member>
+    <member refid="class_graphics2_d_1a88fe3fbf759c21bd6a4bfaefd5c90d58" kind="function"><name>DrawLine</name></member>
+    <member refid="class_graphics2_d_1a5095fffb75a1249ee247c0fa73ebca75" kind="function"><name>DrawRect</name></member>
+    <member refid="class_graphics2_d_1a67fa147d1215bba962230b13154964f8" kind="function"><name>FillRect</name></member>
+    <member refid="class_graphics2_d_1a5c0cd288e641e8a8242740d2898ac3f2" kind="function"><name>FillTriangle</name></member>
+    <member refid="class_graphics2_d_1adad7605dad2d438339e3179a569c6f28" kind="function"><name>DrawEllipse</name></member>
+    <member refid="class_graphics2_d_1a0843c9a23ec885b7d0fcb0554d559457" kind="function"><name>FillEllipse</name></member>
+    <member refid="class_graphics2_d_1a4496c5443a7a614690f1a7c4656a3854" kind="function"><name>DrawImage</name></member>
+    <member refid="class_graphics2_d_1ac7c6ea860d6bca44f1a4247d644d8dce" kind="function"><name>DrawString</name></member>
+  </compound>
+  <compound refid="struct_graphics_context" kind="struct"><name>GraphicsContext</name>
+    <member refid="struct_graphics_context_1a0291fd3e01b5a79716fa4a4b3bc49c64" kind="variable"><name>defaultFontLocation</name></member>
+    <member refid="struct_graphics_context_1a84d5348c6f4e07794b09aae3da43b039" kind="variable"><name>foregroundColor</name></member>
+    <member refid="struct_graphics_context_1a7de64635e4251d2e445f1a2075a58e90" kind="variable"><name>backgroundColor</name></member>
+    <member refid="struct_graphics_context_1a89519c9ea1439b0a9394d937031f2b06" kind="variable"><name>strokeWidth</name></member>
+    <member refid="struct_graphics_context_1a85ea9529a521df09c2ee74347c8318c0" kind="variable"><name>font</name></member>
+    <member refid="struct_graphics_context_1ab410c3213a838dc6d0ae3994f43febb3" kind="variable"><name>fontSize</name></member>
+  </compound>
+  <compound refid="class_grayscale_effect" kind="class"><name>GrayscaleEffect</name>
+    <member refid="class_grayscale_effect_1a1d4623731e048f95478fd411cf05185d" kind="variable"><name>shader</name></member>
+    <member refid="class_grayscale_effect_1ae8c9a2bbe50e01f0f7c0f14284765273" kind="variable"><name>compileAttempted</name></member>
+    <member refid="class_grayscale_effect_1a72ff999ea25ac53765139074e1167a7d" kind="variable"><name>GRAYSCALE_SHADER</name></member>
+    <member refid="class_grayscale_effect_1a4940fa449331fc7235b65ad0b6433263" kind="function"><name>ensureCompiled</name></member>
+    <member refid="class_grayscale_effect_1a6c026cfc72b5a3f2bf2674503183452c" kind="function"><name>GrayscaleEffect</name></member>
+    <member refid="class_grayscale_effect_1a5e71990549a216be2b0f6901932c7692" kind="function"><name>apply</name></member>
+    <member refid="class_grayscale_effect_1acf79b860ba6ab7cd1fbc6bb62fbca723" kind="function"><name>New</name></member>
+  </compound>
+  <compound refid="struct_i_drawable" kind="struct"><name>IDrawable</name>
+    <member refid="struct_i_drawable_1a9fb10215e48d952bd9f6a4c52656ebb8" kind="function"><name>draw</name></member>
+    <member refid="struct_i_drawable_1a618506be098b21fe0b9cae2c4219eb57" kind="function"><name>~IDrawable</name></member>
+  </compound>
+  <compound refid="struct_graphics_1_1_image_1_1_image" kind="struct"><name>Graphics::Image::Image</name>
+    <member refid="struct_graphics_1_1_image_1_1_image_1abd370c0682785decc0f8895a2a6b673a" kind="variable"><name>pixelData</name></member>
+    <member refid="struct_graphics_1_1_image_1_1_image_1a5849ba86af777cde2ea3043123291542" kind="variable"><name>width</name></member>
+    <member refid="struct_graphics_1_1_image_1_1_image_1a5603c843c966d9c2e248cc2badd081b1" kind="variable"><name>height</name></member>
+    <member refid="struct_graphics_1_1_image_1_1_image_1a86c6d37f21cb1b2c02837c4727e63cc8" kind="function"><name>Image</name></member>
+    <member refid="struct_graphics_1_1_image_1_1_image_1af90cfae65c25b2c1aa8336635aa744a4" kind="function"><name>Image</name></member>
+    <member refid="struct_graphics_1_1_image_1_1_image_1ac2dbaa50ab4653153402fa98d1b1e145" kind="function"><name>Image</name></member>
+    <member refid="struct_graphics_1_1_image_1_1_image_1a9360b8e858004f05fc0a87f1903bc1b7" kind="function"><name>getWidth</name></member>
+    <member refid="struct_graphics_1_1_image_1_1_image_1aba4553e8233d07c6439b10df97c68838" kind="function"><name>getHeight</name></member>
+    <member refid="struct_graphics_1_1_image_1_1_image_1a0ce32d2c88a124dfdc8ec4f074c70c40" kind="function"><name>getPixelData</name></member>
+    <member refid="struct_graphics_1_1_image_1_1_image_1a361c6bf49cc6cb69edb8bd6273542952" kind="function"><name>Create</name></member>
+  </compound>
+  <compound refid="class_material_defaults_1_1_image_material" kind="class"><name>MaterialDefaults::ImageMaterial</name>
+    <member refid="class_material_defaults_1_1_image_material_1afa8910b9ce8c42d54fdc79dac534813d" kind="variable"><name>Color</name></member>
+    <member refid="class_material_defaults_1_1_image_material_1ae75e53b16a84f1091f19350655b86c60" kind="variable"><name>Tex</name></member>
+    <member refid="class_material_defaults_1_1_image_material_1ac41d3d5e16c3ddca0e74da2c1b986e65" kind="variable"><name>UV</name></member>
+    <member refid="class_material_defaults_1_1_image_material_1a132cf6ed173fb5c7a62664b5b791b6fe" kind="function"><name>ImageMaterial</name></member>
+    <member refid="class_material_defaults_1_1_image_material_1add720d0e294c8a6aaefcce9149d1c97e" kind="function"><name>Create</name></member>
+  </compound>
+  <compound refid="struct_i_material_property" kind="struct"><name>IMaterialProperty</name>
+    <member refid="struct_i_material_property_1a020ed618177d8a68aaa97d691ef6fc66" kind="function"><name>apply</name></member>
+    <member refid="struct_i_material_property_1a7d5f7dbbd5af6e80c3242c553976b02e" kind="function"><name>~IMaterialProperty</name></member>
+  </compound>
+  <compound refid="struct_light" kind="struct"><name>Light</name>
+    <member refid="struct_light_1a86e648b4a80a5c1e194c97ef52f9efc6" kind="variable"><name>type</name></member>
+    <member refid="struct_light_1a4fdcd58e8f93eb16418bb9852f19bc4e" kind="variable"><name>position</name></member>
+    <member refid="struct_light_1a512f8ab10a31d68e55eade804f13a683" kind="variable"><name>direction</name></member>
+    <member refid="struct_light_1a9969f685e27f38f876702e3dd5bd1cf1" kind="variable"><name>color</name></member>
+    <member refid="struct_light_1a1071eaa556f4bb2a9345fdfba7e6f220" kind="variable"><name>intensity</name></member>
+    <member refid="struct_light_1ad8de02f467484d8e8b08518ddb581e5a" kind="variable"><name>range</name></member>
+    <member refid="struct_light_1ae0d1b643bb7ce302ecd9a0fe78d12335" kind="variable"><name>falloff</name></member>
+    <member refid="struct_light_1a2092ef2339edd1cd4d69e63a0bf51e77" kind="variable"><name>spotAngle</name></member>
+    <member refid="struct_light_1abb7298439012ddc5939562608c2076ee" kind="variable"><name>shadowRange</name></member>
+    <member refid="struct_light_1a7a240b12a17f558f36963ed6aaaa290e" kind="variable"><name>castsShadows</name></member>
+    <member refid="struct_light_1a77256a30d9ce51a8e4e3504b04fd4cc2" kind="variable"><name>shadowType</name></member>
+    <member refid="struct_light_1ad7fa07ea245e48d0fd47d279abd58d3c" kind="variable"><name>shadowBias</name></member>
+    <member refid="struct_light_1aebcc2cc2d05ef5ad585cd240f2850959" kind="variable"><name>shadowNormalBias</name></member>
+    <member refid="struct_light_1a1b12738944d36263610dfc70a8b2021a" kind="variable"><name>shadowStrength</name></member>
+    <member refid="struct_light_1a69610e383b6a6230f3723089880c0038" kind="variable"><name>cascadeLambda</name></member>
+    <member refid="struct_light_1aaefd3dd16a8649fc81cbfbc83b6888cc" kind="variable"><name>shadowDebugMode</name></member>
+    <member refid="struct_light_1aeb5df09a25a32f19fdffa761268ba24f" kind="function"><name>Light</name></member>
+    <member refid="struct_light_1a50daa44245fcf1446cc862cad8d31cd0" kind="function"><name>CreatePointLight</name></member>
+    <member refid="struct_light_1a6f64dcae681aed7a7ddb2e499a49ad50" kind="function"><name>CreateDirectionalLight</name></member>
+    <member refid="struct_light_1a4493641cc4348121e6ec4d351133d747" kind="function"><name>CreateSpotLight</name></member>
+  </compound>
+  <compound refid="class_light_manager" kind="class"><name>LightManager</name>
+    <member refid="class_light_manager_1af3ae0b852040096a84578a7f74a59a3d" kind="variable"><name>lights</name></member>
+    <member refid="class_light_manager_1a0d24360426c3415d75bb7e03169805c1" kind="variable"><name>GlobalLightManager</name></member>
+    <member refid="class_light_manager_1a1eee8eb276ec7f041d961a567389754a" kind="function"><name>LightManager</name></member>
+    <member refid="class_light_manager_1a8eb4ddf0a428e920b719b87e8d11e7dd" kind="function"><name>addLight</name></member>
+    <member refid="class_light_manager_1a5f44c60d70f25a720765d585dee49c5c" kind="function"><name>removeLight</name></member>
+    <member refid="class_light_manager_1a67600b3fe875e0a3b678c6204d2527c4" kind="function"><name>clearLights</name></member>
+    <member refid="class_light_manager_1a5dbe954c240042dbfaa32e0bf41277fb" kind="function"><name>getLightCount</name></member>
+    <member refid="class_light_manager_1a8256492f5e2c03c13d6d8294e6075454" kind="function"><name>getLight</name></member>
+    <member refid="class_light_manager_1a8cdd7ef900426d692bbb7904b093c639" kind="function"><name>getLight</name></member>
+    <member refid="class_light_manager_1a9a5a8d1f6757c21d238fd10dabe34798" kind="function"><name>getAllLights</name></member>
+  </compound>
+  <compound refid="class_light_uniform_uploader" kind="class"><name>LightUniformUploader</name>
+    <member refid="class_light_uniform_uploader_1a47d11f57dfb8557bd58dd6e9ca1cb51f" kind="function"><name>UploadLights</name></member>
+  </compound>
+  <compound refid="class_material_defaults_1_1_lit_color_material" kind="class"><name>MaterialDefaults::LitColorMaterial</name>
+    <member refid="class_material_defaults_1_1_lit_color_material_1adeeaf958d0e0aadac0fb4fd0a84b1d7a" kind="variable"><name>Color</name></member>
+    <member refid="class_material_defaults_1_1_lit_color_material_1ab9f0799711c50e1ee572e002e6d9b6e1" kind="variable"><name>ViewPos</name></member>
+    <member refid="class_material_defaults_1_1_lit_color_material_1a481808bb46099270f1547b25f1b6440c" kind="function"><name>LitColorMaterial</name></member>
+    <member refid="class_material_defaults_1_1_lit_color_material_1a80c1908b825477e38e320f838708fac9" kind="function"><name>bind</name></member>
+    <member refid="class_material_defaults_1_1_lit_color_material_1a76d5ca70b46d87e5e185e958520a3e18" kind="function"><name>Create</name></member>
+  </compound>
+  <compound refid="class_material_defaults_1_1_lit_image_material" kind="class"><name>MaterialDefaults::LitImageMaterial</name>
+    <member refid="class_material_defaults_1_1_lit_image_material_1a1a9904b6d726d0b97093dcb31808da9a" kind="variable"><name>Color</name></member>
+    <member refid="class_material_defaults_1_1_lit_image_material_1ac96a2a5122be4afe12feb91277920657" kind="variable"><name>Tex</name></member>
+    <member refid="class_material_defaults_1_1_lit_image_material_1ac064703c5eee9768cd53d2dac3e51282" kind="variable"><name>ViewPos</name></member>
+    <member refid="class_material_defaults_1_1_lit_image_material_1a145f3af8bff8074b827846bf9df7b71d" kind="function"><name>LitImageMaterial</name></member>
+    <member refid="class_material_defaults_1_1_lit_image_material_1ab48290d5a6ba088db4337a1b9f3c2137" kind="function"><name>bind</name></member>
+    <member refid="class_material_defaults_1_1_lit_image_material_1ade6592a4b94e47005ea95b1038b59d56" kind="function"><name>Create</name></member>
+  </compound>
+  <compound refid="class_material" kind="class"><name>Material</name>
+    <member refid="class_material_1a1eb25a4e720bae53889913f587af516b" kind="variable"><name>programObjPtr</name></member>
+    <member refid="class_material_1a18d9d2e4ef8569fb79e54eb2b4635e11" kind="variable"><name>properties</name></member>
+    <member refid="class_material_1a6646ef8af8f4c352845d20bb5daf5f83" kind="variable"><name>castsShadowsFlag</name></member>
+    <member refid="class_material_1a6c0cb2ee0556c566cf105081a4a50551" kind="variable"><name>receivesShadowsFlag</name></member>
+    <member refid="class_material_1ace810a426f4b488d2dc2a53070d85405" kind="function"><name>Material</name></member>
+    <member refid="class_material_1a179e16d6a1bd4a0f039b8e4cbf2ade30" kind="function"><name>~Material</name></member>
+    <member refid="class_material_1afebe6792e3275332e491ce2ca396069b" kind="function"><name>set</name></member>
+    <member refid="class_material_1aa9acc36e80cc1874dc69da8dedf54695" kind="function"><name>bind</name></member>
+    <member refid="class_material_1a3b4ef589843fde30b1844bde9bcbad19" kind="function"><name>unbind</name></member>
+    <member refid="class_material_1a3fbc05a83a35eb9e07a7b84cba22eb6e" kind="function"><name>getShader</name></member>
+    <member refid="class_material_1add6d2e03a3dc1ac8dfac431b9641d5cc" kind="function"><name>setShader</name></member>
+    <member refid="class_material_1ab98237e9210f21b7b8600966f6b66c5f" kind="function"><name>setCastsShadows</name></member>
+    <member refid="class_material_1aaf9a94eb8335d955b4a58a1f036bb3aa" kind="function"><name>castsShadows</name></member>
+    <member refid="class_material_1acef042dc3f4671a78a172aa90a12b694" kind="function"><name>setReceivesShadows</name></member>
+    <member refid="class_material_1adfd452b4ff41ff6d818278e8adf9b9d5" kind="function"><name>receivesShadows</name></member>
+    <member refid="class_material_1a55fb7dcfa5f72a8997b6423ac099caa6" kind="function"><name>Copy</name></member>
+    <member refid="class_material_1a00c4c29d23d53171fa11ccbe1d91f14d" kind="function"><name>GetAs</name></member>
+  </compound>
+  <compound refid="struct_material_property" kind="struct"><name>MaterialProperty</name>
+    <member refid="struct_material_property_1a617debd35f666ac8999f0e927d40ec9b" kind="variable"><name>value</name></member>
+    <member refid="struct_material_property_1ad18e0b2fc2b7cba4f5a1714ac196e51b" kind="function"><name>MaterialProperty</name></member>
+    <member refid="struct_material_property_1a5645edb77a40c19013dac45a0d21880b" kind="function"><name>apply</name></member>
+  </compound>
+  <compound refid="class_material_registry" kind="class"><name>MaterialRegistry</name>
+    <member refid="class_material_registry_1a62539b60c93fbe4e0f465ac329767bc5" kind="variable"><name>builtInsInitialized</name></member>
+    <member refid="class_material_registry_1a566f4db6ca9f8a79f1ac3829577edffc" kind="variable"><name>entries</name></member>
+    <member refid="class_material_registry_1a23db5b3c73f1c3fae8a3675f817a6e65" kind="variable"><name>builtInFactories</name></member>
+    <member refid="class_material_registry_1a870f0a6e01b4d0ec47dca82786961575" kind="variable"><name>nextRefreshTime</name></member>
+    <member refid="class_material_registry_1a5ac1ab1993ba87006a53205026a7e289" kind="function"><name>Instance</name></member>
+    <member refid="class_material_registry_1adc43e36965c220ba15527a3d8ac9526f" kind="function"><name>Refresh</name></member>
+    <member refid="class_material_registry_1a4c66f055d3c843419a613f70729ea276" kind="function"><name>GetEntries</name></member>
+    <member refid="class_material_registry_1a4e4f6ae18d50428c1352b197aaa4161b" kind="function"><name>CreateById</name></member>
+    <member refid="class_material_registry_1a7c312f7f354335cb3a363222f475a060" kind="function"><name>MaterialRegistry</name></member>
+    <member refid="class_material_registry_1ac874952f4899f3d3419953808c32ad88" kind="function"><name>ensureBuiltIns</name></member>
+    <member refid="class_material_registry_1a187e35f9a9ed7913a17acfd7bc8dfa34" kind="function"><name>rebuildEntries</name></member>
+  </compound>
+  <compound refid="struct_material_registry_entry" kind="struct"><name>MaterialRegistryEntry</name>
+    <member refid="struct_material_registry_entry_1ade69a5fdad734180ac03ea76d20b65d9" kind="variable"><name>id</name></member>
+    <member refid="struct_material_registry_entry_1a4f8ef8e3b79277475d36c07587e644f8" kind="variable"><name>displayName</name></member>
+    <member refid="struct_material_registry_entry_1afa4b0d0f9a2afdb7780fae40c8167f9f" kind="variable"><name>isBuiltIn</name></member>
+    <member refid="struct_material_registry_entry_1a4e21a9d2320505edfb3a70ddf31fe169" kind="variable"><name>assetRef</name></member>
+  </compound>
+  <compound refid="class_mesh" kind="class"><name>Mesh</name>
+    <member refid="class_mesh_1ac27618505c637f3ba638b126c18a974f" kind="variable"><name>verticies</name></member>
+    <member refid="class_mesh_1a336d39c0ff0cc1dcbee9dcc2c8e1caa5" kind="variable"><name>faces</name></member>
+    <member refid="class_mesh_1a8056977ca12e0922ceae61fb28338814" kind="variable"><name>VBO</name></member>
+    <member refid="class_mesh_1a81930f8c9dff29fb27117c82e051b85f" kind="variable"><name>VAO</name></member>
+    <member refid="class_mesh_1a8df328a5ada626ec5fc703747b4a058f" kind="variable"><name>EBO</name></member>
+    <member refid="class_mesh_1a6073fa2f2f3c6d0828ece7cddf8b9bce" kind="variable"><name>localBoundsMin</name></member>
+    <member refid="class_mesh_1a1bb049a026fda2c794b112e2ea6579bd" kind="variable"><name>localBoundsMax</name></member>
+    <member refid="class_mesh_1a93faaec0021f9df59fce02439ffa94d0" kind="variable"><name>hasLocalBounds</name></member>
+    <member refid="class_mesh_1a27e68e1e0c29c5f47fd3afbebe0189ff" kind="function"><name>_genBuffers</name></member>
+    <member refid="class_mesh_1a2f8e9ea6ae32c2107cccaa2c8c111f85" kind="function"><name>_areBuffersBound</name></member>
+    <member refid="class_mesh_1adca325d6bdcf7330680137915d036197" kind="function"><name>computeLocalBounds</name></member>
+    <member refid="class_mesh_1a2af137f1571af89172b9c102302c416b" kind="function"><name>Mesh</name></member>
+    <member refid="class_mesh_1adecf9ab32fac64e846ad6b7753e8996b" kind="function"><name>Mesh</name></member>
+    <member refid="class_mesh_1a54099ce7b9d2999f36af9da5a96a16a7" kind="function"><name>Mesh</name></member>
+    <member refid="class_mesh_1adb906e89a504562d6bc6dedf82e2c7d1" kind="function"><name>upload</name></member>
+    <member refid="class_mesh_1ac50ddfe20d707224dc3de44817da120a" kind="function"><name>upload</name></member>
+    <member refid="class_mesh_1ad331a787fe94be45d100c8cf4ca43a57" kind="function"><name>reload</name></member>
+    <member refid="class_mesh_1a5237bc1186c7ecaa1af79738e3d7db50" kind="function"><name>bind</name></member>
+    <member refid="class_mesh_1abf58756040d4eb2bfe17766af91e3bc6" kind="function"><name>draw</name></member>
+    <member refid="class_mesh_1ac4933429e71411c8141d4a69760a0839" kind="function"><name>dispose</name></member>
+    <member refid="class_mesh_1a8378cbc10e3d72c1b3d08c0a46380a2d" kind="function"><name>getVerticiesVectorArray</name></member>
+    <member refid="class_mesh_1ac8ad00d31216387f8f75072a4b3ee97f" kind="function"><name>getVerticiesAsRawFloatArray</name></member>
+    <member refid="class_mesh_1a05b891bd19229c3def1ac1179b1ad73e" kind="function"><name>getRawVertexData</name></member>
+    <member refid="class_mesh_1ab1a77a703b1d871fbeb0529b85fb8cc9" kind="function"><name>setLocationAttributeOffset</name></member>
+    <member refid="class_mesh_1a56d7f936e780cc493559501576eb4850" kind="function"><name>getVertecies</name></member>
+    <member refid="class_mesh_1a248f4a3f8d0914d98551562bc41a6e6c" kind="function"><name>getFaces</name></member>
+    <member refid="class_mesh_1acbde7dd724a2dcb654622cca1daecad9" kind="function"><name>getLocalBounds</name></member>
+    <member refid="class_mesh_1a5efe4da1a4c0971cfb037bd70304c303" kind="function"><name>~Mesh</name></member>
+    <member refid="class_mesh_1a3967159b14011d7c2ea2f844b4391da7" kind="function"><name>Unbind</name></member>
+  </compound>
+  <compound refid="struct_model" kind="struct"><name>Model</name>
+    <member refid="struct_model_1a8dcecb371d15b8d40377b430fc9fccdc" kind="variable"><name>modelTransform</name></member>
+    <member refid="struct_model_1a03a0a6986a8e3155264ac413e253e48d" kind="variable"><name>modelParts</name></member>
+    <member refid="struct_model_1a275eb4a524aed4949abd1b49c1de1b3d" kind="variable"><name>enableBackfaceCulling</name></member>
+    <member refid="struct_model_1a0521bb349077cca694c9f0011b2c34dc" kind="variable"><name>sourceAssetRef</name></member>
+    <member refid="struct_model_1a0b4eec82499f7aa15dabef2f1a0029f0" kind="variable"><name>sourceForceSmoothNormals</name></member>
+    <member refid="struct_model_1ab5bdabea36b1d1bee80151e2da913373" kind="function"><name>Model</name></member>
+    <member refid="struct_model_1a6ca1896be673957f3c333e08d27c3e86" kind="function"><name>addPart</name></member>
+    <member refid="struct_model_1aebf1f6007849e52f3864f7af2bbb5e3e" kind="function"><name>getParts</name></member>
+    <member refid="struct_model_1a57d503051c77f3585f1dc672d925eca9" kind="function"><name>transform</name></member>
+    <member refid="struct_model_1a5966666c7878e08e03ee1b1e201d6828" kind="function"><name>setBackfaceCulling</name></member>
+    <member refid="struct_model_1a00a24b569d808c3adf5a5f07ec774fa8" kind="function"><name>isBackfaceCullingEnabled</name></member>
+    <member refid="struct_model_1ac139238f33a813689a00d63e9fe58aef" kind="function"><name>setSourceAssetRef</name></member>
+    <member refid="struct_model_1a0a083629248c6964dc26d7d305585058" kind="function"><name>getSourceAssetRef</name></member>
+    <member refid="struct_model_1ac2983e7aa824b3feb46232fe57aa9af9" kind="function"><name>setSourceForceSmoothNormals</name></member>
+    <member refid="struct_model_1a27afa06ccde28393e0563a053819d701" kind="function"><name>getSourceForceSmoothNormals</name></member>
+    <member refid="struct_model_1a70a71199719d002f9cd089af3a5c69eb" kind="function"><name>draw</name></member>
+    <member refid="struct_model_1aa010c342dc045a0ac5f97ae6f4cdef4c" kind="function"><name>drawShadows</name></member>
+    <member refid="struct_model_1ab693c2ae374906f8a19ad2817bd7eceb" kind="function"><name>draw</name></member>
+    <member refid="struct_model_1a3f0b711fc427dce1d41b1c2122248482" kind="function"><name>Create</name></member>
+  </compound>
+  <compound refid="struct_model_part" kind="struct"><name>ModelPart</name>
+    <member refid="struct_model_part_1a724316febc411a4b7532ad1362fa705b" kind="variable"><name>mesh</name></member>
+    <member refid="struct_model_part_1a750370b63ecafb7c790dcb765252344b" kind="variable"><name>material</name></member>
+    <member refid="struct_model_part_1a3a116eb13f46ecc7eebc9f348c787738" kind="variable"><name>localTransform</name></member>
+    <member refid="struct_model_part_1afec314356a85fe1d6231c4a7c29de884" kind="variable"><name>visible</name></member>
+    <member refid="struct_model_part_1a5dfc1f6e0a417be362d4a4f38182c0ff" kind="variable"><name>hideInEditorTree</name></member>
+    <member refid="struct_model_part_1a64fc6730fbf1273892e60fd4906beacc" kind="function"><name>draw</name></member>
+  </compound>
+  <compound refid="struct_model_part_factory" kind="struct"><name>ModelPartFactory</name>
+    <member refid="struct_model_part_factory_1a7721d67eb28ff8389d62261e617367fb" kind="variable"><name>meshInstancePtr</name></member>
+    <member refid="struct_model_part_factory_1adad8033be6b2e82a317f411b8c2b6643" kind="variable"><name>materialInstancePtr</name></member>
+    <member refid="struct_model_part_factory_1aa1427414ffa0f8c8a3975f91c07afe0d" kind="variable"><name>vertexCache</name></member>
+    <member refid="struct_model_part_factory_1a84749fbce120a7ec71860a52a8c5dc5a" kind="variable"><name>faceCache</name></member>
+    <member refid="struct_model_part_factory_1a8b2d0eb06f0a9ade3093831338442085" kind="function"><name>ModelPartFactory</name></member>
+    <member refid="struct_model_part_factory_1a0284fcedc4c25ac5b287327a2d7356f4" kind="function"><name>addVertex</name></member>
+    <member refid="struct_model_part_factory_1a4af8f7d0f3a2958529bbe7aab3233f6d" kind="function"><name>defineFace</name></member>
+    <member refid="struct_model_part_factory_1a8f73e9678bb98f92144d6a36ff1bc41f" kind="function"><name>assemble</name></member>
+    <member refid="struct_model_part_factory_1a3ef7855857c9e4a6106485c4d6dc13d1" kind="function"><name>Create</name></member>
+  </compound>
+  <compound refid="struct_model_part_prefabs" kind="struct"><name>ModelPartPrefabs</name>
+    <member refid="struct_model_part_prefabs_1ae5f37b441c2d40314487e103ada227a8" kind="function"><name>MakePlane</name></member>
+    <member refid="struct_model_part_prefabs_1af662a7f490b997301237d4b33f4a7372" kind="function"><name>MakeBox</name></member>
+    <member refid="struct_model_part_prefabs_1a3416bea1f8d1a22d55739bb58d7fc76e" kind="function"><name>MakeCirclePlane</name></member>
+    <member refid="struct_model_part_prefabs_1aa8e35dc9f7dab334b963ab19c722c948" kind="function"><name>MakeSphere</name></member>
+  </compound>
+  <compound refid="struct_model_prefabs" kind="struct"><name>ModelPrefabs</name>
+    <member refid="struct_model_prefabs_1ad5d5f5c2c36f3c39db66281afd4713ee" kind="function"><name>MakeCube</name></member>
+  </compound>
+  <compound refid="class_p_b_r_material" kind="class"><name>PBRMaterial</name>
+    <member refid="class_p_b_r_material_1aceadfc9d5272d87388c1139a900c5dc5" kind="variable"><name>BaseColor</name></member>
+    <member refid="class_p_b_r_material_1a554713fd5b2b272244887f7e6c8170f0" kind="variable"><name>BaseColorTex</name></member>
+    <member refid="class_p_b_r_material_1a09ce716134fd081ae25bb63a46e9b907" kind="variable"><name>Metallic</name></member>
+    <member refid="class_p_b_r_material_1a2ef8c1065bd047f102140426894c7954" kind="variable"><name>Roughness</name></member>
+    <member refid="class_p_b_r_material_1ab9f974c13a97a14510cf5b7f5acff9ff" kind="variable"><name>RoughnessTex</name></member>
+    <member refid="class_p_b_r_material_1a9cbfd6085711037cff3578c967976d71" kind="variable"><name>MetallicRoughnessTex</name></member>
+    <member refid="class_p_b_r_material_1a06282a8995ad8c24f578cfeda071ff21" kind="variable"><name>NormalTex</name></member>
+    <member refid="class_p_b_r_material_1a0b76aab4d122040de8b4f51f9e842619" kind="variable"><name>NormalScale</name></member>
+    <member refid="class_p_b_r_material_1a8869ab4f3e0a14afbd1742b5d1966c96" kind="variable"><name>HeightTex</name></member>
+    <member refid="class_p_b_r_material_1ad3283b93fb82302a6944a367d23f4f78" kind="variable"><name>HeightScale</name></member>
+    <member refid="class_p_b_r_material_1a3f730409b9806bac6976b31b09f5aee3" kind="variable"><name>EmissiveTex</name></member>
+    <member refid="class_p_b_r_material_1a6b75b41513664cba45750cfd3d511b09" kind="variable"><name>EmissiveColor</name></member>
+    <member refid="class_p_b_r_material_1a561aaaf91f221fedad7c516bacaf8028" kind="variable"><name>EmissiveStrength</name></member>
+    <member refid="class_p_b_r_material_1a0259fb2a84584f677d42b9243b018c4c" kind="variable"><name>OcclusionTex</name></member>
+    <member refid="class_p_b_r_material_1a08e589d6f14c84c24e82efd9b7ca2656" kind="variable"><name>OcclusionStrength</name></member>
+    <member refid="class_p_b_r_material_1a2a80cfcdca578ead8304fcd4ad5a5ea5" kind="variable"><name>EnvMap</name></member>
+    <member refid="class_p_b_r_material_1ae402b765161c57dd6d10cdbf82ce83c1" kind="variable"><name>EnvStrength</name></member>
+    <member refid="class_p_b_r_material_1a6fba5827bb23b0e63044a0bbbc6970c4" kind="variable"><name>UseEnvMap</name></member>
+    <member refid="class_p_b_r_material_1a40a3b2b384fce5cb177e860bbfc4a6fd" kind="variable"><name>UVScale</name></member>
+    <member refid="class_p_b_r_material_1adea8484440177fa1036b3801f3ba60b0" kind="variable"><name>UVOffset</name></member>
+    <member refid="class_p_b_r_material_1a1b33d53a2febf1f2f982dd78ee803654" kind="variable"><name>AlphaCutoff</name></member>
+    <member refid="class_p_b_r_material_1ae26d427d389914c55beec601ddb27d9d" kind="variable"><name>UseAlphaClip</name></member>
+    <member refid="class_p_b_r_material_1a23b5acddbf3484d77c7aff0820abcb5a" kind="variable"><name>ViewPos</name></member>
+    <member refid="class_p_b_r_material_1aa95501f255a91cf9c2572ed4ea38fe27" kind="function"><name>PBRMaterial</name></member>
+    <member refid="class_p_b_r_material_1a30db1aa8fdf92f2a7310b864d79ee159" kind="function"><name>bind</name></member>
+    <member refid="class_p_b_r_material_1aa0579a45ec0d6fa8c1203c0bc582fe39" kind="function"><name>Create</name></member>
+  </compound>
+  <compound refid="class_graphics_1_1_post_processing_1_1_post_processing_effect" kind="class"><name>Graphics::PostProcessing::PostProcessingEffect</name>
+    <member refid="class_graphics_1_1_post_processing_1_1_post_processing_effect_1a956557ebb725734d270dd77ef8e40358" kind="function"><name>~PostProcessingEffect</name></member>
+    <member refid="class_graphics_1_1_post_processing_1_1_post_processing_effect_1a75b0263b1e53943ceb4f13d4aad0f5e6" kind="function"><name>apply</name></member>
+  </compound>
+  <compound refid="class_screen" kind="class"><name>Screen</name>
+    <member refid="class_screen_1a49be8f8ccf7ed7a3151a761495c0ce21" kind="variable"><name>width</name></member>
+    <member refid="class_screen_1a55405920693276db8fbdbf3a903b8d2f" kind="variable"><name>height</name></member>
+    <member refid="class_screen_1a74e8f16e47dd34063d1e1d15806d4ca4" kind="variable"><name>buffer</name></member>
+    <member refid="class_screen_1aba75d4e535c42a9a0049563144d97c5a" kind="variable"><name>screenQuad</name></member>
+    <member refid="class_screen_1a25521d795e7afcf72ab36968bd037a84" kind="variable"><name>screenShader</name></member>
+    <member refid="class_screen_1a1a47d3e7e997650641c8eaaf422dbe7d" kind="variable"><name>effects</name></member>
+    <member refid="class_screen_1aab916a8758c3d6c2c9b7f6367a70d6b3" kind="variable"><name>camera</name></member>
+    <member refid="class_screen_1a5e009530aa028b97959a82c76a1bc159" kind="variable"><name>environment</name></member>
+    <member refid="class_screen_1af920ec62d46b6e48c15953def13d1083" kind="variable"><name>uiCamera</name></member>
+    <member refid="class_screen_1a91682cf46e6769274cc70accdf89b269" kind="variable"><name>uiWidth</name></member>
+    <member refid="class_screen_1a0a399d516d127efaa47ebece1c6361e6" kind="variable"><name>uiHeight</name></member>
+    <member refid="class_screen_1a5843677eda7c51a02b181332610140ac" kind="variable"><name>bound</name></member>
+    <member refid="class_screen_1a6e20647a321f73e24c405d90935a518a" kind="variable"><name>lastPostProcessMs</name></member>
+    <member refid="class_screen_1a3b775039ff7f93dbce539e874597e308" kind="variable"><name>lastPostProcessEffectCount</name></member>
+    <member refid="class_screen_1ae799152435639ccdb09b345a56d9a02f" kind="variable"><name>presentFrameIndex</name></member>
+    <member refid="class_screen_1a71ef1020b14dd7e76b4054dc424ca61f" kind="variable"><name>presentDebandStrength</name></member>
+    <member refid="class_screen_1a61a6f2d903a75680e4164f1c1ba6dfff" kind="variable"><name>clearColor</name></member>
+    <member refid="class_screen_1ac79a59d309cc0665199f2dd5446ee107" kind="variable"><name>CurrentCamera</name></member>
+    <member refid="class_screen_1a8aced7bf50d37f1ecfae7f888860dd58" kind="variable"><name>CurrentEnvironment</name></member>
+    <member refid="class_screen_1a2470968bf6ab8b858523e3c821bcde77" kind="function"><name>initScreenGeom</name></member>
+    <member refid="class_screen_1a8259e5b6857927488f90fbcd83f5ac44" kind="function"><name>initScreenShader</name></member>
+    <member refid="class_screen_1a0d2f55f84802fb3d0348200cea71e59c" kind="function"><name>Screen</name></member>
+    <member refid="class_screen_1a4243bc17596af96415b09ac48205676d" kind="function"><name>~Screen</name></member>
+    <member refid="class_screen_1ab9f2169f953e728fa2614e0026b3b4a7" kind="function"><name>processRenderPipeline</name></member>
+    <member refid="class_screen_1a958f0738b6aa94ae8aeaeffb78753ddf" kind="function"><name>drawToWindow</name></member>
+    <member refid="class_screen_1a0d0154807bb2d93c6896d9511378d2e1" kind="function"><name>drawToView</name></member>
+    <member refid="class_screen_1a5ba54872e8f2ab1fb14a24875db66866" kind="function"><name>resize</name></member>
+    <member refid="class_screen_1ab71b25e991771611d4acab431f92b518" kind="function"><name>getWidth</name></member>
+    <member refid="class_screen_1a4edca55b221da0326dc7de0ec0f4dc91" kind="function"><name>getHeight</name></member>
+    <member refid="class_screen_1ab7a0796298adc6b6ffad439da2215b85" kind="function"><name>bind</name></member>
+    <member refid="class_screen_1a0581496c4bb1cd53273872bc0cbb0566" kind="function"><name>unbind</name></member>
+    <member refid="class_screen_1a5af6bd5e04104a0220cea4f113f65a29" kind="function"><name>addEffect</name></member>
+    <member refid="class_screen_1a752d56573abe000eb842c99a9c068275" kind="function"><name>clearEffects</name></member>
+    <member refid="class_screen_1a54581eb4483a0fbf4433855124c6a154" kind="function"><name>getDisplayTexture</name></member>
+    <member refid="class_screen_1affe30f540e47e10ce7b4a6303c2a0ed6" kind="function"><name>getDisplayBuffer</name></member>
+    <member refid="class_screen_1afeb8a4072024504886db1f2dcc33504a" kind="function"><name>getDrawBuffer</name></member>
+    <member refid="class_screen_1a744f676a8bb30991ae2b4fb3eabf8952" kind="function"><name>getCamera</name></member>
+    <member refid="class_screen_1aa57f801957701f8867371a870c4e2304" kind="function"><name>setCamera</name></member>
+    <member refid="class_screen_1ad7a7f89561b4eda6ec40873951263cab" kind="function"><name>makeCameraCurrent</name></member>
+    <member refid="class_screen_1a9faf64f4369655993e87d6a3cee7d00d" kind="function"><name>getEnvironment</name></member>
+    <member refid="class_screen_1abbefa1e654be150d9999af9ef39e0726" kind="function"><name>setEnvironment</name></member>
+    <member refid="class_screen_1adedfb6caec500ef9dce92e3734a2e7c2" kind="function"><name>makeEnvironmentCurrent</name></member>
+    <member refid="class_screen_1a8314f2f645a71d5f12dcbfeb52445240" kind="function"><name>setClearColor</name></member>
+    <member refid="class_screen_1a097f90299492356d83b9f5b6b8580302" kind="function"><name>getClearColor</name></member>
+    <member refid="class_screen_1a88d41de8a456814a95a75c0f402354ff" kind="function"><name>clear</name></member>
+    <member refid="class_screen_1a1537033d361b07835ebdfe2fabe68d33" kind="function"><name>isBound</name></member>
+    <member refid="class_screen_1a7b09f5f97f11499b0e9a6851a66c38a7" kind="function"><name>getLastPostProcessMs</name></member>
+    <member refid="class_screen_1a094fce9f7d229c82aa6590e1597fb008" kind="function"><name>getLastPostProcessEffectCount</name></member>
+    <member refid="class_screen_1a95dd5de25c923cb0c5a92bea6d455d1e" kind="function"><name>MakeCameraCurrent</name></member>
+    <member refid="class_screen_1a07725080c44bc4d909a0bd36db04b728" kind="function"><name>GetCurrentCamera</name></member>
+    <member refid="class_screen_1a60335c74b0e51c63df7821459706c06b" kind="function"><name>MakeEnvironmentCurrent</name></member>
+    <member refid="class_screen_1ac9ef56948fa161cc570d3f832598fe25" kind="function"><name>GetCurrentEnvironment</name></member>
+  </compound>
+  <compound refid="struct_shader_bundle" kind="struct"><name>ShaderBundle</name>
+    <member refid="struct_shader_bundle_1a6fbb3d169bd1c1c5388fdfae7ae198dc" kind="variable"><name>shaderHandle</name></member>
+    <member refid="struct_shader_bundle_1a1206deb1163491bf5d5e758317dbebab" kind="variable"><name>shader_code</name></member>
+    <member refid="struct_shader_bundle_1a618d88aa7b6aad2e7fc331b61a7adec9" kind="variable"><name>type</name></member>
+    <member refid="struct_shader_bundle_1ad2f706686bc6c5dc7e0df0676f3abdca" kind="variable"><name>valid</name></member>
+    <member refid="struct_shader_bundle_1a5cd28b8d8719d853d9201f0f35d2f695" kind="function"><name>Create</name></member>
+    <member refid="struct_shader_bundle_1a56b986ba4b5b35f47e227087c0035ba2" kind="function"><name>~ShaderBundle</name></member>
+  </compound>
+  <compound refid="struct_shader_cache" kind="struct"><name>ShaderCache</name>
+    <member refid="struct_shader_cache_1a04d6ef8cb95a509dc1b03e65e031bf91" kind="variable"><name>programCache</name></member>
+    <member refid="struct_shader_cache_1af5f1cbf4ab7956b32d7bd121781705d4" kind="function"><name>getOrCompile</name></member>
+    <member refid="struct_shader_cache_1ae36ea2f2f11454ea3df20212e3fffd25" kind="function"><name>clear</name></member>
+  </compound>
+  <compound refid="class_shader_program" kind="class"><name>ShaderProgram</name>
+    <member refid="class_shader_program_1a415fd15e73067265673b70ae8230d2f1" kind="variable"><name>sh_vert</name></member>
+    <member refid="class_shader_program_1ac1437500e212eebab2d9bfb3d25126d7" kind="variable"><name>sh_frag</name></member>
+    <member refid="class_shader_program_1a5e2be0af3af07700421df6b67c4970ff" kind="variable"><name>sh_geom</name></member>
+    <member refid="class_shader_program_1a79d90b6ba739408d161adc26ad9450f3" kind="variable"><name>sh_tess</name></member>
+    <member refid="class_shader_program_1a635605839d5c71694cf90b160ed7a662" kind="variable"><name>sh_comp</name></member>
+    <member refid="class_shader_program_1a1fcd1aa6ef5f89c284d4b1617bf00a2e" kind="variable"><name>sh_task</name></member>
+    <member refid="class_shader_program_1a5b99b8adc409c4939ffa2fe3fc7d15db" kind="variable"><name>sh_srtx</name></member>
+    <member refid="class_shader_program_1aa2abac31c5ffdf0f094522bac396e9d3" kind="variable"><name>programHandle</name></member>
+    <member refid="class_shader_program_1a6fd937ad9e22b5f7aa3129d1040bf609" kind="variable"><name>shaderLog</name></member>
+    <member refid="class_shader_program_1a18d1cf6d41f162f19cb9551f4dd5beec" kind="variable"><name>uniformLocationCache</name></member>
+    <member refid="class_shader_program_1a27f9e1f1679c6a937a4bd33d7b699436" kind="function"><name>getUniformLocationCached</name></member>
+    <member refid="class_shader_program_1ad0bff867e001f70e4d67cc34d2585296" kind="function"><name>_generateShaderLog</name></member>
+    <member refid="class_shader_program_1af8a8e3be93789036cd7c73981203ac99" kind="function"><name>_generateProgramLog</name></member>
+    <member refid="class_shader_program_1a8fe422d0e6dc9bba4087f9e3407db532" kind="function"><name>_createShader</name></member>
+    <member refid="class_shader_program_1ac1e76d7303a44d63a879333209fa48e4" kind="function"><name>_getShaderBundles</name></member>
+    <member refid="class_shader_program_1a1fbce854a5384c6d74425eaff64910f2" kind="function"><name>setVertexShader</name></member>
+    <member refid="class_shader_program_1aa8c62c838e859d5368a98d0314d43d7f" kind="function"><name>setFragmentShader</name></member>
+    <member refid="class_shader_program_1adf9c56429772966970584e6f10043db1" kind="function"><name>setGeometryShader</name></member>
+    <member refid="class_shader_program_1afcc0424f8d20bf2fef3293a029db46cd" kind="function"><name>setTesselationShader</name></member>
+    <member refid="class_shader_program_1a678c9074bbfe1304c471dfc3b1691249" kind="function"><name>setComputeShader</name></member>
+    <member refid="class_shader_program_1a4db8cf4f7428ddd35bde1c89571f853e" kind="function"><name>setTaskShader</name></member>
+    <member refid="class_shader_program_1a329ce6ce72892eb7356f8f52bd6d83dd" kind="function"><name>setRTXShader</name></member>
+    <member refid="class_shader_program_1a8e8f135b343c8de2ef8b93345dce51e2" kind="function"><name>getVertexShader</name></member>
+    <member refid="class_shader_program_1ac0af058463af00f5951b7393322ada78" kind="function"><name>getFragmentShader</name></member>
+    <member refid="class_shader_program_1ac0a7fd97206d529bd045ee5ed13336e7" kind="function"><name>getGeometryShader</name></member>
+    <member refid="class_shader_program_1a49eaef37b8e67cb852549758d0d8668f" kind="function"><name>getTesselationShader</name></member>
+    <member refid="class_shader_program_1a6c3e875914b744e360f728c6c4326a16" kind="function"><name>getComputeShader</name></member>
+    <member refid="class_shader_program_1a611d55ef08eff2e7dc5a6acec08b0881" kind="function"><name>getTaskShader</name></member>
+    <member refid="class_shader_program_1abc9cb3056b3625883f16472767ee5df6" kind="function"><name>getRTXShader</name></member>
+    <member refid="class_shader_program_1a47a8190cccad34baedeafe7e672123ab" kind="function"><name>getLog</name></member>
+    <member refid="class_shader_program_1a2b248c28a509a559831cb86253a13a2c" kind="function"><name>compile</name></member>
+    <member refid="class_shader_program_1ab3c3e75ddf54504b5e9f53bf85c34736" kind="function"><name>bind</name></member>
+    <member refid="class_shader_program_1aeb6df1f103db0e67efbb37ab31983e7f" kind="function"><name>unbind</name></member>
+    <member refid="class_shader_program_1a2c8a90e6624a306ca146759ae24268dc" kind="function"><name>setUniform</name></member>
+    <member refid="class_shader_program_1a793652af8a2d1dede36481c8146de003" kind="function"><name>setUniformFast</name></member>
+    <member refid="class_shader_program_1a7b464da4889af38a911e52a4dc496f29" kind="function"><name>getID</name></member>
+    <member refid="class_shader_program_1a2d2eadcfc48cc2e2ddb82aba70553a9f" kind="function"><name>~ShaderProgram</name></member>
+    <member refid="class_shader_program_1a5f0fd68887a4e8228467d85efca7c286" kind="function"><name>GetCurrentShaderProgram</name></member>
+  </compound>
+  <compound refid="struct_shadow_caster_bounds" kind="struct"><name>ShadowCasterBounds</name>
+    <member refid="struct_shadow_caster_bounds_1abfa72c234b3af71c9ed722c38596a1c0" kind="variable"><name>min</name></member>
+    <member refid="struct_shadow_caster_bounds_1a3bdaea826962ff29b21a20851c170bad" kind="variable"><name>max</name></member>
+  </compound>
+  <compound refid="struct_shadow_renderer_1_1_shadow_draw_item" kind="struct"><name>ShadowRenderer::ShadowDrawItem</name>
+    <member refid="struct_shadow_renderer_1_1_shadow_draw_item_1af5fea58c6b2f3908820b0a0c7d639eca" kind="variable"><name>mesh</name></member>
+    <member refid="struct_shadow_renderer_1_1_shadow_draw_item_1aa66d16752463a53f37a09631a8d63bc2" kind="variable"><name>model</name></member>
+    <member refid="struct_shadow_renderer_1_1_shadow_draw_item_1a4604e56df262031ac26c3d91fb022c2d" kind="variable"><name>material</name></member>
+    <member refid="struct_shadow_renderer_1_1_shadow_draw_item_1a4bdd0c523914d6951104544e2a194a4f" kind="variable"><name>enableBackfaceCulling</name></member>
+    <member refid="struct_shadow_renderer_1_1_shadow_draw_item_1aace360d7eac49a5c4a960fb7724ef2dd" kind="variable"><name>hasBounds</name></member>
+    <member refid="struct_shadow_renderer_1_1_shadow_draw_item_1a825af210d5eab63b7914d18472560cb5" kind="variable"><name>boundsMin</name></member>
+    <member refid="struct_shadow_renderer_1_1_shadow_draw_item_1a8e4ac268e1e55d7370982bbf4847df57" kind="variable"><name>boundsMax</name></member>
+  </compound>
+  <compound refid="struct_shadow_light_data" kind="struct"><name>ShadowLightData</name>
+    <member refid="struct_shadow_light_data_1ac702ae146acae8df77f8e23246868f02" kind="variable"><name>shadowMapIndex</name></member>
+    <member refid="struct_shadow_light_data_1aff377f9a74c61bb3aa681dfaa75917e6" kind="variable"><name>shadowType</name></member>
+    <member refid="struct_shadow_light_data_1ac2324b8b78ba3f0edcaef7b926790bcd" kind="variable"><name>shadowStrength</name></member>
+    <member refid="struct_shadow_light_data_1acd237982292f828f6a4577fa18a04679" kind="variable"><name>shadowBias</name></member>
+    <member refid="struct_shadow_light_data_1a8b3ea850c47b09d9e9427bbc5d4f620b" kind="variable"><name>shadowNormalBias</name></member>
+    <member refid="struct_shadow_light_data_1ab20943a984a1a12945d9024812041dfb" kind="variable"><name>cascadeCount</name></member>
+    <member refid="struct_shadow_light_data_1ab2e59ee0fbcc6b8f63af23de9a5fe940" kind="variable"><name>cascadeSplits</name></member>
+    <member refid="struct_shadow_light_data_1a26d9fea3b61c1c703c8002ac5a72ef69" kind="variable"><name>lightMatrices</name></member>
+  </compound>
+  <compound refid="class_shadow_map2_d" kind="class"><name>ShadowMap2D</name>
+    <member refid="class_shadow_map2_d_1a751bc09919d5132733a74734aba6c578" kind="variable"><name>fbo</name></member>
+    <member refid="class_shadow_map2_d_1a0a5bfdfa26b5f0b694d1bbc357f3589f" kind="variable"><name>depthTex</name></member>
+    <member refid="class_shadow_map2_d_1aec3177330665bc1be60909b8f388967e" kind="variable"><name>size</name></member>
+    <member refid="class_shadow_map2_d_1acb0c162e7dc282a01993308ba3e37a47" kind="function"><name>init</name></member>
+    <member refid="class_shadow_map2_d_1ac0fefac84ac4594eee54eb4816c5177f" kind="function"><name>ShadowMap2D</name></member>
+    <member refid="class_shadow_map2_d_1af59cf83558bc32eebcac4738fcde9e86" kind="function"><name>ShadowMap2D</name></member>
+    <member refid="class_shadow_map2_d_1a3c8d343b4c0347f1fcbfd0ae19f455f5" kind="function"><name>~ShadowMap2D</name></member>
+    <member refid="class_shadow_map2_d_1a9bcfb71d8cf1700c94eafbe92e1c50bc" kind="function"><name>ShadowMap2D</name></member>
+    <member refid="class_shadow_map2_d_1a94dbf35ee38821106ba3e40e54dfb3dd" kind="function"><name>operator=</name></member>
+    <member refid="class_shadow_map2_d_1a41e243d9d88eb4fc16bbd0c4fce7a540" kind="function"><name>ShadowMap2D</name></member>
+    <member refid="class_shadow_map2_d_1adcd5b6a43e12099a2dafcbd75fb071e7" kind="function"><name>operator=</name></member>
+    <member refid="class_shadow_map2_d_1a7e6362d7da8dba35cfae660444cc9b49" kind="function"><name>resize</name></member>
+    <member refid="class_shadow_map2_d_1a2a1d259a6fc56389a7996ef4d952a38e" kind="function"><name>bind</name></member>
+    <member refid="class_shadow_map2_d_1a9118211e5edc5f01537850738383d7ee" kind="function"><name>unbind</name></member>
+    <member refid="class_shadow_map2_d_1a5a0718c2493e2a4c9d149dad17424355" kind="function"><name>clear</name></member>
+    <member refid="class_shadow_map2_d_1a8d54d8cb2578ea60d037d75ee14dfdcc" kind="function"><name>getDepthTexture</name></member>
+    <member refid="class_shadow_map2_d_1a3915b41a0ba9bd4aa8d40119280307a4" kind="function"><name>getSize</name></member>
+  </compound>
+  <compound refid="class_shadow_map_cube" kind="class"><name>ShadowMapCube</name>
+    <member refid="class_shadow_map_cube_1a75dd17413311f1d5f2a9b101d0f77f73" kind="variable"><name>fbo</name></member>
+    <member refid="class_shadow_map_cube_1a1b229d26161b96363f7fc98a8574ba8b" kind="variable"><name>depthCube</name></member>
+    <member refid="class_shadow_map_cube_1a6ea8d03f47afa4351ee9c8f2b87d476e" kind="variable"><name>size</name></member>
+    <member refid="class_shadow_map_cube_1a9ff58f8cb81164cda198be8039bb0e41" kind="function"><name>init</name></member>
+    <member refid="class_shadow_map_cube_1ad6bb31f5d7cc939a0c91a1b1d434a76a" kind="function"><name>ShadowMapCube</name></member>
+    <member refid="class_shadow_map_cube_1ae8b1dbe11963788d9f2661d7b57801e4" kind="function"><name>ShadowMapCube</name></member>
+    <member refid="class_shadow_map_cube_1a35eb630aeabf2272a312f6a4a49f6712" kind="function"><name>~ShadowMapCube</name></member>
+    <member refid="class_shadow_map_cube_1a0aaaefa1c4de0b8da0ef9f4b37d619db" kind="function"><name>ShadowMapCube</name></member>
+    <member refid="class_shadow_map_cube_1aa901c0f61f181dcaf8eeaf2aca97cc9f" kind="function"><name>operator=</name></member>
+    <member refid="class_shadow_map_cube_1acf4f6dc81cb39059f2df7352e667cc9a" kind="function"><name>ShadowMapCube</name></member>
+    <member refid="class_shadow_map_cube_1a9ec157dfb27a1e0f183fad95d0ee128c" kind="function"><name>operator=</name></member>
+    <member refid="class_shadow_map_cube_1a2b4bc34daef25168c05eb6a853919afc" kind="function"><name>resize</name></member>
+    <member refid="class_shadow_map_cube_1aa8bbe52175ec103726b6aa2e4dd4645b" kind="function"><name>bindFace</name></member>
+    <member refid="class_shadow_map_cube_1aa977176a7596a0ba2baa70cb78dcfebf" kind="function"><name>unbind</name></member>
+    <member refid="class_shadow_map_cube_1a7d6e4c1116e8e0827ead05a08c70de5c" kind="function"><name>clear</name></member>
+    <member refid="class_shadow_map_cube_1ad1fcf694238173cea98f59fb0f3f1efe" kind="function"><name>getDepthTexture</name></member>
+    <member refid="class_shadow_map_cube_1ab22b92b416ce0fcf00cd93863958a955" kind="function"><name>getSize</name></member>
+  </compound>
+  <compound refid="class_shadow_renderer" kind="class"><name>ShadowRenderer</name>
+    <member refid="class_shadow_renderer_1afbb6c273a05d6646ee9705e4bd6b3233" kind="function"><name>BeginFrame</name></member>
+    <member refid="class_shadow_renderer_1aab58aceef40d58cbcb99197fb3b0b1c9" kind="function"><name>RenderShadows</name></member>
+    <member refid="class_shadow_renderer_1a3ba920ae87f7206899c27bf206f7b88f" kind="function"><name>RenderShadowsBatch</name></member>
+    <member refid="class_shadow_renderer_1a294d22aa8a61404ca7741fb92179f759" kind="function"><name>BindShadowSamplers</name></member>
+    <member refid="class_shadow_renderer_1a2a6a438bcb4909cfe0f049a418ca08a1" kind="function"><name>GetShadowDataForLight</name></member>
+    <member refid="class_shadow_renderer_1a5b7b6245485e78e450e4f36511dc6028" kind="function"><name>GetFrameId</name></member>
+    <member refid="class_shadow_renderer_1abbd83290397f84630065b8593c6de72d" kind="function"><name>IsEnabled</name></member>
+    <member refid="class_shadow_renderer_1a4968fee5aaeb90ca26b8237a4ad27fda" kind="function"><name>GetDepthBuffer</name></member>
+    <member refid="class_shadow_renderer_1aa3cbcea864992880c1e0e93cb2f03c2d" kind="function"><name>SetDebugShadows</name></member>
+    <member refid="class_shadow_renderer_1a01a2fe136dac80bd65137ddd1163c05c" kind="function"><name>GetDebugShadows</name></member>
+    <member refid="class_shadow_renderer_1a4f8885763f78efa60d45121f1bc33e6a" kind="function"><name>CycleDebugShadows</name></member>
+    <member refid="class_shadow_renderer_1ae8e997e98faa8a7dcee38355f0ba3412" kind="function"><name>GetDebugShadowsMode</name></member>
+    <member refid="class_shadow_renderer_1a1ad93fba9dbece24c39e04dfa0319b84" kind="function"><name>SetDebugShadowsMode</name></member>
+    <member refid="class_shadow_renderer_1a92326cd13a40ee30ab8c1e41cee0cbd1" kind="function"><name>SetGlobalDebugOverrideEnabled</name></member>
+    <member refid="class_shadow_renderer_1aab904aac799df7524a74571d2551ce9c" kind="function"><name>GetGlobalDebugOverrideEnabled</name></member>
+    <member refid="class_shadow_renderer_1af3e6f272f9f7fafa02a28c1684c43aa3" kind="function"><name>SetGlobalDebugOverrideMode</name></member>
+    <member refid="class_shadow_renderer_1ab18542dd44e6199fe8baa8ed4beab5b3" kind="function"><name>GetGlobalDebugOverrideMode</name></member>
+    <member refid="class_shadow_renderer_1a32ac240ccaf7b0d0d9402754663471c8" kind="function"><name>SetSelectedLightIndex</name></member>
+    <member refid="class_shadow_renderer_1ae8491189e251451f3803e8a96144188c" kind="function"><name>GetSelectedLightIndex</name></member>
+    <member refid="class_shadow_renderer_1a8c06fcdbd9d643efd2c1821da281b460" kind="function"><name>SetDirectionalCascadeKernelMarginTexels</name></member>
+    <member refid="class_shadow_renderer_1a232a7bb315118202cb6f79cbb49b29dd" kind="function"><name>GetDirectionalCascadeKernelMarginTexels</name></member>
+    <member refid="class_shadow_renderer_1aa010995c5c5868ce57940c2533741bff" kind="function"><name>SetShadowReceiverNormalBlend</name></member>
+    <member refid="class_shadow_renderer_1ac7c8e21bfe93f9d7ed4891c9a8e1e480" kind="function"><name>GetShadowReceiverNormalBlend</name></member>
+    <member refid="class_shadow_renderer_1ac292095aa08cd34a52c6d1bd498b9818" kind="function"><name>SetDebugLogging</name></member>
+    <member refid="class_shadow_renderer_1ac08a7c94e7678f7c0a7ed17c8970b5dd" kind="function"><name>GetDebugLogging</name></member>
+    <member refid="class_shadow_renderer_1aeeea30f6021a5f93894a8936e24d51b2" kind="function"><name>ensureShadowPrograms</name></member>
+    <member refid="class_shadow_renderer_1a3086ae90853503e1f2a16d574492376f" kind="function"><name>computeDirectionalMatrix</name></member>
+    <member refid="class_shadow_renderer_1a114da67d41bbf8e4ca1fd759253d0a31" kind="function"><name>computeSpotMatrix</name></member>
+    <member refid="class_shadow_renderer_1af64fb186a2a20c310c5f2a123c71a296" kind="function"><name>computePointMatrices</name></member>
+  </compound>
+  <compound refid="class_sky_box" kind="class"><name>SkyBox</name>
+    <member refid="class_sky_box_1afe2f46d87fb8d94272ffd40dbd6c7fd9" kind="variable"><name>skyboxModel</name></member>
+    <member refid="class_sky_box_1a920e066435fab4060dd4f6a2bda09d5c" kind="variable"><name>skyboxMaterial</name></member>
+    <member refid="class_sky_box_1a7b7e36cee974700004139b30d2666243" kind="variable"><name>skyboxCubeMap</name></member>
+    <member refid="class_sky_box_1a984fbaa7cd6c7cfcadf942d91bc2fb41" kind="function"><name>SkyBox</name></member>
+    <member refid="class_sky_box_1af6d94c1589304676eac958ce814ce546" kind="function"><name>SkyBox</name></member>
+    <member refid="class_sky_box_1a0994828d7cce6823083bc8445b9456d6" kind="function"><name>draw</name></member>
+    <member refid="class_sky_box_1a3870170d9350bfa50f6995853dad559f" kind="function"><name>getCubeMap</name></member>
+  </compound>
+  <compound refid="struct_sky_box6_face" kind="struct"><name>SkyBox6Face</name>
+    <member refid="struct_sky_box6_face_1ab6f1ce5be59e6d4873e5c09ad56913cc" kind="variable"><name>topFaceAsset</name></member>
+    <member refid="struct_sky_box6_face_1a171fc45a05df7e4d879a04eb714cf9a7" kind="variable"><name>bottomFaceAsset</name></member>
+    <member refid="struct_sky_box6_face_1a4bf8919a218153bfd1174f86a045dcd5" kind="variable"><name>leftFaceAsset</name></member>
+    <member refid="struct_sky_box6_face_1a480e2da0e85450f5f6862aee821305ce" kind="variable"><name>rightFaceAsset</name></member>
+    <member refid="struct_sky_box6_face_1abb7ee5f7056c9c4d1cd63e7955f06041" kind="variable"><name>frontFaceAsset</name></member>
+    <member refid="struct_sky_box6_face_1a369835ab8dff41effb1178fc2e0fa28f" kind="variable"><name>backFaceAsset</name></member>
+  </compound>
+  <compound refid="class_sky_box_loader" kind="class"><name>SkyBoxLoader</name>
+    <member refid="class_sky_box_loader_1a7a70cc83351435d79408ef2fbcdab277" kind="function"><name>CreateSkyBox</name></member>
+  </compound>
+  <compound refid="class_skybox_material" kind="class"><name>SkyboxMaterial</name>
+    <member refid="class_skybox_material_1a47346520a7ee41cdf47c52009246b26e" kind="variable"><name>EnvMap</name></member>
+    <member refid="class_skybox_material_1a1aa19f0df9db4109ee056f7b109f98c0" kind="function"><name>SkyboxMaterial</name></member>
+    <member refid="class_skybox_material_1acc843c2b1152fda9d10fbd964e7e9473" kind="function"><name>bind</name></member>
+    <member refid="class_skybox_material_1a25b97b60f3d10f4f586a3fcbd1d4f7cc" kind="function"><name>Create</name></member>
+  </compound>
+  <compound refid="class_s_s_a_o_effect" kind="class"><name>SSAOEffect</name>
+    <member refid="class_s_s_a_o_effect_1aade22728cb7e9da0c8a7cfb7fe93057e" kind="variable"><name>shader</name></member>
+    <member refid="class_s_s_a_o_effect_1a8ceda1cdfab381dbaab0e4c4ca338db8" kind="variable"><name>compileAttempted</name></member>
+    <member refid="class_s_s_a_o_effect_1a77e063bb2ed8216729d18c53218459cd" kind="variable"><name>SSAO_FRAG_SHADER</name></member>
+    <member refid="class_s_s_a_o_effect_1af574645d883fac643b853db1b62580d2" kind="variable"><name>radiusPx</name></member>
+    <member refid="class_s_s_a_o_effect_1a9d335514bb79bc311f6b8cdc04b8a86b" kind="variable"><name>depthRadius</name></member>
+    <member refid="class_s_s_a_o_effect_1a4c4e0760accdb8d994446370c8fc42e0" kind="variable"><name>bias</name></member>
+    <member refid="class_s_s_a_o_effect_1abd1606e4d0b941c7b30610e29473f55a" kind="variable"><name>intensity</name></member>
+    <member refid="class_s_s_a_o_effect_1a4d13876a8994c4a2663a16c0f2cffbda" kind="variable"><name>giBoost</name></member>
+    <member refid="class_s_s_a_o_effect_1a648330861bd69dc04718288d615991ce" kind="variable"><name>sampleCount</name></member>
+    <member refid="class_s_s_a_o_effect_1a2da8204d05b9bc357440d9d6bc73d00d" kind="variable"><name>nearPlane</name></member>
+    <member refid="class_s_s_a_o_effect_1a3f8f6ab14f4ed2d75f8dce09da0d3b00" kind="variable"><name>farPlane</name></member>
+    <member refid="class_s_s_a_o_effect_1a48376c9b6b5e288443bf93a21cef91fe" kind="function"><name>ensureCompiled</name></member>
+    <member refid="class_s_s_a_o_effect_1a4170ac563f9fca8af67029028aa3162a" kind="function"><name>SSAOEffect</name></member>
+    <member refid="class_s_s_a_o_effect_1a7f1ff7cf52ff64340ee7789e89b0a16a" kind="function"><name>apply</name></member>
+    <member refid="class_s_s_a_o_effect_1ae40d950572e38a3367b1f1f1b2ac7895" kind="function"><name>New</name></member>
+  </compound>
+  <compound refid="struct_text_cache_key" kind="struct"><name>TextCacheKey</name>
+    <member refid="struct_text_cache_key_1a6ee3f612bb5fd9a9c3f3bbda7a03ff3a" kind="variable"><name>text</name></member>
+    <member refid="struct_text_cache_key_1a8064f8a9e1fa77a26657476eb14ebf12" kind="variable"><name>color</name></member>
+    <member refid="struct_text_cache_key_1abe35541d54da32fbae45e17f405a47a5" kind="function"><name>operator&lt;</name></member>
+  </compound>
+  <compound refid="class_texture" kind="class"><name>Texture</name>
+    <member refid="class_texture_1ab61a414e1ed356a30c48952d65227691" kind="variable"><name>textureID</name></member>
+    <member refid="class_texture_1ab19f8111ea17f98f8eee54c352dc7c21" kind="variable"><name>cpuImage</name></member>
+    <member refid="class_texture_1a06a0246cb31343557c3441c5733349cd" kind="variable"><name>width</name></member>
+    <member refid="class_texture_1ad37c395c65ff8bde86230908027a6fcd" kind="variable"><name>height</name></member>
+    <member refid="class_texture_1a775259027fb95ac6068d1e40fe211189" kind="variable"><name>ownsTexture</name></member>
+    <member refid="class_texture_1ade16ea0be8b7dce9ac7ad477c173b2f4" kind="variable"><name>sourceAssetRef</name></member>
+    <member refid="class_texture_1a6c275e3f186675ff6ed73ccf970e552f" kind="function"><name>Texture</name></member>
+    <member refid="class_texture_1a09c4bcb7462f64c1d20fa69dba3cee8a" kind="function"><name>~Texture</name></member>
+    <member refid="class_texture_1a7de3bf257aace7b8785bc7e31c4be3b8" kind="function"><name>Texture</name></member>
+    <member refid="class_texture_1a6f37ee9dc7bb5e960660df07200de426" kind="function"><name>Texture</name></member>
+    <member refid="class_texture_1a197b839d8525505209f4288071cc7185" kind="function"><name>Texture</name></member>
+    <member refid="class_texture_1a71ec7e2582cc0005fa47f78087d4a539" kind="function"><name>bind</name></member>
+    <member refid="class_texture_1a451d7afac3848417bb1007d39ee7d545" kind="function"><name>unbind</name></member>
+    <member refid="class_texture_1af1051a541f02fd9cae35ac9403d4a0cd" kind="function"><name>dispose</name></member>
+    <member refid="class_texture_1a91a6fd3355bc870194851514194daaab" kind="function"><name>getWidth</name></member>
+    <member refid="class_texture_1a80e143905655b173df5994300088ce35" kind="function"><name>getHeight</name></member>
+    <member refid="class_texture_1ac6b8580d3734f0121b23ccd6ed1f3a08" kind="function"><name>getID</name></member>
+    <member refid="class_texture_1ae23d6b21a3cd5bc2e4fa915379d8bbc2" kind="function"><name>getSourceAssetRef</name></member>
+    <member refid="class_texture_1ab62281b7d9b433e467903f492547b9ac" kind="function"><name>setSourceAssetRef</name></member>
+    <member refid="class_texture_1adeb8d948f7d2e881a8c7cc10702eaade" kind="function"><name>getImageData</name></member>
+    <member refid="class_texture_1a1113f45b4e14a368d3484046a522096d" kind="function"><name>Load</name></member>
+    <member refid="class_texture_1aa743aa51da6bad8cee443fdae0ef35d8" kind="function"><name>LoadImage</name></member>
+    <member refid="class_texture_1a8c0831e6a2717ddd3433cc830f793bbb" kind="function"><name>CreateEmpty</name></member>
+    <member refid="class_texture_1a6e2c7079768a4bc6e109d663d310256b" kind="function"><name>CreateRenderTarget</name></member>
+    <member refid="class_texture_1a429d7cbc7525bfa2b8e8f43c37c1aeea" kind="function"><name>CreateFromAlphaBuffer</name></member>
+    <member refid="class_texture_1a8cf4c2ef5fa9f1b479c79f0cf3a0da2c" kind="function"><name>CreateFromExisting</name></member>
+    <member refid="class_texture_1aac19b195dbfd2a2b818dd7e36199e8db" kind="function"><name>FlushPendingDeletes</name></member>
+    <member refid="class_texture_1ab09e5434e9a5b60446a052c9ca204968" kind="function"><name>Unload</name></member>
+    <member refid="class_texture_1a18efdc2f379cac376b6bad2c75fd2fab" kind="function"><name>FlipVerticallyOnLoad</name></member>
+  </compound>
+  <compound refid="struct_g_l_uniform_upload_1_1_texture_slot" kind="struct"><name>GLUniformUpload::TextureSlot</name>
+    <member refid="struct_g_l_uniform_upload_1_1_texture_slot_1ac8b4d2e94bfd9d37af8127bdacc5a66f" kind="variable"><name>texture</name></member>
+    <member refid="struct_g_l_uniform_upload_1_1_texture_slot_1a99f465321a697ee5adf9aad1bc11731c" kind="variable"><name>slot</name></member>
+    <member refid="struct_g_l_uniform_upload_1_1_texture_slot_1adb577d818d2eb350952f0fa05386ce89" kind="function"><name>TextureSlot</name></member>
+    <member refid="struct_g_l_uniform_upload_1_1_texture_slot_1a23c7092a8763c531ee97288674086c1a" kind="function"><name>TextureSlot</name></member>
+  </compound>
+  <compound refid="struct_tripple_buffer" kind="struct"><name>TrippleBuffer</name>
+    <member refid="struct_tripple_buffer_1ab21532dad5a02848265f8f0012268783" kind="variable"><name>chain</name></member>
+    <member refid="struct_tripple_buffer_1a4a3304a4b3bc1448800ac07465621829" kind="variable"><name>width</name></member>
+    <member refid="struct_tripple_buffer_1a9ca5dcc2ac82e896ec4f4069899c8335" kind="variable"><name>height</name></member>
+    <member refid="struct_tripple_buffer_1af6a568ca26e449ba41d77cd25b253663" kind="function"><name>TrippleBuffer</name></member>
+    <member refid="struct_tripple_buffer_1ade5ad21dfd69dd617dc59c35adddf8c9" kind="function"><name>TrippleBuffer</name></member>
+    <member refid="struct_tripple_buffer_1aa1580b077ee4b77e4cf0293e5fce37af" kind="function"><name>getFront</name></member>
+    <member refid="struct_tripple_buffer_1a27e3d899dc5c66e38fb6d240ad8ac0e6" kind="function"><name>getMiddle</name></member>
+    <member refid="struct_tripple_buffer_1a841ad487a95331a841cd26ede3b8358d" kind="function"><name>getBack</name></member>
+    <member refid="struct_tripple_buffer_1a0b60b6f1e7e12dc0fd41287f66b6523c" kind="function"><name>getDisplayBuffer</name></member>
+    <member refid="struct_tripple_buffer_1a53cf73b5efe7ab4e33b47b4d1ef5f099" kind="function"><name>getEditBuffer</name></member>
+    <member refid="struct_tripple_buffer_1aaadfe8298e9fdbab9177084bf5bbc648" kind="function"><name>getDrawBuffer</name></member>
+    <member refid="struct_tripple_buffer_1afa919e8a8ca329dd8b86ddb15e5a8bcb" kind="function"><name>setFront</name></member>
+    <member refid="struct_tripple_buffer_1a21607aceb5b3dc8dbf987a595e67c567" kind="function"><name>setMiddle</name></member>
+    <member refid="struct_tripple_buffer_1a807d0eac379ba76f82f0dda42f36100d" kind="function"><name>setBack</name></member>
+    <member refid="struct_tripple_buffer_1a2fe9ea51bbfae49182b81360da39b5df" kind="function"><name>swapBuffers</name></member>
+    <member refid="struct_tripple_buffer_1a3e121c9862627d785ba325e00e7aa3d7" kind="function"><name>resizeBuffers</name></member>
+  </compound>
+  <compound refid="class_true_type_font" kind="class"><name>TrueTypeFont</name>
+    <member refid="class_true_type_font_1a16e2319f61337a12f284e8e0add161f3" kind="variable"><name>cdata</name></member>
+    <member refid="class_true_type_font_1ad32c45a5111d82794f1d8fe9d3a0f708" kind="function"><name>TrueTypeFont</name></member>
+    <member refid="class_true_type_font_1a4af92a8e28331e8a35e1624f98706944" kind="function"><name>_initFont</name></member>
+    <member refid="class_true_type_font_1a988b328a7c02ab8509e054f9128c9884" kind="function"><name>drawText</name></member>
+  </compound>
+  <compound refid="class_uniform" kind="class"><name>Uniform</name>
+    <member refid="class_uniform_1ac64bee48c1a3ee0495bc2ba100f6e663" kind="variable"><name>value</name></member>
+    <member refid="class_uniform_1a9daad155d7bb1f986b82ca5a7ba22857" kind="function"><name>Uniform</name></member>
+    <member refid="class_uniform_1ae5fde7a7bdd68515197cf9fe27e9320b" kind="function"><name>Uniform</name></member>
+    <member refid="class_uniform_1a02ce7879e904bdc2abbe387b2004f7cf" kind="function"><name>set</name></member>
+    <member refid="class_uniform_1a7fb2b5d743df511474cbc2b2e8251956" kind="function"><name>get</name></member>
+  </compound>
+  <compound refid="struct_vertex" kind="struct"><name>Vertex</name>
+    <member refid="struct_vertex_1a55470b6176c680998d2b66bac14ae4da" kind="variable"><name>Position</name></member>
+    <member refid="struct_vertex_1a39331a69bee042faef08b291f500419d" kind="variable"><name>Normal</name></member>
+    <member refid="struct_vertex_1a401257a06c2c05262857d31998b91646" kind="variable"><name>TexCoords</name></member>
+    <member refid="struct_vertex_1ab0636b45174ef34e563efbc8024377eb" kind="variable"><name>Color</name></member>
+    <member refid="struct_vertex_1a6ae4835e5fe1f9332acd97ec671279b5" kind="variable"><name>VERTEX_DATA_WIDTH</name></member>
+    <member refid="struct_vertex_1a7828f036e4c200a53d499102997c2a30" kind="function"><name>Pos</name></member>
+    <member refid="struct_vertex_1af1fe2694015b32b90d334bf46820bc04" kind="function"><name>Pos</name></member>
+    <member refid="struct_vertex_1a85ad46ae0b05f963524684314d19fedd" kind="function"><name>Norm</name></member>
+    <member refid="struct_vertex_1a1380a6d23ae35eb199ae3f41628ec47d" kind="function"><name>Norm</name></member>
+    <member refid="struct_vertex_1a7ffc6ba8ee72602e3acbf54a164a031b" kind="function"><name>UV</name></member>
+    <member refid="struct_vertex_1aa1fb5d88ca585d9d07b5838dff9d0aff" kind="function"><name>UV</name></member>
+    <member refid="struct_vertex_1a5ede97c061c4623a1472f5d11ef81726" kind="function"><name>Col</name></member>
+    <member refid="struct_vertex_1a665c30113d1eb71a87f16e499c3d28a9" kind="function"><name>Col</name></member>
+    <member refid="struct_vertex_1a78a44236d3aa30c52652dd07212d9ca4" kind="function"><name>operator==</name></member>
+    <member refid="struct_vertex_1a0368072537259b0222dc040710f682d9" kind="function"><name>operator!=</name></member>
+    <member refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kind="function"><name>Build</name></member>
+    <member refid="struct_vertex_1a392c050c56cbd414b0e541285ba1222a" kind="function"><name>Compose</name></member>
+    <member refid="struct_vertex_1a32abbab0c0fd0e6cd90a030ab0812776" kind="function"><name>Decompose</name></member>
+  </compound>
+  <compound refid="class_view" kind="class"><name>View</name>
+    <member refid="class_view_1ae039aa744b085db819ae149705b2c32b" kind="variable"><name>width</name></member>
+    <member refid="class_view_1a6e3e5c18893617490f02166641356746" kind="variable"><name>height</name></member>
+    <member refid="class_view_1ad90f2879b5a96bf246d06223df4daf6b" kind="variable"><name>window</name></member>
+    <member refid="class_view_1a36fc9e6436a149de4c3f74ae75342a39" kind="variable"><name>screens</name></member>
+    <member refid="class_view_1a44ad60a768422d3fa8fbd7576950080a" kind="function"><name>View</name></member>
+    <member refid="class_view_1a07132ba8235a9facabfd0594fc9e60f4" kind="function"><name>View</name></member>
+    <member refid="class_view_1ad0f3ade04bca4e74b8868e63729bad86" kind="function"><name>~View</name></member>
+    <member refid="class_view_1a2f776db693e8572fb8896f74fe86ef81" kind="function"><name>attachWindow</name></member>
+    <member refid="class_view_1a3c012f511108db02bfe319f63a7c3153" kind="function"><name>hasWindow</name></member>
+    <member refid="class_view_1ac04ab971b398247192797c536c894b71" kind="function"><name>resize</name></member>
+    <member refid="class_view_1aaf31c6402f7eff515fc7ffce37d9faef" kind="function"><name>getScreen</name></member>
+    <member refid="class_view_1aef6eff19fba3651758f30520b48da2b5" kind="function"><name>getMainScreen</name></member>
+    <member refid="class_view_1a3f39fe04bcdae2f40f2f2b5404831cf1" kind="function"><name>getUIScreen</name></member>
+    <member refid="class_view_1afb006fefe82937f955da74db7d1238d0" kind="function"><name>getWindow</name></member>
+    <member refid="class_view_1a895ec1133236bfa64a0a1db15144bc8f" kind="function"><name>getWidth</name></member>
+    <member refid="class_view_1a8d99fa6159d6728d051df65d845bc45a" kind="function"><name>getHeight</name></member>
+    <member refid="class_view_1a3e8cb18218090a709a2ab6d86dccf770" kind="function"><name>addScreen</name></member>
+    <member refid="class_view_1aec098fd90d4651a4d174c8e9aeb10d39" kind="function"><name>screenCount</name></member>
+    <member refid="class_view_1a26ab8b83d0516d7af51a47ca2fdd3aa1" kind="function"><name>drawToWindow</name></member>
+    <member refid="class_view_1a70c24a66d7aa2abc85564a4ac08883e2" kind="function"><name>screenToWorld</name></member>
+    <member refid="class_view_1a4968e73c482870f93a6cfedb85c0ff21" kind="function"><name>worldToScreen</name></member>
+  </compound>
+  <compound refid="namespace_0d015334272366221153237350340303034120145337111320" kind="namespace"><name>@015334272366221153237350340303034120145337111320</name>
+  </compound>
+  <compound refid="namespace_0d034264126015357126040037123315076332257272053132" kind="namespace"><name>@034264126015357126040037123315076332257272053132</name>
+  </compound>
+  <compound refid="namespace_0d055202273137262211030365055072106056306270321201" kind="namespace"><name>@055202273137262211030365055072106056306270321201</name>
+  </compound>
+  <compound refid="namespace_0d057053023300123362164053351157065021325242242016" kind="namespace"><name>@057053023300123362164053351157065021325242242016</name>
+  </compound>
+  <compound refid="namespace_0d222230311253154261022216147367004056042127327045" kind="namespace"><name>@222230311253154261022216147367004056042127327045</name>
+  </compound>
+  <compound refid="namespace_0d244051026107114041225037226243151303337225227126" kind="namespace"><name>@244051026107114041225037226243151303337225227126</name>
+  </compound>
+  <compound refid="namespace_0d316000223257360217355210173040065117357213263151" kind="namespace"><name>@316000223257360217355210173040065117357213263151</name>
+  </compound>
+  <compound refid="namespace_0d336153035124212240215024107200051214264072342361" kind="namespace"><name>@336153035124212240215024107200051214264072342361</name>
+  </compound>
+  <compound refid="namespace_0d356213337351275050326000123102002241215107330336" kind="namespace"><name>@356213337351275050326000123102002241215107330336</name>
+  </compound>
+  <compound refid="namespace_g_l_uniform_upload" kind="namespace"><name>GLUniformUpload</name>
+    <member refid="_shader_program_8h_1a40dd1eef82109d54de6c4c994bfcb00f" kind="function"><name>upload</name></member>
+    <member refid="_shader_program_8h_1a1719a7829b7f536b0c65d54be0b64948" kind="function"><name>upload</name></member>
+    <member refid="_shader_program_8h_1a0a1f6b4923c4b25a20dcd6ad1cce1781" kind="function"><name>upload</name></member>
+    <member refid="_shader_program_8h_1a61bec12b86c8a389cabdd26a3be8c6ac" kind="function"><name>upload</name></member>
+    <member refid="_shader_program_8h_1a84023ab5fba8436663d337b273fd994c" kind="function"><name>upload</name></member>
+    <member refid="_shader_program_8h_1a09c5d4b7c6caded27743e2b2f10f9f10" kind="function"><name>upload</name></member>
+    <member refid="_shader_program_8h_1ae094e61805f2d87dda7bcf8a508ffd4b" kind="function"><name>upload</name></member>
+    <member refid="_shader_program_8h_1a8b04f5fd6f057bffa562e9b7f9cf332c" kind="function"><name>upload</name></member>
+    <member refid="_shader_program_8h_1a9ca31c0cc52ea03cede335da9f4bb4a1" kind="function"><name>upload</name></member>
+    <member refid="_shader_program_8h_1a18485998541e12d87ff9e87b917f76dc" kind="function"><name>upload</name></member>
+  </compound>
+  <compound refid="namespace_graphics" kind="namespace"><name>Graphics</name>
+  </compound>
+  <compound refid="namespace_graphics_1_1_image" kind="namespace"><name>Graphics::Image</name>
+  </compound>
+  <compound refid="namespace_graphics_1_1_post_processing" kind="namespace"><name>Graphics::PostProcessing</name>
+    <member refid="_graphics_8h_1aad5714f52ac2b492e6db435b8c62231f" kind="typedef"><name>PPostProcessingEffect</name></member>
+  </compound>
+  <compound refid="namespace_graphics_1_1_shader_defaults" kind="namespace"><name>Graphics::ShaderDefaults</name>
+    <member refid="_graphics_8h_1a96e46e27bc4147ee02570cf95681d0b3" kind="variable"><name>SCREEN_VERT_SRC</name></member>
+    <member refid="_graphics_8h_1aeb9c40c1306243bfed07c8b2f4141a12" kind="variable"><name>SCREEN_FRAG_SRC</name></member>
+  </compound>
+  <compound refid="namespace_material_defaults" kind="namespace"><name>MaterialDefaults</name>
+  </compound>
+  <compound refid="namespace_shader_cache_manager" kind="namespace"><name>ShaderCacheManager</name>
+    <member refid="_shader_program_8h_1aa7042bd5631b8b49e814f428833f6f13" kind="variable"><name>INSTANCE</name></member>
+  </compound>
+  <compound refid="namespacestd" kind="namespace"><name>std</name>
+  </compound>
+  <compound refid="_frame_buffer_8h" kind="file"><name>FrameBuffer.h</name>
+    <member refid="_frame_buffer_8h_1afd697dc716b9df4a6e9684920596717c" kind="typedef"><name>FrameBufferObject</name></member>
+    <member refid="_frame_buffer_8h_1aadc961de6cfc4dbb59b8b91553589cef" kind="typedef"><name>PFrameBuffer</name></member>
+  </compound>
+  <compound refid="_graphics_8h" kind="file"><name>Graphics.h</name>
+  </compound>
+  <compound refid="_graphics2_d_8cpp" kind="file"><name>Graphics2D.cpp</name>
+  </compound>
+  <compound refid="_graphics2_d_8h" kind="file"><name>Graphics2D.h</name>
+  </compound>
+  <compound refid="_screen_8cpp" kind="file"><name>Screen.cpp</name>
+  </compound>
+  <compound refid="_screen_8h" kind="file"><name>Screen.h</name>
+    <member refid="_screen_8h_1a530d0aaae041af7a43828a01520f47eb" kind="typedef"><name>PView</name></member>
+    <member refid="_screen_8h_1ac7573bac074ff799c4c58a38d76bae79" kind="typedef"><name>PScreen</name></member>
+  </compound>
+  <compound refid="_view_8cpp" kind="file"><name>View.cpp</name>
+  </compound>
+  <compound refid="_view_8h" kind="file"><name>View.h</name>
+    <member refid="_view_8h_1a530d0aaae041af7a43828a01520f47eb" kind="typedef"><name>PView</name></member>
+  </compound>
+  <compound refid="_font_8h" kind="file"><name>Font.h</name>
+    <member refid="_font_8h_1ab3ff9de957df6b4b1c16b5e59f8f7295" kind="define"><name>ENGINE_STB_TRUETYPE</name></member>
+    <member refid="_font_8h_1a892442bd236faf5d769bedb53d057ae3" kind="define"><name>ENGINE_FREETYPE</name></member>
+    <member refid="_font_8h_1a22331570037c683cf3fa26138128cdd2" kind="define"><name>FONT_ENGINE</name></member>
+    <member refid="_font_8h_1a13b6816a1385a6925ae8a18b488f14e3" kind="define"><name>FONT_BITMAP_W</name></member>
+    <member refid="_font_8h_1a87f631c56485868ca2bd1f637f09e73a" kind="define"><name>FONT_BITMAP_H</name></member>
+    <member refid="_font_8h_1a2ac6c72b79285109001635eda602a867" kind="typedef"><name>PFont</name></member>
+  </compound>
+  <compound refid="_free_type_font_8cpp" kind="file"><name>FreeTypeFont.cpp</name>
+  </compound>
+  <compound refid="_free_type_font_8h" kind="file"><name>FreeTypeFont.h</name>
+  </compound>
+  <compound refid="_s_t_b_true_type_font_8cpp" kind="file"><name>STBTrueTypeFont.cpp</name>
+    <member refid="_s_t_b_true_type_font_8cpp_1afaa2f2d0d9d6726cfae6da070e736347" kind="define"><name>STB_TRUETYPE_IMPLEMENTATION</name></member>
+  </compound>
+  <compound refid="_s_t_b_true_type_font_8h" kind="file"><name>STBTrueTypeFont.h</name>
+  </compound>
+  <compound refid="_drawable_8h" kind="file"><name>Drawable.h</name>
+  </compound>
+  <compound refid="_mesh_8cpp" kind="file"><name>Mesh.cpp</name>
+  </compound>
+  <compound refid="_mesh_8h" kind="file"><name>Mesh.h</name>
+    <member refid="_mesh_8h_1af22cd59fba09a4de62b4991b4ce81642" kind="typedef"><name>VertexBufferObject</name></member>
+    <member refid="_mesh_8h_1aed3df4aa000ffa1185ececbadd4c9b8c" kind="typedef"><name>VertexArrayObject</name></member>
+    <member refid="_mesh_8h_1ad314ad2f019b75fa831f2919161371e0" kind="typedef"><name>ElementBufferObject</name></member>
+  </compound>
+  <compound refid="_model_8h" kind="file"><name>Model.h</name>
+    <member refid="_model_8h_1a30ea18bb82fb793debf5f63740468a19" kind="typedef"><name>PModel</name></member>
+  </compound>
+  <compound refid="_model_part_8cpp" kind="file"><name>ModelPart.cpp</name>
+  </compound>
+  <compound refid="_model_part_8h" kind="file"><name>ModelPart.h</name>
+  </compound>
+  <compound refid="_model_part_prefabs_8h" kind="file"><name>ModelPartPrefabs.h</name>
+  </compound>
+  <compound refid="_model_prefabs_8h" kind="file"><name>ModelPrefabs.h</name>
+  </compound>
+  <compound refid="_environment_8h" kind="file"><name>Environment.h</name>
+    <member refid="_environment_8h_1afd8a7601588a5245102e77b8060dc790" kind="typedef"><name>PSkyBox</name></member>
+    <member refid="_environment_8h_1a8bce20c9b7ddf0864416b1535a58f290" kind="typedef"><name>PEnvironment</name></member>
+  </compound>
+  <compound refid="_light_8cpp" kind="file"><name>Light.cpp</name>
+  </compound>
+  <compound refid="_light_8h" kind="file"><name>Light.h</name>
+    <member refid="_light_8h_1a737b417f16ea225cf15e8d4c23df53dc" kind="define"><name>MAX_LIGHTS</name></member>
+    <member refid="_light_8h_1adc3ec8293e6a97ebe43f0196b9a7f638" kind="enum"><name>LightType</name></member>
+    <member refid="_light_8h_1adc3ec8293e6a97ebe43f0196b9a7f638aaebdbcb765394d25d6a604589a890f82" kind="enumvalue"><name>POINT</name></member>
+    <member refid="_light_8h_1adc3ec8293e6a97ebe43f0196b9a7f638ab6f2249394a4def60a78b342dcc925b9" kind="enumvalue"><name>DIRECTIONAL</name></member>
+    <member refid="_light_8h_1adc3ec8293e6a97ebe43f0196b9a7f638a5bac85a0c611ddef64ab0dfb383056f4" kind="enumvalue"><name>SPOT</name></member>
+    <member refid="_light_8h_1a5c50abf40600ee3c28c7fa04702a8bbc" kind="enum"><name>ShadowType</name></member>
+    <member refid="_light_8h_1a5c50abf40600ee3c28c7fa04702a8bbca3656183169810334a96b91129dc9d881" kind="enumvalue"><name>Hard</name></member>
+    <member refid="_light_8h_1a5c50abf40600ee3c28c7fa04702a8bbcaeb6d8ae6f20283755b339c0dc273988b" kind="enumvalue"><name>Standard</name></member>
+    <member refid="_light_8h_1a5c50abf40600ee3c28c7fa04702a8bbcae510cdf33cd497134b47b9316314d4b4" kind="enumvalue"><name>Smooth</name></member>
+  </compound>
+  <compound refid="_light_utils_8cpp" kind="file"><name>LightUtils.cpp</name>
+  </compound>
+  <compound refid="_light_utils_8h" kind="file"><name>LightUtils.h</name>
+  </compound>
+  <compound refid="_shadow_map_8cpp" kind="file"><name>ShadowMap.cpp</name>
+    <member refid="_shadow_map_8cpp_1aa5803570feb0b36078eee9c78789e575" kind="function"><name>configureDepthTexture2D</name></member>
+    <member refid="_shadow_map_8cpp_1aa0794dc55fce585febeb438bf2e7f22a" kind="function"><name>configureDepthTextureCube</name></member>
+  </compound>
+  <compound refid="_shadow_map_8h" kind="file"><name>ShadowMap.h</name>
+  </compound>
+  <compound refid="_shadow_renderer_8cpp" kind="file"><name>ShadowRenderer.cpp</name>
+    <member refid="_shadow_renderer_8cpp_1ae9b31085b0d7d6f4ea7b007a2a04b9ac" kind="function"><name>computeDirectionalCascades</name></member>
+  </compound>
+  <compound refid="_shadow_renderer_8h" kind="file"><name>ShadowRenderer.h</name>
+  </compound>
+  <compound refid="_constructed_material_8cpp" kind="file"><name>ConstructedMaterial.cpp</name>
+  </compound>
+  <compound refid="_constructed_material_8h" kind="file"><name>ConstructedMaterial.h</name>
+  </compound>
+  <compound refid="_material_8h" kind="file"><name>Material.h</name>
+    <member refid="_material_8h_1aad9a6eb3c83b1a7a5bcc90de1c991ecc" kind="typedef"><name>PMaterial</name></member>
+  </compound>
+  <compound refid="_material_defaults_8cpp" kind="file"><name>MaterialDefaults.cpp</name>
+  </compound>
+  <compound refid="_material_defaults_8h" kind="file"><name>MaterialDefaults.h</name>
+  </compound>
+  <compound refid="_material_registry_8cpp" kind="file"><name>MaterialRegistry.cpp</name>
+  </compound>
+  <compound refid="_material_registry_8h" kind="file"><name>MaterialRegistry.h</name>
+  </compound>
+  <compound refid="_p_b_r_material_8cpp" kind="file"><name>PBRMaterial.cpp</name>
+  </compound>
+  <compound refid="_p_b_r_material_8h" kind="file"><name>PBRMaterial.h</name>
+  </compound>
+  <compound refid="_skybox_material_8cpp" kind="file"><name>SkyboxMaterial.cpp</name>
+  </compound>
+  <compound refid="_skybox_material_8h" kind="file"><name>SkyboxMaterial.h</name>
+  </compound>
+  <compound refid="_screen_effects_8h" kind="file"><name>ScreenEffects.h</name>
+    <member refid="_screen_effects_8h_1a253b4cf4d7c392a00e85057fab843598" kind="enum"><name>AntiAliasingPreset</name></member>
+    <member refid="_screen_effects_8h_1a253b4cf4d7c392a00e85057fab843598ad15305d7a4e34e02489c74a5ef542f36" kind="enumvalue"><name>Off</name></member>
+    <member refid="_screen_effects_8h_1a253b4cf4d7c392a00e85057fab843598a92aa810060ca5e354d550167528fcb56" kind="enumvalue"><name>FXAA_Low</name></member>
+    <member refid="_screen_effects_8h_1a253b4cf4d7c392a00e85057fab843598ab08cacaec01a9e0ff69c39c733fb9907" kind="enumvalue"><name>FXAA_Medium</name></member>
+    <member refid="_screen_effects_8h_1a253b4cf4d7c392a00e85057fab843598a1879d710ce05a347b9979a5556ff7d95" kind="enumvalue"><name>FXAA_High</name></member>
+  </compound>
+  <compound refid="_shader_program_8cpp" kind="file"><name>ShaderProgram.cpp</name>
+  </compound>
+  <compound refid="_shader_program_8h" kind="file"><name>ShaderProgram.h</name>
+    <member refid="_shader_program_8h_1a6230e1b9ecbf2d82d10856fd7e1fde46" kind="enum"><name>ShaderType</name></member>
+    <member refid="_shader_program_8h_1a6230e1b9ecbf2d82d10856fd7e1fde46af7088b42f1b1ff22e50559719b20ffaf" kind="enumvalue"><name>FRAGMENT</name></member>
+    <member refid="_shader_program_8h_1a6230e1b9ecbf2d82d10856fd7e1fde46a2e4d5495bd9d476f78962cebe074ebbd" kind="enumvalue"><name>VERTEX</name></member>
+    <member refid="_shader_program_8h_1a6230e1b9ecbf2d82d10856fd7e1fde46ac9aaa20273366c49f183d2cc226b20bd" kind="enumvalue"><name>GEOMETRY</name></member>
+    <member refid="_shader_program_8h_1a6230e1b9ecbf2d82d10856fd7e1fde46a16cb45430e438228d09bd2e1a3c4471e" kind="enumvalue"><name>TESSELATION</name></member>
+    <member refid="_shader_program_8h_1a6230e1b9ecbf2d82d10856fd7e1fde46a391a0f3463a51c90bdf19aa7f35e0b46" kind="enumvalue"><name>COMPUTE</name></member>
+    <member refid="_shader_program_8h_1a6230e1b9ecbf2d82d10856fd7e1fde46adcd8fc0dfcbc905dcb6267c36b20bfd7" kind="enumvalue"><name>TASK</name></member>
+    <member refid="_shader_program_8h_1a6230e1b9ecbf2d82d10856fd7e1fde46af592af201c7b72e9bc09111b35fdf75a" kind="enumvalue"><name>RAYTRACE</name></member>
+    <member refid="_shader_program_8h_1a628acddf9216b5e00424607a3f76ccde" kind="typedef"><name>Shader</name></member>
+    <member refid="_shader_program_8h_1a674040327ddd18c70c0dd831c8f8aece" kind="typedef"><name>Program</name></member>
+    <member refid="_shader_program_8h_1ade8b92f95573f1fad883fc0c57b13ce4" kind="typedef"><name>Buffer</name></member>
+    <member refid="_shader_program_8h_1a5b731b0d2c129b1d4abd740553375f91" kind="typedef"><name>Array</name></member>
+  </compound>
+  <compound refid="_cube_map_8cpp" kind="file"><name>CubeMap.cpp</name>
+    <member refid="_cube_map_8cpp_1a48eeea27756c30fdae65035f069133fe" kind="variable"><name>cubemapLogger</name></member>
+    <member refid="_cube_map_8cpp_1a5021ab6018f7bfadbe94b638920e1bca" kind="function"><name>loadFace</name></member>
+  </compound>
+  <compound refid="_cube_map_8h" kind="file"><name>CubeMap.h</name>
+    <member refid="_cube_map_8h_1a562a673e7cf146444d0968502003899e" kind="typedef"><name>PCubeMap</name></member>
+  </compound>
+  <compound refid="_sky_box_8cpp" kind="file"><name>SkyBox.cpp</name>
+  </compound>
+  <compound refid="_sky_box_8h" kind="file"><name>SkyBox.h</name>
+    <member refid="_sky_box_8h_1afd8a7601588a5245102e77b8060dc790" kind="typedef"><name>PSkyBox</name></member>
+  </compound>
+  <compound refid="_texture_8cpp" kind="file"><name>Texture.cpp</name>
+    <member refid="_texture_8cpp_1a18372412ad2fc3ce1e3240b3cf0efe78" kind="define"><name>STB_IMAGE_IMPLEMENTATION</name></member>
+    <member refid="_texture_8cpp_1ac95a72c6f2daf960c2d3dcc41b54def6" kind="variable"><name>textureLogger</name></member>
+  </compound>
+  <compound refid="_texture_8h" kind="file"><name>Texture.h</name>
+    <member refid="_texture_8h_1a26ea2099fa018b231d6865cf8ef63410" kind="typedef"><name>PTexture</name></member>
+  </compound>
+  <compound refid="dir_d7056e544613b93ef3f48389d812c75e" kind="dir"><name>src/Rendering/Core</name>
+  </compound>
+  <compound refid="dir_1aa8c55c493a0d0e1495c103be011e33" kind="dir"><name>src/Rendering/Fonts</name>
+  </compound>
+  <compound refid="dir_ad27c5e799b93ebaeff8f79fd9b7d324" kind="dir"><name>src/Rendering/Geometry</name>
+  </compound>
+  <compound refid="dir_2b4f8c587d77a88f7914cf5c46849a39" kind="dir"><name>src/Rendering/Lighting</name>
+  </compound>
+  <compound refid="dir_96fb6c566891e7f12f4bf101397ebc43" kind="dir"><name>src/Rendering/Materials</name>
+  </compound>
+  <compound refid="dir_c11df6c3ad5785f32769b1a0fa5b9a13" kind="dir"><name>src/Rendering/PostFX</name>
+  </compound>
+  <compound refid="dir_d4e015951b263415729819c1a4b61808" kind="dir"><name>src/Rendering</name>
+  </compound>
+  <compound refid="dir_48510c05943b50a10c24618fc3c9f404" kind="dir"><name>src/Rendering/Shaders</name>
+  </compound>
+  <compound refid="dir_68267d1309a1af8e8297ef4c3efbcdba" kind="dir"><name>src</name>
+  </compound>
+  <compound refid="dir_c81126972a1dd0bf41a2f587f31413b2" kind="dir"><name>src/Rendering/Textures</name>
+  </compound>
+</doxygenindex>

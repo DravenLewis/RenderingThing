@@ -1,0 +1,198 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_environment" kind="class" language="C++" prot="public">
+    <compoundname>Environment</compoundname>
+    <includes refid="_environment_8h" local="no">Environment.h</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_environment_1a9b28c461c6073d1cd7e67a430e474383" prot="private" static="no" mutable="no">
+        <type><ref refid="class_light_manager" kindref="compound">LightManager</ref></type>
+        <definition>LightManager Environment::lightManager</definition>
+        <argsstring></argsstring>
+        <name>lightManager</name>
+        <qualifiedname>Environment::lightManager</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Environment.h" line="20" column="22" bodyfile="src/Rendering/Lighting/Environment.h" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_environment_1a52cb1d4023c430b48db9e5382d51fda5" prot="private" static="no" mutable="no">
+        <type>PSkyBox</type>
+        <definition>PSkyBox Environment::skybox</definition>
+        <argsstring></argsstring>
+        <name>skybox</name>
+        <qualifiedname>Environment::skybox</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Environment.h" line="21" column="17" bodyfile="src/Rendering/Lighting/Environment.h" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_environment_1a4ca2c8196a094e5e43b68cd1e5179e92" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool Environment::lightingEnabled</definition>
+        <argsstring></argsstring>
+        <name>lightingEnabled</name>
+        <qualifiedname>Environment::lightingEnabled</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Environment.h" line="22" column="14" bodyfile="src/Rendering/Lighting/Environment.h" bodystart="22" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_environment_1a5ec60bc420d1c8837fa0c429c7da7eef" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>Environment::Environment</definition>
+        <argsstring>()=default</argsstring>
+        <name>Environment</name>
+        <qualifiedname>Environment::Environment</qualifiedname>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_environment" kindref="compound">Environment</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Environment.h" line="28" column="9"/>
+      </memberdef>
+      <memberdef kind="function" id="class_environment_1ac4805d9a4e1da4f43d8f6cc7964cda38" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="class_light_manager" kindref="compound">LightManager</ref> &amp;</type>
+        <definition>LightManager &amp; Environment::getLightManager</definition>
+        <argsstring>()</argsstring>
+        <name>getLightManager</name>
+        <qualifiedname>Environment::getLightManager</qualifiedname>
+        <briefdescription>
+<para>Returns the light manager. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Environment.h" line="34" column="22" bodyfile="src/Rendering/Lighting/Environment.h" bodystart="34" bodyend="34"/>
+      </memberdef>
+      <memberdef kind="function" id="class_environment_1ace273e545c41b6049f6b843e49c07aba" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const <ref refid="class_light_manager" kindref="compound">LightManager</ref> &amp;</type>
+        <definition>const LightManager &amp; Environment::getLightManager</definition>
+        <argsstring>() const</argsstring>
+        <name>getLightManager</name>
+        <qualifiedname>Environment::getLightManager</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Environment.h" line="35" column="28" bodyfile="src/Rendering/Lighting/Environment.h" bodystart="35" bodyend="35"/>
+      </memberdef>
+      <memberdef kind="function" id="class_environment_1a10e711206e9abe20f8c29c2f45be21a9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void Environment::setSkyBox</definition>
+        <argsstring>(PSkyBox box)</argsstring>
+        <name>setSkyBox</name>
+        <qualifiedname>Environment::setSkyBox</qualifiedname>
+        <param>
+          <type>PSkyBox</type>
+          <declname>box</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Environment.h" line="37" column="14" bodyfile="src/Rendering/Lighting/Environment.h" bodystart="37" bodyend="37"/>
+      </memberdef>
+      <memberdef kind="function" id="class_environment_1ae9a844c9bb23fde0f9143275a30e686c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>PSkyBox</type>
+        <definition>PSkyBox Environment::getSkyBox</definition>
+        <argsstring>() const</argsstring>
+        <name>getSkyBox</name>
+        <qualifiedname>Environment::getSkyBox</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Environment.h" line="38" column="17" bodyfile="src/Rendering/Lighting/Environment.h" bodystart="38" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="class_environment_1a438f229c453941923e7a4e6e20901dae" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void Environment::setLightingEnabled</definition>
+        <argsstring>(bool enabled)</argsstring>
+        <name>setLightingEnabled</name>
+        <qualifiedname>Environment::setLightingEnabled</qualifiedname>
+        <param>
+          <type>bool</type>
+          <declname>enabled</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Environment.h" line="40" column="14" bodyfile="src/Rendering/Lighting/Environment.h" bodystart="40" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="class_environment_1a3ecb71afed64e8a5b3a9502494fa92c8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool Environment::isLightingEnabled</definition>
+        <argsstring>() const</argsstring>
+        <name>isLightingEnabled</name>
+        <qualifiedname>Environment::isLightingEnabled</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Environment.h" line="41" column="14" bodyfile="src/Rendering/Lighting/Environment.h" bodystart="41" bodyend="41"/>
+      </memberdef>
+      <memberdef kind="function" id="class_environment_1ac3e818fd64b523cefccf84d082141bf2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const std::vector&lt; <ref refid="struct_light" kindref="compound">Light</ref> &gt; &amp;</type>
+        <definition>const std::vector&lt; Light &gt; &amp; Environment::getLightsForUpload</definition>
+        <argsstring>() const</argsstring>
+        <name>getLightsForUpload</name>
+        <qualifiedname>Environment::getLightsForUpload</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Environment.h" line="43" column="27" bodyfile="src/Rendering/Lighting/Environment.h" bodystart="43" bodyend="46"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_environment" kindref="compound">Environment</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Lighting/Environment.h" line="18" column="1" bodyfile="src/Rendering/Lighting/Environment.h" bodystart="18" bodyend="47"/>
+    <listofallmembers>
+      <member refid="class_environment_1a5ec60bc420d1c8837fa0c429c7da7eef" prot="public" virt="non-virtual"><scope>Environment</scope><name>Environment</name></member>
+      <member refid="class_environment_1ac4805d9a4e1da4f43d8f6cc7964cda38" prot="public" virt="non-virtual"><scope>Environment</scope><name>getLightManager</name></member>
+      <member refid="class_environment_1ace273e545c41b6049f6b843e49c07aba" prot="public" virt="non-virtual"><scope>Environment</scope><name>getLightManager</name></member>
+      <member refid="class_environment_1ac3e818fd64b523cefccf84d082141bf2" prot="public" virt="non-virtual"><scope>Environment</scope><name>getLightsForUpload</name></member>
+      <member refid="class_environment_1ae9a844c9bb23fde0f9143275a30e686c" prot="public" virt="non-virtual"><scope>Environment</scope><name>getSkyBox</name></member>
+      <member refid="class_environment_1a3ecb71afed64e8a5b3a9502494fa92c8" prot="public" virt="non-virtual"><scope>Environment</scope><name>isLightingEnabled</name></member>
+      <member refid="class_environment_1a4ca2c8196a094e5e43b68cd1e5179e92" prot="private" virt="non-virtual"><scope>Environment</scope><name>lightingEnabled</name></member>
+      <member refid="class_environment_1a9b28c461c6073d1cd7e67a430e474383" prot="private" virt="non-virtual"><scope>Environment</scope><name>lightManager</name></member>
+      <member refid="class_environment_1a438f229c453941923e7a4e6e20901dae" prot="public" virt="non-virtual"><scope>Environment</scope><name>setLightingEnabled</name></member>
+      <member refid="class_environment_1a10e711206e9abe20f8c29c2f45be21a9" prot="public" virt="non-virtual"><scope>Environment</scope><name>setSkyBox</name></member>
+      <member refid="class_environment_1a52cb1d4023c430b48db9e5382d51fda5" prot="private" virt="non-virtual"><scope>Environment</scope><name>skybox</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

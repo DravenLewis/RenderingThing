@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_g_l_uniform_upload_1_1_texture_slot" kind="struct" language="C++" prot="public">
+    <compoundname>GLUniformUpload::TextureSlot</compoundname>
+    <includes refid="_shader_program_8h" local="no">ShaderProgram.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_g_l_uniform_upload_1_1_texture_slot_1ac8b4d2e94bfd9d37af8127bdacc5a66f" prot="public" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="class_texture" kindref="compound">Texture</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;Texture&gt; GLUniformUpload::TextureSlot::texture</definition>
+        <argsstring></argsstring>
+        <name>texture</name>
+        <qualifiedname>GLUniformUpload::TextureSlot::texture</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="47" column="25" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_g_l_uniform_upload_1_1_texture_slot_1a99f465321a697ee5adf9aad1bc11731c" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int GLUniformUpload::TextureSlot::slot</definition>
+        <argsstring></argsstring>
+        <name>slot</name>
+        <qualifiedname>GLUniformUpload::TextureSlot::slot</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="48" column="13" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="struct_g_l_uniform_upload_1_1_texture_slot_1adb577d818d2eb350952f0fa05386ce89" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>GLUniformUpload::TextureSlot::TextureSlot</definition>
+        <argsstring>()=default</argsstring>
+        <name>TextureSlot</name>
+        <qualifiedname>GLUniformUpload::TextureSlot::TextureSlot</qualifiedname>
+        <briefdescription>
+<para>Constructs a new <ref refid="struct_g_l_uniform_upload_1_1_texture_slot" kindref="compound">TextureSlot</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="53" column="9"/>
+      </memberdef>
+      <memberdef kind="function" id="struct_g_l_uniform_upload_1_1_texture_slot_1a23c7092a8763c531ee97288674086c1a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>GLUniformUpload::TextureSlot::TextureSlot</definition>
+        <argsstring>(std::shared_ptr&lt; Texture &gt; tex, int s=0)</argsstring>
+        <name>TextureSlot</name>
+        <qualifiedname>GLUniformUpload::TextureSlot::TextureSlot</qualifiedname>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="class_texture" kindref="compound">Texture</ref> &gt;</type>
+          <declname>tex</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>s</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="struct_g_l_uniform_upload_1_1_texture_slot" kindref="compound">TextureSlot</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>tex</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for tex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>s</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for s. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="59" column="9" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="59" bodyend="59"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_g_l_uniform_upload_1_1_texture_slot" kindref="compound">TextureSlot</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Shaders/ShaderProgram.h" line="46" column="5" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="46" bodyend="60"/>
+    <listofallmembers>
+      <member refid="struct_g_l_uniform_upload_1_1_texture_slot_1a99f465321a697ee5adf9aad1bc11731c" prot="public" virt="non-virtual"><scope>GLUniformUpload::TextureSlot</scope><name>slot</name></member>
+      <member refid="struct_g_l_uniform_upload_1_1_texture_slot_1ac8b4d2e94bfd9d37af8127bdacc5a66f" prot="public" virt="non-virtual"><scope>GLUniformUpload::TextureSlot</scope><name>texture</name></member>
+      <member refid="struct_g_l_uniform_upload_1_1_texture_slot_1adb577d818d2eb350952f0fa05386ce89" prot="public" virt="non-virtual"><scope>GLUniformUpload::TextureSlot</scope><name>TextureSlot</name></member>
+      <member refid="struct_g_l_uniform_upload_1_1_texture_slot_1a23c7092a8763c531ee97288674086c1a" prot="public" virt="non-virtual"><scope>GLUniformUpload::TextureSlot</scope><name>TextureSlot</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

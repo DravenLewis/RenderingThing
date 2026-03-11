@@ -1,0 +1,563 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_vertex" xml:lang="en-US">
+<title>Vertex Struct Reference</title>
+<indexterm><primary>Vertex</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_vertex">Vertex</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;Mesh.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><link linkend="_struct_vertex">Vertex</link> &amp; <link linkend="_struct_vertex_1a7828f036e4c200a53d499102997c2a30">Pos</link> (const Math3D::Vec3 &amp;pos)</para>
+
+<para>Sets vertex position. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_vertex">Vertex</link> &amp; <link linkend="_struct_vertex_1af1fe2694015b32b90d334bf46820bc04">Pos</link> (float x=0, float y=0, float z=0)</para>
+
+<para>Sets vertex position. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_vertex">Vertex</link> &amp; <link linkend="_struct_vertex_1a85ad46ae0b05f963524684314d19fedd">Norm</link> (const Math3D::Vec3 &amp;nml)</para>
+
+<para>Sets vertex normal. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_vertex">Vertex</link> &amp; <link linkend="_struct_vertex_1a1380a6d23ae35eb199ae3f41628ec47d">Norm</link> (float x=0, float y=0, float z=0)</para>
+
+<para>Sets vertex normal. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_vertex">Vertex</link> &amp; <link linkend="_struct_vertex_1a7ffc6ba8ee72602e3acbf54a164a031b">UV</link> (const Math3D::Vec2 &amp;pos)</para>
+
+<para>Sets vertex UV coordinates. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_vertex">Vertex</link> &amp; <link linkend="_struct_vertex_1aa1fb5d88ca585d9d07b5838dff9d0aff">UV</link> (float u=0, float v=0)</para>
+
+<para>Sets vertex UV coordinates. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_vertex">Vertex</link> &amp; <link linkend="_struct_vertex_1a5ede97c061c4623a1472f5d11ef81726">Col</link> (const Math3D::Vec4 &amp;col)</para>
+
+<para>Sets vertex color. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_vertex">Vertex</link> &amp; <link linkend="_struct_vertex_1a665c30113d1eb71a87f16e499c3d28a9">Col</link> (float r=0, float g=0, float b=0, float a=1)</para>
+
+<para>Sets vertex color. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_vertex_1a78a44236d3aa30c52652dd07212d9ca4"/>bool <emphasis role="strong">operator==</emphasis> (const <link linkend="_struct_vertex">Vertex</link> &amp;vtx) const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_vertex_1a0368072537259b0222dc040710f682d9"/>bool <emphasis role="strong">operator!=</emphasis> (const <link linkend="_struct_vertex">Vertex</link> &amp;vtx) const</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>static <link linkend="_struct_vertex">Vertex</link> <link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Build</link> (Math3D::Vec3 pos=Math3D::Vec3::zero(), Math3D::Vec4 color=Math3D::Vec4(1, 1, 1, 1), Math3D::Vec3 normal=Math3D::Vec3::zero(), Math3D::Vec2 texcords=Math3D::Vec2(0, 0))</para>
+
+<para>Builds the target output. </para>
+</listitem>
+            <listitem><para>static <link linkend="_struct_vertex">Vertex</link> <link linkend="_struct_vertex_1a392c050c56cbd414b0e541285ba1222a">Compose</link> (std::vector&lt; float &gt; &amp;floats, int dataSize=VERTEX_DATA_WIDTH)</para>
+
+<para>Composes a vertex from components. </para>
+</listitem>
+            <listitem><para>static std::vector&lt; float &gt; <link linkend="_struct_vertex_1a32abbab0c0fd0e6cd90a030ab0812776">Decompose</link> (<link linkend="_struct_vertex">Vertex</link> &amp;v)</para>
+
+<para>Decomposes a vertex into scalar components. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_vertex_1a55470b6176c680998d2b66bac14ae4da"/>Math3D::Vec3 <emphasis role="strong">Position</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_vertex_1a39331a69bee042faef08b291f500419d"/>Math3D::Vec3 <emphasis role="strong">Normal</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_vertex_1a401257a06c2c05262857d31998b91646"/>Math3D::Vec2 <emphasis role="strong">TexCoords</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_vertex_1ab0636b45174ef34e563efbc8024377eb"/>Math3D::Vec4 <emphasis role="strong">Color</emphasis></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Static Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_vertex_1a6ae4835e5fe1f9332acd97ec671279b5"/>static const int <emphasis role="strong">VERTEX_DATA_WIDTH</emphasis> = 12</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_vertex">Vertex</link>. </para>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8"/><section>
+    <title>Build()</title>
+<indexterm><primary>Build</primary><secondary>Vertex</secondary></indexterm>
+<indexterm><primary>Vertex</primary><secondary>Build</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_vertex">Vertex</link> Vertex::Build (Math3D::Vec3 pos = <computeroutput>Math3D::Vec3::zero()</computeroutput>
+, Math3D::Vec4 color = <computeroutput>Math3D::Vec4(1,1,1,1)</computeroutput>
+, Math3D::Vec3 normal = <computeroutput>Math3D::Vec3::zero()</computeroutput>
+, Math3D::Vec2 texcords = <computeroutput>Math3D::Vec2(0,0)</computeroutput>
+)<computeroutput>[inline]</computeroutput>, <computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Builds the target output. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>pos</entry><entry>
+<para>Value for pos. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>color</entry><entry>
+<para>Color value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>normal</entry><entry>
+<para>Value for normal. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>texcords</entry><entry>
+<para>Value for texcords. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Result of this operation. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_vertex_1a5ede97c061c4623a1472f5d11ef81726"/><section>
+    <title>Col()<computeroutput>[1/2]</computeroutput></title>
+<indexterm><primary>Col</primary><secondary>Vertex</secondary></indexterm>
+<indexterm><primary>Vertex</primary><secondary>Col</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_vertex">Vertex</link> &amp; Vertex::Col (const Math3D::Vec4 &amp; col)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Sets vertex color. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>col</entry><entry>
+<para>Value for col. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_vertex_1a665c30113d1eb71a87f16e499c3d28a9"/><section>
+    <title>Col()<computeroutput>[2/2]</computeroutput></title>
+<indexterm><primary>Col</primary><secondary>Vertex</secondary></indexterm>
+<indexterm><primary>Vertex</primary><secondary>Col</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_vertex">Vertex</link> &amp; Vertex::Col (float r = <computeroutput>0</computeroutput>
+, float g = <computeroutput>0</computeroutput>
+, float b = <computeroutput>0</computeroutput>
+, float a = <computeroutput>1</computeroutput>
+)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Sets vertex color. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>r</entry><entry>
+<para>Value for r. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>g</entry><entry>
+<para>Value for g. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>b</entry><entry>
+<para>Value for b. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>a</entry><entry>
+<para>Value for a. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_vertex_1a392c050c56cbd414b0e541285ba1222a"/><section>
+    <title>Compose()</title>
+<indexterm><primary>Compose</primary><secondary>Vertex</secondary></indexterm>
+<indexterm><primary>Vertex</primary><secondary>Compose</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_vertex">Vertex</link> Vertex::Compose (std::vector&lt; float &gt; &amp; floats, int dataSize = <computeroutput>VERTEX_DATA_WIDTH</computeroutput>
+)<computeroutput>[inline]</computeroutput>, <computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Composes a vertex from components. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>floats</entry><entry>
+<para>Value for floats. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>dataSize</entry><entry>
+<para>Number of elements or bytes. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Result of this operation. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_vertex_1a32abbab0c0fd0e6cd90a030ab0812776"/><section>
+    <title>Decompose()</title>
+<indexterm><primary>Decompose</primary><secondary>Vertex</secondary></indexterm>
+<indexterm><primary>Vertex</primary><secondary>Decompose</secondary></indexterm>
+<para><computeroutput>std::vector&lt; float &gt; Vertex::Decompose (<link linkend="_struct_vertex">Vertex</link> &amp; v)<computeroutput>[inline]</computeroutput>, <computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Decomposes a vertex into scalar components. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>v</entry><entry>
+<para>Value for v. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Computed numeric result. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_vertex_1a85ad46ae0b05f963524684314d19fedd"/><section>
+    <title>Norm()<computeroutput>[1/2]</computeroutput></title>
+<indexterm><primary>Norm</primary><secondary>Vertex</secondary></indexterm>
+<indexterm><primary>Vertex</primary><secondary>Norm</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_vertex">Vertex</link> &amp; Vertex::Norm (const Math3D::Vec3 &amp; nml)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Sets vertex normal. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>nml</entry><entry>
+<para>Value for nml. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_vertex_1a1380a6d23ae35eb199ae3f41628ec47d"/><section>
+    <title>Norm()<computeroutput>[2/2]</computeroutput></title>
+<indexterm><primary>Norm</primary><secondary>Vertex</secondary></indexterm>
+<indexterm><primary>Vertex</primary><secondary>Norm</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_vertex">Vertex</link> &amp; Vertex::Norm (float x = <computeroutput>0</computeroutput>
+, float y = <computeroutput>0</computeroutput>
+, float z = <computeroutput>0</computeroutput>
+)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Sets vertex normal. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>x</entry><entry>
+<para>Spatial value used by this operation. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>y</entry><entry>
+<para>Spatial value used by this operation. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>z</entry><entry>
+<para>Spatial value used by this operation. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_vertex_1a7828f036e4c200a53d499102997c2a30"/><section>
+    <title>Pos()<computeroutput>[1/2]</computeroutput></title>
+<indexterm><primary>Pos</primary><secondary>Vertex</secondary></indexterm>
+<indexterm><primary>Vertex</primary><secondary>Pos</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_vertex">Vertex</link> &amp; Vertex::Pos (const Math3D::Vec3 &amp; pos)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Sets vertex position. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>pos</entry><entry>
+<para>Value for pos. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_vertex_1af1fe2694015b32b90d334bf46820bc04"/><section>
+    <title>Pos()<computeroutput>[2/2]</computeroutput></title>
+<indexterm><primary>Pos</primary><secondary>Vertex</secondary></indexterm>
+<indexterm><primary>Vertex</primary><secondary>Pos</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_vertex">Vertex</link> &amp; Vertex::Pos (float x = <computeroutput>0</computeroutput>
+, float y = <computeroutput>0</computeroutput>
+, float z = <computeroutput>0</computeroutput>
+)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Sets vertex position. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>x</entry><entry>
+<para>Spatial value used by this operation. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>y</entry><entry>
+<para>Spatial value used by this operation. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>z</entry><entry>
+<para>Spatial value used by this operation. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_vertex_1a7ffc6ba8ee72602e3acbf54a164a031b"/><section>
+    <title>UV()<computeroutput>[1/2]</computeroutput></title>
+<indexterm><primary>UV</primary><secondary>Vertex</secondary></indexterm>
+<indexterm><primary>Vertex</primary><secondary>UV</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_vertex">Vertex</link> &amp; Vertex::UV (const Math3D::Vec2 &amp; pos)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Sets vertex UV coordinates. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>pos</entry><entry>
+<para>Value for pos. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_vertex_1aa1fb5d88ca585d9d07b5838dff9d0aff"/><section>
+    <title>UV()<computeroutput>[2/2]</computeroutput></title>
+<indexterm><primary>UV</primary><secondary>Vertex</secondary></indexterm>
+<indexterm><primary>Vertex</primary><secondary>UV</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_vertex">Vertex</link> &amp; Vertex::UV (float u = <computeroutput>0</computeroutput>
+, float v = <computeroutput>0</computeroutput>
+)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Sets vertex UV coordinates. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>u</entry><entry>
+<para>Value for u. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>v</entry><entry>
+<para>Value for v. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Geometry/<link linkend="__mesh_8h">Mesh.h</link></section>
+</section>

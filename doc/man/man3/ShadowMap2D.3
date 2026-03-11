@@ -1,0 +1,137 @@
+.TH "ShadowMap2D" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ShadowMap2D \- Represents the \fBShadowMap2D\fP type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ShadowMap\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBShadowMap2D\fP ()=default"
+.br
+.RI "Constructs a new \fBShadowMap2D\fP instance\&. "
+.ti -1c
+.RI "\fBShadowMap2D\fP (int size)"
+.br
+.RI "Constructs a new \fBShadowMap2D\fP instance\&. "
+.ti -1c
+.RI "\fB~ShadowMap2D\fP ()"
+.br
+.RI "Destroys this \fBShadowMap2D\fP instance\&. "
+.ti -1c
+.RI "\fBShadowMap2D\fP (const \fBShadowMap2D\fP &)=delete"
+.br
+.RI "Constructs a new \fBShadowMap2D\fP instance\&. "
+.ti -1c
+.RI "\fBShadowMap2D\fP & \fBoperator=\fP (const \fBShadowMap2D\fP &)=delete"
+.br
+.RI "Assigns from another instance\&. "
+.ti -1c
+.RI "\fBShadowMap2D\fP (\fBShadowMap2D\fP &&other) noexcept"
+.br
+.RI "Constructs a new \fBShadowMap2D\fP instance\&. "
+.ti -1c
+.RI "\fBShadowMap2D\fP & \fBoperator=\fP (\fBShadowMap2D\fP &&other) noexcept"
+.br
+.RI "Assigns from another instance\&. "
+.ti -1c
+.RI "void \fBresize\fP (int newSize)"
+.br
+.RI "Resizes internal resources\&. "
+.ti -1c
+.RI "void \fBbind\fP () const"
+.br
+.RI "Binds this resource\&. "
+.ti -1c
+.RI "void \fBunbind\fP () const"
+.br
+.RI "Unbinds this resource\&. "
+.ti -1c
+.RI "void \fBclear\fP () const"
+.br
+.RI "Clears the current state\&. "
+.ti -1c
+.RI "GLuint \fBgetDepthTexture\fP () const"
+.br
+.RI "Returns the depth texture\&. "
+.ti -1c
+.RI "int \fBgetSize\fP () const"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the \fBShadowMap2D\fP type\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ShadowMap2D::ShadowMap2D (int size)\fR [explicit]\fP"
+
+.PP
+Constructs a new \fBShadowMap2D\fP instance\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsize\fP Number of elements or bytes\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Result of this operation\&. 
+.RE
+.PP
+
+.SS "ShadowMap2D::ShadowMap2D (\fBShadowMap2D\fP && other)\fR [noexcept]\fP"
+
+.PP
+Constructs a new \fBShadowMap2D\fP instance\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIother\fP Value for other\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "GLuint ShadowMap2D::getDepthTexture () const\fR [inline]\fP"
+
+.PP
+Returns the depth texture\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Result of this operation\&. 
+.RE
+.PP
+
+.SS "\fBShadowMap2D\fP & ShadowMap2D::operator= (\fBShadowMap2D\fP && other)\fR [noexcept]\fP"
+
+.PP
+Assigns from another instance\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIother\fP Value for other\&. 
+.RE
+.PP
+
+.SS "void ShadowMap2D::resize (int newSize)"
+
+.PP
+Resizes internal resources\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fInewSize\fP Number of elements or bytes\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

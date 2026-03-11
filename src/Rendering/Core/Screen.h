@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Core/Screen.h
+ * @brief Declarations for Screen.
+ */
+
 #ifndef SCREEN_H
 #define SCREEN_H
 
@@ -20,6 +25,7 @@
 class View;
 typedef std::shared_ptr<View> PView;
 
+/// @brief Represents the Screen type.
 class Screen{
     private:
         int width, height;
@@ -40,35 +46,109 @@ class Screen{
         std::uint32_t presentFrameIndex = 0;
         float presentDebandStrength = 1.25f;
 
+        /**
+         * @brief Initializes screen geom.
+         */
         void initScreenGeom();
+        /**
+         * @brief Initializes screen shader.
+         */
         void initScreenShader();
 
         static PCamera CurrentCamera;
         static PEnvironment CurrentEnvironment;
         Color clearColor = Color::BLACK;
     public:
+        /**
+         * @brief Constructs a new Screen instance.
+         * @param width Dimension value.
+         * @param height Dimension value.
+         */
         Screen(int width, int height);
+        /**
+         * @brief Destroys this Screen instance.
+         */
         ~Screen();
 
+        /**
+         * @brief Processes the post-processing pipeline.
+         */
         void processRenderPipeline();
+        /**
+         * @brief Draws to window.
+         * @param window Value for window.
+         * @param clearWindow Flag controlling clear window.
+         */
         void drawToWindow(RenderWindow* window, bool clearWindow = true);
+        /**
+         * @brief Draws to view.
+         * @param view Value for view.
+         * @param clearWindow Flag controlling clear window.
+         * @param x Spatial value used by this operation.
+         * @param y Spatial value used by this operation.
+         * @param width Dimension value.
+         * @param height Dimension value.
+         */
         void drawToView(PView view, bool clearWindow = true, float x = -1, float y = -1, float width = -1, float height = -1);
 
+        /**
+         * @brief Resizes internal resources.
+         * @param w Value for w.
+         * @param h Value for h.
+         */
         void resize(int w, int h);
+        /**
+         * @brief Returns the width.
+         * @return Computed numeric result.
+         */
         int getWidth();
+        /**
+         * @brief Returns the height.
+         * @return Computed numeric result.
+         */
         int getHeight();
 
+        /**
+         * @brief Binds this resource.
+         * @param clear Flag controlling clear.
+         */
         void bind(bool clear = true);
+        /**
+         * @brief Unbinds this resource.
+         */
         void unbind();
 
+        /**
+         * @brief Adds effect.
+         * @param effect Value for effect.
+         */
         void addEffect(Graphics::PostProcessing::PPostProcessingEffect effect);
+        /**
+         * @brief Clears effects.
+         */
         void clearEffects();
 
 
+        /**
+         * @brief Returns the display texture.
+         * @return Result of this operation.
+         */
         PTexture getDisplayTexture();
+        /**
+         * @brief Returns the display buffer.
+         * @return Result of this operation.
+         */
         PFrameBuffer getDisplayBuffer() const;
+        /**
+         * @brief Returns the draw buffer.
+         * @return Result of this operation.
+         */
         PFrameBuffer getDrawBuffer() const;
 
+        /**
+         * @brief Returns the camera.
+         * @return Result of this operation.
+         */
         PCamera getCamera() const { return camera; }
         void setCamera(PCamera cam, bool makeCurrent = true);
         void makeCameraCurrent();

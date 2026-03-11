@@ -1,0 +1,205 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="_p_b_r_material_8h" kind="file" language="C++">
+    <compoundname>PBRMaterial.h</compoundname>
+    <includes local="no">memory</includes>
+    <includes refid="_material_8h" local="yes">Rendering/Materials/Material.h</includes>
+    <includes refid="_texture_8h" local="yes">Rendering/Textures/Texture.h</includes>
+    <includes refid="_cube_map_8h" local="yes">Rendering/Textures/CubeMap.h</includes>
+    <includes local="yes">Foundation/Util/ValueContainer.h</includes>
+    <includes local="yes">Foundation/Math/Color.h</includes>
+    <includedby refid="_constructed_material_8cpp" local="yes">src/Rendering/Materials/ConstructedMaterial.cpp</includedby>
+    <includedby refid="_material_registry_8cpp" local="yes">src/Rendering/Materials/MaterialRegistry.cpp</includedby>
+    <includedby refid="_p_b_r_material_8cpp" local="yes">src/Rendering/Materials/PBRMaterial.cpp</includedby>
+    <incdepgraph>
+      <node id="13">
+        <label>Assets/Core/Asset.h</label>
+      </node>
+      <node id="3">
+        <label>Rendering/Materials/Material.h</label>
+        <link refid="_material_8h"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>src/Rendering/Materials/PBRMaterial.h</label>
+        <link refid="_p_b_r_material_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>Rendering/Shaders/ShaderProgram.h</label>
+        <link refid="_shader_program_8h"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+      </node>
+      <node id="14">
+        <label>Rendering/Textures/CubeMap.h</label>
+        <link refid="_cube_map_8h"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="12">
+        <label>Rendering/Textures/Texture.h</label>
+        <link refid="_texture_8h"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="16">
+        <label>Foundation/Math/Color.h</label>
+      </node>
+      <node id="11">
+        <label>Foundation/Math/Math3D.h</label>
+      </node>
+      <node id="15">
+        <label>Foundation/Util/ValueContainer.h</label>
+      </node>
+      <node id="9">
+        <label>SDL3/SDL_opengl.h</label>
+      </node>
+      <node id="8">
+        <label>glad/glad.h</label>
+      </node>
+      <node id="10">
+        <label>map</label>
+      </node>
+      <node id="2">
+        <label>memory</label>
+      </node>
+      <node id="4">
+        <label>string</label>
+      </node>
+      <node id="5">
+        <label>unordered_map</label>
+      </node>
+      <node id="7">
+        <label>vector</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="2">
+        <label>src/Rendering/Materials/ConstructedMaterial.cpp</label>
+        <link refid="_constructed_material_8cpp"/>
+      </node>
+      <node id="3">
+        <label>src/Rendering/Materials/MaterialRegistry.cpp</label>
+        <link refid="_material_registry_8cpp"/>
+      </node>
+      <node id="4">
+        <label>src/Rendering/Materials/PBRMaterial.cpp</label>
+        <link refid="_p_b_r_material_8cpp"/>
+      </node>
+      <node id="1">
+        <label>src/Rendering/Materials/PBRMaterial.h</label>
+        <link refid="_p_b_r_material_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="class_p_b_r_material" prot="public">PBRMaterial</innerclass>
+    <briefdescription>
+<para>Declarations for <ref refid="class_p_b_r_material" kindref="compound">PBRMaterial</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>PBR_MATERIAL_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PBR_MATERIAL_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;memory&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_material_8h" kindref="compound">Rendering/Materials/Material.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_texture_8h" kindref="compound">Rendering/Textures/Texture.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_cube_map_8h" kindref="compound">Rendering/Textures/CubeMap.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Foundation/Util/ValueContainer.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Foundation/Math/Color.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight></codeline>
+<codeline lineno="18" refid="class_p_b_r_material" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="class_p_b_r_material_1aa95501f255a91cf9c2572ed4ea38fe27" kindref="member">PBRMaterial</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="class_material_1ace810a426f4b488d2dc2a53070d85405" kindref="member">Material</ref><sp/>{</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;Math3D::Vec4&gt;<sp/>BaseColor;</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;<sp/>BaseColorTex;</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;float&gt;<sp/>Metallic;</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;float&gt;<sp/>Roughness;</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;<sp/>RoughnessTex;</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;<sp/>MetallicRoughnessTex;</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;<sp/>NormalTex;</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;float&gt;<sp/>NormalScale;</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;<sp/>HeightTex;</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;float&gt;<sp/>HeightScale;</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;<sp/>EmissiveTex;</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;Math3D::Vec3&gt;<sp/>EmissiveColor;</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;float&gt;<sp/>EmissiveStrength;</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;<sp/>OcclusionTex;</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;float&gt;<sp/>OcclusionStrength;</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;std::shared_ptr&lt;CubeMap&gt;&gt;<sp/>EnvMap;</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;float&gt;<sp/>EnvStrength;</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;int&gt;<sp/>UseEnvMap;</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;Math3D::Vec2&gt;<sp/>UVScale;</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;Math3D::Vec2&gt;<sp/>UVOffset;</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;float&gt;<sp/>AlphaCutoff;</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;int&gt;<sp/>UseAlphaClip;</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;Math3D::Vec3&gt;<sp/>ViewPos;</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="class_p_b_r_material_1aa95501f255a91cf9c2572ed4ea38fe27" kindref="member">PBRMaterial</ref>(std::shared_ptr&lt;ShaderProgram&gt;<sp/>program);</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="class_p_b_r_material_1a30db1aa8fdf92f2a7310b864d79ee159" kindref="member">bind</ref>()<sp/></highlight><highlight class="keyword">override</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;PBRMaterial&gt;<sp/><ref refid="class_p_b_r_material_1aa0579a45ec0d6fa8c1203c0bc582fe39" kindref="member">Create</ref>(Math3D::Vec4<sp/>baseColor<sp/>=<sp/>Color::WHITE);</highlight></codeline>
+<codeline lineno="60"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">//<sp/>PBR_MATERIAL_H</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="src/Rendering/Materials/PBRMaterial.h"/>
+  </compounddef>
+</doxygen>

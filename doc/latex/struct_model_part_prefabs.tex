@@ -1,0 +1,131 @@
+\doxysection{Model\+Part\+Prefabs Struct Reference}
+\hypertarget{struct_model_part_prefabs}{}\label{struct_model_part_prefabs}\index{ModelPartPrefabs@{ModelPartPrefabs}}
+
+
+Holds data for \doxylink{struct_model_part_prefabs}{Model\+Part\+Prefabs}.  
+
+
+
+
+{\ttfamily \+\#include $<$Model\+Part\+Prefabs.\+h$>$}
+
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$ \doxymbox{\hyperlink{struct_model_part_prefabs_ae5f37b441c2d40314487e103ada227a8}{Make\+Plane}} (float width, float height, PMaterial mat=\doxymbox{\hyperlink{class_material_defaults_1_1_color_material_a2564a57120b10a3b17e87a04413db769}{Material\+Defaults::\+\+Color\+Material::\+\+Create}}(Color::\+\+RED), Math3\+D::\+\+Vec3 normal=Math3\+D::\+\+Vec3(0, 1, 0))
+\begin{DoxyCompactList}\small\item\em Creates plane. \end{DoxyCompactList}\item 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$ \doxymbox{\hyperlink{struct_model_part_prefabs_af662a7f490b997301237d4b33f4a7372}{Make\+Box}} (float width, float height, float depth, PMaterial mat=\doxymbox{\hyperlink{class_material_defaults_1_1_color_material_a2564a57120b10a3b17e87a04413db769}{Material\+Defaults::\+\+Color\+Material::\+\+Create}}(Color::\+\+RED))
+\begin{DoxyCompactList}\small\item\em Creates box. \end{DoxyCompactList}\item 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$ \doxymbox{\hyperlink{struct_model_part_prefabs_a3416bea1f8d1a22d55739bb58d7fc76e}{Make\+Circle\+Plane}} (float radius, int segments=32, PMaterial material=\doxymbox{\hyperlink{class_material_defaults_1_1_color_material_a2564a57120b10a3b17e87a04413db769}{Material\+Defaults::\+\+Color\+Material::\+\+Create}}(Color::\+\+RED), Math3\+D::\+\+Vec3 normal=Math3\+D::\+\+Vec3(0, 1, 0))
+\begin{DoxyCompactList}\small\item\em Creates circle plane. \end{DoxyCompactList}\item 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$ \doxymbox{\hyperlink{struct_model_part_prefabs_aa8e35dc9f7dab334b963ab19c722c948}{Make\+Sphere}} (float radius=1.\+0f, int slices=32, int stacks=18, PMaterial material=\doxymbox{\hyperlink{class_material_defaults_1_1_color_material_a2564a57120b10a3b17e87a04413db769}{Material\+Defaults::\+\+Color\+Material::\+\+Create}}(Color::\+\+WHITE))
+\begin{DoxyCompactList}\small\item\em Creates sphere. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Holds data for \doxylink{struct_model_part_prefabs}{Model\+Part\+Prefabs}. 
+
+\label{doc-func-members}
+\Hypertarget{struct_model_part_prefabs_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{struct_model_part_prefabs_af662a7f490b997301237d4b33f4a7372}\index{ModelPartPrefabs@{ModelPartPrefabs}!MakeBox@{MakeBox}}
+\index{MakeBox@{MakeBox}!ModelPartPrefabs@{ModelPartPrefabs}}
+\doxysubsubsection{\texorpdfstring{MakeBox()}{MakeBox()}}
+{\footnotesize\ttfamily \label{struct_model_part_prefabs_af662a7f490b997301237d4b33f4a7372} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$ Model\+Part\+Prefabs::\+\+Make\+Box (\begin{DoxyParamCaption}\item[{float}]{width}{, }\item[{float}]{height}{, }\item[{float}]{depth}{, }\item[{PMaterial}]{mat}{ = {\ttfamily \doxymbox{\hyperlink{class_material_defaults_1_1_color_material_a2564a57120b10a3b17e87a04413db769}{Material\+Defaults::\+\+Color\+Material::\+\+Create}}(Color:\+:\+RED)}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Creates box. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em width} & Dimension value. \\
+\hline
+{\em height} & Dimension value. \\
+\hline
+{\em depth} & Value for depth. \\
+\hline
+{\em mat} & Value for mat. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the resulting object. 
+\end{DoxyReturn}
+\Hypertarget{struct_model_part_prefabs_a3416bea1f8d1a22d55739bb58d7fc76e}\index{ModelPartPrefabs@{ModelPartPrefabs}!MakeCirclePlane@{MakeCirclePlane}}
+\index{MakeCirclePlane@{MakeCirclePlane}!ModelPartPrefabs@{ModelPartPrefabs}}
+\doxysubsubsection{\texorpdfstring{MakeCirclePlane()}{MakeCirclePlane()}}
+{\footnotesize\ttfamily \label{struct_model_part_prefabs_a3416bea1f8d1a22d55739bb58d7fc76e} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$ Model\+Part\+Prefabs::\+\+Make\+Circle\+Plane (\begin{DoxyParamCaption}\item[{float}]{radius}{, }\item[{int}]{segments}{ = {\ttfamily 32}, }\item[{PMaterial}]{material}{ = {\ttfamily \doxymbox{\hyperlink{class_material_defaults_1_1_color_material_a2564a57120b10a3b17e87a04413db769}{Material\+Defaults::\+\+Color\+Material::\+\+Create}}(Color:\+:\+RED)}, }\item[{Math3\+D::\+\+Vec3}]{normal}{ = {\ttfamily Math3D:\+:\+Vec3(0,1,0)}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Creates circle plane. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em radius} & Value for radius. \\
+\hline
+{\em segments} & Value for segments. \\
+\hline
+{\em material} & Value for material. \\
+\hline
+{\em normal} & Value for normal. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the resulting object. 
+\end{DoxyReturn}
+\Hypertarget{struct_model_part_prefabs_ae5f37b441c2d40314487e103ada227a8}\index{ModelPartPrefabs@{ModelPartPrefabs}!MakePlane@{MakePlane}}
+\index{MakePlane@{MakePlane}!ModelPartPrefabs@{ModelPartPrefabs}}
+\doxysubsubsection{\texorpdfstring{MakePlane()}{MakePlane()}}
+{\footnotesize\ttfamily \label{struct_model_part_prefabs_ae5f37b441c2d40314487e103ada227a8} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$ Model\+Part\+Prefabs::\+\+Make\+Plane (\begin{DoxyParamCaption}\item[{float}]{width}{, }\item[{float}]{height}{, }\item[{PMaterial}]{mat}{ = {\ttfamily \doxymbox{\hyperlink{class_material_defaults_1_1_color_material_a2564a57120b10a3b17e87a04413db769}{Material\+Defaults::\+\+Color\+Material::\+\+Create}}(Color:\+:\+RED)}, }\item[{Math3\+D::\+\+Vec3}]{normal}{ = {\ttfamily Math3D:\+:\+Vec3(0,1,0)}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Creates plane. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em width} & Dimension value. \\
+\hline
+{\em height} & Dimension value. \\
+\hline
+{\em mat} & Value for mat. \\
+\hline
+{\em normal} & Value for normal. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the resulting object. 
+\end{DoxyReturn}
+\Hypertarget{struct_model_part_prefabs_aa8e35dc9f7dab334b963ab19c722c948}\index{ModelPartPrefabs@{ModelPartPrefabs}!MakeSphere@{MakeSphere}}
+\index{MakeSphere@{MakeSphere}!ModelPartPrefabs@{ModelPartPrefabs}}
+\doxysubsubsection{\texorpdfstring{MakeSphere()}{MakeSphere()}}
+{\footnotesize\ttfamily \label{struct_model_part_prefabs_aa8e35dc9f7dab334b963ab19c722c948} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$ Model\+Part\+Prefabs::\+\+Make\+Sphere (\begin{DoxyParamCaption}\item[{float}]{radius}{ = {\ttfamily 1.0f}, }\item[{int}]{slices}{ = {\ttfamily 32}, }\item[{int}]{stacks}{ = {\ttfamily 18}, }\item[{PMaterial}]{material}{ = {\ttfamily \doxymbox{\hyperlink{class_material_defaults_1_1_color_material_a2564a57120b10a3b17e87a04413db769}{Material\+Defaults::\+\+Color\+Material::\+\+Create}}(Color:\+:\+WHITE)}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Creates sphere. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em radius} & Value for radius. \\
+\hline
+{\em slices} & Value for slices. \\
+\hline
+{\em stacks} & Value for stacks. \\
+\hline
+{\em material} & Value for material. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the resulting object. 
+\end{DoxyReturn}
+
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Geometry/\+\doxymbox{\hyperlink{_model_part_prefabs_8h}{Model\+Part\+Prefabs.\+h}}\end{DoxyCompactItemize}

@@ -1,0 +1,119 @@
+\doxysection{Constructed\+Material.\+h}
+\hypertarget{_constructed_material_8h_source}{}\label{_constructed_material_8h_source}\index{src/Rendering/Materials/ConstructedMaterial.h@{src/Rendering/Materials/ConstructedMaterial.h}}
+\doxymbox{\hyperlink{_constructed_material_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ CONSTRUCTED\_MATERIAL\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ CONSTRUCTED\_MATERIAL\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_material_8h}{Rendering/Materials/Material.h}}"{}}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_texture}{Texture}};}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00017\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_constructed_material_a6e513e5615be7d3b0fa75894b2c58dd1}{ConstructedMaterial}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{class_material_ace810a426f4b488d2dc2a53070d85405}{Material}}\ \{}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum\ class}\ \doxymbox{\hyperlink{class_constructed_material_a7944a0525d83161b63f7cef5d90c58cf}{FieldType}}\ \{}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \ \ \ \ Float\ =\ 0,}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \ \ \ \ Int,}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ \ \ \ \ Bool,}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \ \ \ \ Vec2,}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \ \ \ \ Vec3,}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \ \ \ \ Vec4,}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \ \ \ \ Texture2D}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Field}}\ \{}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ key;}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ displayName;}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ uniformName;}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ mirrorUniformName;}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ presenceUniformName;}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_constructed_material_a7944a0525d83161b63f7cef5d90c58cf}{FieldType}}\ type\ =\ FieldType::Float;}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ floatValue\ =\ 0.0f;}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ intValue\ =\ 0;}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ boolValue\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \ \ \ \ Math3D::Vec2\ vec2Value\ =\ Math3D::Vec2(0.0f,\ 0.0f);}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \ \ \ \ Math3D::Vec3\ vec3Value\ =\ Math3D::Vec3(0.0f,\ 0.0f,\ 0.0f);}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \ \ \ \ Math3D::Vec4\ vec4Value\ =\ Math3D::Vec4(0.0f,\ 0.0f,\ 0.0f,\ 1.0f);}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ textureAssetRef;}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \ \ \ \ std::shared\_ptr<Texture>\ texturePtr;}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ loadedTextureRef;}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ textureSlot\ =\ 0;}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \textcolor{keyword}{explicit}\ \doxymbox{\hyperlink{class_constructed_material_a6e513e5615be7d3b0fa75894b2c58dd1}{ConstructedMaterial}}(\textcolor{keyword}{const}\ std::shared\_ptr<ShaderProgram>\&\ shaderProgram);}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<ConstructedMaterial>\ \doxymbox{\hyperlink{class_constructed_material_a3a3f4b57dfe35059b73a40e6cac44684}{CreateWithPBRShader}}();}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_constructed_material_a21bc4a9062326ce5c0cd79a8a702a6be}{setSourceAssetRef}}(\textcolor{keyword}{const}\ std::string\&\ ref);}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ \doxymbox{\hyperlink{class_constructed_material_a71a8ad0b3f9b7332cbeb6f83f40b7c9c}{getSourceAssetRef}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_constructed_material_ac61016aad3fbd3d73ec68b6bbb1ddada}{setSourceMaterialName}}(\textcolor{keyword}{const}\ std::string\&\ name);}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ \doxymbox{\hyperlink{class_constructed_material_aa0808c55319a66dcef4948cca0f68a20}{getSourceMaterialName}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Field}}\&\ \doxymbox{\hyperlink{class_constructed_material_a2f30d4fbf1fdb26e428b33d23dbf10c6}{addFloatField}}(\textcolor{keyword}{const}\ std::string\&\ key,}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ displayName,}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ uniformName,}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ value,}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ mirrorUniformName\ =\ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Field}}\&\ \doxymbox{\hyperlink{class_constructed_material_a284816c36fa3df24c2a4078166d2e542}{addIntField}}(\textcolor{keyword}{const}\ std::string\&\ key,}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ displayName,}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ uniformName,}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ value,}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ mirrorUniformName\ =\ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Field}}\&\ \doxymbox{\hyperlink{class_constructed_material_a3aede6f45921adc753bb60b2f312a894}{addBoolField}}(\textcolor{keyword}{const}\ std::string\&\ key,}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ displayName,}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ uniformName,}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ value,}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ mirrorUniformName\ =\ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Field}}\&\ \doxymbox{\hyperlink{class_constructed_material_a5e730682b49c7d07f4e3213b7c8e936f}{addVec2Field}}(\textcolor{keyword}{const}\ std::string\&\ key,}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ displayName,}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ uniformName,}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ Math3D::Vec2\&\ value,}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ mirrorUniformName\ =\ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Field}}\&\ \doxymbox{\hyperlink{class_constructed_material_afa38f16b02e4428ab401779f626db4bb}{addVec3Field}}(\textcolor{keyword}{const}\ std::string\&\ key,}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ displayName,}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ uniformName,}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ Math3D::Vec3\&\ value,}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ mirrorUniformName\ =\ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Field}}\&\ \doxymbox{\hyperlink{class_constructed_material_acf1ea6cee12a7e291049b2bcd93e418a}{addVec4Field}}(\textcolor{keyword}{const}\ std::string\&\ key,}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ displayName,}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ uniformName,}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ Math3D::Vec4\&\ value,}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ mirrorUniformName\ =\ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Field}}\&\ \doxymbox{\hyperlink{class_constructed_material_a4a1b88134f55b0f679212db40941c87b}{addTexture2DField}}(\textcolor{keyword}{const}\ std::string\&\ key,}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ displayName,}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ uniformName,}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ textureAssetRef,}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ textureSlot,}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ presenceUniformName\ =\ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00187\ }
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ std::vector<Field>\&\ \doxymbox{\hyperlink{class_constructed_material_a7d29c3cf5ab8b761637884dd53ccb531}{fields}}();}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<Field>\&\ \doxymbox{\hyperlink{class_constructed_material_a7d29c3cf5ab8b761637884dd53ccb531}{fields}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00198\ }
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_constructed_material_a1672cf71fcbe34b381fe784c9dcafa5c}{clearFields}}();}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_constructed_material_ad41964516b374f85c9dbe03d70285388}{markFieldsDirty}}();}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_constructed_material_a0b89ef6b1940504648859f840dd78a4b}{applyField}}(\textcolor{keywordtype}{size\_t}\ index);}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_constructed_material_a2d9ac90844fa0e951bdb8a2f90bd1aea}{applyAllFields}}();}
+\DoxyCodeLine{00216\ }
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_constructed_material_a20ec1258bcfcd504150134f3d12dbb4a}{bind}}()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00221\ }
+\DoxyCodeLine{00222\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00228\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Field}}\&\ emplaceField(\doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Field}}\&\&\ field);}
+\DoxyCodeLine{00233\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ applyFieldInternal(\doxymbox{\hyperlink{struct_constructed_material_1_1_field}{Field}}\&\ field);}
+\DoxyCodeLine{00234\ }
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \ \ std::vector<Field>\ dynamicFields;}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ fieldsDirty\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ std::string\ sourceAssetRef;}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ std::string\ sourceMaterialName;}
+\DoxyCodeLine{00239\ \};}
+\DoxyCodeLine{00240\ }
+\DoxyCodeLine{00241\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ CONSTRUCTED\_MATERIAL\_H}}
+
+\end{DoxyCode}

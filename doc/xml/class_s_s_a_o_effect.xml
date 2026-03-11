@@ -1,0 +1,348 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_s_s_a_o_effect" kind="class" language="C++" prot="public">
+    <compoundname>SSAOEffect</compoundname>
+    <basecompoundref refid="class_graphics_1_1_post_processing_1_1_post_processing_effect" prot="public" virt="non-virtual">Graphics::PostProcessing::PostProcessingEffect</basecompoundref>
+    <includes refid="_screen_effects_8h" local="no">ScreenEffects.h</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_s_s_a_o_effect_1aade22728cb7e9da0c8a7cfb7fe93057e" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="class_shader_program" kindref="compound">ShaderProgram</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;ShaderProgram&gt; SSAOEffect::shader</definition>
+        <argsstring></argsstring>
+        <name>shader</name>
+        <qualifiedname>SSAOEffect::shader</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="131" column="25" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="131" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_s_s_a_o_effect_1a8ceda1cdfab381dbaab0e4c4ca338db8" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool SSAOEffect::compileAttempted</definition>
+        <argsstring></argsstring>
+        <name>compileAttempted</name>
+        <qualifiedname>SSAOEffect::compileAttempted</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="132" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="132" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_s_s_a_o_effect_1a77e063bb2ed8216729d18c53218459cd" prot="private" static="no" mutable="no">
+        <type>const std::string</type>
+        <definition>const std::string SSAOEffect::SSAO_FRAG_SHADER</definition>
+        <argsstring></argsstring>
+        <name>SSAO_FRAG_SHADER</name>
+        <qualifiedname>SSAOEffect::SSAO_FRAG_SHADER</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="133" column="27" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="133" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="class_s_s_a_o_effect_1af574645d883fac643b853db1b62580d2" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float SSAOEffect::radiusPx</definition>
+        <argsstring></argsstring>
+        <name>radiusPx</name>
+        <qualifiedname>SSAOEffect::radiusPx</qualifiedname>
+        <initializer>= 3.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="303" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="303" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_s_s_a_o_effect_1a9d335514bb79bc311f6b8cdc04b8a86b" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float SSAOEffect::depthRadius</definition>
+        <argsstring></argsstring>
+        <name>depthRadius</name>
+        <qualifiedname>SSAOEffect::depthRadius</qualifiedname>
+        <initializer>= 0.025f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="304" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="304" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_s_s_a_o_effect_1a4c4e0760accdb8d994446370c8fc42e0" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float SSAOEffect::bias</definition>
+        <argsstring></argsstring>
+        <name>bias</name>
+        <qualifiedname>SSAOEffect::bias</qualifiedname>
+        <initializer>= 0.001f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="305" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="305" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_s_s_a_o_effect_1abd1606e4d0b941c7b30610e29473f55a" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float SSAOEffect::intensity</definition>
+        <argsstring></argsstring>
+        <name>intensity</name>
+        <qualifiedname>SSAOEffect::intensity</qualifiedname>
+        <initializer>= 1.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="306" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="306" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_s_s_a_o_effect_1a4d13876a8994c4a2663a16c0f2cffbda" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float SSAOEffect::giBoost</definition>
+        <argsstring></argsstring>
+        <name>giBoost</name>
+        <qualifiedname>SSAOEffect::giBoost</qualifiedname>
+        <initializer>= 0.12f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="307" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="307" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_s_s_a_o_effect_1a648330861bd69dc04718288d615991ce" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int SSAOEffect::sampleCount</definition>
+        <argsstring></argsstring>
+        <name>sampleCount</name>
+        <qualifiedname>SSAOEffect::sampleCount</qualifiedname>
+        <initializer>= 8</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="308" column="13" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="308" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_s_s_a_o_effect_1a2da8204d05b9bc357440d9d6bc73d00d" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float SSAOEffect::nearPlane</definition>
+        <argsstring></argsstring>
+        <name>nearPlane</name>
+        <qualifiedname>SSAOEffect::nearPlane</qualifiedname>
+        <initializer>= 0.1f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="309" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="309" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_s_s_a_o_effect_1a3f8f6ab14f4ed2d75f8dce09da0d3b00" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float SSAOEffect::farPlane</definition>
+        <argsstring></argsstring>
+        <name>farPlane</name>
+        <qualifiedname>SSAOEffect::farPlane</qualifiedname>
+        <initializer>= 1000.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="310" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="310" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_s_s_a_o_effect_1a48376c9b6b5e288443bf93a21cef91fe" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool SSAOEffect::ensureCompiled</definition>
+        <argsstring>()</argsstring>
+        <name>ensureCompiled</name>
+        <qualifiedname>SSAOEffect::ensureCompiled</qualifiedname>
+        <briefdescription>
+<para>Checks whether ensure compiled. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>True when the operation succeeds; otherwise false. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="284" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="284" bodyend="300"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_s_s_a_o_effect_1a4170ac563f9fca8af67029028aa3162a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>SSAOEffect::SSAOEffect</definition>
+        <argsstring>()</argsstring>
+        <name>SSAOEffect</name>
+        <qualifiedname>SSAOEffect::SSAOEffect</qualifiedname>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_s_s_a_o_effect" kindref="compound">SSAOEffect</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="315" column="9" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="315" bodyend="319"/>
+      </memberdef>
+      <memberdef kind="function" id="class_s_s_a_o_effect_1a7f1ff7cf52ff64340ee7789e89b0a16a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>bool</type>
+        <definition>bool SSAOEffect::apply</definition>
+        <argsstring>(PTexture tex, PTexture depthTex, PFrameBuffer outFbo, std::shared_ptr&lt; ModelPart &gt; quad) override</argsstring>
+        <name>apply</name>
+        <qualifiedname>SSAOEffect::apply</qualifiedname>
+        <reimplements refid="class_graphics_1_1_post_processing_1_1_post_processing_effect_1a75b0263b1e53943ceb4f13d4aad0f5e6">apply</reimplements>
+        <param>
+          <type>PTexture</type>
+          <declname>tex</declname>
+        </param>
+        <param>
+          <type>PTexture</type>
+          <declname>depthTex</declname>
+        </param>
+        <param>
+          <type>PFrameBuffer</type>
+          <declname>outFbo</declname>
+        </param>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="struct_model_part" kindref="compound">ModelPart</ref> &gt;</type>
+          <declname>quad</declname>
+        </param>
+        <briefdescription>
+<para>Applies current settings. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>tex</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for tex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>depthTex</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for depth tex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>outFbo</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output value for fbo. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>quad</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for quad. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>True when the operation succeeds; otherwise false. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="329" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="329" bodyend="372"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_s_s_a_o_effect_1ae40d950572e38a3367b1f1f1b2ac7895" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="class_s_s_a_o_effect" kindref="compound">SSAOEffect</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt; SSAOEffect &gt; SSAOEffect::New</definition>
+        <argsstring>()</argsstring>
+        <name>New</name>
+        <qualifiedname>SSAOEffect::New</qualifiedname>
+        <briefdescription>
+<para>Creates a new object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Pointer to the resulting object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="378" column="32" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="378" bodyend="380"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_s_s_a_o_effect" kindref="compound">SSAOEffect</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>Graphics::PostProcessing::PostProcessingEffect</label>
+        <link refid="class_graphics_1_1_post_processing_1_1_post_processing_effect"/>
+      </node>
+      <node id="1">
+        <label>SSAOEffect</label>
+        <link refid="class_s_s_a_o_effect"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>Graphics::PostProcessing::PostProcessingEffect</label>
+        <link refid="class_graphics_1_1_post_processing_1_1_post_processing_effect"/>
+      </node>
+      <node id="1">
+        <label>SSAOEffect</label>
+        <link refid="class_s_s_a_o_effect"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="src/Rendering/PostFX/ScreenEffects.h" line="129" column="1" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="129" bodyend="381"/>
+    <listofallmembers>
+      <member refid="class_s_s_a_o_effect_1a7f1ff7cf52ff64340ee7789e89b0a16a" prot="public" virt="virtual"><scope>SSAOEffect</scope><name>apply</name></member>
+      <member refid="class_s_s_a_o_effect_1a4c4e0760accdb8d994446370c8fc42e0" prot="public" virt="non-virtual"><scope>SSAOEffect</scope><name>bias</name></member>
+      <member refid="class_s_s_a_o_effect_1a8ceda1cdfab381dbaab0e4c4ca338db8" prot="private" virt="non-virtual"><scope>SSAOEffect</scope><name>compileAttempted</name></member>
+      <member refid="class_s_s_a_o_effect_1a9d335514bb79bc311f6b8cdc04b8a86b" prot="public" virt="non-virtual"><scope>SSAOEffect</scope><name>depthRadius</name></member>
+      <member refid="class_s_s_a_o_effect_1a48376c9b6b5e288443bf93a21cef91fe" prot="private" virt="non-virtual"><scope>SSAOEffect</scope><name>ensureCompiled</name></member>
+      <member refid="class_s_s_a_o_effect_1a3f8f6ab14f4ed2d75f8dce09da0d3b00" prot="public" virt="non-virtual"><scope>SSAOEffect</scope><name>farPlane</name></member>
+      <member refid="class_s_s_a_o_effect_1a4d13876a8994c4a2663a16c0f2cffbda" prot="public" virt="non-virtual"><scope>SSAOEffect</scope><name>giBoost</name></member>
+      <member refid="class_s_s_a_o_effect_1abd1606e4d0b941c7b30610e29473f55a" prot="public" virt="non-virtual"><scope>SSAOEffect</scope><name>intensity</name></member>
+      <member refid="class_s_s_a_o_effect_1a2da8204d05b9bc357440d9d6bc73d00d" prot="public" virt="non-virtual"><scope>SSAOEffect</scope><name>nearPlane</name></member>
+      <member refid="class_s_s_a_o_effect_1ae40d950572e38a3367b1f1f1b2ac7895" prot="public" virt="non-virtual"><scope>SSAOEffect</scope><name>New</name></member>
+      <member refid="class_s_s_a_o_effect_1af574645d883fac643b853db1b62580d2" prot="public" virt="non-virtual"><scope>SSAOEffect</scope><name>radiusPx</name></member>
+      <member refid="class_s_s_a_o_effect_1a648330861bd69dc04718288d615991ce" prot="public" virt="non-virtual"><scope>SSAOEffect</scope><name>sampleCount</name></member>
+      <member refid="class_s_s_a_o_effect_1aade22728cb7e9da0c8a7cfb7fe93057e" prot="private" virt="non-virtual"><scope>SSAOEffect</scope><name>shader</name></member>
+      <member refid="class_s_s_a_o_effect_1a77e063bb2ed8216729d18c53218459cd" prot="private" virt="non-virtual"><scope>SSAOEffect</scope><name>SSAO_FRAG_SHADER</name></member>
+      <member refid="class_s_s_a_o_effect_1a4170ac563f9fca8af67029028aa3162a" prot="public" virt="non-virtual"><scope>SSAOEffect</scope><name>SSAOEffect</name></member>
+      <member refid="class_graphics_1_1_post_processing_1_1_post_processing_effect_1a956557ebb725734d270dd77ef8e40358" prot="public" virt="virtual"><scope>SSAOEffect</scope><name>~PostProcessingEffect</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

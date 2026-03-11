@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__material_8h" xml:lang="en-US">
+<title>src/Rendering/Materials/Material.h File Reference</title>
+<indexterm><primary>src/Rendering/Materials/Material.h</primary></indexterm>
+<para>
+
+<para>Declarations for <link linkend="_class_material">Material</link>. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &lt;string&gt;<?linebreak?>#include &lt;unordered_map&gt;<?linebreak?>#include &lt;memory&gt;<?linebreak?>#include &quot;Rendering/Shaders/ShaderProgram.h&quot;<?linebreak?></programlisting><simplesect>
+    <title>Classes    </title>
+        <itemizedlist>
+            <listitem><para>struct <link linkend="_struct_i_material_property">IMaterialProperty</link></para>
+
+<para>Holds data for <link linkend="_struct_i_material_property">IMaterialProperty</link>. </para>
+</listitem>
+            <listitem><para>struct <link linkend="_struct_material_property">MaterialProperty&lt; T &gt;</link></para>
+
+<para>Holds data for <link linkend="_struct_material_property">MaterialProperty</link>. </para>
+</listitem>
+            <listitem><para>class <link linkend="_class_material">Material</link></para>
+
+<para>Represents the <link linkend="_class_material">Material</link> type. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Typedefs    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="__material_8h_1aad9a6eb3c83b1a7a5bcc90de1c991ecc"/>typedef std::shared_ptr&lt; <link linkend="_class_material">Material</link> &gt; <emphasis role="strong">PMaterial</emphasis></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Declarations for <link linkend="_class_material">Material</link>. </para>
+</section>
+</section>

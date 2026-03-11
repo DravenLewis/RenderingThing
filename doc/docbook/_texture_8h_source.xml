@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__texture_8h_source" xml:lang="en-US">
+<title>Texture.h</title>
+<indexterm><primary>src/Rendering/Textures/Texture.h</primary></indexterm>
+Go to the documentation of this file.<programlisting linenumbering="unnumbered">1 
+5 
+6 <emphasis role="preprocessor">#ifndef&#32;TEXTURE_H</emphasis>
+7 <emphasis role="preprocessor">#define&#32;TEXTURE_H</emphasis>
+8 
+9 <emphasis role="preprocessor">#include&#32;&lt;glad/glad.h&gt;</emphasis>
+10 <emphasis role="preprocessor">#include&#32;&lt;string&gt;</emphasis>
+11 <emphasis role="preprocessor">#include&#32;&lt;memory&gt;</emphasis>
+12 <emphasis role="preprocessor">#include&#32;&lt;vector&gt;</emphasis>
+13 
+14 <emphasis role="preprocessor">#include&#32;&quot;Assets/Core/Asset.h&quot;</emphasis>
+15 
+16 <emphasis role="keyword">namespace&#32;</emphasis>Graphics&#32;{&#32;<emphasis role="comment">//&#32;Hollow&#32;Structure&#32;of&#32;the&#32;Graphics&#32;Class.</emphasis>
+17 &#32;&#32;&#32;&#32;<emphasis role="keyword">namespace&#32;</emphasis>Image{
+18 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">class&#32;</emphasis><link linkend="_struct_graphics_1_1_image_1_1_image">Image</link>;
+19 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">class&#32;</emphasis><link linkend="_struct_graphics_1_1_image_1_1_buffered_image">BufferedImage</link>;
+20 &#32;&#32;&#32;&#32;}
+21 }
+22 
+24 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_texture_1a6c275e3f186675ff6ed73ccf970e552f">Texture</link>{
+25 &#32;&#32;&#32;&#32;<emphasis role="keyword">private</emphasis>:
+26 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;GLuint&#32;textureID;
+27 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;Graphics::Image::Image&gt;&#32;cpuImage;
+28 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;width,&#32;height;
+29 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;ownsTexture&#32;=&#32;<emphasis role="keyword">true</emphasis>;
+30 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::string&#32;sourceAssetRef;
+31 &#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+32 
+36 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_texture_1a6c275e3f186675ff6ed73ccf970e552f">Texture</link>()&#32;:&#32;textureID(0),&#32;width(0),&#32;height(0){};
+37 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_texture">~Texture</link>();
+38 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_texture_1a6c275e3f186675ff6ed73ccf970e552f">Texture</link>(std::shared_ptr&lt;Graphics::Image::Image&gt;&#32;image,&#32;GLenum&#32;imageHint&#32;=&#32;GL_TEXTURE_2D);
+39 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_texture_1a6c275e3f186675ff6ed73ccf970e552f">Texture</link>(<emphasis role="keyword">const</emphasis>&#32;<link linkend="_class_texture">Texture</link>&amp;)&#32;=&#32;<emphasis role="keyword">delete</emphasis>;&#32;<emphasis role="comment">//&#32;dont&#32;allow&#32;copying&#32;Texture&#32;tex&#32;=&#32;val.getTexture();&#32;is&#32;invald&#32;Texture*&#32;tex&#32;=&#32;val.getTexturePtr()&#32;is&#32;okay&#32;tho.</emphasis>
+40 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_texture_1a6c275e3f186675ff6ed73ccf970e552f">Texture</link>(<emphasis role="keywordtype">int</emphasis>&#32;width,&#32;<emphasis role="keywordtype">int</emphasis>&#32;height)&#32;:&#32;textureID(0),&#32;width(width),&#32;height(height)&#32;{};
+41 
+42 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;bind(<emphasis role="keywordtype">unsigned</emphasis>&#32;<emphasis role="keywordtype">int</emphasis>&#32;slot&#32;=&#32;0)&#32;<emphasis role="keyword">const</emphasis>;
+43 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;unbind()&#32;<emphasis role="keyword">const</emphasis>;
+44 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;dispose();
+45 
+46 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">inline</emphasis>&#32;<emphasis role="keywordtype">int</emphasis>&#32;getWidth()&#32;{<emphasis role="keywordflow">return</emphasis>&#32;this-&gt;width;}
+47 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">inline</emphasis>&#32;<emphasis role="keywordtype">int</emphasis>&#32;getHeight()&#32;{<emphasis role="keywordflow">return</emphasis>&#32;this-&gt;height;}
+48 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;GLuint&amp;&#32;getID()&#32;{<emphasis role="keywordflow">return</emphasis>&#32;this-&gt;textureID;}
+49 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;getSourceAssetRef()<emphasis role="keyword">&#32;const&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;sourceAssetRef;&#32;}
+50 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;setSourceAssetRef(<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;assetRef)&#32;{&#32;sourceAssetRef&#32;=&#32;assetRef;&#32;}
+51 
+52 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;Graphics::Image::Image&gt;&#32;getImageData()<emphasis role="keyword">&#32;const&#32;</emphasis>{<emphasis role="keywordflow">return</emphasis>&#32;cpuImage;}
+53 
+54 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;Texture&gt;&#32;Load(PAsset&#32;asset,&#32;GLenum&#32;imageHint&#32;=&#32;GL_TEXTURE_2D,&#32;<emphasis role="keywordtype">bool</emphasis>&#32;flipVertically&#32;=&#32;<emphasis role="keyword">true</emphasis>);
+55 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;Graphics::Image::Image&gt;&#32;LoadImage(PAsset&#32;asset,&#32;<emphasis role="keywordtype">bool</emphasis>&#32;flipVertically&#32;=&#32;<emphasis role="keyword">true</emphasis>);
+56 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;Texture&gt;&#32;CreateEmpty(<emphasis role="keywordtype">int</emphasis>&#32;width,&#32;<emphasis role="keywordtype">int</emphasis>&#32;height);
+57 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;Texture&gt;&#32;CreateRenderTarget(
+58 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;width,
+59 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;height,
+60 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;GLenum&#32;internalFormat&#32;=&#32;GL_RGBA16F,
+61 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;GLenum&#32;format&#32;=&#32;GL_RGBA,
+62 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;GLenum&#32;type&#32;=&#32;GL_FLOAT
+63 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;);
+64 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;Texture&gt;&#32;CreateFromAlphaBuffer(<emphasis role="keywordtype">int</emphasis>&#32;width,&#32;<emphasis role="keywordtype">int</emphasis>&#32;height,&#32;<emphasis role="keyword">const</emphasis>&#32;<emphasis role="keywordtype">unsigned</emphasis>&#32;<emphasis role="keywordtype">char</emphasis>*&#32;alphaData);
+65 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;Texture&gt;&#32;CreateFromExisting(GLuint&#32;<emphasis role="keywordtype">id</emphasis>,&#32;<emphasis role="keywordtype">int</emphasis>&#32;width,&#32;<emphasis role="keywordtype">int</emphasis>&#32;height,&#32;<emphasis role="keywordtype">bool</emphasis>&#32;owns&#32;=&#32;<emphasis role="keyword">false</emphasis>);
+66 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;FlushPendingDeletes();
+67 
+68 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;Unload(std::shared_ptr&lt;Texture&gt;&amp;&#32;tex){
+69 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(tex){
+70 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;tex-&gt;dispose();
+71 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;tex.reset();
+72 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+73 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+74 
+75 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;FlipVerticallyOnLoad(<emphasis role="keywordtype">int</emphasis>&#32;i);
+76 };
+77 
+78 <emphasis role="keyword">typedef</emphasis>&#32;std::shared_ptr&lt;Texture&gt;&#32;PTexture;&#32;
+79 
+80 <emphasis role="preprocessor">#endif&#32;</emphasis><emphasis role="comment">//&#32;TEXTURE_H</emphasis>
+</programlisting></section>

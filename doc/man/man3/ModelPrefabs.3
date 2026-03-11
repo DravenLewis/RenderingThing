@@ -1,0 +1,54 @@
+.TH "ModelPrefabs" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ModelPrefabs \- Holds data for \fBModelPrefabs\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ModelPrefabs\&.h>\fP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBCubeMaterialDefinition\fP"
+.br
+.RI "Holds data for \fBCubeMaterialDefinition\fP\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static std::shared_ptr< \fBModel\fP > \fBMakeCube\fP (float scale=1\&.0f, std::shared_ptr< \fBCubeMaterialDefinition\fP > matDef=\fBCubeMaterialDefinition::Create\fP())"
+.br
+.RI "Creates cube\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Holds data for \fBModelPrefabs\fP\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "std::shared_ptr< \fBModel\fP > ModelPrefabs::MakeCube (float scale = \fR1\&.0f\fP, std::shared_ptr< \fBCubeMaterialDefinition\fP > matDef = \fR\fBCubeMaterialDefinition::Create\fP()\fP)\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+Creates cube\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIscale\fP Spatial value used by this operation\&. 
+.br
+\fImatDef\fP Value for mat def\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

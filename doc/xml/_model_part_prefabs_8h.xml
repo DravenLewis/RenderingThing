@@ -1,0 +1,520 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="_model_part_prefabs_8h" kind="file" language="C++">
+    <compoundname>ModelPartPrefabs.h</compoundname>
+    <includes local="no">memory</includes>
+    <includes local="no">algorithm</includes>
+    <includes local="no">cmath</includes>
+    <includes local="no">vector</includes>
+    <includes refid="_model_part_8h" local="yes">Rendering/Geometry/ModelPart.h</includes>
+    <includes refid="_material_8h" local="yes">Rendering/Materials/Material.h</includes>
+    <includes refid="_material_defaults_8h" local="yes">Rendering/Materials/MaterialDefaults.h</includes>
+    <includes local="yes">Foundation/Math/Math3D.h</includes>
+    <includedby refid="_graphics2_d_8h" local="yes">src/Rendering/Core/Graphics2D.h</includedby>
+    <includedby refid="_screen_8h" local="yes">src/Rendering/Core/Screen.h</includedby>
+    <includedby refid="_model_prefabs_8h" local="yes">src/Rendering/Geometry/ModelPrefabs.h</includedby>
+    <includedby refid="_sky_box_8cpp" local="yes">src/Rendering/Textures/SkyBox.cpp</includedby>
+    <incdepgraph>
+      <node id="20">
+        <label>Assets/Core/Asset.h</label>
+      </node>
+      <node id="13">
+        <label>Rendering/Geometry/Drawable.h</label>
+        <link refid="_drawable_8h"/>
+        <childnode refid="12" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>Rendering/Geometry/Mesh.h</label>
+        <link refid="_mesh_8h"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>Rendering/Geometry/ModelPart.h</label>
+        <link refid="_model_part_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>src/Rendering/Geometry/ModelPartPrefabs.h</label>
+        <link refid="_model_part_prefabs_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+      </node>
+      <node id="25">
+        <label>Rendering/Lighting/Light.h</label>
+        <link refid="_light_8h"/>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>Rendering/Lighting/LightUtils.h</label>
+        <link refid="_light_utils_8h"/>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="14">
+        <label>Rendering/Materials/Material.h</label>
+        <link refid="_material_8h"/>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+      </node>
+      <node id="22">
+        <label>Rendering/Materials/MaterialDefaults.h</label>
+        <link refid="_material_defaults_8h"/>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+      </node>
+      <node id="17">
+        <label>Rendering/Shaders/ShaderProgram.h</label>
+        <link refid="_shader_program_8h"/>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+      </node>
+      <node id="21">
+        <label>Rendering/Textures/CubeMap.h</label>
+        <link refid="_cube_map_8h"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="19">
+        <label>Rendering/Textures/Texture.h</label>
+        <link refid="_texture_8h"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>Foundation/Logging/Logbot.h</label>
+      </node>
+      <node id="24">
+        <label>Foundation/Math/Color.h</label>
+      </node>
+      <node id="12">
+        <label>Foundation/Math/Math3D.h</label>
+      </node>
+      <node id="27">
+        <label>Foundation/Util/ValueContainer.h</label>
+      </node>
+      <node id="9">
+        <label>SDL3/SDL.h</label>
+      </node>
+      <node id="10">
+        <label>SDL3/SDL_opengl.h</label>
+      </node>
+      <node id="3">
+        <label>algorithm</label>
+      </node>
+      <node id="4">
+        <label>cmath</label>
+      </node>
+      <node id="11">
+        <label>cstdint</label>
+      </node>
+      <node id="8">
+        <label>glad/glad.h</label>
+      </node>
+      <node id="18">
+        <label>map</label>
+      </node>
+      <node id="2">
+        <label>memory</label>
+      </node>
+      <node id="15">
+        <label>string</label>
+      </node>
+      <node id="16">
+        <label>unordered_map</label>
+      </node>
+      <node id="5">
+        <label>vector</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="3">
+        <label>src/Rendering/Core/Graphics2D.cpp</label>
+        <link refid="_graphics2_d_8cpp"/>
+      </node>
+      <node id="2">
+        <label>src/Rendering/Core/Graphics2D.h</label>
+        <link refid="_graphics2_d_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>src/Rendering/Core/Screen.cpp</label>
+        <link refid="_screen_8cpp"/>
+      </node>
+      <node id="4">
+        <label>src/Rendering/Core/Screen.h</label>
+        <link refid="_screen_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>src/Rendering/Core/View.cpp</label>
+        <link refid="_view_8cpp"/>
+      </node>
+      <node id="6">
+        <label>src/Rendering/Core/View.h</label>
+        <link refid="_view_8h"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>src/Rendering/Geometry/ModelPartPrefabs.h</label>
+        <link refid="_model_part_prefabs_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+      </node>
+      <node id="11">
+        <label>src/Rendering/Geometry/ModelPrefabs.h</label>
+        <link refid="_model_prefabs_8h"/>
+      </node>
+      <node id="8">
+        <label>src/Rendering/Lighting/ShadowRenderer.cpp</label>
+        <link refid="_shadow_renderer_8cpp"/>
+      </node>
+      <node id="9">
+        <label>src/Rendering/Materials/MaterialDefaults.cpp</label>
+        <link refid="_material_defaults_8cpp"/>
+      </node>
+      <node id="10">
+        <label>src/Rendering/Materials/PBRMaterial.cpp</label>
+        <link refid="_p_b_r_material_8cpp"/>
+      </node>
+      <node id="12">
+        <label>src/Rendering/Textures/SkyBox.cpp</label>
+        <link refid="_sky_box_8cpp"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="struct_model_part_prefabs" prot="public">ModelPartPrefabs</innerclass>
+    <briefdescription>
+<para>Declarations for <ref refid="struct_model_part_prefabs" kindref="compound">ModelPartPrefabs</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>MODELPART_PREFABS_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>MODELPART_PREFABS_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;memory&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;algorithm&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cmath&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;vector&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_model_part_8h" kindref="compound">Rendering/Geometry/ModelPart.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_material_8h" kindref="compound">Rendering/Materials/Material.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_material_defaults_8h" kindref="compound">Rendering/Materials/MaterialDefaults.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Foundation/Math/Math3D.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight></codeline>
+<codeline lineno="21" refid="struct_model_part_prefabs" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_model_part_prefabs" kindref="compound">ModelPartPrefabs</ref>{</highlight></codeline>
+<codeline lineno="30" refid="struct_model_part_prefabs_1ae5f37b441c2d40314487e103ada227a8" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;ModelPart&gt;<sp/><ref refid="struct_model_part_prefabs_1ae5f37b441c2d40314487e103ada227a8" kindref="member">MakePlane</ref>(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>width,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>height,<sp/>PMaterial<sp/>mat<sp/>=<sp/><ref refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" kindref="member">MaterialDefaults::ColorMaterial::Create</ref>(Color::RED),<sp/>Math3D::Vec3<sp/>normal<sp/>=<sp/>Math3D::Vec3(0,1,0)){</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;ModelPart&gt;<sp/>part;</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>factory<sp/>=<sp/><ref refid="struct_model_part_factory_1a3ef7855857c9e4a6106485c4d6dc13d1" kindref="member">ModelPartFactory::Create</ref>(mat);</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>v1,<sp/>v2,<sp/>v3,<sp/>v4;</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>factory</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(-1.0f,0.0f,-1.0f)).UV(0,0).Norm(normal),<sp/>&amp;v1)</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(<sp/>1.0f,0.0f,-1.0f)).UV(1,0).Norm(normal),<sp/>&amp;v2)</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(<sp/>1.0f,0.0f,<sp/>1.0f)).UV(1,1).Norm(normal),<sp/>&amp;v3)</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(-1.0f,0.0f,<sp/>1.0f)).UV(0,1).Norm(normal),<sp/>&amp;v4)</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.defineFace(v1,v4,v3,v2);</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>part<sp/>=<sp/>factory.assemble();</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>part-&gt;localTransform.setScale(Math3D::Vec3(width,1.0f,height));</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>part;</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight></codeline>
+<codeline lineno="54" refid="struct_model_part_prefabs_1af662a7f490b997301237d4b33f4a7372" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;ModelPart&gt;<sp/><ref refid="struct_model_part_prefabs_1af662a7f490b997301237d4b33f4a7372" kindref="member">MakeBox</ref>(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>width,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>height,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>depth,PMaterial<sp/>mat<sp/>=<sp/><ref refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" kindref="member">MaterialDefaults::ColorMaterial::Create</ref>(Color::RED)){</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>factory<sp/>=<sp/><ref refid="struct_model_part_factory_1a3ef7855857c9e4a6106485c4d6dc13d1" kindref="member">ModelPartFactory::Create</ref>(mat);</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>v0,<sp/>v1,<sp/>v2,<sp/>v3,<sp/>v4,<sp/>v5,<sp/>v6,<sp/>v7,<sp/>v8,<sp/>v9,<sp/>v10,<sp/>v11,<sp/>v12,<sp/>v13,<sp/>v14,<sp/>v15,<sp/>v16,<sp/>v17,<sp/>v18,<sp/>v19,<sp/>v20,<sp/>v21,<sp/>v22,<sp/>v23;</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>factory</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Front<sp/>face<sp/>(Z<sp/>=<sp/>1.0,<sp/>Normal<sp/>=<sp/>0,<sp/>0,<sp/>1)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(-1.0f,<sp/>-1.0f,<sp/><sp/>1.0f)).UV(0,0).Norm(Math3D::Vec3(0,0,1)),<sp/>&amp;v0)</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(<sp/>1.0f,<sp/>-1.0f,<sp/><sp/>1.0f)).UV(1,0).Norm(Math3D::Vec3(0,0,1)),<sp/>&amp;v1)</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(<sp/>1.0f,<sp/><sp/>1.0f,<sp/><sp/>1.0f)).UV(1,1).Norm(Math3D::Vec3(0,0,1)),<sp/>&amp;v2)</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(-1.0f,<sp/><sp/>1.0f,<sp/><sp/>1.0f)).UV(0,1).Norm(Math3D::Vec3(0,0,1)),<sp/>&amp;v3)</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Back<sp/>face<sp/>(Z<sp/>=<sp/>-1.0,<sp/>Normal<sp/>=<sp/>0,<sp/>0,<sp/>-1)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(<sp/>1.0f,<sp/>-1.0f,<sp/>-1.0f)).UV(0,0).Norm(Math3D::Vec3(0,0,-1)),<sp/>&amp;v4)</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(-1.0f,<sp/>-1.0f,<sp/>-1.0f)).UV(1,0).Norm(Math3D::Vec3(0,0,-1)),<sp/>&amp;v5)</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(-1.0f,<sp/><sp/>1.0f,<sp/>-1.0f)).UV(1,1).Norm(Math3D::Vec3(0,0,-1)),<sp/>&amp;v6)</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(<sp/>1.0f,<sp/><sp/>1.0f,<sp/>-1.0f)).UV(0,1).Norm(Math3D::Vec3(0,0,-1)),<sp/>&amp;v7)</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Top<sp/>face<sp/>(Y<sp/>=<sp/>1.0,<sp/>Normal<sp/>=<sp/>0,<sp/>1,<sp/>0)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(-1.0f,<sp/><sp/>1.0f,<sp/>-1.0f)).UV(0,0).Norm(Math3D::Vec3(0,1,0)),<sp/>&amp;v8)</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(<sp/>1.0f,<sp/><sp/>1.0f,<sp/>-1.0f)).UV(1,0).Norm(Math3D::Vec3(0,1,0)),<sp/>&amp;v9)</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(<sp/>1.0f,<sp/><sp/>1.0f,<sp/><sp/>1.0f)).UV(1,1).Norm(Math3D::Vec3(0,1,0)),<sp/>&amp;v10)</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(-1.0f,<sp/><sp/>1.0f,<sp/><sp/>1.0f)).UV(0,1).Norm(Math3D::Vec3(0,1,0)),<sp/>&amp;v11)</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Bottom<sp/>face<sp/>(Y<sp/>=<sp/>-1.0,<sp/>Normal<sp/>=<sp/>0,<sp/>-1,<sp/>0)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(-1.0f,<sp/>-1.0f,<sp/>-1.0f)).UV(0,1).Norm(Math3D::Vec3(0,-1,0)),<sp/>&amp;v12)</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(<sp/>1.0f,<sp/>-1.0f,<sp/>-1.0f)).UV(1,1).Norm(Math3D::Vec3(0,-1,0)),<sp/>&amp;v13)</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(<sp/>1.0f,<sp/>-1.0f,<sp/><sp/>1.0f)).UV(1,0).Norm(Math3D::Vec3(0,-1,0)),<sp/>&amp;v14)</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(-1.0f,<sp/>-1.0f,<sp/><sp/>1.0f)).UV(0,0).Norm(Math3D::Vec3(0,-1,0)),<sp/>&amp;v15)</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"></highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Right<sp/>face<sp/>(X<sp/>=<sp/>1.0,<sp/>Normal<sp/>=<sp/>1,<sp/>0,<sp/>0)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(<sp/>1.0f,<sp/>-1.0f,<sp/>-1.0f)).UV(0,0).Norm(Math3D::Vec3(1,0,0)),<sp/>&amp;v16)</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(<sp/>1.0f,<sp/>-1.0f,<sp/><sp/>1.0f)).UV(1,0).Norm(Math3D::Vec3(1,0,0)),<sp/>&amp;v17)</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(<sp/>1.0f,<sp/><sp/>1.0f,<sp/><sp/>1.0f)).UV(1,1).Norm(Math3D::Vec3(1,0,0)),<sp/>&amp;v18)</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(<sp/>1.0f,<sp/><sp/>1.0f,<sp/>-1.0f)).UV(0,1).Norm(Math3D::Vec3(1,0,0)),<sp/>&amp;v19)</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"></highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Left<sp/>face<sp/>(X<sp/>=<sp/>-1.0,<sp/>Normal<sp/>=<sp/>-1,<sp/>0,<sp/>0)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(-1.0f,<sp/>-1.0f,<sp/><sp/>1.0f)).UV(0,0).Norm(Math3D::Vec3(-1,0,0)),<sp/>&amp;v20)</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(-1.0f,<sp/>-1.0f,<sp/>-1.0f)).UV(1,0).Norm(Math3D::Vec3(-1,0,0)),<sp/>&amp;v21)</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(-1.0f,<sp/><sp/>1.0f,<sp/>-1.0f)).UV(1,1).Norm(Math3D::Vec3(-1,0,0)),<sp/>&amp;v22)</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(-1.0f,<sp/><sp/>1.0f,<sp/><sp/>1.0f)).UV(0,1).Norm(Math3D::Vec3(-1,0,0)),<sp/>&amp;v23)</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"></highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Define<sp/>the<sp/>6<sp/>faces</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.defineFace(v0,<sp/>v1,<sp/>v2,<sp/>v3)<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Front</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.defineFace(v4,<sp/>v5,<sp/>v6,<sp/>v7)<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Back</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.defineFace(v8,<sp/>v11,<sp/>v10,<sp/>v9)<sp/></highlight><highlight class="comment">//<sp/>Top</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.defineFace(v12,<sp/>v13,<sp/>v14,<sp/>v15)<sp/></highlight><highlight class="comment">//<sp/>Bottom</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.defineFace(v16,<sp/>v19,<sp/>v18,<sp/>v17)<sp/></highlight><highlight class="comment">//<sp/>Right</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.defineFace(v20,<sp/>v23,<sp/>v22,<sp/>v21);<sp/></highlight><highlight class="comment">//<sp/>Left</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="102"><highlight class="normal"></highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>part<sp/>=<sp/>factory.assemble();</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>part-&gt;localTransform.setScale(Math3D::Vec3(width,<sp/>height,<sp/>depth));</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>part;</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"></highlight></codeline>
+<codeline lineno="116" refid="struct_model_part_prefabs_1a3416bea1f8d1a22d55739bb58d7fc76e" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;ModelPart&gt;<sp/><ref refid="struct_model_part_prefabs_1a3416bea1f8d1a22d55739bb58d7fc76e" kindref="member">MakeCirclePlane</ref>(</highlight></codeline>
+<codeline lineno="117"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>radius,<sp/></highlight></codeline>
+<codeline lineno="118"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>segments<sp/>=<sp/>32,<sp/></highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>PMaterial<sp/>material<sp/>=<sp/><ref refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" kindref="member">MaterialDefaults::ColorMaterial::Create</ref>(Color::RED),<sp/></highlight></codeline>
+<codeline lineno="120"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Math3D::Vec3<sp/>normal<sp/>=<sp/>Math3D::Vec3(0,1,0)</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><sp/><sp/><sp/><sp/>){</highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>factory<sp/>=<sp/><ref refid="struct_model_part_factory_1a3ef7855857c9e4a6106485c4d6dc13d1" kindref="member">ModelPartFactory::Create</ref>(material);</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"></highlight></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>centerIndex;</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>factory.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(0,0,0)).UV(0.5f,0.5f).Norm(normal),<sp/>&amp;centerIndex);</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"></highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>firstEdgeIndex<sp/>=<sp/>-1,<sp/>lastEdgeIndex<sp/>=<sp/>-1;</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i<sp/>=<sp/>0;<sp/>i<sp/>&lt;=<sp/>segments;<sp/>i++){</highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>theta<sp/>=<sp/>(float)i<sp/>/<sp/>(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">)segments<sp/>*<sp/>2.0f<sp/>*<sp/>(float)<sp/>Math3D::PI;</highlight></codeline>
+<codeline lineno="130"><highlight class="normal"></highlight></codeline>
+<codeline lineno="131"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>x<sp/>=<sp/>Math3D::Cos(theta);</highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>z<sp/>=<sp/>Math3D::Sin(theta);</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"></highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>currentIndex;</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>u<sp/>=<sp/>x<sp/>*<sp/>0.5f<sp/>+<sp/>0.5f;</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>v<sp/>=<sp/>z<sp/>*<sp/>0.5f<sp/>+<sp/>0.5f;</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"></highlight></codeline>
+<codeline lineno="138"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>factory.addVertex(<ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(x,0.0f,z)).UV(u,v).Norm(normal),<sp/>&amp;currentIndex);</highlight></codeline>
+<codeline lineno="139"><highlight class="normal"></highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(i<sp/>==<sp/>0)<sp/>firstEdgeIndex<sp/>=<sp/>currentIndex;</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"></highlight></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(i<sp/>&gt;<sp/>0){</highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>factory.defineFace(centerIndex,<sp/>currentIndex,<sp/>lastEdgeIndex);</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="145"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>lastEdgeIndex<sp/>=<sp/>currentIndex;</highlight></codeline>
+<codeline lineno="146"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="147"><highlight class="normal"></highlight></codeline>
+<codeline lineno="148"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>part<sp/>=<sp/>factory.assemble();</highlight></codeline>
+<codeline lineno="149"><highlight class="normal"></highlight></codeline>
+<codeline lineno="150"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>part-&gt;localTransform.setScale(Math3D::Vec3(radius,<sp/>1.0f,<sp/>radius));</highlight></codeline>
+<codeline lineno="151"><highlight class="normal"></highlight></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>part;</highlight></codeline>
+<codeline lineno="153"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="154"><highlight class="normal"></highlight></codeline>
+<codeline lineno="163" refid="struct_model_part_prefabs_1aa8e35dc9f7dab334b963ab19c722c948" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;ModelPart&gt;<sp/><ref refid="struct_model_part_prefabs_1aa8e35dc9f7dab334b963ab19c722c948" kindref="member">MakeSphere</ref>(</highlight></codeline>
+<codeline lineno="164"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>radius<sp/>=<sp/>1.0f,</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>slices<sp/>=<sp/>32,</highlight></codeline>
+<codeline lineno="166"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>stacks<sp/>=<sp/>18,</highlight></codeline>
+<codeline lineno="167"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>PMaterial<sp/>material<sp/>=<sp/><ref refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" kindref="member">MaterialDefaults::ColorMaterial::Create</ref>(Color::WHITE)</highlight></codeline>
+<codeline lineno="168"><highlight class="normal"><sp/><sp/><sp/><sp/>){</highlight></codeline>
+<codeline lineno="169"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>slices<sp/>=<sp/>Math3D::Max(slices,<sp/>8);</highlight></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>stacks<sp/>=<sp/>Math3D::Max(stacks,<sp/>6);</highlight></codeline>
+<codeline lineno="171"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(radius<sp/>&lt;=<sp/>Math3D::EPSILON){</highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>radius<sp/>=<sp/>1.0f;</highlight></codeline>
+<codeline lineno="173"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="174"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(!material){</highlight></codeline>
+<codeline lineno="175"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>material<sp/>=<sp/><ref refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" kindref="member">MaterialDefaults::ColorMaterial::Create</ref>(Color::WHITE);</highlight></codeline>
+<codeline lineno="176"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="177"><highlight class="normal"></highlight></codeline>
+<codeline lineno="178"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>factory<sp/>=<sp/><ref refid="struct_model_part_factory_1a3ef7855857c9e4a6106485c4d6dc13d1" kindref="member">ModelPartFactory::Create</ref>(material);</highlight></codeline>
+<codeline lineno="179"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;int&gt;<sp/>indices(</highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">size_t</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">((stacks<sp/>+<sp/>1)<sp/>*<sp/>(slices<sp/>+<sp/>1)),<sp/>-1);</highlight></codeline>
+<codeline lineno="180"><highlight class="normal"></highlight></codeline>
+<codeline lineno="181"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>stack<sp/>=<sp/>0;<sp/>stack<sp/>&lt;=<sp/>stacks;<sp/>++stack){</highlight></codeline>
+<codeline lineno="182"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>v<sp/>=<sp/>(float)stack<sp/>/<sp/>(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">)stacks;</highlight></codeline>
+<codeline lineno="183"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>phi<sp/>=<sp/>v<sp/>*<sp/>(float)Math3D::PI;</highlight></codeline>
+<codeline lineno="184"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>y<sp/>=<sp/>std::cos(phi);</highlight></codeline>
+<codeline lineno="185"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>ringRadius<sp/>=<sp/>std::sin(phi);</highlight></codeline>
+<codeline lineno="186"><highlight class="normal"></highlight></codeline>
+<codeline lineno="187"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>slice<sp/>=<sp/>0;<sp/>slice<sp/>&lt;=<sp/>slices;<sp/>++slice){</highlight></codeline>
+<codeline lineno="188"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>u<sp/>=<sp/>(float)slice<sp/>/<sp/>(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">)slices;</highlight></codeline>
+<codeline lineno="189"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>theta<sp/>=<sp/>u<sp/>*<sp/>(float)Math3D::PI<sp/>*<sp/>2.0f;</highlight></codeline>
+<codeline lineno="190"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>x<sp/>=<sp/>ringRadius<sp/>*<sp/>std::cos(theta);</highlight></codeline>
+<codeline lineno="191"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>z<sp/>=<sp/>ringRadius<sp/>*<sp/>std::sin(theta);</highlight></codeline>
+<codeline lineno="192"><highlight class="normal"></highlight></codeline>
+<codeline lineno="193"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Math3D::Vec3<sp/>normal(x,<sp/>y,<sp/>z);</highlight></codeline>
+<codeline lineno="194"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(normal.length()<sp/>&lt;=<sp/>Math3D::EPSILON){</highlight></codeline>
+<codeline lineno="195"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>normal<sp/>=<sp/>Math3D::Vec3(0.0f,<sp/>1.0f,<sp/>0.0f);</highlight></codeline>
+<codeline lineno="196"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight><highlight class="keywordflow">else</highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="197"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>normal<sp/>=<sp/>normal.normalize();</highlight></codeline>
+<codeline lineno="198"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="199"><highlight class="normal"></highlight></codeline>
+<codeline lineno="200"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="struct_vertex" kindref="compound">Vertex</ref><sp/>vertex<sp/>=<sp/><ref refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" kindref="member">Vertex::Build</ref>(Math3D::Vec3(normal.x<sp/>*<sp/>radius,<sp/>normal.y<sp/>*<sp/>radius,<sp/>normal.z<sp/>*<sp/>radius))</highlight></codeline>
+<codeline lineno="201"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="struct_vertex_1a85ad46ae0b05f963524684314d19fedd" kindref="member">Norm</ref>(normal)</highlight></codeline>
+<codeline lineno="202"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="struct_vertex_1a7ffc6ba8ee72602e3acbf54a164a031b" kindref="member">UV</ref>(u,<sp/>1.0f<sp/>-<sp/>v);</highlight></codeline>
+<codeline lineno="203"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>outIndex<sp/>=<sp/>-1;</highlight></codeline>
+<codeline lineno="204"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>factory.addVertex(vertex,<sp/>&amp;outIndex);</highlight></codeline>
+<codeline lineno="205"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>indices[(size_t)stack<sp/>*<sp/>(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal">)(slices<sp/>+<sp/>1)<sp/>+<sp/>(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal">)slice]<sp/>=<sp/>outIndex;</highlight></codeline>
+<codeline lineno="206"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="207"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="208"><highlight class="normal"></highlight></codeline>
+<codeline lineno="209"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>stack<sp/>=<sp/>0;<sp/>stack<sp/>&lt;<sp/>stacks;<sp/>++stack){</highlight></codeline>
+<codeline lineno="210"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>slice<sp/>=<sp/>0;<sp/>slice<sp/>&lt;<sp/>slices;<sp/>++slice){</highlight></codeline>
+<codeline lineno="211"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i00<sp/>=<sp/>indices[(size_t)stack<sp/>*<sp/>(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal">)(slices<sp/>+<sp/>1)<sp/>+<sp/>(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal">)slice];</highlight></codeline>
+<codeline lineno="212"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i01<sp/>=<sp/>indices[(size_t)stack<sp/>*<sp/>(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal">)(slices<sp/>+<sp/>1)<sp/>+<sp/>(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal">)(slice<sp/>+<sp/>1)];</highlight></codeline>
+<codeline lineno="213"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i10<sp/>=<sp/>indices[(size_t)(stack<sp/>+<sp/>1)<sp/>*<sp/>(size_t)(slices<sp/>+<sp/>1)<sp/>+<sp/>(size_t)slice];</highlight></codeline>
+<codeline lineno="214"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i11<sp/>=<sp/>indices[(size_t)(stack<sp/>+<sp/>1)<sp/>*<sp/>(size_t)(slices<sp/>+<sp/>1)<sp/>+<sp/>(size_t)(slice<sp/>+<sp/>1)];</highlight></codeline>
+<codeline lineno="215"><highlight class="normal"></highlight></codeline>
+<codeline lineno="216"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(stack<sp/>==<sp/>0){</highlight></codeline>
+<codeline lineno="217"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>factory.defineFace(i00,<sp/>i11,<sp/>i10);</highlight></codeline>
+<codeline lineno="218"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(stack<sp/>==<sp/>(stacks<sp/>-<sp/>1)){</highlight></codeline>
+<codeline lineno="219"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>factory.defineFace(i00,<sp/>i01,<sp/>i10);</highlight></codeline>
+<codeline lineno="220"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight><highlight class="keywordflow">else</highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="221"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>factory.defineFace(i00,<sp/>i11,<sp/>i10);</highlight></codeline>
+<codeline lineno="222"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>factory.defineFace(i00,<sp/>i01,<sp/>i11);</highlight></codeline>
+<codeline lineno="223"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="224"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="225"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="226"><highlight class="normal"></highlight></codeline>
+<codeline lineno="227"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>factory.assemble();</highlight></codeline>
+<codeline lineno="228"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="229"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="230"><highlight class="normal"></highlight></codeline>
+<codeline lineno="231"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">//<sp/>MODELPART_PREFABS_H</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="src/Rendering/Geometry/ModelPartPrefabs.h"/>
+  </compounddef>
+</doxygen>

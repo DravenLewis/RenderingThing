@@ -1,0 +1,617 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_bloom_effect" kind="class" language="C++" prot="public">
+    <compoundname>BloomEffect</compoundname>
+    <basecompoundref refid="class_graphics_1_1_post_processing_1_1_post_processing_effect" prot="public" virt="non-virtual">Graphics::PostProcessing::PostProcessingEffect</basecompoundref>
+    <includes refid="_screen_effects_8h" local="no">ScreenEffects.h</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_bloom_effect_1aaa968308f80fd92fe91417f8e50e235b" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="class_shader_program" kindref="compound">ShaderProgram</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;ShaderProgram&gt; BloomEffect::shader</definition>
+        <argsstring></argsstring>
+        <name>shader</name>
+        <qualifiedname>BloomEffect::shader</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="917" column="25" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="917" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_bloom_effect_1a950d5a52d44db0bb1c43c6309c4286fc" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool BloomEffect::compileAttempted</definition>
+        <argsstring></argsstring>
+        <name>compileAttempted</name>
+        <qualifiedname>BloomEffect::compileAttempted</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="918" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="918" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_bloom_effect_1a14562c1839f3f9ed2b2cf7246083e8fc" prot="private" static="no" mutable="no">
+        <type>const std::string</type>
+        <definition>const std::string BloomEffect::BLOOM_FRAG_SHADER</definition>
+        <argsstring></argsstring>
+        <name>BLOOM_FRAG_SHADER</name>
+        <qualifiedname>BloomEffect::BLOOM_FRAG_SHADER</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="919" column="27" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="919" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_bloom_effect_1a6ec25beb86184d532d940a8277216c7d" prot="private" static="no" mutable="no">
+        <type>GLuint</type>
+        <definition>GLuint BloomEffect::adaptationReadFbo</definition>
+        <argsstring></argsstring>
+        <name>adaptationReadFbo</name>
+        <qualifiedname>BloomEffect::adaptationReadFbo</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1004" column="16" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1004" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_bloom_effect_1a38deefa8c5cdbfdf21431e9b31c7dd66" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool BloomEffect::adaptationInitialized</definition>
+        <argsstring></argsstring>
+        <name>adaptationInitialized</name>
+        <qualifiedname>BloomEffect::adaptationInitialized</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1005" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1005" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_bloom_effect_1a693b0180733225e6b0d4d36b10243b51" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float BloomEffect::adaptedLuminance</definition>
+        <argsstring></argsstring>
+        <name>adaptedLuminance</name>
+        <qualifiedname>BloomEffect::adaptedLuminance</qualifiedname>
+        <initializer>= 0.35f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1006" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1006" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_bloom_effect_1a1cc4c9d4917c71799cadceccfc743345" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float BloomEffect::filteredLuminance</definition>
+        <argsstring></argsstring>
+        <name>filteredLuminance</name>
+        <qualifiedname>BloomEffect::filteredLuminance</qualifiedname>
+        <initializer>= 0.35f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1007" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1007" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_bloom_effect_1ae5d4c0108efe8ff36c25c4f80de05cee" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float BloomEffect::smoothedThresholdScale</definition>
+        <argsstring></argsstring>
+        <name>smoothedThresholdScale</name>
+        <qualifiedname>BloomEffect::smoothedThresholdScale</qualifiedname>
+        <initializer>= 1.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1008" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1008" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_bloom_effect_1ab852faa5367a46dd3aa359c1440ffe0f" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float BloomEffect::smoothedIntensityScale</definition>
+        <argsstring></argsstring>
+        <name>smoothedIntensityScale</name>
+        <qualifiedname>BloomEffect::smoothedIntensityScale</qualifiedname>
+        <initializer>= 1.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1009" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1009" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_bloom_effect_1a704c1b7fd024c3e08032d018aa130267" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float BloomEffect::smoothedExposureScale</definition>
+        <argsstring></argsstring>
+        <name>smoothedExposureScale</name>
+        <qualifiedname>BloomEffect::smoothedExposureScale</qualifiedname>
+        <initializer>= 1.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1010" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1010" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_bloom_effect_1a2734288c6df08695d19d94a7859a897c" prot="private" static="no" mutable="no">
+        <type>std::chrono::steady_clock::time_point</type>
+        <definition>std::chrono::steady_clock::time_point BloomEffect::lastAdaptationTime</definition>
+        <argsstring></argsstring>
+        <name>lastAdaptationTime</name>
+        <qualifiedname>BloomEffect::lastAdaptationTime</qualifiedname>
+        <initializer>= std::chrono::steady_clock::now()</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1011" column="47" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1011" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="class_bloom_effect_1a0be8556c8edebb4c6c0e09fbcf65be79" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool BloomEffect::adaptiveBloom</definition>
+        <argsstring></argsstring>
+        <name>adaptiveBloom</name>
+        <qualifiedname>BloomEffect::adaptiveBloom</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1166" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1166" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_bloom_effect_1ace8000ba288ba6ca8601c87523b36a8b" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float BloomEffect::threshold</definition>
+        <argsstring></argsstring>
+        <name>threshold</name>
+        <qualifiedname>BloomEffect::threshold</qualifiedname>
+        <initializer>= 0.75f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1167" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1167" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_bloom_effect_1a8f8b60469c5920fe6ee2dab335ca3990" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float BloomEffect::softKnee</definition>
+        <argsstring></argsstring>
+        <name>softKnee</name>
+        <qualifiedname>BloomEffect::softKnee</qualifiedname>
+        <initializer>= 0.5f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1168" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1168" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_bloom_effect_1a06b4b4bb24f13de018ed7e4780e79c96" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float BloomEffect::intensity</definition>
+        <argsstring></argsstring>
+        <name>intensity</name>
+        <qualifiedname>BloomEffect::intensity</qualifiedname>
+        <initializer>= 0.65f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1169" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1169" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_bloom_effect_1ab9eb15f7ed03d8128b0824d5143f9553" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float BloomEffect::radiusPx</definition>
+        <argsstring></argsstring>
+        <name>radiusPx</name>
+        <qualifiedname>BloomEffect::radiusPx</qualifiedname>
+        <initializer>= 6.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1170" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1170" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_bloom_effect_1ac72dcff5e7ae1a3c73bcbbb42e5deaed" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BloomEffect::sampleCount</definition>
+        <argsstring></argsstring>
+        <name>sampleCount</name>
+        <qualifiedname>BloomEffect::sampleCount</qualifiedname>
+        <initializer>= 8</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1171" column="13" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1171" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_bloom_effect_1af77398b019a2c45daecb17c0ffdc3caa" prot="public" static="no" mutable="no">
+        <type>Math3D::Vec3</type>
+        <definition>Math3D::Vec3 BloomEffect::tint</definition>
+        <argsstring></argsstring>
+        <name>tint</name>
+        <qualifiedname>BloomEffect::tint</qualifiedname>
+        <initializer>= Math3D::Vec3(1.0f, 1.0f, 1.0f)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1172" column="22" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1172" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_bloom_effect_1a15792ccc1a754c32a07d9dcfd41e0f13" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float BloomEffect::autoExposureIntensityScale</definition>
+        <argsstring></argsstring>
+        <name>autoExposureIntensityScale</name>
+        <qualifiedname>BloomEffect::autoExposureIntensityScale</qualifiedname>
+        <initializer>= 1.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1173" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1173" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_bloom_effect_1ac007ae8c56a320f5b58899480f17771e" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float BloomEffect::autoExposureThresholdScale</definition>
+        <argsstring></argsstring>
+        <name>autoExposureThresholdScale</name>
+        <qualifiedname>BloomEffect::autoExposureThresholdScale</qualifiedname>
+        <initializer>= 1.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1174" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1174" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_bloom_effect_1a80c9c12fbba335f732898fe34687220f" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool BloomEffect::sampleSceneLuminance</definition>
+        <argsstring>(PTexture tex, float &amp;outLuminance)</argsstring>
+        <name>sampleSceneLuminance</name>
+        <qualifiedname>BloomEffect::sampleSceneLuminance</qualifiedname>
+        <param>
+          <type>PTexture</type>
+          <declname>tex</declname>
+        </param>
+        <param>
+          <type>float &amp;</type>
+          <declname>outLuminance</declname>
+        </param>
+        <briefdescription>
+<para>Checks whether sample scene luminance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>tex</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for tex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>outLuminance</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output value for luminance. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>True when the operation succeeds; otherwise false. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1019" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1019" bodyend="1065"/>
+      </memberdef>
+      <memberdef kind="function" id="class_bloom_effect_1a7578ef357086ed97e4cc84f4b6f0ff43" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void BloomEffect::computeAdaptiveScales</definition>
+        <argsstring>(PTexture tex, float &amp;outThresholdScale, float &amp;outIntensityScale, float &amp;outExposureScale)</argsstring>
+        <name>computeAdaptiveScales</name>
+        <qualifiedname>BloomEffect::computeAdaptiveScales</qualifiedname>
+        <param>
+          <type>PTexture</type>
+          <declname>tex</declname>
+        </param>
+        <param>
+          <type>float &amp;</type>
+          <declname>outThresholdScale</declname>
+        </param>
+        <param>
+          <type>float &amp;</type>
+          <declname>outIntensityScale</declname>
+        </param>
+        <param>
+          <type>float &amp;</type>
+          <declname>outExposureScale</declname>
+        </param>
+        <briefdescription>
+<para>Computes adaptive scales. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>tex</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for tex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>outThresholdScale</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>outIntensityScale</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>outExposureScale</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1074" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1074" bodyend="1141"/>
+      </memberdef>
+      <memberdef kind="function" id="class_bloom_effect_1a98cb679eb8f14817cef77f54c1e835e3" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool BloomEffect::ensureCompiled</definition>
+        <argsstring>()</argsstring>
+        <name>ensureCompiled</name>
+        <qualifiedname>BloomEffect::ensureCompiled</qualifiedname>
+        <briefdescription>
+<para>Checks whether ensure compiled. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>True when the operation succeeds; otherwise false. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1147" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1147" bodyend="1163"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_bloom_effect_1ae76d6ede7ad9201f6bf8f4c9927c827b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BloomEffect::BloomEffect</definition>
+        <argsstring>()</argsstring>
+        <name>BloomEffect</name>
+        <qualifiedname>BloomEffect::BloomEffect</qualifiedname>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_bloom_effect" kindref="compound">BloomEffect</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1179" column="9" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1179" bodyend="1183"/>
+      </memberdef>
+      <memberdef kind="function" id="class_bloom_effect_1ae4699677bdf89a388fab1912b1abcf67" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BloomEffect::~BloomEffect</definition>
+        <argsstring>() override</argsstring>
+        <name>~BloomEffect</name>
+        <qualifiedname>BloomEffect::~BloomEffect</qualifiedname>
+        <briefdescription>
+<para>Destroys this <ref refid="class_bloom_effect" kindref="compound">BloomEffect</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1188" column="9" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1188" bodyend="1193"/>
+      </memberdef>
+      <memberdef kind="function" id="class_bloom_effect_1a0406096e8d58f6e752976df0121dfd64" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>bool</type>
+        <definition>bool BloomEffect::apply</definition>
+        <argsstring>(PTexture tex, PTexture, PFrameBuffer outFbo, std::shared_ptr&lt; ModelPart &gt; quad) override</argsstring>
+        <name>apply</name>
+        <qualifiedname>BloomEffect::apply</qualifiedname>
+        <reimplements refid="class_graphics_1_1_post_processing_1_1_post_processing_effect_1a75b0263b1e53943ceb4f13d4aad0f5e6">apply</reimplements>
+        <param>
+          <type>PTexture</type>
+          <declname>tex</declname>
+        </param>
+        <param>
+          <type>PTexture</type>
+        </param>
+        <param>
+          <type>PFrameBuffer</type>
+          <declname>outFbo</declname>
+        </param>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="struct_model_part" kindref="compound">ModelPart</ref> &gt;</type>
+          <declname>quad</declname>
+        </param>
+        <briefdescription>
+<para>Applies current settings. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>tex</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for tex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>PTexture</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for p texture. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>outFbo</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output value for fbo. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>quad</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for quad. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>True when the operation succeeds; otherwise false. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1203" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1203" bodyend="1254"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_bloom_effect_1a3e0a4cd9ff40a8e0caa73d9603299e44" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="class_bloom_effect" kindref="compound">BloomEffect</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt; BloomEffect &gt; BloomEffect::New</definition>
+        <argsstring>()</argsstring>
+        <name>New</name>
+        <qualifiedname>BloomEffect::New</qualifiedname>
+        <briefdescription>
+<para>Creates a new object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Pointer to the resulting object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1260" column="32" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1260" bodyend="1262"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_bloom_effect" kindref="compound">BloomEffect</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>BloomEffect</label>
+        <link refid="class_bloom_effect"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Graphics::PostProcessing::PostProcessingEffect</label>
+        <link refid="class_graphics_1_1_post_processing_1_1_post_processing_effect"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>BloomEffect</label>
+        <link refid="class_bloom_effect"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Graphics::PostProcessing::PostProcessingEffect</label>
+        <link refid="class_graphics_1_1_post_processing_1_1_post_processing_effect"/>
+      </node>
+    </collaborationgraph>
+    <location file="src/Rendering/PostFX/ScreenEffects.h" line="915" column="1" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="915" bodyend="1263"/>
+    <listofallmembers>
+      <member refid="class_bloom_effect_1a38deefa8c5cdbfdf21431e9b31c7dd66" prot="private" virt="non-virtual"><scope>BloomEffect</scope><name>adaptationInitialized</name></member>
+      <member refid="class_bloom_effect_1a6ec25beb86184d532d940a8277216c7d" prot="private" virt="non-virtual"><scope>BloomEffect</scope><name>adaptationReadFbo</name></member>
+      <member refid="class_bloom_effect_1a693b0180733225e6b0d4d36b10243b51" prot="private" virt="non-virtual"><scope>BloomEffect</scope><name>adaptedLuminance</name></member>
+      <member refid="class_bloom_effect_1a0be8556c8edebb4c6c0e09fbcf65be79" prot="public" virt="non-virtual"><scope>BloomEffect</scope><name>adaptiveBloom</name></member>
+      <member refid="class_bloom_effect_1a0406096e8d58f6e752976df0121dfd64" prot="public" virt="virtual"><scope>BloomEffect</scope><name>apply</name></member>
+      <member refid="class_bloom_effect_1a15792ccc1a754c32a07d9dcfd41e0f13" prot="public" virt="non-virtual"><scope>BloomEffect</scope><name>autoExposureIntensityScale</name></member>
+      <member refid="class_bloom_effect_1ac007ae8c56a320f5b58899480f17771e" prot="public" virt="non-virtual"><scope>BloomEffect</scope><name>autoExposureThresholdScale</name></member>
+      <member refid="class_bloom_effect_1a14562c1839f3f9ed2b2cf7246083e8fc" prot="private" virt="non-virtual"><scope>BloomEffect</scope><name>BLOOM_FRAG_SHADER</name></member>
+      <member refid="class_bloom_effect_1ae76d6ede7ad9201f6bf8f4c9927c827b" prot="public" virt="non-virtual"><scope>BloomEffect</scope><name>BloomEffect</name></member>
+      <member refid="class_bloom_effect_1a950d5a52d44db0bb1c43c6309c4286fc" prot="private" virt="non-virtual"><scope>BloomEffect</scope><name>compileAttempted</name></member>
+      <member refid="class_bloom_effect_1a7578ef357086ed97e4cc84f4b6f0ff43" prot="private" virt="non-virtual"><scope>BloomEffect</scope><name>computeAdaptiveScales</name></member>
+      <member refid="class_bloom_effect_1a98cb679eb8f14817cef77f54c1e835e3" prot="private" virt="non-virtual"><scope>BloomEffect</scope><name>ensureCompiled</name></member>
+      <member refid="class_bloom_effect_1a1cc4c9d4917c71799cadceccfc743345" prot="private" virt="non-virtual"><scope>BloomEffect</scope><name>filteredLuminance</name></member>
+      <member refid="class_bloom_effect_1a06b4b4bb24f13de018ed7e4780e79c96" prot="public" virt="non-virtual"><scope>BloomEffect</scope><name>intensity</name></member>
+      <member refid="class_bloom_effect_1a2734288c6df08695d19d94a7859a897c" prot="private" virt="non-virtual"><scope>BloomEffect</scope><name>lastAdaptationTime</name></member>
+      <member refid="class_bloom_effect_1a3e0a4cd9ff40a8e0caa73d9603299e44" prot="public" virt="non-virtual"><scope>BloomEffect</scope><name>New</name></member>
+      <member refid="class_bloom_effect_1ab9eb15f7ed03d8128b0824d5143f9553" prot="public" virt="non-virtual"><scope>BloomEffect</scope><name>radiusPx</name></member>
+      <member refid="class_bloom_effect_1ac72dcff5e7ae1a3c73bcbbb42e5deaed" prot="public" virt="non-virtual"><scope>BloomEffect</scope><name>sampleCount</name></member>
+      <member refid="class_bloom_effect_1a80c9c12fbba335f732898fe34687220f" prot="private" virt="non-virtual"><scope>BloomEffect</scope><name>sampleSceneLuminance</name></member>
+      <member refid="class_bloom_effect_1aaa968308f80fd92fe91417f8e50e235b" prot="private" virt="non-virtual"><scope>BloomEffect</scope><name>shader</name></member>
+      <member refid="class_bloom_effect_1a704c1b7fd024c3e08032d018aa130267" prot="private" virt="non-virtual"><scope>BloomEffect</scope><name>smoothedExposureScale</name></member>
+      <member refid="class_bloom_effect_1ab852faa5367a46dd3aa359c1440ffe0f" prot="private" virt="non-virtual"><scope>BloomEffect</scope><name>smoothedIntensityScale</name></member>
+      <member refid="class_bloom_effect_1ae5d4c0108efe8ff36c25c4f80de05cee" prot="private" virt="non-virtual"><scope>BloomEffect</scope><name>smoothedThresholdScale</name></member>
+      <member refid="class_bloom_effect_1a8f8b60469c5920fe6ee2dab335ca3990" prot="public" virt="non-virtual"><scope>BloomEffect</scope><name>softKnee</name></member>
+      <member refid="class_bloom_effect_1ace8000ba288ba6ca8601c87523b36a8b" prot="public" virt="non-virtual"><scope>BloomEffect</scope><name>threshold</name></member>
+      <member refid="class_bloom_effect_1af77398b019a2c45daecb17c0ffdc3caa" prot="public" virt="non-virtual"><scope>BloomEffect</scope><name>tint</name></member>
+      <member refid="class_bloom_effect_1ae4699677bdf89a388fab1912b1abcf67" prot="public" virt="non-virtual"><scope>BloomEffect</scope><name>~BloomEffect</name></member>
+      <member refid="class_graphics_1_1_post_processing_1_1_post_processing_effect_1a956557ebb725734d270dd77ef8e40358" prot="public" virt="virtual"><scope>BloomEffect</scope><name>~PostProcessingEffect</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

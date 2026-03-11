@@ -1,0 +1,254 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_model_part_prefabs" xml:lang="en-US">
+<title>ModelPartPrefabs Struct Reference</title>
+<indexterm><primary>ModelPartPrefabs</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_model_part_prefabs">ModelPartPrefabs</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;ModelPartPrefabs.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>static std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; <link linkend="_struct_model_part_prefabs_1ae5f37b441c2d40314487e103ada227a8">MakePlane</link> (float width, float height, PMaterial mat=<link linkend="_class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769">MaterialDefaults::ColorMaterial::Create</link>(Color::RED), Math3D::Vec3 normal=Math3D::Vec3(0, 1, 0))</para>
+
+<para>Creates plane. </para>
+</listitem>
+            <listitem><para>static std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; <link linkend="_struct_model_part_prefabs_1af662a7f490b997301237d4b33f4a7372">MakeBox</link> (float width, float height, float depth, PMaterial mat=<link linkend="_class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769">MaterialDefaults::ColorMaterial::Create</link>(Color::RED))</para>
+
+<para>Creates box. </para>
+</listitem>
+            <listitem><para>static std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; <link linkend="_struct_model_part_prefabs_1a3416bea1f8d1a22d55739bb58d7fc76e">MakeCirclePlane</link> (float radius, int segments=32, PMaterial material=<link linkend="_class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769">MaterialDefaults::ColorMaterial::Create</link>(Color::RED), Math3D::Vec3 normal=Math3D::Vec3(0, 1, 0))</para>
+
+<para>Creates circle plane. </para>
+</listitem>
+            <listitem><para>static std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; <link linkend="_struct_model_part_prefabs_1aa8e35dc9f7dab334b963ab19c722c948">MakeSphere</link> (float radius=1.0f, int slices=32, int stacks=18, PMaterial material=<link linkend="_class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769">MaterialDefaults::ColorMaterial::Create</link>(Color::WHITE))</para>
+
+<para>Creates sphere. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_model_part_prefabs">ModelPartPrefabs</link>. </para>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_struct_model_part_prefabs_1af662a7f490b997301237d4b33f4a7372"/><section>
+    <title>MakeBox()</title>
+<indexterm><primary>MakeBox</primary><secondary>ModelPartPrefabs</secondary></indexterm>
+<indexterm><primary>ModelPartPrefabs</primary><secondary>MakeBox</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; ModelPartPrefabs::MakeBox (float width, float height, float depth, PMaterial mat = <computeroutput><link linkend="_class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769">MaterialDefaults::ColorMaterial::Create</link>(Color::RED)</computeroutput>
+)<computeroutput>[inline]</computeroutput>, <computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Creates box. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>width</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>height</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>depth</entry><entry>
+<para>Value for depth. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>mat</entry><entry>
+<para>Value for mat. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_model_part_prefabs_1a3416bea1f8d1a22d55739bb58d7fc76e"/><section>
+    <title>MakeCirclePlane()</title>
+<indexterm><primary>MakeCirclePlane</primary><secondary>ModelPartPrefabs</secondary></indexterm>
+<indexterm><primary>ModelPartPrefabs</primary><secondary>MakeCirclePlane</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; ModelPartPrefabs::MakeCirclePlane (float radius, int segments = <computeroutput>32</computeroutput>
+, PMaterial material = <computeroutput><link linkend="_class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769">MaterialDefaults::ColorMaterial::Create</link>(Color::RED)</computeroutput>
+, Math3D::Vec3 normal = <computeroutput>Math3D::Vec3(0,1,0)</computeroutput>
+)<computeroutput>[inline]</computeroutput>, <computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Creates circle plane. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>radius</entry><entry>
+<para>Value for radius. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>segments</entry><entry>
+<para>Value for segments. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>material</entry><entry>
+<para>Value for material. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>normal</entry><entry>
+<para>Value for normal. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_model_part_prefabs_1ae5f37b441c2d40314487e103ada227a8"/><section>
+    <title>MakePlane()</title>
+<indexterm><primary>MakePlane</primary><secondary>ModelPartPrefabs</secondary></indexterm>
+<indexterm><primary>ModelPartPrefabs</primary><secondary>MakePlane</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; ModelPartPrefabs::MakePlane (float width, float height, PMaterial mat = <computeroutput><link linkend="_class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769">MaterialDefaults::ColorMaterial::Create</link>(Color::RED)</computeroutput>
+, Math3D::Vec3 normal = <computeroutput>Math3D::Vec3(0,1,0)</computeroutput>
+)<computeroutput>[inline]</computeroutput>, <computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Creates plane. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>width</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>height</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>mat</entry><entry>
+<para>Value for mat. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>normal</entry><entry>
+<para>Value for normal. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_model_part_prefabs_1aa8e35dc9f7dab334b963ab19c722c948"/><section>
+    <title>MakeSphere()</title>
+<indexterm><primary>MakeSphere</primary><secondary>ModelPartPrefabs</secondary></indexterm>
+<indexterm><primary>ModelPartPrefabs</primary><secondary>MakeSphere</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; ModelPartPrefabs::MakeSphere (float radius = <computeroutput>1.0f</computeroutput>
+, int slices = <computeroutput>32</computeroutput>
+, int stacks = <computeroutput>18</computeroutput>
+, PMaterial material = <computeroutput><link linkend="_class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769">MaterialDefaults::ColorMaterial::Create</link>(Color::WHITE)</computeroutput>
+)<computeroutput>[inline]</computeroutput>, <computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Creates sphere. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>radius</entry><entry>
+<para>Value for radius. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>slices</entry><entry>
+<para>Value for slices. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>stacks</entry><entry>
+<para>Value for stacks. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>material</entry><entry>
+<para>Value for material. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Geometry/<link linkend="__model_part_prefabs_8h">ModelPartPrefabs.h</link></section>
+</section>

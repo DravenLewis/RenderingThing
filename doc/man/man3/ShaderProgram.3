@@ -1,0 +1,344 @@
+.TH "ShaderProgram" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ShaderProgram \- Represents the \fBShaderProgram\fP type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ShaderProgram\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBsetVertexShader\fP (std::string glsl)"
+.br
+.RI "Sets the vertex shader\&. "
+.ti -1c
+.RI "void \fBsetFragmentShader\fP (std::string glsl)"
+.br
+.RI "Sets the fragment shader\&. "
+.ti -1c
+.RI "void \fBsetGeometryShader\fP (std::string glsl)"
+.br
+.RI "Sets the geometry shader\&. "
+.ti -1c
+.RI "void \fBsetTesselationShader\fP (std::string glsl)"
+.br
+.RI "Sets the tesselation shader\&. "
+.ti -1c
+.RI "void \fBsetComputeShader\fP (std::string glsl)"
+.br
+.RI "Sets the compute shader\&. "
+.ti -1c
+.RI "void \fBsetTaskShader\fP (std::string glsl)"
+.br
+.RI "Sets the task shader\&. "
+.ti -1c
+.RI "void \fBsetRTXShader\fP (std::string glsl)"
+.br
+.RI "Sets the rtx shader\&. "
+.ti -1c
+.RI "\fBShaderBundle\fP & \fBgetVertexShader\fP ()"
+.br
+.RI "Returns the vertex shader\&. "
+.ti -1c
+.RI "\fBShaderBundle\fP & \fBgetFragmentShader\fP ()"
+.br
+.RI "Returns the fragment shader\&. "
+.ti -1c
+.RI "\fBShaderBundle\fP & \fBgetGeometryShader\fP ()"
+.br
+.RI "Returns the geometry shader\&. "
+.ti -1c
+.RI "\fBShaderBundle\fP & \fBgetTesselationShader\fP ()"
+.br
+.RI "Returns the tesselation shader\&. "
+.ti -1c
+.RI "\fBShaderBundle\fP & \fBgetComputeShader\fP ()"
+.br
+.RI "Returns the compute shader\&. "
+.ti -1c
+.RI "\fBShaderBundle\fP & \fBgetTaskShader\fP ()"
+.br
+.RI "Returns the task shader\&. "
+.ti -1c
+.RI "\fBShaderBundle\fP & \fBgetRTXShader\fP ()"
+.br
+.RI "Returns the rtx shader\&. "
+.ti -1c
+.RI "std::string \fBgetLog\fP ()"
+.br
+.RI "Returns the last compile/link log message\&. "
+.ti -1c
+.RI "Shader \fBcompile\fP ()"
+.br
+.RI "Compiles and links all configured shader stages\&. "
+.ti -1c
+.RI "void \fBbind\fP ()"
+.br
+.RI "Binds this resource\&. "
+.ti -1c
+.RI "void \fBunbind\fP ()"
+.br
+.RI "Unbinds this resource\&. "
+.ti -1c
+.RI "template<typename T> void \fBsetUniform\fP (const std::string &name, const \fBUniform\fP< T > &uniform)"
+.br
+.RI "Sets the uniform\&. "
+.ti -1c
+.RI "template<typename T> void \fBsetUniformFast\fP (const std::string &name, const \fBUniform\fP< T > &uniform)"
+.br
+.RI "Sets the uniform fast\&. "
+.ti -1c
+.RI "Shader \fBgetID\fP ()"
+.br
+.RI "Returns the OpenGL program id\&. "
+.ti -1c
+.RI "\fB~ShaderProgram\fP ()"
+.br
+.RI "Destroys this \fBShaderProgram\fP instance\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static Shader \fBGetCurrentShaderProgram\fP ()"
+.br
+.RI "Returns the currently bound OpenGL program id\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the \fBShaderProgram\fP type\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "Shader ShaderProgram::compile ()"
+
+.PP
+Compiles and links all configured shader stages\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Program handle, or \fR0\fP on failure\&. 
+.RE
+.PP
+
+.SS "\fBShaderBundle\fP & ShaderProgram::getComputeShader ()"
+
+.PP
+Returns the compute shader\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "Shader ShaderProgram::GetCurrentShaderProgram ()\fR [static]\fP"
+
+.PP
+Returns the currently bound OpenGL program id\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Active program handle\&. 
+.RE
+.PP
+
+.SS "\fBShaderBundle\fP & ShaderProgram::getFragmentShader ()"
+
+.PP
+Returns the fragment shader\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "\fBShaderBundle\fP & ShaderProgram::getGeometryShader ()"
+
+.PP
+Returns the geometry shader\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "Shader ShaderProgram::getID ()"
+
+.PP
+Returns the OpenGL program id\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Program handle\&. 
+.RE
+.PP
+
+.SS "std::string ShaderProgram::getLog ()"
+
+.PP
+Returns the last compile/link log message\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Log message text\&. 
+.RE
+.PP
+
+.SS "\fBShaderBundle\fP & ShaderProgram::getRTXShader ()"
+
+.PP
+Returns the rtx shader\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "\fBShaderBundle\fP & ShaderProgram::getTaskShader ()"
+
+.PP
+Returns the task shader\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "\fBShaderBundle\fP & ShaderProgram::getTesselationShader ()"
+
+.PP
+Returns the tesselation shader\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "\fBShaderBundle\fP & ShaderProgram::getVertexShader ()"
+
+.PP
+Returns the vertex shader\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "void ShaderProgram::setComputeShader (std::string glsl)"
+
+.PP
+Sets the compute shader\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIglsl\fP GLSL source code\&. 
+.RE
+.PP
+
+.SS "void ShaderProgram::setFragmentShader (std::string glsl)"
+
+.PP
+Sets the fragment shader\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIglsl\fP GLSL source code\&. 
+.RE
+.PP
+
+.SS "void ShaderProgram::setGeometryShader (std::string glsl)"
+
+.PP
+Sets the geometry shader\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIglsl\fP GLSL source code\&. 
+.RE
+.PP
+
+.SS "void ShaderProgram::setRTXShader (std::string glsl)"
+
+.PP
+Sets the rtx shader\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIglsl\fP GLSL source code\&. 
+.RE
+.PP
+
+.SS "void ShaderProgram::setTaskShader (std::string glsl)"
+
+.PP
+Sets the task shader\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIglsl\fP GLSL source code\&. 
+.RE
+.PP
+
+.SS "void ShaderProgram::setTesselationShader (std::string glsl)"
+
+.PP
+Sets the tesselation shader\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIglsl\fP GLSL source code\&. 
+.RE
+.PP
+
+.SS "template<typename T> void ShaderProgram::setUniform (const std::string & name, const \fBUniform\fP< T > & uniform)\fR [inline]\fP"
+
+.PP
+Sets the uniform\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP \fBUniform\fP name\&. 
+.br
+\fIuniform\fP \fBUniform\fP wrapper containing the value\&. 
+.RE
+.PP
+
+.SS "template<typename T> void ShaderProgram::setUniformFast (const std::string & name, const \fBUniform\fP< T > & uniform)\fR [inline]\fP"
+
+.PP
+Sets the uniform fast\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP \fBUniform\fP name\&. 
+.br
+\fIuniform\fP \fBUniform\fP wrapper containing the value\&. 
+.RE
+.PP
+
+.SS "void ShaderProgram::setVertexShader (std::string glsl)"
+
+.PP
+Sets the vertex shader\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIglsl\fP GLSL source code\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

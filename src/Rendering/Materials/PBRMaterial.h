@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Materials/PBRMaterial.h
+ * @brief Declarations for PBRMaterial.
+ */
+
 #ifndef PBR_MATERIAL_H
 #define PBR_MATERIAL_H
 
@@ -9,6 +14,7 @@
 #include "Foundation/Util/ValueContainer.h"
 #include "Foundation/Math/Color.h"
 
+/// @brief Represents the PBRMaterial type.
 class PBRMaterial : public Material {
     public:
         ValueContainer<Math3D::Vec4> BaseColor;
@@ -35,9 +41,21 @@ class PBRMaterial : public Material {
         ValueContainer<int> UseAlphaClip;
         ValueContainer<Math3D::Vec3> ViewPos;
 
+        /**
+         * @brief Constructs a new PBRMaterial instance.
+         * @param program Value for program.
+         */
         PBRMaterial(std::shared_ptr<ShaderProgram> program);
+        /**
+         * @brief Binds this resource.
+         */
         void bind() override;
 
+        /**
+         * @brief Creates a new object.
+         * @param baseColor Color value.
+         * @return Pointer to the resulting object.
+         */
         static std::shared_ptr<PBRMaterial> Create(Math3D::Vec4 baseColor = Color::WHITE);
 };
 

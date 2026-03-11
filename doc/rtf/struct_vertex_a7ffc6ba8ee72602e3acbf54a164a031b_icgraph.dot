@@ -1,0 +1,13 @@
+digraph "Vertex::UV"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="RL";
+  Node1 [id="Node000001",label="Vertex::UV",height=0.2,width=0.4,color="gray40", fillcolor="grey60", style="filled", fontcolor="black",tooltip="Sets vertex UV coordinates."];
+  Node1 -> Node2 [id="edge7_Node000001_Node000002",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node2 [id="Node000002",label="ModelPartPrefabs::MakeSphere",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$struct_model_part_prefabs.html#aa8e35dc9f7dab334b963ab19c722c948",tooltip="Creates sphere."];
+  Node1 -> Node3 [id="edge8_Node000001_Node000003",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node3 [id="Node000003",label="Vertex::UV",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$struct_vertex.html#aa1fb5d88ca585d9d07b5838dff9d0aff",tooltip="Sets vertex UV coordinates."];
+}

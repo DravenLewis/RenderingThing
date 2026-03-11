@@ -1,0 +1,1077 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_screen" kind="class" language="C++" prot="public">
+    <compoundname>Screen</compoundname>
+    <includes refid="_screen_8h" local="no">Screen.h</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_screen_1a49be8f8ccf7ed7a3151a761495c0ce21" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int Screen::width</definition>
+        <argsstring></argsstring>
+        <name>width</name>
+        <qualifiedname>Screen::width</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="31" column="13" bodyfile="src/Rendering/Core/Screen.h" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_screen_1a55405920693276db8fbdbf3a903b8d2f" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int Screen::height</definition>
+        <argsstring></argsstring>
+        <name>height</name>
+        <qualifiedname>Screen::height</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="31" column="19" bodyfile="src/Rendering/Core/Screen.h" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_screen_1a74e8f16e47dd34063d1e1d15806d4ca4" prot="private" static="no" mutable="no">
+        <type>std::unique_ptr&lt; <ref refid="struct_tripple_buffer" kindref="compound">TrippleBuffer</ref> &gt;</type>
+        <definition>std::unique_ptr&lt;TrippleBuffer&gt; Screen::buffer</definition>
+        <argsstring></argsstring>
+        <name>buffer</name>
+        <qualifiedname>Screen::buffer</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="33" column="25" bodyfile="src/Rendering/Core/Screen.h" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_screen_1aba75d4e535c42a9a0049563144d97c5a" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="struct_model_part" kindref="compound">ModelPart</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;ModelPart&gt; Screen::screenQuad</definition>
+        <argsstring></argsstring>
+        <name>screenQuad</name>
+        <qualifiedname>Screen::screenQuad</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="34" column="25" bodyfile="src/Rendering/Core/Screen.h" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_screen_1a25521d795e7afcf72ab36968bd037a84" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="class_shader_program" kindref="compound">ShaderProgram</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;ShaderProgram&gt; Screen::screenShader</definition>
+        <argsstring></argsstring>
+        <name>screenShader</name>
+        <qualifiedname>Screen::screenShader</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="35" column="25" bodyfile="src/Rendering/Core/Screen.h" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_screen_1a1a47d3e7e997650641c8eaaf422dbe7d" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; Graphics::PostProcessing::PPostProcessingEffect &gt;</type>
+        <definition>std::vector&lt;Graphics::PostProcessing::PPostProcessingEffect&gt; Screen::effects</definition>
+        <argsstring></argsstring>
+        <name>effects</name>
+        <qualifiedname>Screen::effects</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="36" column="21" bodyfile="src/Rendering/Core/Screen.h" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_screen_1aab916a8758c3d6c2c9b7f6367a70d6b3" prot="private" static="no" mutable="no">
+        <type>PCamera</type>
+        <definition>PCamera Screen::camera</definition>
+        <argsstring></argsstring>
+        <name>camera</name>
+        <qualifiedname>Screen::camera</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="38" column="17" bodyfile="src/Rendering/Core/Screen.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_screen_1a5e009530aa028b97959a82c76a1bc159" prot="private" static="no" mutable="no">
+        <type>PEnvironment</type>
+        <definition>PEnvironment Screen::environment</definition>
+        <argsstring></argsstring>
+        <name>environment</name>
+        <qualifiedname>Screen::environment</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="39" column="22" bodyfile="src/Rendering/Core/Screen.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_screen_1af920ec62d46b6e48c15953def13d1083" prot="private" static="no" mutable="no">
+        <type>PCamera</type>
+        <definition>PCamera Screen::uiCamera</definition>
+        <argsstring></argsstring>
+        <name>uiCamera</name>
+        <qualifiedname>Screen::uiCamera</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="40" column="17" bodyfile="src/Rendering/Core/Screen.h" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_screen_1a91682cf46e6769274cc70accdf89b269" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int Screen::uiWidth</definition>
+        <argsstring></argsstring>
+        <name>uiWidth</name>
+        <qualifiedname>Screen::uiWidth</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="41" column="13" bodyfile="src/Rendering/Core/Screen.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_screen_1a0a399d516d127efaa47ebece1c6361e6" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int Screen::uiHeight</definition>
+        <argsstring></argsstring>
+        <name>uiHeight</name>
+        <qualifiedname>Screen::uiHeight</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="42" column="13" bodyfile="src/Rendering/Core/Screen.h" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_screen_1a5843677eda7c51a02b181332610140ac" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool Screen::bound</definition>
+        <argsstring></argsstring>
+        <name>bound</name>
+        <qualifiedname>Screen::bound</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="43" column="14" bodyfile="src/Rendering/Core/Screen.h" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_screen_1a6e20647a321f73e24c405d90935a518a" prot="private" static="no" mutable="no">
+        <type>std::atomic&lt; float &gt;</type>
+        <definition>std::atomic&lt;float&gt; Screen::lastPostProcessMs</definition>
+        <argsstring></argsstring>
+        <name>lastPostProcessMs</name>
+        <qualifiedname>Screen::lastPostProcessMs</qualifiedname>
+        <initializer>{0.0f}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="44" column="21" bodyfile="src/Rendering/Core/Screen.h" bodystart="44" bodyend="44"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_screen_1a3b775039ff7f93dbce539e874597e308" prot="private" static="no" mutable="no">
+        <type>std::atomic&lt; int &gt;</type>
+        <definition>std::atomic&lt;int&gt; Screen::lastPostProcessEffectCount</definition>
+        <argsstring></argsstring>
+        <name>lastPostProcessEffectCount</name>
+        <qualifiedname>Screen::lastPostProcessEffectCount</qualifiedname>
+        <initializer>{0}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="45" column="21" bodyfile="src/Rendering/Core/Screen.h" bodystart="45" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_screen_1ae799152435639ccdb09b345a56d9a02f" prot="private" static="no" mutable="no">
+        <type>std::uint32_t</type>
+        <definition>std::uint32_t Screen::presentFrameIndex</definition>
+        <argsstring></argsstring>
+        <name>presentFrameIndex</name>
+        <qualifiedname>Screen::presentFrameIndex</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="46" column="23" bodyfile="src/Rendering/Core/Screen.h" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_screen_1a71ef1020b14dd7e76b4054dc424ca61f" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float Screen::presentDebandStrength</definition>
+        <argsstring></argsstring>
+        <name>presentDebandStrength</name>
+        <qualifiedname>Screen::presentDebandStrength</qualifiedname>
+        <initializer>= 1.25f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="47" column="15" bodyfile="src/Rendering/Core/Screen.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_screen_1a61a6f2d903a75680e4164f1c1ba6dfff" prot="private" static="no" mutable="no">
+        <type>Color</type>
+        <definition>Color Screen::clearColor</definition>
+        <argsstring></argsstring>
+        <name>clearColor</name>
+        <qualifiedname>Screen::clearColor</qualifiedname>
+        <initializer>= Color::BLACK</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="60" column="15" bodyfile="src/Rendering/Core/Screen.h" bodystart="60" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-static-attrib">
+      <memberdef kind="variable" id="class_screen_1ac79a59d309cc0665199f2dd5446ee107" prot="private" static="yes" mutable="no">
+        <type>PCamera</type>
+        <definition>PCamera Screen::CurrentCamera</definition>
+        <argsstring></argsstring>
+        <name>CurrentCamera</name>
+        <qualifiedname>Screen::CurrentCamera</qualifiedname>
+        <initializer>= nullptr</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="58" column="24" bodyfile="src/Rendering/Core/Screen.h" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_screen_1a8aced7bf50d37f1ecfae7f888860dd58" prot="private" static="yes" mutable="no">
+        <type>PEnvironment</type>
+        <definition>PEnvironment Screen::CurrentEnvironment</definition>
+        <argsstring></argsstring>
+        <name>CurrentEnvironment</name>
+        <qualifiedname>Screen::CurrentEnvironment</qualifiedname>
+        <initializer>= nullptr</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="59" column="29" bodyfile="src/Rendering/Core/Screen.h" bodystart="59" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_screen_1a2470968bf6ab8b858523e3c821bcde77" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Screen::initScreenGeom</definition>
+        <argsstring>()</argsstring>
+        <name>initScreenGeom</name>
+        <qualifiedname>Screen::initScreenGeom</qualifiedname>
+        <briefdescription>
+<para>Initializes screen geom. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="52" column="14" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="29" bodyend="48"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1a8259e5b6857927488f90fbcd83f5ac44" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Screen::initScreenShader</definition>
+        <argsstring>()</argsstring>
+        <name>initScreenShader</name>
+        <qualifiedname>Screen::initScreenShader</qualifiedname>
+        <briefdescription>
+<para>Initializes screen shader. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="56" column="14" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="50" bodyend="59"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_screen_1a0d2f55f84802fb3d0348200cea71e59c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>Screen::Screen</definition>
+        <argsstring>(int width, int height)</argsstring>
+        <name>Screen</name>
+        <qualifiedname>Screen::Screen</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>width</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>height</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_screen" kindref="compound">Screen</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>width</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Dimension value. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>height</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Dimension value. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="67" column="9" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="15" bodyend="23"/>
+        <references refid="class_screen_1a5ba54872e8f2ab1fb14a24875db66866" compoundref="_screen_8cpp" startline="307" endline="335">resize</references>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1a4243bc17596af96415b09ac48205676d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>Screen::~Screen</definition>
+        <argsstring>()</argsstring>
+        <name>~Screen</name>
+        <qualifiedname>Screen::~Screen</qualifiedname>
+        <briefdescription>
+<para>Destroys this <ref refid="class_screen" kindref="compound">Screen</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="71" column="9" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="25" bodyend="27"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1ab9f2169f953e728fa2614e0026b3b4a7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Screen::processRenderPipeline</definition>
+        <argsstring>()</argsstring>
+        <name>processRenderPipeline</name>
+        <qualifiedname>Screen::processRenderPipeline</qualifiedname>
+        <briefdescription>
+<para>Processes the post-processing pipeline. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="76" column="14" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="61" bodyend="172"/>
+        <referencedby refid="class_screen_1a0581496c4bb1cd53273872bc0cbb0566" compoundref="_screen_8cpp" startline="370" endline="379">unbind</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1a958f0738b6aa94ae8aeaeffb78753ddf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Screen::drawToWindow</definition>
+        <argsstring>(RenderWindow *window, bool clearWindow=true)</argsstring>
+        <name>drawToWindow</name>
+        <qualifiedname>Screen::drawToWindow</qualifiedname>
+        <param>
+          <type>RenderWindow *</type>
+          <declname>window</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>clearWindow</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+<para>Draws to window. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>window</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for window. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>clearWindow</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Flag controlling clear window. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="82" column="14" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="174" bodyend="214"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1a0d0154807bb2d93c6896d9511378d2e1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Screen::drawToView</definition>
+        <argsstring>(PView view, bool clearWindow=true, float x=-1, float y=-1, float width=-1, float height=-1)</argsstring>
+        <name>drawToView</name>
+        <qualifiedname>Screen::drawToView</qualifiedname>
+        <param>
+          <type>PView</type>
+          <declname>view</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>clearWindow</declname>
+          <defval>true</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>x</declname>
+          <defval>-1</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>y</declname>
+          <defval>-1</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>width</declname>
+          <defval>-1</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>height</declname>
+          <defval>-1</defval>
+        </param>
+        <briefdescription>
+<para>Draws to view. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>view</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for view. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>clearWindow</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Flag controlling clear window. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>x</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>y</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>width</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Dimension value. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>height</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Dimension value. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="92" column="14" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="216" bodyend="286"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1a5ba54872e8f2ab1fb14a24875db66866" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Screen::resize</definition>
+        <argsstring>(int w, int h)</argsstring>
+        <name>resize</name>
+        <qualifiedname>Screen::resize</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>w</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>h</declname>
+        </param>
+        <briefdescription>
+<para>Resizes internal resources. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>w</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for w. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>h</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for h. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="99" column="14" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="307" bodyend="335"/>
+        <referencedby refid="class_screen_1a0d2f55f84802fb3d0348200cea71e59c" compoundref="_screen_8cpp" startline="15" endline="23">Screen</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1ab71b25e991771611d4acab431f92b518" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int Screen::getWidth</definition>
+        <argsstring>()</argsstring>
+        <name>getWidth</name>
+        <qualifiedname>Screen::getWidth</qualifiedname>
+        <briefdescription>
+<para>Returns the width. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Computed numeric result. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="104" column="13" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="337" bodyend="339"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1a4edca55b221da0326dc7de0ec0f4dc91" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int Screen::getHeight</definition>
+        <argsstring>()</argsstring>
+        <name>getHeight</name>
+        <qualifiedname>Screen::getHeight</qualifiedname>
+        <briefdescription>
+<para>Returns the height. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Computed numeric result. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="109" column="13" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="341" bodyend="343"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1ab7a0796298adc6b6ffad439da2215b85" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Screen::bind</definition>
+        <argsstring>(bool clear=true)</argsstring>
+        <name>bind</name>
+        <qualifiedname>Screen::bind</qualifiedname>
+        <param>
+          <type>bool</type>
+          <declname>clear</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+<para>Binds this resource. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>clear</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Flag controlling clear. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="115" column="14" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="345" bodyend="368"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1a0581496c4bb1cd53273872bc0cbb0566" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Screen::unbind</definition>
+        <argsstring>()</argsstring>
+        <name>unbind</name>
+        <qualifiedname>Screen::unbind</qualifiedname>
+        <briefdescription>
+<para>Unbinds this resource. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="119" column="14" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="370" bodyend="379"/>
+        <references refid="class_screen_1ab9f2169f953e728fa2614e0026b3b4a7" compoundref="_screen_8cpp" startline="61" endline="172">processRenderPipeline</references>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1a5af6bd5e04104a0220cea4f113f65a29" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Screen::addEffect</definition>
+        <argsstring>(Graphics::PostProcessing::PPostProcessingEffect effect)</argsstring>
+        <name>addEffect</name>
+        <qualifiedname>Screen::addEffect</qualifiedname>
+        <param>
+          <type>Graphics::PostProcessing::PPostProcessingEffect</type>
+          <declname>effect</declname>
+        </param>
+        <briefdescription>
+<para>Adds effect. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>effect</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for effect. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="125" column="14" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="381" bodyend="383"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1a752d56573abe000eb842c99a9c068275" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Screen::clearEffects</definition>
+        <argsstring>()</argsstring>
+        <name>clearEffects</name>
+        <qualifiedname>Screen::clearEffects</qualifiedname>
+        <briefdescription>
+<para>Clears effects. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="129" column="14" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="385" bodyend="387"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1a54581eb4483a0fbf4433855124c6a154" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>PTexture</type>
+        <definition>PTexture Screen::getDisplayTexture</definition>
+        <argsstring>()</argsstring>
+        <name>getDisplayTexture</name>
+        <qualifiedname>Screen::getDisplayTexture</qualifiedname>
+        <briefdescription>
+<para>Returns the display texture. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Result of this operation. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="136" column="18" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="293" bodyend="295"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1affe30f540e47e10ce7b4a6303c2a0ed6" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>PFrameBuffer</type>
+        <definition>PFrameBuffer Screen::getDisplayBuffer</definition>
+        <argsstring>() const</argsstring>
+        <name>getDisplayBuffer</name>
+        <qualifiedname>Screen::getDisplayBuffer</qualifiedname>
+        <briefdescription>
+<para>Returns the display buffer. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Result of this operation. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="141" column="22" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="297" bodyend="300"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1afeb8a4072024504886db1f2dcc33504a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>PFrameBuffer</type>
+        <definition>PFrameBuffer Screen::getDrawBuffer</definition>
+        <argsstring>() const</argsstring>
+        <name>getDrawBuffer</name>
+        <qualifiedname>Screen::getDrawBuffer</qualifiedname>
+        <briefdescription>
+<para>Returns the draw buffer. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Result of this operation. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="146" column="22" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="302" bodyend="305"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1a744f676a8bb30991ae2b4fb3eabf8952" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>PCamera</type>
+        <definition>PCamera Screen::getCamera</definition>
+        <argsstring>() const</argsstring>
+        <name>getCamera</name>
+        <qualifiedname>Screen::getCamera</qualifiedname>
+        <briefdescription>
+<para>Returns the camera. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Result of this operation. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="152" column="17" bodyfile="src/Rendering/Core/Screen.h" bodystart="152" bodyend="152"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1aa57f801957701f8867371a870c4e2304" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Screen::setCamera</definition>
+        <argsstring>(PCamera cam, bool makeCurrent=true)</argsstring>
+        <name>setCamera</name>
+        <qualifiedname>Screen::setCamera</qualifiedname>
+        <param>
+          <type>PCamera</type>
+          <declname>cam</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>makeCurrent</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="153" column="14" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="389" bodyend="394"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1ad7a7f89561b4eda6ec40873951263cab" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Screen::makeCameraCurrent</definition>
+        <argsstring>()</argsstring>
+        <name>makeCameraCurrent</name>
+        <qualifiedname>Screen::makeCameraCurrent</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="154" column="14" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="411" bodyend="415"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1a9faf64f4369655993e87d6a3cee7d00d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>PEnvironment</type>
+        <definition>PEnvironment Screen::getEnvironment</definition>
+        <argsstring>() const</argsstring>
+        <name>getEnvironment</name>
+        <qualifiedname>Screen::getEnvironment</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="156" column="22" bodyfile="src/Rendering/Core/Screen.h" bodystart="156" bodyend="156"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1abbefa1e654be150d9999af9ef39e0726" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Screen::setEnvironment</definition>
+        <argsstring>(PEnvironment env, bool makeCurrent=true)</argsstring>
+        <name>setEnvironment</name>
+        <qualifiedname>Screen::setEnvironment</qualifiedname>
+        <param>
+          <type>PEnvironment</type>
+          <declname>env</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>makeCurrent</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="157" column="14" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="396" bodyend="401"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1adedfb6caec500ef9dce92e3734a2e7c2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Screen::makeEnvironmentCurrent</definition>
+        <argsstring>()</argsstring>
+        <name>makeEnvironmentCurrent</name>
+        <qualifiedname>Screen::makeEnvironmentCurrent</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="158" column="14" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="425" bodyend="429"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1a8314f2f645a71d5f12dcbfeb52445240" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void Screen::setClearColor</definition>
+        <argsstring>(Color color)</argsstring>
+        <name>setClearColor</name>
+        <qualifiedname>Screen::setClearColor</qualifiedname>
+        <param>
+          <type>Color</type>
+          <declname>color</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="165" column="14" bodyfile="src/Rendering/Core/Screen.h" bodystart="165" bodyend="165"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1a097f90299492356d83b9f5b6b8580302" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Color &amp;</type>
+        <definition>Color &amp; Screen::getClearColor</definition>
+        <argsstring>()</argsstring>
+        <name>getClearColor</name>
+        <qualifiedname>Screen::getClearColor</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="166" column="15" bodyfile="src/Rendering/Core/Screen.h" bodystart="166" bodyend="166"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1a88d41de8a456814a95a75c0f402354ff" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Screen::clear</definition>
+        <argsstring>(Color c=Color::BLACK)</argsstring>
+        <name>clear</name>
+        <qualifiedname>Screen::clear</qualifiedname>
+        <param>
+          <type>Color</type>
+          <declname>c</declname>
+          <defval>Color::BLACK</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="167" column="14" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="288" bodyend="291"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1a1537033d361b07835ebdfe2fabe68d33" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool Screen::isBound</definition>
+        <argsstring>() const</argsstring>
+        <name>isBound</name>
+        <qualifiedname>Screen::isBound</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="168" column="14" bodyfile="src/Rendering/Core/Screen.h" bodystart="168" bodyend="168"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1a7b09f5f97f11499b0e9a6851a66c38a7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>float</type>
+        <definition>float Screen::getLastPostProcessMs</definition>
+        <argsstring>() const</argsstring>
+        <name>getLastPostProcessMs</name>
+        <qualifiedname>Screen::getLastPostProcessMs</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="169" column="15" bodyfile="src/Rendering/Core/Screen.h" bodystart="169" bodyend="169"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1a094fce9f7d229c82aa6590e1597fb008" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int Screen::getLastPostProcessEffectCount</definition>
+        <argsstring>() const</argsstring>
+        <name>getLastPostProcessEffectCount</name>
+        <qualifiedname>Screen::getLastPostProcessEffectCount</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="170" column="13" bodyfile="src/Rendering/Core/Screen.h" bodystart="170" bodyend="170"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_screen_1a95dd5de25c923cb0c5a92bea6d455d1e" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Screen::MakeCameraCurrent</definition>
+        <argsstring>(PCamera camera)</argsstring>
+        <name>MakeCameraCurrent</name>
+        <qualifiedname>Screen::MakeCameraCurrent</qualifiedname>
+        <param>
+          <type>PCamera</type>
+          <declname>camera</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="160" column="21" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="403" bodyend="405"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1a07725080c44bc4d909a0bd36db04b728" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>PCamera</type>
+        <definition>PCamera Screen::GetCurrentCamera</definition>
+        <argsstring>()</argsstring>
+        <name>GetCurrentCamera</name>
+        <qualifiedname>Screen::GetCurrentCamera</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="161" column="24" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="407" bodyend="409"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1a60335c74b0e51c63df7821459706c06b" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Screen::MakeEnvironmentCurrent</definition>
+        <argsstring>(PEnvironment env)</argsstring>
+        <name>MakeEnvironmentCurrent</name>
+        <qualifiedname>Screen::MakeEnvironmentCurrent</qualifiedname>
+        <param>
+          <type>PEnvironment</type>
+          <declname>env</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="162" column="21" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="417" bodyend="419"/>
+      </memberdef>
+      <memberdef kind="function" id="class_screen_1ac9ef56948fa161cc570d3f832598fe25" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>PEnvironment</type>
+        <definition>PEnvironment Screen::GetCurrentEnvironment</definition>
+        <argsstring>()</argsstring>
+        <name>GetCurrentEnvironment</name>
+        <qualifiedname>Screen::GetCurrentEnvironment</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Screen.h" line="163" column="29" bodyfile="src/Rendering/Core/Screen.cpp" bodystart="421" bodyend="423"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_screen" kindref="compound">Screen</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Core/Screen.h" line="29" column="1" bodyfile="src/Rendering/Core/Screen.h" bodystart="29" bodyend="171"/>
+    <listofallmembers>
+      <member refid="class_screen_1a5af6bd5e04104a0220cea4f113f65a29" prot="public" virt="non-virtual"><scope>Screen</scope><name>addEffect</name></member>
+      <member refid="class_screen_1ab7a0796298adc6b6ffad439da2215b85" prot="public" virt="non-virtual"><scope>Screen</scope><name>bind</name></member>
+      <member refid="class_screen_1a5843677eda7c51a02b181332610140ac" prot="private" virt="non-virtual"><scope>Screen</scope><name>bound</name></member>
+      <member refid="class_screen_1a74e8f16e47dd34063d1e1d15806d4ca4" prot="private" virt="non-virtual"><scope>Screen</scope><name>buffer</name></member>
+      <member refid="class_screen_1aab916a8758c3d6c2c9b7f6367a70d6b3" prot="private" virt="non-virtual"><scope>Screen</scope><name>camera</name></member>
+      <member refid="class_screen_1a88d41de8a456814a95a75c0f402354ff" prot="public" virt="non-virtual"><scope>Screen</scope><name>clear</name></member>
+      <member refid="class_screen_1a61a6f2d903a75680e4164f1c1ba6dfff" prot="private" virt="non-virtual"><scope>Screen</scope><name>clearColor</name></member>
+      <member refid="class_screen_1a752d56573abe000eb842c99a9c068275" prot="public" virt="non-virtual"><scope>Screen</scope><name>clearEffects</name></member>
+      <member refid="class_screen_1ac79a59d309cc0665199f2dd5446ee107" prot="private" virt="non-virtual"><scope>Screen</scope><name>CurrentCamera</name></member>
+      <member refid="class_screen_1a8aced7bf50d37f1ecfae7f888860dd58" prot="private" virt="non-virtual"><scope>Screen</scope><name>CurrentEnvironment</name></member>
+      <member refid="class_screen_1a0d0154807bb2d93c6896d9511378d2e1" prot="public" virt="non-virtual"><scope>Screen</scope><name>drawToView</name></member>
+      <member refid="class_screen_1a958f0738b6aa94ae8aeaeffb78753ddf" prot="public" virt="non-virtual"><scope>Screen</scope><name>drawToWindow</name></member>
+      <member refid="class_screen_1a1a47d3e7e997650641c8eaaf422dbe7d" prot="private" virt="non-virtual"><scope>Screen</scope><name>effects</name></member>
+      <member refid="class_screen_1a5e009530aa028b97959a82c76a1bc159" prot="private" virt="non-virtual"><scope>Screen</scope><name>environment</name></member>
+      <member refid="class_screen_1a744f676a8bb30991ae2b4fb3eabf8952" prot="public" virt="non-virtual"><scope>Screen</scope><name>getCamera</name></member>
+      <member refid="class_screen_1a097f90299492356d83b9f5b6b8580302" prot="public" virt="non-virtual"><scope>Screen</scope><name>getClearColor</name></member>
+      <member refid="class_screen_1a07725080c44bc4d909a0bd36db04b728" prot="public" virt="non-virtual"><scope>Screen</scope><name>GetCurrentCamera</name></member>
+      <member refid="class_screen_1ac9ef56948fa161cc570d3f832598fe25" prot="public" virt="non-virtual"><scope>Screen</scope><name>GetCurrentEnvironment</name></member>
+      <member refid="class_screen_1affe30f540e47e10ce7b4a6303c2a0ed6" prot="public" virt="non-virtual"><scope>Screen</scope><name>getDisplayBuffer</name></member>
+      <member refid="class_screen_1a54581eb4483a0fbf4433855124c6a154" prot="public" virt="non-virtual"><scope>Screen</scope><name>getDisplayTexture</name></member>
+      <member refid="class_screen_1afeb8a4072024504886db1f2dcc33504a" prot="public" virt="non-virtual"><scope>Screen</scope><name>getDrawBuffer</name></member>
+      <member refid="class_screen_1a9faf64f4369655993e87d6a3cee7d00d" prot="public" virt="non-virtual"><scope>Screen</scope><name>getEnvironment</name></member>
+      <member refid="class_screen_1a4edca55b221da0326dc7de0ec0f4dc91" prot="public" virt="non-virtual"><scope>Screen</scope><name>getHeight</name></member>
+      <member refid="class_screen_1a094fce9f7d229c82aa6590e1597fb008" prot="public" virt="non-virtual"><scope>Screen</scope><name>getLastPostProcessEffectCount</name></member>
+      <member refid="class_screen_1a7b09f5f97f11499b0e9a6851a66c38a7" prot="public" virt="non-virtual"><scope>Screen</scope><name>getLastPostProcessMs</name></member>
+      <member refid="class_screen_1ab71b25e991771611d4acab431f92b518" prot="public" virt="non-virtual"><scope>Screen</scope><name>getWidth</name></member>
+      <member refid="class_screen_1a55405920693276db8fbdbf3a903b8d2f" prot="private" virt="non-virtual"><scope>Screen</scope><name>height</name></member>
+      <member refid="class_screen_1a2470968bf6ab8b858523e3c821bcde77" prot="private" virt="non-virtual"><scope>Screen</scope><name>initScreenGeom</name></member>
+      <member refid="class_screen_1a8259e5b6857927488f90fbcd83f5ac44" prot="private" virt="non-virtual"><scope>Screen</scope><name>initScreenShader</name></member>
+      <member refid="class_screen_1a1537033d361b07835ebdfe2fabe68d33" prot="public" virt="non-virtual"><scope>Screen</scope><name>isBound</name></member>
+      <member refid="class_screen_1a3b775039ff7f93dbce539e874597e308" prot="private" virt="non-virtual"><scope>Screen</scope><name>lastPostProcessEffectCount</name></member>
+      <member refid="class_screen_1a6e20647a321f73e24c405d90935a518a" prot="private" virt="non-virtual"><scope>Screen</scope><name>lastPostProcessMs</name></member>
+      <member refid="class_screen_1a95dd5de25c923cb0c5a92bea6d455d1e" prot="public" virt="non-virtual"><scope>Screen</scope><name>MakeCameraCurrent</name></member>
+      <member refid="class_screen_1ad7a7f89561b4eda6ec40873951263cab" prot="public" virt="non-virtual"><scope>Screen</scope><name>makeCameraCurrent</name></member>
+      <member refid="class_screen_1a60335c74b0e51c63df7821459706c06b" prot="public" virt="non-virtual"><scope>Screen</scope><name>MakeEnvironmentCurrent</name></member>
+      <member refid="class_screen_1adedfb6caec500ef9dce92e3734a2e7c2" prot="public" virt="non-virtual"><scope>Screen</scope><name>makeEnvironmentCurrent</name></member>
+      <member refid="class_screen_1a71ef1020b14dd7e76b4054dc424ca61f" prot="private" virt="non-virtual"><scope>Screen</scope><name>presentDebandStrength</name></member>
+      <member refid="class_screen_1ae799152435639ccdb09b345a56d9a02f" prot="private" virt="non-virtual"><scope>Screen</scope><name>presentFrameIndex</name></member>
+      <member refid="class_screen_1ab9f2169f953e728fa2614e0026b3b4a7" prot="public" virt="non-virtual"><scope>Screen</scope><name>processRenderPipeline</name></member>
+      <member refid="class_screen_1a5ba54872e8f2ab1fb14a24875db66866" prot="public" virt="non-virtual"><scope>Screen</scope><name>resize</name></member>
+      <member refid="class_screen_1a0d2f55f84802fb3d0348200cea71e59c" prot="public" virt="non-virtual"><scope>Screen</scope><name>Screen</name></member>
+      <member refid="class_screen_1aba75d4e535c42a9a0049563144d97c5a" prot="private" virt="non-virtual"><scope>Screen</scope><name>screenQuad</name></member>
+      <member refid="class_screen_1a25521d795e7afcf72ab36968bd037a84" prot="private" virt="non-virtual"><scope>Screen</scope><name>screenShader</name></member>
+      <member refid="class_screen_1aa57f801957701f8867371a870c4e2304" prot="public" virt="non-virtual"><scope>Screen</scope><name>setCamera</name></member>
+      <member refid="class_screen_1a8314f2f645a71d5f12dcbfeb52445240" prot="public" virt="non-virtual"><scope>Screen</scope><name>setClearColor</name></member>
+      <member refid="class_screen_1abbefa1e654be150d9999af9ef39e0726" prot="public" virt="non-virtual"><scope>Screen</scope><name>setEnvironment</name></member>
+      <member refid="class_screen_1af920ec62d46b6e48c15953def13d1083" prot="private" virt="non-virtual"><scope>Screen</scope><name>uiCamera</name></member>
+      <member refid="class_screen_1a0a399d516d127efaa47ebece1c6361e6" prot="private" virt="non-virtual"><scope>Screen</scope><name>uiHeight</name></member>
+      <member refid="class_screen_1a91682cf46e6769274cc70accdf89b269" prot="private" virt="non-virtual"><scope>Screen</scope><name>uiWidth</name></member>
+      <member refid="class_screen_1a0581496c4bb1cd53273872bc0cbb0566" prot="public" virt="non-virtual"><scope>Screen</scope><name>unbind</name></member>
+      <member refid="class_screen_1a49be8f8ccf7ed7a3151a761495c0ce21" prot="private" virt="non-virtual"><scope>Screen</scope><name>width</name></member>
+      <member refid="class_screen_1a4243bc17596af96415b09ac48205676d" prot="public" virt="non-virtual"><scope>Screen</scope><name>~Screen</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

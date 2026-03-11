@@ -1,0 +1,96 @@
+\doxysection{Material\+Defaults.\+h}
+\hypertarget{_material_defaults_8h_source}{}\label{_material_defaults_8h_source}\index{src/Rendering/Materials/MaterialDefaults.h@{src/Rendering/Materials/MaterialDefaults.h}}
+\doxymbox{\hyperlink{_material_defaults_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ MATERIAL\_DEFAULTS\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ MATERIAL\_DEFAULTS\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <map>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ "{}Foundation/Logging/Logbot.h"{}}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_material_8h}{Rendering/Materials/Material.h}}"{}}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_shader_program_8h}{Rendering/Shaders/ShaderProgram.h}}"{}}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ "{}Assets/Core/Asset.h"{}}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ "{}Foundation/Math/Color.h"{}}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_texture_8h}{Rendering/Textures/Texture.h}}"{}}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_light_8h}{Rendering/Lighting/Light.h}}"{}}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_light_utils_8h}{Rendering/Lighting/LightUtils.h}}"{}}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ "{}Foundation/Util/ValueContainer.h"{}}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_screen}{Screen}};}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{keyword}{namespace\ }MaterialDefaults\{}
+\DoxyCodeLine{00028\ \ \ \ \ }
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_material_defaults_1_1_color_material_af4201c21c18e146bd0b1a4f707d89b5e}{ColorMaterial}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{class_material_ace810a426f4b488d2dc2a53070d85405}{Material}}\{}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \ \ \ \ ValueContainer<Math3D::Vec4>\ Color;}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_material_defaults_1_1_color_material_af4201c21c18e146bd0b1a4f707d89b5e}{ColorMaterial}}(std::shared\_ptr<ShaderProgram>\ program);}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<ColorMaterial>\ \doxymbox{\hyperlink{class_material_defaults_1_1_color_material_a2564a57120b10a3b17e87a04413db769}{Create}}(Math3D::Vec4\ color\ =\ Color::MAGENTA);}
+\DoxyCodeLine{00044\ \ \ \ \ \};}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_material_defaults_1_1_image_material_a132cf6ed173fb5c7a62664b5b791b6fe}{ImageMaterial}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{class_material_ace810a426f4b488d2dc2a53070d85405}{Material}}\{}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \ \ \ \ ValueContainer<Math3D::Vec4>\ Color;}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \ \ \ \ ValueContainer<std::shared\_ptr<Texture>>\ Tex;}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ \ \ ValueContainer<Math3D::Vec2>\ UV;}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_material_defaults_1_1_image_material_a132cf6ed173fb5c7a62664b5b791b6fe}{ImageMaterial}}(std::shared\_ptr<ShaderProgram>\ program,\ std::shared\_ptr<Texture>\ texture);}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<ImageMaterial>\ \doxymbox{\hyperlink{class_material_defaults_1_1_image_material_add720d0e294c8a6aaefcce9149d1c97e}{Create}}(PTexture\ tex,\ Math3D::Vec4\ color\ =\ Color::WHITE,\ Math3D::Vec2\ uv\ =\ Math3D::Vec2(0,0));}
+\DoxyCodeLine{00068\ \ \ \ \ \};}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_material_defaults_1_1_lit_color_material_a481808bb46099270f1547b25f1b6440c}{LitColorMaterial}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{class_material_ace810a426f4b488d2dc2a53070d85405}{Material}}\{}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \ \ \ \ ValueContainer<Math3D::Vec4>\ Color;}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \ \ \ \ ValueContainer<Math3D::Vec3>\ ViewPos;}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_material_defaults_1_1_lit_color_material_a481808bb46099270f1547b25f1b6440c}{LitColorMaterial}}(std::shared\_ptr<ShaderProgram>\ program);}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_material_defaults_1_1_lit_color_material_a80c1908b825477e38e320f838708fac9}{bind}}()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<LitColorMaterial>\ \doxymbox{\hyperlink{class_material_defaults_1_1_lit_color_material_a76d5ca70b46d87e5e185e958520a3e18}{Create}}(Math3D::Vec4\ color\ =\ Color::WHITE);}
+\DoxyCodeLine{00092\ \ \ \ \ \};}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_material_defaults_1_1_lit_image_material_a145f3af8bff8074b827846bf9df7b71d}{LitImageMaterial}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{class_material_ace810a426f4b488d2dc2a53070d85405}{Material}}\{}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ ValueContainer<Math3D::Vec4>\ Color;}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \ \ \ \ ValueContainer<std::shared\_ptr<Texture>>\ Tex;}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \ \ \ \ ValueContainer<Math3D::Vec3>\ ViewPos;}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_material_defaults_1_1_lit_image_material_a145f3af8bff8074b827846bf9df7b71d}{LitImageMaterial}}(std::shared\_ptr<ShaderProgram>\ program,\ std::shared\_ptr<Texture>\ texture);}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_material_defaults_1_1_lit_image_material_ab48290d5a6ba088db4337a1b9f3c2137}{bind}}()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<LitImageMaterial>\ \doxymbox{\hyperlink{class_material_defaults_1_1_lit_image_material_ade6592a4b94e47005ea95b1038b59d56}{Create}}(PTexture\ tex,\ Math3D::Vec4\ color\ =\ Color::WHITE);}
+\DoxyCodeLine{00119\ \ \ \ \ \};}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_material_defaults_1_1_flat_color_material_ac7dc6be01211acd7b57c3cdc9c66465c}{FlatColorMaterial}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{class_material_ace810a426f4b488d2dc2a53070d85405}{Material}}\ \{}
+\DoxyCodeLine{00123\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ ValueContainer<Math3D::Vec4>\ Color;}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ ValueContainer<Math3D::Vec3>\ ViewPos;}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_material_defaults_1_1_flat_color_material_ac7dc6be01211acd7b57c3cdc9c66465c}{FlatColorMaterial}}(std::shared\_ptr<ShaderProgram>\ program);}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_material_defaults_1_1_flat_color_material_a3602a1f317d7e37c08e1f2c7e4fd4c2b}{bind}}()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<FlatColorMaterial>\ \doxymbox{\hyperlink{class_material_defaults_1_1_flat_color_material_a4cde023f130787555ffd8f4b322a040e}{Create}}(Math3D::Vec4\ color\ =\ Color::WHITE);}
+\DoxyCodeLine{00142\ \ \ \ \ \};\ \ \ \ }
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00145\ \ \ \ \ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_material_defaults_1_1_flat_image_material_a9c3f9e57b779bf7b98422cb07f9fb5f2}{FlatImageMaterial}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{class_material_ace810a426f4b488d2dc2a53070d85405}{Material}}\ \{}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \ \ \ \ ValueContainer<Math3D::Vec4>\ Color;}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \ \ \ \ ValueContainer<std::shared\_ptr<Texture>>\ Tex;}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \ \ \ \ ValueContainer<Math3D::Vec3>\ ViewPos;}
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_material_defaults_1_1_flat_image_material_a9c3f9e57b779bf7b98422cb07f9fb5f2}{FlatImageMaterial}}(std::shared\_ptr<ShaderProgram>\ program,\ std::shared\_ptr<Texture>\ texture);}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_material_defaults_1_1_flat_image_material_a61b269b2721d94022945e0bf31bbd6fc}{bind}}()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<FlatImageMaterial>\ \doxymbox{\hyperlink{class_material_defaults_1_1_flat_image_material_a501a86e2432c06f23aae2b5f027c4e52}{Create}}(std::shared\_ptr<Texture>\ tex,\ Math3D::Vec4\ color\ =\ Color::WHITE);}
+\DoxyCodeLine{00169\ \ \ \ \ \};}
+\DoxyCodeLine{00170\ \};}
+\DoxyCodeLine{00171\ }
+\DoxyCodeLine{00172\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//MATERIAL\_DEFAULTS\_H}}
+
+\end{DoxyCode}

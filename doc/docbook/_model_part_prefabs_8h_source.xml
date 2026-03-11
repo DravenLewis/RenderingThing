@@ -1,0 +1,200 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__model_part_prefabs_8h_source" xml:lang="en-US">
+<title>ModelPartPrefabs.h</title>
+<indexterm><primary>src/Rendering/Geometry/ModelPartPrefabs.h</primary></indexterm>
+Go to the documentation of this file.<programlisting linenumbering="unnumbered">1 
+5 
+6 
+7 <emphasis role="preprocessor">#ifndef&#32;MODELPART_PREFABS_H</emphasis>
+8 <emphasis role="preprocessor">#define&#32;MODELPART_PREFABS_H</emphasis>
+9 
+10 <emphasis role="preprocessor">#include&#32;&lt;memory&gt;</emphasis>
+11 <emphasis role="preprocessor">#include&#32;&lt;algorithm&gt;</emphasis>
+12 <emphasis role="preprocessor">#include&#32;&lt;cmath&gt;</emphasis>
+13 <emphasis role="preprocessor">#include&#32;&lt;vector&gt;</emphasis>
+14 
+15 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__model_part_8h">Rendering/Geometry/ModelPart.h</link>&quot;</emphasis>
+16 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__material_8h">Rendering/Materials/Material.h</link>&quot;</emphasis>
+17 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__material_defaults_8h">Rendering/Materials/MaterialDefaults.h</link>&quot;</emphasis>
+18 <emphasis role="preprocessor">#include&#32;&quot;Foundation/Math/Math3D.h&quot;</emphasis>
+19 
+21 <emphasis role="keyword">struct&#32;</emphasis><link linkend="_struct_model_part_prefabs">ModelPartPrefabs</link>{
+30 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;ModelPart&gt;&#32;<link linkend="_struct_model_part_prefabs_1ae5f37b441c2d40314487e103ada227a8">MakePlane</link>(<emphasis role="keywordtype">float</emphasis>&#32;width,&#32;<emphasis role="keywordtype">float</emphasis>&#32;height,&#32;PMaterial&#32;mat&#32;=&#32;<link linkend="_class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769">MaterialDefaults::ColorMaterial::Create</link>(Color::RED),&#32;Math3D::Vec3&#32;normal&#32;=&#32;Math3D::Vec3(0,1,0)){
+31 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;ModelPart&gt;&#32;part;
+32 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">auto</emphasis>&#32;factory&#32;=&#32;<link linkend="_struct_model_part_factory_1a3ef7855857c9e4a6106485c4d6dc13d1">ModelPartFactory::Create</link>(mat);
+33 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;v1,&#32;v2,&#32;v3,&#32;v4;
+34 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;factory
+35 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(-1.0f,0.0f,-1.0f)).UV(0,0).Norm(normal),&#32;&amp;v1)
+36 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(&#32;1.0f,0.0f,-1.0f)).UV(1,0).Norm(normal),&#32;&amp;v2)
+37 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(&#32;1.0f,0.0f,&#32;1.0f)).UV(1,1).Norm(normal),&#32;&amp;v3)
+38 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(-1.0f,0.0f,&#32;1.0f)).UV(0,1).Norm(normal),&#32;&amp;v4)
+39 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.defineFace(v1,v4,v3,v2);
+40 
+41 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;part&#32;=&#32;factory.assemble();
+42 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;part-&gt;localTransform.setScale(Math3D::Vec3(width,1.0f,height));
+43 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;part;
+44 &#32;&#32;&#32;&#32;}
+45 
+54 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;ModelPart&gt;&#32;<link linkend="_struct_model_part_prefabs_1af662a7f490b997301237d4b33f4a7372">MakeBox</link>(<emphasis role="keywordtype">float</emphasis>&#32;width,&#32;<emphasis role="keywordtype">float</emphasis>&#32;height,&#32;<emphasis role="keywordtype">float</emphasis>&#32;depth,PMaterial&#32;mat&#32;=&#32;<link linkend="_class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769">MaterialDefaults::ColorMaterial::Create</link>(Color::RED)){
+55 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">auto</emphasis>&#32;factory&#32;=&#32;<link linkend="_struct_model_part_factory_1a3ef7855857c9e4a6106485c4d6dc13d1">ModelPartFactory::Create</link>(mat);
+56 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;v0,&#32;v1,&#32;v2,&#32;v3,&#32;v4,&#32;v5,&#32;v6,&#32;v7,&#32;v8,&#32;v9,&#32;v10,&#32;v11,&#32;v12,&#32;v13,&#32;v14,&#32;v15,&#32;v16,&#32;v17,&#32;v18,&#32;v19,&#32;v20,&#32;v21,&#32;v22,&#32;v23;
+57 
+58 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;factory
+59 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;Front&#32;face&#32;(Z&#32;=&#32;1.0,&#32;Normal&#32;=&#32;0,&#32;0,&#32;1)</emphasis>
+60 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(-1.0f,&#32;-1.0f,&#32;&#32;1.0f)).UV(0,0).Norm(Math3D::Vec3(0,0,1)),&#32;&amp;v0)
+61 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(&#32;1.0f,&#32;-1.0f,&#32;&#32;1.0f)).UV(1,0).Norm(Math3D::Vec3(0,0,1)),&#32;&amp;v1)
+62 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(&#32;1.0f,&#32;&#32;1.0f,&#32;&#32;1.0f)).UV(1,1).Norm(Math3D::Vec3(0,0,1)),&#32;&amp;v2)
+63 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(-1.0f,&#32;&#32;1.0f,&#32;&#32;1.0f)).UV(0,1).Norm(Math3D::Vec3(0,0,1)),&#32;&amp;v3)
+64 
+65 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;Back&#32;face&#32;(Z&#32;=&#32;-1.0,&#32;Normal&#32;=&#32;0,&#32;0,&#32;-1)</emphasis>
+66 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(&#32;1.0f,&#32;-1.0f,&#32;-1.0f)).UV(0,0).Norm(Math3D::Vec3(0,0,-1)),&#32;&amp;v4)
+67 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(-1.0f,&#32;-1.0f,&#32;-1.0f)).UV(1,0).Norm(Math3D::Vec3(0,0,-1)),&#32;&amp;v5)
+68 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(-1.0f,&#32;&#32;1.0f,&#32;-1.0f)).UV(1,1).Norm(Math3D::Vec3(0,0,-1)),&#32;&amp;v6)
+69 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(&#32;1.0f,&#32;&#32;1.0f,&#32;-1.0f)).UV(0,1).Norm(Math3D::Vec3(0,0,-1)),&#32;&amp;v7)
+70 
+71 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;Top&#32;face&#32;(Y&#32;=&#32;1.0,&#32;Normal&#32;=&#32;0,&#32;1,&#32;0)</emphasis>
+72 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(-1.0f,&#32;&#32;1.0f,&#32;-1.0f)).UV(0,0).Norm(Math3D::Vec3(0,1,0)),&#32;&amp;v8)
+73 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(&#32;1.0f,&#32;&#32;1.0f,&#32;-1.0f)).UV(1,0).Norm(Math3D::Vec3(0,1,0)),&#32;&amp;v9)
+74 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(&#32;1.0f,&#32;&#32;1.0f,&#32;&#32;1.0f)).UV(1,1).Norm(Math3D::Vec3(0,1,0)),&#32;&amp;v10)
+75 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(-1.0f,&#32;&#32;1.0f,&#32;&#32;1.0f)).UV(0,1).Norm(Math3D::Vec3(0,1,0)),&#32;&amp;v11)
+76 
+77 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;Bottom&#32;face&#32;(Y&#32;=&#32;-1.0,&#32;Normal&#32;=&#32;0,&#32;-1,&#32;0)</emphasis>
+78 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(-1.0f,&#32;-1.0f,&#32;-1.0f)).UV(0,1).Norm(Math3D::Vec3(0,-1,0)),&#32;&amp;v12)
+79 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(&#32;1.0f,&#32;-1.0f,&#32;-1.0f)).UV(1,1).Norm(Math3D::Vec3(0,-1,0)),&#32;&amp;v13)
+80 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(&#32;1.0f,&#32;-1.0f,&#32;&#32;1.0f)).UV(1,0).Norm(Math3D::Vec3(0,-1,0)),&#32;&amp;v14)
+81 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(-1.0f,&#32;-1.0f,&#32;&#32;1.0f)).UV(0,0).Norm(Math3D::Vec3(0,-1,0)),&#32;&amp;v15)
+82 
+83 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;Right&#32;face&#32;(X&#32;=&#32;1.0,&#32;Normal&#32;=&#32;1,&#32;0,&#32;0)</emphasis>
+84 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(&#32;1.0f,&#32;-1.0f,&#32;-1.0f)).UV(0,0).Norm(Math3D::Vec3(1,0,0)),&#32;&amp;v16)
+85 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(&#32;1.0f,&#32;-1.0f,&#32;&#32;1.0f)).UV(1,0).Norm(Math3D::Vec3(1,0,0)),&#32;&amp;v17)
+86 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(&#32;1.0f,&#32;&#32;1.0f,&#32;&#32;1.0f)).UV(1,1).Norm(Math3D::Vec3(1,0,0)),&#32;&amp;v18)
+87 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(&#32;1.0f,&#32;&#32;1.0f,&#32;-1.0f)).UV(0,1).Norm(Math3D::Vec3(1,0,0)),&#32;&amp;v19)
+88 
+89 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;Left&#32;face&#32;(X&#32;=&#32;-1.0,&#32;Normal&#32;=&#32;-1,&#32;0,&#32;0)</emphasis>
+90 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(-1.0f,&#32;-1.0f,&#32;&#32;1.0f)).UV(0,0).Norm(Math3D::Vec3(-1,0,0)),&#32;&amp;v20)
+91 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(-1.0f,&#32;-1.0f,&#32;-1.0f)).UV(1,0).Norm(Math3D::Vec3(-1,0,0)),&#32;&amp;v21)
+92 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(-1.0f,&#32;&#32;1.0f,&#32;-1.0f)).UV(1,1).Norm(Math3D::Vec3(-1,0,0)),&#32;&amp;v22)
+93 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(-1.0f,&#32;&#32;1.0f,&#32;&#32;1.0f)).UV(0,1).Norm(Math3D::Vec3(-1,0,0)),&#32;&amp;v23)
+94 
+95 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;Define&#32;the&#32;6&#32;faces</emphasis>
+96 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.defineFace(v0,&#32;v1,&#32;v2,&#32;v3)&#32;&#32;&#32;<emphasis role="comment">//&#32;Front</emphasis>
+97 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.defineFace(v4,&#32;v5,&#32;v6,&#32;v7)&#32;&#32;&#32;<emphasis role="comment">//&#32;Back</emphasis>
+98 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.defineFace(v8,&#32;v11,&#32;v10,&#32;v9)&#32;<emphasis role="comment">//&#32;Top</emphasis>
+99 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.defineFace(v12,&#32;v13,&#32;v14,&#32;v15)&#32;<emphasis role="comment">//&#32;Bottom</emphasis>
+100 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.defineFace(v16,&#32;v19,&#32;v18,&#32;v17)&#32;<emphasis role="comment">//&#32;Right</emphasis>
+101 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.defineFace(v20,&#32;v23,&#32;v22,&#32;v21);&#32;<emphasis role="comment">//&#32;Left</emphasis>
+102 
+103 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">auto</emphasis>&#32;part&#32;=&#32;factory.assemble();
+104 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;part-&gt;localTransform.setScale(Math3D::Vec3(width,&#32;height,&#32;depth));
+105 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;part;
+106 &#32;&#32;&#32;&#32;}
+107 
+116 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;ModelPart&gt;&#32;<link linkend="_struct_model_part_prefabs_1a3416bea1f8d1a22d55739bb58d7fc76e">MakeCirclePlane</link>(
+117 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;radius,&#32;
+118 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;segments&#32;=&#32;32,&#32;
+119 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PMaterial&#32;material&#32;=&#32;<link linkend="_class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769">MaterialDefaults::ColorMaterial::Create</link>(Color::RED),&#32;
+120 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::Vec3&#32;normal&#32;=&#32;Math3D::Vec3(0,1,0)
+121 &#32;&#32;&#32;&#32;){
+122 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">auto</emphasis>&#32;factory&#32;=&#32;<link linkend="_struct_model_part_factory_1a3ef7855857c9e4a6106485c4d6dc13d1">ModelPartFactory::Create</link>(material);
+123 
+124 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;centerIndex;
+125 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;factory.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(0,0,0)).UV(0.5f,0.5f).Norm(normal),&#32;&amp;centerIndex);
+126 
+127 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;firstEdgeIndex&#32;=&#32;-1,&#32;lastEdgeIndex&#32;=&#32;-1;
+128 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">for</emphasis>(<emphasis role="keywordtype">int</emphasis>&#32;i&#32;=&#32;0;&#32;i&#32;&lt;=&#32;segments;&#32;i++){
+129 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;theta&#32;=&#32;(float)i&#32;/&#32;(<emphasis role="keywordtype">float</emphasis>)segments&#32;*&#32;2.0f&#32;*&#32;(float)&#32;Math3D::PI;
+130 
+131 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;x&#32;=&#32;Math3D::Cos(theta);
+132 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;z&#32;=&#32;Math3D::Sin(theta);
+133 
+134 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;currentIndex;
+135 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;u&#32;=&#32;x&#32;*&#32;0.5f&#32;+&#32;0.5f;
+136 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;v&#32;=&#32;z&#32;*&#32;0.5f&#32;+&#32;0.5f;
+137 
+138 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;factory.addVertex(<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(x,0.0f,z)).UV(u,v).Norm(normal),&#32;&amp;currentIndex);
+139 
+140 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(i&#32;==&#32;0)&#32;firstEdgeIndex&#32;=&#32;currentIndex;
+141 
+142 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(i&#32;&gt;&#32;0){
+143 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;factory.defineFace(centerIndex,&#32;currentIndex,&#32;lastEdgeIndex);
+144 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+145 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;lastEdgeIndex&#32;=&#32;currentIndex;
+146 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+147 
+148 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">auto</emphasis>&#32;part&#32;=&#32;factory.assemble();
+149 
+150 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;part-&gt;localTransform.setScale(Math3D::Vec3(radius,&#32;1.0f,&#32;radius));
+151 
+152 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;part;
+153 &#32;&#32;&#32;&#32;}
+154 
+163 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;ModelPart&gt;&#32;<link linkend="_struct_model_part_prefabs_1aa8e35dc9f7dab334b963ab19c722c948">MakeSphere</link>(
+164 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;radius&#32;=&#32;1.0f,
+165 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;slices&#32;=&#32;32,
+166 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;stacks&#32;=&#32;18,
+167 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PMaterial&#32;material&#32;=&#32;<link linkend="_class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769">MaterialDefaults::ColorMaterial::Create</link>(Color::WHITE)
+168 &#32;&#32;&#32;&#32;){
+169 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;slices&#32;=&#32;Math3D::Max(slices,&#32;8);
+170 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;stacks&#32;=&#32;Math3D::Max(stacks,&#32;6);
+171 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(radius&#32;&lt;=&#32;Math3D::EPSILON){
+172 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;radius&#32;=&#32;1.0f;
+173 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+174 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(!material){
+175 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;material&#32;=&#32;<link linkend="_class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769">MaterialDefaults::ColorMaterial::Create</link>(Color::WHITE);
+176 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+177 
+178 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">auto</emphasis>&#32;factory&#32;=&#32;<link linkend="_struct_model_part_factory_1a3ef7855857c9e4a6106485c4d6dc13d1">ModelPartFactory::Create</link>(material);
+179 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::vector&lt;int&gt;&#32;indices(<emphasis role="keyword">static_cast&lt;</emphasis><emphasis role="keywordtype">size_t</emphasis><emphasis role="keyword">&gt;</emphasis>((stacks&#32;+&#32;1)&#32;*&#32;(slices&#32;+&#32;1)),&#32;-1);
+180 
+181 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">for</emphasis>(<emphasis role="keywordtype">int</emphasis>&#32;stack&#32;=&#32;0;&#32;stack&#32;&lt;=&#32;stacks;&#32;++stack){
+182 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;v&#32;=&#32;(float)stack&#32;/&#32;(<emphasis role="keywordtype">float</emphasis>)stacks;
+183 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;phi&#32;=&#32;v&#32;*&#32;(float)Math3D::PI;
+184 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;y&#32;=&#32;std::cos(phi);
+185 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;ringRadius&#32;=&#32;std::sin(phi);
+186 
+187 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">for</emphasis>(<emphasis role="keywordtype">int</emphasis>&#32;slice&#32;=&#32;0;&#32;slice&#32;&lt;=&#32;slices;&#32;++slice){
+188 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;u&#32;=&#32;(float)slice&#32;/&#32;(<emphasis role="keywordtype">float</emphasis>)slices;
+189 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;theta&#32;=&#32;u&#32;*&#32;(float)Math3D::PI&#32;*&#32;2.0f;
+190 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;x&#32;=&#32;ringRadius&#32;*&#32;std::cos(theta);
+191 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;z&#32;=&#32;ringRadius&#32;*&#32;std::sin(theta);
+192 
+193 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::Vec3&#32;normal(x,&#32;y,&#32;z);
+194 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(normal.length()&#32;&lt;=&#32;Math3D::EPSILON){
+195 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;normal&#32;=&#32;Math3D::Vec3(0.0f,&#32;1.0f,&#32;0.0f);
+196 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}<emphasis role="keywordflow">else</emphasis>{
+197 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;normal&#32;=&#32;normal.normalize();
+198 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+199 
+200 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_vertex">Vertex</link>&#32;vertex&#32;=&#32;<link linkend="_struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8">Vertex::Build</link>(Math3D::Vec3(normal.x&#32;*&#32;radius,&#32;normal.y&#32;*&#32;radius,&#32;normal.z&#32;*&#32;radius))
+201 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.<link linkend="_struct_vertex_1a85ad46ae0b05f963524684314d19fedd">Norm</link>(normal)
+202 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;.<link linkend="_struct_vertex_1a7ffc6ba8ee72602e3acbf54a164a031b">UV</link>(u,&#32;1.0f&#32;-&#32;v);
+203 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;outIndex&#32;=&#32;-1;
+204 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;factory.addVertex(vertex,&#32;&amp;outIndex);
+205 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;indices[(size_t)stack&#32;*&#32;(<emphasis role="keywordtype">size_t</emphasis>)(slices&#32;+&#32;1)&#32;+&#32;(<emphasis role="keywordtype">size_t</emphasis>)slice]&#32;=&#32;outIndex;
+206 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+207 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+208 
+209 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">for</emphasis>(<emphasis role="keywordtype">int</emphasis>&#32;stack&#32;=&#32;0;&#32;stack&#32;&lt;&#32;stacks;&#32;++stack){
+210 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">for</emphasis>(<emphasis role="keywordtype">int</emphasis>&#32;slice&#32;=&#32;0;&#32;slice&#32;&lt;&#32;slices;&#32;++slice){
+211 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;i00&#32;=&#32;indices[(size_t)stack&#32;*&#32;(<emphasis role="keywordtype">size_t</emphasis>)(slices&#32;+&#32;1)&#32;+&#32;(<emphasis role="keywordtype">size_t</emphasis>)slice];
+212 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;i01&#32;=&#32;indices[(size_t)stack&#32;*&#32;(<emphasis role="keywordtype">size_t</emphasis>)(slices&#32;+&#32;1)&#32;+&#32;(<emphasis role="keywordtype">size_t</emphasis>)(slice&#32;+&#32;1)];
+213 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;i10&#32;=&#32;indices[(size_t)(stack&#32;+&#32;1)&#32;*&#32;(size_t)(slices&#32;+&#32;1)&#32;+&#32;(size_t)slice];
+214 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;i11&#32;=&#32;indices[(size_t)(stack&#32;+&#32;1)&#32;*&#32;(size_t)(slices&#32;+&#32;1)&#32;+&#32;(size_t)(slice&#32;+&#32;1)];
+215 
+216 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(stack&#32;==&#32;0){
+217 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;factory.defineFace(i00,&#32;i11,&#32;i10);
+218 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}<emphasis role="keywordflow">else</emphasis>&#32;<emphasis role="keywordflow">if</emphasis>(stack&#32;==&#32;(stacks&#32;-&#32;1)){
+219 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;factory.defineFace(i00,&#32;i01,&#32;i10);
+220 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}<emphasis role="keywordflow">else</emphasis>{
+221 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;factory.defineFace(i00,&#32;i11,&#32;i10);
+222 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;factory.defineFace(i00,&#32;i01,&#32;i11);
+223 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+224 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+225 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+226 
+227 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;factory.assemble();
+228 &#32;&#32;&#32;&#32;}
+229 };
+230 
+231 <emphasis role="preprocessor">#endif&#32;</emphasis><emphasis role="comment">//&#32;MODELPART_PREFABS_H</emphasis>
+</programlisting></section>

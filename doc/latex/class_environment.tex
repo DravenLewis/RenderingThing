@@ -1,0 +1,63 @@
+\doxysection{Environment Class Reference}
+\hypertarget{class_environment}{}\label{class_environment}\index{Environment@{Environment}}
+
+
+Represents the \doxylink{class_environment}{Environment} type.  
+
+
+
+
+{\ttfamily \+\#include $<$Environment.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_environment_a5ec60bc420d1c8837fa0c429c7da7eef}\label{class_environment_a5ec60bc420d1c8837fa0c429c7da7eef} 
+{\bfseries Environment} ()=default
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_environment}{Environment} instance. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{class_light_manager}{Light\+Manager}} \& \doxymbox{\hyperlink{class_environment_ac4805d9a4e1da4f43d8f6cc7964cda38}{get\+Light\+Manager}} ()
+\begin{DoxyCompactList}\small\item\em Returns the light manager. \end{DoxyCompactList}\item 
+\Hypertarget{class_environment_ace273e545c41b6049f6b843e49c07aba}\label{class_environment_ace273e545c41b6049f6b843e49c07aba} 
+const \doxymbox{\hyperlink{class_light_manager}{Light\+Manager}} \& {\bfseries get\+Light\+Manager} () const
+\item 
+\Hypertarget{class_environment_a10e711206e9abe20f8c29c2f45be21a9}\label{class_environment_a10e711206e9abe20f8c29c2f45be21a9} 
+void {\bfseries set\+Sky\+Box} (PSky\+Box box)
+\item 
+\Hypertarget{class_environment_ae9a844c9bb23fde0f9143275a30e686c}\label{class_environment_ae9a844c9bb23fde0f9143275a30e686c} 
+PSky\+Box {\bfseries get\+Sky\+Box} () const
+\item 
+\Hypertarget{class_environment_a438f229c453941923e7a4e6e20901dae}\label{class_environment_a438f229c453941923e7a4e6e20901dae} 
+void {\bfseries set\+Lighting\+Enabled} (bool enabled)
+\item 
+\Hypertarget{class_environment_a3ecb71afed64e8a5b3a9502494fa92c8}\label{class_environment_a3ecb71afed64e8a5b3a9502494fa92c8} 
+bool {\bfseries is\+Lighting\+Enabled} () const
+\item 
+\Hypertarget{class_environment_ac3e818fd64b523cefccf84d082141bf2}\label{class_environment_ac3e818fd64b523cefccf84d082141bf2} 
+const std::\+vector$<$ \doxymbox{\hyperlink{struct_light}{Light}} $>$ \& {\bfseries get\+Lights\+For\+Upload} () const
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the \doxylink{class_environment}{Environment} type. 
+
+\label{doc-func-members}
+\Hypertarget{class_environment_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_environment_ac4805d9a4e1da4f43d8f6cc7964cda38}\index{Environment@{Environment}!getLightManager@{getLightManager}}
+\index{getLightManager@{getLightManager}!Environment@{Environment}}
+\doxysubsubsection{\texorpdfstring{getLightManager()}{getLightManager()}}
+{\footnotesize\ttfamily \label{class_environment_ac4805d9a4e1da4f43d8f6cc7964cda38} 
+\doxymbox{\hyperlink{class_light_manager}{Light\+Manager}} \& Environment::\+get\+Light\+Manager (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the light manager. 
+
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Lighting/\+\doxymbox{\hyperlink{_environment_8h}{Environment.\+h}}\end{DoxyCompactItemize}

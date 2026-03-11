@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__model_prefabs_8h" xml:lang="en-US">
+<title>src/Rendering/Geometry/ModelPrefabs.h File Reference</title>
+<indexterm><primary>src/Rendering/Geometry/ModelPrefabs.h</primary></indexterm>
+<para>
+
+<para>Declarations for <link linkend="_struct_model_prefabs">ModelPrefabs</link>. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &lt;memory&gt;<?linebreak?>#include &quot;Rendering/Materials/MaterialDefaults.h&quot;<?linebreak?>#include &quot;Rendering/Geometry/ModelPartPrefabs.h&quot;<?linebreak?>#include &quot;Rendering/Geometry/Model.h&quot;<?linebreak?></programlisting><simplesect>
+    <title>Classes    </title>
+        <itemizedlist>
+            <listitem><para>struct <link linkend="_struct_model_prefabs">ModelPrefabs</link></para>
+
+<para>Holds data for <link linkend="_struct_model_prefabs">ModelPrefabs</link>. </para>
+</listitem>
+            <listitem><para>struct <link linkend="_struct_model_prefabs_1_1_cube_material_definition">ModelPrefabs::CubeMaterialDefinition</link></para>
+
+<para>Holds data for <link linkend="_struct_model_prefabs_1_1_cube_material_definition">CubeMaterialDefinition</link>. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Declarations for <link linkend="_struct_model_prefabs">ModelPrefabs</link>. </para>
+</section>
+</section>

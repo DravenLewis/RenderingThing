@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__material_registry_8cpp" xml:lang="en-US">
+<title>src/Rendering/Materials/MaterialRegistry.cpp File Reference</title>
+<indexterm><primary>src/Rendering/Materials/MaterialRegistry.cpp</primary></indexterm>
+<para>
+
+<para>Implementation for <link linkend="_class_material_registry">MaterialRegistry</link>. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &quot;Rendering/Materials/MaterialRegistry.h&quot;<?linebreak?>#include &quot;Assets/Core/Asset.h&quot;<?linebreak?>#include &quot;Foundation/IO/File.h&quot;<?linebreak?>#include &quot;Assets/Descriptors/MaterialAsset.h&quot;<?linebreak?>#include &quot;Rendering/Materials/MaterialDefaults.h&quot;<?linebreak?>#include &quot;Rendering/Materials/PBRMaterial.h&quot;<?linebreak?>#include &quot;Foundation/Util/StringUtils.h&quot;<?linebreak?>#include &quot;Rendering/Textures/Texture.h&quot;<?linebreak?>#include &lt;algorithm&gt;<?linebreak?>#include &lt;chrono&gt;<?linebreak?>#include &lt;cstring&gt;<?linebreak?>#include &lt;filesystem&gt;<?linebreak?></programlisting><section>
+<title>Detailed Description</title>
+
+<para>Implementation for <link linkend="_class_material_registry">MaterialRegistry</link>. </para>
+</section>
+</section>

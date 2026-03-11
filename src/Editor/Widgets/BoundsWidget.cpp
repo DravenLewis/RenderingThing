@@ -1,3 +1,8 @@
+/**
+ * @file src/Editor/Widgets/BoundsWidget.cpp
+ * @brief Implementation for BoundsWidget.
+ */
+
 #include "Editor/Widgets/BoundsWidget.h"
 
 #include <cmath>

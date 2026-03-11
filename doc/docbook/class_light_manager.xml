@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_light_manager" xml:lang="en-US">
+<title>LightManager Class Reference</title>
+<indexterm><primary>LightManager</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_light_manager">LightManager</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;Light.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_light_manager_1a1eee8eb276ec7f041d961a567389754a"/><emphasis role="strong">LightManager</emphasis> ()</para>
+
+<para>Constructs a new <link linkend="_class_light_manager">LightManager</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_light_manager_1a8eb4ddf0a428e920b719b87e8d11e7dd"/>void <emphasis role="strong">addLight</emphasis> (const <link linkend="_struct_light">Light</link> &amp;light)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_light_manager_1a5f44c60d70f25a720765d585dee49c5c"/>void <emphasis role="strong">removeLight</emphasis> (size_t index)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_light_manager_1a67600b3fe875e0a3b678c6204d2527c4"/>void <emphasis role="strong">clearLights</emphasis> ()</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_light_manager_1a5dbe954c240042dbfaa32e0bf41277fb"/>size_t <emphasis role="strong">getLightCount</emphasis> () const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_light_manager_1a8256492f5e2c03c13d6d8294e6075454"/><link linkend="_struct_light">Light</link> &amp; <emphasis role="strong">getLight</emphasis> (size_t index)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_light_manager_1a8cdd7ef900426d692bbb7904b093c639"/>const <link linkend="_struct_light">Light</link> &amp; <emphasis role="strong">getLight</emphasis> (size_t index) const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_light_manager_1a9a5a8d1f6757c21d238fd10dabe34798"/>const std::vector&lt; <link linkend="_struct_light">Light</link> &gt; &amp; <emphasis role="strong">getAllLights</emphasis> () const</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Static Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_light_manager_1a0d24360426c3415d75bb7e03169805c1"/>static <link linkend="_class_light_manager">LightManager</link> <emphasis role="strong">GlobalLightManager</emphasis></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_light_manager">LightManager</link> type. </para>
+<para>
+The documentation for this class was generated from the following files:</para>
+src/Rendering/Lighting/<link linkend="__light_8h">Light.h</link>src/Rendering/Lighting/<link linkend="__light_8cpp">Light.cpp</link></section>
+</section>

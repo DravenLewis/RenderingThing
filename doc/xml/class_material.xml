@@ -1,0 +1,417 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_material" kind="class" language="C++" prot="public">
+    <compoundname>Material</compoundname>
+    <derivedcompoundref refid="class_constructed_material" prot="public" virt="non-virtual">ConstructedMaterial</derivedcompoundref>
+    <derivedcompoundref refid="class_material_defaults_1_1_color_material" prot="public" virt="non-virtual">MaterialDefaults::ColorMaterial</derivedcompoundref>
+    <derivedcompoundref refid="class_material_defaults_1_1_flat_color_material" prot="public" virt="non-virtual">MaterialDefaults::FlatColorMaterial</derivedcompoundref>
+    <derivedcompoundref refid="class_material_defaults_1_1_flat_image_material" prot="public" virt="non-virtual">MaterialDefaults::FlatImageMaterial</derivedcompoundref>
+    <derivedcompoundref refid="class_material_defaults_1_1_image_material" prot="public" virt="non-virtual">MaterialDefaults::ImageMaterial</derivedcompoundref>
+    <derivedcompoundref refid="class_material_defaults_1_1_lit_color_material" prot="public" virt="non-virtual">MaterialDefaults::LitColorMaterial</derivedcompoundref>
+    <derivedcompoundref refid="class_material_defaults_1_1_lit_image_material" prot="public" virt="non-virtual">MaterialDefaults::LitImageMaterial</derivedcompoundref>
+    <derivedcompoundref refid="class_p_b_r_material" prot="public" virt="non-virtual">PBRMaterial</derivedcompoundref>
+    <derivedcompoundref refid="class_skybox_material" prot="public" virt="non-virtual">SkyboxMaterial</derivedcompoundref>
+    <includes refid="_material_8h" local="no">Material.h</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_material_1a1eb25a4e720bae53889913f587af516b" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="class_shader_program" kindref="compound">ShaderProgram</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;ShaderProgram&gt; Material::programObjPtr</definition>
+        <argsstring></argsstring>
+        <name>programObjPtr</name>
+        <qualifiedname>Material::programObjPtr</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/Material.h" line="54" column="25" bodyfile="src/Rendering/Materials/Material.h" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_material_1a18d9d2e4ef8569fb79e54eb2b4635e11" prot="private" static="no" mutable="no">
+        <type>std::unordered_map&lt; std::string, std::shared_ptr&lt; <ref refid="struct_i_material_property" kindref="compound">IMaterialProperty</ref> &gt; &gt;</type>
+        <definition>std::unordered_map&lt;std::string, std::shared_ptr&lt;IMaterialProperty&gt; &gt; Material::properties</definition>
+        <argsstring></argsstring>
+        <name>properties</name>
+        <qualifiedname>Material::properties</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/Material.h" line="55" column="28" bodyfile="src/Rendering/Materials/Material.h" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_material_1a6646ef8af8f4c352845d20bb5daf5f83" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool Material::castsShadowsFlag</definition>
+        <argsstring></argsstring>
+        <name>castsShadowsFlag</name>
+        <qualifiedname>Material::castsShadowsFlag</qualifiedname>
+        <initializer>= true</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/Material.h" line="56" column="14" bodyfile="src/Rendering/Materials/Material.h" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_material_1a6c0cb2ee0556c566cf105081a4a50551" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool Material::receivesShadowsFlag</definition>
+        <argsstring></argsstring>
+        <name>receivesShadowsFlag</name>
+        <qualifiedname>Material::receivesShadowsFlag</qualifiedname>
+        <initializer>= true</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/Material.h" line="57" column="14" bodyfile="src/Rendering/Materials/Material.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_material_1ace810a426f4b488d2dc2a53070d85405" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Material::Material</definition>
+        <argsstring>(std::shared_ptr&lt; ShaderProgram &gt; program)</argsstring>
+        <name>Material</name>
+        <qualifiedname>Material::Material</qualifiedname>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="class_shader_program" kindref="compound">ShaderProgram</ref> &gt;</type>
+          <declname>program</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_material" kindref="compound">Material</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>program</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for program. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/Material.h" line="63" column="9" bodyfile="src/Rendering/Materials/Material.h" bodystart="63" bodyend="73"/>
+        <referencedby refid="class_material_defaults_1_1_color_material_1af4201c21c18e146bd0b1a4f707d89b5e" compoundref="_material_defaults_8cpp" startline="48" endline="56">MaterialDefaults::ColorMaterial::ColorMaterial</referencedby>
+        <referencedby refid="class_constructed_material_1a6e513e5615be7d3b0fa75894b2c58dd1" compoundref="_constructed_material_8cpp" startline="14" endline="16">ConstructedMaterial::ConstructedMaterial</referencedby>
+        <referencedby refid="class_material_defaults_1_1_flat_color_material_1ac7dc6be01211acd7b57c3cdc9c66465c" compoundref="_material_defaults_8cpp" startline="262" endline="279">MaterialDefaults::FlatColorMaterial::FlatColorMaterial</referencedby>
+        <referencedby refid="class_material_defaults_1_1_flat_image_material_1a9c3f9e57b779bf7b98422cb07f9fb5f2" compoundref="_material_defaults_8cpp" startline="318" endline="342">MaterialDefaults::FlatImageMaterial::FlatImageMaterial</referencedby>
+        <referencedby refid="class_material_defaults_1_1_image_material_1a132cf6ed173fb5c7a62664b5b791b6fe" compoundref="_material_defaults_8cpp" startline="80" endline="105">MaterialDefaults::ImageMaterial::ImageMaterial</referencedby>
+        <referencedby refid="class_material_defaults_1_1_lit_color_material_1a481808bb46099270f1547b25f1b6440c" compoundref="_material_defaults_8cpp" startline="138" endline="154">MaterialDefaults::LitColorMaterial::LitColorMaterial</referencedby>
+        <referencedby refid="class_material_defaults_1_1_lit_image_material_1a145f3af8bff8074b827846bf9df7b71d" compoundref="_material_defaults_8cpp" startline="192" endline="216">MaterialDefaults::LitImageMaterial::LitImageMaterial</referencedby>
+        <referencedby refid="class_p_b_r_material_1aa95501f255a91cf9c2572ed4ea38fe27" compoundref="_p_b_r_material_8cpp" startline="54" endline="226">PBRMaterial::PBRMaterial</referencedby>
+        <referencedby refid="class_skybox_material_1a1aa19f0df9db4109ee056f7b109f98c0" compoundref="_skybox_material_8cpp" startline="12" endline="17">SkyboxMaterial::SkyboxMaterial</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_material_1a179e16d6a1bd4a0f039b8e4cbf2ade30" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual Material::~Material</definition>
+        <argsstring>()</argsstring>
+        <name>~Material</name>
+        <qualifiedname>Material::~Material</qualifiedname>
+        <briefdescription>
+<para>Destroys this <ref refid="class_material" kindref="compound">Material</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/Material.h" line="77" column="17" bodyfile="src/Rendering/Materials/Material.h" bodystart="77" bodyend="77"/>
+      </memberdef>
+      <memberdef kind="function" id="class_material_1afebe6792e3275332e491ce2ca396069b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool Material::set</definition>
+        <argsstring>(const std::string &amp;name, T value)</argsstring>
+        <name>set</name>
+        <qualifiedname>Material::set</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>T</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/Material.h" line="80" column="14" bodyfile="src/Rendering/Materials/Material.h" bodystart="80" bodyend="92"/>
+      </memberdef>
+      <memberdef kind="function" id="class_material_1aa9acc36e80cc1874dc69da8dedf54695" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>virtual void Material::bind</definition>
+        <argsstring>()</argsstring>
+        <name>bind</name>
+        <qualifiedname>Material::bind</qualifiedname>
+        <reimplementedby refid="class_constructed_material_1a20ec1258bcfcd504150134f3d12dbb4a">bind</reimplementedby>
+        <reimplementedby refid="class_material_defaults_1_1_flat_color_material_1a3602a1f317d7e37c08e1f2c7e4fd4c2b">bind</reimplementedby>
+        <reimplementedby refid="class_material_defaults_1_1_flat_image_material_1a61b269b2721d94022945e0bf31bbd6fc">bind</reimplementedby>
+        <reimplementedby refid="class_material_defaults_1_1_lit_color_material_1a80c1908b825477e38e320f838708fac9">bind</reimplementedby>
+        <reimplementedby refid="class_material_defaults_1_1_lit_image_material_1ab48290d5a6ba088db4337a1b9f3c2137">bind</reimplementedby>
+        <reimplementedby refid="class_p_b_r_material_1a30db1aa8fdf92f2a7310b864d79ee159">bind</reimplementedby>
+        <reimplementedby refid="class_skybox_material_1acc843c2b1152fda9d10fbd964e7e9473">bind</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/Material.h" line="94" column="22" bodyfile="src/Rendering/Materials/Material.h" bodystart="94" bodyend="103"/>
+      </memberdef>
+      <memberdef kind="function" id="class_material_1a3b4ef589843fde30b1844bde9bcbad19" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void Material::unbind</definition>
+        <argsstring>()</argsstring>
+        <name>unbind</name>
+        <qualifiedname>Material::unbind</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/Material.h" line="105" column="14" bodyfile="src/Rendering/Materials/Material.h" bodystart="105" bodyend="109"/>
+      </memberdef>
+      <memberdef kind="function" id="class_material_1a3fbc05a83a35eb9e07a7b84cba22eb6e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="class_shader_program" kindref="compound">ShaderProgram</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; ShaderProgram &gt; Material::getShader</definition>
+        <argsstring>()</argsstring>
+        <name>getShader</name>
+        <qualifiedname>Material::getShader</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/Material.h" line="111" column="25" bodyfile="src/Rendering/Materials/Material.h" bodystart="111" bodyend="113"/>
+      </memberdef>
+      <memberdef kind="function" id="class_material_1add6d2e03a3dc1ac8dfac431b9641d5cc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void Material::setShader</definition>
+        <argsstring>(std::shared_ptr&lt; ShaderProgram &gt; program)</argsstring>
+        <name>setShader</name>
+        <qualifiedname>Material::setShader</qualifiedname>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="class_shader_program" kindref="compound">ShaderProgram</ref> &gt;</type>
+          <declname>program</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/Material.h" line="115" column="14" bodyfile="src/Rendering/Materials/Material.h" bodystart="115" bodyend="122"/>
+      </memberdef>
+      <memberdef kind="function" id="class_material_1ab98237e9210f21b7b8600966f6b66c5f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void Material::setCastsShadows</definition>
+        <argsstring>(bool value)</argsstring>
+        <name>setCastsShadows</name>
+        <qualifiedname>Material::setCastsShadows</qualifiedname>
+        <param>
+          <type>bool</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/Material.h" line="124" column="14" bodyfile="src/Rendering/Materials/Material.h" bodystart="124" bodyend="124"/>
+      </memberdef>
+      <memberdef kind="function" id="class_material_1aaf9a94eb8335d955b4a58a1f036bb3aa" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool Material::castsShadows</definition>
+        <argsstring>() const</argsstring>
+        <name>castsShadows</name>
+        <qualifiedname>Material::castsShadows</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/Material.h" line="125" column="14" bodyfile="src/Rendering/Materials/Material.h" bodystart="125" bodyend="125"/>
+      </memberdef>
+      <memberdef kind="function" id="class_material_1acef042dc3f4671a78a172aa90a12b694" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void Material::setReceivesShadows</definition>
+        <argsstring>(bool value)</argsstring>
+        <name>setReceivesShadows</name>
+        <qualifiedname>Material::setReceivesShadows</qualifiedname>
+        <param>
+          <type>bool</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/Material.h" line="127" column="14" bodyfile="src/Rendering/Materials/Material.h" bodystart="127" bodyend="130"/>
+      </memberdef>
+      <memberdef kind="function" id="class_material_1adfd452b4ff41ff6d818278e8adf9b9d5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool Material::receivesShadows</definition>
+        <argsstring>() const</argsstring>
+        <name>receivesShadows</name>
+        <qualifiedname>Material::receivesShadows</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/Material.h" line="131" column="14" bodyfile="src/Rendering/Materials/Material.h" bodystart="131" bodyend="131"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_material_1a55fb7dcfa5f72a8997b6423ac099caa6" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="class_material" kindref="compound">Material</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt; Material &gt; Material::Copy</definition>
+        <argsstring>(std::shared_ptr&lt; Material &gt; material)</argsstring>
+        <name>Copy</name>
+        <qualifiedname>Material::Copy</qualifiedname>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="class_material" kindref="compound">Material</ref> &gt;</type>
+          <declname>material</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/Material.h" line="133" column="32" bodyfile="src/Rendering/Materials/Material.h" bodystart="133" bodyend="138"/>
+      </memberdef>
+      <memberdef kind="function" id="class_material_1a00c4c29d23d53171fa11ccbe1d91f14d" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>std::shared_ptr&lt; T &gt;</type>
+        <definition>static std::shared_ptr&lt; T &gt; Material::GetAs</definition>
+        <argsstring>(std::shared_ptr&lt; Material &gt; matPtr)</argsstring>
+        <name>GetAs</name>
+        <qualifiedname>Material::GetAs</qualifiedname>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="class_material" kindref="compound">Material</ref> &gt;</type>
+          <declname>matPtr</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/Material.h" line="141" column="32" bodyfile="src/Rendering/Materials/Material.h" bodystart="141" bodyend="143"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_material" kindref="compound">Material</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>ConstructedMaterial</label>
+        <link refid="class_constructed_material"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>Material</label>
+        <link refid="class_material"/>
+      </node>
+      <node id="3">
+        <label>MaterialDefaults::ColorMaterial</label>
+        <link refid="class_material_defaults_1_1_color_material"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>MaterialDefaults::FlatColorMaterial</label>
+        <link refid="class_material_defaults_1_1_flat_color_material"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>MaterialDefaults::FlatImageMaterial</label>
+        <link refid="class_material_defaults_1_1_flat_image_material"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>MaterialDefaults::ImageMaterial</label>
+        <link refid="class_material_defaults_1_1_image_material"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>MaterialDefaults::LitColorMaterial</label>
+        <link refid="class_material_defaults_1_1_lit_color_material"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>MaterialDefaults::LitImageMaterial</label>
+        <link refid="class_material_defaults_1_1_lit_image_material"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>PBRMaterial</label>
+        <link refid="class_p_b_r_material"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>SkyboxMaterial</label>
+        <link refid="class_skybox_material"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <location file="src/Rendering/Materials/Material.h" line="52" column="1" bodyfile="src/Rendering/Materials/Material.h" bodystart="52" bodyend="144"/>
+    <listofallmembers>
+      <member refid="class_material_1aa9acc36e80cc1874dc69da8dedf54695" prot="public" virt="virtual"><scope>Material</scope><name>bind</name></member>
+      <member refid="class_material_1aaf9a94eb8335d955b4a58a1f036bb3aa" prot="public" virt="non-virtual"><scope>Material</scope><name>castsShadows</name></member>
+      <member refid="class_material_1a6646ef8af8f4c352845d20bb5daf5f83" prot="private" virt="non-virtual"><scope>Material</scope><name>castsShadowsFlag</name></member>
+      <member refid="class_material_1a55fb7dcfa5f72a8997b6423ac099caa6" prot="public" virt="non-virtual"><scope>Material</scope><name>Copy</name></member>
+      <member refid="class_material_1a00c4c29d23d53171fa11ccbe1d91f14d" prot="public" virt="non-virtual"><scope>Material</scope><name>GetAs</name></member>
+      <member refid="class_material_1a3fbc05a83a35eb9e07a7b84cba22eb6e" prot="public" virt="non-virtual"><scope>Material</scope><name>getShader</name></member>
+      <member refid="class_material_1ace810a426f4b488d2dc2a53070d85405" prot="public" virt="non-virtual"><scope>Material</scope><name>Material</name></member>
+      <member refid="class_material_1a1eb25a4e720bae53889913f587af516b" prot="private" virt="non-virtual"><scope>Material</scope><name>programObjPtr</name></member>
+      <member refid="class_material_1a18d9d2e4ef8569fb79e54eb2b4635e11" prot="private" virt="non-virtual"><scope>Material</scope><name>properties</name></member>
+      <member refid="class_material_1adfd452b4ff41ff6d818278e8adf9b9d5" prot="public" virt="non-virtual"><scope>Material</scope><name>receivesShadows</name></member>
+      <member refid="class_material_1a6c0cb2ee0556c566cf105081a4a50551" prot="private" virt="non-virtual"><scope>Material</scope><name>receivesShadowsFlag</name></member>
+      <member refid="class_material_1afebe6792e3275332e491ce2ca396069b" prot="public" virt="non-virtual"><scope>Material</scope><name>set</name></member>
+      <member refid="class_material_1ab98237e9210f21b7b8600966f6b66c5f" prot="public" virt="non-virtual"><scope>Material</scope><name>setCastsShadows</name></member>
+      <member refid="class_material_1acef042dc3f4671a78a172aa90a12b694" prot="public" virt="non-virtual"><scope>Material</scope><name>setReceivesShadows</name></member>
+      <member refid="class_material_1add6d2e03a3dc1ac8dfac431b9641d5cc" prot="public" virt="non-virtual"><scope>Material</scope><name>setShader</name></member>
+      <member refid="class_material_1a3b4ef589843fde30b1844bde9bcbad19" prot="public" virt="non-virtual"><scope>Material</scope><name>unbind</name></member>
+      <member refid="class_material_1a179e16d6a1bd4a0f039b8e4cbf2ade30" prot="public" virt="virtual"><scope>Material</scope><name>~Material</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

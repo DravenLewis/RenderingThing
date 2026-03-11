@@ -1,0 +1,53 @@
+\doxysection{Light\+Manager Class Reference}
+\hypertarget{class_light_manager}{}\label{class_light_manager}\index{LightManager@{LightManager}}
+
+
+Represents the \doxylink{class_light_manager}{Light\+Manager} type.  
+
+
+
+
+{\ttfamily \+\#include $<$Light.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_light_manager_a1eee8eb276ec7f041d961a567389754a}\label{class_light_manager_a1eee8eb276ec7f041d961a567389754a} 
+{\bfseries Light\+Manager} ()
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_light_manager}{Light\+Manager} instance. \end{DoxyCompactList}\item 
+\Hypertarget{class_light_manager_a8eb4ddf0a428e920b719b87e8d11e7dd}\label{class_light_manager_a8eb4ddf0a428e920b719b87e8d11e7dd} 
+void {\bfseries add\+Light} (const \doxymbox{\hyperlink{struct_light}{Light}} \&light)
+\item 
+\Hypertarget{class_light_manager_a5f44c60d70f25a720765d585dee49c5c}\label{class_light_manager_a5f44c60d70f25a720765d585dee49c5c} 
+void {\bfseries remove\+Light} (size\+\_\+t index)
+\item 
+\Hypertarget{class_light_manager_a67600b3fe875e0a3b678c6204d2527c4}\label{class_light_manager_a67600b3fe875e0a3b678c6204d2527c4} 
+void {\bfseries clear\+Lights} ()
+\item 
+\Hypertarget{class_light_manager_a5dbe954c240042dbfaa32e0bf41277fb}\label{class_light_manager_a5dbe954c240042dbfaa32e0bf41277fb} 
+size\+\_\+t {\bfseries get\+Light\+Count} () const
+\item 
+\Hypertarget{class_light_manager_a8256492f5e2c03c13d6d8294e6075454}\label{class_light_manager_a8256492f5e2c03c13d6d8294e6075454} 
+\doxymbox{\hyperlink{struct_light}{Light}} \& {\bfseries get\+Light} (size\+\_\+t index)
+\item 
+\Hypertarget{class_light_manager_a8cdd7ef900426d692bbb7904b093c639}\label{class_light_manager_a8cdd7ef900426d692bbb7904b093c639} 
+const \doxymbox{\hyperlink{struct_light}{Light}} \& {\bfseries get\+Light} (size\+\_\+t index) const
+\item 
+\Hypertarget{class_light_manager_a9a5a8d1f6757c21d238fd10dabe34798}\label{class_light_manager_a9a5a8d1f6757c21d238fd10dabe34798} 
+const std::\+vector$<$ \doxymbox{\hyperlink{struct_light}{Light}} $>$ \& {\bfseries get\+All\+Lights} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_light_manager_a0d24360426c3415d75bb7e03169805c1}\label{class_light_manager_a0d24360426c3415d75bb7e03169805c1} 
+static \doxymbox{\hyperlink{class_light_manager}{Light\+Manager}} {\bfseries Global\+Light\+Manager}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the \doxylink{class_light_manager}{Light\+Manager} type. 
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Lighting/\+\doxymbox{\hyperlink{_light_8h}{Light.\+h}}\item 
+src/\+\+Rendering/\+\+Lighting/\+\doxymbox{\hyperlink{_light_8cpp}{Light.\+cpp}}\end{DoxyCompactItemize}

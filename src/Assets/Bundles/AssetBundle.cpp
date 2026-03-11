@@ -1,3 +1,8 @@
+/**
+ * @file src/Assets/Bundles/AssetBundle.cpp
+ * @brief Implementation for AssetBundle.
+ */
+
 #include "Assets/Bundles/AssetBundle.h"
 
 #include "Assets/Core/AssetDescriptorUtils.h"

@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_constructed_material_1_1_field" xml:lang="en-US">
+<title>ConstructedMaterial::Field Struct Reference</title>
+<indexterm><primary>ConstructedMaterial::Field</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_constructed_material_1_1_field">Field</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;ConstructedMaterial.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_constructed_material_1_1_field_1aea1b90ed2ac0fe5de9e0a621201f0de9"/>std::string <emphasis role="strong">key</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_constructed_material_1_1_field_1ae405ee0ef9675ae06d507aab0f283688"/>std::string <emphasis role="strong">displayName</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_constructed_material_1_1_field_1ab5df4e3a55fde3b53d143589624f0b1f"/>std::string <emphasis role="strong">uniformName</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_constructed_material_1_1_field_1a7b44889db8619b7baa3256f0ba041d0e"/>std::string <emphasis role="strong">mirrorUniformName</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_constructed_material_1_1_field_1a23e61dbecabc9437441853665e92cf2c"/>std::string <emphasis role="strong">presenceUniformName</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_constructed_material_1_1_field_1ac14f7a5aa053c48d0d900b223ea88254"/><link linkend="_class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cf">FieldType</link> <emphasis role="strong">type</emphasis> = FieldType::Float</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_constructed_material_1_1_field_1a56a6a73b0e5400dad95b5517a81e3af7"/>float <emphasis role="strong">floatValue</emphasis> = 0.0f</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_constructed_material_1_1_field_1af27efb334454d4ea12dfe9af6c084006"/>int <emphasis role="strong">intValue</emphasis> = 0</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_constructed_material_1_1_field_1a018f2d065f4894bdcf4cfad8553139fe"/>bool <emphasis role="strong">boolValue</emphasis> = false</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_constructed_material_1_1_field_1ac2bfb1bae96030da2ba422f95e946589"/>Math3D::Vec2 <emphasis role="strong">vec2Value</emphasis> = Math3D::Vec2(0.0f, 0.0f)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_constructed_material_1_1_field_1ade83ca486b4a4aba7317c29a971cae73"/>Math3D::Vec3 <emphasis role="strong">vec3Value</emphasis> = Math3D::Vec3(0.0f, 0.0f, 0.0f)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_constructed_material_1_1_field_1ae6d6329dc69a039a9ba1db500f95894a"/>Math3D::Vec4 <emphasis role="strong">vec4Value</emphasis> = Math3D::Vec4(0.0f, 0.0f, 0.0f, 1.0f)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_constructed_material_1_1_field_1a4ff93fdebe30b55f3296f8cbb5ce6495"/>std::string <emphasis role="strong">textureAssetRef</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_constructed_material_1_1_field_1a17698bf08499c28b16489aee03b31a82"/>std::shared_ptr&lt; <link linkend="_class_texture">Texture</link> &gt; <emphasis role="strong">texturePtr</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_constructed_material_1_1_field_1af96b1e10a7ec184a8c19d9ca6d8129c0"/>std::string <emphasis role="strong">loadedTextureRef</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_constructed_material_1_1_field_1a8653f76acd8f779bd48027574a36597f"/>int <emphasis role="strong">textureSlot</emphasis> = 0</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_constructed_material_1_1_field">Field</link>. </para>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Materials/<link linkend="__constructed_material_8h">ConstructedMaterial.h</link></section>
+</section>

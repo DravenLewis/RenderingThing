@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_sky_box" kind="class" language="C++" prot="public">
+    <compoundname>SkyBox</compoundname>
+    <includes refid="_sky_box_8h" local="no">SkyBox.h</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_sky_box_1afe2f46d87fb8d94272ffd40dbd6c7fd9" prot="private" static="no" mutable="no">
+        <type>PModel</type>
+        <definition>PModel SkyBox::skyboxModel</definition>
+        <argsstring></argsstring>
+        <name>skyboxModel</name>
+        <qualifiedname>SkyBox::skyboxModel</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/SkyBox.h" line="30" column="16" bodyfile="src/Rendering/Textures/SkyBox.h" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_sky_box_1a920e066435fab4060dd4f6a2bda09d5c" prot="private" static="no" mutable="no">
+        <type>PMaterial</type>
+        <definition>PMaterial SkyBox::skyboxMaterial</definition>
+        <argsstring></argsstring>
+        <name>skyboxMaterial</name>
+        <qualifiedname>SkyBox::skyboxMaterial</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/SkyBox.h" line="31" column="19" bodyfile="src/Rendering/Textures/SkyBox.h" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_sky_box_1a7b7e36cee974700004139b30d2666243" prot="private" static="no" mutable="no">
+        <type>PCubeMap</type>
+        <definition>PCubeMap SkyBox::skyboxCubeMap</definition>
+        <argsstring></argsstring>
+        <name>skyboxCubeMap</name>
+        <qualifiedname>SkyBox::skyboxCubeMap</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/SkyBox.h" line="32" column="18" bodyfile="src/Rendering/Textures/SkyBox.h" bodystart="32" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_sky_box_1a984fbaa7cd6c7cfcadf942d91bc2fb41" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>SkyBox::SkyBox</definition>
+        <argsstring>()=delete</argsstring>
+        <name>SkyBox</name>
+        <qualifiedname>SkyBox::SkyBox</qualifiedname>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_sky_box" kindref="compound">SkyBox</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/SkyBox.h" line="36" column="9"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_sky_box_1af6d94c1589304676eac958ce814ce546" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>SkyBox::SkyBox</definition>
+        <argsstring>(const SkyBox6Face &amp;faceAssetDef)</argsstring>
+        <name>SkyBox</name>
+        <qualifiedname>SkyBox::SkyBox</qualifiedname>
+        <param>
+          <type>const <ref refid="struct_sky_box6_face" kindref="compound">SkyBox6Face</ref> &amp;</type>
+          <declname>faceAssetDef</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_sky_box" kindref="compound">SkyBox</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>faceAssetDef</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for face asset def. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/SkyBox.h" line="42" column="9" bodyfile="src/Rendering/Textures/SkyBox.cpp" bodystart="12" bodyend="35"/>
+        <references refid="struct_model_1a3f0b711fc427dce1d41b1c2122248482" compoundref="_model_8h" startline="179" endline="181">Model::Create</references>
+        <references refid="class_skybox_material_1a25b97b60f3d10f4f586a3fcbd1d4f7cc" compoundref="_skybox_material_8cpp" startline="37" endline="52">SkyboxMaterial::Create</references>
+        <references refid="struct_model_part_prefabs_1af662a7f490b997301237d4b33f4a7372" compoundref="_model_part_prefabs_8h" startline="54" endline="106">ModelPartPrefabs::MakeBox</references>
+      </memberdef>
+      <memberdef kind="function" id="class_sky_box_1a0994828d7cce6823083bc8445b9456d6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void SkyBox::draw</definition>
+        <argsstring>(PCamera cam, bool depthTested=false)</argsstring>
+        <name>draw</name>
+        <qualifiedname>SkyBox::draw</qualifiedname>
+        <param>
+          <type>PCamera</type>
+          <declname>cam</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>depthTested</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+<para>Draws this object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>cam</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for cam. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>depthTested</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for depth tested. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/SkyBox.h" line="48" column="14" bodyfile="src/Rendering/Textures/SkyBox.cpp" bodystart="37" bodyend="65"/>
+      </memberdef>
+      <memberdef kind="function" id="class_sky_box_1a3870170d9350bfa50f6995853dad559f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>PCubeMap</type>
+        <definition>PCubeMap SkyBox::getCubeMap</definition>
+        <argsstring>() const</argsstring>
+        <name>getCubeMap</name>
+        <qualifiedname>SkyBox::getCubeMap</qualifiedname>
+        <briefdescription>
+<para>Returns the cube map. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Result of this operation. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/SkyBox.h" line="53" column="18" bodyfile="src/Rendering/Textures/SkyBox.h" bodystart="53" bodyend="53"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_sky_box" kindref="compound">SkyBox</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Textures/SkyBox.h" line="28" column="1" bodyfile="src/Rendering/Textures/SkyBox.h" bodystart="28" bodyend="55"/>
+    <listofallmembers>
+      <member refid="class_sky_box_1a0994828d7cce6823083bc8445b9456d6" prot="public" virt="non-virtual"><scope>SkyBox</scope><name>draw</name></member>
+      <member refid="class_sky_box_1a3870170d9350bfa50f6995853dad559f" prot="public" virt="non-virtual"><scope>SkyBox</scope><name>getCubeMap</name></member>
+      <member refid="class_sky_box_1a984fbaa7cd6c7cfcadf942d91bc2fb41" prot="private" virt="non-virtual"><scope>SkyBox</scope><name>SkyBox</name></member>
+      <member refid="class_sky_box_1af6d94c1589304676eac958ce814ce546" prot="public" virt="non-virtual"><scope>SkyBox</scope><name>SkyBox</name></member>
+      <member refid="class_sky_box_1a7b7e36cee974700004139b30d2666243" prot="private" virt="non-virtual"><scope>SkyBox</scope><name>skyboxCubeMap</name></member>
+      <member refid="class_sky_box_1a920e066435fab4060dd4f6a2bda09d5c" prot="private" virt="non-virtual"><scope>SkyBox</scope><name>skyboxMaterial</name></member>
+      <member refid="class_sky_box_1afe2f46d87fb8d94272ffd40dbd6c7fd9" prot="private" virt="non-virtual"><scope>SkyBox</scope><name>skyboxModel</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

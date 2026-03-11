@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_material_property" xml:lang="en-US">
+<title>MaterialProperty&lt; T &gt; Struct Template Reference</title>
+<indexterm><primary>MaterialProperty&lt; T &gt;</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_material_property">MaterialProperty</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;Material.h&gt;</computeroutput>
+</para>
+<para>Inheritance diagram for MaterialProperty&lt; T &gt;:    <informalfigure>
+        <mediaobject>
+            <imageobject>
+                <imagedata width="50%" align="center" valign="middle" scalefit="0" fileref="struct_material_property.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+    </informalfigure>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><link linkend="_struct_material_property_1ad18e0b2fc2b7cba4f5a1714ac196e51b">MaterialProperty</link> (T val)</para>
+
+<para>Constructs a new <link linkend="_struct_material_property">MaterialProperty</link> instance. </para>
+</listitem>
+            <listitem><para>void <link linkend="_struct_material_property_1a5645edb77a40c19013dac45a0d21880b">apply</link> (<link linkend="_class_shader_program">ShaderProgram</link> &amp;shader, const std::string &amp;name, bool assumeBound) override</para>
+
+<para>Applies current settings. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+Public Member Functions inherited from <link linkend="_struct_i_material_property">IMaterialProperty</link>        <itemizedlist>
+            <listitem><para>virtual <emphasis role="strong">~IMaterialProperty</emphasis> ()=default</para>
+
+<para>Destroys this <link linkend="_struct_i_material_property">IMaterialProperty</link> instance. </para>
+</listitem>
+        </itemizedlist>
+<simplesect>
+    <title>Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_material_property_1a617debd35f666ac8999f0e927d40ec9b"/>T <emphasis role="strong">value</emphasis></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+<simplesect><title>template&lt;typename T&gt;<?linebreak?>struct MaterialProperty&lt; T &gt;</title></simplesect>
+
+<para>Holds data for <link linkend="_struct_material_property">MaterialProperty</link>. </para>
+</section>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_struct_material_property_1ad18e0b2fc2b7cba4f5a1714ac196e51b"/><section>
+    <title>MaterialProperty()</title>
+<indexterm><primary>MaterialProperty</primary><secondary>MaterialProperty&lt; T &gt;</secondary></indexterm>
+<indexterm><primary>MaterialProperty&lt; T &gt;</primary><secondary>MaterialProperty</secondary></indexterm>
+<computeroutput>template&lt;typename T&gt; </computeroutput><para><computeroutput><link linkend="_struct_material_property">MaterialProperty</link>&lt; T &gt;::MaterialProperty (T val)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Constructs a new <link linkend="_struct_material_property">MaterialProperty</link> instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>val</entry><entry>
+<para>Value for val. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_struct_material_property_1a5645edb77a40c19013dac45a0d21880b"/><section>
+    <title>apply()</title>
+<indexterm><primary>apply</primary><secondary>MaterialProperty&lt; T &gt;</secondary></indexterm>
+<indexterm><primary>MaterialProperty&lt; T &gt;</primary><secondary>apply</secondary></indexterm>
+<computeroutput>template&lt;typename T&gt; </computeroutput><para><computeroutput>void <link linkend="_struct_material_property">MaterialProperty</link>&lt; T &gt;::apply (<link linkend="_class_shader_program">ShaderProgram</link> &amp; shader, const std::string &amp; name, bool assumeBound)<computeroutput>[inline]</computeroutput>, <computeroutput>[override]</computeroutput>, <computeroutput>[virtual]</computeroutput></computeroutput></para><para>
+
+<para>Applies current settings. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>shader</entry><entry>
+<para>Value for shader. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>name</entry><entry>
+<para>Name used for name. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>assumeBound</entry><entry>
+<para>Value for assume bound. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+<para>
+Implements <link linkend="_struct_i_material_property_1a020ed618177d8a68aaa97d691ef6fc66">IMaterialProperty</link>.</para>
+</section>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Materials/<link linkend="__material_8h">Material.h</link></section>
+</section>

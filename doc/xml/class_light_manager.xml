@@ -1,0 +1,197 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_light_manager" kind="class" language="C++" prot="public">
+    <compoundname>LightManager</compoundname>
+    <includes refid="_light_8h" local="no">Light.h</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_light_manager_1af3ae0b852040096a84578a7f74a59a3d" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; <ref refid="struct_light" kindref="compound">Light</ref> &gt;</type>
+        <definition>std::vector&lt;Light&gt; LightManager::lights</definition>
+        <argsstring></argsstring>
+        <name>lights</name>
+        <qualifiedname>LightManager::lights</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="136" column="17" bodyfile="src/Rendering/Lighting/Light.h" bodystart="136" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="class_light_manager_1a0d24360426c3415d75bb7e03169805c1" prot="public" static="yes" mutable="no">
+        <type><ref refid="class_light_manager" kindref="compound">LightManager</ref></type>
+        <definition>LightManager LightManager::GlobalLightManager</definition>
+        <argsstring></argsstring>
+        <name>GlobalLightManager</name>
+        <qualifiedname>LightManager::GlobalLightManager</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="176" column="25" bodyfile="src/Rendering/Lighting/Light.h" bodystart="176" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_light_manager_1a1eee8eb276ec7f041d961a567389754a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>LightManager::LightManager</definition>
+        <argsstring>()</argsstring>
+        <name>LightManager</name>
+        <qualifiedname>LightManager::LightManager</qualifiedname>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_light_manager" kindref="compound">LightManager</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="142" column="5" bodyfile="src/Rendering/Lighting/Light.h" bodystart="142" bodyend="142"/>
+      </memberdef>
+      <memberdef kind="function" id="class_light_manager_1a8eb4ddf0a428e920b719b87e8d11e7dd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void LightManager::addLight</definition>
+        <argsstring>(const Light &amp;light)</argsstring>
+        <name>addLight</name>
+        <qualifiedname>LightManager::addLight</qualifiedname>
+        <param>
+          <type>const <ref refid="struct_light" kindref="compound">Light</ref> &amp;</type>
+          <declname>light</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="144" column="10" bodyfile="src/Rendering/Lighting/Light.h" bodystart="144" bodyend="148"/>
+      </memberdef>
+      <memberdef kind="function" id="class_light_manager_1a5f44c60d70f25a720765d585dee49c5c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void LightManager::removeLight</definition>
+        <argsstring>(size_t index)</argsstring>
+        <name>removeLight</name>
+        <qualifiedname>LightManager::removeLight</qualifiedname>
+        <param>
+          <type>size_t</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="150" column="10" bodyfile="src/Rendering/Lighting/Light.h" bodystart="150" bodyend="154"/>
+      </memberdef>
+      <memberdef kind="function" id="class_light_manager_1a67600b3fe875e0a3b678c6204d2527c4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void LightManager::clearLights</definition>
+        <argsstring>()</argsstring>
+        <name>clearLights</name>
+        <qualifiedname>LightManager::clearLights</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="156" column="10" bodyfile="src/Rendering/Lighting/Light.h" bodystart="156" bodyend="158"/>
+      </memberdef>
+      <memberdef kind="function" id="class_light_manager_1a5dbe954c240042dbfaa32e0bf41277fb" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t LightManager::getLightCount</definition>
+        <argsstring>() const</argsstring>
+        <name>getLightCount</name>
+        <qualifiedname>LightManager::getLightCount</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="160" column="12" bodyfile="src/Rendering/Lighting/Light.h" bodystart="160" bodyend="162"/>
+      </memberdef>
+      <memberdef kind="function" id="class_light_manager_1a8256492f5e2c03c13d6d8294e6075454" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="struct_light" kindref="compound">Light</ref> &amp;</type>
+        <definition>Light &amp; LightManager::getLight</definition>
+        <argsstring>(size_t index)</argsstring>
+        <name>getLight</name>
+        <qualifiedname>LightManager::getLight</qualifiedname>
+        <param>
+          <type>size_t</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="164" column="11" bodyfile="src/Rendering/Lighting/Light.h" bodystart="164" bodyend="166"/>
+      </memberdef>
+      <memberdef kind="function" id="class_light_manager_1a8cdd7ef900426d692bbb7904b093c639" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const <ref refid="struct_light" kindref="compound">Light</ref> &amp;</type>
+        <definition>const Light &amp; LightManager::getLight</definition>
+        <argsstring>(size_t index) const</argsstring>
+        <name>getLight</name>
+        <qualifiedname>LightManager::getLight</qualifiedname>
+        <param>
+          <type>size_t</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="168" column="17" bodyfile="src/Rendering/Lighting/Light.h" bodystart="168" bodyend="170"/>
+      </memberdef>
+      <memberdef kind="function" id="class_light_manager_1a9a5a8d1f6757c21d238fd10dabe34798" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const std::vector&lt; <ref refid="struct_light" kindref="compound">Light</ref> &gt; &amp;</type>
+        <definition>const std::vector&lt; Light &gt; &amp; LightManager::getAllLights</definition>
+        <argsstring>() const</argsstring>
+        <name>getAllLights</name>
+        <qualifiedname>LightManager::getAllLights</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="172" column="23" bodyfile="src/Rendering/Lighting/Light.h" bodystart="172" bodyend="174"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_light_manager" kindref="compound">LightManager</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>LightManager</label>
+        <link refid="class_light_manager"/>
+        <childnode refid="1" relation="usage">
+          <edgelabel>GlobalLightManager</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="src/Rendering/Lighting/Light.h" line="134" column="1" bodyfile="src/Rendering/Lighting/Light.h" bodystart="134" bodyend="177"/>
+    <listofallmembers>
+      <member refid="class_light_manager_1a8eb4ddf0a428e920b719b87e8d11e7dd" prot="public" virt="non-virtual"><scope>LightManager</scope><name>addLight</name></member>
+      <member refid="class_light_manager_1a67600b3fe875e0a3b678c6204d2527c4" prot="public" virt="non-virtual"><scope>LightManager</scope><name>clearLights</name></member>
+      <member refid="class_light_manager_1a9a5a8d1f6757c21d238fd10dabe34798" prot="public" virt="non-virtual"><scope>LightManager</scope><name>getAllLights</name></member>
+      <member refid="class_light_manager_1a8256492f5e2c03c13d6d8294e6075454" prot="public" virt="non-virtual"><scope>LightManager</scope><name>getLight</name></member>
+      <member refid="class_light_manager_1a8cdd7ef900426d692bbb7904b093c639" prot="public" virt="non-virtual"><scope>LightManager</scope><name>getLight</name></member>
+      <member refid="class_light_manager_1a5dbe954c240042dbfaa32e0bf41277fb" prot="public" virt="non-virtual"><scope>LightManager</scope><name>getLightCount</name></member>
+      <member refid="class_light_manager_1a0d24360426c3415d75bb7e03169805c1" prot="public" virt="non-virtual"><scope>LightManager</scope><name>GlobalLightManager</name></member>
+      <member refid="class_light_manager_1a1eee8eb276ec7f041d961a567389754a" prot="public" virt="non-virtual"><scope>LightManager</scope><name>LightManager</name></member>
+      <member refid="class_light_manager_1af3ae0b852040096a84578a7f74a59a3d" prot="private" virt="non-virtual"><scope>LightManager</scope><name>lights</name></member>
+      <member refid="class_light_manager_1a5f44c60d70f25a720765d585dee49c5c" prot="public" virt="non-virtual"><scope>LightManager</scope><name>removeLight</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

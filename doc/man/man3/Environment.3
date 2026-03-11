@@ -1,0 +1,61 @@
+.TH "Environment" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Environment \- Represents the \fBEnvironment\fP type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <Environment\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBEnvironment\fP ()=default"
+.br
+.RI "Constructs a new \fBEnvironment\fP instance\&. "
+.ti -1c
+.RI "\fBLightManager\fP & \fBgetLightManager\fP ()"
+.br
+.RI "Returns the light manager\&. "
+.ti -1c
+.RI "const \fBLightManager\fP & \fBgetLightManager\fP () const"
+.br
+.ti -1c
+.RI "void \fBsetSkyBox\fP (PSkyBox box)"
+.br
+.ti -1c
+.RI "PSkyBox \fBgetSkyBox\fP () const"
+.br
+.ti -1c
+.RI "void \fBsetLightingEnabled\fP (bool enabled)"
+.br
+.ti -1c
+.RI "bool \fBisLightingEnabled\fP () const"
+.br
+.ti -1c
+.RI "const std::vector< \fBLight\fP > & \fBgetLightsForUpload\fP () const"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the \fBEnvironment\fP type\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBLightManager\fP & Environment::getLightManager ()\fR [inline]\fP"
+
+.PP
+Returns the light manager\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

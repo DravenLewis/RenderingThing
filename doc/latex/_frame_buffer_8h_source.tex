@@ -1,0 +1,392 @@
+\doxysection{Frame\+Buffer.\+h}
+\hypertarget{_frame_buffer_8h_source}{}\label{_frame_buffer_8h_source}\index{src/Rendering/Core/FrameBuffer.h@{src/Rendering/Core/FrameBuffer.h}}
+\doxymbox{\hyperlink{_frame_buffer_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ FRAMEBUFFER\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ FRAMEBUFFER\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <cstdlib>}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_texture_8h}{Rendering/Textures/Texture.h}}"{}}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ "{}Foundation/Math/Math3D.h"{}}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}Foundation/Math/Color.h"{}}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ "{}Foundation/Logging/Logbot.h"{}}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{keyword}{typedef}\ GLuint\ FrameBufferObject;}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00022\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_frame_buffer_aab4c897d360f51c5a96b4782e67e98a9}{FrameBuffer}}\{}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ FrameBufferObject\ fboID;}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ width,\ height;}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ PTexture\ texturePtr;}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ PTexture\ depthTexture;}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }GBufferAttachment\{}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \ \ \ \ PTexture\ texture;}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \ \ \ \ GLenum\ internalFormat\ =\ GL\_RGBA8;}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \ \ \ \ GLenum\ format\ =\ GL\_RGBA;}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \ \ \ \ GLenum\ type\ =\ GL\_UNSIGNED\_BYTE;}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ std::vector<GBufferAttachment>\ gbufferAttachments;}
+\DoxyCodeLine{00039\ \ \ \ \ }
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_frame_buffer_aab4c897d360f51c5a96b4782e67e98a9}{FrameBuffer}}(\textcolor{keywordtype}{int}\ width,\ \textcolor{keywordtype}{int}\ height)\ :\ width(width),\ height(height)\ \{}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \ \ \ \ glGenFramebuffers(1,\ \&fboID);}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 1.\ Create\ the\ Depth\ Texture}}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ We\ do\ this\ manually\ here\ (or\ you\ could\ add\ a\ helper\ in\ Texture.h)}}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \ \ \ \ depthTexture\ =\ std::make\_shared<Texture>();}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Note:\ We\ don't\ set\ width/height\ on\ the\ Texture\ object\ here\ manually\ }}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ unless\ your\ Texture\ class\ requires\ it.}}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \ \ GLuint\ tid;}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \ \ \ \ glGenTextures(1,\ \&tid);}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \ \ \ \ depthTexture-\/>getID()\ =\ tid;}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ DEBUG\ CHECK}}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(depthTexture-\/>getID()\ ==\ 0)\ \{}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ LogBot.Log(LOG\_FATL,\ \textcolor{stringliteral}{"{}[FrameBuffer]\ CRITICAL:\ glGenTextures\ failed\ for\ Depth\ Texture!"{}});}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \ \ \ \ glBindTexture(GL\_TEXTURE\_2D,\ depthTexture-\/>getID());}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ GL\_DEPTH\_COMPONENT24\ is\ standard\ for\ precision}}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \ \ \ \ glTexImage2D(GL\_TEXTURE\_2D,\ 0,\ GL\_DEPTH\_COMPONENT24,\ width,\ height,\ 0,\ GL\_DEPTH\_COMPONENT,\ GL\_FLOAT,\ NULL);}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Essential\ Texture\ Parameters\ for\ Depth}}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Linear\ filtering\ keeps\ post-\/process\ depth\ lookups\ (SSAO/DOF)\ stable\ across\ pixel\ edges.}}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \ \ \ \ glTexParameteri(GL\_TEXTURE\_2D,\ GL\_TEXTURE\_MIN\_FILTER,\ GL\_LINEAR);}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \ \ \ \ glTexParameteri(GL\_TEXTURE\_2D,\ GL\_TEXTURE\_MAG\_FILTER,\ GL\_LINEAR);}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \ \ \ \ glTexParameteri(GL\_TEXTURE\_2D,\ GL\_TEXTURE\_WRAP\_S,\ GL\_CLAMP\_TO\_BORDER);\ }
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \ \ \ \ glTexParameteri(GL\_TEXTURE\_2D,\ GL\_TEXTURE\_WRAP\_T,\ GL\_CLAMP\_TO\_BORDER);}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Border\ color\ for\ depth\ (white\ =\ far\ away)\ prevents\ artifacts\ at\ screen\ edges}}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ borderColor[]\ =\ \{\ 1.0f,\ 1.0f,\ 1.0f,\ 1.0f\ \};}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \ \ \ \ glTexParameterfv(GL\_TEXTURE\_2D,\ GL\_TEXTURE\_BORDER\_COLOR,\ borderColor);}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 2.\ Attach\ Depth\ Texture\ to\ FBO}}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_frame_buffer_a16fa30984714c6070f4c5bde5b5b87f7}{bind}}();}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \ \ \ \ glFramebufferTexture2D(GL\_FRAMEBUFFER,\ GL\_DEPTH\_ATTACHMENT,\ GL\_TEXTURE\_2D,\ depthTexture-\/>getID(),\ 0);}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Note:\ We\ are\ currently\ NOT\ complete\ because\ we\ have\ no\ Color\ buffer\ yet.}}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Screen\ class\ attaches\ color\ later\ via\ attachTexture().}}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ If\ you\ want\ to\ use\ this\ for\ Shadow\ Mapping\ (Depth\ Only),\ you\ need\ to\ tell\ GL\ to\ draw\ no\ color:}}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ glDrawBuffer(GL\_NONE);\ glReadBuffer(GL\_NONE);}}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Crucial:\ Tell\ OpenGL\ we\ aren't\ drawing\ to\ color\ YET}}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \ \ \ \ glDrawBuffer(GL\_NONE);}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \ \ \ \ glReadBuffer(GL\_NONE);}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_frame_buffer_a3b82af89f1c0c0f4c0140e41863256c0}{unbind}}();}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_frame_buffer_aef8be9884e8cc0fc3f3692e6c6968fa1}{\string~FrameBuffer}}()\{}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \ \ \ \ glDeleteFramebuffers(1,\ \&fboID);}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{struct_frame_buffer_a16fa30984714c6070f4c5bde5b5b87f7}{bind}}()\{}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \ \ \ \ glBindFramebuffer(GL\_FRAMEBUFFER,\ fboID);}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \ \ \ \ glViewport(0,0,width,\ height);}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{struct_frame_buffer_a3b82af89f1c0c0f4c0140e41863256c0}{unbind}}()\{}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \ \ \ \ glBindFramebuffer(GL\_FRAMEBUFFER,\ 0);}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{struct_frame_buffer_a9d024ca8640a15ba5bc1b57bea53f520}{resize}}(\textcolor{keywordtype}{int}\ width,\ \textcolor{keywordtype}{int}\ height)\{}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>width\ =\ width;}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>height\ =\ height;}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Resize\ Depth\ Texture}}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(depthTexture)\{}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glBindTexture(GL\_TEXTURE\_2D,\ depthTexture-\/>getID());}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glTexImage2D(GL\_TEXTURE\_2D,\ 0,\ GL\_DEPTH\_COMPONENT24,\ width,\ height,\ 0,\ GL\_DEPTH\_COMPONENT,\ GL\_FLOAT,\ NULL);}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glBindTexture(GL\_TEXTURE\_2D,\ 0);}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!gbufferAttachments.empty())\{}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\&\ attachment\ :\ gbufferAttachments)\{}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!attachment.texture)\ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glBindTexture(GL\_TEXTURE\_2D,\ attachment.texture-\/>getID());}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glTexImage2D(}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GL\_TEXTURE\_2D,}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0,}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ attachment.internalFormat,}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ width,}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ height,}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0,}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ attachment.format,}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ attachment.type,}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ NULL}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glBindTexture(GL\_TEXTURE\_2D,\ 0);}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{struct_frame_buffer_a0c4622e1392380ac5f445ca896b8cfaf}{attachTexture}}(PTexture\ tex)\{}
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>texturePtr\ =\ tex;}
+\DoxyCodeLine{00161\ }
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_frame_buffer_a16fa30984714c6070f4c5bde5b5b87f7}{bind}}();}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \ \ \ \ glFramebufferTexture2D(GL\_FRAMEBUFFER,\ GL\_COLOR\_ATTACHMENT0,\ GL\_TEXTURE\_2D,\ tex-\/>getID(),\ 0);}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \ \ \ \ GLenum\ drawBuffers[1]\ =\ \{GL\_COLOR\_ATTACHMENT0\};}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \ \ \ \ glDrawBuffers(1,\ drawBuffers);}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \ \ \ \ glReadBuffer(GL\_COLOR\_ATTACHMENT0);}
+\DoxyCodeLine{00168\ }
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \ \ \ \ GLenum\ status\ =\ glCheckFramebufferStatus(GL\_FRAMEBUFFER);}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (status\ !=\ GL\_FRAMEBUFFER\_COMPLETE)\ \{}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ error;}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (status)\ \{}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ GL\_FRAMEBUFFER\_INCOMPLETE\_ATTACHMENT:\ \ \ \ \ \ \ \ \ error\ =\ \textcolor{stringliteral}{"{}Incomplete\ Attachment"{}};\ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ GL\_FRAMEBUFFER\_INCOMPLETE\_MISSING\_ATTACHMENT:\ error\ =\ \textcolor{stringliteral}{"{}Missing\ Attachment"{}};\ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ GL\_FRAMEBUFFER\_UNSUPPORTED:\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ error\ =\ \textcolor{stringliteral}{"{}Unsupported\ Format"{}};\ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{default}:\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ error\ =\ \textcolor{stringliteral}{"{}Unknown\ Error"{}};\ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ LogBot.Log(LOG\_ERRO,\ \textcolor{stringliteral}{"{}[FrameBuffer]\ FBO\ Error:\ \%s\ (Code:\ \%u)"{}},\ error.c\_str(),\ status);}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00180\ }
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_frame_buffer_a3b82af89f1c0c0f4c0140e41863256c0}{unbind}}();}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{struct_frame_buffer_a0cd55ff0fbb64f384e420ee01747baa9}{validate}}()\{}
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_frame_buffer_a16fa30984714c6070f4c5bde5b5b87f7}{bind}}();}
+\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ complete\ =\ (glCheckFramebufferStatus(GL\_FRAMEBUFFER)\ ==\ GL\_FRAMEBUFFER\_COMPLETE);}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_frame_buffer_a3b82af89f1c0c0f4c0140e41863256c0}{unbind}}();}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ complete;}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00194\ }
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{struct_frame_buffer_a97b10220144ae378552526387dd74063}{clear}}(Color\ clearColor\ =\ Color::BLACK)\{}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ \ \ \ \ glClearColor(}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ clearColor.getRed(),}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ clearColor.getGreen(),}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ clearColor.getBlue(),}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ clearColor.getAlpha()}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00206\ }
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \ \ \ \ glClear(GL\_COLOR\_BUFFER\_BIT\ |\ GL\_DEPTH\_BUFFER\_BIT);}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00209\ }
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<FrameBuffer>\ \doxymbox{\hyperlink{struct_frame_buffer_ac9d501ed7d2c3065d73ab4bb3ac79aaa}{Create}}(\textcolor{keywordtype}{int}\ width,\ \textcolor{keywordtype}{int}\ height)\{}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ fbuffer\ =\ std::make\_shared<FrameBuffer>(width,\ height);}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ fbuffer;}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00220\ }
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<FrameBuffer>\ \doxymbox{\hyperlink{struct_frame_buffer_ac84282b82629c78a650e7cb0aa653392}{CreateGBuffer}}(\textcolor{keywordtype}{int}\ width,\ \textcolor{keywordtype}{int}\ height)\{}
+\DoxyCodeLine{00228\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ fbuffer\ =\ std::make\_shared<FrameBuffer>(width,\ height);}
+\DoxyCodeLine{00229\ }
+\DoxyCodeLine{00230\ \ \ \ \ \ \ \ \ \ \ \ \ fbuffer-\/>gbufferAttachments.clear();}
+\DoxyCodeLine{00231\ \ \ \ \ \ \ \ \ \ \ \ \ fbuffer-\/>gbufferAttachments.reserve(3);}
+\DoxyCodeLine{00232\ }
+\DoxyCodeLine{00233\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ createAttachment\ =\ [\&](GLenum\ internalFormat,\ GLenum\ format,\ GLenum\ type)\ -\/>\ PTexture\ \{}
+\DoxyCodeLine{00234\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GLuint\ texId\ =\ 0;}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glGenTextures(1,\ \&texId);}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glBindTexture(GL\_TEXTURE\_2D,\ texId);}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glTexImage2D(GL\_TEXTURE\_2D,\ 0,\ internalFormat,\ width,\ height,\ 0,\ format,\ type,\ NULL);}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glTexParameteri(GL\_TEXTURE\_2D,\ GL\_TEXTURE\_MIN\_FILTER,\ GL\_NEAREST);}
+\DoxyCodeLine{00239\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glTexParameteri(GL\_TEXTURE\_2D,\ GL\_TEXTURE\_MAG\_FILTER,\ GL\_NEAREST);}
+\DoxyCodeLine{00240\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glTexParameteri(GL\_TEXTURE\_2D,\ GL\_TEXTURE\_WRAP\_S,\ GL\_CLAMP\_TO\_EDGE);}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glTexParameteri(GL\_TEXTURE\_2D,\ GL\_TEXTURE\_WRAP\_T,\ GL\_CLAMP\_TO\_EDGE);}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glBindTexture(GL\_TEXTURE\_2D,\ 0);}
+\DoxyCodeLine{00243\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ Texture::CreateFromExisting(texId,\ width,\ height,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00244\ \ \ \ \ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00245\ }
+\DoxyCodeLine{00246\ \ \ \ \ \ \ \ \ \ \ \ \ fbuffer-\/>bind();}
+\DoxyCodeLine{00247\ }
+\DoxyCodeLine{00248\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GBufferAttachment\ albedo;}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ albedo.internalFormat\ =\ GL\_RGBA8;}
+\DoxyCodeLine{00251\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ albedo.format\ =\ GL\_RGBA;}
+\DoxyCodeLine{00252\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ albedo.type\ =\ GL\_UNSIGNED\_BYTE;}
+\DoxyCodeLine{00253\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ albedo.texture\ =\ createAttachment(albedo.internalFormat,\ albedo.format,\ albedo.type);}
+\DoxyCodeLine{00254\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glFramebufferTexture2D(GL\_FRAMEBUFFER,\ GL\_COLOR\_ATTACHMENT0,\ GL\_TEXTURE\_2D,\ albedo.texture-\/>getID(),\ 0);}
+\DoxyCodeLine{00255\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ fbuffer-\/>gbufferAttachments.push\_back(albedo);}
+\DoxyCodeLine{00256\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00257\ }
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GBufferAttachment\ normal;}
+\DoxyCodeLine{00260\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ normal.internalFormat\ =\ GL\_RGBA16F;}
+\DoxyCodeLine{00261\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ normal.format\ =\ GL\_RGBA;}
+\DoxyCodeLine{00262\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ normal.type\ =\ GL\_FLOAT;}
+\DoxyCodeLine{00263\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ normal.texture\ =\ createAttachment(normal.internalFormat,\ normal.format,\ normal.type);}
+\DoxyCodeLine{00264\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glFramebufferTexture2D(GL\_FRAMEBUFFER,\ GL\_COLOR\_ATTACHMENT1,\ GL\_TEXTURE\_2D,\ normal.texture-\/>getID(),\ 0);}
+\DoxyCodeLine{00265\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ fbuffer-\/>gbufferAttachments.push\_back(normal);}
+\DoxyCodeLine{00266\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00267\ }
+\DoxyCodeLine{00268\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GBufferAttachment\ position;}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Large\ receivers\ (e.g.\ 200x200\ ground\ planes)\ need\ full\ precision\ to\ avoid\ deferred-\/light\ banding.}}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ position.internalFormat\ =\ GL\_RGBA32F;}
+\DoxyCodeLine{00272\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ position.format\ =\ GL\_RGBA;}
+\DoxyCodeLine{00273\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ position.type\ =\ GL\_FLOAT;}
+\DoxyCodeLine{00274\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ position.texture\ =\ createAttachment(position.internalFormat,\ position.format,\ position.type);}
+\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glFramebufferTexture2D(GL\_FRAMEBUFFER,\ GL\_COLOR\_ATTACHMENT2,\ GL\_TEXTURE\_2D,\ position.texture-\/>getID(),\ 0);}
+\DoxyCodeLine{00276\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ fbuffer-\/>gbufferAttachments.push\_back(position);}
+\DoxyCodeLine{00277\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00278\ }
+\DoxyCodeLine{00279\ \ \ \ \ \ \ \ \ \ \ \ \ GLenum\ drawBuffers[3]\ =\ \{\ GL\_COLOR\_ATTACHMENT0,\ GL\_COLOR\_ATTACHMENT1,\ GL\_COLOR\_ATTACHMENT2\ \};}
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ \ \ \ \ glDrawBuffers(3,\ drawBuffers);}
+\DoxyCodeLine{00281\ \ \ \ \ \ \ \ \ \ \ \ \ glReadBuffer(GL\_COLOR\_ATTACHMENT0);}
+\DoxyCodeLine{00282\ }
+\DoxyCodeLine{00283\ \ \ \ \ \ \ \ \ \ \ \ \ GLenum\ status\ =\ glCheckFramebufferStatus(GL\_FRAMEBUFFER);}
+\DoxyCodeLine{00284\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(status\ !=\ GL\_FRAMEBUFFER\_COMPLETE)\{}
+\DoxyCodeLine{00285\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ error;}
+\DoxyCodeLine{00286\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}(status)\{}
+\DoxyCodeLine{00287\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ GL\_FRAMEBUFFER\_INCOMPLETE\_ATTACHMENT:\ \ \ \ \ \ \ \ \ error\ =\ \textcolor{stringliteral}{"{}Incomplete\ Attachment"{}};\ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00288\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ GL\_FRAMEBUFFER\_INCOMPLETE\_MISSING\_ATTACHMENT:\ error\ =\ \textcolor{stringliteral}{"{}Missing\ Attachment"{}};\ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00289\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ GL\_FRAMEBUFFER\_UNSUPPORTED:\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ error\ =\ \textcolor{stringliteral}{"{}Unsupported\ Format"{}};\ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00290\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{default}:\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ error\ =\ \textcolor{stringliteral}{"{}Unknown\ Error"{}};\ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00291\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00292\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ LogBot.Log(LOG\_ERRO,\ \textcolor{stringliteral}{"{}[FrameBuffer]\ GBuffer\ Error:\ \%s\ (Code:\ \%u)"{}},\ error.c\_str(),\ status);}
+\DoxyCodeLine{00293\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00294\ }
+\DoxyCodeLine{00295\ \ \ \ \ \ \ \ \ \ \ \ \ fbuffer-\/>unbind();}
+\DoxyCodeLine{00296\ }
+\DoxyCodeLine{00297\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ fbuffer;}
+\DoxyCodeLine{00298\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00299\ }
+\DoxyCodeLine{00304\ \ \ \ \ \ \ \ \ PTexture\ \doxymbox{\hyperlink{struct_frame_buffer_a7ccdbe4ef2127c1d95a6855326a411e8}{getTexture}}()\{}
+\DoxyCodeLine{00305\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ texturePtr;}
+\DoxyCodeLine{00306\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00307\ }
+\DoxyCodeLine{00312\ \ \ \ \ \ \ \ \ PTexture\ \doxymbox{\hyperlink{struct_frame_buffer_ae1bb1d29cead16f8ed5bc3243ce670a7}{getDepthTexture}}()\{}
+\DoxyCodeLine{00313\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ depthTexture;}
+\DoxyCodeLine{00314\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00315\ }
+\DoxyCodeLine{00321\ \ \ \ \ \ \ \ \ PTexture\ \doxymbox{\hyperlink{struct_frame_buffer_a90a260aa56cc237856abc3ccd2e4db3a}{getGBufferTexture}}(\textcolor{keywordtype}{size\_t}\ index)\textcolor{keyword}{\ const}\{}
+\DoxyCodeLine{00322\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(index\ >=\ gbufferAttachments.size())\{}
+\DoxyCodeLine{00323\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00324\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00325\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ gbufferAttachments[index].texture;}
+\DoxyCodeLine{00326\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00327\ }
+\DoxyCodeLine{00332\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ \doxymbox{\hyperlink{struct_frame_buffer_aa79c4835cb0975e916fae02fb38370b6}{getGBufferCount}}()\textcolor{keyword}{\ const}\{}
+\DoxyCodeLine{00333\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ gbufferAttachments.size();}
+\DoxyCodeLine{00334\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00335\ }
+\DoxyCodeLine{00340\ \ \ \ \ \ \ \ \ FrameBufferObject\ \doxymbox{\hyperlink{struct_frame_buffer_ade3f6891bef5507f4efeeed8031674ee}{getID}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ fboID;\ \}}
+\DoxyCodeLine{00341\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ getWidth()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ width;\ \}}
+\DoxyCodeLine{00342\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ getHeight()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ height;\ \}}
+\DoxyCodeLine{00343\ \};}
+\DoxyCodeLine{00344\ }
+\DoxyCodeLine{00346\ \textcolor{keyword}{struct\ }FrameBufferChain\{}
+\DoxyCodeLine{00347\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00351\ \ \ \ \ \ \ \ \ FrameBufferChain()\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00352\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ size\ =\ 0;}
+\DoxyCodeLine{00353\ \ \ \ \ \ \ \ \ std::vector<std::shared\_ptr<FrameBuffer>>\ frameBufferPtrArray;}
+\DoxyCodeLine{00354\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00359\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_frame_buffer_chain_a43ca39ab87494b584ffd2c3c20d421ed}{FrameBufferChain}}(\textcolor{keywordtype}{int}\ s)\ :\ size(s)\ \{}
+\DoxyCodeLine{00360\ \ \ \ \ \ \ \ \ \ \ \ \ frameBufferPtrArray.resize(s);}
+\DoxyCodeLine{00361\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00362\ }
+\DoxyCodeLine{00368\ \ \ \ \ \ \ \ \ std::shared\_ptr<FrameBuffer>\ \doxymbox{\hyperlink{struct_frame_buffer_chain_aa952a5f3795b96066b498e1ca7fa9f74}{getAtIndex}}(\textcolor{keywordtype}{int}\ index)\{}
+\DoxyCodeLine{00369\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(index\ <\ 0\ ||\ index\ >=\ size)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00370\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ frameBufferPtrArray[index];}
+\DoxyCodeLine{00371\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00372\ }
+\DoxyCodeLine{00378\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{struct_frame_buffer_chain_a90a985cb4b6b820d2d2ed09f33042e02}{setAtIndex}}(\textcolor{keywordtype}{int}\ index,\ std::shared\_ptr<FrameBuffer>\ fbPtr)\{}
+\DoxyCodeLine{00379\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(index\ <\ 0\ ||\ index\ >=\ size)\ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00380\ \ \ \ \ \ \ \ \ \ \ \ \ frameBufferPtrArray[index]\ =\ fbPtr;}
+\DoxyCodeLine{00381\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00382\ }
+\DoxyCodeLine{00387\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{struct_frame_buffer_chain_a8457c99bcb3c3f8528241e3944b2a136}{getSize}}()\{}
+\DoxyCodeLine{00388\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ size;}
+\DoxyCodeLine{00389\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00390\ }
+\DoxyCodeLine{00395\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{struct_frame_buffer_chain_a6a1c1c03350c99f6c487b6175d6c7a8a}{resize}}(\textcolor{keywordtype}{int}\ newSize)\{}
+\DoxyCodeLine{00396\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(newSize\ <=\ 0)\ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00397\ \ \ \ \ \ \ \ \ \ \ \ \ frameBufferPtrArray.resize(newSize);}
+\DoxyCodeLine{00398\ \ \ \ \ \ \ \ \ \ \ \ \ size\ =\ newSize;}
+\DoxyCodeLine{00399\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00400\ }
+\DoxyCodeLine{00406\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{struct_frame_buffer_chain_aa3a1aab9cd6f4bdb0dbbf89c9c993320}{resizeBuffers}}(\textcolor{keywordtype}{int}\ width,\ \textcolor{keywordtype}{int}\ height)\{}
+\DoxyCodeLine{00407\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}(\textcolor{keyword}{auto}\ buffer\ :\ frameBufferPtrArray)\{}
+\DoxyCodeLine{00408\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(buffer)\ \{}
+\DoxyCodeLine{00409\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ buffer-\/>resize(width,height);}
+\DoxyCodeLine{00410\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00411\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00412\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00413\ \};}
+\DoxyCodeLine{00414\ }
+\DoxyCodeLine{00416\ \textcolor{keyword}{struct\ }TrippleBuffer\{}
+\DoxyCodeLine{00417\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00418\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_frame_buffer_chain}{FrameBufferChain}}\ chain\ =\ \doxymbox{\hyperlink{struct_frame_buffer_chain}{FrameBufferChain}}(3);}
+\DoxyCodeLine{00419\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ width,\ height;}
+\DoxyCodeLine{00423\ \ \ \ \ \ \ \ \ TrippleBuffer()\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00424\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00425\ }
+\DoxyCodeLine{00431\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_tripple_buffer_ade5ad21dfd69dd617dc59c35adddf8c9}{TrippleBuffer}}(\textcolor{keywordtype}{int}\ width,\ \textcolor{keywordtype}{int}\ height)\ :\ width(width),\ height(height)\ \{}
+\DoxyCodeLine{00432\ \ \ \ \ \ \ \ \ \ \ \ \ chain.setAtIndex(0,\ \doxymbox{\hyperlink{struct_frame_buffer_ac9d501ed7d2c3065d73ab4bb3ac79aaa}{FrameBuffer::Create}}(width,\ height));}
+\DoxyCodeLine{00433\ \ \ \ \ \ \ \ \ \ \ \ \ chain.setAtIndex(1,\ \doxymbox{\hyperlink{struct_frame_buffer_ac9d501ed7d2c3065d73ab4bb3ac79aaa}{FrameBuffer::Create}}(width,\ height));}
+\DoxyCodeLine{00434\ \ \ \ \ \ \ \ \ \ \ \ \ chain.setAtIndex(2,\ \doxymbox{\hyperlink{struct_frame_buffer_ac9d501ed7d2c3065d73ab4bb3ac79aaa}{FrameBuffer::Create}}(width,\ height));}
+\DoxyCodeLine{00435\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00436\ }
+\DoxyCodeLine{00441\ \ \ \ \ \ \ \ \ std::shared\_ptr<FrameBuffer>\ \doxymbox{\hyperlink{struct_tripple_buffer_aa1580b077ee4b77e4cf0293e5fce37af}{getFront}}()\{}
+\DoxyCodeLine{00442\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ chain.getAtIndex(0);}
+\DoxyCodeLine{00443\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00444\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00449\ \ \ \ \ \ \ \ \ std::shared\_ptr<FrameBuffer>\ \doxymbox{\hyperlink{struct_tripple_buffer_a27e3d899dc5c66e38fb6d240ad8ac0e6}{getMiddle}}()\{}
+\DoxyCodeLine{00450\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ chain.getAtIndex(1);}
+\DoxyCodeLine{00451\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00452\ }
+\DoxyCodeLine{00457\ \ \ \ \ \ \ \ \ std::shared\_ptr<FrameBuffer>\ \doxymbox{\hyperlink{struct_tripple_buffer_a841ad487a95331a841cd26ede3b8358d}{getBack}}()\{}
+\DoxyCodeLine{00458\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ chain.getAtIndex(2);}
+\DoxyCodeLine{00459\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00460\ }
+\DoxyCodeLine{00461\ }
+\DoxyCodeLine{00462\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Helper\ functions\ for\ understanding\ the\ order.}}
+\DoxyCodeLine{00463\ }
+\DoxyCodeLine{00464\ \ \ \ \ \ \ \ \ std::shared\_ptr<FrameBuffer>\ getDisplayBuffer()\{}
+\DoxyCodeLine{00465\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{struct_tripple_buffer_aa1580b077ee4b77e4cf0293e5fce37af}{getFront}}();}
+\DoxyCodeLine{00466\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00467\ }
+\DoxyCodeLine{00472\ \ \ \ \ \ \ \ \ std::shared\_ptr<FrameBuffer>\ \doxymbox{\hyperlink{struct_tripple_buffer_a53cf73b5efe7ab4e33b47b4d1ef5f099}{getEditBuffer}}()\{}
+\DoxyCodeLine{00473\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{struct_tripple_buffer_a27e3d899dc5c66e38fb6d240ad8ac0e6}{getMiddle}}();}
+\DoxyCodeLine{00474\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00475\ }
+\DoxyCodeLine{00480\ \ \ \ \ \ \ \ \ std::shared\_ptr<FrameBuffer>\ \doxymbox{\hyperlink{struct_tripple_buffer_aaadfe8298e9fdbab9177084bf5bbc648}{getDrawBuffer}}()\{}
+\DoxyCodeLine{00481\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{struct_tripple_buffer_a841ad487a95331a841cd26ede3b8358d}{getBack}}();}
+\DoxyCodeLine{00482\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00483\ }
+\DoxyCodeLine{00484\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ ===================================================}}
+\DoxyCodeLine{00485\ }
+\DoxyCodeLine{00486\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setFront(std::shared\_ptr<FrameBuffer>\ framePtr)\{}
+\DoxyCodeLine{00487\ \ \ \ \ \ \ \ \ \ \ \ \ chain.\doxymbox{\hyperlink{struct_frame_buffer_chain_a90a985cb4b6b820d2d2ed09f33042e02}{setAtIndex}}(0,framePtr);}
+\DoxyCodeLine{00488\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00489\ }
+\DoxyCodeLine{00494\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{struct_tripple_buffer_a21607aceb5b3dc8dbf987a595e67c567}{setMiddle}}(std::shared\_ptr<FrameBuffer>\ framePtr)\{}
+\DoxyCodeLine{00495\ \ \ \ \ \ \ \ \ \ \ \ \ chain.setAtIndex(1,framePtr);}
+\DoxyCodeLine{00496\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00497\ }
+\DoxyCodeLine{00502\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{struct_tripple_buffer_a807d0eac379ba76f82f0dda42f36100d}{setBack}}(std::shared\_ptr<FrameBuffer>\ framePtr)\{}
+\DoxyCodeLine{00503\ \ \ \ \ \ \ \ \ \ \ \ \ chain.setAtIndex(2,framePtr);}
+\DoxyCodeLine{00504\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00505\ }
+\DoxyCodeLine{00509\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{struct_tripple_buffer_a2fe9ea51bbfae49182b81360da39b5df}{swapBuffers}}()\{}
+\DoxyCodeLine{00510\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ frontBuffer\ =\ \doxymbox{\hyperlink{struct_tripple_buffer_aa1580b077ee4b77e4cf0293e5fce37af}{getFront}}();}
+\DoxyCodeLine{00511\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ middleBuffer\ =\ \doxymbox{\hyperlink{struct_tripple_buffer_a27e3d899dc5c66e38fb6d240ad8ac0e6}{getMiddle}}();}
+\DoxyCodeLine{00512\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ backBuffer\ =\ \doxymbox{\hyperlink{struct_tripple_buffer_a841ad487a95331a841cd26ede3b8358d}{getBack}}();}
+\DoxyCodeLine{00513\ }
+\DoxyCodeLine{00514\ \ \ \ \ \ \ \ \ \ \ \ \ setFront(middleBuffer);}
+\DoxyCodeLine{00515\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_tripple_buffer_a21607aceb5b3dc8dbf987a595e67c567}{setMiddle}}(backBuffer);}
+\DoxyCodeLine{00516\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_tripple_buffer_a807d0eac379ba76f82f0dda42f36100d}{setBack}}(frontBuffer);}
+\DoxyCodeLine{00517\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00518\ }
+\DoxyCodeLine{00524\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{struct_tripple_buffer_a3e121c9862627d785ba325e00e7aa3d7}{resizeBuffers}}(\textcolor{keywordtype}{int}\ width,\ \textcolor{keywordtype}{int}\ height)\{}
+\DoxyCodeLine{00525\ \ \ \ \ \ \ \ \ \ \ \ \ chain.resizeBuffers(width,\ height);}
+\DoxyCodeLine{00526\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00527\ \};}
+\DoxyCodeLine{00528\ }
+\DoxyCodeLine{00529\ \textcolor{keyword}{typedef}\ std::shared\_ptr<FrameBuffer>\ PFrameBuffer;}
+\DoxyCodeLine{00530\ }
+\DoxyCodeLine{00531\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ FRAMEBUFFER\_H}}
+
+\end{DoxyCode}

@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Geometry/ModelPart.cpp
+ * @brief Implementation for ModelPart.
+ */
+
 
 #include "Rendering/Geometry/ModelPart.h"
 

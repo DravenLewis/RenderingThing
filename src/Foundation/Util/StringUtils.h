@@ -1,3 +1,8 @@
+/**
+ * @file src/Foundation/Util/StringUtils.h
+ * @brief Declarations for StringUtils.
+ */
+
 
 #ifndef STRING_UTILS_H
 #define STRING_UTILS_H
@@ -7,11 +12,17 @@
 #include <algorithm>
 #include <cstdarg> // for varargs support
 
+/// @brief Represents the StringUtils type.
 class StringUtils{    
     public:
 
         typedef std::vector<std::string> StringArray;
 
+        /**
+         * @brief Converts to lower case.
+         * @param source Value for source.
+         * @return Resulting string value.
+         */
         static std::string ToLowerCase(const std::string& source){
             std::string newString = source;
             std::transform(newString.begin(), newString.end(), newString.begin(),[](unsigned char c){ // better than for looping.
@@ -20,6 +31,11 @@ class StringUtils{
             return newString;
         }
 
+        /**
+         * @brief Converts to upper case.
+         * @param source Value for source.
+         * @return Resulting string value.
+         */
         static std::string ToUpperCase(const std::string& source){
             std::string newString = source;
             std::transform(newString.begin(), newString.end(), newString.begin(),[](unsigned char c){ // better than for looping.
@@ -28,15 +44,34 @@ class StringUtils{
             return newString;
         }
 
+        /**
+         * @brief Checks whether contains.
+         * @param source Value for source.
+         * @param value Value for value.
+         * @return True when the operation succeeds; otherwise false.
+         */
         static bool Contains(const std::string& source, std::string value){
             return source.find(value) != std::string::npos;
         }
 
+        /**
+         * @brief Checks whether contains ignore case.
+         * @param source Value for source.
+         * @param value Value for value.
+         * @return True when the operation succeeds; otherwise false.
+         */
         static bool ContainsIgnoreCase(const std::string& source, std::string value){
             std::string tempString = ToLowerCase(source);
             return tempString.find(ToLowerCase(value)) != std::string::npos;
         }
 
+        /**
+         * @brief Replaces the first matching substring.
+         * @param source Value for source.
+         * @param search Value for search.
+         * @param value Value for value.
+         * @return Resulting string value.
+         */
         static std::string Replace(const std::string& source, std::string search, std::string value){
             if(Contains(source, search)){
                 std::string newString = source;
@@ -47,6 +82,13 @@ class StringUtils{
             return source;
         }
 
+        /**
+         * @brief Replaces all matching substrings.
+         * @param source Value for source.
+         * @param search Value for search.
+         * @param value Value for value.
+         * @return Resulting string value.
+         */
         static std::string ReplaceAll(const std::string& source, std::string search, std::string value){
             if(Contains(source, search)){
                 std::string newString = source;
@@ -62,6 +104,12 @@ class StringUtils{
             return source;
         }
 
+        /**
+         * @brief Checks whether ends with.
+         * @param source Value for source.
+         * @param value Value for value.
+         * @return True when the operation succeeds; otherwise false.
+         */
         static bool EndsWith(const std::string& source, std::string value){
             if(Contains(source, value) && source.length() >= value.length()){
                 return (source.compare(source.length() - value.length(), value.length(), value)) == 0;
@@ -70,6 +118,12 @@ class StringUtils{
             return false;
         }
 
+        /**
+         * @brief Checks whether begins with.
+         * @param source Value for source.
+         * @param value Value for value.
+         * @return True when the operation succeeds; otherwise false.
+         */
         static bool BeginsWith(const std::string& source, std::string value){
             if(Contains(source, value) && source.length() >= value.length()){
                 return (source.compare(0,value.length(), value) == 0);
@@ -78,6 +132,11 @@ class StringUtils{
             return false;
         }
 
+        /**
+         * @brief Trims leading and trailing whitespace.
+         * @param source Value for source.
+         * @return Resulting string value.
+         */
         static std::string Trim(const std::string& source){
             const std::string whiteSpaceChars = " \n\r\t\f\v";
             std::string newString = source;
@@ -99,6 +158,12 @@ class StringUtils{
             return newString;
         }
 
+        /**
+         * @brief Splits text into tokens.
+         * @param source Value for source.
+         * @param delimiter Value for delimiter.
+         * @return Result of this operation.
+         */
         static StringArray Split(const std::string& source, std::string delimiter){
             std::string stringCopy = source;
             StringArray splitParts;
@@ -117,6 +182,12 @@ class StringUtils{
         }
 
 
+        /**
+         * @brief Formats a string using printf-style arguments.
+         * @param source Value for source.
+         * @param args Value for args.
+         * @return Resulting string value.
+         */
         template<typename... Args>
         static std::string Format(const std::string& source,Args... args){
             #pragma region Old Code

@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__constructed_material_8h" xml:lang="en-US">
+<title>src/Rendering/Materials/ConstructedMaterial.h File Reference</title>
+<indexterm><primary>src/Rendering/Materials/ConstructedMaterial.h</primary></indexterm>
+<para>
+
+<para>Declarations for <link linkend="_class_constructed_material">ConstructedMaterial</link>. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &quot;Rendering/Materials/Material.h&quot;<?linebreak?>#include &lt;string&gt;<?linebreak?>#include &lt;vector&gt;<?linebreak?></programlisting><simplesect>
+    <title>Classes    </title>
+        <itemizedlist>
+            <listitem><para>class <link linkend="_class_constructed_material">ConstructedMaterial</link></para>
+
+<para>Represents the <link linkend="_class_constructed_material">ConstructedMaterial</link> type. </para>
+</listitem>
+            <listitem><para>struct <link linkend="_struct_constructed_material_1_1_field">ConstructedMaterial::Field</link></para>
+
+<para>Holds data for <link linkend="_struct_constructed_material_1_1_field">Field</link>. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Declarations for <link linkend="_class_constructed_material">ConstructedMaterial</link>. </para>
+</section>
+</section>

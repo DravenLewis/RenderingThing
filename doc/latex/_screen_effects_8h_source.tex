@@ -1,0 +1,1482 @@
+\doxysection{Screen\+Effects.\+h}
+\hypertarget{_screen_effects_8h_source}{}\label{_screen_effects_8h_source}\index{src/Rendering/PostFX/ScreenEffects.h@{src/Rendering/PostFX/ScreenEffects.h}}
+\doxymbox{\hyperlink{_screen_effects_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ SCREENEFFECTS\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ SCREENEFFECTS\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_graphics_8h}{Rendering/Core/Graphics.h}}"{}}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_shader_program_8h}{Rendering/Shaders/ShaderProgram.h}}"{}}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ "{}Foundation/Math/Color.h"{}}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}Foundation/Logging/Logbot.h"{}}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ <algorithm>}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ <array>}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ <chrono>}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ <cmath>}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00020\ \textcolor{keyword}{enum\ class}\ \doxymbox{\hyperlink{_screen_effects_8h_a253b4cf4d7c392a00e85057fab843598}{AntiAliasingPreset}}\ \{}
+\DoxyCodeLine{00021\ \ \ \ \ Off\ =\ 0,}
+\DoxyCodeLine{00022\ \ \ \ \ FXAA\_Low,}
+\DoxyCodeLine{00023\ \ \ \ \ FXAA\_Medium,}
+\DoxyCodeLine{00024\ \ \ \ \ FXAA\_High}
+\DoxyCodeLine{00025\ \};}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00028\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_grayscale_effect_a6c026cfc72b5a3f2bf2674503183452c}{GrayscaleEffect}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{class_graphics_1_1_post_processing_1_1_post_processing_effect}{Graphics::PostProcessing::PostProcessingEffect}}\{}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ std::shared\_ptr<ShaderProgram>\ shader;}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ compileAttempted\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\ GRAYSCALE\_SHADER\ =\ R\textcolor{stringliteral}{"{}(}}
+\DoxyCodeLine{00034\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \#version\ 330\ core}}
+\DoxyCodeLine{00035\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{00036\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ out\ vec4\ FragColor;}}
+\DoxyCodeLine{00037\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ in\ vec2\ TexCoords;}}
+\DoxyCodeLine{00038\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ sampler2D\ screenTexture;}}
+\DoxyCodeLine{00039\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ }}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \ \ \ \ void\ main()\ \{}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec4\ col\ =\ texture(screenTexture,\ TexCoords);}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ avg\ =\ 0.2126\ *\ col.r\ +\ 0.7152\ *\ col.g\ +\ 0.0722\ *\ col.b;}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FragColor\ =\ vec4(avg,\ avg,\ avg,\ col.a);}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ )"{};}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ ensureCompiled()\{}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!shader)\{}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(shader-\/>getID()\ !=\ 0)\{}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(compileAttempted)\{}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \ \ \ \ compileAttempted\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(shader-\/>compile()\ ==\ 0)\{}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ LogBot.Log(LOG\_ERRO,\ \textcolor{stringliteral}{"{}Failed\ to\ compile\ grayscale\ effect\ shader:\(\backslash\)n\%s"{}},\ shader-\/>getLog().c\_str());}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_grayscale_effect_a6c026cfc72b5a3f2bf2674503183452c}{GrayscaleEffect}}()\{}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \ \ \ \ shader\ =\ std::make\_shared<ShaderProgram>();}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setVertexShader(Graphics::ShaderDefaults::SCREEN\_VERT\_SRC);}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setFragmentShader(GRAYSCALE\_SHADER);}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{class_grayscale_effect_a5e71990549a216be2b0f6901932c7692}{apply}}(PTexture\ tex,\ PTexture\ depthTex,\ PFrameBuffer\ outFbo,\ std::shared\_ptr<ModelPart>\ quad)\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \ \ \ \ (void)depthTex;}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!tex\ ||\ !outFbo\ ||\ !quad)\{}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!ensureCompiled())\{}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \ \ \ \ outFbo-\/>bind();}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \ \ \ \ glClearColor(0.0f,\ 0.0f,\ 0.0f,\ 1.0f);}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \ \ \ \ glClear(GL\_COLOR\_BUFFER\_BIT);}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \ \ \ \ glDisable(GL\_DEPTH\_TEST);}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>bind();}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_uniform}{Uniform<PTexture>}}\ u\_tex(tex);}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniform(\textcolor{stringliteral}{"{}screenTexture"{}},\ u\_tex);}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ Math3D::Mat4\ IDENTITY;}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_model"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Mat4>}}(IDENTITY));}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_view"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Mat4>}}(IDENTITY));}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_projection"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Mat4>}}(IDENTITY));}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ quad-\/>draw(IDENTITY,\ IDENTITY,\ IDENTITY);}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \ \ \ \ outFbo-\/>unbind();}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ Graphics::PostProcessing::PPostProcessingEffect\ \doxymbox{\hyperlink{class_grayscale_effect_acf79b860ba6ab7cd1fbc6bb62fbca723}{New}}()\{}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::make\_shared<GrayscaleEffect>();}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00126\ \};}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00129\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_s_s_a_o_effect_a4170ac563f9fca8af67029028aa3162a}{SSAOEffect}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{class_graphics_1_1_post_processing_1_1_post_processing_effect}{Graphics::PostProcessing::PostProcessingEffect}}\ \{}
+\DoxyCodeLine{00130\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ std::shared\_ptr<ShaderProgram>\ shader;}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ compileAttempted\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\ SSAO\_FRAG\_SHADER\ =\ R\textcolor{stringliteral}{"{}(}}
+\DoxyCodeLine{00134\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \#version\ 330\ core}}
+\DoxyCodeLine{00135\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{00136\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ out\ vec4\ FragColor;}}
+\DoxyCodeLine{00137\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ in\ vec2\ TexCoords;}}
+\DoxyCodeLine{00138\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{00139\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ sampler2D\ screenTexture;}}
+\DoxyCodeLine{00140\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ sampler2D\ depthTexture;}}
+\DoxyCodeLine{00141\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ vec2\ u\_texelSize;}}
+\DoxyCodeLine{00142\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_radiusPx;}}
+\DoxyCodeLine{00143\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_depthRadius;}}
+\DoxyCodeLine{00144\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_bias;}}
+\DoxyCodeLine{00145\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_intensity;}}
+\DoxyCodeLine{00146\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_giBoost;}}
+\DoxyCodeLine{00147\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ int\ u\_sampleCount;}}
+\DoxyCodeLine{00148\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_nearPlane;}}
+\DoxyCodeLine{00149\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_farPlane;}}
+\DoxyCodeLine{00150\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{00151\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ const\ vec2\ kPoisson[16]\ =\ vec2[](}}
+\DoxyCodeLine{00152\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(-\/0.94201624,\ -\/0.39906216),}}
+\DoxyCodeLine{00153\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 0.94558609,\ -\/0.76890725),}}
+\DoxyCodeLine{00154\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(-\/0.09418410,\ -\/0.92938870),}}
+\DoxyCodeLine{00155\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 0.34495938,\ \ 0.29387760),}}
+\DoxyCodeLine{00156\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(-\/0.91588581,\ \ 0.45771432),}}
+\DoxyCodeLine{00157\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(-\/0.81544232,\ -\/0.87912464),}}
+\DoxyCodeLine{00158\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(-\/0.38277543,\ \ 0.27676845),}}
+\DoxyCodeLine{00159\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 0.97484398,\ \ 0.75648379),}}
+\DoxyCodeLine{00160\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 0.44323325,\ -\/0.97511554),}}
+\DoxyCodeLine{00161\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 0.53742981,\ -\/0.47373420),}}
+\DoxyCodeLine{00162\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(-\/0.26496911,\ -\/0.41893023),}}
+\DoxyCodeLine{00163\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 0.79197514,\ \ 0.19090188),}}
+\DoxyCodeLine{00164\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(-\/0.24188840,\ \ 0.99706507),}}
+\DoxyCodeLine{00165\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(-\/0.81409955,\ \ 0.91437590),}}
+\DoxyCodeLine{00166\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 0.19984126,\ \ 0.78641367),}}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 0.14383161,\ -\/0.14100790)}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \ \ \ \ float\ linearizeDepth(float\ depth)\{}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ z\ =\ depth\ *\ 2.0\ -\/\ 1.0;}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ return\ (2.0\ *\ u\_nearPlane\ *\ u\_farPlane)\ /\ max((u\_farPlane\ +\ u\_nearPlane)\ -\/\ (z\ *\ (u\_farPlane\ -\/\ u\_nearPlane)),\ 0.0001);}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00182\ }
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ \ \ \ \ float\ hash12(vec2\ p)\{}
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ p3\ =\ fract(vec3(p.xyx)\ *\ 0.1031);}
+\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ p3\ +=\ dot(p3,\ p3.yzx\ +\ 33.33);}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ return\ fract((p3.x\ +\ p3.y)\ *\ p3.z);}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00193\ }
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ \ \ \ \ void\ main()\ \{}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec4\ base\ =\ texture(screenTexture,\ TexCoords);}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ centerDepthRaw\ =\ texture(depthTexture,\ TexCoords).r;}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ //\ Treat\ near-\/far\ depth\ as\ background/sky\ and\ skip\ AO\ to\ avoid\ horizon\ halos.}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ const\ float\ kSkyDepthCutoff\ =\ 0.9995;}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ if(centerDepthRaw\ >=\ kSkyDepthCutoff)\{}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FragColor\ =\ base;}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ return;}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ centerDepth\ =\ linearizeDepth(centerDepthRaw);}
+\DoxyCodeLine{00207\ }
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ radiusPx\ =\ max(u\_radiusPx,\ 0.25);}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ depthRadius\ =\ max(u\_depthRadius,\ 0.00005);}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ int\ count\ =\ clamp(u\_sampleCount,\ 1,\ 16);}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ //\ Use\ pixel-\/stable\ noise\ to\ avoid\ UV-\/space\ stripe\ patterns\ on\ large\ flat\ surfaces.}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ angle\ =\ hash12(floor(gl\_FragCoord.xy))\ *\ 6.2831853;}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ sinAngle\ =\ sin(angle);}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ cosAngle\ =\ cos(angle);}
+\DoxyCodeLine{00215\ }
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ //\ Scale\ thresholds\ with\ distance\ and\ local\ depth\ slope\ for\ temporal\ stability.}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ //\ Avoid\ derivative-\/based\ slope\ (dFdx/dFdy),\ which\ can\ introduce\ primitive-\/edge\ seams.}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ depthScaleTarget\ =\ clamp(centerDepth\ *\ 0.08,\ 1.0,\ 32.0);}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ //\ Smoothly\ ramp\ depth\ scaling\ to\ avoid\ a\ visible\ contour\ where\ distance\ scaling\ kicks\ in.}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ depthScaleBlend\ =\ smoothstep(4.0,\ 28.0,\ centerDepth);}
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ depthScale\ =\ mix(1.0,\ depthScaleTarget,\ depthScaleBlend);}
+\DoxyCodeLine{00222\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ adaptiveDepthRadius\ =\ depthRadius\ *\ depthScale;}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ depthRightRaw\ =\ texture(depthTexture,\ clamp(TexCoords\ +\ vec2(u\_texelSize.x,\ 0.0),\ vec2(0.0),\ vec2(1.0))).r;}
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ depthUpRaw\ =\ texture(depthTexture,\ clamp(TexCoords\ +\ vec2(0.0,\ u\_texelSize.y),\ vec2(0.0),\ vec2(1.0))).r;}
+\DoxyCodeLine{00225\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ depthRight\ =\ (depthRightRaw\ >=\ kSkyDepthCutoff)\ ?\ centerDepth\ :\ linearizeDepth(depthRightRaw);}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ depthUp\ =\ (depthUpRaw\ >=\ kSkyDepthCutoff)\ ?\ centerDepth\ :\ linearizeDepth(depthUpRaw);}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ depthSlope\ =\ abs(depthRight\ -\/\ centerDepth)\ +\ abs(depthUp\ -\/\ centerDepth);}
+\DoxyCodeLine{00228\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ baseBias\ =\ max(u\_bias\ *\ depthScale,\ adaptiveDepthRadius\ *\ 0.10);}
+\DoxyCodeLine{00229\ }
+\DoxyCodeLine{00230\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ occ\ =\ 0.0;}
+\DoxyCodeLine{00231\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ weightSum\ =\ 0.0;}
+\DoxyCodeLine{00232\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for(int\ i\ =\ 0;\ i\ <\ count;\ ++i)\{}
+\DoxyCodeLine{00233\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ ringT\ =\ (float(i)\ +\ 0.5)\ /\ float(count);}
+\DoxyCodeLine{00234\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2\ poisson\ =\ kPoisson[i];}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2\ rotated\ =\ vec2(}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (poisson.x\ *\ cosAngle)\ -\/\ (poisson.y\ *\ sinAngle),}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (poisson.x\ *\ sinAngle)\ +\ (poisson.y\ *\ cosAngle)}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00239\ }
+\DoxyCodeLine{00240\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for(int\ mirror\ =\ 0;\ mirror\ <\ 2;\ ++mirror)\{}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2\ direction\ =\ (mirror\ ==\ 0)\ ?\ rotated\ :\ -\/rotated;}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2\ pixelOffset\ =\ direction\ *\ radiusPx\ *\ ringT;}
+\DoxyCodeLine{00243\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2\ uv\ =\ TexCoords\ +\ (pixelOffset\ *\ u\_texelSize);}
+\DoxyCodeLine{00244\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ if(uv.x\ <\ 0.0\ ||\ uv.x\ >\ 1.0\ ||\ uv.y\ <\ 0.0\ ||\ uv.y\ >\ 1.0)\{}
+\DoxyCodeLine{00245\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ continue;}
+\DoxyCodeLine{00246\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00247\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ sampleDepthRaw\ =\ texture(depthTexture,\ uv).r;}
+\DoxyCodeLine{00248\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ if(sampleDepthRaw\ >=\ kSkyDepthCutoff)\{}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ continue;}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00251\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ sampleDepth\ =\ linearizeDepth(sampleDepthRaw);}
+\DoxyCodeLine{00252\ }
+\DoxyCodeLine{00253\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ depthDelta\ =\ centerDepth\ -\/\ sampleDepth;}
+\DoxyCodeLine{00254\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ slopeAllowance\ =\ depthSlope\ *\ length(pixelOffset);}
+\DoxyCodeLine{00255\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ adjustedDelta\ =\ depthDelta\ -\/\ (baseBias\ +\ slopeAllowance);}
+\DoxyCodeLine{00256\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ sampleOcc\ =\ smoothstep(0.0,\ adaptiveDepthRadius,\ adjustedDelta);}
+\DoxyCodeLine{00257\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ radialBias\ =\ 1.0\ -\/\ smoothstep(0.35,\ 1.0,\ ringT);}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ sampleOcc\ *=\ mix(1.0,\ 1.35,\ radialBias);}
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ //\ Weight\ by\ raw\ geometric\ proximity\ so\ non-\/occluding\ neighbors\ still\ normalize.}
+\DoxyCodeLine{00260\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ rangeWeight\ =\ 1.0\ -\/\ smoothstep(0.0,\ adaptiveDepthRadius\ *\ 2.5,\ abs(depthDelta));}
+\DoxyCodeLine{00261\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ occ\ +=\ sampleOcc\ *\ rangeWeight;}
+\DoxyCodeLine{00262\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ weightSum\ +=\ rangeWeight;}
+\DoxyCodeLine{00263\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00264\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00265\ }
+\DoxyCodeLine{00266\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ occ\ =\ clamp(occ\ /\ max(weightSum,\ 0.0001),\ 0.0,\ 1.0);}
+\DoxyCodeLine{00267\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ occ\ =\ pow(occ,\ 0.85);}
+\DoxyCodeLine{00268\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ effectiveIntensity\ =\ pow(max(u\_intensity,\ 0.0),\ 0.6);}
+\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ //\ Keep\ a\ floor\ so\ SSAO\ cannot\ collapse\ the\ whole\ frame\ into\ near-\/black.}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ ao\ =\ clamp(1.0\ -\/\ (occ\ *\ effectiveIntensity),\ 0.35,\ 1.0);}
+\DoxyCodeLine{00271\ }
+\DoxyCodeLine{00272\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ giFactor\ =\ (1.0\ -\/\ ao);}
+\DoxyCodeLine{00273\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ giFactor\ =\ giFactor\ *\ giFactor\ *\ u\_giBoost;}
+\DoxyCodeLine{00274\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ giBounce\ =\ base.rgb\ *\ giFactor;}
+\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ finalColor\ =\ (base.rgb\ *\ ao)\ +\ giBounce;}
+\DoxyCodeLine{00276\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FragColor\ =\ vec4(finalColor,\ base.a);}
+\DoxyCodeLine{00277\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00278\ \ \ \ \ \ \ \ \ )"{};}
+\DoxyCodeLine{00279\ }
+\DoxyCodeLine{00284\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ ensureCompiled()\{}
+\DoxyCodeLine{00285\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!shader)\{}
+\DoxyCodeLine{00286\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00287\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00288\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(shader-\/>getID()\ !=\ 0)\{}
+\DoxyCodeLine{00289\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00290\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00291\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(compileAttempted)\{}
+\DoxyCodeLine{00292\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00293\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00294\ \ \ \ \ \ \ \ \ \ \ \ \ compileAttempted\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00295\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(shader-\/>compile()\ ==\ 0)\{}
+\DoxyCodeLine{00296\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ LogBot.Log(LOG\_ERRO,\ \textcolor{stringliteral}{"{}Failed\ to\ compile\ SSAO\ effect\ shader:\(\backslash\)n\%s"{}},\ shader-\/>getLog().c\_str());}
+\DoxyCodeLine{00297\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00298\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00299\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00300\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00301\ }
+\DoxyCodeLine{00302\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00303\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ radiusPx\ =\ 3.0f;}
+\DoxyCodeLine{00304\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ depthRadius\ =\ 0.025f;}
+\DoxyCodeLine{00305\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ bias\ =\ 0.001f;}
+\DoxyCodeLine{00306\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ intensity\ =\ 1.0f;}
+\DoxyCodeLine{00307\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ giBoost\ =\ 0.12f;}
+\DoxyCodeLine{00308\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ sampleCount\ =\ 8;}
+\DoxyCodeLine{00309\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ nearPlane\ =\ 0.1f;}
+\DoxyCodeLine{00310\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ farPlane\ =\ 1000.0f;}
+\DoxyCodeLine{00311\ }
+\DoxyCodeLine{00315\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_s_s_a_o_effect_a4170ac563f9fca8af67029028aa3162a}{SSAOEffect}}()\ \{}
+\DoxyCodeLine{00316\ \ \ \ \ \ \ \ \ \ \ \ \ shader\ =\ std::make\_shared<ShaderProgram>();}
+\DoxyCodeLine{00317\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setVertexShader(Graphics::ShaderDefaults::SCREEN\_VERT\_SRC);}
+\DoxyCodeLine{00318\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setFragmentShader(SSAO\_FRAG\_SHADER);}
+\DoxyCodeLine{00319\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00320\ }
+\DoxyCodeLine{00329\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{class_s_s_a_o_effect_a7f1ff7cf52ff64340ee7789e89b0a16a}{apply}}(PTexture\ tex,\ PTexture\ depthTex,\ PFrameBuffer\ outFbo,\ std::shared\_ptr<ModelPart>\ quad)\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00330\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!outFbo\ ||\ !quad\ ||\ !tex\ ||\ !depthTex)\{}
+\DoxyCodeLine{00331\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00332\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00333\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!ensureCompiled())\{}
+\DoxyCodeLine{00334\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00335\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00336\ }
+\DoxyCodeLine{00337\ \ \ \ \ \ \ \ \ \ \ \ \ outFbo-\/>bind();}
+\DoxyCodeLine{00338\ \ \ \ \ \ \ \ \ \ \ \ \ glClearColor(0.0f,\ 0.0f,\ 0.0f,\ 0.0f);}
+\DoxyCodeLine{00339\ \ \ \ \ \ \ \ \ \ \ \ \ glClear(GL\_COLOR\_BUFFER\_BIT);}
+\DoxyCodeLine{00340\ \ \ \ \ \ \ \ \ \ \ \ \ glDisable(GL\_DEPTH\_TEST);}
+\DoxyCodeLine{00341\ }
+\DoxyCodeLine{00342\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>bind();}
+\DoxyCodeLine{00343\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}screenTexture"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<GLUniformUpload::TextureSlot>}}(\doxymbox{\hyperlink{struct_g_l_uniform_upload_1_1_texture_slot}{GLUniformUpload::TextureSlot}}(tex,\ 0)));}
+\DoxyCodeLine{00344\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}depthTexture"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<GLUniformUpload::TextureSlot>}}(\doxymbox{\hyperlink{struct_g_l_uniform_upload_1_1_texture_slot}{GLUniformUpload::TextureSlot}}(depthTex,\ 1)));}
+\DoxyCodeLine{00345\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_texelSize"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Vec2>}}(Math3D::Vec2(1.0f\ /\ (\textcolor{keywordtype}{float})outFbo-\/>getWidth(),\ 1.0f\ /\ (\textcolor{keywordtype}{float})outFbo-\/>getHeight())));}
+\DoxyCodeLine{00346\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_radiusPx"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(radiusPx));}
+\DoxyCodeLine{00347\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_depthRadius"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(depthRadius));}
+\DoxyCodeLine{00348\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_bias"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(bias));}
+\DoxyCodeLine{00349\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_intensity"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(intensity));}
+\DoxyCodeLine{00350\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_giBoost"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(giBoost));}
+\DoxyCodeLine{00351\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ effectiveSamples\ =\ sampleCount;}
+\DoxyCodeLine{00352\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ pixelCount\ =\ outFbo-\/>getWidth()\ *\ outFbo-\/>getHeight();}
+\DoxyCodeLine{00353\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(pixelCount\ >=\ (2560\ *\ 1440)\ \&\&\ effectiveSamples\ >\ 5)\{}
+\DoxyCodeLine{00354\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ effectiveSamples\ =\ 5;}
+\DoxyCodeLine{00355\ \ \ \ \ \ \ \ \ \ \ \ \ \}\textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}(pixelCount\ >=\ (1920\ *\ 1080)\ \&\&\ effectiveSamples\ >\ 6)\{}
+\DoxyCodeLine{00356\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ effectiveSamples\ =\ 6;}
+\DoxyCodeLine{00357\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00358\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(effectiveSamples\ <\ 1)\{}
+\DoxyCodeLine{00359\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ effectiveSamples\ =\ 1;}
+\DoxyCodeLine{00360\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00361\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_sampleCount"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<int>}}(effectiveSamples));}
+\DoxyCodeLine{00362\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_nearPlane"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(nearPlane));}
+\DoxyCodeLine{00363\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_farPlane"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(farPlane));}
+\DoxyCodeLine{00364\ }
+\DoxyCodeLine{00365\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ Math3D::Mat4\ IDENTITY;}
+\DoxyCodeLine{00366\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_model"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Mat4>}}(IDENTITY));}
+\DoxyCodeLine{00367\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_view"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Mat4>}}(IDENTITY));}
+\DoxyCodeLine{00368\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_projection"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Mat4>}}(IDENTITY));}
+\DoxyCodeLine{00369\ \ \ \ \ \ \ \ \ \ \ \ \ quad-\/>draw(IDENTITY,\ IDENTITY,\ IDENTITY);}
+\DoxyCodeLine{00370\ \ \ \ \ \ \ \ \ \ \ \ \ outFbo-\/>unbind();}
+\DoxyCodeLine{00371\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00372\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00373\ }
+\DoxyCodeLine{00378\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<SSAOEffect>\ \doxymbox{\hyperlink{class_s_s_a_o_effect_ae40d950572e38a3367b1f1f1b2ac7895}{New}}()\ \{}
+\DoxyCodeLine{00379\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::make\_shared<SSAOEffect>();}
+\DoxyCodeLine{00380\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00381\ \};}
+\DoxyCodeLine{00382\ }
+\DoxyCodeLine{00384\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_depth_of_field_effect_a156dc1b753fbf841b0f8176a26d58b45}{DepthOfFieldEffect}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{class_graphics_1_1_post_processing_1_1_post_processing_effect}{Graphics::PostProcessing::PostProcessingEffect}}\ \{}
+\DoxyCodeLine{00385\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00386\ \ \ \ \ \ \ \ \ std::shared\_ptr<ShaderProgram>\ shader;}
+\DoxyCodeLine{00387\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ compileAttempted\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00388\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ resolvedFocusDistance\ =\ 8.0f;}
+\DoxyCodeLine{00389\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ resolvedFocusRange\ =\ 4.0f;}
+\DoxyCodeLine{00390\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ focusAdaptationInitialized\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00391\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ smoothedFocusDistance\ =\ 8.0f;}
+\DoxyCodeLine{00392\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ smoothedFocusRange\ =\ 4.0f;}
+\DoxyCodeLine{00393\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ focusPullBackRate\ =\ 10.0f;}
+\DoxyCodeLine{00394\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ focusPushOutRate\ =\ 3.0f;}
+\DoxyCodeLine{00395\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ focusFallbackRate\ =\ 2.0f;}
+\DoxyCodeLine{00396\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ debugAdaptiveCenterValid\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00397\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ debugAdaptiveCenterDistance\ =\ 0.0f;}
+\DoxyCodeLine{00398\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ debugAdaptiveRayValid\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00399\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ debugAdaptiveRayDistance\ =\ 0.0f;}
+\DoxyCodeLine{00400\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ debugAdaptiveUsedFallback\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00401\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ debugAdaptiveTargetDistance\ =\ 0.0f;}
+\DoxyCodeLine{00402\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ debugAdaptiveFallbackDistance\ =\ 0.0f;}
+\DoxyCodeLine{00403\ \ \ \ \ \ \ \ \ std::chrono::steady\_clock::time\_point\ lastFocusAdaptationTime\ =\ std::chrono::steady\_clock::now();}
+\DoxyCodeLine{00404\ \ \ \ \ \ \ \ \ std::vector<float>\ adaptiveFocusDepthCpu;}
+\DoxyCodeLine{00405\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\ DOF\_FRAG\_SHADER\ =\ R\textcolor{stringliteral}{"{}(}}
+\DoxyCodeLine{00406\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \#version\ 330\ core}}
+\DoxyCodeLine{00407\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{00408\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ out\ vec4\ FragColor;}}
+\DoxyCodeLine{00409\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ in\ vec2\ TexCoords;}}
+\DoxyCodeLine{00410\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{00411\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ sampler2D\ screenTexture;}}
+\DoxyCodeLine{00412\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ sampler2D\ depthTexture;}}
+\DoxyCodeLine{00413\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ vec2\ u\_texelSize;}}
+\DoxyCodeLine{00414\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_focusDistance;}}
+\DoxyCodeLine{00415\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_focusRange;}}
+\DoxyCodeLine{00416\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_focusBandWidth;}}
+\DoxyCodeLine{00417\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_blurRamp;}}
+\DoxyCodeLine{00418\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_blurDistanceLerp;}}
+\DoxyCodeLine{00419\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_blurStrength;}}
+\DoxyCodeLine{00420\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_maxBlurPx;}}
+\DoxyCodeLine{00421\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ int\ u\_sampleCount;}}
+\DoxyCodeLine{00422\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ int\ u\_debugCocView;}}
+\DoxyCodeLine{00423\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ int\ u\_adaptiveFocusEnabled;}}
+\DoxyCodeLine{00424\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ vec2\ u\_focusUv;}}
+\DoxyCodeLine{00425\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_nearPlane;}}
+\DoxyCodeLine{00426\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_farPlane;}}
+\DoxyCodeLine{00427\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{00433\ \ \ \ \ \ \ \ \ \ \ \ \ float\ linearizeDepth(float\ depth)\{}
+\DoxyCodeLine{00434\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ z\ =\ depth\ *\ 2.0\ -\/\ 1.0;}
+\DoxyCodeLine{00435\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ return\ (2.0\ *\ u\_nearPlane\ *\ u\_farPlane)\ /\ max((u\_farPlane\ +\ u\_nearPlane)\ -\/\ (z\ *\ (u\_farPlane\ -\/\ u\_nearPlane)),\ 0.0001);}
+\DoxyCodeLine{00436\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00437\ }
+\DoxyCodeLine{00442\ \ \ \ \ \ \ \ \ \ \ \ \ float\ resolveFocusDistance()\{}
+\DoxyCodeLine{00443\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ if(u\_adaptiveFocusEnabled\ ==\ 0)\{}
+\DoxyCodeLine{00444\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ return\ u\_focusDistance;}
+\DoxyCodeLine{00445\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00446\ }
+\DoxyCodeLine{00447\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ const\ float\ kSkyDepthCutoff\ =\ 0.9995;}
+\DoxyCodeLine{00448\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2\ clampedFocusUv\ =\ clamp(u\_focusUv,\ vec2(0.0),\ vec2(1.0));}
+\DoxyCodeLine{00449\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ centerDepth\ =\ texture(depthTexture,\ clampedFocusUv).r;}
+\DoxyCodeLine{00450\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ if(centerDepth\ <\ kSkyDepthCutoff)\{}
+\DoxyCodeLine{00451\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ return\ linearizeDepth(centerDepth);}
+\DoxyCodeLine{00452\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00453\ }
+\DoxyCodeLine{00454\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2\ fallbackTaps[8]\ =\ vec2[](}
+\DoxyCodeLine{00455\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 1.0,\ \ 0.0),}
+\DoxyCodeLine{00456\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(-\/1.0,\ \ 0.0),}
+\DoxyCodeLine{00457\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 0.0,\ \ 1.0),}
+\DoxyCodeLine{00458\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 0.0,\ -\/1.0),}
+\DoxyCodeLine{00459\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 2.0,\ \ 0.0),}
+\DoxyCodeLine{00460\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(-\/2.0,\ \ 0.0),}
+\DoxyCodeLine{00461\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 0.0,\ \ 2.0),}
+\DoxyCodeLine{00462\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 0.0,\ -\/2.0)}
+\DoxyCodeLine{00463\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00464\ }
+\DoxyCodeLine{00465\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ accum\ =\ 0.0;}
+\DoxyCodeLine{00466\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ weight\ =\ 0.0;}
+\DoxyCodeLine{00467\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for(int\ i\ =\ 0;\ i\ <\ 8;\ ++i)\{}
+\DoxyCodeLine{00468\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2\ sampleUv\ =\ clamp(clampedFocusUv\ +\ (fallbackTaps[i]\ *\ u\_texelSize),\ vec2(0.0),\ vec2(1.0));}
+\DoxyCodeLine{00469\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ sampleDepth\ =\ texture(depthTexture,\ sampleUv).r;}
+\DoxyCodeLine{00470\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ if(sampleDepth\ >=\ kSkyDepthCutoff)\{}
+\DoxyCodeLine{00471\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ continue;}
+\DoxyCodeLine{00472\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00473\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ accum\ +=\ linearizeDepth(sampleDepth);}
+\DoxyCodeLine{00474\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ weight\ +=\ 1.0;}
+\DoxyCodeLine{00475\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00476\ }
+\DoxyCodeLine{00477\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ if(weight\ <=\ 0.0001)\{}
+\DoxyCodeLine{00478\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ return\ u\_focusDistance;}
+\DoxyCodeLine{00479\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00480\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ return\ accum\ /\ weight;}
+\DoxyCodeLine{00481\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00482\ }
+\DoxyCodeLine{00492\ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ gatherBlur(vec2\ uv,\ float\ radiusPx,\ int\ sampleCount,\ float\ centerLinearDepth,\ float\ blurAmount)\{}
+\DoxyCodeLine{00493\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2\ dirs[8]\ =\ vec2[](}
+\DoxyCodeLine{00494\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 1.0,\ \ 0.0),}
+\DoxyCodeLine{00495\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(-\/1.0,\ \ 0.0),}
+\DoxyCodeLine{00496\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 0.0,\ \ 1.0),}
+\DoxyCodeLine{00497\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 0.0,\ -\/1.0),}
+\DoxyCodeLine{00498\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 0.707,\ \ 0.707),}
+\DoxyCodeLine{00499\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(-\/0.707,\ \ 0.707),}
+\DoxyCodeLine{00500\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 0.707,\ -\/0.707),}
+\DoxyCodeLine{00501\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(-\/0.707,\ -\/0.707)}
+\DoxyCodeLine{00502\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00503\ }
+\DoxyCodeLine{00504\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ accum\ =\ texture(screenTexture,\ uv).rgb;}
+\DoxyCodeLine{00505\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ weight\ =\ 1.0;}
+\DoxyCodeLine{00506\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ int\ loops\ =\ clamp(sampleCount,\ 1,\ 8);}
+\DoxyCodeLine{00507\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ baseDepthTolerance\ =\ max(u\_focusRange\ *\ 0.35,\ 0.25);}
+\DoxyCodeLine{00508\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ //\ Keep\ blur\ relaxation\ continuous\ from\ the\ first\ blur\ contribution\ so\ large\ flats}
+\DoxyCodeLine{00509\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ //\ do\ not\ show\ a\ distance\ "{}knee"{}\ where\ blur\ behavior\ abruptly\ changes.}
+\DoxyCodeLine{00510\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ blurRelax\ =\ smoothstep(0.0,\ 1.0,\ clamp(blurAmount,\ 0.0,\ 1.0));}
+\DoxyCodeLine{00511\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ relaxedDepthTolerance\ =\ mix(baseDepthTolerance,\ max(baseDepthTolerance\ *\ 4.0,\ 1.5),\ blurRelax);}
+\DoxyCodeLine{00512\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for(int\ i\ =\ 0;\ i\ <\ loops;\ ++i)\{}
+\DoxyCodeLine{00513\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2\ offset\ =\ dirs[i]\ *\ radiusPx\ *\ u\_texelSize;}
+\DoxyCodeLine{00514\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2\ sampleUv\ =\ clamp(uv\ +\ offset,\ vec2(0.0),\ vec2(1.0));}
+\DoxyCodeLine{00515\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ sampleColor\ =\ texture(screenTexture,\ sampleUv).rgb;}
+\DoxyCodeLine{00516\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ sampleLinearDepth\ =\ linearizeDepth(texture(depthTexture,\ sampleUv).r);}
+\DoxyCodeLine{00517\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ depthDelta\ =\ abs(sampleLinearDepth\ -\/\ centerLinearDepth);}
+\DoxyCodeLine{00518\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ depthWeight\ =\ 1.0\ -\/\ smoothstep(0.0,\ relaxedDepthTolerance,\ depthDelta);}
+\DoxyCodeLine{00519\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ depthWeight\ =\ mix(depthWeight,\ 1.0,\ blurRelax\ *\ 0.55);}
+\DoxyCodeLine{00520\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ accum\ +=\ sampleColor\ *\ depthWeight;}
+\DoxyCodeLine{00521\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ weight\ +=\ depthWeight;}
+\DoxyCodeLine{00522\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00523\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ return\ accum\ /\ max(weight,\ 0.0001);}
+\DoxyCodeLine{00524\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00525\ }
+\DoxyCodeLine{00529\ \ \ \ \ \ \ \ \ \ \ \ \ void\ main()\ \{}
+\DoxyCodeLine{00530\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec4\ base\ =\ texture(screenTexture,\ TexCoords);}
+\DoxyCodeLine{00531\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ depth\ =\ texture(depthTexture,\ TexCoords).r;}
+\DoxyCodeLine{00532\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ linearDepth\ =\ linearizeDepth(depth);}
+\DoxyCodeLine{00533\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ focusDistance\ =\ resolveFocusDistance();}
+\DoxyCodeLine{00534\ }
+\DoxyCodeLine{00535\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ focusRange\ =\ max(u\_focusRange,\ 0.001);}
+\DoxyCodeLine{00536\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ depthDelta\ =\ linearDepth\ -\/\ focusDistance;}
+\DoxyCodeLine{00537\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ nearBoost\ =\ (depthDelta\ <\ 0.0)\ ?\ 1.15\ :\ 1.0;}
+\DoxyCodeLine{00538\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ //\ Smooth\ CoC\ falloff\ prevents\ a\ harsh\ in-\/focus\ strip\ while\ keeping}
+\DoxyCodeLine{00539\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ //\ a\ clear\ focal\ region\ around\ the\ resolved\ distance.}
+\DoxyCodeLine{00540\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ absDepthDelta\ =\ abs(depthDelta);}
+\DoxyCodeLine{00541\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ focusBandWidth\ =\ max(u\_focusBandWidth,\ 0.05);}
+\DoxyCodeLine{00542\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ focusSigma\ =\ max(focusRange\ *\ focusBandWidth,\ 0.02);}
+\DoxyCodeLine{00543\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ coc\ =\ 1.0\ -\/\ exp(-\/(absDepthDelta\ *\ absDepthDelta)\ /\ (2.0\ *\ focusSigma\ *\ focusSigma));}
+\DoxyCodeLine{00544\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ coc\ =\ clamp(coc\ *\ nearBoost,\ 0.0,\ 1.0);}
+\DoxyCodeLine{00545\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ blurRamp\ =\ max(u\_blurRamp,\ 0.05);}
+\DoxyCodeLine{00546\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ cocCurve\ =\ pow(coc,\ blurRamp);}
+\DoxyCodeLine{00547\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ blurDistanceLerp\ =\ clamp(u\_blurDistanceLerp,\ 0.0,\ 1.0);}
+\DoxyCodeLine{00548\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ cocBlend\ =\ mix(cocCurve,\ coc,\ blurDistanceLerp);}
+\DoxyCodeLine{00549\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ strength\ =\ max(u\_blurStrength,\ 0.0);}
+\DoxyCodeLine{00550\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ blurRadius\ =\ cocBlend\ *\ max(u\_maxBlurPx,\ 0.0)\ *\ strength;}
+\DoxyCodeLine{00551\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ //\ Use\ stronger\ blend\ than\ radius\ scaling\ so\ clearly\ out-\/of-\/focus\ regions}
+\DoxyCodeLine{00552\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ //\ don't\ remain\ overly\ crisp\ at\ moderate\ blurStrength\ values.}
+\DoxyCodeLine{00553\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ blurAmount\ =\ clamp(cocBlend\ *\ clamp(strength\ *\ 1.8,\ 0.0,\ 1.0),\ 0.0,\ 1.0);}
+\DoxyCodeLine{00554\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ if(u\_debugCocView\ !=\ 0)\{}
+\DoxyCodeLine{00555\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ focusColor\ =\ vec3(0.10,\ 0.95,\ 0.20);}
+\DoxyCodeLine{00556\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ nearColor\ =\ vec3(0.18,\ 0.55,\ 1.00);}
+\DoxyCodeLine{00557\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ farColor\ =\ vec3(1.00,\ 0.42,\ 0.12);}
+\DoxyCodeLine{00558\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ sideColor\ =\ (depthDelta\ <\ 0.0)\ ?\ nearColor\ :\ farColor;}
+\DoxyCodeLine{00559\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ cocColor\ =\ mix(focusColor,\ sideColor,\ coc);}
+\DoxyCodeLine{00560\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cocColor\ *=\ mix(0.45,\ 1.0,\ blurAmount);}
+\DoxyCodeLine{00561\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FragColor\ =\ vec4(cocColor,\ 1.0);}
+\DoxyCodeLine{00562\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ return;}
+\DoxyCodeLine{00563\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00564\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ blurred\ =\ gatherBlur(TexCoords,\ blurRadius,\ u\_sampleCount,\ linearDepth,\ blurAmount);}
+\DoxyCodeLine{00565\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ color\ =\ mix(base.rgb,\ blurred,\ blurAmount);}
+\DoxyCodeLine{00566\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FragColor\ =\ vec4(color,\ base.a);}
+\DoxyCodeLine{00567\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00568\ \ \ \ \ \ \ \ \ )"{};}
+\DoxyCodeLine{00569\ }
+\DoxyCodeLine{00574\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ ensureCompiled()\{}
+\DoxyCodeLine{00575\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!shader)\{}
+\DoxyCodeLine{00576\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00577\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00578\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(shader-\/>getID()\ !=\ 0)\{}
+\DoxyCodeLine{00579\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00580\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00581\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(compileAttempted)\{}
+\DoxyCodeLine{00582\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00583\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00584\ \ \ \ \ \ \ \ \ \ \ \ \ compileAttempted\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00585\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(shader-\/>compile()\ ==\ 0)\{}
+\DoxyCodeLine{00586\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ LogBot.Log(LOG\_ERRO,\ \textcolor{stringliteral}{"{}Failed\ to\ compile\ depth-\/of-\/field\ effect\ shader:\(\backslash\)n\%s"{}},\ shader-\/>getLog().c\_str());}
+\DoxyCodeLine{00587\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00588\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00589\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00590\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00591\ }
+\DoxyCodeLine{00597\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ linearizeDepthCpu(\textcolor{keywordtype}{float}\ depth)\textcolor{keyword}{\ const}\{}
+\DoxyCodeLine{00598\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ z\ =\ (depth\ *\ 2.0f)\ -\/\ 1.0f;}
+\DoxyCodeLine{00599\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (2.0f\ *\ nearPlane\ *\ farPlane)\ /}
+\DoxyCodeLine{00600\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Math3D::Max((farPlane\ +\ nearPlane)\ -\/\ (z\ *\ (farPlane\ -\/\ nearPlane)),\ 0.0001f);}
+\DoxyCodeLine{00601\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00602\ }
+\DoxyCodeLine{00609\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ sampleAdaptiveFocusDistance(PTexture\ depthTex,\ \textcolor{keywordtype}{float}\&\ outDistance)\{}
+\DoxyCodeLine{00610\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!depthTex\ ||\ depthTex-\/>getID()\ ==\ 0)\{}
+\DoxyCodeLine{00611\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00612\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00613\ }
+\DoxyCodeLine{00614\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ width\ =\ 0;}
+\DoxyCodeLine{00615\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ height\ =\ 0;}
+\DoxyCodeLine{00616\ \ \ \ \ \ \ \ \ \ \ \ \ GLint\ prevTexBinding\ =\ 0;}
+\DoxyCodeLine{00617\ \ \ \ \ \ \ \ \ \ \ \ \ glGetIntegerv(GL\_TEXTURE\_BINDING\_2D,\ \&prevTexBinding);}
+\DoxyCodeLine{00618\ \ \ \ \ \ \ \ \ \ \ \ \ glBindTexture(GL\_TEXTURE\_2D,\ depthTex-\/>getID());}
+\DoxyCodeLine{00619\ \ \ \ \ \ \ \ \ \ \ \ \ glGetTexLevelParameteriv(GL\_TEXTURE\_2D,\ 0,\ GL\_TEXTURE\_WIDTH,\ \&width);}
+\DoxyCodeLine{00620\ \ \ \ \ \ \ \ \ \ \ \ \ glGetTexLevelParameteriv(GL\_TEXTURE\_2D,\ 0,\ GL\_TEXTURE\_HEIGHT,\ \&height);}
+\DoxyCodeLine{00621\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(width\ <=\ 0\ ||\ height\ <=\ 0)\{}
+\DoxyCodeLine{00622\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glBindTexture(GL\_TEXTURE\_2D,\ \textcolor{keyword}{static\_cast<}GLuint\textcolor{keyword}{>}(prevTexBinding));}
+\DoxyCodeLine{00623\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00624\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00625\ }
+\DoxyCodeLine{00626\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ pixelCount\ =\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(width)\ *\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(height);}
+\DoxyCodeLine{00627\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(pixelCount\ ==\ 0)\{}
+\DoxyCodeLine{00628\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glBindTexture(GL\_TEXTURE\_2D,\ \textcolor{keyword}{static\_cast<}GLuint\textcolor{keyword}{>}(prevTexBinding));}
+\DoxyCodeLine{00629\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00630\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00631\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(adaptiveFocusDepthCpu.size()\ !=\ pixelCount)\{}
+\DoxyCodeLine{00632\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ adaptiveFocusDepthCpu.resize(pixelCount);}
+\DoxyCodeLine{00633\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00634\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(adaptiveFocusDepthCpu.empty())\{}
+\DoxyCodeLine{00635\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glBindTexture(GL\_TEXTURE\_2D,\ \textcolor{keyword}{static\_cast<}GLuint\textcolor{keyword}{>}(prevTexBinding));}
+\DoxyCodeLine{00636\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00637\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00638\ }
+\DoxyCodeLine{00639\ \ \ \ \ \ \ \ \ \ \ \ \ GLenum\ preReadErr\ =\ glGetError();}
+\DoxyCodeLine{00640\ \ \ \ \ \ \ \ \ \ \ \ \ (void)preReadErr;}
+\DoxyCodeLine{00641\ \ \ \ \ \ \ \ \ \ \ \ \ glGetTexImage(GL\_TEXTURE\_2D,\ 0,\ GL\_DEPTH\_COMPONENT,\ GL\_FLOAT,\ adaptiveFocusDepthCpu.data());}
+\DoxyCodeLine{00642\ \ \ \ \ \ \ \ \ \ \ \ \ GLenum\ readErr\ =\ glGetError();}
+\DoxyCodeLine{00643\ \ \ \ \ \ \ \ \ \ \ \ \ glBindTexture(GL\_TEXTURE\_2D,\ \textcolor{keyword}{static\_cast<}GLuint\textcolor{keyword}{>}(prevTexBinding));}
+\DoxyCodeLine{00644\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(readErr\ !=\ GL\_NO\_ERROR)\{}
+\DoxyCodeLine{00645\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00646\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00647\ }
+\DoxyCodeLine{00648\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ kSkyDepthCutoff\ =\ 0.9995f;}
+\DoxyCodeLine{00649\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ x\ =\ Math3D::Clamp(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(std::round(focusUv.x\ *\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(width\ -\/\ 1))),\ 0,\ width\ -\/\ 1);}
+\DoxyCodeLine{00650\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ y\ =\ Math3D::Clamp(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(std::round(focusUv.y\ *\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(height\ -\/\ 1))),\ 0,\ height\ -\/\ 1);}
+\DoxyCodeLine{00651\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ depth\ =\ adaptiveFocusDepthCpu[\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(y)\ *\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(width)\ +\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(x)];}
+\DoxyCodeLine{00652\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!std::isfinite(depth)\ ||\ depth\ >=\ kSkyDepthCutoff)\{}
+\DoxyCodeLine{00653\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00654\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00655\ \ \ \ \ \ \ \ \ \ \ \ \ outDistance\ =\ linearizeDepthCpu(depth);}
+\DoxyCodeLine{00656\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::isfinite(outDistance)\ \&\&\ outDistance\ >\ 0.0f;}
+\DoxyCodeLine{00657\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00658\ }
+\DoxyCodeLine{00659\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00660\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ focusDistance\ =\ 8.0f;}
+\DoxyCodeLine{00661\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ focusRange\ =\ 4.0f;}
+\DoxyCodeLine{00662\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ focusBandWidth\ =\ 0.85f;}
+\DoxyCodeLine{00663\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ blurRamp\ =\ 2.0f;}
+\DoxyCodeLine{00664\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ blurDistanceLerp\ =\ 0.35f;}
+\DoxyCodeLine{00665\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ fallbackFocusRange\ =\ 6.0f;}
+\DoxyCodeLine{00666\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ blurStrength\ =\ 0.65f;}
+\DoxyCodeLine{00667\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ maxBlurPx\ =\ 7.0f;}
+\DoxyCodeLine{00668\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ sampleCount\ =\ 6;}
+\DoxyCodeLine{00669\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ debugCocView\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00670\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ adaptiveFocus\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00671\ \ \ \ \ \ \ \ \ Math3D::Vec2\ focusUv\ =\ Math3D::Vec2(0.5f,\ 0.5f);}
+\DoxyCodeLine{00672\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ nearPlane\ =\ 0.1f;}
+\DoxyCodeLine{00673\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ farPlane\ =\ 1000.0f;}
+\DoxyCodeLine{00674\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ externalAdaptiveFocusValid\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00675\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ externalAdaptiveFocusDistance\ =\ 0.0f;}
+\DoxyCodeLine{00676\ }
+\DoxyCodeLine{00680\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_depth_of_field_effect_a156dc1b753fbf841b0f8176a26d58b45}{DepthOfFieldEffect}}()\ \{}
+\DoxyCodeLine{00681\ \ \ \ \ \ \ \ \ \ \ \ \ shader\ =\ std::make\_shared<ShaderProgram>();}
+\DoxyCodeLine{00682\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setVertexShader(Graphics::ShaderDefaults::SCREEN\_VERT\_SRC);}
+\DoxyCodeLine{00683\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setFragmentShader(DOF\_FRAG\_SHADER);}
+\DoxyCodeLine{00684\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00685\ }
+\DoxyCodeLine{00689\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_depth_of_field_effect_a71ff3039585ef902e8c5325d9f2c8543}{\string~DepthOfFieldEffect}}()\ \textcolor{keyword}{override}\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00690\ }
+\DoxyCodeLine{00695\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \doxymbox{\hyperlink{class_depth_of_field_effect_a89866922b7bfdc7e1b39cd339996afbc}{getResolvedFocusDistance}}()\textcolor{keyword}{\ const}\{}
+\DoxyCodeLine{00696\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ resolvedFocusDistance;}
+\DoxyCodeLine{00697\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00698\ }
+\DoxyCodeLine{00703\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \doxymbox{\hyperlink{class_depth_of_field_effect_a3b3084c5e7f4fbc0acc22c2d407cba19}{getResolvedFocusRange}}()\textcolor{keyword}{\ const}\{}
+\DoxyCodeLine{00704\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ resolvedFocusRange;}
+\DoxyCodeLine{00705\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00706\ }
+\DoxyCodeLine{00711\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{class_depth_of_field_effect_a2b6c470cc2298d4e7f9638ab02fd6339}{getDebugAdaptiveCenterValid}}()\textcolor{keyword}{\ const}\{}
+\DoxyCodeLine{00712\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ debugAdaptiveCenterValid;}
+\DoxyCodeLine{00713\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00714\ }
+\DoxyCodeLine{00719\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \doxymbox{\hyperlink{class_depth_of_field_effect_a0702ba093291383aec8a394bd58b4da3}{getDebugAdaptiveCenterDistance}}()\textcolor{keyword}{\ const}\{}
+\DoxyCodeLine{00720\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ debugAdaptiveCenterDistance;}
+\DoxyCodeLine{00721\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00722\ }
+\DoxyCodeLine{00727\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{class_depth_of_field_effect_a00464f8858539d0013ea8e9de66f7505}{getDebugAdaptiveRayValid}}()\textcolor{keyword}{\ const}\{}
+\DoxyCodeLine{00728\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ debugAdaptiveRayValid;}
+\DoxyCodeLine{00729\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00730\ }
+\DoxyCodeLine{00735\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \doxymbox{\hyperlink{class_depth_of_field_effect_afb17fd27b66d9a68d9cc46d2fbc71f08}{getDebugAdaptiveRayDistance}}()\textcolor{keyword}{\ const}\{}
+\DoxyCodeLine{00736\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ debugAdaptiveRayDistance;}
+\DoxyCodeLine{00737\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00738\ }
+\DoxyCodeLine{00743\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{class_depth_of_field_effect_a47ced74a994feca82c1628689e9f8cc0}{getDebugAdaptiveUsedFallback}}()\textcolor{keyword}{\ const}\{}
+\DoxyCodeLine{00744\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ debugAdaptiveUsedFallback;}
+\DoxyCodeLine{00745\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00746\ }
+\DoxyCodeLine{00751\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \doxymbox{\hyperlink{class_depth_of_field_effect_a0651cbdf436d209ce86174cfb9c7884e}{getDebugAdaptiveTargetDistance}}()\textcolor{keyword}{\ const}\{}
+\DoxyCodeLine{00752\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ debugAdaptiveTargetDistance;}
+\DoxyCodeLine{00753\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00754\ }
+\DoxyCodeLine{00759\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \doxymbox{\hyperlink{class_depth_of_field_effect_ae7717684c372c1cbc62e7894479d206c}{getDebugAdaptiveFallbackDistance}}()\textcolor{keyword}{\ const}\{}
+\DoxyCodeLine{00760\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ debugAdaptiveFallbackDistance;}
+\DoxyCodeLine{00761\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00762\ }
+\DoxyCodeLine{00771\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{class_depth_of_field_effect_a7c28be25a4f335b6cb15282996d50995}{apply}}(PTexture\ tex,\ PTexture\ depthTex,\ PFrameBuffer\ outFbo,\ std::shared\_ptr<ModelPart>\ quad)\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00772\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!outFbo\ ||\ !quad\ ||\ !tex\ ||\ !depthTex)\{}
+\DoxyCodeLine{00773\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00774\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00775\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!ensureCompiled())\{}
+\DoxyCodeLine{00776\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00777\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00778\ }
+\DoxyCodeLine{00779\ \ \ \ \ \ \ \ \ \ \ \ \ outFbo-\/>bind();}
+\DoxyCodeLine{00780\ \ \ \ \ \ \ \ \ \ \ \ \ glClearColor(0.0f,\ 0.0f,\ 0.0f,\ 0.0f);}
+\DoxyCodeLine{00781\ \ \ \ \ \ \ \ \ \ \ \ \ glClear(GL\_COLOR\_BUFFER\_BIT);}
+\DoxyCodeLine{00782\ \ \ \ \ \ \ \ \ \ \ \ \ glDisable(GL\_DEPTH\_TEST);}
+\DoxyCodeLine{00783\ }
+\DoxyCodeLine{00784\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ targetFocusRange\ =\ Math3D::Max(0.001f,\ focusRange);}
+\DoxyCodeLine{00785\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ useExternalAdaptiveFocus\ =\ externalAdaptiveFocusValid;}
+\DoxyCodeLine{00786\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ externalAdaptiveDistance\ =\ externalAdaptiveFocusDistance;}
+\DoxyCodeLine{00787\ \ \ \ \ \ \ \ \ \ \ \ \ externalAdaptiveFocusValid\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00788\ \ \ \ \ \ \ \ \ \ \ \ \ debugAdaptiveCenterValid\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00789\ \ \ \ \ \ \ \ \ \ \ \ \ debugAdaptiveCenterDistance\ =\ 0.0f;}
+\DoxyCodeLine{00790\ \ \ \ \ \ \ \ \ \ \ \ \ debugAdaptiveRayValid\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00791\ \ \ \ \ \ \ \ \ \ \ \ \ debugAdaptiveRayDistance\ =\ 0.0f;}
+\DoxyCodeLine{00792\ \ \ \ \ \ \ \ \ \ \ \ \ debugAdaptiveUsedFallback\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00793\ \ \ \ \ \ \ \ \ \ \ \ \ debugAdaptiveTargetDistance\ =\ 0.0f;}
+\DoxyCodeLine{00794\ \ \ \ \ \ \ \ \ \ \ \ \ debugAdaptiveFallbackDistance\ =\ Math3D::Max(0.01f,\ focusDistance);}
+\DoxyCodeLine{00795\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(adaptiveFocus)\{}
+\DoxyCodeLine{00796\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ fallbackFocusDistance\ =\ Math3D::Max(0.01f,\ focusDistance);}
+\DoxyCodeLine{00797\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ hasRayFocusTarget\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00798\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ targetFocusPlaneDistance\ =\ fallbackFocusDistance;}
+\DoxyCodeLine{00799\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ sampledFocusDistance\ =\ 0.0f;}
+\DoxyCodeLine{00800\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(sampleAdaptiveFocusDistance(depthTex,\ sampledFocusDistance))\{}
+\DoxyCodeLine{00801\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ targetFocusPlaneDistance\ =\ Math3D::Max(0.01f,\ sampledFocusDistance);}
+\DoxyCodeLine{00802\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ hasRayFocusTarget\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00803\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ debugAdaptiveCenterValid\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00804\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ debugAdaptiveCenterDistance\ =\ targetFocusPlaneDistance;}
+\DoxyCodeLine{00805\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}\textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}(useExternalAdaptiveFocus\ \&\&\ std::isfinite(externalAdaptiveDistance)\ \&\&\ externalAdaptiveDistance\ >\ 0.0f)\{}
+\DoxyCodeLine{00806\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ targetFocusPlaneDistance\ =\ Math3D::Max(0.01f,\ externalAdaptiveDistance);}
+\DoxyCodeLine{00807\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ hasRayFocusTarget\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00808\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ debugAdaptiveRayValid\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00809\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ debugAdaptiveRayDistance\ =\ targetFocusPlaneDistance;}
+\DoxyCodeLine{00810\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}\textcolor{keywordflow}{else}\{}
+\DoxyCodeLine{00811\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ targetFocusRange\ =\ Math3D::Max(0.001f,\ fallbackFocusRange);}
+\DoxyCodeLine{00812\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00813\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ debugAdaptiveTargetDistance\ =\ targetFocusPlaneDistance;}
+\DoxyCodeLine{00814\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ debugAdaptiveUsedFallback\ =\ !hasRayFocusTarget;}
+\DoxyCodeLine{00815\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ debugAdaptiveFallbackDistance\ =\ fallbackFocusDistance;}
+\DoxyCodeLine{00816\ }
+\DoxyCodeLine{00817\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ now\ =\ std::chrono::steady\_clock::now();}
+\DoxyCodeLine{00818\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!focusAdaptationInitialized)\{}
+\DoxyCodeLine{00819\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ smoothedFocusDistance\ =\ targetFocusPlaneDistance;}
+\DoxyCodeLine{00820\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ smoothedFocusRange\ =\ targetFocusRange;}
+\DoxyCodeLine{00821\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ focusAdaptationInitialized\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00822\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ lastFocusAdaptationTime\ =\ now;}
+\DoxyCodeLine{00823\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}\textcolor{keywordflow}{else}\{}
+\DoxyCodeLine{00824\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ dt\ =\ std::chrono::duration<float>(now\ -\/\ lastFocusAdaptationTime).count();}
+\DoxyCodeLine{00825\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ dt\ =\ Math3D::Clamp(dt,\ 0.001f,\ 0.25f);}
+\DoxyCodeLine{00826\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ lastFocusAdaptationTime\ =\ now;}
+\DoxyCodeLine{00827\ }
+\DoxyCodeLine{00828\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ moveTowardNoOvershoot\ =\ [\&](\textcolor{keywordtype}{float}\ current,\ \textcolor{keywordtype}{float}\ target,\ \textcolor{keywordtype}{float}\ rate)\ -\/>\ \textcolor{keywordtype}{float}\ \{}
+\DoxyCodeLine{00829\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ alpha\ =\ 1.0f\ -\/\ std::exp(-\/Math3D::Max(rate,\ 0.0001f)\ *\ dt);}
+\DoxyCodeLine{00830\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ next\ =\ current\ +\ (target\ -\/\ current)\ *\ alpha;}
+\DoxyCodeLine{00831\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(target\ >=\ current)\{}
+\DoxyCodeLine{00832\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ Math3D::Min(next,\ target);}
+\DoxyCodeLine{00833\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00834\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ Math3D::Max(next,\ target);}
+\DoxyCodeLine{00835\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00836\ }
+\DoxyCodeLine{00837\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(hasRayFocusTarget)\{}
+\DoxyCodeLine{00838\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(smoothedFocusDistance\ >\ targetFocusPlaneDistance)\{}
+\DoxyCodeLine{00839\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ FocusDistance\ is\ beyond\ target\ plane:\ pull\ back\ quickly\ toward\ it.}}
+\DoxyCodeLine{00840\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ smoothedFocusDistance\ =\ moveTowardNoOvershoot(smoothedFocusDistance,\ targetFocusPlaneDistance,\ focusPullBackRate);}
+\DoxyCodeLine{00841\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}\textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}(smoothedFocusDistance\ <\ targetFocusPlaneDistance)\{}
+\DoxyCodeLine{00842\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ FocusDistance\ is\ nearer\ than\ target\ plane:\ push\ out\ slowly\ toward\ it.}}
+\DoxyCodeLine{00843\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ smoothedFocusDistance\ =\ moveTowardNoOvershoot(smoothedFocusDistance,\ targetFocusPlaneDistance,\ focusPushOutRate);}
+\DoxyCodeLine{00844\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00845\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}\textcolor{keywordflow}{else}\{}
+\DoxyCodeLine{00846\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ No\ ray\ hit:\ drift\ back\ to\ fallback\ focus\ distance.}}
+\DoxyCodeLine{00847\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ smoothedFocusDistance\ =\ moveTowardNoOvershoot(smoothedFocusDistance,\ fallbackFocusDistance,\ focusFallbackRate);}
+\DoxyCodeLine{00848\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00849\ }
+\DoxyCodeLine{00850\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ rangeRate\ =\ hasRayFocusTarget\ ?\ 5.0f\ :\ 2.5f;}
+\DoxyCodeLine{00851\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ rangeAlpha\ =\ 1.0f\ -\/\ std::exp(-\/rangeRate\ *\ dt);}
+\DoxyCodeLine{00852\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ smoothedFocusRange\ +=\ (targetFocusRange\ -\/\ smoothedFocusRange)\ *\ rangeAlpha;}
+\DoxyCodeLine{00853\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00854\ }
+\DoxyCodeLine{00855\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ resolvedFocusDistance\ =\ Math3D::Max(0.01f,\ smoothedFocusDistance);}
+\DoxyCodeLine{00856\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ resolvedFocusRange\ =\ Math3D::Max(0.001f,\ smoothedFocusRange);}
+\DoxyCodeLine{00857\ \ \ \ \ \ \ \ \ \ \ \ \ \}\textcolor{keywordflow}{else}\{}
+\DoxyCodeLine{00858\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ targetFocusDistance\ =\ Math3D::Max(0.01f,\ focusDistance);}
+\DoxyCodeLine{00859\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ focusAdaptationInitialized\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00860\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ smoothedFocusDistance\ =\ targetFocusDistance;}
+\DoxyCodeLine{00861\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ smoothedFocusRange\ =\ targetFocusRange;}
+\DoxyCodeLine{00862\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ resolvedFocusDistance\ =\ targetFocusDistance;}
+\DoxyCodeLine{00863\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ resolvedFocusRange\ =\ targetFocusRange;}
+\DoxyCodeLine{00864\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00865\ }
+\DoxyCodeLine{00866\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>bind();}
+\DoxyCodeLine{00867\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}screenTexture"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<GLUniformUpload::TextureSlot>}}(\doxymbox{\hyperlink{struct_g_l_uniform_upload_1_1_texture_slot}{GLUniformUpload::TextureSlot}}(tex,\ 0)));}
+\DoxyCodeLine{00868\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}depthTexture"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<GLUniformUpload::TextureSlot>}}(\doxymbox{\hyperlink{struct_g_l_uniform_upload_1_1_texture_slot}{GLUniformUpload::TextureSlot}}(depthTex,\ 1)));}
+\DoxyCodeLine{00869\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_texelSize"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Vec2>}}(Math3D::Vec2(1.0f\ /\ (\textcolor{keywordtype}{float})outFbo-\/>getWidth(),\ 1.0f\ /\ (\textcolor{keywordtype}{float})outFbo-\/>getHeight())));}
+\DoxyCodeLine{00870\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_focusDistance"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(resolvedFocusDistance));}
+\DoxyCodeLine{00871\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_focusRange"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(resolvedFocusRange));}
+\DoxyCodeLine{00872\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_focusBandWidth"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(Math3D::Clamp(focusBandWidth,\ 0.05f,\ 4.0f)));}
+\DoxyCodeLine{00873\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_blurRamp"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(Math3D::Clamp(blurRamp,\ 0.05f,\ 6.0f)));}
+\DoxyCodeLine{00874\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_blurDistanceLerp"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(Math3D::Clamp(blurDistanceLerp,\ 0.0f,\ 1.0f)));}
+\DoxyCodeLine{00875\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_blurStrength"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(blurStrength));}
+\DoxyCodeLine{00876\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_maxBlurPx"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(maxBlurPx));}
+\DoxyCodeLine{00877\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_debugCocView"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<int>}}(debugCocView\ ?\ 1\ :\ 0));}
+\DoxyCodeLine{00878\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ CPU\ resolves\ and\ smooths\ adaptive\ focus\ distance\ from\ scene\ raycast\ each\ frame.}}
+\DoxyCodeLine{00879\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Keep\ shader-\/side\ adaptive\ depth\ sampling\ disabled\ to\ avoid\ competing\ focus\ targets.}}
+\DoxyCodeLine{00880\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_adaptiveFocusEnabled"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<int>}}(0));}
+\DoxyCodeLine{00881\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_focusUv"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Vec2>}}(focusUv));}
+\DoxyCodeLine{00882\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ effectiveSamples\ =\ sampleCount;}
+\DoxyCodeLine{00883\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ pixelCount\ =\ outFbo-\/>getWidth()\ *\ outFbo-\/>getHeight();}
+\DoxyCodeLine{00884\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(pixelCount\ >=\ (2560\ *\ 1440)\ \&\&\ effectiveSamples\ >\ 4)\{}
+\DoxyCodeLine{00885\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ effectiveSamples\ =\ 4;}
+\DoxyCodeLine{00886\ \ \ \ \ \ \ \ \ \ \ \ \ \}\textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}(pixelCount\ >=\ (1920\ *\ 1080)\ \&\&\ effectiveSamples\ >\ 5)\{}
+\DoxyCodeLine{00887\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ effectiveSamples\ =\ 5;}
+\DoxyCodeLine{00888\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00889\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(effectiveSamples\ <\ 1)\{}
+\DoxyCodeLine{00890\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ effectiveSamples\ =\ 1;}
+\DoxyCodeLine{00891\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00892\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_sampleCount"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<int>}}(effectiveSamples));}
+\DoxyCodeLine{00893\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_nearPlane"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(nearPlane));}
+\DoxyCodeLine{00894\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_farPlane"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(farPlane));}
+\DoxyCodeLine{00895\ }
+\DoxyCodeLine{00896\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ Math3D::Mat4\ IDENTITY;}
+\DoxyCodeLine{00897\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_model"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Mat4>}}(IDENTITY));}
+\DoxyCodeLine{00898\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_view"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Mat4>}}(IDENTITY));}
+\DoxyCodeLine{00899\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_projection"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Mat4>}}(IDENTITY));}
+\DoxyCodeLine{00900\ \ \ \ \ \ \ \ \ \ \ \ \ quad-\/>draw(IDENTITY,\ IDENTITY,\ IDENTITY);}
+\DoxyCodeLine{00901\ \ \ \ \ \ \ \ \ \ \ \ \ outFbo-\/>unbind();}
+\DoxyCodeLine{00902\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00903\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00904\ }
+\DoxyCodeLine{00909\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<DepthOfFieldEffect>\ \doxymbox{\hyperlink{class_depth_of_field_effect_a5b2434a9c622430d7fb62cbc305722fe}{New}}()\ \{}
+\DoxyCodeLine{00910\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::make\_shared<DepthOfFieldEffect>();}
+\DoxyCodeLine{00911\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00912\ \};}
+\DoxyCodeLine{00913\ }
+\DoxyCodeLine{00915\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_bloom_effect_ae76d6ede7ad9201f6bf8f4c9927c827b}{BloomEffect}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{class_graphics_1_1_post_processing_1_1_post_processing_effect}{Graphics::PostProcessing::PostProcessingEffect}}\ \{}
+\DoxyCodeLine{00916\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00917\ \ \ \ \ \ \ \ \ std::shared\_ptr<ShaderProgram>\ shader;}
+\DoxyCodeLine{00918\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ compileAttempted\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00919\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\ BLOOM\_FRAG\_SHADER\ =\ R\textcolor{stringliteral}{"{}(}}
+\DoxyCodeLine{00920\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \#version\ 330\ core}}
+\DoxyCodeLine{00921\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{00922\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ out\ vec4\ FragColor;}}
+\DoxyCodeLine{00923\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ in\ vec2\ TexCoords;}}
+\DoxyCodeLine{00924\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{00925\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ sampler2D\ screenTexture;}}
+\DoxyCodeLine{00926\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ vec2\ u\_texelSize;}}
+\DoxyCodeLine{00927\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_threshold;}}
+\DoxyCodeLine{00928\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_softKnee;}}
+\DoxyCodeLine{00929\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_intensity;}}
+\DoxyCodeLine{00930\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_radiusPx;}}
+\DoxyCodeLine{00931\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ int\ u\_sampleCount;}}
+\DoxyCodeLine{00932\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ vec3\ u\_tint;}}
+\DoxyCodeLine{00933\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_exposureScale;}}
+\DoxyCodeLine{00934\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{00935\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ const\ vec2\ kPoisson[12]\ =\ vec2[](}}
+\DoxyCodeLine{00936\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(-\/0.326,\ -\/0.406),}}
+\DoxyCodeLine{00937\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(-\/0.840,\ -\/0.074),}}
+\DoxyCodeLine{00938\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(-\/0.696,\ \ 0.457),}}
+\DoxyCodeLine{00939\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(-\/0.203,\ \ 0.621),}}
+\DoxyCodeLine{00940\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 0.962,\ -\/0.195),}}
+\DoxyCodeLine{00941\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 0.473,\ -\/0.480),}}
+\DoxyCodeLine{00942\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 0.519,\ \ 0.767),}}
+\DoxyCodeLine{00943\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 0.185,\ -\/0.893),}}
+\DoxyCodeLine{00944\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 0.507,\ \ 0.064),}}
+\DoxyCodeLine{00945\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(\ 0.896,\ \ 0.412),}}
+\DoxyCodeLine{00946\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(-\/0.322,\ \ 0.951),}}
+\DoxyCodeLine{00950\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2(-\/0.720,\ \ 0.631)}
+\DoxyCodeLine{00951\ \ \ \ \ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00952\ }
+\DoxyCodeLine{00958\ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ prefilterBright(vec3\ color)\{}
+\DoxyCodeLine{00959\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ brightness\ =\ max(color.r,\ max(color.g,\ color.b));}
+\DoxyCodeLine{00960\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ threshold\ =\ max(u\_threshold,\ 0.0);}
+\DoxyCodeLine{00961\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ knee\ =\ max(threshold\ *\ max(u\_softKnee,\ 0.0001),\ 0.00001);}
+\DoxyCodeLine{00962\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ soft\ =\ clamp(brightness\ -\/\ threshold\ +\ knee,\ 0.0,\ 2.0\ *\ knee);}
+\DoxyCodeLine{00963\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ soft\ =\ (0.25\ /\ knee)\ *\ soft\ *\ soft;}
+\DoxyCodeLine{00964\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ hard\ =\ max(brightness\ -\/\ threshold,\ 0.0);}
+\DoxyCodeLine{00965\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ contribution\ =\ max(hard,\ soft)\ /\ max(brightness,\ 0.0001);}
+\DoxyCodeLine{00966\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ return\ color\ *\ contribution;}
+\DoxyCodeLine{00967\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00968\ }
+\DoxyCodeLine{00972\ \ \ \ \ \ \ \ \ \ \ \ \ void\ main()\ \{}
+\DoxyCodeLine{00973\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ exposureScale\ =\ max(u\_exposureScale,\ 0.0);}
+\DoxyCodeLine{00974\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ base\ =\ texture(screenTexture,\ TexCoords).rgb;}
+\DoxyCodeLine{00975\ }
+\DoxyCodeLine{00976\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ int\ count\ =\ clamp(u\_sampleCount,\ 1,\ 12);}
+\DoxyCodeLine{00977\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ radiusPx\ =\ max(u\_radiusPx,\ 0.0);}
+\DoxyCodeLine{00978\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ bloomAccum\ =\ prefilterBright(base);}
+\DoxyCodeLine{00979\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ weightSum\ =\ 1.0;}
+\DoxyCodeLine{00980\ }
+\DoxyCodeLine{00981\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for(int\ i\ =\ 0;\ i\ <\ 12;\ ++i)\{}
+\DoxyCodeLine{00982\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ if(i\ >=\ count)\{}
+\DoxyCodeLine{00983\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ break;}
+\DoxyCodeLine{00984\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00985\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ ringT\ =\ (float(i)\ +\ 0.5)\ /\ float(count);}
+\DoxyCodeLine{00986\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ radialScale\ =\ mix(0.35,\ 1.0,\ ringT);}
+\DoxyCodeLine{00987\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ weight\ =\ mix(1.0,\ 0.35,\ ringT);}
+\DoxyCodeLine{00988\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2\ offset\ =\ kPoisson[i]\ *\ radiusPx\ *\ radialScale\ *\ u\_texelSize;}
+\DoxyCodeLine{00989\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2\ uvA\ =\ clamp(TexCoords\ +\ offset,\ vec2(0.0),\ vec2(1.0));}
+\DoxyCodeLine{00990\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2\ uvB\ =\ clamp(TexCoords\ -\/\ offset,\ vec2(0.0),\ vec2(1.0));}
+\DoxyCodeLine{00991\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ sampleA\ =\ prefilterBright(texture(screenTexture,\ uvA).rgb\ *\ exposureScale);}
+\DoxyCodeLine{00992\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ sampleB\ =\ prefilterBright(texture(screenTexture,\ uvB).rgb\ *\ exposureScale);}
+\DoxyCodeLine{00993\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ bloomAccum\ +=\ (sampleA\ +\ sampleB)\ *\ weight;}
+\DoxyCodeLine{00994\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ weightSum\ +=\ 2.0\ *\ weight;}
+\DoxyCodeLine{00995\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00996\ }
+\DoxyCodeLine{00997\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ bloom\ =\ (bloomAccum\ /\ max(weightSum,\ 0.0001));}
+\DoxyCodeLine{00998\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ bloom\ *=\ max(u\_intensity,\ 0.0)\ *\ u\_tint;}
+\DoxyCodeLine{00999\ }
+\DoxyCodeLine{01000\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ color\ =\ base\ +\ bloom;}
+\DoxyCodeLine{01001\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FragColor\ =\ vec4(max(color,\ vec3(0.0)),\ 1.0);}
+\DoxyCodeLine{01002\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01003\ \ \ \ \ \ \ \ \ )"{};}
+\DoxyCodeLine{01004\ \ \ \ \ \ \ \ \ GLuint\ adaptationReadFbo\ =\ 0;}
+\DoxyCodeLine{01005\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ adaptationInitialized\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01006\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ adaptedLuminance\ =\ 0.35f;}
+\DoxyCodeLine{01007\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ filteredLuminance\ =\ 0.35f;}
+\DoxyCodeLine{01008\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ smoothedThresholdScale\ =\ 1.0f;}
+\DoxyCodeLine{01009\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ smoothedIntensityScale\ =\ 1.0f;}
+\DoxyCodeLine{01010\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ smoothedExposureScale\ =\ 1.0f;}
+\DoxyCodeLine{01011\ \ \ \ \ \ \ \ \ std::chrono::steady\_clock::time\_point\ lastAdaptationTime\ =\ std::chrono::steady\_clock::now();}
+\DoxyCodeLine{01012\ }
+\DoxyCodeLine{01019\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ sampleSceneLuminance(PTexture\ tex,\ \textcolor{keywordtype}{float}\&\ outLuminance)\{}
+\DoxyCodeLine{01020\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!tex\ ||\ tex-\/>getID()\ ==\ 0\ ||\ tex-\/>getWidth()\ <=\ 0\ ||\ tex-\/>getHeight()\ <=\ 0)\{}
+\DoxyCodeLine{01021\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01022\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01023\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(adaptationReadFbo\ ==\ 0)\{}
+\DoxyCodeLine{01024\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glGenFramebuffers(1,\ \&adaptationReadFbo);}
+\DoxyCodeLine{01025\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01026\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(adaptationReadFbo\ ==\ 0)\{}
+\DoxyCodeLine{01027\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01028\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01029\ }
+\DoxyCodeLine{01030\ \ \ \ \ \ \ \ \ \ \ \ \ GLint\ prevReadFbo\ =\ 0;}
+\DoxyCodeLine{01031\ \ \ \ \ \ \ \ \ \ \ \ \ glGetIntegerv(GL\_READ\_FRAMEBUFFER\_BINDING,\ \&prevReadFbo);}
+\DoxyCodeLine{01032\ \ \ \ \ \ \ \ \ \ \ \ \ glBindFramebuffer(GL\_READ\_FRAMEBUFFER,\ adaptationReadFbo);}
+\DoxyCodeLine{01033\ \ \ \ \ \ \ \ \ \ \ \ \ glFramebufferTexture2D(GL\_READ\_FRAMEBUFFER,\ GL\_COLOR\_ATTACHMENT0,\ GL\_TEXTURE\_2D,\ tex-\/>getID(),\ 0);}
+\DoxyCodeLine{01034\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(glCheckFramebufferStatus(GL\_READ\_FRAMEBUFFER)\ !=\ GL\_FRAMEBUFFER\_COMPLETE)\{}
+\DoxyCodeLine{01035\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glBindFramebuffer(GL\_READ\_FRAMEBUFFER,\ \textcolor{keyword}{static\_cast<}GLuint\textcolor{keyword}{>}(prevReadFbo));}
+\DoxyCodeLine{01036\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01037\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01038\ }
+\DoxyCodeLine{01039\ \ \ \ \ \ \ \ \ \ \ \ \ glReadBuffer(GL\_COLOR\_ATTACHMENT0);}
+\DoxyCodeLine{01040\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ readLumaAt\ =\ [](\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y)\ -\/>\ \textcolor{keywordtype}{float}\ \{}
+\DoxyCodeLine{01041\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ pixel[4]\ =\ \{0.0f,\ 0.0f,\ 0.0f,\ 1.0f\};}
+\DoxyCodeLine{01042\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glReadPixels(x,\ y,\ 1,\ 1,\ GL\_RGBA,\ GL\_FLOAT,\ pixel);}
+\DoxyCodeLine{01043\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (pixel[0]\ *\ 0.2126f)\ +\ (pixel[1]\ *\ 0.7152f)\ +\ (pixel[2]\ *\ 0.0722f);}
+\DoxyCodeLine{01044\ \ \ \ \ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{01045\ }
+\DoxyCodeLine{01046\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ width\ =\ tex-\/>getWidth();}
+\DoxyCodeLine{01047\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ height\ =\ tex-\/>getHeight();}
+\DoxyCodeLine{01048\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ centerX\ =\ width\ /\ 2;}
+\DoxyCodeLine{01049\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ centerY\ =\ height\ /\ 2;}
+\DoxyCodeLine{01050\ }
+\DoxyCodeLine{01051\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ luma\ =\ 0.0f;}
+\DoxyCodeLine{01052\ \ \ \ \ \ \ \ \ \ \ \ \ luma\ +=\ readLumaAt(centerX,\ centerY)\ *\ 0.50f;}
+\DoxyCodeLine{01053\ \ \ \ \ \ \ \ \ \ \ \ \ luma\ +=\ readLumaAt(width\ /\ 4,\ height\ /\ 4)\ *\ 0.125f;}
+\DoxyCodeLine{01054\ \ \ \ \ \ \ \ \ \ \ \ \ luma\ +=\ readLumaAt((width\ *\ 3)\ /\ 4,\ height\ /\ 4)\ *\ 0.125f;}
+\DoxyCodeLine{01055\ \ \ \ \ \ \ \ \ \ \ \ \ luma\ +=\ readLumaAt(width\ /\ 4,\ (height\ *\ 3)\ /\ 4)\ *\ 0.125f;}
+\DoxyCodeLine{01056\ \ \ \ \ \ \ \ \ \ \ \ \ luma\ +=\ readLumaAt((width\ *\ 3)\ /\ 4,\ (height\ *\ 3)\ /\ 4)\ *\ 0.125f;}
+\DoxyCodeLine{01057\ }
+\DoxyCodeLine{01058\ \ \ \ \ \ \ \ \ \ \ \ \ glBindFramebuffer(GL\_READ\_FRAMEBUFFER,\ \textcolor{keyword}{static\_cast<}GLuint\textcolor{keyword}{>}(prevReadFbo));}
+\DoxyCodeLine{01059\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!std::isfinite(luma))\{}
+\DoxyCodeLine{01060\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01061\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01062\ }
+\DoxyCodeLine{01063\ \ \ \ \ \ \ \ \ \ \ \ \ outLuminance\ =\ Math3D::Clamp(luma,\ 0.0001f,\ 64.0f);}
+\DoxyCodeLine{01064\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01065\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01066\ }
+\DoxyCodeLine{01074\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ computeAdaptiveScales(PTexture\ tex,\ \textcolor{keywordtype}{float}\&\ outThresholdScale,\ \textcolor{keywordtype}{float}\&\ outIntensityScale,\ \textcolor{keywordtype}{float}\&\ outExposureScale)\{}
+\DoxyCodeLine{01075\ \ \ \ \ \ \ \ \ \ \ \ \ outThresholdScale\ =\ smoothedThresholdScale;}
+\DoxyCodeLine{01076\ \ \ \ \ \ \ \ \ \ \ \ \ outIntensityScale\ =\ smoothedIntensityScale;}
+\DoxyCodeLine{01077\ \ \ \ \ \ \ \ \ \ \ \ \ outExposureScale\ =\ smoothedExposureScale;}
+\DoxyCodeLine{01078\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!adaptiveBloom)\{}
+\DoxyCodeLine{01079\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ adaptationInitialized\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01080\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ adaptedLuminance\ =\ 0.35f;}
+\DoxyCodeLine{01081\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ filteredLuminance\ =\ 0.35f;}
+\DoxyCodeLine{01082\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ smoothedThresholdScale\ =\ 1.0f;}
+\DoxyCodeLine{01083\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ smoothedIntensityScale\ =\ 1.0f;}
+\DoxyCodeLine{01084\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ smoothedExposureScale\ =\ 1.0f;}
+\DoxyCodeLine{01085\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ outThresholdScale\ =\ smoothedThresholdScale;}
+\DoxyCodeLine{01086\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ outIntensityScale\ =\ smoothedIntensityScale;}
+\DoxyCodeLine{01087\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ outExposureScale\ =\ smoothedExposureScale;}
+\DoxyCodeLine{01088\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{01089\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01090\ }
+\DoxyCodeLine{01091\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ observedLuminance\ =\ adaptedLuminance;}
+\DoxyCodeLine{01092\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!sampleSceneLuminance(tex,\ observedLuminance))\{}
+\DoxyCodeLine{01093\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{01094\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01095\ }
+\DoxyCodeLine{01096\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ now\ =\ std::chrono::steady\_clock::now();}
+\DoxyCodeLine{01097\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!adaptationInitialized)\{}
+\DoxyCodeLine{01098\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ adaptedLuminance\ =\ observedLuminance;}
+\DoxyCodeLine{01099\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ filteredLuminance\ =\ observedLuminance;}
+\DoxyCodeLine{01100\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ smoothedThresholdScale\ =\ 1.0f;}
+\DoxyCodeLine{01101\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ smoothedIntensityScale\ =\ 1.0f;}
+\DoxyCodeLine{01102\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ smoothedExposureScale\ =\ 1.0f;}
+\DoxyCodeLine{01103\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ adaptationInitialized\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01104\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ lastAdaptationTime\ =\ now;}
+\DoxyCodeLine{01105\ \ \ \ \ \ \ \ \ \ \ \ \ \}\textcolor{keywordflow}{else}\{}
+\DoxyCodeLine{01106\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ dt\ =\ std::chrono::duration<float>(now\ -\/\ lastAdaptationTime).count();}
+\DoxyCodeLine{01107\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ dt\ =\ Math3D::Clamp(dt,\ 0.001f,\ 0.25f);}
+\DoxyCodeLine{01108\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ lastAdaptationTime\ =\ now;}
+\DoxyCodeLine{01109\ }
+\DoxyCodeLine{01110\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ First,\ filter\ noisy\ per-\/frame\ luminance\ shifts\ (camera\ motion\ over\ high-\/contrast\ edges).}}
+\DoxyCodeLine{01111\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ observedFilterRate\ =\ 5.0f;}
+\DoxyCodeLine{01112\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ observedAlpha\ =\ 1.0f\ -\/\ std::exp(-\/observedFilterRate\ *\ dt);}
+\DoxyCodeLine{01113\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ filteredLuminance\ +=\ (observedLuminance\ -\/\ filteredLuminance)\ *\ observedAlpha;}
+\DoxyCodeLine{01114\ }
+\DoxyCodeLine{01115\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Then\ move\ the\ "{}eye\ adaptation"{}\ state\ toward\ filtered\ luminance.}}
+\DoxyCodeLine{01116\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ adaptationRateUp\ =\ 1.35f;}
+\DoxyCodeLine{01117\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ adaptationRateDown\ =\ 0.95f;}
+\DoxyCodeLine{01118\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ adaptationRate\ =\ (filteredLuminance\ >\ adaptedLuminance)\ ?\ adaptationRateUp\ :\ adaptationRateDown;}
+\DoxyCodeLine{01119\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ adaptationAlpha\ =\ 1.0f\ -\/\ std::exp(-\/adaptationRate\ *\ dt);}
+\DoxyCodeLine{01120\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ adaptedLuminance\ +=\ (filteredLuminance\ -\/\ adaptedLuminance)\ *\ adaptationAlpha;}
+\DoxyCodeLine{01121\ }
+\DoxyCodeLine{01122\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ ratio\ =\ Math3D::Clamp(filteredLuminance\ /\ Math3D::Max(adaptedLuminance,\ 0.0001f),\ 0.5f,\ 2.5f);}
+\DoxyCodeLine{01123\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(std::abs(std::log2(ratio))\ <\ 0.06f)\{}
+\DoxyCodeLine{01124\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ratio\ =\ 1.0f;}
+\DoxyCodeLine{01125\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01126\ }
+\DoxyCodeLine{01127\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ targetExposureScale\ =\ Math3D::Clamp(std::pow(ratio,\ 0.16f),\ 0.92f,\ 1.16f);}
+\DoxyCodeLine{01128\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ targetIntensityScale\ =\ Math3D::Clamp(std::pow(ratio,\ 0.30f),\ 0.72f,\ 1.55f);}
+\DoxyCodeLine{01129\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ targetThresholdScale\ =\ Math3D::Clamp(std::pow(ratio,\ -\/0.18f),\ 0.78f,\ 1.22f);}
+\DoxyCodeLine{01130\ }
+\DoxyCodeLine{01131\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ outputSmoothingRate\ =\ 4.2f;}
+\DoxyCodeLine{01132\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ outputAlpha\ =\ 1.0f\ -\/\ std::exp(-\/outputSmoothingRate\ *\ dt);}
+\DoxyCodeLine{01133\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ smoothedExposureScale\ +=\ (targetExposureScale\ -\/\ smoothedExposureScale)\ *\ outputAlpha;}
+\DoxyCodeLine{01134\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ smoothedIntensityScale\ +=\ (targetIntensityScale\ -\/\ smoothedIntensityScale)\ *\ outputAlpha;}
+\DoxyCodeLine{01135\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ smoothedThresholdScale\ +=\ (targetThresholdScale\ -\/\ smoothedThresholdScale)\ *\ outputAlpha;}
+\DoxyCodeLine{01136\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01137\ }
+\DoxyCodeLine{01138\ \ \ \ \ \ \ \ \ \ \ \ \ outThresholdScale\ =\ smoothedThresholdScale;}
+\DoxyCodeLine{01139\ \ \ \ \ \ \ \ \ \ \ \ \ outIntensityScale\ =\ smoothedIntensityScale;}
+\DoxyCodeLine{01140\ \ \ \ \ \ \ \ \ \ \ \ \ outExposureScale\ =\ smoothedExposureScale;}
+\DoxyCodeLine{01141\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01142\ }
+\DoxyCodeLine{01147\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ ensureCompiled()\{}
+\DoxyCodeLine{01148\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!shader)\{}
+\DoxyCodeLine{01149\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01150\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01151\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(shader-\/>getID()\ !=\ 0)\{}
+\DoxyCodeLine{01152\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01153\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01154\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(compileAttempted)\{}
+\DoxyCodeLine{01155\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01156\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01157\ \ \ \ \ \ \ \ \ \ \ \ \ compileAttempted\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01158\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(shader-\/>compile()\ ==\ 0)\{}
+\DoxyCodeLine{01159\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ LogBot.Log(LOG\_ERRO,\ \textcolor{stringliteral}{"{}Failed\ to\ compile\ Bloom\ shader:\(\backslash\)n\%s"{}},\ shader-\/>getLog().c\_str());}
+\DoxyCodeLine{01160\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01161\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01162\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01163\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01164\ }
+\DoxyCodeLine{01165\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01166\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ adaptiveBloom\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01167\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ threshold\ =\ 0.75f;}
+\DoxyCodeLine{01168\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ softKnee\ =\ 0.5f;}
+\DoxyCodeLine{01169\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ intensity\ =\ 0.65f;}
+\DoxyCodeLine{01170\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ radiusPx\ =\ 6.0f;}
+\DoxyCodeLine{01171\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ sampleCount\ =\ 8;}
+\DoxyCodeLine{01172\ \ \ \ \ \ \ \ \ Math3D::Vec3\ tint\ =\ Math3D::Vec3(1.0f,\ 1.0f,\ 1.0f);}
+\DoxyCodeLine{01173\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ autoExposureIntensityScale\ =\ 1.0f;}
+\DoxyCodeLine{01174\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ autoExposureThresholdScale\ =\ 1.0f;}
+\DoxyCodeLine{01175\ }
+\DoxyCodeLine{01179\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_bloom_effect_ae76d6ede7ad9201f6bf8f4c9927c827b}{BloomEffect}}()\ \{}
+\DoxyCodeLine{01180\ \ \ \ \ \ \ \ \ \ \ \ \ shader\ =\ std::make\_shared<ShaderProgram>();}
+\DoxyCodeLine{01181\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setVertexShader(Graphics::ShaderDefaults::SCREEN\_VERT\_SRC);}
+\DoxyCodeLine{01182\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setFragmentShader(BLOOM\_FRAG\_SHADER);}
+\DoxyCodeLine{01183\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01184\ }
+\DoxyCodeLine{01188\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_bloom_effect_ae4699677bdf89a388fab1912b1abcf67}{\string~BloomEffect}}()\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{01189\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(adaptationReadFbo\ !=\ 0)\{}
+\DoxyCodeLine{01190\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glDeleteFramebuffers(1,\ \&adaptationReadFbo);}
+\DoxyCodeLine{01191\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ adaptationReadFbo\ =\ 0;}
+\DoxyCodeLine{01192\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01193\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01194\ }
+\DoxyCodeLine{01203\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{class_bloom_effect_a0406096e8d58f6e752976df0121dfd64}{apply}}(PTexture\ tex,\ PTexture,\ PFrameBuffer\ outFbo,\ std::shared\_ptr<ModelPart>\ quad)\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{01204\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!outFbo\ ||\ !quad\ ||\ !tex)\{}
+\DoxyCodeLine{01205\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01206\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01207\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!ensureCompiled())\{}
+\DoxyCodeLine{01208\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01209\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01210\ }
+\DoxyCodeLine{01211\ \ \ \ \ \ \ \ \ \ \ \ \ outFbo-\/>bind();}
+\DoxyCodeLine{01212\ \ \ \ \ \ \ \ \ \ \ \ \ glClearColor(0.0f,\ 0.0f,\ 0.0f,\ 0.0f);}
+\DoxyCodeLine{01213\ \ \ \ \ \ \ \ \ \ \ \ \ glClear(GL\_COLOR\_BUFFER\_BIT);}
+\DoxyCodeLine{01214\ \ \ \ \ \ \ \ \ \ \ \ \ glDisable(GL\_DEPTH\_TEST);}
+\DoxyCodeLine{01215\ }
+\DoxyCodeLine{01216\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>bind();}
+\DoxyCodeLine{01217\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}screenTexture"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<GLUniformUpload::TextureSlot>}}(\doxymbox{\hyperlink{struct_g_l_uniform_upload_1_1_texture_slot}{GLUniformUpload::TextureSlot}}(tex,\ 0)));}
+\DoxyCodeLine{01218\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_texelSize"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Vec2>}}(Math3D::Vec2(1.0f\ /\ (\textcolor{keywordtype}{float})outFbo-\/>getWidth(),\ 1.0f\ /\ (\textcolor{keywordtype}{float})outFbo-\/>getHeight())));}
+\DoxyCodeLine{01219\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ thresholdScale\ =\ Math3D::Clamp(autoExposureThresholdScale,\ 0.25f,\ 4.0f);}
+\DoxyCodeLine{01220\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ intensityScale\ =\ Math3D::Clamp(autoExposureIntensityScale,\ 0.25f,\ 4.0f);}
+\DoxyCodeLine{01221\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ exposureScale\ =\ 1.0f;}
+\DoxyCodeLine{01222\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ adaptiveThresholdScale\ =\ 1.0f;}
+\DoxyCodeLine{01223\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ adaptiveIntensityScale\ =\ 1.0f;}
+\DoxyCodeLine{01224\ \ \ \ \ \ \ \ \ \ \ \ \ computeAdaptiveScales(tex,\ adaptiveThresholdScale,\ adaptiveIntensityScale,\ exposureScale);}
+\DoxyCodeLine{01225\ \ \ \ \ \ \ \ \ \ \ \ \ thresholdScale\ *=\ adaptiveThresholdScale;}
+\DoxyCodeLine{01226\ \ \ \ \ \ \ \ \ \ \ \ \ intensityScale\ *=\ adaptiveIntensityScale;}
+\DoxyCodeLine{01227\ }
+\DoxyCodeLine{01228\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_threshold"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(Math3D::Clamp(threshold\ *\ thresholdScale,\ 0.0f,\ 4.0f)));}
+\DoxyCodeLine{01229\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_softKnee"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(softKnee));}
+\DoxyCodeLine{01230\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_intensity"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(Math3D::Clamp(intensity\ *\ intensityScale,\ 0.0f,\ 6.0f)));}
+\DoxyCodeLine{01231\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_radiusPx"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(radiusPx));}
+\DoxyCodeLine{01232\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_exposureScale"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(exposureScale));}
+\DoxyCodeLine{01233\ }
+\DoxyCodeLine{01234\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ effectiveSamples\ =\ sampleCount;}
+\DoxyCodeLine{01235\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ pixelCount\ =\ outFbo-\/>getWidth()\ *\ outFbo-\/>getHeight();}
+\DoxyCodeLine{01236\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(pixelCount\ >=\ (2560\ *\ 1440)\ \&\&\ effectiveSamples\ >\ 8)\{}
+\DoxyCodeLine{01237\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ effectiveSamples\ =\ 8;}
+\DoxyCodeLine{01238\ \ \ \ \ \ \ \ \ \ \ \ \ \}\textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}(pixelCount\ >=\ (1920\ *\ 1080)\ \&\&\ effectiveSamples\ >\ 10)\{}
+\DoxyCodeLine{01239\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ effectiveSamples\ =\ 10;}
+\DoxyCodeLine{01240\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01241\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(effectiveSamples\ <\ 1)\{}
+\DoxyCodeLine{01242\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ effectiveSamples\ =\ 1;}
+\DoxyCodeLine{01243\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01244\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_sampleCount"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<int>}}(effectiveSamples));}
+\DoxyCodeLine{01245\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_tint"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Vec3>}}(tint));}
+\DoxyCodeLine{01246\ }
+\DoxyCodeLine{01247\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ Math3D::Mat4\ IDENTITY;}
+\DoxyCodeLine{01248\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_model"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Mat4>}}(IDENTITY));}
+\DoxyCodeLine{01249\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_view"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Mat4>}}(IDENTITY));}
+\DoxyCodeLine{01250\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_projection"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Mat4>}}(IDENTITY));}
+\DoxyCodeLine{01251\ \ \ \ \ \ \ \ \ \ \ \ \ quad-\/>draw(IDENTITY,\ IDENTITY,\ IDENTITY);}
+\DoxyCodeLine{01252\ \ \ \ \ \ \ \ \ \ \ \ \ outFbo-\/>unbind();}
+\DoxyCodeLine{01253\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01254\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01255\ }
+\DoxyCodeLine{01260\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<BloomEffect>\ \doxymbox{\hyperlink{class_bloom_effect_a3e0a4cd9ff40a8e0caa73d9603299e44}{New}}()\ \{}
+\DoxyCodeLine{01261\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::make\_shared<BloomEffect>();}
+\DoxyCodeLine{01262\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01263\ \};}
+\DoxyCodeLine{01264\ }
+\DoxyCodeLine{01266\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_auto_exposure_effect_a47347afe30cc06c30cc94ce7bd9bc28e}{AutoExposureEffect}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{class_graphics_1_1_post_processing_1_1_post_processing_effect}{Graphics::PostProcessing::PostProcessingEffect}}\ \{}
+\DoxyCodeLine{01267\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01268\ \ \ \ \ \ \ \ \ std::shared\_ptr<ShaderProgram>\ shader;}
+\DoxyCodeLine{01269\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ compileAttempted\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01270\ \ \ \ \ \ \ \ \ GLuint\ meteringReadFbo\ =\ 0;}
+\DoxyCodeLine{01271\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ adaptationInitialized\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01272\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ adaptedExposure\ =\ 1.0f;}
+\DoxyCodeLine{01273\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ filteredLogLuminance\ =\ std::log2(0.18f);}
+\DoxyCodeLine{01274\ \ \ \ \ \ \ \ \ std::chrono::steady\_clock::time\_point\ lastAdaptationTime\ =\ std::chrono::steady\_clock::now();}
+\DoxyCodeLine{01275\ }
+\DoxyCodeLine{01276\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\ AUTO\_EXPOSURE\_FRAG\_SHADER\ =\ R\textcolor{stringliteral}{"{}(}}
+\DoxyCodeLine{01277\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \#version\ 330\ core}}
+\DoxyCodeLine{01278\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{01279\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ out\ vec4\ FragColor;}}
+\DoxyCodeLine{01280\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ in\ vec2\ TexCoords;}}
+\DoxyCodeLine{01281\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{01282\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ sampler2D\ screenTexture;}}
+\DoxyCodeLine{01283\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_exposure;}}
+\DoxyCodeLine{01284\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{01290\ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ tonemapAces(vec3\ color)\{}
+\DoxyCodeLine{01291\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ a\ =\ color\ *\ (color\ *\ 2.51\ +\ 0.03);}
+\DoxyCodeLine{01292\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ b\ =\ color\ *\ (color\ *\ 2.43\ +\ 0.59)\ +\ 0.14;}
+\DoxyCodeLine{01293\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ return\ clamp(a\ /\ max(b,\ vec3(0.0001)),\ 0.0,\ 1.0);}
+\DoxyCodeLine{01294\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01295\ }
+\DoxyCodeLine{01299\ \ \ \ \ \ \ \ \ \ \ \ \ void\ main()\ \{}
+\DoxyCodeLine{01300\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec4\ base\ =\ texture(screenTexture,\ TexCoords);}
+\DoxyCodeLine{01301\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ exposed\ =\ max(base.rgb,\ vec3(0.0))\ *\ max(u\_exposure,\ 0.0001);}
+\DoxyCodeLine{01302\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ mapped\ =\ tonemapAces(exposed);}
+\DoxyCodeLine{01303\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FragColor\ =\ vec4(mapped,\ base.a);}
+\DoxyCodeLine{01304\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01305\ \ \ \ \ \ \ \ \ )"{};}
+\DoxyCodeLine{01306\ }
+\DoxyCodeLine{01313\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ sampleSceneLuminance(PTexture\ tex,\ \textcolor{keywordtype}{float}\&\ outLuminance)\{}
+\DoxyCodeLine{01314\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!tex\ ||\ tex-\/>getID()\ ==\ 0\ ||\ tex-\/>getWidth()\ <=\ 0\ ||\ tex-\/>getHeight()\ <=\ 0)\{}
+\DoxyCodeLine{01315\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01316\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01317\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(meteringReadFbo\ ==\ 0)\{}
+\DoxyCodeLine{01318\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glGenFramebuffers(1,\ \&meteringReadFbo);}
+\DoxyCodeLine{01319\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01320\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(meteringReadFbo\ ==\ 0)\{}
+\DoxyCodeLine{01321\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01322\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01323\ }
+\DoxyCodeLine{01324\ \ \ \ \ \ \ \ \ \ \ \ \ GLint\ prevReadFbo\ =\ 0;}
+\DoxyCodeLine{01325\ \ \ \ \ \ \ \ \ \ \ \ \ glGetIntegerv(GL\_READ\_FRAMEBUFFER\_BINDING,\ \&prevReadFbo);}
+\DoxyCodeLine{01326\ \ \ \ \ \ \ \ \ \ \ \ \ glBindFramebuffer(GL\_READ\_FRAMEBUFFER,\ meteringReadFbo);}
+\DoxyCodeLine{01327\ \ \ \ \ \ \ \ \ \ \ \ \ glFramebufferTexture2D(GL\_READ\_FRAMEBUFFER,\ GL\_COLOR\_ATTACHMENT0,\ GL\_TEXTURE\_2D,\ tex-\/>getID(),\ 0);}
+\DoxyCodeLine{01328\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(glCheckFramebufferStatus(GL\_READ\_FRAMEBUFFER)\ !=\ GL\_FRAMEBUFFER\_COMPLETE)\{}
+\DoxyCodeLine{01329\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glBindFramebuffer(GL\_READ\_FRAMEBUFFER,\ \textcolor{keyword}{static\_cast<}GLuint\textcolor{keyword}{>}(prevReadFbo));}
+\DoxyCodeLine{01330\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01331\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01332\ }
+\DoxyCodeLine{01333\ \ \ \ \ \ \ \ \ \ \ \ \ glReadBuffer(GL\_COLOR\_ATTACHMENT0);}
+\DoxyCodeLine{01334\ }
+\DoxyCodeLine{01336\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }MeterTap\ \{}
+\DoxyCodeLine{01337\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ u;}
+\DoxyCodeLine{01338\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ v;}
+\DoxyCodeLine{01339\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ weight;}
+\DoxyCodeLine{01340\ \ \ \ \ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{01341\ }
+\DoxyCodeLine{01342\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ std::array<MeterTap,\ 13>\ kMeterTaps\ =\ \{\{}
+\DoxyCodeLine{01343\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{0.50f,\ 0.50f,\ 0.22f\},}
+\DoxyCodeLine{01344\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{0.35f,\ 0.35f,\ 0.10f\},}
+\DoxyCodeLine{01345\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{0.65f,\ 0.35f,\ 0.10f\},}
+\DoxyCodeLine{01346\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{0.35f,\ 0.65f,\ 0.10f\},}
+\DoxyCodeLine{01347\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{0.65f,\ 0.65f,\ 0.10f\},}
+\DoxyCodeLine{01348\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{0.12f,\ 0.12f,\ 0.07f\},}
+\DoxyCodeLine{01349\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{0.88f,\ 0.12f,\ 0.07f\},}
+\DoxyCodeLine{01350\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{0.12f,\ 0.88f,\ 0.07f\},}
+\DoxyCodeLine{01351\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{0.88f,\ 0.88f,\ 0.07f\},}
+\DoxyCodeLine{01352\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{0.50f,\ 0.20f,\ 0.025f\},}
+\DoxyCodeLine{01353\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{0.20f,\ 0.50f,\ 0.025f\},}
+\DoxyCodeLine{01354\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{0.80f,\ 0.50f,\ 0.025f\},}
+\DoxyCodeLine{01355\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{0.50f,\ 0.80f,\ 0.025f\}}
+\DoxyCodeLine{01356\ \ \ \ \ \ \ \ \ \ \ \ \ \}\};}
+\DoxyCodeLine{01357\ }
+\DoxyCodeLine{01358\ \ \ \ \ \ \ \ \ \ \ \ \ std::array<float,\ kMeterTaps.size()>\ logLuminance\{\};}
+\DoxyCodeLine{01359\ \ \ \ \ \ \ \ \ \ \ \ \ std::array<float,\ kMeterTaps.size()>\ weights\{\};}
+\DoxyCodeLine{01360\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ sampleCount\ =\ 0;}
+\DoxyCodeLine{01361\ }
+\DoxyCodeLine{01362\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ width\ =\ tex-\/>getWidth();}
+\DoxyCodeLine{01363\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ height\ =\ tex-\/>getHeight();}
+\DoxyCodeLine{01364\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}(\textcolor{keyword}{const}\ MeterTap\&\ tap\ :\ kMeterTaps)\{}
+\DoxyCodeLine{01365\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ x\ =\ Math3D::Clamp(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(std::round(tap.u\ *\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(width\ -\/\ 1))),\ 0,\ width\ -\/\ 1);}
+\DoxyCodeLine{01366\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ y\ =\ Math3D::Clamp(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(std::round(tap.v\ *\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(height\ -\/\ 1))),\ 0,\ height\ -\/\ 1);}
+\DoxyCodeLine{01367\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ pixel[4]\ =\ \{0.0f,\ 0.0f,\ 0.0f,\ 1.0f\};}
+\DoxyCodeLine{01368\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glReadPixels(x,\ y,\ 1,\ 1,\ GL\_RGBA,\ GL\_FLOAT,\ pixel);}
+\DoxyCodeLine{01369\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ luminance\ =\ (pixel[0]\ *\ 0.2126f)\ +\ (pixel[1]\ *\ 0.7152f)\ +\ (pixel[2]\ *\ 0.0722f);}
+\DoxyCodeLine{01370\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ luminance\ =\ Math3D::Clamp(luminance,\ 0.0001f,\ 64.0f);}
+\DoxyCodeLine{01371\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ logLuminance[sampleCount]\ =\ std::log2(luminance);}
+\DoxyCodeLine{01372\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ weights[sampleCount]\ =\ tap.weight;}
+\DoxyCodeLine{01373\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ sampleCount++;}
+\DoxyCodeLine{01374\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01375\ }
+\DoxyCodeLine{01376\ \ \ \ \ \ \ \ \ \ \ \ \ glBindFramebuffer(GL\_READ\_FRAMEBUFFER,\ \textcolor{keyword}{static\_cast<}GLuint\textcolor{keyword}{>}(prevReadFbo));}
+\DoxyCodeLine{01377\ }
+\DoxyCodeLine{01378\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(sampleCount\ ==\ 0)\{}
+\DoxyCodeLine{01379\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01380\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01381\ }
+\DoxyCodeLine{01382\ \ \ \ \ \ \ \ \ \ \ \ \ std::array<float,\ kMeterTaps.size()>\ sortedLog\ =\ logLuminance;}
+\DoxyCodeLine{01383\ \ \ \ \ \ \ \ \ \ \ \ \ std::sort(sortedLog.begin(),\ sortedLog.begin()\ +\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(sampleCount));}
+\DoxyCodeLine{01384\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ lowIndex\ =\ (sampleCount\ >\ 4)\ ?\ (sampleCount\ /\ 6)\ :\ 0;}
+\DoxyCodeLine{01385\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ highIndex\ =\ (sampleCount\ >\ 4)\ ?\ (sampleCount\ -\/\ 1\ -\/\ (sampleCount\ /\ 6))\ :\ (sampleCount\ -\/\ 1);}
+\DoxyCodeLine{01386\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ trimmedLow\ =\ sortedLog[lowIndex];}
+\DoxyCodeLine{01387\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ trimmedHigh\ =\ sortedLog[highIndex];}
+\DoxyCodeLine{01388\ }
+\DoxyCodeLine{01389\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ weightedLog\ =\ 0.0f;}
+\DoxyCodeLine{01390\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ totalWeight\ =\ 0.0f;}
+\DoxyCodeLine{01391\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}(\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ <\ sampleCount;\ ++i)\{}
+\DoxyCodeLine{01392\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ clampedLog\ =\ Math3D::Clamp(logLuminance[i],\ trimmedLow,\ trimmedHigh);}
+\DoxyCodeLine{01393\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ weightedLog\ +=\ clampedLog\ *\ weights[i];}
+\DoxyCodeLine{01394\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ totalWeight\ +=\ weights[i];}
+\DoxyCodeLine{01395\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01396\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(totalWeight\ <=\ 0.0001f\ ||\ !std::isfinite(weightedLog))\{}
+\DoxyCodeLine{01397\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01398\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01399\ }
+\DoxyCodeLine{01400\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ meteredLuminance\ =\ std::exp2(weightedLog\ /\ totalWeight);}
+\DoxyCodeLine{01401\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!std::isfinite(meteredLuminance))\{}
+\DoxyCodeLine{01402\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01403\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01404\ \ \ \ \ \ \ \ \ \ \ \ \ outLuminance\ =\ Math3D::Clamp(meteredLuminance,\ 0.0001f,\ 64.0f);}
+\DoxyCodeLine{01405\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01406\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01407\ }
+\DoxyCodeLine{01412\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ updateAdaptation(PTexture\ tex)\{}
+\DoxyCodeLine{01413\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ observedLuminance\ =\ 0.18f;}
+\DoxyCodeLine{01414\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!sampleSceneLuminance(tex,\ observedLuminance))\{}
+\DoxyCodeLine{01415\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{01416\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01417\ }
+\DoxyCodeLine{01418\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ minExp\ =\ Math3D::Clamp(minExposure,\ 0.01f,\ 64.0f);}
+\DoxyCodeLine{01419\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ maxExp\ =\ Math3D::Clamp(maxExposure,\ minExp,\ 64.0f);}
+\DoxyCodeLine{01420\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ compensationScale\ =\ std::pow(2.0f,\ exposureCompensation);}
+\DoxyCodeLine{01421\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ now\ =\ std::chrono::steady\_clock::now();}
+\DoxyCodeLine{01422\ }
+\DoxyCodeLine{01423\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!adaptationInitialized)\{}
+\DoxyCodeLine{01424\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ filteredLogLuminance\ =\ std::log2(Math3D::Clamp(observedLuminance,\ 0.0001f,\ 64.0f));}
+\DoxyCodeLine{01425\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ targetExposure\ =\ (0.18f\ /\ Math3D::Max(observedLuminance,\ 0.0001f))\ *\ compensationScale;}
+\DoxyCodeLine{01426\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ adaptedExposure\ =\ Math3D::Clamp(targetExposure,\ minExp,\ maxExp);}
+\DoxyCodeLine{01427\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ adaptationInitialized\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01428\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ lastAdaptationTime\ =\ now;}
+\DoxyCodeLine{01429\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{01430\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01431\ }
+\DoxyCodeLine{01432\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ dt\ =\ std::chrono::duration<float>(now\ -\/\ lastAdaptationTime).count();}
+\DoxyCodeLine{01433\ \ \ \ \ \ \ \ \ \ \ \ \ dt\ =\ Math3D::Clamp(dt,\ 0.001f,\ 0.25f);}
+\DoxyCodeLine{01434\ \ \ \ \ \ \ \ \ \ \ \ \ lastAdaptationTime\ =\ now;}
+\DoxyCodeLine{01435\ }
+\DoxyCodeLine{01436\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ observedLog\ =\ std::log2(Math3D::Clamp(observedLuminance,\ 0.0001f,\ 64.0f));}
+\DoxyCodeLine{01437\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ meteringFilterRate\ =\ 3.5f;}
+\DoxyCodeLine{01438\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ filterAlpha\ =\ 1.0f\ -\/\ std::exp(-\/meteringFilterRate\ *\ dt);}
+\DoxyCodeLine{01439\ \ \ \ \ \ \ \ \ \ \ \ \ filteredLogLuminance\ +=\ (observedLog\ -\/\ filteredLogLuminance)\ *\ filterAlpha;}
+\DoxyCodeLine{01440\ }
+\DoxyCodeLine{01441\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ filteredLuminance\ =\ std::exp2(filteredLogLuminance);}
+\DoxyCodeLine{01442\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ targetExposure\ =\ (0.18f\ /\ Math3D::Max(filteredLuminance,\ 0.0001f))\ *\ compensationScale;}
+\DoxyCodeLine{01443\ \ \ \ \ \ \ \ \ \ \ \ \ targetExposure\ =\ Math3D::Clamp(targetExposure,\ minExp,\ maxExp);}
+\DoxyCodeLine{01444\ }
+\DoxyCodeLine{01445\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ currentExposure\ =\ Math3D::Clamp(adaptedExposure,\ minExp,\ maxExp);}
+\DoxyCodeLine{01446\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ speedUp\ =\ Math3D::Max(adaptationSpeedUp,\ 0.01f);}
+\DoxyCodeLine{01447\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ speedDown\ =\ Math3D::Max(adaptationSpeedDown,\ 0.01f);}
+\DoxyCodeLine{01448\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ adaptationRate\ =\ (targetExposure\ >\ currentExposure)\ ?\ speedUp\ :\ speedDown;}
+\DoxyCodeLine{01449\ }
+\DoxyCodeLine{01450\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ currentEv\ =\ std::log2(Math3D::Max(currentExposure,\ 0.0001f));}
+\DoxyCodeLine{01451\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ targetEv\ =\ std::log2(Math3D::Max(targetExposure,\ 0.0001f));}
+\DoxyCodeLine{01452\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ evDelta\ =\ targetEv\ -\/\ currentEv;}
+\DoxyCodeLine{01453\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(std::abs(evDelta)\ <\ 0.015f)\{}
+\DoxyCodeLine{01454\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ evDelta\ =\ 0.0f;}
+\DoxyCodeLine{01455\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01456\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ maxEvStep\ =\ Math3D::Max(0.001f,\ adaptationRate\ *\ dt);}
+\DoxyCodeLine{01457\ \ \ \ \ \ \ \ \ \ \ \ \ evDelta\ =\ Math3D::Clamp(evDelta,\ -\/maxEvStep,\ maxEvStep);}
+\DoxyCodeLine{01458\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ steppedExposure\ =\ std::exp2(currentEv\ +\ evDelta);}
+\DoxyCodeLine{01459\ \ \ \ \ \ \ \ \ \ \ \ \ adaptedExposure\ =\ Math3D::Clamp(steppedExposure,\ minExp,\ maxExp);}
+\DoxyCodeLine{01460\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01461\ }
+\DoxyCodeLine{01466\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ ensureCompiled()\{}
+\DoxyCodeLine{01467\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!shader)\{}
+\DoxyCodeLine{01468\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01469\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01470\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(shader-\/>getID()\ !=\ 0)\{}
+\DoxyCodeLine{01471\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01472\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01473\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(compileAttempted)\{}
+\DoxyCodeLine{01474\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01475\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01476\ \ \ \ \ \ \ \ \ \ \ \ \ compileAttempted\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01477\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(shader-\/>compile()\ ==\ 0)\{}
+\DoxyCodeLine{01478\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ LogBot.Log(LOG\_ERRO,\ \textcolor{stringliteral}{"{}Failed\ to\ compile\ Auto\ Exposure\ shader:\(\backslash\)n\%s"{}},\ shader-\/>getLog().c\_str());}
+\DoxyCodeLine{01479\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01480\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01481\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01482\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01483\ }
+\DoxyCodeLine{01484\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01485\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ minExposure\ =\ 0.6f;}
+\DoxyCodeLine{01486\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ maxExposure\ =\ 2.4f;}
+\DoxyCodeLine{01487\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ exposureCompensation\ =\ 0.0f;}
+\DoxyCodeLine{01488\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ adaptationSpeedUp\ =\ 1.2f;}
+\DoxyCodeLine{01489\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ adaptationSpeedDown\ =\ 0.7f;}
+\DoxyCodeLine{01490\ }
+\DoxyCodeLine{01494\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_auto_exposure_effect_a47347afe30cc06c30cc94ce7bd9bc28e}{AutoExposureEffect}}()\{}
+\DoxyCodeLine{01495\ \ \ \ \ \ \ \ \ \ \ \ \ shader\ =\ std::make\_shared<ShaderProgram>();}
+\DoxyCodeLine{01496\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setVertexShader(Graphics::ShaderDefaults::SCREEN\_VERT\_SRC);}
+\DoxyCodeLine{01497\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setFragmentShader(AUTO\_EXPOSURE\_FRAG\_SHADER);}
+\DoxyCodeLine{01498\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01499\ }
+\DoxyCodeLine{01503\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_auto_exposure_effect_ab7f60c587637d4528d2742459ca0b0bb}{\string~AutoExposureEffect}}()\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{01504\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(meteringReadFbo\ !=\ 0)\{}
+\DoxyCodeLine{01505\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ glDeleteFramebuffers(1,\ \&meteringReadFbo);}
+\DoxyCodeLine{01506\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ meteringReadFbo\ =\ 0;}
+\DoxyCodeLine{01507\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01508\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01509\ }
+\DoxyCodeLine{01513\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_auto_exposure_effect_ab72cd49d8c43c7ea6dc10c71891f8320}{resetAdaptation}}()\{}
+\DoxyCodeLine{01514\ \ \ \ \ \ \ \ \ \ \ \ \ adaptationInitialized\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01515\ \ \ \ \ \ \ \ \ \ \ \ \ adaptedExposure\ =\ 1.0f;}
+\DoxyCodeLine{01516\ \ \ \ \ \ \ \ \ \ \ \ \ filteredLogLuminance\ =\ std::log2(0.18f);}
+\DoxyCodeLine{01517\ \ \ \ \ \ \ \ \ \ \ \ \ lastAdaptationTime\ =\ std::chrono::steady\_clock::now();}
+\DoxyCodeLine{01518\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01519\ }
+\DoxyCodeLine{01524\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \doxymbox{\hyperlink{class_auto_exposure_effect_a7b5e8266e87eb3b70992a02335b87ce7}{getCurrentExposure}}()\textcolor{keyword}{\ const}\{}
+\DoxyCodeLine{01525\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ adaptedExposure;}
+\DoxyCodeLine{01526\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01527\ }
+\DoxyCodeLine{01536\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{class_auto_exposure_effect_addcac25d10d86ac96887736dcf750e40}{apply}}(PTexture\ tex,\ PTexture,\ PFrameBuffer\ outFbo,\ std::shared\_ptr<ModelPart>\ quad)\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{01537\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!outFbo\ ||\ !quad\ ||\ !tex)\{}
+\DoxyCodeLine{01538\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01539\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01540\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!ensureCompiled())\{}
+\DoxyCodeLine{01541\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01542\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01543\ }
+\DoxyCodeLine{01544\ \ \ \ \ \ \ \ \ \ \ \ \ updateAdaptation(tex);}
+\DoxyCodeLine{01545\ }
+\DoxyCodeLine{01546\ \ \ \ \ \ \ \ \ \ \ \ \ outFbo-\/>bind();}
+\DoxyCodeLine{01547\ \ \ \ \ \ \ \ \ \ \ \ \ glClearColor(0.0f,\ 0.0f,\ 0.0f,\ 0.0f);}
+\DoxyCodeLine{01548\ \ \ \ \ \ \ \ \ \ \ \ \ glClear(GL\_COLOR\_BUFFER\_BIT);}
+\DoxyCodeLine{01549\ \ \ \ \ \ \ \ \ \ \ \ \ glDisable(GL\_DEPTH\_TEST);}
+\DoxyCodeLine{01550\ }
+\DoxyCodeLine{01551\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>bind();}
+\DoxyCodeLine{01552\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}screenTexture"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<GLUniformUpload::TextureSlot>}}(\doxymbox{\hyperlink{struct_g_l_uniform_upload_1_1_texture_slot}{GLUniformUpload::TextureSlot}}(tex,\ 0)));}
+\DoxyCodeLine{01553\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_exposure"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(Math3D::Clamp(adaptedExposure,\ 0.01f,\ 64.0f)));}
+\DoxyCodeLine{01554\ }
+\DoxyCodeLine{01555\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ Math3D::Mat4\ IDENTITY;}
+\DoxyCodeLine{01556\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_model"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Mat4>}}(IDENTITY));}
+\DoxyCodeLine{01557\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_view"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Mat4>}}(IDENTITY));}
+\DoxyCodeLine{01558\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_projection"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Mat4>}}(IDENTITY));}
+\DoxyCodeLine{01559\ \ \ \ \ \ \ \ \ \ \ \ \ quad-\/>draw(IDENTITY,\ IDENTITY,\ IDENTITY);}
+\DoxyCodeLine{01560\ \ \ \ \ \ \ \ \ \ \ \ \ outFbo-\/>unbind();}
+\DoxyCodeLine{01561\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01562\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01563\ }
+\DoxyCodeLine{01568\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<AutoExposureEffect>\ \doxymbox{\hyperlink{class_auto_exposure_effect_a3ea1f05e72ecd506feff02ec9ec3fb24}{New}}()\{}
+\DoxyCodeLine{01569\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::make\_shared<AutoExposureEffect>();}
+\DoxyCodeLine{01570\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01571\ \};}
+\DoxyCodeLine{01572\ }
+\DoxyCodeLine{01574\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_f_x_a_a_effect_a86127f37cfc0a67e3a96cb7c5a498988}{FXAAEffect}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{class_graphics_1_1_post_processing_1_1_post_processing_effect}{Graphics::PostProcessing::PostProcessingEffect}}\ \{}
+\DoxyCodeLine{01575\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01576\ \ \ \ \ \ \ \ \ std::shared\_ptr<ShaderProgram>\ shader;}
+\DoxyCodeLine{01577\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ compileAttempted\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01578\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\ FXAA\_FRAG\_SHADER\ =\ R\textcolor{stringliteral}{"{}(}}
+\DoxyCodeLine{01579\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ \#version\ 330\ core}}
+\DoxyCodeLine{01580\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{01581\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ out\ vec4\ FragColor;}}
+\DoxyCodeLine{01582\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ in\ vec2\ TexCoords;}}
+\DoxyCodeLine{01583\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{01584\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ sampler2D\ screenTexture;}}
+\DoxyCodeLine{01585\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ vec2\ u\_texelSize;}}
+\DoxyCodeLine{01586\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_subpix;}}
+\DoxyCodeLine{01587\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_edgeThreshold;}}
+\DoxyCodeLine{01588\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ \ \ \ \ uniform\ float\ u\_edgeThresholdMin;}}
+\DoxyCodeLine{01589\ \textcolor{stringliteral}{}}
+\DoxyCodeLine{01595\ \ \ \ \ \ \ \ \ \ \ \ \ float\ luma(vec3\ c)\{}
+\DoxyCodeLine{01596\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ return\ dot(c,\ vec3(0.299,\ 0.587,\ 0.114));}
+\DoxyCodeLine{01597\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01598\ }
+\DoxyCodeLine{01602\ \ \ \ \ \ \ \ \ \ \ \ \ void\ main()\ \{}
+\DoxyCodeLine{01603\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ rgbNW\ =\ texture(screenTexture,\ TexCoords\ +\ vec2(-\/1.0,\ -\/1.0)\ *\ u\_texelSize).rgb;}
+\DoxyCodeLine{01604\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ rgbNE\ =\ texture(screenTexture,\ TexCoords\ +\ vec2(\ 1.0,\ -\/1.0)\ *\ u\_texelSize).rgb;}
+\DoxyCodeLine{01605\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ rgbSW\ =\ texture(screenTexture,\ TexCoords\ +\ vec2(-\/1.0,\ \ 1.0)\ *\ u\_texelSize).rgb;}
+\DoxyCodeLine{01606\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ rgbSE\ =\ texture(screenTexture,\ TexCoords\ +\ vec2(\ 1.0,\ \ 1.0)\ *\ u\_texelSize).rgb;}
+\DoxyCodeLine{01607\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ rgbM\ \ =\ texture(screenTexture,\ TexCoords).rgb;}
+\DoxyCodeLine{01608\ }
+\DoxyCodeLine{01609\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ lumaNW\ =\ luma(rgbNW);}
+\DoxyCodeLine{01610\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ lumaNE\ =\ luma(rgbNE);}
+\DoxyCodeLine{01611\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ lumaSW\ =\ luma(rgbSW);}
+\DoxyCodeLine{01612\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ lumaSE\ =\ luma(rgbSE);}
+\DoxyCodeLine{01613\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ lumaM\ =\ luma(rgbM);}
+\DoxyCodeLine{01614\ }
+\DoxyCodeLine{01615\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ lumaMin\ =\ min(lumaM,\ min(min(lumaNW,\ lumaNE),\ min(lumaSW,\ lumaSE)));}
+\DoxyCodeLine{01616\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ lumaMax\ =\ max(lumaM,\ max(max(lumaNW,\ lumaNE),\ max(lumaSW,\ lumaSE)));}
+\DoxyCodeLine{01617\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ lumaRange\ =\ lumaMax\ -\/\ lumaMin;}
+\DoxyCodeLine{01618\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ if(lumaRange\ <\ max(u\_edgeThresholdMin,\ lumaMax\ *\ u\_edgeThreshold))\{}
+\DoxyCodeLine{01619\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FragColor\ =\ vec4(rgbM,\ 1.0);}
+\DoxyCodeLine{01620\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ return;}
+\DoxyCodeLine{01621\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01622\ }
+\DoxyCodeLine{01623\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec2\ dir;}
+\DoxyCodeLine{01624\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ dir.x\ =\ -\/((lumaNW\ +\ lumaNE)\ -\/\ (lumaSW\ +\ lumaSE));}
+\DoxyCodeLine{01625\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ dir.y\ =\ \ ((lumaNW\ +\ lumaSW)\ -\/\ (lumaNE\ +\ lumaSE));}
+\DoxyCodeLine{01626\ }
+\DoxyCodeLine{01627\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ dirReduce\ =\ max((lumaNW\ +\ lumaNE\ +\ lumaSW\ +\ lumaSE)\ *\ (0.25\ *\ u\_subpix),\ 1.0\ /\ 128.0);}
+\DoxyCodeLine{01628\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ rcpDirMin\ =\ 1.0\ /\ (min(abs(dir.x),\ abs(dir.y))\ +\ dirReduce);}
+\DoxyCodeLine{01629\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ dir\ =\ clamp(dir\ *\ rcpDirMin,\ vec2(-\/8.0),\ vec2(8.0))\ *\ u\_texelSize;}
+\DoxyCodeLine{01630\ }
+\DoxyCodeLine{01631\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ rgbA\ =\ 0.5\ *\ (}
+\DoxyCodeLine{01632\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ texture(screenTexture,\ TexCoords\ +\ dir\ *\ (1.0\ /\ 3.0\ -\/\ 0.5)).rgb\ +}
+\DoxyCodeLine{01633\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ texture(screenTexture,\ TexCoords\ +\ dir\ *\ (2.0\ /\ 3.0\ -\/\ 0.5)).rgb}
+\DoxyCodeLine{01634\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{01635\ }
+\DoxyCodeLine{01636\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vec3\ rgbB\ =\ rgbA\ *\ 0.5\ +\ 0.25\ *\ (}
+\DoxyCodeLine{01637\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ texture(screenTexture,\ TexCoords\ +\ dir\ *\ -\/0.5).rgb\ +}
+\DoxyCodeLine{01638\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ texture(screenTexture,\ TexCoords\ +\ dir\ *\ \ 0.5).rgb}
+\DoxyCodeLine{01639\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{01640\ }
+\DoxyCodeLine{01641\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ float\ lumaB\ =\ luma(rgbB);}
+\DoxyCodeLine{01642\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ if((lumaB\ <\ lumaMin)\ ||\ (lumaB\ >\ lumaMax))\{}
+\DoxyCodeLine{01643\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FragColor\ =\ vec4(rgbA,\ 1.0);}
+\DoxyCodeLine{01644\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}else\{}
+\DoxyCodeLine{01645\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FragColor\ =\ vec4(rgbB,\ 1.0);}
+\DoxyCodeLine{01646\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01647\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01648\ \ \ \ \ \ \ \ \ )"{};}
+\DoxyCodeLine{01649\ }
+\DoxyCodeLine{01654\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ ensureCompiled()\{}
+\DoxyCodeLine{01655\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!shader)\{}
+\DoxyCodeLine{01656\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01657\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01658\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(shader-\/>getID()\ !=\ 0)\{}
+\DoxyCodeLine{01659\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01660\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01661\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(compileAttempted)\{}
+\DoxyCodeLine{01662\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01663\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01664\ \ \ \ \ \ \ \ \ \ \ \ \ compileAttempted\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01665\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(shader-\/>compile()\ ==\ 0)\{}
+\DoxyCodeLine{01666\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ LogBot.Log(LOG\_ERRO,\ \textcolor{stringliteral}{"{}Failed\ to\ compile\ FXAA\ shader:\(\backslash\)n\%s"{}},\ shader-\/>getLog().c\_str());}
+\DoxyCodeLine{01667\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01668\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01669\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01670\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01671\ }
+\DoxyCodeLine{01672\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01673\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{_screen_effects_8h_a253b4cf4d7c392a00e85057fab843598}{AntiAliasingPreset}}\ preset\ =\ AntiAliasingPreset::FXAA\_Medium;}
+\DoxyCodeLine{01674\ }
+\DoxyCodeLine{01678\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_f_x_a_a_effect_a86127f37cfc0a67e3a96cb7c5a498988}{FXAAEffect}}()\ \{}
+\DoxyCodeLine{01679\ \ \ \ \ \ \ \ \ \ \ \ \ shader\ =\ std::make\_shared<ShaderProgram>();}
+\DoxyCodeLine{01680\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setVertexShader(Graphics::ShaderDefaults::SCREEN\_VERT\_SRC);}
+\DoxyCodeLine{01681\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setFragmentShader(FXAA\_FRAG\_SHADER);}
+\DoxyCodeLine{01682\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01683\ }
+\DoxyCodeLine{01692\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{class_f_x_a_a_effect_a350d2e34ca8351fb00fad5a571645f37}{apply}}(PTexture\ tex,\ PTexture,\ PFrameBuffer\ outFbo,\ std::shared\_ptr<ModelPart>\ quad)\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{01693\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!outFbo\ ||\ !quad\ ||\ !tex\ ||\ preset\ ==\ AntiAliasingPreset::Off)\{}
+\DoxyCodeLine{01694\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01695\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01696\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!ensureCompiled())\{}
+\DoxyCodeLine{01697\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01698\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01699\ }
+\DoxyCodeLine{01700\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ subpix\ =\ 0.75f;}
+\DoxyCodeLine{01701\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ edgeThreshold\ =\ 0.166f;}
+\DoxyCodeLine{01702\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ edgeThresholdMin\ =\ 0.0833f;}
+\DoxyCodeLine{01703\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}(preset)\{}
+\DoxyCodeLine{01704\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ AntiAliasingPreset::FXAA\_Low:}
+\DoxyCodeLine{01705\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ subpix\ =\ 0.50f;}
+\DoxyCodeLine{01706\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ edgeThreshold\ =\ 0.250f;}
+\DoxyCodeLine{01707\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ edgeThresholdMin\ =\ 0.120f;}
+\DoxyCodeLine{01708\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{01709\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ AntiAliasingPreset::FXAA\_Medium:}
+\DoxyCodeLine{01710\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ subpix\ =\ 0.75f;}
+\DoxyCodeLine{01711\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ edgeThreshold\ =\ 0.166f;}
+\DoxyCodeLine{01712\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ edgeThresholdMin\ =\ 0.0833f;}
+\DoxyCodeLine{01713\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{01714\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ AntiAliasingPreset::FXAA\_High:}
+\DoxyCodeLine{01715\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ subpix\ =\ 1.00f;}
+\DoxyCodeLine{01716\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ edgeThreshold\ =\ 0.125f;}
+\DoxyCodeLine{01717\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ edgeThresholdMin\ =\ 0.0312f;}
+\DoxyCodeLine{01718\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{01719\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ AntiAliasingPreset::Off:}
+\DoxyCodeLine{01720\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{01721\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{01722\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01723\ }
+\DoxyCodeLine{01724\ \ \ \ \ \ \ \ \ \ \ \ \ outFbo-\/>bind();}
+\DoxyCodeLine{01725\ \ \ \ \ \ \ \ \ \ \ \ \ glClearColor(0.0f,\ 0.0f,\ 0.0f,\ 0.0f);}
+\DoxyCodeLine{01726\ \ \ \ \ \ \ \ \ \ \ \ \ glClear(GL\_COLOR\_BUFFER\_BIT);}
+\DoxyCodeLine{01727\ \ \ \ \ \ \ \ \ \ \ \ \ glDisable(GL\_DEPTH\_TEST);}
+\DoxyCodeLine{01728\ }
+\DoxyCodeLine{01729\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>bind();}
+\DoxyCodeLine{01730\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}screenTexture"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<GLUniformUpload::TextureSlot>}}(\doxymbox{\hyperlink{struct_g_l_uniform_upload_1_1_texture_slot}{GLUniformUpload::TextureSlot}}(tex,\ 0)));}
+\DoxyCodeLine{01731\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_texelSize"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Vec2>}}(Math3D::Vec2(1.0f\ /\ (\textcolor{keywordtype}{float})outFbo-\/>getWidth(),\ 1.0f\ /\ (\textcolor{keywordtype}{float})outFbo-\/>getHeight())));}
+\DoxyCodeLine{01732\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_subpix"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(subpix));}
+\DoxyCodeLine{01733\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_edgeThreshold"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(edgeThreshold));}
+\DoxyCodeLine{01734\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_edgeThresholdMin"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<float>}}(edgeThresholdMin));}
+\DoxyCodeLine{01735\ }
+\DoxyCodeLine{01736\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ Math3D::Mat4\ IDENTITY;}
+\DoxyCodeLine{01737\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_model"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Mat4>}}(IDENTITY));}
+\DoxyCodeLine{01738\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_view"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Mat4>}}(IDENTITY));}
+\DoxyCodeLine{01739\ \ \ \ \ \ \ \ \ \ \ \ \ shader-\/>setUniformFast(\textcolor{stringliteral}{"{}u\_projection"{}},\ \doxymbox{\hyperlink{class_uniform}{Uniform<Math3D::Mat4>}}(IDENTITY));}
+\DoxyCodeLine{01740\ \ \ \ \ \ \ \ \ \ \ \ \ quad-\/>draw(IDENTITY,\ IDENTITY,\ IDENTITY);}
+\DoxyCodeLine{01741\ \ \ \ \ \ \ \ \ \ \ \ \ outFbo-\/>unbind();}
+\DoxyCodeLine{01742\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01743\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01744\ }
+\DoxyCodeLine{01749\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<FXAAEffect>\ \doxymbox{\hyperlink{class_f_x_a_a_effect_aaa839eb208b74595da76aba25276b6f8}{New}}()\ \{}
+\DoxyCodeLine{01750\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::make\_shared<FXAAEffect>();}
+\DoxyCodeLine{01751\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01752\ \};}
+\DoxyCodeLine{01753\ }
+\DoxyCodeLine{01754\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//SCREENEFFECTS\_H}}
+
+\end{DoxyCode}

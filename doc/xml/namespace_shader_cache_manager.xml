@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="namespace_shader_cache_manager" kind="namespace" language="C++">
+    <compoundname>ShaderCacheManager</compoundname>
+    <sectiondef kind="var">
+      <memberdef kind="variable" id="_shader_program_8h_1aa7042bd5631b8b49e814f428833f6f13" prot="public" static="yes" mutable="no">
+        <type><ref refid="struct_shader_cache" kindref="compound">ShaderCache</ref></type>
+        <definition>ShaderCache ShaderCacheManager::INSTANCE</definition>
+        <argsstring></argsstring>
+        <name>INSTANCE</name>
+        <qualifiedname>ShaderCacheManager::INSTANCE</qualifiedname>
+        <initializer>= <ref refid="struct_shader_cache" kindref="compound">ShaderCache</ref>()</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="560" column="31" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="560" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Shaders/ShaderProgram.h" line="559" column="1"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__skybox_material_8h_source" xml:lang="en-US">
+<title>SkyboxMaterial.h</title>
+<indexterm><primary>src/Rendering/Materials/SkyboxMaterial.h</primary></indexterm>
+Go to the documentation of this file.<programlisting linenumbering="unnumbered">1 
+5 
+6 <emphasis role="preprocessor">#ifndef&#32;SKYBOX_MATERIAL_H</emphasis>
+7 <emphasis role="preprocessor">#define&#32;SKYBOX_MATERIAL_H</emphasis>
+8 
+9 <emphasis role="preprocessor">#include&#32;&lt;memory&gt;</emphasis>
+10 
+11 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__material_8h">Rendering/Materials/Material.h</link>&quot;</emphasis>
+12 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__cube_map_8h">Rendering/Textures/CubeMap.h</link>&quot;</emphasis>
+13 <emphasis role="preprocessor">#include&#32;&quot;Foundation/Util/ValueContainer.h&quot;</emphasis>
+14 
+16 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_skybox_material_1a1aa19f0df9db4109ee056f7b109f98c0">SkyboxMaterial</link>&#32;:&#32;<emphasis role="keyword">public</emphasis>&#32;<link linkend="_class_material_1ace810a426f4b488d2dc2a53070d85405">Material</link>&#32;{
+17 &#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+18 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;std::shared_ptr&lt;CubeMap&gt;&gt;&#32;EnvMap;
+19 
+24 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_skybox_material_1a1aa19f0df9db4109ee056f7b109f98c0">SkyboxMaterial</link>(std::shared_ptr&lt;ShaderProgram&gt;&#32;program);
+28 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_skybox_material_1acc843c2b1152fda9d10fbd964e7e9473">bind</link>()&#32;<emphasis role="keyword">override</emphasis>;
+34 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;SkyboxMaterial&gt;&#32;<link linkend="_class_skybox_material_1a25b97b60f3d10f4f586a3fcbd1d4f7cc">Create</link>(std::shared_ptr&lt;CubeMap&gt;&#32;envMap);
+35 };
+36 
+37 <emphasis role="preprocessor">#endif&#32;</emphasis><emphasis role="comment">//&#32;SKYBOX_MATERIAL_H</emphasis>
+</programlisting></section>

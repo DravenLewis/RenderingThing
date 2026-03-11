@@ -1,0 +1,49 @@
+\doxysection{Sky\+Box.\+h}
+\hypertarget{_sky_box_8h_source}{}\label{_sky_box_8h_source}\index{src/Rendering/Textures/SkyBox.h@{src/Rendering/Textures/SkyBox.h}}
+\doxymbox{\hyperlink{_sky_box_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ SKYBOX\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ SKYBOX\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_model_8h}{Rendering/Geometry/Model.h}}"{}}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_skybox_material_8h}{Rendering/Materials/SkyboxMaterial.h}}"{}}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_cube_map_8h}{Rendering/Textures/CubeMap.h}}"{}}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}Assets/Core/Asset.h"{}}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ "{}Scene/Camera.h"{}}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00018\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_sky_box6_face}{SkyBox6Face}}\{}
+\DoxyCodeLine{00019\ \ \ \ \ PAsset\ topFaceAsset\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00020\ \ \ \ \ PAsset\ bottomFaceAsset\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00021\ \ \ \ \ PAsset\ leftFaceAsset\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00022\ \ \ \ \ PAsset\ rightFaceAsset\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00023\ \ \ \ \ PAsset\ frontFaceAsset\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00024\ \ \ \ \ PAsset\ backFaceAsset\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00025\ \};}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00028\ \textcolor{keyword}{class\ }SkyBox\{}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ PModel\ skyboxModel;}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ PMaterial\ skyboxMaterial;}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ PCubeMap\ skyboxCubeMap;}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ SkyBox()\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ SkyBox(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{struct_sky_box6_face}{SkyBox6Face}}\&\ faceAssetDef);}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_sky_box_a0994828d7cce6823083bc8445b9456d6}{draw}}(PCamera\ cam,\ \textcolor{keywordtype}{bool}\ depthTested\ =\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ PCubeMap\ \doxymbox{\hyperlink{class_sky_box_a3870170d9350bfa50f6995853dad559f}{getCubeMap}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ skyboxCubeMap;\ \}}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \};}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00058\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_sky_box_loader}{SkyBoxLoader}}\{}
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<SkyBox>\ \doxymbox{\hyperlink{class_sky_box_loader_a7a70cc83351435d79408ef2fbcdab277}{CreateSkyBox}}(\textcolor{keyword}{const}\ std::string\&\ directoryAssetPath,\ \textcolor{keyword}{const}\ std::string\&\ skyboxName);}
+\DoxyCodeLine{00067\ \};}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \textcolor{keyword}{typedef}\ std::shared\_ptr<SkyBox>\ PSkyBox;}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \textcolor{preprocessor}{\#endif}\textcolor{comment}{//SKYBOX\_H}}
+
+\end{DoxyCode}

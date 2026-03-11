@@ -1,3 +1,8 @@
+/**
+ * @file src/Serialization/Json/JsonUtils.cpp
+ * @brief Implementation for JsonUtils.
+ */
+
 #include "Serialization/Json/JsonUtils.h"
 
 #include "Assets/Core/Asset.h"

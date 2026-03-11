@@ -1,3 +1,8 @@
+/**
+ * @file src/Scene/LoadedScene.h
+ * @brief Declarations for LoadedScene.
+ */
+
 #ifndef SCENE_LOADED_SCENE_H
 #define SCENE_LOADED_SCENE_H
 
@@ -7,12 +12,23 @@
 #include "Assets/Core/Asset.h"
 #include "Scene/Scene.h"
 
+/// @brief Represents the LoadedScene type.
 class LoadedScene : public Scene3D {
     public:
+        /**
+         * @brief Constructs a new LoadedScene instance.
+         * @param window Value for window.
+         * @param sceneRefOrPath Filesystem path for scene reference or path.
+         * @param baseDirectory Filesystem path for base directory.
+         */
         explicit LoadedScene(RenderWindow* window = nullptr,
                              std::string sceneRefOrPath = std::string(),
                              std::filesystem::path baseDirectory = std::filesystem::path());
 
+        /**
+         * @brief Sets the scene ref or path.
+         * @param value Value for value.
+         */
         void setSceneRefOrPath(const std::string& value) { sceneRefOrPath = value; }
         const std::string& getSceneRefOrPath() const { return sceneRefOrPath; }
 

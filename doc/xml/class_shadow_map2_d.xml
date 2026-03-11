@@ -1,0 +1,367 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_shadow_map2_d" kind="class" language="C++" prot="public">
+    <compoundname>ShadowMap2D</compoundname>
+    <includes refid="_shadow_map_8h" local="no">ShadowMap.h</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_shadow_map2_d_1a751bc09919d5132733a74734aba6c578" prot="private" static="no" mutable="no">
+        <type>GLuint</type>
+        <definition>GLuint ShadowMap2D::fbo</definition>
+        <argsstring></argsstring>
+        <name>fbo</name>
+        <qualifiedname>ShadowMap2D::fbo</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="14" column="12" bodyfile="src/Rendering/Lighting/ShadowMap.h" bodystart="14" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_shadow_map2_d_1a0a5bfdfa26b5f0b694d1bbc357f3589f" prot="private" static="no" mutable="no">
+        <type>GLuint</type>
+        <definition>GLuint ShadowMap2D::depthTex</definition>
+        <argsstring></argsstring>
+        <name>depthTex</name>
+        <qualifiedname>ShadowMap2D::depthTex</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="15" column="12" bodyfile="src/Rendering/Lighting/ShadowMap.h" bodystart="15" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_shadow_map2_d_1aec3177330665bc1be60909b8f388967e" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int ShadowMap2D::size</definition>
+        <argsstring></argsstring>
+        <name>size</name>
+        <qualifiedname>ShadowMap2D::size</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="16" column="9" bodyfile="src/Rendering/Lighting/ShadowMap.h" bodystart="16" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_shadow_map2_d_1acb0c162e7dc282a01993308ba3e37a47" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowMap2D::init</definition>
+        <argsstring>()</argsstring>
+        <name>init</name>
+        <qualifiedname>ShadowMap2D::init</qualifiedname>
+        <briefdescription>
+<para>Initializes this object. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="21" column="10" bodyfile="src/Rendering/Lighting/ShadowMap.cpp" bodystart="71" bodyend="95"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_shadow_map2_d_1ac0fefac84ac4594eee54eb4816c5177f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>ShadowMap2D::ShadowMap2D</definition>
+        <argsstring>()=default</argsstring>
+        <name>ShadowMap2D</name>
+        <qualifiedname>ShadowMap2D::ShadowMap2D</qualifiedname>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_shadow_map2_d" kindref="compound">ShadowMap2D</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="27" column="5"/>
+        <referencedby refid="class_shadow_map2_d_1a94dbf35ee38821106ba3e40e54dfb3dd">operator=</referencedby>
+        <referencedby refid="class_shadow_map2_d_1adcd5b6a43e12099a2dafcbd75fb071e7" compoundref="_shadow_map_8cpp" startline="57" endline="69">operator=</referencedby>
+        <referencedby refid="class_shadow_map2_d_1a9bcfb71d8cf1700c94eafbe92e1c50bc">ShadowMap2D</referencedby>
+        <referencedby refid="class_shadow_map2_d_1a41e243d9d88eb4fc16bbd0c4fce7a540" compoundref="_shadow_map_8cpp" startline="48" endline="55">ShadowMap2D</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map2_d_1af59cf83558bc32eebcac4738fcde9e86" prot="public" static="no" const="no" explicit="yes" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>ShadowMap2D::ShadowMap2D</definition>
+        <argsstring>(int size)</argsstring>
+        <name>ShadowMap2D</name>
+        <qualifiedname>ShadowMap2D::ShadowMap2D</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_shadow_map2_d" kindref="compound">ShadowMap2D</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of elements or bytes. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Result of this operation. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="33" column="14" bodyfile="src/Rendering/Lighting/ShadowMap.cpp" bodystart="39" bodyend="41"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map2_d_1a3c8d343b4c0347f1fcbfd0ae19f455f5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>ShadowMap2D::~ShadowMap2D</definition>
+        <argsstring>()</argsstring>
+        <name>~ShadowMap2D</name>
+        <qualifiedname>ShadowMap2D::~ShadowMap2D</qualifiedname>
+        <briefdescription>
+<para>Destroys this <ref refid="class_shadow_map2_d" kindref="compound">ShadowMap2D</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="37" column="5" bodyfile="src/Rendering/Lighting/ShadowMap.cpp" bodystart="43" bodyend="46"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map2_d_1a9bcfb71d8cf1700c94eafbe92e1c50bc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>ShadowMap2D::ShadowMap2D</definition>
+        <argsstring>(const ShadowMap2D &amp;)=delete</argsstring>
+        <name>ShadowMap2D</name>
+        <qualifiedname>ShadowMap2D::ShadowMap2D</qualifiedname>
+        <param>
+          <type>const <ref refid="class_shadow_map2_d" kindref="compound">ShadowMap2D</ref> &amp;</type>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_shadow_map2_d" kindref="compound">ShadowMap2D</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="41" column="5"/>
+        <references refid="class_shadow_map2_d_1ac0fefac84ac4594eee54eb4816c5177f">ShadowMap2D</references>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map2_d_1a94dbf35ee38821106ba3e40e54dfb3dd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="class_shadow_map2_d" kindref="compound">ShadowMap2D</ref> &amp;</type>
+        <definition>ShadowMap2D &amp; ShadowMap2D::operator=</definition>
+        <argsstring>(const ShadowMap2D &amp;)=delete</argsstring>
+        <name>operator=</name>
+        <qualifiedname>ShadowMap2D::operator=</qualifiedname>
+        <param>
+          <type>const <ref refid="class_shadow_map2_d" kindref="compound">ShadowMap2D</ref> &amp;</type>
+        </param>
+        <briefdescription>
+<para>Assigns from another instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="45" column="17"/>
+        <references refid="class_shadow_map2_d_1ac0fefac84ac4594eee54eb4816c5177f">ShadowMap2D</references>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map2_d_1a41e243d9d88eb4fc16bbd0c4fce7a540" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type></type>
+        <definition>ShadowMap2D::ShadowMap2D</definition>
+        <argsstring>(ShadowMap2D &amp;&amp;other) noexcept</argsstring>
+        <name>ShadowMap2D</name>
+        <qualifiedname>ShadowMap2D::ShadowMap2D</qualifiedname>
+        <param>
+          <type><ref refid="class_shadow_map2_d" kindref="compound">ShadowMap2D</ref> &amp;&amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_shadow_map2_d" kindref="compound">ShadowMap2D</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>other</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for other. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="50" column="5" bodyfile="src/Rendering/Lighting/ShadowMap.cpp" bodystart="48" bodyend="55"/>
+        <references refid="class_shadow_map2_d_1ac0fefac84ac4594eee54eb4816c5177f">ShadowMap2D</references>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map2_d_1adcd5b6a43e12099a2dafcbd75fb071e7" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type><ref refid="class_shadow_map2_d" kindref="compound">ShadowMap2D</ref> &amp;</type>
+        <definition>ShadowMap2D &amp; ShadowMap2D::operator=</definition>
+        <argsstring>(ShadowMap2D &amp;&amp;other) noexcept</argsstring>
+        <name>operator=</name>
+        <qualifiedname>ShadowMap2D::operator=</qualifiedname>
+        <param>
+          <type><ref refid="class_shadow_map2_d" kindref="compound">ShadowMap2D</ref> &amp;&amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+<para>Assigns from another instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>other</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for other. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="55" column="17" bodyfile="src/Rendering/Lighting/ShadowMap.cpp" bodystart="57" bodyend="69"/>
+        <references refid="class_shadow_map2_d_1ac0fefac84ac4594eee54eb4816c5177f">ShadowMap2D</references>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map2_d_1a7e6362d7da8dba35cfae660444cc9b49" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowMap2D::resize</definition>
+        <argsstring>(int newSize)</argsstring>
+        <name>resize</name>
+        <qualifiedname>ShadowMap2D::resize</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>newSize</declname>
+        </param>
+        <briefdescription>
+<para>Resizes internal resources. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>newSize</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of elements or bytes. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="61" column="10" bodyfile="src/Rendering/Lighting/ShadowMap.cpp" bodystart="97" bodyend="105"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map2_d_1a2a1d259a6fc56389a7996ef4d952a38e" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowMap2D::bind</definition>
+        <argsstring>() const</argsstring>
+        <name>bind</name>
+        <qualifiedname>ShadowMap2D::bind</qualifiedname>
+        <briefdescription>
+<para>Binds this resource. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="65" column="10" bodyfile="src/Rendering/Lighting/ShadowMap.cpp" bodystart="107" bodyend="112"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map2_d_1a9118211e5edc5f01537850738383d7ee" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowMap2D::unbind</definition>
+        <argsstring>() const</argsstring>
+        <name>unbind</name>
+        <qualifiedname>ShadowMap2D::unbind</qualifiedname>
+        <briefdescription>
+<para>Unbinds this resource. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="69" column="10" bodyfile="src/Rendering/Lighting/ShadowMap.cpp" bodystart="114" bodyend="116"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map2_d_1a5a0718c2493e2a4c9d149dad17424355" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowMap2D::clear</definition>
+        <argsstring>() const</argsstring>
+        <name>clear</name>
+        <qualifiedname>ShadowMap2D::clear</qualifiedname>
+        <briefdescription>
+<para>Clears the current state. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="73" column="10" bodyfile="src/Rendering/Lighting/ShadowMap.cpp" bodystart="118" bodyend="120"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map2_d_1a8d54d8cb2578ea60d037d75ee14dfdcc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>GLuint</type>
+        <definition>GLuint ShadowMap2D::getDepthTexture</definition>
+        <argsstring>() const</argsstring>
+        <name>getDepthTexture</name>
+        <qualifiedname>ShadowMap2D::getDepthTexture</qualifiedname>
+        <briefdescription>
+<para>Returns the depth texture. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Result of this operation. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="79" column="12" bodyfile="src/Rendering/Lighting/ShadowMap.h" bodystart="79" bodyend="79"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map2_d_1a3915b41a0ba9bd4aa8d40119280307a4" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int ShadowMap2D::getSize</definition>
+        <argsstring>() const</argsstring>
+        <name>getSize</name>
+        <qualifiedname>ShadowMap2D::getSize</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="80" column="9" bodyfile="src/Rendering/Lighting/ShadowMap.h" bodystart="80" bodyend="80"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_shadow_map2_d" kindref="compound">ShadowMap2D</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Lighting/ShadowMap.h" line="12" column="1" bodyfile="src/Rendering/Lighting/ShadowMap.h" bodystart="12" bodyend="81"/>
+    <listofallmembers>
+      <member refid="class_shadow_map2_d_1a2a1d259a6fc56389a7996ef4d952a38e" prot="public" virt="non-virtual"><scope>ShadowMap2D</scope><name>bind</name></member>
+      <member refid="class_shadow_map2_d_1a5a0718c2493e2a4c9d149dad17424355" prot="public" virt="non-virtual"><scope>ShadowMap2D</scope><name>clear</name></member>
+      <member refid="class_shadow_map2_d_1a0a5bfdfa26b5f0b694d1bbc357f3589f" prot="private" virt="non-virtual"><scope>ShadowMap2D</scope><name>depthTex</name></member>
+      <member refid="class_shadow_map2_d_1a751bc09919d5132733a74734aba6c578" prot="private" virt="non-virtual"><scope>ShadowMap2D</scope><name>fbo</name></member>
+      <member refid="class_shadow_map2_d_1a8d54d8cb2578ea60d037d75ee14dfdcc" prot="public" virt="non-virtual"><scope>ShadowMap2D</scope><name>getDepthTexture</name></member>
+      <member refid="class_shadow_map2_d_1a3915b41a0ba9bd4aa8d40119280307a4" prot="public" virt="non-virtual"><scope>ShadowMap2D</scope><name>getSize</name></member>
+      <member refid="class_shadow_map2_d_1acb0c162e7dc282a01993308ba3e37a47" prot="private" virt="non-virtual"><scope>ShadowMap2D</scope><name>init</name></member>
+      <member refid="class_shadow_map2_d_1a94dbf35ee38821106ba3e40e54dfb3dd" prot="public" virt="non-virtual"><scope>ShadowMap2D</scope><name>operator=</name></member>
+      <member refid="class_shadow_map2_d_1adcd5b6a43e12099a2dafcbd75fb071e7" prot="public" virt="non-virtual"><scope>ShadowMap2D</scope><name>operator=</name></member>
+      <member refid="class_shadow_map2_d_1a7e6362d7da8dba35cfae660444cc9b49" prot="public" virt="non-virtual"><scope>ShadowMap2D</scope><name>resize</name></member>
+      <member refid="class_shadow_map2_d_1ac0fefac84ac4594eee54eb4816c5177f" prot="public" virt="non-virtual"><scope>ShadowMap2D</scope><name>ShadowMap2D</name></member>
+      <member refid="class_shadow_map2_d_1af59cf83558bc32eebcac4738fcde9e86" prot="public" virt="non-virtual"><scope>ShadowMap2D</scope><name>ShadowMap2D</name></member>
+      <member refid="class_shadow_map2_d_1a9bcfb71d8cf1700c94eafbe92e1c50bc" prot="public" virt="non-virtual"><scope>ShadowMap2D</scope><name>ShadowMap2D</name></member>
+      <member refid="class_shadow_map2_d_1a41e243d9d88eb4fc16bbd0c4fce7a540" prot="public" virt="non-virtual"><scope>ShadowMap2D</scope><name>ShadowMap2D</name></member>
+      <member refid="class_shadow_map2_d_1aec3177330665bc1be60909b8f388967e" prot="private" virt="non-virtual"><scope>ShadowMap2D</scope><name>size</name></member>
+      <member refid="class_shadow_map2_d_1a9118211e5edc5f01537850738383d7ee" prot="public" virt="non-virtual"><scope>ShadowMap2D</scope><name>unbind</name></member>
+      <member refid="class_shadow_map2_d_1a3c8d343b4c0347f1fcbfd0ae19f455f5" prot="public" virt="non-virtual"><scope>ShadowMap2D</scope><name>~ShadowMap2D</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

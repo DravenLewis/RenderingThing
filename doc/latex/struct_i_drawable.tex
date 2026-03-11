@@ -1,0 +1,61 @@
+\doxysection{IDrawable Struct Reference}
+\hypertarget{struct_i_drawable}{}\label{struct_i_drawable}\index{IDrawable@{IDrawable}}
+
+
+Holds data for \doxylink{struct_i_drawable}{IDrawable}.  
+
+
+
+
+{\ttfamily \+\#include $<$Drawable.\+h$>$}
+
+Inheritance diagram for IDrawable:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{struct_i_drawable}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \doxymbox{\hyperlink{struct_i_drawable_a9fb10215e48d952bd9f6a4c52656ebb8}{draw}} (const Math3\+D::\+\+Mat4 \&parent=Math3\+D::\+\+Mat4(), const Math3\+D::\+\+Mat4 \&view\+Mtx=Math3\+D::\+\+Mat4(), const Math3\+D::\+\+Mat4 \&projection\+Mtx=Math3\+D::\+\+Mat4())=0
+\begin{DoxyCompactList}\small\item\em Draws this object. \end{DoxyCompactList}\item 
+\Hypertarget{struct_i_drawable_a618506be098b21fe0b9cae2c4219eb57}\label{struct_i_drawable_a618506be098b21fe0b9cae2c4219eb57} 
+{\bfseries \texorpdfstring{$\sim$}{\string~}\+IDrawable} ()=default
+\begin{DoxyCompactList}\small\item\em Destroys this \doxylink{struct_i_drawable}{IDrawable} instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Holds data for \doxylink{struct_i_drawable}{IDrawable}. 
+
+\label{doc-func-members}
+\Hypertarget{struct_i_drawable_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{struct_i_drawable_a9fb10215e48d952bd9f6a4c52656ebb8}\index{IDrawable@{IDrawable}!draw@{draw}}
+\index{draw@{draw}!IDrawable@{IDrawable}}
+\doxysubsubsection{\texorpdfstring{draw()}{draw()}}
+{\footnotesize\ttfamily \label{struct_i_drawable_a9fb10215e48d952bd9f6a4c52656ebb8} 
+virtual void IDrawable::\+draw (\begin{DoxyParamCaption}\item[{const Math3\+D::\+\+Mat4 \&}]{parent}{ = {\ttfamily Math3D:\+:\+Mat4()}, }\item[{const Math3\+D::\+\+Mat4 \&}]{view\+Mtx}{ = {\ttfamily Math3D:\+:\+Mat4()}, }\item[{const Math3\+D::\+\+Mat4 \&}]{projection\+Mtx}{ = {\ttfamily Math3D:\+:\+Mat4()}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Draws this object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parent} & Value for parent. \\
+\hline
+{\em view\+Mtx} & Value for view mtx. \\
+\hline
+{\em projection\+Mtx} & Value for projection mtx. \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \doxymbox{\hyperlink{class_mesh_abf58756040d4eb2bfe17766af91e3bc6}{Mesh}}, \doxymbox{\hyperlink{struct_model_a70a71199719d002f9cd089af3a5c69eb}{Model}}, and \doxymbox{\hyperlink{struct_model_part_a64fc6730fbf1273892e60fd4906beacc}{Model\+Part}}.
+
+
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Geometry/\+\doxymbox{\hyperlink{_drawable_8h}{Drawable.\+h}}\end{DoxyCompactItemize}

@@ -1,0 +1,239 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_frame_buffer_chain" xml:lang="en-US">
+<title>FrameBufferChain Struct Reference</title>
+<indexterm><primary>FrameBufferChain</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_frame_buffer_chain">FrameBufferChain</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;FrameBuffer.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><link linkend="_struct_frame_buffer_chain_1a43ca39ab87494b584ffd2c3c20d421ed">FrameBufferChain</link> (int s)</para>
+
+<para>Constructs a new <link linkend="_struct_frame_buffer_chain">FrameBufferChain</link> instance. </para>
+</listitem>
+            <listitem><para>std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; <link linkend="_struct_frame_buffer_chain_1aa952a5f3795b96066b498e1ca7fa9f74">getAtIndex</link> (int index)</para>
+
+<para>Returns the at index. </para>
+</listitem>
+            <listitem><para>void <link linkend="_struct_frame_buffer_chain_1a90a985cb4b6b820d2d2ed09f33042e02">setAtIndex</link> (int index, std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; fbPtr)</para>
+
+<para>Sets the at index. </para>
+</listitem>
+            <listitem><para>int <link linkend="_struct_frame_buffer_chain_1a8457c99bcb3c3f8528241e3944b2a136">getSize</link> ()</para>
+
+<para>Returns the size. </para>
+</listitem>
+            <listitem><para>void <link linkend="_struct_frame_buffer_chain_1a6a1c1c03350c99f6c487b6175d6c7a8a">resize</link> (int newSize)</para>
+
+<para>Resizes internal resources. </para>
+</listitem>
+            <listitem><para>void <link linkend="_struct_frame_buffer_chain_1aa3a1aab9cd6f4bdb0dbbf89c9c993320">resizeBuffers</link> (int width, int height)</para>
+
+<para>Resizes backing GPU buffers. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_frame_buffer_chain">FrameBufferChain</link>. </para>
+</section>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_struct_frame_buffer_chain_1a43ca39ab87494b584ffd2c3c20d421ed"/><section>
+    <title>FrameBufferChain()</title>
+<indexterm><primary>FrameBufferChain</primary><secondary>FrameBufferChain</secondary></indexterm>
+<indexterm><primary>FrameBufferChain</primary><secondary>FrameBufferChain</secondary></indexterm>
+<para><computeroutput>FrameBufferChain::FrameBufferChain (int s)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Constructs a new <link linkend="_struct_frame_buffer_chain">FrameBufferChain</link> instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>s</entry><entry>
+<para>Value for s. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_struct_frame_buffer_chain_1aa952a5f3795b96066b498e1ca7fa9f74"/><section>
+    <title>getAtIndex()</title>
+<indexterm><primary>getAtIndex</primary><secondary>FrameBufferChain</secondary></indexterm>
+<indexterm><primary>FrameBufferChain</primary><secondary>getAtIndex</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; FrameBufferChain::getAtIndex (int index)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the at index. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>index</entry><entry>
+<para>Identifier or index value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_frame_buffer_chain_1a8457c99bcb3c3f8528241e3944b2a136"/><section>
+    <title>getSize()</title>
+<indexterm><primary>getSize</primary><secondary>FrameBufferChain</secondary></indexterm>
+<indexterm><primary>FrameBufferChain</primary><secondary>getSize</secondary></indexterm>
+<para><computeroutput>int FrameBufferChain::getSize ( )<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the size. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Computed numeric result. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_frame_buffer_chain_1a6a1c1c03350c99f6c487b6175d6c7a8a"/><section>
+    <title>resize()</title>
+<indexterm><primary>resize</primary><secondary>FrameBufferChain</secondary></indexterm>
+<indexterm><primary>FrameBufferChain</primary><secondary>resize</secondary></indexterm>
+<para><computeroutput>void FrameBufferChain::resize (int newSize)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Resizes internal resources. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>newSize</entry><entry>
+<para>Number of elements or bytes. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_struct_frame_buffer_chain_1aa3a1aab9cd6f4bdb0dbbf89c9c993320"/><section>
+    <title>resizeBuffers()</title>
+<indexterm><primary>resizeBuffers</primary><secondary>FrameBufferChain</secondary></indexterm>
+<indexterm><primary>FrameBufferChain</primary><secondary>resizeBuffers</secondary></indexterm>
+<para><computeroutput>void FrameBufferChain::resizeBuffers (int width, int height)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Resizes backing GPU buffers. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>width</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>height</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_struct_frame_buffer_chain_1a90a985cb4b6b820d2d2ed09f33042e02"/><section>
+    <title>setAtIndex()</title>
+<indexterm><primary>setAtIndex</primary><secondary>FrameBufferChain</secondary></indexterm>
+<indexterm><primary>FrameBufferChain</primary><secondary>setAtIndex</secondary></indexterm>
+<para><computeroutput>void FrameBufferChain::setAtIndex (int index, std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; fbPtr)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Sets the at index. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>index</entry><entry>
+<para>Identifier or index value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>fbPtr</entry><entry>
+<para>Pointer to fb. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Core/<link linkend="__frame_buffer_8h">FrameBuffer.h</link></section>
+</section>

@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_environment" xml:lang="en-US">
+<title>Environment Class Reference</title>
+<indexterm><primary>Environment</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_environment">Environment</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;Environment.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_environment_1a5ec60bc420d1c8837fa0c429c7da7eef"/><emphasis role="strong">Environment</emphasis> ()=default</para>
+
+<para>Constructs a new <link linkend="_class_environment">Environment</link> instance. </para>
+</listitem>
+            <listitem><para><link linkend="_class_light_manager">LightManager</link> &amp; <link linkend="_class_environment_1ac4805d9a4e1da4f43d8f6cc7964cda38">getLightManager</link> ()</para>
+
+<para>Returns the light manager. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_environment_1ace273e545c41b6049f6b843e49c07aba"/>const <link linkend="_class_light_manager">LightManager</link> &amp; <emphasis role="strong">getLightManager</emphasis> () const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_environment_1a10e711206e9abe20f8c29c2f45be21a9"/>void <emphasis role="strong">setSkyBox</emphasis> (PSkyBox box)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_environment_1ae9a844c9bb23fde0f9143275a30e686c"/>PSkyBox <emphasis role="strong">getSkyBox</emphasis> () const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_environment_1a438f229c453941923e7a4e6e20901dae"/>void <emphasis role="strong">setLightingEnabled</emphasis> (bool enabled)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_environment_1a3ecb71afed64e8a5b3a9502494fa92c8"/>bool <emphasis role="strong">isLightingEnabled</emphasis> () const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_environment_1ac3e818fd64b523cefccf84d082141bf2"/>const std::vector&lt; <link linkend="_struct_light">Light</link> &gt; &amp; <emphasis role="strong">getLightsForUpload</emphasis> () const</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_environment">Environment</link> type. </para>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_environment_1ac4805d9a4e1da4f43d8f6cc7964cda38"/><section>
+    <title>getLightManager()</title>
+<indexterm><primary>getLightManager</primary><secondary>Environment</secondary></indexterm>
+<indexterm><primary>Environment</primary><secondary>getLightManager</secondary></indexterm>
+<para><computeroutput><link linkend="_class_light_manager">LightManager</link> &amp; Environment::getLightManager ( )<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the light manager. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this class was generated from the following file:</para>
+src/Rendering/Lighting/<link linkend="__environment_8h">Environment.h</link></section>
+</section>

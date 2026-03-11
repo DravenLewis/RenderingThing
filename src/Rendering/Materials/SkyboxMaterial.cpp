@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Materials/SkyboxMaterial.cpp
+ * @brief Implementation for SkyboxMaterial.
+ */
+
 #include "Rendering/Materials/SkyboxMaterial.h"
 
 #include "Assets/Core/Asset.h"

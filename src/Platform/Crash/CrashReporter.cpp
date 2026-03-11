@@ -1,3 +1,8 @@
+/**
+ * @file src/Platform/Crash/CrashReporter.cpp
+ * @brief Implementation for CrashReporter.
+ */
+
 #include "Platform/Crash/CrashReporter.h"
 
 #include <cstring>

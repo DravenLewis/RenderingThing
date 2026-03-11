@@ -1,0 +1,66 @@
+\doxysection{Shadow\+Map.\+h}
+\hypertarget{_shadow_map_8h_source}{}\label{_shadow_map_8h_source}\index{src/Rendering/Lighting/ShadowMap.h@{src/Rendering/Lighting/ShadowMap.h}}
+\doxymbox{\hyperlink{_shadow_map_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ SHADOW\_MAP\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ SHADOW\_MAP\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <glad/glad.h>}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00012\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_shadow_map2_d_ac0fefac84ac4594eee54eb4816c5177f}{ShadowMap2D}}\ \{}
+\DoxyCodeLine{00013\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00014\ \ \ \ \ GLuint\ fbo\ =\ 0;}
+\DoxyCodeLine{00015\ \ \ \ \ GLuint\ depthTex\ =\ 0;}
+\DoxyCodeLine{00016\ \ \ \ \ \textcolor{keywordtype}{int}\ size\ =\ 0;}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keywordtype}{void}\ init();}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00027\ \ \ \ \ \doxymbox{\hyperlink{class_shadow_map2_d_ac0fefac84ac4594eee54eb4816c5177f}{ShadowMap2D}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keyword}{explicit}\ \doxymbox{\hyperlink{class_shadow_map2_d_ac0fefac84ac4594eee54eb4816c5177f}{ShadowMap2D}}(\textcolor{keywordtype}{int}\ size);}
+\DoxyCodeLine{00037\ \ \ \ \ \doxymbox{\hyperlink{class_shadow_map2_d_a3c8d343b4c0347f1fcbfd0ae19f455f5}{\string~ShadowMap2D}}();}
+\DoxyCodeLine{00041\ \ \ \ \ \doxymbox{\hyperlink{class_shadow_map2_d_a9bcfb71d8cf1700c94eafbe92e1c50bc}{ShadowMap2D}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{class_shadow_map2_d_ac0fefac84ac4594eee54eb4816c5177f}{ShadowMap2D}}\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00045\ \ \ \ \ \doxymbox{\hyperlink{class_shadow_map2_d_ac0fefac84ac4594eee54eb4816c5177f}{ShadowMap2D}}\&\ \doxymbox{\hyperlink{class_shadow_map2_d_a94dbf35ee38821106ba3e40e54dfb3dd}{operator=}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{class_shadow_map2_d_ac0fefac84ac4594eee54eb4816c5177f}{ShadowMap2D}}\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00050\ \ \ \ \ \doxymbox{\hyperlink{class_shadow_map2_d_ac0fefac84ac4594eee54eb4816c5177f}{ShadowMap2D}}(\doxymbox{\hyperlink{class_shadow_map2_d_ac0fefac84ac4594eee54eb4816c5177f}{ShadowMap2D}}\&\&\ other)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00055\ \ \ \ \ \doxymbox{\hyperlink{class_shadow_map2_d_ac0fefac84ac4594eee54eb4816c5177f}{ShadowMap2D}}\&\ \doxymbox{\hyperlink{class_shadow_map2_d_a94dbf35ee38821106ba3e40e54dfb3dd}{operator=}}(\doxymbox{\hyperlink{class_shadow_map2_d_ac0fefac84ac4594eee54eb4816c5177f}{ShadowMap2D}}\&\&\ other)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shadow_map2_d_a7e6362d7da8dba35cfae660444cc9b49}{resize}}(\textcolor{keywordtype}{int}\ newSize);}
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shadow_map2_d_a2a1d259a6fc56389a7996ef4d952a38e}{bind}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shadow_map2_d_a9118211e5edc5f01537850738383d7ee}{unbind}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shadow_map2_d_a5a0718c2493e2a4c9d149dad17424355}{clear}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00079\ \ \ \ \ GLuint\ \doxymbox{\hyperlink{class_shadow_map2_d_a8d54d8cb2578ea60d037d75ee14dfdcc}{getDepthTexture}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ depthTex;\ \}}
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keywordtype}{int}\ getSize()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ size;\ \}}
+\DoxyCodeLine{00081\ \};}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00084\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_shadow_map_cube_ad6bb31f5d7cc939a0c91a1b1d434a76a}{ShadowMapCube}}\ \{}
+\DoxyCodeLine{00085\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00086\ \ \ \ \ GLuint\ fbo\ =\ 0;}
+\DoxyCodeLine{00087\ \ \ \ \ GLuint\ depthCube\ =\ 0;}
+\DoxyCodeLine{00088\ \ \ \ \ \textcolor{keywordtype}{int}\ size\ =\ 0;}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00093\ \ \ \ \ \textcolor{keywordtype}{void}\ init();}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00099\ \ \ \ \ \doxymbox{\hyperlink{class_shadow_map_cube_ad6bb31f5d7cc939a0c91a1b1d434a76a}{ShadowMapCube}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00105\ \ \ \ \ \textcolor{keyword}{explicit}\ \doxymbox{\hyperlink{class_shadow_map_cube_ad6bb31f5d7cc939a0c91a1b1d434a76a}{ShadowMapCube}}(\textcolor{keywordtype}{int}\ size);}
+\DoxyCodeLine{00109\ \ \ \ \ \doxymbox{\hyperlink{class_shadow_map_cube_a35eb630aeabf2272a312f6a4a49f6712}{\string~ShadowMapCube}}();}
+\DoxyCodeLine{00113\ \ \ \ \ \doxymbox{\hyperlink{class_shadow_map_cube_a0aaaefa1c4de0b8da0ef9f4b37d619db}{ShadowMapCube}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{class_shadow_map_cube_ad6bb31f5d7cc939a0c91a1b1d434a76a}{ShadowMapCube}}\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00117\ \ \ \ \ \doxymbox{\hyperlink{class_shadow_map_cube_ad6bb31f5d7cc939a0c91a1b1d434a76a}{ShadowMapCube}}\&\ \doxymbox{\hyperlink{class_shadow_map_cube_aa901c0f61f181dcaf8eeaf2aca97cc9f}{operator=}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{class_shadow_map_cube_ad6bb31f5d7cc939a0c91a1b1d434a76a}{ShadowMapCube}}\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00122\ \ \ \ \ \doxymbox{\hyperlink{class_shadow_map_cube_ad6bb31f5d7cc939a0c91a1b1d434a76a}{ShadowMapCube}}(\doxymbox{\hyperlink{class_shadow_map_cube_ad6bb31f5d7cc939a0c91a1b1d434a76a}{ShadowMapCube}}\&\&\ other)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00127\ \ \ \ \ \doxymbox{\hyperlink{class_shadow_map_cube_ad6bb31f5d7cc939a0c91a1b1d434a76a}{ShadowMapCube}}\&\ \doxymbox{\hyperlink{class_shadow_map_cube_aa901c0f61f181dcaf8eeaf2aca97cc9f}{operator=}}(\doxymbox{\hyperlink{class_shadow_map_cube_ad6bb31f5d7cc939a0c91a1b1d434a76a}{ShadowMapCube}}\&\&\ other)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00133\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shadow_map_cube_a2b4bc34daef25168c05eb6a853919afc}{resize}}(\textcolor{keywordtype}{int}\ newSize);}
+\DoxyCodeLine{00138\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shadow_map_cube_aa8bbe52175ec103726b6aa2e4dd4645b}{bindFace}}(GLenum\ face)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shadow_map_cube_aa977176a7596a0ba2baa70cb78dcfebf}{unbind}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00146\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_shadow_map_cube_a7d6e4c1116e8e0827ead05a08c70de5c}{clear}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00152\ \ \ \ \ GLuint\ \doxymbox{\hyperlink{class_shadow_map_cube_ad1fcf694238173cea98f59fb0f3f1efe}{getDepthTexture}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ depthCube;\ \}}
+\DoxyCodeLine{00153\ \ \ \ \ \textcolor{keywordtype}{int}\ getSize()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ size;\ \}}
+\DoxyCodeLine{00154\ \};}
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00156\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ SHADOW\_MAP\_H}}
+
+\end{DoxyCode}

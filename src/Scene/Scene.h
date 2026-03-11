@@ -1,3 +1,8 @@
+/**
+ * @file src/Scene/Scene.h
+ * @brief Declarations for Scene.
+ */
+
 #ifndef SCENE_H
 #define SCENE_H
 
@@ -18,22 +23,75 @@ class Scene;
 typedef std::shared_ptr<Scene> PScene;
 class ShaderProgram;
 
+/// @brief Represents the Scene type.
 class Scene : public View {
     public:
+        /**
+         * @brief Constructs a new Scene instance.
+         * @param window Window that owns the rendering context for this scene.
+         */
         explicit Scene(RenderWindow* window = nullptr);
+        /**
+         * @brief Destroys this Scene instance.
+         */
         virtual ~Scene() = default;
 
+        /**
+         * @brief Initializes scene resources and entities.
+         */
         virtual void init() {}
+        /**
+         * @brief Updates scene simulation state.
+         * @param deltaTime Delta time in seconds.
+         */
         virtual void update(float deltaTime) {}
+        /**
+         * @brief Renders scene content.
+         */
         virtual void render() {}
+        /**
+         * @brief Releases scene-owned resources.
+         */
         virtual void dispose();
+        /**
+         * @brief Sets the input manager used by this scene.
+         * @param manager Shared input manager instance.
+         */
         virtual void setInputManager(std::shared_ptr<InputManager> manager) { inputManager = manager; }
+        /**
+         * @brief Handles a state switch into this scene.
+         * @param newState Scene being activated.
+         * @param oldState Scene being deactivated.
+         * @return True when the switch is accepted.
+         */
         virtual bool switchState(PScene newState, PScene oldState) { return true; }
+        /**
+         * @brief Returns whether update ticks should run on the render thread.
+         * @return True if ticking on the render thread is required.
+         */
         virtual bool shouldTickOnRenderThread() const { return false; }
+        /**
+         * @brief Renders the scene into the active viewport target.
+         */
         void renderViewportContents();
 
+        /**
+         * @brief Updates ECS transforms and component-driven runtime state.
+         * @param deltaTime Delta time in seconds.
+         */
         void updateECS(float deltaTime);
+        /**
+         * @brief Rebuilds the render snapshot used by the render pass.
+         */
         void refreshRenderState();
+        /**
+         * @brief Applies post-processing effects defined by a camera entity.
+         * @param screen Destination screen/post-process chain.
+         * @param manager ECS component manager.
+         * @param cameraEntity Camera entity owning effect components.
+         * @param clearExisting True to clear previously queued effects.
+         * @param entityManager Optional entity manager for cross-entity lookups.
+         */
         static void ApplyCameraEffectsToScreen(
             PScreen screen,
             NeoECS::ECSComponentManager* manager,
@@ -41,23 +99,91 @@ class Scene : public View {
             bool clearExisting = true,
             NeoECS::ECSEntityManager* entityManager = nullptr
         );
+        /**
+         * @brief Applies camera effects using this scene's ECS context.
+         * @param screen Destination screen/post-process chain.
+         * @param cameraEntity Camera entity owning effect components.
+         * @param clearExisting True to clear previously queued effects.
+         * @param adaptiveFocusSourceScene Optional source scene for adaptive-focus sampling.
+         */
         void applyCameraEffectsToScreen(PScreen screen,
                                         NeoECS::ECSEntity* cameraEntity,
                                         bool clearExisting = true,
                                         const Scene* adaptiveFocusSourceScene = nullptr);
+        /**
+         * @brief Computes adaptive focus distance from the current render snapshot.
+         * @param camera Camera used for ray construction.
+         * @param outDistance Output focus distance in scene units.
+         * @return True when a valid distance is found.
+         */
         bool computeAdaptiveFocusDistanceFromSnapshotForCamera(const PCamera& camera, float& outDistance) const;
 
+        /**
+         * @brief Returns the scene ECS instance.
+         * @return Raw ECS instance pointer.
+         */
         NeoECS::NeoECS* getECS() const { return ecsInstance; }
+        /**
+         * @brief Returns the scene ECS helper API.
+         * @return Raw ECS API pointer.
+         */
         NeoECS::NeoAPI* getECSAPI() const { return ecsAPI; }
+        /**
+         * @brief Creates an ECS game object under the scene root.
+         * @param name Display name for the object.
+         * @param parent Optional parent object.
+         * @return Pointer to the created game object.
+         */
         NeoECS::GameObject* createECSGameObject(const std::string& name, NeoECS::GameObject* parent = nullptr);
+        /**
+         * @brief Destroys an ECS game object.
+         * @param object Object to destroy.
+         * @return True when the object is removed.
+         */
         bool destroyECSGameObject(NeoECS::GameObject* object);
+        /**
+         * @brief Creates a game object configured with model rendering components.
+         * @param name Display name for the object.
+         * @param model Model instance to assign.
+         * @param parent Optional parent object.
+         * @return Pointer to the created game object.
+         */
         NeoECS::GameObject* createModelGameObject(const std::string& name, const PModel& model, NeoECS::GameObject* parent = nullptr);
+        /**
+         * @brief Creates a game object configured with a light component.
+         * @param name Display name for the object.
+         * @param light Light value to copy.
+         * @param parent Optional parent object.
+         * @param syncTransform True to keep light position synced to transform.
+         * @param syncDirection True to keep light direction synced to transform.
+         * @return Pointer to the created game object.
+         */
         NeoECS::GameObject* createLightGameObject(const std::string& name, const Light& light, NeoECS::GameObject* parent = nullptr, bool syncTransform = true, bool syncDirection = false);
+        /**
+         * @brief Creates a game object configured with a camera component.
+         * @param name Display name for the object.
+         * @param parent Optional parent object.
+         * @return Pointer to the created game object.
+         */
         NeoECS::GameObject* createCameraGameObject(const std::string& name, NeoECS::GameObject* parent = nullptr);
+        /**
+         * @brief Returns the scene root game object.
+         * @return Pointer to the scene root object.
+         */
         NeoECS::GameObject* getSceneRootGameObject() const { return sceneRootObject; }
+        /**
+         * @brief Returns the scene root ECS entity.
+         * @return Pointer to the root entity.
+         */
         NeoECS::ECSEntity* getSceneRootEntity() const;
+        /**
+         * @brief Checks whether an entity is the scene root entity.
+         * @param entity Entity to test.
+         * @return True when the entity is the root.
+         */
         bool isSceneRootEntity(NeoECS::ECSEntity* entity) const;
 
+        /// @brief Holds data for DebugStats.
         struct DebugStats {
             std::atomic<float> snapshotMs{0.0f};
             std::atomic<float> shadowMs{0.0f};
@@ -68,11 +194,28 @@ class Scene : public View {
             std::atomic<int> postFxEffectCount{0};
         };
 
+        /**
+         * @brief Returns aggregate debug counters for the last rendered frame.
+         * @return Reference to scene debug statistics.
+         */
         const DebugStats& getDebugStats() const { return debugStats; }
+        /**
+         * @brief Requests scene closure.
+         */
         virtual void requestClose();
+        /**
+         * @brief Consumes and clears a pending close request.
+         * @return True when a request was pending.
+         */
         virtual bool consumeCloseRequest();
 
     protected:
+        /**
+         * @brief Builds a world transform matrix for an entity.
+         * @param entity Entity to evaluate.
+         * @param manager ECS component manager.
+         * @return World transform matrix.
+         */
         Math3D::Mat4 buildWorldMatrix(NeoECS::ECSEntity* entity, NeoECS::ECSComponentManager* manager) const;
 
         std::shared_ptr<InputManager> inputManager;
@@ -80,6 +223,7 @@ class Scene : public View {
         NeoECS::NeoAPI* ecsAPI = nullptr;
         NeoECS::GameObject* sceneRootObject = nullptr;
 
+        /// @brief Holds data for RenderItem.
         struct RenderItem {
             std::shared_ptr<Mesh> mesh;
             std::shared_ptr<Material> material;
@@ -95,6 +239,7 @@ class Scene : public View {
             Math3D::Vec3 boundsMax = Math3D::Vec3(0.0f, 0.0f, 0.0f);
         };
 
+        /// @brief Holds data for RenderSnapshot.
         struct RenderSnapshot {
             std::vector<RenderItem> drawItems;
             std::vector<Light> lights;
@@ -120,48 +265,158 @@ class Scene : public View {
         bool deferredDisabled = false;
         PCamera preferredCamera;
 
+        /// @brief Enumerates values for RenderFilter.
         enum class RenderFilter{
             All,
             Opaque,
             Transparent
         };
 
+        /**
+         * @brief Returns whether a material should be rendered in the transparent pass.
+         * @param material Material to evaluate.
+         * @return True when the material is transparent.
+         */
         bool isMaterialTransparent(const std::shared_ptr<Material>& material) const;
+        /**
+         * @brief Returns whether a material is compatible with deferred shading.
+         * @param material Material to evaluate.
+         * @return True when deferred-compatible.
+         */
         bool isDeferredCompatibleMaterial(const std::shared_ptr<Material>& material) const;
+        /**
+         * @brief Allocates or resizes deferred-render targets for the active screen.
+         * @param screen Active screen target.
+         */
         void ensureDeferredResources(PScreen screen);
+        /**
+         * @brief Computes adaptive focus distance using ECS snapshot data.
+         * @param cameraEntity Active camera entity.
+         * @param camera Active camera object.
+         * @param outDistance Output focus distance.
+         * @return True when a valid distance is found.
+         */
         bool computeAdaptiveFocusDistanceFromSnapshot(NeoECS::ECSEntity* cameraEntity, const PCamera& camera, float& outDistance) const;
+        /**
+         * @brief Rebuilds post-process effects for the active camera.
+         * @param activeCameraEntity Active camera entity.
+         * @param manager ECS component manager.
+         */
         void updateActiveCameraEffects(NeoECS::ECSEntity* activeCameraEntity, NeoECS::ECSComponentManager* manager);
+        /**
+         * @brief Draws geometry into deferred G-buffer targets.
+         * @param cam Active camera.
+         */
         void drawDeferredGeometry(PCamera cam);
+        /**
+         * @brief Executes deferred lighting over the populated G-buffer.
+         * @param screen Destination screen.
+         * @param cam Active camera.
+         */
         void drawDeferredLighting(PScreen screen, PCamera cam);
+        /**
+         * @brief Runs the full deferred rendering pipeline.
+         * @param screen Destination screen.
+         * @param cam Active camera.
+         */
         void renderDeferred(PScreen screen, PCamera cam);
+        /**
+         * @brief Draws editor/selection outlines.
+         * @param cam Active camera.
+         */
         void drawOutlines(PCamera cam);
 
+        /**
+         * @brief Uploads current scene lights to rendering systems.
+         */
         void updateSceneLights();
+        /**
+         * @brief Executes the primary 3D render pass.
+         */
         void render3DPass();
+        /**
+         * @brief Draws model render items for a selected filter.
+         * @param cam Active camera.
+         * @param filter Opaque/transparent filter selection.
+         * @param drawOutlines True to include outline pass.
+         * @param skipDeferredCompatible True to skip deferred-compatible items.
+         */
         void drawModels3D(PCamera cam, RenderFilter filter = RenderFilter::All, bool drawOutlines = true, bool skipDeferredCompatible = false);
+        /**
+         * @brief Renders shadow maps for shadow-casting lights.
+         */
         void drawShadowsPass();
+        /**
+         * @brief Draws the active skybox.
+         * @param cam Active camera.
+         * @param depthTested True to keep depth testing enabled while drawing.
+         */
         void drawSkybox(PCamera cam, bool depthTested = false);
 
     public:
+        /**
+         * @brief Sets the currently selected entity id.
+         * @param id Entity id string.
+         */
         void setSelectedEntityId(const std::string& id) { selectedEntityId = id; }
+        /**
+         * @brief Returns the currently selected entity id.
+         * @return Selected entity id.
+         */
         const std::string& getSelectedEntityId() const { return selectedEntityId; }
+        /**
+         * @brief Enables or disables outline rendering.
+         * @param enabled True to enable outlines.
+         */
         void setOutlineEnabled(bool enabled) { outlineEnabled = enabled; }
+        /**
+         * @brief Returns whether outline rendering is enabled.
+         * @return True when outlines are enabled.
+         */
         bool isOutlineEnabled() const { return outlineEnabled; }
+        /**
+         * @brief Sets a preferred camera for rendering and optional post-process updates.
+         * @param cam Preferred camera.
+         * @param applyToScreen True to apply camera effects immediately.
+         */
         void setPreferredCamera(PCamera cam, bool applyToScreen = true);
+        /**
+         * @brief Returns the preferred camera.
+         * @return Preferred camera pointer.
+         */
         PCamera getPreferredCamera() const { return preferredCamera; }
+        /**
+         * @brief Returns world matrix for an entity.
+         * @param entity Entity to evaluate.
+         * @param manager ECS component manager.
+         * @return World transform matrix.
+         */
         Math3D::Mat4 getWorldMatrix(NeoECS::ECSEntity* entity, NeoECS::ECSComponentManager* manager) const { return buildWorldMatrix(entity, manager); }
+        /**
+         * @brief Returns world-space position for an entity.
+         * @param entity Entity to evaluate.
+         * @return World-space position.
+         */
         Math3D::Vec3 getWorldPosition(NeoECS::ECSEntity* entity) const;
 };
 
+/// @brief Represents the Scene3D type.
 class Scene3D : public Scene {
     public:
         using Scene::Scene;
+        /**
+         * @brief Destroys this Scene3D instance.
+         */
         ~Scene3D() override = default;
 };
 
+/// @brief Represents the Scene2D type.
 class Scene2D : public Scene {
     public:
         using Scene::Scene;
+        /**
+         * @brief Destroys this Scene2D instance.
+         */
         ~Scene2D() override = default;
 };
 

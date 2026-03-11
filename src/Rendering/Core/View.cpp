@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Core/View.cpp
+ * @brief Implementation for View.
+ */
+
 #include "Rendering/Core/View.h"
 #include <glm/gtc/matrix_transform.hpp>
 

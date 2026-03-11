@@ -1,0 +1,180 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_material_defaults_1_1_image_material" xml:lang="en-US">
+<title>MaterialDefaults::ImageMaterial Class Reference</title>
+<indexterm><primary>MaterialDefaults::ImageMaterial</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_material_defaults_1_1_image_material">ImageMaterial</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;MaterialDefaults.h&gt;</computeroutput>
+</para>
+<para>Inheritance diagram for MaterialDefaults::ImageMaterial:    <informalfigure>
+        <mediaobject>
+            <imageobject>
+                <imagedata width="50%" align="center" valign="middle" scalefit="0" fileref="class_material_defaults_1_1_image_material.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+    </informalfigure>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><link linkend="_class_material_defaults_1_1_image_material_1a132cf6ed173fb5c7a62664b5b791b6fe">ImageMaterial</link> (std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; program, std::shared_ptr&lt; <link linkend="_class_texture">Texture</link> &gt; texture)</para>
+
+<para>Constructs a new <link linkend="_class_material_defaults_1_1_image_material">ImageMaterial</link> instance. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+Public Member Functions inherited from <link linkend="_class_material">Material</link>        <itemizedlist>
+            <listitem><para><link linkend="_class_material_1ace810a426f4b488d2dc2a53070d85405">Material</link> (std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; program)</para>
+
+<para>Constructs a new <link linkend="_class_material">Material</link> instance. </para>
+</listitem>
+            <listitem><para>virtual <emphasis role="strong">~Material</emphasis> ()</para>
+
+<para>Destroys this <link linkend="_class_material">Material</link> instance. </para>
+</listitem>
+            <listitem><para>template&lt;typename T&gt; </para><para>bool <emphasis role="strong">set</emphasis> (const std::string &amp;name, T value)</para>
+</listitem>
+            <listitem><para>virtual void <link linkend="_class_material_1aa9acc36e80cc1874dc69da8dedf54695">bind</link> ()</para>
+</listitem>
+            <listitem><para>void <emphasis role="strong">unbind</emphasis> ()</para>
+</listitem>
+            <listitem><para>std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; <emphasis role="strong">getShader</emphasis> ()</para>
+</listitem>
+            <listitem><para>void <emphasis role="strong">setShader</emphasis> (std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; program)</para>
+</listitem>
+            <listitem><para>void <emphasis role="strong">setCastsShadows</emphasis> (bool value)</para>
+</listitem>
+            <listitem><para>bool <emphasis role="strong">castsShadows</emphasis> () const</para>
+</listitem>
+            <listitem><para>void <emphasis role="strong">setReceivesShadows</emphasis> (bool value)</para>
+</listitem>
+            <listitem><para>bool <emphasis role="strong">receivesShadows</emphasis> () const</para>
+</listitem>
+        </itemizedlist>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>static std::shared_ptr&lt; <link linkend="_class_material_defaults_1_1_image_material_1a132cf6ed173fb5c7a62664b5b791b6fe">ImageMaterial</link> &gt; <link linkend="_class_material_defaults_1_1_image_material_1add720d0e294c8a6aaefcce9149d1c97e">Create</link> (PTexture tex, Math3D::Vec4 color=Color::WHITE, Math3D::Vec2 uv=Math3D::Vec2(0, 0))</para>
+
+<para>Creates a new object. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+Static Public Member Functions inherited from <link linkend="_class_material">Material</link>        <itemizedlist>
+            <listitem><para>static std::shared_ptr&lt; <link linkend="_class_material">Material</link> &gt; <emphasis role="strong">Copy</emphasis> (std::shared_ptr&lt; <link linkend="_class_material">Material</link> &gt; material)</para>
+</listitem>
+            <listitem><para>template&lt;typename T&gt; </para><para>static std::shared_ptr&lt; T &gt; <emphasis role="strong">GetAs</emphasis> (std::shared_ptr&lt; <link linkend="_class_material">Material</link> &gt; matPtr)</para>
+</listitem>
+        </itemizedlist>
+<simplesect>
+    <title>Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_material_defaults_1_1_image_material_1afa8910b9ce8c42d54fdc79dac534813d"/>ValueContainer&lt; Math3D::Vec4 &gt; <emphasis role="strong">Color</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_material_defaults_1_1_image_material_1ae75e53b16a84f1091f19350655b86c60"/>ValueContainer&lt; std::shared_ptr&lt; <link linkend="_class_texture">Texture</link> &gt; &gt; <emphasis role="strong">Tex</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_material_defaults_1_1_image_material_1ac41d3d5e16c3ddca0e74da2c1b986e65"/>ValueContainer&lt; Math3D::Vec2 &gt; <emphasis role="strong">UV</emphasis></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_material_defaults_1_1_image_material">ImageMaterial</link> type. </para>
+</section>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_class_material_defaults_1_1_image_material_1a132cf6ed173fb5c7a62664b5b791b6fe"/><section>
+    <title>ImageMaterial()</title>
+<indexterm><primary>ImageMaterial</primary><secondary>MaterialDefaults::ImageMaterial</secondary></indexterm>
+<indexterm><primary>MaterialDefaults::ImageMaterial</primary><secondary>ImageMaterial</secondary></indexterm>
+<para><computeroutput>ImageMaterial::ImageMaterial (std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; program, std::shared_ptr&lt; <link linkend="_class_texture">Texture</link> &gt; texture)</computeroutput></para><para>
+
+<para>Constructs a new <link linkend="_class_material_defaults_1_1_image_material">ImageMaterial</link> instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>program</entry><entry>
+<para>Value for program. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>texture</entry><entry>
+<para>Value for texture. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_material_defaults_1_1_image_material_1add720d0e294c8a6aaefcce9149d1c97e"/><section>
+    <title>Create()</title>
+<indexterm><primary>Create</primary><secondary>MaterialDefaults::ImageMaterial</secondary></indexterm>
+<indexterm><primary>MaterialDefaults::ImageMaterial</primary><secondary>Create</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_class_material_defaults_1_1_image_material_1a132cf6ed173fb5c7a62664b5b791b6fe">ImageMaterial</link> &gt; ImageMaterial::Create (PTexture tex, Math3D::Vec4 color = <computeroutput>Color::WHITE</computeroutput>
+, Math3D::Vec2 uv = <computeroutput>Math3D::Vec2(0,0)</computeroutput>
+)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Creates a new object. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>tex</entry><entry>
+<para>Value for tex. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>color</entry><entry>
+<para>Color value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>uv</entry><entry>
+<para>Value for uv. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this class was generated from the following files:</para>
+src/Rendering/Materials/<link linkend="__material_defaults_8h">MaterialDefaults.h</link>src/Rendering/Materials/<link linkend="__material_defaults_8cpp">MaterialDefaults.cpp</link></section>
+</section>

@@ -1,0 +1,838 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_shadow_renderer" kind="class" language="C++" prot="public">
+    <compoundname>ShadowRenderer</compoundname>
+    <includes refid="_shadow_renderer_8h" local="no">ShadowRenderer.h</includes>
+    <innerclass refid="struct_shadow_renderer_1_1_shadow_draw_item" prot="public">ShadowRenderer::ShadowDrawItem</innerclass>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_shadow_renderer_1afbb6c273a05d6646ee9705e4bd6b3233" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowRenderer::BeginFrame</definition>
+        <argsstring>(PCamera camera, const std::vector&lt; ShadowCasterBounds &gt; *casters=nullptr)</argsstring>
+        <name>BeginFrame</name>
+        <qualifiedname>ShadowRenderer::BeginFrame</qualifiedname>
+        <param>
+          <type>PCamera</type>
+          <declname>camera</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; <ref refid="struct_shadow_caster_bounds" kindref="compound">ShadowCasterBounds</ref> &gt; *</type>
+          <declname>casters</declname>
+          <defval>nullptr</defval>
+        </param>
+        <briefdescription>
+<para>Begins frame. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>camera</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for camera. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>casters</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for casters. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="65" column="17" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="842" bodyend="1130"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1aab58aceef40d58cbcb99197fb3b0b1c9" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowRenderer::RenderShadows</definition>
+        <argsstring>(const std::shared_ptr&lt; Mesh &gt; &amp;mesh, const Math3D::Mat4 &amp;model, const std::shared_ptr&lt; Material &gt; &amp;material)</argsstring>
+        <name>RenderShadows</name>
+        <qualifiedname>ShadowRenderer::RenderShadows</qualifiedname>
+        <param>
+          <type>const std::shared_ptr&lt; <ref refid="class_mesh" kindref="compound">Mesh</ref> &gt; &amp;</type>
+          <declname>mesh</declname>
+        </param>
+        <param>
+          <type>const Math3D::Mat4 &amp;</type>
+          <declname>model</declname>
+        </param>
+        <param>
+          <type>const std::shared_ptr&lt; <ref refid="class_material" kindref="compound">Material</ref> &gt; &amp;</type>
+          <declname>material</declname>
+        </param>
+        <briefdescription>
+<para>Renders shadows. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>mesh</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for mesh. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>model</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Mode or type selector. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>material</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for material. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="72" column="17" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1140" bodyend="1153"/>
+        <referencedby refid="struct_model_1aa010c342dc045a0ac5f97ae6f4cdef4c" compoundref="_model_8h" startline="146" endline="154">Model::drawShadows</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1a3ba920ae87f7206899c27bf206f7b88f" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowRenderer::RenderShadowsBatch</definition>
+        <argsstring>(const std::vector&lt; ShadowDrawItem &gt; &amp;items)</argsstring>
+        <name>RenderShadowsBatch</name>
+        <qualifiedname>ShadowRenderer::RenderShadowsBatch</qualifiedname>
+        <param>
+          <type>const std::vector&lt; <ref refid="struct_shadow_renderer_1_1_shadow_draw_item" kindref="compound">ShadowDrawItem</ref> &gt; &amp;</type>
+          <declname>items</declname>
+        </param>
+        <briefdescription>
+<para>Renders shadows batch. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>items</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for items. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="77" column="17" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1155" bodyend="1364"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1a294d22aa8a61404ca7741fb92179f759" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowRenderer::BindShadowSamplers</definition>
+        <argsstring>(const std::shared_ptr&lt; ShaderProgram &gt; &amp;program)</argsstring>
+        <name>BindShadowSamplers</name>
+        <qualifiedname>ShadowRenderer::BindShadowSamplers</qualifiedname>
+        <param>
+          <type>const std::shared_ptr&lt; <ref refid="class_shader_program" kindref="compound">ShaderProgram</ref> &gt; &amp;</type>
+          <declname>program</declname>
+        </param>
+        <briefdescription>
+<para>Binds shadow samplers. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>program</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for program. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="82" column="17" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1366" bodyend="1495"/>
+        <referencedby refid="class_material_defaults_1_1_flat_color_material_1a3602a1f317d7e37c08e1f2c7e4fd4c2b" compoundref="_material_defaults_8cpp" startline="281" endline="293">MaterialDefaults::FlatColorMaterial::bind</referencedby>
+        <referencedby refid="class_material_defaults_1_1_flat_image_material_1a61b269b2721d94022945e0bf31bbd6fc" compoundref="_material_defaults_8cpp" startline="344" endline="355">MaterialDefaults::FlatImageMaterial::bind</referencedby>
+        <referencedby refid="class_material_defaults_1_1_lit_color_material_1a80c1908b825477e38e320f838708fac9" compoundref="_material_defaults_8cpp" startline="156" endline="168">MaterialDefaults::LitColorMaterial::bind</referencedby>
+        <referencedby refid="class_material_defaults_1_1_lit_image_material_1ab48290d5a6ba088db4337a1b9f3c2137" compoundref="_material_defaults_8cpp" startline="218" endline="230">MaterialDefaults::LitImageMaterial::bind</referencedby>
+        <referencedby refid="class_p_b_r_material_1a30db1aa8fdf92f2a7310b864d79ee159" compoundref="_p_b_r_material_8cpp" startline="228" endline="238">PBRMaterial::bind</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1a2a6a438bcb4909cfe0f049a418ca08a1" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowRenderer::GetShadowDataForLight</definition>
+        <argsstring>(size_t index, const Light &amp;light, ShadowLightData &amp;outData)</argsstring>
+        <name>GetShadowDataForLight</name>
+        <qualifiedname>ShadowRenderer::GetShadowDataForLight</qualifiedname>
+        <param>
+          <type>size_t</type>
+          <declname>index</declname>
+        </param>
+        <param>
+          <type>const <ref refid="struct_light" kindref="compound">Light</ref> &amp;</type>
+          <declname>light</declname>
+        </param>
+        <param>
+          <type><ref refid="struct_shadow_light_data" kindref="compound">ShadowLightData</ref> &amp;</type>
+          <declname>outData</declname>
+        </param>
+        <briefdescription>
+<para>Returns the shadow data for light. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>index</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Identifier or index value. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>light</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for light. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>outData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Buffer that receives data data. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="89" column="17" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1581" bodyend="1598"/>
+        <referencedby refid="class_light_uniform_uploader_1a47d11f57dfb8557bd58dd6e9ca1cb51f" compoundref="_light_utils_8cpp" startline="107" endline="266">LightUniformUploader::UploadLights</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1a5b7b6245485e78e450e4f36511dc6028" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint64_t</type>
+        <definition>uint64_t ShadowRenderer::GetFrameId</definition>
+        <argsstring>()</argsstring>
+        <name>GetFrameId</name>
+        <qualifiedname>ShadowRenderer::GetFrameId</qualifiedname>
+        <briefdescription>
+<para>Returns the frame id. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Result of this operation. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="94" column="21" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1136" bodyend="1138"/>
+        <referencedby refid="class_light_uniform_uploader_1a47d11f57dfb8557bd58dd6e9ca1cb51f" compoundref="_light_utils_8cpp" startline="107" endline="266">LightUniformUploader::UploadLights</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1abbd83290397f84630065b8593c6de72d" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool ShadowRenderer::IsEnabled</definition>
+        <argsstring>()</argsstring>
+        <name>IsEnabled</name>
+        <qualifiedname>ShadowRenderer::IsEnabled</qualifiedname>
+        <briefdescription>
+<para>Checks whether enabled. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>True when the condition is satisfied; otherwise false. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="99" column="17" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1132" bodyend="1134"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1a4968fee5aaeb90ca26b8237a4ad27fda" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="class_texture" kindref="compound">Texture</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; Texture &gt; ShadowRenderer::GetDepthBuffer</definition>
+        <argsstring>()</argsstring>
+        <name>GetDepthBuffer</name>
+        <qualifiedname>ShadowRenderer::GetDepthBuffer</qualifiedname>
+        <briefdescription>
+<para>Returns the depth buffer. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Pointer to the resulting object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="104" column="28" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1497" bodyend="1579"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1aa3cbcea864992880c1e0e93cb2f03c2d" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowRenderer::SetDebugShadows</definition>
+        <argsstring>(bool enabled)</argsstring>
+        <name>SetDebugShadows</name>
+        <qualifiedname>ShadowRenderer::SetDebugShadows</qualifiedname>
+        <param>
+          <type>bool</type>
+          <declname>enabled</declname>
+        </param>
+        <briefdescription>
+<para>Sets the debug shadows. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>enabled</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Flag controlling enabled. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="109" column="17" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1600" bodyend="1602"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1a01a2fe136dac80bd65137ddd1163c05c" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool ShadowRenderer::GetDebugShadows</definition>
+        <argsstring>()</argsstring>
+        <name>GetDebugShadows</name>
+        <qualifiedname>ShadowRenderer::GetDebugShadows</qualifiedname>
+        <briefdescription>
+<para>Returns the debug shadows. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>True when the operation succeeds; otherwise false. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="114" column="17" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1604" bodyend="1606"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1a4f8885763f78efa60d45121f1bc33e6a" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowRenderer::CycleDebugShadows</definition>
+        <argsstring>()</argsstring>
+        <name>CycleDebugShadows</name>
+        <qualifiedname>ShadowRenderer::CycleDebugShadows</qualifiedname>
+        <briefdescription>
+<para>Cycles the active debug shadow visualization mode. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="118" column="17" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1608" bodyend="1615"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1ae8e997e98faa8a7dcee38355f0ba3412" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int ShadowRenderer::GetDebugShadowsMode</definition>
+        <argsstring>()</argsstring>
+        <name>GetDebugShadowsMode</name>
+        <qualifiedname>ShadowRenderer::GetDebugShadowsMode</qualifiedname>
+        <briefdescription>
+<para>Returns the debug shadows mode. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Computed numeric result. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="123" column="16" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1617" bodyend="1619"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1a1ad93fba9dbece24c39e04dfa0319b84" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowRenderer::SetDebugShadowsMode</definition>
+        <argsstring>(int mode)</argsstring>
+        <name>SetDebugShadowsMode</name>
+        <qualifiedname>ShadowRenderer::SetDebugShadowsMode</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>mode</declname>
+        </param>
+        <briefdescription>
+<para>Sets the debug shadows mode. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>mode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Mode or type selector. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="128" column="17" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1621" bodyend="1628"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1a92326cd13a40ee30ab8c1e41cee0cbd1" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowRenderer::SetGlobalDebugOverrideEnabled</definition>
+        <argsstring>(bool enabled)</argsstring>
+        <name>SetGlobalDebugOverrideEnabled</name>
+        <qualifiedname>ShadowRenderer::SetGlobalDebugOverrideEnabled</qualifiedname>
+        <param>
+          <type>bool</type>
+          <declname>enabled</declname>
+        </param>
+        <briefdescription>
+<para>Sets the global debug override enabled. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>enabled</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Flag controlling enabled. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="133" column="17" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1630" bodyend="1632"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1aab904aac799df7524a74571d2551ce9c" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool ShadowRenderer::GetGlobalDebugOverrideEnabled</definition>
+        <argsstring>()</argsstring>
+        <name>GetGlobalDebugOverrideEnabled</name>
+        <qualifiedname>ShadowRenderer::GetGlobalDebugOverrideEnabled</qualifiedname>
+        <briefdescription>
+<para>Returns the global debug override enabled. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>True when the operation succeeds; otherwise false. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="138" column="17" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1634" bodyend="1636"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1af3e6f272f9f7fafa02a28c1684c43aa3" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowRenderer::SetGlobalDebugOverrideMode</definition>
+        <argsstring>(int mode)</argsstring>
+        <name>SetGlobalDebugOverrideMode</name>
+        <qualifiedname>ShadowRenderer::SetGlobalDebugOverrideMode</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>mode</declname>
+        </param>
+        <briefdescription>
+<para>Sets the global debug override mode. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>mode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Mode or type selector. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="143" column="17" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1638" bodyend="1640"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1ab18542dd44e6199fe8baa8ed4beab5b3" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int ShadowRenderer::GetGlobalDebugOverrideMode</definition>
+        <argsstring>()</argsstring>
+        <name>GetGlobalDebugOverrideMode</name>
+        <qualifiedname>ShadowRenderer::GetGlobalDebugOverrideMode</qualifiedname>
+        <briefdescription>
+<para>Returns the global debug override mode. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Computed numeric result. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="148" column="16" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1642" bodyend="1644"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1a32ac240ccaf7b0d0d9402754663471c8" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowRenderer::SetSelectedLightIndex</definition>
+        <argsstring>(int index)</argsstring>
+        <name>SetSelectedLightIndex</name>
+        <qualifiedname>ShadowRenderer::SetSelectedLightIndex</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+<para>Sets the selected light index. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>index</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Identifier or index value. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="153" column="17" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1646" bodyend="1648"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1ae8491189e251451f3803e8a96144188c" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int ShadowRenderer::GetSelectedLightIndex</definition>
+        <argsstring>()</argsstring>
+        <name>GetSelectedLightIndex</name>
+        <qualifiedname>ShadowRenderer::GetSelectedLightIndex</qualifiedname>
+        <briefdescription>
+<para>Returns the selected light index. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Computed numeric result. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="158" column="16" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1650" bodyend="1652"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1a8c06fcdbd9d643efd2c1821da281b460" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowRenderer::SetDirectionalCascadeKernelMarginTexels</definition>
+        <argsstring>(float value)</argsstring>
+        <name>SetDirectionalCascadeKernelMarginTexels</name>
+        <qualifiedname>ShadowRenderer::SetDirectionalCascadeKernelMarginTexels</qualifiedname>
+        <param>
+          <type>float</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+<para>Sets the directional cascade kernel margin texels. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for value. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="163" column="17" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1654" bodyend="1656"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1a232a7bb315118202cb6f79cbb49b29dd" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>float</type>
+        <definition>float ShadowRenderer::GetDirectionalCascadeKernelMarginTexels</definition>
+        <argsstring>()</argsstring>
+        <name>GetDirectionalCascadeKernelMarginTexels</name>
+        <qualifiedname>ShadowRenderer::GetDirectionalCascadeKernelMarginTexels</qualifiedname>
+        <briefdescription>
+<para>Returns the directional cascade kernel margin texels. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Computed numeric result. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="168" column="18" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1658" bodyend="1660"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1aa010995c5c5868ce57940c2533741bff" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowRenderer::SetShadowReceiverNormalBlend</definition>
+        <argsstring>(float value)</argsstring>
+        <name>SetShadowReceiverNormalBlend</name>
+        <qualifiedname>ShadowRenderer::SetShadowReceiverNormalBlend</qualifiedname>
+        <param>
+          <type>float</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+<para>Sets the shadow receiver normal blend. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for value. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="173" column="17" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1662" bodyend="1664"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1ac7c8e21bfe93f9d7ed4891c9a8e1e480" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>float</type>
+        <definition>float ShadowRenderer::GetShadowReceiverNormalBlend</definition>
+        <argsstring>()</argsstring>
+        <name>GetShadowReceiverNormalBlend</name>
+        <qualifiedname>ShadowRenderer::GetShadowReceiverNormalBlend</qualifiedname>
+        <briefdescription>
+<para>Returns the shadow receiver normal blend. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Computed numeric result. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="178" column="18" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1666" bodyend="1668"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1ac292095aa08cd34a52c6d1bd498b9818" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowRenderer::SetDebugLogging</definition>
+        <argsstring>(bool enabled)</argsstring>
+        <name>SetDebugLogging</name>
+        <qualifiedname>ShadowRenderer::SetDebugLogging</qualifiedname>
+        <param>
+          <type>bool</type>
+          <declname>enabled</declname>
+        </param>
+        <briefdescription>
+<para>Sets the debug logging. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>enabled</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Flag controlling enabled. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="183" column="17" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1670" bodyend="1672"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1ac08a7c94e7678f7c0a7ed17c8970b5dd" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool ShadowRenderer::GetDebugLogging</definition>
+        <argsstring>()</argsstring>
+        <name>GetDebugLogging</name>
+        <qualifiedname>ShadowRenderer::GetDebugLogging</qualifiedname>
+        <briefdescription>
+<para>Returns the debug logging. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>True when the operation succeeds; otherwise false. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="188" column="17" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="1674" bodyend="1676"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-static-func">
+      <memberdef kind="function" id="class_shadow_renderer_1aeeea30f6021a5f93894a8936e24d51b2" prot="private" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowRenderer::ensureShadowPrograms</definition>
+        <argsstring>()</argsstring>
+        <name>ensureShadowPrograms</name>
+        <qualifiedname>ShadowRenderer::ensureShadowPrograms</qualifiedname>
+        <briefdescription>
+<para>Ensures shadow programs. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="194" column="17" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="460" bodyend="481"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1a3086ae90853503e1f2a16d574492376f" prot="private" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>Math3D::Mat4</type>
+        <definition>Math3D::Mat4 ShadowRenderer::computeDirectionalMatrix</definition>
+        <argsstring>(const Light &amp;light, PCamera camera)</argsstring>
+        <name>computeDirectionalMatrix</name>
+        <qualifiedname>ShadowRenderer::computeDirectionalMatrix</qualifiedname>
+        <param>
+          <type>const <ref refid="struct_light" kindref="compound">Light</ref> &amp;</type>
+          <declname>light</declname>
+        </param>
+        <param>
+          <type>PCamera</type>
+          <declname>camera</declname>
+        </param>
+        <briefdescription>
+<para>Computes directional matrix. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>light</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for light. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>camera</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for camera. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Result of this operation. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="201" column="25" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="483" bodyend="552"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1a114da67d41bbf8e4ca1fd759253d0a31" prot="private" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>Math3D::Mat4</type>
+        <definition>Math3D::Mat4 ShadowRenderer::computeSpotMatrix</definition>
+        <argsstring>(const Light &amp;light)</argsstring>
+        <name>computeSpotMatrix</name>
+        <qualifiedname>ShadowRenderer::computeSpotMatrix</qualifiedname>
+        <param>
+          <type>const <ref refid="struct_light" kindref="compound">Light</ref> &amp;</type>
+          <declname>light</declname>
+        </param>
+        <briefdescription>
+<para>Computes spot matrix. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>light</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for light. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Result of this operation. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="207" column="25" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="800" bodyend="823"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_renderer_1af64fb186a2a20c310c5f2a123c71a296" prot="private" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowRenderer::computePointMatrices</definition>
+        <argsstring>(const Light &amp;light, std::vector&lt; Math3D::Mat4 &gt; &amp;outMatrices)</argsstring>
+        <name>computePointMatrices</name>
+        <qualifiedname>ShadowRenderer::computePointMatrices</qualifiedname>
+        <param>
+          <type>const <ref refid="struct_light" kindref="compound">Light</ref> &amp;</type>
+          <declname>light</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; Math3D::Mat4 &gt; &amp;</type>
+          <declname>outMatrices</declname>
+        </param>
+        <briefdescription>
+<para>Computes point matrices. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>light</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for light. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>outMatrices</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output value for matrices. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="213" column="17" bodyfile="src/Rendering/Lighting/ShadowRenderer.cpp" bodystart="825" bodyend="840"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_shadow_renderer" kindref="compound">ShadowRenderer</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Lighting/ShadowRenderer.h" line="47" column="1" bodyfile="src/Rendering/Lighting/ShadowRenderer.h" bodystart="47" bodyend="214"/>
+    <listofallmembers>
+      <member refid="class_shadow_renderer_1afbb6c273a05d6646ee9705e4bd6b3233" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>BeginFrame</name></member>
+      <member refid="class_shadow_renderer_1a294d22aa8a61404ca7741fb92179f759" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>BindShadowSamplers</name></member>
+      <member refid="class_shadow_renderer_1a3086ae90853503e1f2a16d574492376f" prot="private" virt="non-virtual"><scope>ShadowRenderer</scope><name>computeDirectionalMatrix</name></member>
+      <member refid="class_shadow_renderer_1af64fb186a2a20c310c5f2a123c71a296" prot="private" virt="non-virtual"><scope>ShadowRenderer</scope><name>computePointMatrices</name></member>
+      <member refid="class_shadow_renderer_1a114da67d41bbf8e4ca1fd759253d0a31" prot="private" virt="non-virtual"><scope>ShadowRenderer</scope><name>computeSpotMatrix</name></member>
+      <member refid="class_shadow_renderer_1a4f8885763f78efa60d45121f1bc33e6a" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>CycleDebugShadows</name></member>
+      <member refid="class_shadow_renderer_1aeeea30f6021a5f93894a8936e24d51b2" prot="private" virt="non-virtual"><scope>ShadowRenderer</scope><name>ensureShadowPrograms</name></member>
+      <member refid="class_shadow_renderer_1ac08a7c94e7678f7c0a7ed17c8970b5dd" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>GetDebugLogging</name></member>
+      <member refid="class_shadow_renderer_1a01a2fe136dac80bd65137ddd1163c05c" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>GetDebugShadows</name></member>
+      <member refid="class_shadow_renderer_1ae8e997e98faa8a7dcee38355f0ba3412" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>GetDebugShadowsMode</name></member>
+      <member refid="class_shadow_renderer_1a4968fee5aaeb90ca26b8237a4ad27fda" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>GetDepthBuffer</name></member>
+      <member refid="class_shadow_renderer_1a232a7bb315118202cb6f79cbb49b29dd" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>GetDirectionalCascadeKernelMarginTexels</name></member>
+      <member refid="class_shadow_renderer_1a5b7b6245485e78e450e4f36511dc6028" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>GetFrameId</name></member>
+      <member refid="class_shadow_renderer_1aab904aac799df7524a74571d2551ce9c" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>GetGlobalDebugOverrideEnabled</name></member>
+      <member refid="class_shadow_renderer_1ab18542dd44e6199fe8baa8ed4beab5b3" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>GetGlobalDebugOverrideMode</name></member>
+      <member refid="class_shadow_renderer_1ae8491189e251451f3803e8a96144188c" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>GetSelectedLightIndex</name></member>
+      <member refid="class_shadow_renderer_1a2a6a438bcb4909cfe0f049a418ca08a1" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>GetShadowDataForLight</name></member>
+      <member refid="class_shadow_renderer_1ac7c8e21bfe93f9d7ed4891c9a8e1e480" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>GetShadowReceiverNormalBlend</name></member>
+      <member refid="class_shadow_renderer_1abbd83290397f84630065b8593c6de72d" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>IsEnabled</name></member>
+      <member refid="class_shadow_renderer_1aab58aceef40d58cbcb99197fb3b0b1c9" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>RenderShadows</name></member>
+      <member refid="class_shadow_renderer_1a3ba920ae87f7206899c27bf206f7b88f" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>RenderShadowsBatch</name></member>
+      <member refid="class_shadow_renderer_1ac292095aa08cd34a52c6d1bd498b9818" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>SetDebugLogging</name></member>
+      <member refid="class_shadow_renderer_1aa3cbcea864992880c1e0e93cb2f03c2d" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>SetDebugShadows</name></member>
+      <member refid="class_shadow_renderer_1a1ad93fba9dbece24c39e04dfa0319b84" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>SetDebugShadowsMode</name></member>
+      <member refid="class_shadow_renderer_1a8c06fcdbd9d643efd2c1821da281b460" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>SetDirectionalCascadeKernelMarginTexels</name></member>
+      <member refid="class_shadow_renderer_1a92326cd13a40ee30ab8c1e41cee0cbd1" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>SetGlobalDebugOverrideEnabled</name></member>
+      <member refid="class_shadow_renderer_1af3e6f272f9f7fafa02a28c1684c43aa3" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>SetGlobalDebugOverrideMode</name></member>
+      <member refid="class_shadow_renderer_1a32ac240ccaf7b0d0d9402754663471c8" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>SetSelectedLightIndex</name></member>
+      <member refid="class_shadow_renderer_1aa010995c5c5868ce57940c2533741bff" prot="public" virt="non-virtual"><scope>ShadowRenderer</scope><name>SetShadowReceiverNormalBlend</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

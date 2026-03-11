@@ -1,0 +1,186 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="_skybox_material_8cpp" kind="file" language="C++">
+    <compoundname>SkyboxMaterial.cpp</compoundname>
+    <includes refid="_skybox_material_8h" local="yes">Rendering/Materials/SkyboxMaterial.h</includes>
+    <includes local="yes">Assets/Core/Asset.h</includes>
+    <includes local="yes">Foundation/Logging/Logbot.h</includes>
+    <includes local="no">glad/glad.h</includes>
+    <incdepgraph>
+      <node id="14">
+        <label>Assets/Core/Asset.h</label>
+      </node>
+      <node id="4">
+        <label>Rendering/Materials/Material.h</label>
+        <link refid="_material_8h"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>src/Rendering/Materials/SkyboxMaterial.cpp</label>
+        <link refid="_skybox_material_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Rendering/Materials/SkyboxMaterial.h</label>
+        <link refid="_skybox_material_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>Rendering/Shaders/ShaderProgram.h</label>
+        <link refid="_shader_program_8h"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+      </node>
+      <node id="15">
+        <label>Rendering/Textures/CubeMap.h</label>
+        <link refid="_cube_map_8h"/>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+      </node>
+      <node id="13">
+        <label>Rendering/Textures/Texture.h</label>
+        <link refid="_texture_8h"/>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+      </node>
+      <node id="17">
+        <label>Foundation/Logging/Logbot.h</label>
+      </node>
+      <node id="12">
+        <label>Foundation/Math/Math3D.h</label>
+      </node>
+      <node id="16">
+        <label>Foundation/Util/ValueContainer.h</label>
+      </node>
+      <node id="10">
+        <label>SDL3/SDL_opengl.h</label>
+      </node>
+      <node id="9">
+        <label>glad/glad.h</label>
+      </node>
+      <node id="11">
+        <label>map</label>
+      </node>
+      <node id="3">
+        <label>memory</label>
+      </node>
+      <node id="5">
+        <label>string</label>
+      </node>
+      <node id="6">
+        <label>unordered_map</label>
+      </node>
+      <node id="8">
+        <label>vector</label>
+      </node>
+    </incdepgraph>
+    <briefdescription>
+<para>Implementation for <ref refid="class_skybox_material" kindref="compound">SkyboxMaterial</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_skybox_material_8h" kindref="compound">Rendering/Materials/SkyboxMaterial.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Assets/Core/Asset.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Foundation/Logging/Logbot.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;glad/glad.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight></codeline>
+<codeline lineno="12" refid="class_skybox_material_1a1aa19f0df9db4109ee056f7b109f98c0" refkind="member"><highlight class="normal"><ref refid="class_skybox_material_1a1aa19f0df9db4109ee056f7b109f98c0" kindref="member">SkyboxMaterial::SkyboxMaterial</ref>(std::shared_ptr&lt;ShaderProgram&gt;<sp/>program)<sp/>:<sp/><ref refid="class_material_1ace810a426f4b488d2dc2a53070d85405" kindref="member">Material</ref>(program)<sp/>{</highlight></codeline>
+<codeline lineno="13"><highlight class="normal"><sp/><sp/><sp/><sp/>EnvMap.onChange([</highlight><highlight class="keyword">this</highlight><highlight class="normal">](std::shared_ptr&lt;CubeMap&gt;,<sp/>std::shared_ptr&lt;CubeMap&gt;<sp/>newValue)<sp/>-&gt;<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="14"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>set&lt;GLUniformUpload::CubeMapSlot&gt;(</highlight><highlight class="stringliteral">&quot;u_envMap&quot;</highlight><highlight class="normal">,<sp/><ref refid="struct_g_l_uniform_upload_1_1_cube_map_slot" kindref="compound">GLUniformUpload::CubeMapSlot</ref>(newValue,<sp/>0));</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><sp/><sp/><sp/><sp/>});</highlight></codeline>
+<codeline lineno="17"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight></codeline>
+<codeline lineno="19" refid="class_skybox_material_1acc843c2b1152fda9d10fbd964e7e9473" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="class_skybox_material_1acc843c2b1152fda9d10fbd964e7e9473" kindref="member">SkyboxMaterial::bind</ref>(){</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>program<sp/>=<sp/>getShader();</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(!program)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/>program-&gt;bind();</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>map<sp/>=<sp/>EnvMap.get();</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(map){</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>map-&gt;bind(0);</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>GLint<sp/>loc<sp/>=<sp/>glGetUniformLocation(program-&gt;getID(),<sp/></highlight><highlight class="stringliteral">&quot;u_envMap&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(loc<sp/>!=<sp/>-1){</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>glUniform1i(loc,<sp/>0);</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/>Material::bind();</highlight></codeline>
+<codeline lineno="35"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight></codeline>
+<codeline lineno="37" refid="class_skybox_material_1a25b97b60f3d10f4f586a3fcbd1d4f7cc" refkind="member"><highlight class="normal">std::shared_ptr&lt;SkyboxMaterial&gt;<sp/><ref refid="class_skybox_material_1a25b97b60f3d10f4f586a3fcbd1d4f7cc" kindref="member">SkyboxMaterial::Create</ref>(std::shared_ptr&lt;CubeMap&gt;<sp/>envMap){</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/>std::shared_ptr&lt;Asset&gt;<sp/>vertexShader<sp/>=<sp/>(AssetManager::Instance.getOrLoad(</highlight><highlight class="stringliteral">&quot;@assets/shader/Shader_Vert_Skybox.vert&quot;</highlight><highlight class="normal">));</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/>std::shared_ptr&lt;Asset&gt;<sp/>fragmentShader<sp/>=<sp/>(AssetManager::Instance.getOrLoad(</highlight><highlight class="stringliteral">&quot;@assets/shader/Shader_Frag_Skybox.frag&quot;</highlight><highlight class="normal">));</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>program<sp/>=<sp/>ShaderCacheManager::INSTANCE.getOrCompile(</highlight><highlight class="stringliteral">&quot;SkyboxShader_v2&quot;</highlight><highlight class="normal">,<sp/>vertexShader-&gt;asString(),<sp/>fragmentShader-&gt;asString());</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(program<sp/>&amp;&amp;<sp/>program-&gt;getID()<sp/>==<sp/>0){</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LogBot.Log(LOG_ERRO,<sp/></highlight><highlight class="stringliteral">&quot;Failed<sp/>to<sp/>link<sp/>SkyboxShader:<sp/>\n%s&quot;</highlight><highlight class="normal">,<sp/>program-&gt;getLog().c_str());</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>material<sp/>=<sp/>std::make_shared&lt;SkyboxMaterial&gt;(program);</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(!envMap){</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LogBot.Log(LOG_WARN,<sp/></highlight><highlight class="stringliteral">&quot;SkyboxMaterial<sp/>created<sp/>with<sp/>null<sp/>cubemap.<sp/>Skybox<sp/>will<sp/>render<sp/>black.&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/>material-&gt;EnvMap<sp/>=<sp/>envMap;</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>material;</highlight></codeline>
+<codeline lineno="52"><highlight class="normal">}</highlight></codeline>
+    </programlisting>
+    <location file="src/Rendering/Materials/SkyboxMaterial.cpp"/>
+  </compounddef>
+</doxygen>

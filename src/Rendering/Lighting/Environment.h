@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Lighting/Environment.h
+ * @brief Declarations for Environment.
+ */
+
 #ifndef ENVIRONMENT_H
 #define ENVIRONMENT_H
 
@@ -9,6 +14,7 @@
 class SkyBox;
 typedef std::shared_ptr<SkyBox> PSkyBox;
 
+/// @brief Represents the Environment type.
 class Environment {
     private:
         LightManager lightManager;
@@ -16,8 +22,15 @@ class Environment {
         bool lightingEnabled = false;
 
     public:
+        /**
+         * @brief Constructs a new Environment instance.
+         */
         Environment() = default;
 
+        /**
+         * @brief Returns the light manager.
+         * @return Reference to the resulting value.
+         */
         LightManager& getLightManager() { return lightManager; }
         const LightManager& getLightManager() const { return lightManager; }
 

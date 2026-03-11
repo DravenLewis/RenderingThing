@@ -1,8 +1,14 @@
+/**
+ * @file src/Foundation/Util/ValueContainer.h
+ * @brief Declarations for ValueContainer.
+ */
+
 #ifndef VALUECONTAINER_H
 #define VALUECONTAINER_H
 
 #include <functional>
 
+/// @brief Holds data for ValueContainer.
 template<typename T>
 struct ValueContainer{
     private:
@@ -12,13 +18,24 @@ struct ValueContainer{
 
     public:
 
+        /**
+         * @brief Constructs a new ValueContainer instance.
+         */
         ValueContainer() = default;
 
+        /**
+         * @brief Constructs a new ValueContainer instance.
+         * @param v Value for v.
+         */
         ValueContainer(const T& v){
             val = v;
             empty = false;
         }
 
+        /**
+         * @brief Sets the target value.
+         * @param v Value for v.
+         */
         void set(const T& v) {
             if(!empty && v == val) return;
 
@@ -33,6 +50,10 @@ struct ValueContainer{
             }
         };
 
+        /**
+         * @brief Returns the current value.
+         * @return Reference to the resulting value.
+         */
         T& get() {return val;}
 
         void onChange(std::function<bool(T,T)> fn){on_change = std::move(fn);};

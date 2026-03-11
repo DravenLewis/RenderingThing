@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_true_type_font" xml:lang="en-US">
+<title>TrueTypeFont Class Reference</title>
+<indexterm><primary>TrueTypeFont</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_true_type_font">TrueTypeFont</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;STBTrueTypeFont.h&gt;</computeroutput>
+</para>
+<para>Inheritance diagram for TrueTypeFont:    <informalfigure>
+        <mediaobject>
+            <imageobject>
+                <imagedata width="50%" align="center" valign="middle" scalefit="0" fileref="class_true_type_font.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+    </informalfigure>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_true_type_font_1ad32c45a5111d82794f1d8fe9d3a0f708"/><emphasis role="strong">TrueTypeFont</emphasis> ()</para>
+
+<para>Constructs a new <link linkend="_class_true_type_font">TrueTypeFont</link> instance. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_true_type_font_1a4af92a8e28331e8a35e1624f98706944">_initFont</link> () override</para>
+
+<para>Initializes font resources. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_true_type_font_1a988b328a7c02ab8509e054f9128c9884">drawText</link> (std::string text, Math3D::Vec2 position, PCamera camera, Color color, bool useCache) override</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+Public Member Functions inherited from <link linkend="_class_font">Font</link>        <itemizedlist>
+            <listitem><para><emphasis role="strong">Font</emphasis> ()</para>
+
+<para>Constructs a new <link linkend="_class_font">Font</link> instance. </para>
+</listitem>
+            <listitem><para>virtual bool <emphasis role="strong">supportsQueuedDrawing</emphasis> () const</para>
+</listitem>
+            <listitem><para>virtual void <emphasis role="strong">beginFrame</emphasis> (PCamera camera)</para>
+</listitem>
+            <listitem><para>virtual void <emphasis role="strong">flushQueuedText</emphasis> (PCamera camera)</para>
+</listitem>
+            <listitem><para>void <emphasis role="strong">clearCache</emphasis> ()</para>
+</listitem>
+            <listitem><para>PAsset <emphasis role="strong">getAssetPointer</emphasis> ()</para>
+</listitem>
+        </itemizedlist>
+<simplesect>
+    <title>Additional Inherited Members    </title>
+Static Public Member Functions inherited from <link linkend="_class_font">Font</link>        <itemizedlist>
+            <listitem><para>template&lt;typename T&gt; </para><para>static std::shared_ptr&lt; T &gt; <emphasis role="strong">Create</emphasis> (PAsset asset, float fontSize=18.0f)</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+Static Public Attributes inherited from <link linkend="_class_font">Font</link>        <itemizedlist>
+            <listitem><para>static Logbot <emphasis role="strong">FontLogger</emphasis> = Logbot::CreateInstance(&quot;Font&quot;)</para>
+</listitem>
+        </itemizedlist>
+Protected Attributes inherited from <link linkend="_class_font">Font</link>        <itemizedlist>
+            <listitem><para>PAsset <emphasis role="strong">assetPtr</emphasis></para>
+</listitem>
+            <listitem><para>PTexture <emphasis role="strong">textureAtlasPtr</emphasis></para>
+</listitem>
+            <listitem><para>PMaterial <emphasis role="strong">materialCachePtr</emphasis></para>
+</listitem>
+            <listitem><para>float <emphasis role="strong">fontSize</emphasis></para>
+</listitem>
+            <listitem><para>std::array&lt; <link linkend="_struct_font_character">FontCharacter</link>, 128 &gt; <emphasis role="strong">characters</emphasis></para>
+</listitem>
+            <listitem><para>std::map&lt; <link linkend="_struct_text_cache_key">TextCacheKey</link>, std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; &gt; <emphasis role="strong">meshCache</emphasis></para>
+</listitem>
+        </itemizedlist>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_true_type_font">TrueTypeFont</link> type. </para>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_true_type_font_1a4af92a8e28331e8a35e1624f98706944"/><section>
+    <title>_initFont()</title>
+<indexterm><primary>_initFont</primary><secondary>TrueTypeFont</secondary></indexterm>
+<indexterm><primary>TrueTypeFont</primary><secondary>_initFont</secondary></indexterm>
+<para><computeroutput>void TrueTypeFont::_initFont ( )<computeroutput>[override]</computeroutput>, <computeroutput>[virtual]</computeroutput></computeroutput></para><para>
+
+<para>Initializes font resources. </para>
+</para>
+<para>
+Implements <link linkend="_class_font_1aa6b8da140518e4282bbe81e7033e0081">Font</link>.</para>
+</section>
+<anchor xml:id="_class_true_type_font_1a988b328a7c02ab8509e054f9128c9884"/><section>
+    <title>drawText()</title>
+<indexterm><primary>drawText</primary><secondary>TrueTypeFont</secondary></indexterm>
+<indexterm><primary>TrueTypeFont</primary><secondary>drawText</secondary></indexterm>
+<para><computeroutput>void TrueTypeFont::drawText (std::string text, Math3D::Vec2 position, PCamera camera, Color color, bool useCache)<computeroutput>[override]</computeroutput>, <computeroutput>[virtual]</computeroutput></computeroutput></para><para>
+Implements <link linkend="_class_font">Font</link>.</para>
+</section>
+<para>
+The documentation for this class was generated from the following files:</para>
+src/Rendering/Fonts/<link linkend="__s_t_b_true_type_font_8h">STBTrueTypeFont.h</link>src/Rendering/Fonts/<link linkend="__s_t_b_true_type_font_8cpp">STBTrueTypeFont.cpp</link></section>
+</section>

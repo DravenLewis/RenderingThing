@@ -1,3 +1,8 @@
+/**
+ * @file src/Foundation/Compression/CompressedFile.cpp
+ * @brief Implementation for CompressedFile.
+ */
+
 #include "Foundation/Compression/CompressedFile.h"
 
 #include "Foundation/Logging/Logbot.h"
@@ -109,6 +114,7 @@ bool writeFileBytes(const std::filesystem::path& path, const BinaryBuffer& data,
     return true;
 }
 
+/// @brief Represents Prepared Zip Write Entry data.
 struct PreparedZipWriteEntry {
     std::string path;
     BinaryBuffer payload;

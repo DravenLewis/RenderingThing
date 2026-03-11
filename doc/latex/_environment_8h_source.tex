@@ -1,0 +1,46 @@
+\doxysection{Environment.\+h}
+\hypertarget{_environment_8h_source}{}\label{_environment_8h_source}\index{src/Rendering/Lighting/Environment.h@{src/Rendering/Lighting/Environment.h}}
+\doxymbox{\hyperlink{_environment_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ ENVIRONMENT\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ ENVIRONMENT\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_light_8h}{Rendering/Lighting/Light.h}}"{}}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_sky_box}{SkyBox}};}
+\DoxyCodeLine{00015\ \textcolor{keyword}{typedef}\ std::shared\_ptr<SkyBox>\ PSkyBox;}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00018\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_environment_a5ec60bc420d1c8837fa0c429c7da7eef}{Environment}}\ \{}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_light_manager}{LightManager}}\ lightManager;}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ PSkyBox\ skybox;}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ lightingEnabled\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_environment_a5ec60bc420d1c8837fa0c429c7da7eef}{Environment}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_light_manager}{LightManager}}\&\ \doxymbox{\hyperlink{class_environment_ac4805d9a4e1da4f43d8f6cc7964cda38}{getLightManager}}()\ \{\ \textcolor{keywordflow}{return}\ lightManager;\ \}}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{class_light_manager}{LightManager}}\&\ \doxymbox{\hyperlink{class_environment_ac4805d9a4e1da4f43d8f6cc7964cda38}{getLightManager}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ lightManager;\ \}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setSkyBox(PSkyBox\ box)\ \{\ skybox\ =\ box;\ \}}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ PSkyBox\ getSkyBox()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ skybox;\ \}}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setLightingEnabled(\textcolor{keywordtype}{bool}\ enabled)\ \{\ lightingEnabled\ =\ enabled;\ \}}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ isLightingEnabled()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ lightingEnabled;\ \}}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<Light>\&\ getLightsForUpload()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ std::vector<Light>\ EMPTY;}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ lightingEnabled\ ?\ lightManager.getAllLights()\ :\ EMPTY;}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00047\ \};}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \textcolor{keyword}{typedef}\ std::shared\_ptr<Environment>\ PEnvironment;}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ ENVIRONMENT\_H}}
+
+\end{DoxyCode}

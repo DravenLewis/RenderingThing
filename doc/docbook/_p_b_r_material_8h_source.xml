@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__p_b_r_material_8h_source" xml:lang="en-US">
+<title>PBRMaterial.h</title>
+<indexterm><primary>src/Rendering/Materials/PBRMaterial.h</primary></indexterm>
+Go to the documentation of this file.<programlisting linenumbering="unnumbered">1 
+5 
+6 <emphasis role="preprocessor">#ifndef&#32;PBR_MATERIAL_H</emphasis>
+7 <emphasis role="preprocessor">#define&#32;PBR_MATERIAL_H</emphasis>
+8 
+9 <emphasis role="preprocessor">#include&#32;&lt;memory&gt;</emphasis>
+10 
+11 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__material_8h">Rendering/Materials/Material.h</link>&quot;</emphasis>
+12 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__texture_8h">Rendering/Textures/Texture.h</link>&quot;</emphasis>
+13 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__cube_map_8h">Rendering/Textures/CubeMap.h</link>&quot;</emphasis>
+14 <emphasis role="preprocessor">#include&#32;&quot;Foundation/Util/ValueContainer.h&quot;</emphasis>
+15 <emphasis role="preprocessor">#include&#32;&quot;Foundation/Math/Color.h&quot;</emphasis>
+16 
+18 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_p_b_r_material_1aa95501f255a91cf9c2572ed4ea38fe27">PBRMaterial</link>&#32;:&#32;<emphasis role="keyword">public</emphasis>&#32;<link linkend="_class_material_1ace810a426f4b488d2dc2a53070d85405">Material</link>&#32;{
+19 &#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+20 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;Math3D::Vec4&gt;&#32;BaseColor;
+21 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;&#32;BaseColorTex;
+22 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;float&gt;&#32;Metallic;
+23 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;float&gt;&#32;Roughness;
+24 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;&#32;RoughnessTex;
+25 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;&#32;MetallicRoughnessTex;
+26 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;&#32;NormalTex;
+27 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;float&gt;&#32;NormalScale;
+28 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;&#32;HeightTex;
+29 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;float&gt;&#32;HeightScale;
+30 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;&#32;EmissiveTex;
+31 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;Math3D::Vec3&gt;&#32;EmissiveColor;
+32 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;float&gt;&#32;EmissiveStrength;
+33 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;&#32;OcclusionTex;
+34 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;float&gt;&#32;OcclusionStrength;
+35 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;std::shared_ptr&lt;CubeMap&gt;&gt;&#32;EnvMap;
+36 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;float&gt;&#32;EnvStrength;
+37 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;int&gt;&#32;UseEnvMap;
+38 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;Math3D::Vec2&gt;&#32;UVScale;
+39 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;Math3D::Vec2&gt;&#32;UVOffset;
+40 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;float&gt;&#32;AlphaCutoff;
+41 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;int&gt;&#32;UseAlphaClip;
+42 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;Math3D::Vec3&gt;&#32;ViewPos;
+43 
+48 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_p_b_r_material_1aa95501f255a91cf9c2572ed4ea38fe27">PBRMaterial</link>(std::shared_ptr&lt;ShaderProgram&gt;&#32;program);
+52 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_p_b_r_material_1a30db1aa8fdf92f2a7310b864d79ee159">bind</link>()&#32;<emphasis role="keyword">override</emphasis>;
+53 
+59 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;PBRMaterial&gt;&#32;<link linkend="_class_p_b_r_material_1aa0579a45ec0d6fa8c1203c0bc582fe39">Create</link>(Math3D::Vec4&#32;baseColor&#32;=&#32;Color::WHITE);
+60 };
+61 
+62 <emphasis role="preprocessor">#endif&#32;</emphasis><emphasis role="comment">//&#32;PBR_MATERIAL_H</emphasis>
+</programlisting></section>

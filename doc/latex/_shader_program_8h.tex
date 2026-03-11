@@ -1,0 +1,249 @@
+\doxysection{src/\+\+Rendering/\+\+Shaders/\+\+Shader\+Program.h File Reference}
+\hypertarget{_shader_program_8h}{}\label{_shader_program_8h}\index{src/Rendering/Shaders/ShaderProgram.h@{src/Rendering/Shaders/ShaderProgram.h}}
+
+
+Declarations for \doxylink{class_shader_program}{Shader\+Program}.  
+
+
+{\ttfamily \+\#include $<$string$>$}\newline
+{\ttfamily \+\#include $<$vector$>$}\newline
+{\ttfamily \+\#include $<$glad/\+glad.\+h$>$}\newline
+{\ttfamily \+\#include $<$SDL3/\+\+SDL\+\_\+opengl.\+h$>$}\newline
+{\ttfamily \+\#include $<$memory$>$}\newline
+{\ttfamily \+\#include $<$map$>$}\newline
+{\ttfamily \+\#include $<$unordered\+\_\+map$>$}\newline
+{\ttfamily \+\#include "{}Foundation/\+\+Math/\+\+Math3\+D.\+h"{}}\newline
+{\ttfamily \+\#include "{}Rendering/\+\+Textures/\+\+Texture.\+h"{}}\newline
+{\ttfamily \+\#include "{}Rendering/\+\+Textures/\+\+Cube\+Map.\+h"{}}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \doxymbox{\hyperlink{class_uniform}{Uniform$<$ T $>$}}
+\begin{DoxyCompactList}\small\item\em Represents the \doxylink{class_uniform}{Uniform} type. \end{DoxyCompactList}\item 
+struct \doxymbox{\hyperlink{struct_g_l_uniform_upload_1_1_texture_slot}{GLUniform\+Upload::\+\+Texture\+Slot}}
+\begin{DoxyCompactList}\small\item\em Holds data for \doxylink{struct_g_l_uniform_upload_1_1_texture_slot}{Texture\+Slot}. \end{DoxyCompactList}\item 
+struct \doxymbox{\hyperlink{struct_g_l_uniform_upload_1_1_cube_map_slot}{GLUniform\+Upload::\+\+Cube\+Map\+Slot}}
+\begin{DoxyCompactList}\small\item\em Holds data for \doxylink{struct_g_l_uniform_upload_1_1_cube_map_slot}{Cube\+Map\+Slot}. \end{DoxyCompactList}\item 
+struct \doxymbox{\hyperlink{struct_shader_bundle}{Shader\+Bundle}}
+\begin{DoxyCompactList}\small\item\em Holds data for \doxylink{struct_shader_bundle}{Shader\+Bundle}. \end{DoxyCompactList}\item 
+class \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}}
+\begin{DoxyCompactList}\small\item\em Represents the \doxylink{class_shader_program}{Shader\+Program} type. \end{DoxyCompactList}\item 
+struct \doxymbox{\hyperlink{struct_shader_cache}{Shader\+Cache}}
+\begin{DoxyCompactList}\small\item\em Holds data for \doxylink{struct_shader_cache}{Shader\+Cache}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{_shader_program_8h_a628acddf9216b5e00424607a3f76ccde}\label{_shader_program_8h_a628acddf9216b5e00424607a3f76ccde} 
+typedef unsigned int {\bfseries Shader}
+\item 
+\Hypertarget{_shader_program_8h_a674040327ddd18c70c0dd831c8f8aece}\label{_shader_program_8h_a674040327ddd18c70c0dd831c8f8aece} 
+typedef unsigned int {\bfseries Program}
+\item 
+\Hypertarget{_shader_program_8h_ade8b92f95573f1fad883fc0c57b13ce4}\label{_shader_program_8h_ade8b92f95573f1fad883fc0c57b13ce4} 
+typedef unsigned int {\bfseries Buffer}
+\item 
+\Hypertarget{_shader_program_8h_a5b731b0d2c129b1d4abd740553375f91}\label{_shader_program_8h_a5b731b0d2c129b1d4abd740553375f91} 
+typedef unsigned int {\bfseries Array}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{_shader_program_8h_a6230e1b9ecbf2d82d10856fd7e1fde46}\label{_shader_program_8h_a6230e1b9ecbf2d82d10856fd7e1fde46} 
+enum \doxymbox{\hyperlink{_shader_program_8h_a6230e1b9ecbf2d82d10856fd7e1fde46}{Shader\+Type}} \{ \newline
+{\bfseries FRAGMENT} = 0
+, {\bfseries VERTEX}
+, {\bfseries GEOMETRY}
+, {\bfseries TESSELATION}
+, \newline
+{\bfseries COMPUTE}
+, {\bfseries TASK}
+, {\bfseries RAYTRACE}
+ \}
+\begin{DoxyCompactList}\small\item\em Enumerates values for \doxylink{_shader_program_8h_a6230e1b9ecbf2d82d10856fd7e1fde46}{Shader\+Type}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \doxymbox{\hyperlink{_shader_program_8h_a40dd1eef82109d54de6c4c994bfcb00f}{GLUniform\+Upload::\+upload}} (GLint loc, int v)
+\begin{DoxyCompactList}\small\item\em Uploads an integer uniform value. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{_shader_program_8h_a1719a7829b7f536b0c65d54be0b64948}{GLUniform\+Upload::\+upload}} (GLint loc, float v)
+\begin{DoxyCompactList}\small\item\em Uploads a float uniform value. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{_shader_program_8h_a0a1f6b4923c4b25a20dcd6ad1cce1781}{GLUniform\+Upload::\+upload}} (GLint loc, const Math3\+D::\+\+Vec2 \&v)
+\begin{DoxyCompactList}\small\item\em Uploads a {\ttfamily vec2} uniform value. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{_shader_program_8h_a61bec12b86c8a389cabdd26a3be8c6ac}{GLUniform\+Upload::\+upload}} (GLint loc, const Math3\+D::\+\+Vec3 \&v)
+\begin{DoxyCompactList}\small\item\em Uploads a {\ttfamily vec3} uniform value. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{_shader_program_8h_a84023ab5fba8436663d337b273fd994c}{GLUniform\+Upload::\+upload}} (GLint loc, const Math3\+D::\+\+Vec4 \&v)
+\begin{DoxyCompactList}\small\item\em Uploads a {\ttfamily vec4} uniform value. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{_shader_program_8h_a09c5d4b7c6caded27743e2b2f10f9f10}{GLUniform\+Upload::\+upload}} (GLint loc, const Math3\+D::\+\+Quat \&q)
+\begin{DoxyCompactList}\small\item\em Uploads a quaternion uniform value. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{_shader_program_8h_ae094e61805f2d87dda7bcf8a508ffd4b}{GLUniform\+Upload::\+upload}} (GLint loc, const Math3\+D::\+\+Mat4 \&m)
+\begin{DoxyCompactList}\small\item\em Uploads a 4x4 matrix uniform value. \end{DoxyCompactList}\item 
+\Hypertarget{_shader_program_8h_a8b04f5fd6f057bffa562e9b7f9cf332c}\label{_shader_program_8h_a8b04f5fd6f057bffa562e9b7f9cf332c} 
+void {\bfseries GLUniform\+Upload::\+upload} (GLint loc, std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$ tex, int slot=0)
+\item 
+void \doxymbox{\hyperlink{_shader_program_8h_a9ca31c0cc52ea03cede335da9f4bb4a1}{GLUniform\+Upload::\+upload}} (GLint loc, const \doxymbox{\hyperlink{struct_g_l_uniform_upload_1_1_texture_slot}{Texture\+Slot}} \&tex\+Slot)
+\begin{DoxyCompactList}\small\item\em Uploads a texture slot uniform. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{_shader_program_8h_a18485998541e12d87ff9e87b917f76dc}{GLUniform\+Upload::\+upload}} (GLint loc, const \doxymbox{\hyperlink{struct_g_l_uniform_upload_1_1_cube_map_slot}{Cube\+Map\+Slot}} \&map\+Slot)
+\begin{DoxyCompactList}\small\item\em Uploads a cube-\/map slot uniform. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Declarations for \doxylink{class_shader_program}{Shader\+Program}. 
+
+
+
+\label{doc-func-members}
+\Hypertarget{_shader_program_8h_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{_shader_program_8h_a18485998541e12d87ff9e87b917f76dc}\index{ShaderProgram.h@{ShaderProgram.h}!upload@{upload}}
+\index{upload@{upload}!ShaderProgram.h@{ShaderProgram.h}}
+\doxysubsubsection{\texorpdfstring{upload()}{upload()}\hspace{0.1cm}{\footnotesize\ttfamily [1/9]}}
+{\footnotesize\ttfamily \label{_shader_program_8h_a18485998541e12d87ff9e87b917f76dc} 
+void GLUniform\+Upload::\+upload (\begin{DoxyParamCaption}\item[{GLint}]{loc}{, }\item[{const \doxymbox{\hyperlink{struct_g_l_uniform_upload_1_1_cube_map_slot}{Cube\+Map\+Slot}} \&}]{map\+Slot}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Uploads a cube-\/map slot uniform. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em loc} & \doxylink{class_uniform}{Uniform} location. \\
+\hline
+{\em map\+Slot} & Cube-\/map and slot binding information. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{_shader_program_8h_ae094e61805f2d87dda7bcf8a508ffd4b}\index{ShaderProgram.h@{ShaderProgram.h}!upload@{upload}}
+\index{upload@{upload}!ShaderProgram.h@{ShaderProgram.h}}
+\doxysubsubsection{\texorpdfstring{upload()}{upload()}\hspace{0.1cm}{\footnotesize\ttfamily [2/9]}}
+{\footnotesize\ttfamily \label{_shader_program_8h_ae094e61805f2d87dda7bcf8a508ffd4b} 
+void GLUniform\+Upload::\+upload (\begin{DoxyParamCaption}\item[{GLint}]{loc}{, }\item[{const Math3\+D::\+\+Mat4 \&}]{m}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Uploads a 4x4 matrix uniform value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em loc} & \doxylink{class_uniform}{Uniform} location. \\
+\hline
+{\em m} & Matrix value. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{_shader_program_8h_a09c5d4b7c6caded27743e2b2f10f9f10}\index{ShaderProgram.h@{ShaderProgram.h}!upload@{upload}}
+\index{upload@{upload}!ShaderProgram.h@{ShaderProgram.h}}
+\doxysubsubsection{\texorpdfstring{upload()}{upload()}\hspace{0.1cm}{\footnotesize\ttfamily [3/9]}}
+{\footnotesize\ttfamily \label{_shader_program_8h_a09c5d4b7c6caded27743e2b2f10f9f10} 
+void GLUniform\+Upload::\+upload (\begin{DoxyParamCaption}\item[{GLint}]{loc}{, }\item[{const Math3\+D::\+\+Quat \&}]{q}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Uploads a quaternion uniform value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em loc} & \doxylink{class_uniform}{Uniform} location. \\
+\hline
+{\em q} & Quaternion value. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{_shader_program_8h_a0a1f6b4923c4b25a20dcd6ad1cce1781}\index{ShaderProgram.h@{ShaderProgram.h}!upload@{upload}}
+\index{upload@{upload}!ShaderProgram.h@{ShaderProgram.h}}
+\doxysubsubsection{\texorpdfstring{upload()}{upload()}\hspace{0.1cm}{\footnotesize\ttfamily [4/9]}}
+{\footnotesize\ttfamily \label{_shader_program_8h_a0a1f6b4923c4b25a20dcd6ad1cce1781} 
+void GLUniform\+Upload::\+upload (\begin{DoxyParamCaption}\item[{GLint}]{loc}{, }\item[{const Math3\+D::\+\+Vec2 \&}]{v}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Uploads a {\ttfamily vec2} uniform value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em loc} & \doxylink{class_uniform}{Uniform} location. \\
+\hline
+{\em v} & Vector value. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{_shader_program_8h_a61bec12b86c8a389cabdd26a3be8c6ac}\index{ShaderProgram.h@{ShaderProgram.h}!upload@{upload}}
+\index{upload@{upload}!ShaderProgram.h@{ShaderProgram.h}}
+\doxysubsubsection{\texorpdfstring{upload()}{upload()}\hspace{0.1cm}{\footnotesize\ttfamily [5/9]}}
+{\footnotesize\ttfamily \label{_shader_program_8h_a61bec12b86c8a389cabdd26a3be8c6ac} 
+void GLUniform\+Upload::\+upload (\begin{DoxyParamCaption}\item[{GLint}]{loc}{, }\item[{const Math3\+D::\+\+Vec3 \&}]{v}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Uploads a {\ttfamily vec3} uniform value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em loc} & \doxylink{class_uniform}{Uniform} location. \\
+\hline
+{\em v} & Vector value. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{_shader_program_8h_a84023ab5fba8436663d337b273fd994c}\index{ShaderProgram.h@{ShaderProgram.h}!upload@{upload}}
+\index{upload@{upload}!ShaderProgram.h@{ShaderProgram.h}}
+\doxysubsubsection{\texorpdfstring{upload()}{upload()}\hspace{0.1cm}{\footnotesize\ttfamily [6/9]}}
+{\footnotesize\ttfamily \label{_shader_program_8h_a84023ab5fba8436663d337b273fd994c} 
+void GLUniform\+Upload::\+upload (\begin{DoxyParamCaption}\item[{GLint}]{loc}{, }\item[{const Math3\+D::\+\+Vec4 \&}]{v}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Uploads a {\ttfamily vec4} uniform value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em loc} & \doxylink{class_uniform}{Uniform} location. \\
+\hline
+{\em v} & Vector value. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{_shader_program_8h_a9ca31c0cc52ea03cede335da9f4bb4a1}\index{ShaderProgram.h@{ShaderProgram.h}!upload@{upload}}
+\index{upload@{upload}!ShaderProgram.h@{ShaderProgram.h}}
+\doxysubsubsection{\texorpdfstring{upload()}{upload()}\hspace{0.1cm}{\footnotesize\ttfamily [7/9]}}
+{\footnotesize\ttfamily \label{_shader_program_8h_a9ca31c0cc52ea03cede335da9f4bb4a1} 
+void GLUniform\+Upload::\+upload (\begin{DoxyParamCaption}\item[{GLint}]{loc}{, }\item[{const \doxymbox{\hyperlink{struct_g_l_uniform_upload_1_1_texture_slot}{Texture\+Slot}} \&}]{tex\+Slot}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Uploads a texture slot uniform. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em loc} & \doxylink{class_uniform}{Uniform} location. \\
+\hline
+{\em tex\+Slot} & \doxylink{class_texture}{Texture} and slot binding information. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{_shader_program_8h_a1719a7829b7f536b0c65d54be0b64948}\index{ShaderProgram.h@{ShaderProgram.h}!upload@{upload}}
+\index{upload@{upload}!ShaderProgram.h@{ShaderProgram.h}}
+\doxysubsubsection{\texorpdfstring{upload()}{upload()}\hspace{0.1cm}{\footnotesize\ttfamily [8/9]}}
+{\footnotesize\ttfamily \label{_shader_program_8h_a1719a7829b7f536b0c65d54be0b64948} 
+void GLUniform\+Upload::\+upload (\begin{DoxyParamCaption}\item[{GLint}]{loc}{, }\item[{float}]{v}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Uploads a float uniform value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em loc} & \doxylink{class_uniform}{Uniform} location. \\
+\hline
+{\em v} & Float value. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{_shader_program_8h_a40dd1eef82109d54de6c4c994bfcb00f}\index{ShaderProgram.h@{ShaderProgram.h}!upload@{upload}}
+\index{upload@{upload}!ShaderProgram.h@{ShaderProgram.h}}
+\doxysubsubsection{\texorpdfstring{upload()}{upload()}\hspace{0.1cm}{\footnotesize\ttfamily [9/9]}}
+{\footnotesize\ttfamily \label{_shader_program_8h_a40dd1eef82109d54de6c4c994bfcb00f} 
+void GLUniform\+Upload::\+upload (\begin{DoxyParamCaption}\item[{GLint}]{loc}{, }\item[{int}]{v}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Uploads an integer uniform value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em loc} & \doxylink{class_uniform}{Uniform} location. \\
+\hline
+{\em v} & Integer value. \\
+\hline
+\end{DoxyParams}

@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_material_registry" xml:lang="en-US">
+<title>MaterialRegistry Class Reference</title>
+<indexterm><primary>MaterialRegistry</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_material_registry">MaterialRegistry</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;MaterialRegistry.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>void <link linkend="_class_material_registry_1adc43e36965c220ba15527a3d8ac9526f">Refresh</link> (bool force=false)</para>
+
+<para>Refreshes registry state. </para>
+</listitem>
+            <listitem><para>const std::vector&lt; <link linkend="_struct_material_registry_entry">MaterialRegistryEntry</link> &gt; &amp; <link linkend="_class_material_registry_1a4c66f055d3c843419a613f70729ea276">GetEntries</link> () const</para>
+
+<para>Returns the entries. </para>
+</listitem>
+            <listitem><para>std::shared_ptr&lt; <link linkend="_class_material">Material</link> &gt; <link linkend="_class_material_registry_1a4e4f6ae18d50428c1352b197aaa4161b">CreateById</link> (const std::string &amp;id, std::string *outError=nullptr) const</para>
+
+<para>Creates by id. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>static <link linkend="_class_material_registry">MaterialRegistry</link> &amp; <link linkend="_class_material_registry_1a5ac1ab1993ba87006a53205026a7e289">Instance</link> ()</para>
+
+<para>Returns the registry singleton instance. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_material_registry">MaterialRegistry</link> type. </para>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_material_registry_1a4e4f6ae18d50428c1352b197aaa4161b"/><section>
+    <title>CreateById()</title>
+<indexterm><primary>CreateById</primary><secondary>MaterialRegistry</secondary></indexterm>
+<indexterm><primary>MaterialRegistry</primary><secondary>CreateById</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_class_material">Material</link> &gt; MaterialRegistry::CreateById (const std::string &amp; id, std::string * outError = <computeroutput>nullptr</computeroutput>
+) const</computeroutput></para><para>
+
+<para>Creates by id. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>id</entry><entry>
+<para>Identifier or index value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>outError</entry><entry>
+<para>Output value for error. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_material_registry_1a4c66f055d3c843419a613f70729ea276"/><section>
+    <title>GetEntries()</title>
+<indexterm><primary>GetEntries</primary><secondary>MaterialRegistry</secondary></indexterm>
+<indexterm><primary>MaterialRegistry</primary><secondary>GetEntries</secondary></indexterm>
+<para><computeroutput>const std::vector&lt; <link linkend="_struct_material_registry_entry">MaterialRegistryEntry</link> &gt; &amp; MaterialRegistry::GetEntries ( ) const</computeroutput></para><para>
+
+<para>Returns the entries. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_material_registry_1a5ac1ab1993ba87006a53205026a7e289"/><section>
+    <title>Instance()</title>
+<indexterm><primary>Instance</primary><secondary>MaterialRegistry</secondary></indexterm>
+<indexterm><primary>MaterialRegistry</primary><secondary>Instance</secondary></indexterm>
+<para><computeroutput><link linkend="_class_material_registry">MaterialRegistry</link> &amp; MaterialRegistry::Instance ( )<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Returns the registry singleton instance. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_material_registry_1adc43e36965c220ba15527a3d8ac9526f"/><section>
+    <title>Refresh()</title>
+<indexterm><primary>Refresh</primary><secondary>MaterialRegistry</secondary></indexterm>
+<indexterm><primary>MaterialRegistry</primary><secondary>Refresh</secondary></indexterm>
+<para><computeroutput>void MaterialRegistry::Refresh (bool force = <computeroutput>false</computeroutput>
+)</computeroutput></para><para>
+
+<para>Refreshes registry state. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>force</entry><entry>
+<para>Flag controlling force. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<para>
+The documentation for this class was generated from the following files:</para>
+src/Rendering/Materials/<link linkend="__material_registry_8h">MaterialRegistry.h</link>src/Rendering/Materials/<link linkend="__material_registry_8cpp">MaterialRegistry.cpp</link></section>
+</section>

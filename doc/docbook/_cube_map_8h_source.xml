@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__cube_map_8h_source" xml:lang="en-US">
+<title>CubeMap.h</title>
+<indexterm><primary>src/Rendering/Textures/CubeMap.h</primary></indexterm>
+Go to the documentation of this file.<programlisting linenumbering="unnumbered">1 
+5 
+6 <emphasis role="preprocessor">#ifndef&#32;CUBEMAP_H</emphasis>
+7 <emphasis role="preprocessor">#define&#32;CUBEMAP_H</emphasis>
+8 
+9 <emphasis role="preprocessor">#include&#32;&lt;glad/glad.h&gt;</emphasis>
+10 <emphasis role="preprocessor">#include&#32;&lt;memory&gt;</emphasis>
+11 
+12 <emphasis role="preprocessor">#include&#32;&quot;Assets/Core/Asset.h&quot;</emphasis>
+13 
+15 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_cube_map_1abafcc08996f6f10f5c0cdcd34c0c68d3">CubeMap</link>&#32;{
+16 &#32;&#32;&#32;&#32;<emphasis role="keyword">private</emphasis>:
+17 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;GLuint&#32;textureID&#32;=&#32;0;
+18 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;size&#32;=&#32;0;
+19 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;ownsTexture&#32;=&#32;<emphasis role="keyword">true</emphasis>;
+20 
+21 &#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+25 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_cube_map_1abafcc08996f6f10f5c0cdcd34c0c68d3">CubeMap</link>()&#32;=&#32;<emphasis role="keywordflow">default</emphasis>;
+29 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_cube_map_1ac4c453248cd7022d3b268755b2dd218e">~CubeMap</link>();
+33 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_cube_map_1ab580566fd193af8a9b1ec59bb0bef307">CubeMap</link>(<emphasis role="keyword">const</emphasis>&#32;<link linkend="_class_cube_map_1abafcc08996f6f10f5c0cdcd34c0c68d3">CubeMap</link>&amp;)&#32;=&#32;<emphasis role="keyword">delete</emphasis>;
+37 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_cube_map_1abafcc08996f6f10f5c0cdcd34c0c68d3">CubeMap</link>&amp;&#32;<link linkend="_class_cube_map_1a4258cd7b4b21d93ebf4438684e6b5689">operator=</link>(<emphasis role="keyword">const</emphasis>&#32;<link linkend="_class_cube_map_1abafcc08996f6f10f5c0cdcd34c0c68d3">CubeMap</link>&amp;)&#32;=&#32;<emphasis role="keyword">delete</emphasis>;
+42 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_cube_map_1abafcc08996f6f10f5c0cdcd34c0c68d3">CubeMap</link>(<link linkend="_class_cube_map_1abafcc08996f6f10f5c0cdcd34c0c68d3">CubeMap</link>&amp;&amp;&#32;other)&#32;<emphasis role="keyword">noexcept</emphasis>;
+47 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_cube_map_1abafcc08996f6f10f5c0cdcd34c0c68d3">CubeMap</link>&amp;&#32;<link linkend="_class_cube_map_1a4258cd7b4b21d93ebf4438684e6b5689">operator=</link>(<link linkend="_class_cube_map_1abafcc08996f6f10f5c0cdcd34c0c68d3">CubeMap</link>&amp;&amp;&#32;other)&#32;<emphasis role="keyword">noexcept</emphasis>;
+48 
+53 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_cube_map_1a60762e1cc3859756d5f63b71d147f83c">bind</link>(<emphasis role="keywordtype">unsigned</emphasis>&#32;<emphasis role="keywordtype">int</emphasis>&#32;slot&#32;=&#32;0)&#32;<emphasis role="keyword">const</emphasis>;
+57 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_cube_map_1ae1991169c4fb0bddf66ab9b7a6fd9d1d">unbind</link>()&#32;<emphasis role="keyword">const</emphasis>;
+61 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_cube_map_1a1257f0ccf0fc38c412ea4e3eb5303e3a">dispose</link>();
+62 
+67 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;<link linkend="_class_cube_map_1ae9d52b975e1d891d4f3084ee36185dea">getSize</link>()<emphasis role="keyword">&#32;const&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;size;&#32;}
+68 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;GLuint&#32;getID()<emphasis role="keyword">&#32;const&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;textureID;&#32;}
+69 
+70 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;CubeMap&gt;&#32;Load(
+71 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PAsset&#32;posX,
+72 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PAsset&#32;negX,
+73 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PAsset&#32;posY,
+74 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PAsset&#32;negY,
+75 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PAsset&#32;posZ,
+76 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PAsset&#32;negZ
+77 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;);
+78 };
+79 
+80 <emphasis role="keyword">typedef</emphasis>&#32;std::shared_ptr&lt;CubeMap&gt;&#32;PCubeMap;
+81 
+82 <emphasis role="preprocessor">#endif&#32;</emphasis><emphasis role="comment">//&#32;CUBEMAP_H</emphasis>
+</programlisting></section>

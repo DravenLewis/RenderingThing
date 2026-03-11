@@ -1,3 +1,8 @@
+/**
+ * @file src/Serialization/Schema/ComponentSerializationRegistry.cpp
+ * @brief Implementation for ComponentSerializationRegistry.
+ */
+
 #include "Serialization/Schema/ComponentSerializationRegistry.h"
 
 #include "ECS/Core/ECSComponents.h"

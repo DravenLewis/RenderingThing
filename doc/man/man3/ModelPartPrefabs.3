@@ -1,0 +1,128 @@
+.TH "ModelPartPrefabs" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ModelPartPrefabs \- Holds data for \fBModelPartPrefabs\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ModelPartPrefabs\&.h>\fP
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static std::shared_ptr< \fBModelPart\fP > \fBMakePlane\fP (float width, float height, PMaterial mat=\fBMaterialDefaults::ColorMaterial::Create\fP(Color::RED), Math3D::Vec3 normal=Math3D::Vec3(0, 1, 0))"
+.br
+.RI "Creates plane\&. "
+.ti -1c
+.RI "static std::shared_ptr< \fBModelPart\fP > \fBMakeBox\fP (float width, float height, float depth, PMaterial mat=\fBMaterialDefaults::ColorMaterial::Create\fP(Color::RED))"
+.br
+.RI "Creates box\&. "
+.ti -1c
+.RI "static std::shared_ptr< \fBModelPart\fP > \fBMakeCirclePlane\fP (float radius, int segments=32, PMaterial material=\fBMaterialDefaults::ColorMaterial::Create\fP(Color::RED), Math3D::Vec3 normal=Math3D::Vec3(0, 1, 0))"
+.br
+.RI "Creates circle plane\&. "
+.ti -1c
+.RI "static std::shared_ptr< \fBModelPart\fP > \fBMakeSphere\fP (float radius=1\&.0f, int slices=32, int stacks=18, PMaterial material=\fBMaterialDefaults::ColorMaterial::Create\fP(Color::WHITE))"
+.br
+.RI "Creates sphere\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Holds data for \fBModelPartPrefabs\fP\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "std::shared_ptr< \fBModelPart\fP > ModelPartPrefabs::MakeBox (float width, float height, float depth, PMaterial mat = \fR\fBMaterialDefaults::ColorMaterial::Create\fP(Color::RED)\fP)\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+Creates box\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIwidth\fP Dimension value\&. 
+.br
+\fIheight\fP Dimension value\&. 
+.br
+\fIdepth\fP Value for depth\&. 
+.br
+\fImat\fP Value for mat\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+.SS "std::shared_ptr< \fBModelPart\fP > ModelPartPrefabs::MakeCirclePlane (float radius, int segments = \fR32\fP, PMaterial material = \fR\fBMaterialDefaults::ColorMaterial::Create\fP(Color::RED)\fP, Math3D::Vec3 normal = \fRMath3D::Vec3(0,1,0)\fP)\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+Creates circle plane\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIradius\fP Value for radius\&. 
+.br
+\fIsegments\fP Value for segments\&. 
+.br
+\fImaterial\fP Value for material\&. 
+.br
+\fInormal\fP Value for normal\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+.SS "std::shared_ptr< \fBModelPart\fP > ModelPartPrefabs::MakePlane (float width, float height, PMaterial mat = \fR\fBMaterialDefaults::ColorMaterial::Create\fP(Color::RED)\fP, Math3D::Vec3 normal = \fRMath3D::Vec3(0,1,0)\fP)\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+Creates plane\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIwidth\fP Dimension value\&. 
+.br
+\fIheight\fP Dimension value\&. 
+.br
+\fImat\fP Value for mat\&. 
+.br
+\fInormal\fP Value for normal\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+.SS "std::shared_ptr< \fBModelPart\fP > ModelPartPrefabs::MakeSphere (float radius = \fR1\&.0f\fP, int slices = \fR32\fP, int stacks = \fR18\fP, PMaterial material = \fR\fBMaterialDefaults::ColorMaterial::Create\fP(Color::WHITE)\fP)\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+Creates sphere\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIradius\fP Value for radius\&. 
+.br
+\fIslices\fP Value for slices\&. 
+.br
+\fIstacks\fP Value for stacks\&. 
+.br
+\fImaterial\fP Value for material\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

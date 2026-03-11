@@ -1,0 +1,57 @@
+\doxysection{src/\+\+Rendering/\+\+Fonts/\+\+Font.h File Reference}
+\hypertarget{_font_8h}{}\label{_font_8h}\index{src/Rendering/Fonts/Font.h@{src/Rendering/Fonts/Font.h}}
+
+
+Declarations for \doxylink{class_font}{Font}.  
+
+
+{\ttfamily \+\#include $<$memory$>$}\newline
+{\ttfamily \+\#include $<$map$>$}\newline
+{\ttfamily \+\#include $<$array$>$}\newline
+{\ttfamily \+\#include $<$vector$>$}\newline
+{\ttfamily \+\#include "{}Assets/\+\+Core/\+\+Asset.\+h"{}}\newline
+{\ttfamily \+\#include "{}Foundation/\+\+Math/\+\+Math3\+D.\+h"{}}\newline
+{\ttfamily \+\#include "{}Rendering/\+\+Geometry/\+\+Drawable.\+h"{}}\newline
+{\ttfamily \+\#include "{}Rendering/\+\+Geometry/\+\+Model\+Part.\+h"{}}\newline
+{\ttfamily \+\#include "{}Rendering/\+\+Textures/\+\+Texture.\+h"{}}\newline
+{\ttfamily \+\#include "{}Foundation/\+\+Math/\+\+Color.\+h"{}}\newline
+{\ttfamily \+\#include "{}Scene/\+\+Camera.\+h"{}}\newline
+{\ttfamily \+\#include "{}Foundation/\+\+Logging/\+\+Logbot.\+h"{}}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \doxymbox{\hyperlink{struct_text_cache_key}{Text\+Cache\+Key}}
+\begin{DoxyCompactList}\small\item\em Holds data for \doxylink{struct_text_cache_key}{Text\+Cache\+Key}. \end{DoxyCompactList}\item 
+struct \doxymbox{\hyperlink{struct_font_character}{Font\+Character}}
+\begin{DoxyCompactList}\small\item\em Holds data for \doxylink{struct_font_character}{Font\+Character}. \end{DoxyCompactList}\item 
+class \doxymbox{\hyperlink{class_font}{Font}}
+\begin{DoxyCompactList}\small\item\em Represents the \doxylink{class_font}{Font} type. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{_font_8h_ab3ff9de957df6b4b1c16b5e59f8f7295}\label{_font_8h_ab3ff9de957df6b4b1c16b5e59f8f7295} 
+\+\#define {\bfseries ENGINE\+\_\+\+STB\+\_\+\+TRUETYPE}~0x0\+FA25
+\item 
+\Hypertarget{_font_8h_a892442bd236faf5d769bedb53d057ae3}\label{_font_8h_a892442bd236faf5d769bedb53d057ae3} 
+\+\#define {\bfseries ENGINE\+\_\+\+FREETYPE}~0x0\+E281
+\item 
+\Hypertarget{_font_8h_a22331570037c683cf3fa26138128cdd2}\label{_font_8h_a22331570037c683cf3fa26138128cdd2} 
+\+\#define {\bfseries FONT\+\_\+\+ENGINE}~ENGINE\+\_\+\+FREETYPE
+\item 
+\Hypertarget{_font_8h_a13b6816a1385a6925ae8a18b488f14e3}\label{_font_8h_a13b6816a1385a6925ae8a18b488f14e3} 
+\+\#define {\bfseries FONT\+\_\+\+BITMAP\+\_\+W}~1024
+\item 
+\Hypertarget{_font_8h_a87f631c56485868ca2bd1f637f09e73a}\label{_font_8h_a87f631c56485868ca2bd1f637f09e73a} 
+\+\#define {\bfseries FONT\+\_\+\+BITMAP\+\_\+H}~1024
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{_font_8h_a2ac6c72b79285109001635eda602a867}\label{_font_8h_a2ac6c72b79285109001635eda602a867} 
+typedef std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_font}{Font}} $>$ {\bfseries PFont}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Declarations for \doxylink{class_font}{Font}. 
+

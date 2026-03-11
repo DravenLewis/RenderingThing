@@ -1,0 +1,287 @@
+.TH "Screen" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Screen \- Represents the \fBScreen\fP type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <Screen\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBScreen\fP (int width, int height)"
+.br
+.RI "Constructs a new \fBScreen\fP instance\&. "
+.ti -1c
+.RI "\fB~Screen\fP ()"
+.br
+.RI "Destroys this \fBScreen\fP instance\&. "
+.ti -1c
+.RI "void \fBprocessRenderPipeline\fP ()"
+.br
+.RI "Processes the post-processing pipeline\&. "
+.ti -1c
+.RI "void \fBdrawToWindow\fP (RenderWindow *window, bool clearWindow=true)"
+.br
+.RI "Draws to window\&. "
+.ti -1c
+.RI "void \fBdrawToView\fP (PView view, bool clearWindow=true, float x=\-1, float y=\-1, float width=\-1, float height=\-1)"
+.br
+.RI "Draws to view\&. "
+.ti -1c
+.RI "void \fBresize\fP (int w, int h)"
+.br
+.RI "Resizes internal resources\&. "
+.ti -1c
+.RI "int \fBgetWidth\fP ()"
+.br
+.RI "Returns the width\&. "
+.ti -1c
+.RI "int \fBgetHeight\fP ()"
+.br
+.RI "Returns the height\&. "
+.ti -1c
+.RI "void \fBbind\fP (bool clear=true)"
+.br
+.RI "Binds this resource\&. "
+.ti -1c
+.RI "void \fBunbind\fP ()"
+.br
+.RI "Unbinds this resource\&. "
+.ti -1c
+.RI "void \fBaddEffect\fP (Graphics::PostProcessing::PPostProcessingEffect effect)"
+.br
+.RI "Adds effect\&. "
+.ti -1c
+.RI "void \fBclearEffects\fP ()"
+.br
+.RI "Clears effects\&. "
+.ti -1c
+.RI "PTexture \fBgetDisplayTexture\fP ()"
+.br
+.RI "Returns the display texture\&. "
+.ti -1c
+.RI "PFrameBuffer \fBgetDisplayBuffer\fP () const"
+.br
+.RI "Returns the display buffer\&. "
+.ti -1c
+.RI "PFrameBuffer \fBgetDrawBuffer\fP () const"
+.br
+.RI "Returns the draw buffer\&. "
+.ti -1c
+.RI "PCamera \fBgetCamera\fP () const"
+.br
+.RI "Returns the camera\&. "
+.ti -1c
+.RI "void \fBsetCamera\fP (PCamera cam, bool makeCurrent=true)"
+.br
+.ti -1c
+.RI "void \fBmakeCameraCurrent\fP ()"
+.br
+.ti -1c
+.RI "PEnvironment \fBgetEnvironment\fP () const"
+.br
+.ti -1c
+.RI "void \fBsetEnvironment\fP (PEnvironment env, bool makeCurrent=true)"
+.br
+.ti -1c
+.RI "void \fBmakeEnvironmentCurrent\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetClearColor\fP (Color color)"
+.br
+.ti -1c
+.RI "Color & \fBgetClearColor\fP ()"
+.br
+.ti -1c
+.RI "void \fBclear\fP (Color c=Color::BLACK)"
+.br
+.ti -1c
+.RI "bool \fBisBound\fP () const"
+.br
+.ti -1c
+.RI "float \fBgetLastPostProcessMs\fP () const"
+.br
+.ti -1c
+.RI "int \fBgetLastPostProcessEffectCount\fP () const"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBMakeCameraCurrent\fP (PCamera camera)"
+.br
+.ti -1c
+.RI "static PCamera \fBGetCurrentCamera\fP ()"
+.br
+.ti -1c
+.RI "static void \fBMakeEnvironmentCurrent\fP (PEnvironment env)"
+.br
+.ti -1c
+.RI "static PEnvironment \fBGetCurrentEnvironment\fP ()"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the \fBScreen\fP type\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Screen::Screen (int width, int height)"
+
+.PP
+Constructs a new \fBScreen\fP instance\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIwidth\fP Dimension value\&. 
+.br
+\fIheight\fP Dimension value\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void Screen::addEffect (Graphics::PostProcessing::PPostProcessingEffect effect)"
+
+.PP
+Adds effect\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIeffect\fP Value for effect\&. 
+.RE
+.PP
+
+.SS "void Screen::bind (bool clear = \fRtrue\fP)"
+
+.PP
+Binds this resource\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIclear\fP Flag controlling clear\&. 
+.RE
+.PP
+
+.SS "void Screen::drawToView (PView view, bool clearWindow = \fRtrue\fP, float x = \fR\-1\fP, float y = \fR\-1\fP, float width = \fR\-1\fP, float height = \fR\-1\fP)"
+
+.PP
+Draws to view\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIview\fP Value for view\&. 
+.br
+\fIclearWindow\fP Flag controlling clear window\&. 
+.br
+\fIx\fP Spatial value used by this operation\&. 
+.br
+\fIy\fP Spatial value used by this operation\&. 
+.br
+\fIwidth\fP Dimension value\&. 
+.br
+\fIheight\fP Dimension value\&. 
+.RE
+.PP
+
+.SS "void Screen::drawToWindow (RenderWindow * window, bool clearWindow = \fRtrue\fP)"
+
+.PP
+Draws to window\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIwindow\fP Value for window\&. 
+.br
+\fIclearWindow\fP Flag controlling clear window\&. 
+.RE
+.PP
+
+.SS "PCamera Screen::getCamera () const\fR [inline]\fP"
+
+.PP
+Returns the camera\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Result of this operation\&. 
+.RE
+.PP
+
+.SS "PFrameBuffer Screen::getDisplayBuffer () const"
+
+.PP
+Returns the display buffer\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Result of this operation\&. 
+.RE
+.PP
+
+.SS "PTexture Screen::getDisplayTexture ()"
+
+.PP
+Returns the display texture\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Result of this operation\&. 
+.RE
+.PP
+
+.SS "PFrameBuffer Screen::getDrawBuffer () const"
+
+.PP
+Returns the draw buffer\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Result of this operation\&. 
+.RE
+.PP
+
+.SS "int Screen::getHeight ()"
+
+.PP
+Returns the height\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Computed numeric result\&. 
+.RE
+.PP
+
+.SS "int Screen::getWidth ()"
+
+.PP
+Returns the width\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Computed numeric result\&. 
+.RE
+.PP
+
+.SS "void Screen::resize (int w, int h)"
+
+.PP
+Resizes internal resources\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIw\fP Value for w\&. 
+.br
+\fIh\fP Value for h\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

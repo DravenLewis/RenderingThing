@@ -1,0 +1,207 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_graphics_1_1_image_1_1_image" xml:lang="en-US">
+<title>Graphics::Image::Image Struct Reference</title>
+<indexterm><primary>Graphics::Image::Image</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_graphics_1_1_image_1_1_image">Image</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;Graphics.h&gt;</computeroutput>
+</para>
+<para>Inheritance diagram for Graphics::Image::Image:    <informalfigure>
+        <mediaobject>
+            <imageobject>
+                <imagedata width="50%" align="center" valign="middle" scalefit="0" fileref="struct_graphics_1_1_image_1_1_image.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+    </informalfigure>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_graphics_1_1_image_1_1_image_1a86c6d37f21cb1b2c02837c4727e63cc8"/><emphasis role="strong">Image</emphasis> ()=delete</para>
+
+<para>Constructs a new <link linkend="_struct_graphics_1_1_image_1_1_image">Image</link> instance. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_graphics_1_1_image_1_1_image_1af90cfae65c25b2c1aa8336635aa744a4">Image</link> (int width, int height)</para>
+
+<para>Constructs a new <link linkend="_struct_graphics_1_1_image_1_1_image">Image</link> instance. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_graphics_1_1_image_1_1_image_1ac2dbaa50ab4653153402fa98d1b1e145">Image</link> (const Image &amp;src)</para>
+
+<para>Constructs a new <link linkend="_struct_graphics_1_1_image_1_1_image">Image</link> instance. </para>
+</listitem>
+            <listitem><para>int <link linkend="_struct_graphics_1_1_image_1_1_image_1a9360b8e858004f05fc0a87f1903bc1b7">getWidth</link> () const</para>
+
+<para>Returns the width. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_graphics_1_1_image_1_1_image_1aba4553e8233d07c6439b10df97c68838"/>int <emphasis role="strong">getHeight</emphasis> () const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_graphics_1_1_image_1_1_image_1a0ce32d2c88a124dfdc8ec4f074c70c40"/>std::vector&lt; uint32_t &gt; <emphasis role="strong">getPixelData</emphasis> () const</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>static std::shared_ptr&lt; <link linkend="_struct_graphics_1_1_image_1_1_image_1a86c6d37f21cb1b2c02837c4727e63cc8">Image</link> &gt; <link linkend="_struct_graphics_1_1_image_1_1_image_1a361c6bf49cc6cb69edb8bd6273542952">Create</link> (int width, int height, const std::vector&lt; uint32_t &gt; &amp;src={})</para>
+
+<para>Creates a new object. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_graphics_1_1_image_1_1_image_1abd370c0682785decc0f8895a2a6b673a"/>std::vector&lt; uint32_t &gt; <emphasis role="strong">pixelData</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_graphics_1_1_image_1_1_image_1a5849ba86af777cde2ea3043123291542"/>int <emphasis role="strong">width</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_graphics_1_1_image_1_1_image_1a5603c843c966d9c2e248cc2badd081b1"/>int <emphasis role="strong">height</emphasis></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_graphics_1_1_image_1_1_image">Image</link>. </para>
+</section>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_struct_graphics_1_1_image_1_1_image_1af90cfae65c25b2c1aa8336635aa744a4"/><section>
+    <title>Image()<computeroutput>[1/2]</computeroutput></title>
+<indexterm><primary>Image</primary><secondary>Graphics::Image::Image</secondary></indexterm>
+<indexterm><primary>Graphics::Image::Image</primary><secondary>Image</secondary></indexterm>
+<para><computeroutput>Graphics::Image::Image::Image (int width, int height)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Constructs a new <link linkend="_struct_graphics_1_1_image_1_1_image">Image</link> instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>width</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>height</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_struct_graphics_1_1_image_1_1_image_1ac2dbaa50ab4653153402fa98d1b1e145"/><section>
+    <title>Image()<computeroutput>[2/2]</computeroutput></title>
+<indexterm><primary>Image</primary><secondary>Graphics::Image::Image</secondary></indexterm>
+<indexterm><primary>Graphics::Image::Image</primary><secondary>Image</secondary></indexterm>
+<para><computeroutput>Graphics::Image::Image::Image (const Image &amp; src)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Constructs a new <link linkend="_struct_graphics_1_1_image_1_1_image">Image</link> instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>src</entry><entry>
+<para>Value for src. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_struct_graphics_1_1_image_1_1_image_1a361c6bf49cc6cb69edb8bd6273542952"/><section>
+    <title>Create()</title>
+<indexterm><primary>Create</primary><secondary>Graphics::Image::Image</secondary></indexterm>
+<indexterm><primary>Graphics::Image::Image</primary><secondary>Create</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_struct_graphics_1_1_image_1_1_image_1a86c6d37f21cb1b2c02837c4727e63cc8">Image</link> &gt; Graphics::Image::Image::Create (int width, int height, const std::vector&lt; uint32_t &gt; &amp; src = <computeroutput>{}</computeroutput>
+)<computeroutput>[inline]</computeroutput>, <computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Creates a new object. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>width</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>height</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>src</entry><entry>
+<para>Value for src. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_graphics_1_1_image_1_1_image_1a9360b8e858004f05fc0a87f1903bc1b7"/><section>
+    <title>getWidth()</title>
+<indexterm><primary>getWidth</primary><secondary>Graphics::Image::Image</secondary></indexterm>
+<indexterm><primary>Graphics::Image::Image</primary><secondary>getWidth</secondary></indexterm>
+<para><computeroutput>int Graphics::Image::Image::getWidth ( ) const<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the width. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Computed numeric result. </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Core/<link linkend="__graphics_8h">Graphics.h</link></section>
+</section>

@@ -1,0 +1,377 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="_model_prefabs_8h" kind="file" language="C++">
+    <compoundname>ModelPrefabs.h</compoundname>
+    <includes local="no">memory</includes>
+    <includes refid="_material_defaults_8h" local="yes">Rendering/Materials/MaterialDefaults.h</includes>
+    <includes refid="_model_part_prefabs_8h" local="yes">Rendering/Geometry/ModelPartPrefabs.h</includes>
+    <includes refid="_model_8h" local="yes">Rendering/Geometry/Model.h</includes>
+    <incdepgraph>
+      <node id="15">
+        <label>Assets/Core/Asset.h</label>
+      </node>
+      <node id="28">
+        <label>Rendering/Geometry/Drawable.h</label>
+        <link refid="_drawable_8h"/>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="25">
+        <label>Rendering/Geometry/Mesh.h</label>
+        <link refid="_mesh_8h"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+      </node>
+      <node id="29">
+        <label>Rendering/Geometry/Model.h</label>
+        <link refid="_model_8h"/>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>Rendering/Geometry/ModelPart.h</label>
+        <link refid="_model_part_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+      </node>
+      <node id="21">
+        <label>Rendering/Geometry/ModelPartPrefabs.h</label>
+        <link refid="_model_part_prefabs_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>src/Rendering/Geometry/ModelPrefabs.h</label>
+        <link refid="_model_prefabs_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+      </node>
+      <node id="18">
+        <label>Rendering/Lighting/Light.h</label>
+        <link refid="_light_8h"/>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="19">
+        <label>Rendering/Lighting/LightUtils.h</label>
+        <link refid="_light_utils_8h"/>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="33">
+        <label>Rendering/Lighting/ShadowMap.h</label>
+        <link refid="_shadow_map_8h"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="32">
+        <label>Rendering/Lighting/ShadowRenderer.h</label>
+        <link refid="_shadow_renderer_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>Rendering/Materials/Material.h</label>
+        <link refid="_material_8h"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>Rendering/Materials/MaterialDefaults.h</label>
+        <link refid="_material_defaults_8h"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>Rendering/Shaders/ShaderProgram.h</label>
+        <link refid="_shader_program_8h"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="16">
+        <label>Rendering/Textures/CubeMap.h</label>
+        <link refid="_cube_map_8h"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+      </node>
+      <node id="14">
+        <label>Rendering/Textures/Texture.h</label>
+        <link refid="_texture_8h"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>Foundation/Logging/Logbot.h</label>
+      </node>
+      <node id="17">
+        <label>Foundation/Math/Color.h</label>
+      </node>
+      <node id="13">
+        <label>Foundation/Math/Math3D.h</label>
+      </node>
+      <node id="30">
+        <label>Foundation/Util/Types.h</label>
+      </node>
+      <node id="20">
+        <label>Foundation/Util/ValueContainer.h</label>
+      </node>
+      <node id="26">
+        <label>SDL3/SDL.h</label>
+      </node>
+      <node id="12">
+        <label>SDL3/SDL_opengl.h</label>
+      </node>
+      <node id="31">
+        <label>Scene/Camera.h</label>
+      </node>
+      <node id="22">
+        <label>algorithm</label>
+      </node>
+      <node id="23">
+        <label>cmath</label>
+      </node>
+      <node id="27">
+        <label>cstdint</label>
+      </node>
+      <node id="11">
+        <label>glad/glad.h</label>
+      </node>
+      <node id="5">
+        <label>map</label>
+      </node>
+      <node id="2">
+        <label>memory</label>
+      </node>
+      <node id="4">
+        <label>string</label>
+      </node>
+      <node id="8">
+        <label>unordered_map</label>
+      </node>
+      <node id="10">
+        <label>vector</label>
+      </node>
+    </incdepgraph>
+    <innerclass refid="struct_model_prefabs" prot="public">ModelPrefabs</innerclass>
+    <innerclass refid="struct_model_prefabs_1_1_cube_material_definition" prot="public">ModelPrefabs::CubeMaterialDefinition</innerclass>
+    <briefdescription>
+<para>Declarations for <ref refid="struct_model_prefabs" kindref="compound">ModelPrefabs</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>MODEL_PREFABS_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>MODEL_PREFABS_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;memory&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_material_defaults_8h" kindref="compound">Rendering/Materials/MaterialDefaults.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_model_part_prefabs_8h" kindref="compound">Rendering/Geometry/ModelPartPrefabs.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_model_8h" kindref="compound">Rendering/Geometry/Model.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight></codeline>
+<codeline lineno="16" refid="struct_model_prefabs" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_model_prefabs" kindref="compound">ModelPrefabs</ref>{</highlight></codeline>
+<codeline lineno="18" refid="struct_model_prefabs_1_1_cube_material_definition" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_model_prefabs_1_1_cube_material_definition" kindref="compound">CubeMaterialDefinition</ref>{</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>PMaterial<sp/>matTop<sp/>=<sp/><ref refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" kindref="member">MaterialDefaults::ColorMaterial::Create</ref>(Color::MAGENTA);</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>PMaterial<sp/>matBottom<sp/>=<sp/><ref refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" kindref="member">MaterialDefaults::ColorMaterial::Create</ref>(Color::MAGENTA);</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>PMaterial<sp/>matLeft<sp/>=<sp/><ref refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" kindref="member">MaterialDefaults::ColorMaterial::Create</ref>(Color::MAGENTA);</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>PMaterial<sp/>matRight<sp/>=<sp/><ref refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" kindref="member">MaterialDefaults::ColorMaterial::Create</ref>(Color::MAGENTA);</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>PMaterial<sp/>matFront<sp/>=<sp/><ref refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" kindref="member">MaterialDefaults::ColorMaterial::Create</ref>(Color::MAGENTA);</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>PMaterial<sp/>matBack<sp/>=<sp/><ref refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" kindref="member">MaterialDefaults::ColorMaterial::Create</ref>(Color::MAGENTA);</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31" refid="struct_model_prefabs_1_1_cube_material_definition_1aba705d4394d425991f04fbfb85500839" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;CubeMaterialDefinition&gt;<sp/><ref refid="struct_model_prefabs_1_1_cube_material_definition_1aba705d4394d425991f04fbfb85500839" kindref="member">Create</ref>()<sp/>{</highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>std::make_shared&lt;CubeMaterialDefinition&gt;();};</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;CubeMaterialDefinition&gt;<sp/>CreateSame(PMaterial<sp/>mat)<sp/>{</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>def<sp/>=<sp/>std::make_shared&lt;CubeMaterialDefinition&gt;();</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>def-&gt;matFront<sp/>=<sp/>mat;</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>def-&gt;matBack<sp/>=<sp/>mat;</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>def-&gt;matLeft<sp/>=<sp/>mat;</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>def-&gt;matRight<sp/>=<sp/>mat;</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>def-&gt;matTop<sp/>=<sp/>mat;</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>def-&gt;matBottom<sp/>=<sp/>mat;</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>def;</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight></codeline>
+<codeline lineno="50" refid="struct_model_prefabs_1ad5d5f5c2c36f3c39db66281afd4713ee" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;Model&gt;<sp/><ref refid="struct_model_prefabs_1ad5d5f5c2c36f3c39db66281afd4713ee" kindref="member">MakeCube</ref>(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>scale<sp/>=<sp/>1.0f,<sp/>std::shared_ptr&lt;CubeMaterialDefinition&gt;<sp/>matDef<sp/>=<sp/><ref refid="struct_model_prefabs_1_1_cube_material_definition_1aba705d4394d425991f04fbfb85500839" kindref="member">CubeMaterialDefinition::Create</ref>()){</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>model<sp/>=<sp/><ref refid="struct_model_1a3f0b711fc427dce1d41b1c2122248482" kindref="member">Model::Create</ref>();</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;ModelPart&gt;<sp/>cubeTop<sp/>=<sp/><ref refid="struct_model_part_prefabs_1ae5f37b441c2d40314487e103ada227a8" kindref="member">ModelPartPrefabs::MakePlane</ref>(scale,<sp/>scale,<sp/>matDef-&gt;matTop);</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>cubeTop-&gt;localTransform.setPosition(Math3D::Vec3(0.0f,1.0f,0.0f));</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>cubeTop-&gt;localTransform.setRotation(0.0f,0.0f,0.0f);</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;ModelPart&gt;<sp/>cubeBottom<sp/>=<sp/><ref refid="struct_model_part_prefabs_1ae5f37b441c2d40314487e103ada227a8" kindref="member">ModelPartPrefabs::MakePlane</ref>(scale,<sp/>scale,<sp/>matDef-&gt;matBottom);</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>cubeBottom-&gt;localTransform.setPosition(Math3D::Vec3(0.0f,-1.0f,0.0f));</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>cubeBottom-&gt;localTransform.setRotation(180.0f,0.0f,0.0f);</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;ModelPart&gt;<sp/>cubeLeft<sp/>=<sp/><ref refid="struct_model_part_prefabs_1ae5f37b441c2d40314487e103ada227a8" kindref="member">ModelPartPrefabs::MakePlane</ref>(scale,<sp/>scale,<sp/>matDef-&gt;matLeft);</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>cubeLeft-&gt;localTransform.setPosition(Math3D::Vec3(-1.0f,0.0f,0.0f));</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>cubeLeft-&gt;localTransform.setRotation(0.0f,-90.0f,90.0f);</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;ModelPart&gt;<sp/>cubeRight<sp/>=<sp/><ref refid="struct_model_part_prefabs_1ae5f37b441c2d40314487e103ada227a8" kindref="member">ModelPartPrefabs::MakePlane</ref>(scale,<sp/>scale,<sp/>matDef-&gt;matRight);</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>cubeRight-&gt;localTransform.setPosition(Math3D::Vec3(1.0f,0.0f,0.0f));</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>cubeRight-&gt;localTransform.setRotation(0.0f,90.0f,-90.0f);</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;ModelPart&gt;<sp/>cubeFront<sp/>=<sp/><ref refid="struct_model_part_prefabs_1ae5f37b441c2d40314487e103ada227a8" kindref="member">ModelPartPrefabs::MakePlane</ref>(scale,<sp/>scale,<sp/>matDef-&gt;matFront);</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>cubeFront-&gt;localTransform.setPosition(Math3D::Vec3(0.0f,0.0f,1.0f));</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>cubeFront-&gt;localTransform.setRotation(-90.0f,180.0f,180.0f);</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;ModelPart&gt;<sp/>cubeBack<sp/>=<sp/><ref refid="struct_model_part_prefabs_1ae5f37b441c2d40314487e103ada227a8" kindref="member">ModelPartPrefabs::MakePlane</ref>(scale,<sp/>scale,<sp/>matDef-&gt;matBack);</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>cubeBack-&gt;localTransform.setPosition(Math3D::Vec3(0.0f,0.0f,-1.0f));</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>cubeBack-&gt;localTransform.setRotation(90.0f,180.0f,0.0f);</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"></highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>model-&gt;addPart(cubeTop).addPart(cubeBottom).addPart(cubeLeft).addPart(cubeRight).addPart(cubeFront).addPart(cubeBack);</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"></highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>model;</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="82"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"></highlight></codeline>
+<codeline lineno="84"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">//<sp/>MODEL_PREFABS_H</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="src/Rendering/Geometry/ModelPrefabs.h"/>
+  </compounddef>
+</doxygen>

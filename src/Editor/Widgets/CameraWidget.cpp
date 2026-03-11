@@ -1,3 +1,8 @@
+/**
+ * @file src/Editor/Widgets/CameraWidget.cpp
+ * @brief Implementation for CameraWidget.
+ */
+
 #include "Editor/Widgets/CameraWidget.h"
 
 #include <cmath>

@@ -1,0 +1,252 @@
+.TH "src/Rendering/Shaders/ShaderProgram.h" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+src/Rendering/Shaders/ShaderProgram.h \- Declarations for \fBShaderProgram\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <string>\fP
+.br
+\fR#include <vector>\fP
+.br
+\fR#include <glad/glad\&.h>\fP
+.br
+\fR#include <SDL3/SDL_opengl\&.h>\fP
+.br
+\fR#include <memory>\fP
+.br
+\fR#include <map>\fP
+.br
+\fR#include <unordered_map>\fP
+.br
+\fR#include 'Foundation/Math/Math3D\&.h'\fP
+.br
+\fR#include 'Rendering/Textures/Texture\&.h'\fP
+.br
+\fR#include 'Rendering/Textures/CubeMap\&.h'\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBUniform< T >\fP"
+.br
+.RI "Represents the \fBUniform\fP type\&. "
+.ti -1c
+.RI "struct \fBGLUniformUpload::TextureSlot\fP"
+.br
+.RI "Holds data for \fBTextureSlot\fP\&. "
+.ti -1c
+.RI "struct \fBGLUniformUpload::CubeMapSlot\fP"
+.br
+.RI "Holds data for \fBCubeMapSlot\fP\&. "
+.ti -1c
+.RI "struct \fBShaderBundle\fP"
+.br
+.RI "Holds data for \fBShaderBundle\fP\&. "
+.ti -1c
+.RI "class \fBShaderProgram\fP"
+.br
+.RI "Represents the \fBShaderProgram\fP type\&. "
+.ti -1c
+.RI "struct \fBShaderCache\fP"
+.br
+.RI "Holds data for \fBShaderCache\fP\&. "
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef unsigned int \fBShader\fP"
+.br
+.ti -1c
+.RI "typedef unsigned int \fBProgram\fP"
+.br
+.ti -1c
+.RI "typedef unsigned int \fBBuffer\fP"
+.br
+.ti -1c
+.RI "typedef unsigned int \fBArray\fP"
+.br
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBShaderType\fP { \fBFRAGMENT\fP = 0, \fBVERTEX\fP, \fBGEOMETRY\fP, \fBTESSELATION\fP, \fBCOMPUTE\fP, \fBTASK\fP, \fBRAYTRACE\fP }"
+.br
+.RI "Enumerates values for \fBShaderType\fP\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBGLUniformUpload::upload\fP (GLint loc, int v)"
+.br
+.RI "Uploads an integer uniform value\&. "
+.ti -1c
+.RI "void \fBGLUniformUpload::upload\fP (GLint loc, float v)"
+.br
+.RI "Uploads a float uniform value\&. "
+.ti -1c
+.RI "void \fBGLUniformUpload::upload\fP (GLint loc, const Math3D::Vec2 &v)"
+.br
+.RI "Uploads a \fRvec2\fP uniform value\&. "
+.ti -1c
+.RI "void \fBGLUniformUpload::upload\fP (GLint loc, const Math3D::Vec3 &v)"
+.br
+.RI "Uploads a \fRvec3\fP uniform value\&. "
+.ti -1c
+.RI "void \fBGLUniformUpload::upload\fP (GLint loc, const Math3D::Vec4 &v)"
+.br
+.RI "Uploads a \fRvec4\fP uniform value\&. "
+.ti -1c
+.RI "void \fBGLUniformUpload::upload\fP (GLint loc, const Math3D::Quat &q)"
+.br
+.RI "Uploads a quaternion uniform value\&. "
+.ti -1c
+.RI "void \fBGLUniformUpload::upload\fP (GLint loc, const Math3D::Mat4 &m)"
+.br
+.RI "Uploads a 4x4 matrix uniform value\&. "
+.ti -1c
+.RI "void \fBGLUniformUpload::upload\fP (GLint loc, std::shared_ptr< \fBTexture\fP > tex, int slot=0)"
+.br
+.ti -1c
+.RI "void \fBGLUniformUpload::upload\fP (GLint loc, const \fBTextureSlot\fP &texSlot)"
+.br
+.RI "Uploads a texture slot uniform\&. "
+.ti -1c
+.RI "void \fBGLUniformUpload::upload\fP (GLint loc, const \fBCubeMapSlot\fP &mapSlot)"
+.br
+.RI "Uploads a cube-map slot uniform\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Declarations for \fBShaderProgram\fP\&. 
+
+
+.SH "Function Documentation"
+.PP 
+.SS "void GLUniformUpload::upload (GLint loc, const \fBCubeMapSlot\fP & mapSlot)\fR [inline]\fP"
+
+.PP
+Uploads a cube-map slot uniform\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIloc\fP \fBUniform\fP location\&. 
+.br
+\fImapSlot\fP Cube-map and slot binding information\&. 
+.RE
+.PP
+
+.SS "void GLUniformUpload::upload (GLint loc, const Math3D::Mat4 & m)\fR [inline]\fP"
+
+.PP
+Uploads a 4x4 matrix uniform value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIloc\fP \fBUniform\fP location\&. 
+.br
+\fIm\fP Matrix value\&. 
+.RE
+.PP
+
+.SS "void GLUniformUpload::upload (GLint loc, const Math3D::Quat & q)\fR [inline]\fP"
+
+.PP
+Uploads a quaternion uniform value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIloc\fP \fBUniform\fP location\&. 
+.br
+\fIq\fP Quaternion value\&. 
+.RE
+.PP
+
+.SS "void GLUniformUpload::upload (GLint loc, const Math3D::Vec2 & v)\fR [inline]\fP"
+
+.PP
+Uploads a \fRvec2\fP uniform value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIloc\fP \fBUniform\fP location\&. 
+.br
+\fIv\fP Vector value\&. 
+.RE
+.PP
+
+.SS "void GLUniformUpload::upload (GLint loc, const Math3D::Vec3 & v)\fR [inline]\fP"
+
+.PP
+Uploads a \fRvec3\fP uniform value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIloc\fP \fBUniform\fP location\&. 
+.br
+\fIv\fP Vector value\&. 
+.RE
+.PP
+
+.SS "void GLUniformUpload::upload (GLint loc, const Math3D::Vec4 & v)\fR [inline]\fP"
+
+.PP
+Uploads a \fRvec4\fP uniform value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIloc\fP \fBUniform\fP location\&. 
+.br
+\fIv\fP Vector value\&. 
+.RE
+.PP
+
+.SS "void GLUniformUpload::upload (GLint loc, const \fBTextureSlot\fP & texSlot)\fR [inline]\fP"
+
+.PP
+Uploads a texture slot uniform\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIloc\fP \fBUniform\fP location\&. 
+.br
+\fItexSlot\fP \fBTexture\fP and slot binding information\&. 
+.RE
+.PP
+
+.SS "void GLUniformUpload::upload (GLint loc, float v)\fR [inline]\fP"
+
+.PP
+Uploads a float uniform value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIloc\fP \fBUniform\fP location\&. 
+.br
+\fIv\fP Float value\&. 
+.RE
+.PP
+
+.SS "void GLUniformUpload::upload (GLint loc, int v)\fR [inline]\fP"
+
+.PP
+Uploads an integer uniform value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIloc\fP \fBUniform\fP location\&. 
+.br
+\fIv\fP Integer value\&. 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

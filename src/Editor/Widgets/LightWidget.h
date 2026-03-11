@@ -1,3 +1,8 @@
+/**
+ * @file src/Editor/Widgets/LightWidget.h
+ * @brief Declarations for LightWidget.
+ */
+
 #ifndef WIDGETS_LIGHT_WIDGET_H
 #define WIDGETS_LIGHT_WIDGET_H
 
@@ -10,8 +15,10 @@
 #include "Rendering/Textures/Texture.h"
 #include "Editor/Widgets/TransformWidget.h"
 
+/// @brief Represents the LightWidget type.
 class LightWidget {
     public:
+        /// @brief Enumerates values for Handle.
         enum class Handle {
             None = 0,
             PointRadius,
@@ -19,14 +26,22 @@ class LightWidget {
             SpotRange
         };
 
+        /// @brief Holds data for Icons.
         struct Icons {
             PTexture point;
             PTexture spot;
             PTexture directional;
         };
 
+        /**
+         * @brief Constructs a new LightWidget instance.
+         */
         LightWidget() = default;
 
+        /**
+         * @brief Sets the icons.
+         * @param newIcons Value for new icons.
+         */
         void setIcons(const Icons& newIcons){ icons = newIcons; }
         void reset();
 

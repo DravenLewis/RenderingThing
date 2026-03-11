@@ -1,3 +1,8 @@
+/**
+ * @file src/Scene/LoadedScene.cpp
+ * @brief Implementation for LoadedScene.
+ */
+
 #include "Scene/LoadedScene.h"
 
 #include "Assets/Core/AssetDescriptorUtils.h"

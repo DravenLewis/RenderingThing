@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__light_8h_source" xml:lang="en-US">
+<title>Light.h</title>
+<indexterm><primary>src/Rendering/Lighting/Light.h</primary></indexterm>
+Go to the documentation of this file.<programlisting linenumbering="unnumbered">1 
+5 
+6 <emphasis role="preprocessor">#ifndef&#32;LIGHT_H</emphasis>
+7 <emphasis role="preprocessor">#define&#32;LIGHT_H</emphasis>
+8 
+9 <emphasis role="preprocessor">#include&#32;&quot;Foundation/Math/Math3D.h&quot;</emphasis>
+10 <emphasis role="preprocessor">#include&#32;&quot;Foundation/Math/Color.h&quot;</emphasis>
+11 <emphasis role="preprocessor">#include&#32;&lt;vector&gt;</emphasis>
+12 <emphasis role="preprocessor">#include&#32;&lt;memory&gt;</emphasis>
+13 
+15 <emphasis role="keyword">enum&#32;class</emphasis>&#32;<link linkend="__light_8h_1adc3ec8293e6a97ebe43f0196b9a7f638">LightType</link>&#32;{
+16 &#32;&#32;&#32;&#32;POINT,
+17 &#32;&#32;&#32;&#32;DIRECTIONAL,
+18 &#32;&#32;&#32;&#32;SPOT
+19 };
+20 
+22 <emphasis role="keyword">enum&#32;class</emphasis>&#32;<link linkend="__light_8h_1a5c50abf40600ee3c28c7fa04702a8bbc">ShadowType</link>&#32;{
+23 &#32;&#32;&#32;&#32;Hard,
+24 &#32;&#32;&#32;&#32;Standard,
+25 &#32;&#32;&#32;&#32;Smooth
+26 };
+27 
+28 <emphasis role="preprocessor">#define&#32;MAX_LIGHTS&#32;16</emphasis>
+29 
+31 <emphasis role="keyword">struct&#32;</emphasis><link linkend="_struct_light_1aeb5df09a25a32f19fdffa761268ba24f">Light</link>&#32;{
+32 &#32;&#32;&#32;&#32;<link linkend="__light_8h_1adc3ec8293e6a97ebe43f0196b9a7f638">LightType</link>&#32;type;
+33 &#32;&#32;&#32;&#32;Math3D::Vec3&#32;position;
+34 &#32;&#32;&#32;&#32;Math3D::Vec3&#32;direction;&#32;&#32;<emphasis role="comment">//&#32;For&#32;directional&#32;and&#32;spot&#32;lights</emphasis>
+35 &#32;&#32;&#32;&#32;Math3D::Vec4&#32;color;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;RGB&#32;+&#32;Alpha&#32;for&#32;intensity</emphasis>
+36 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;intensity;
+37 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;range;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;Maximum&#32;distance&#32;for&#32;point/spot&#32;lights</emphasis>
+38 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;falloff;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;1.0&#32;=&#32;linear,&#32;2.0&#32;=&#32;quadratic,&#32;3.0&#32;=&#32;cubic,&#32;etc</emphasis>
+39 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;spotAngle;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;For&#32;spot&#32;lights&#32;(in&#32;degrees)</emphasis>
+40 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;shadowRange;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;Shadow&#32;far&#32;plane&#32;for&#32;point/spot&#32;(&lt;=0&#32;uses&#32;range)</emphasis>
+41 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;castsShadows;
+42 &#32;&#32;&#32;&#32;<link linkend="__light_8h_1a5c50abf40600ee3c28c7fa04702a8bbc">ShadowType</link>&#32;shadowType;
+43 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;shadowBias;
+44 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;shadowNormalBias;
+45 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;shadowStrength;
+46 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;cascadeLambda;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;Directional&#32;CSM&#32;split&#32;blend:&#32;0=linear,&#32;1=logarithmic</emphasis>
+47 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;shadowDebugMode;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;0=off,1=visibility,2=cascade&#32;index,3=projection&#32;bounds</emphasis>
+48 &#32;&#32;&#32;&#32;
+52 &#32;&#32;&#32;&#32;<link linkend="_struct_light_1aeb5df09a25a32f19fdffa761268ba24f">Light</link>()
+53 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;:&#32;type(<link linkend="__light_8h_1adc3ec8293e6a97ebe43f0196b9a7f638">LightType</link>::POINT),
+54 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;position(Math3D::Vec3(0,&#32;0,&#32;0)),
+55 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;direction(Math3D::Vec3(0,&#32;-1,&#32;0)),
+56 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;color(Color::WHITE),
+57 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;intensity(1.0f),
+58 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;range(20.0f),
+59 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;falloff(2.0f),
+60 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;spotAngle(45.0f),
+61 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;shadowRange(20.0f),
+62 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;castsShadows(false),
+63 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;shadowType(<link linkend="__light_8h_1a5c50abf40600ee3c28c7fa04702a8bbc">ShadowType</link>::Smooth),
+64 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;shadowBias(0.0025f),
+65 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;shadowNormalBias(0.005f),
+66 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;shadowStrength(1.0f),
+67 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;cascadeLambda(0.82f),
+71 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;shadowDebugMode(0)
+72 &#32;&#32;&#32;&#32;{}
+73 &#32;&#32;&#32;&#32;
+74 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<link linkend="_struct_light">Light</link>&#32;CreatePointLight(
+75 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::Vec3&#32;position,
+76 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::Vec4&#32;color&#32;=&#32;Color::WHITE,
+77 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;intensity&#32;=&#32;1.0f,
+78 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;range&#32;=&#32;10.0f,
+79 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;falloff&#32;=&#32;1.0f
+80 &#32;&#32;&#32;&#32;)&#32;{
+81 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_light">Light</link>&#32;light;
+82 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.type&#32;=&#32;LightType::POINT;
+83 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.position&#32;=&#32;position;
+84 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.color&#32;=&#32;color;
+85 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.intensity&#32;=&#32;intensity;
+86 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.range&#32;=&#32;range;
+87 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.falloff&#32;=&#32;Math3D::Clamp(falloff,&#32;0.1f,&#32;3.0f);
+88 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.shadowRange&#32;=&#32;range;
+89 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.castsShadows&#32;=&#32;<emphasis role="keyword">true</emphasis>;
+90 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;light;
+91 &#32;&#32;&#32;&#32;}
+92 &#32;&#32;&#32;&#32;
+93 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<link linkend="_struct_light_1aeb5df09a25a32f19fdffa761268ba24f">Light</link>&#32;CreateDirectionalLight(
+94 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::Vec3&#32;direction,
+95 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::Vec4&#32;color&#32;=&#32;Color::WHITE,
+96 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;intensity&#32;=&#32;1.0f
+97 &#32;&#32;&#32;&#32;)&#32;{
+98 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_light_1aeb5df09a25a32f19fdffa761268ba24f">Light</link>&#32;light;
+99 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.type&#32;=&#32;LightType::DIRECTIONAL;
+100 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.direction&#32;=&#32;Math3D::Vec3(glm::normalize(glm::vec3(direction.x,&#32;direction.y,&#32;direction.z)));
+101 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.color&#32;=&#32;color;
+102 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.intensity&#32;=&#32;intensity;
+103 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.range&#32;=&#32;20.0f;
+104 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.shadowRange&#32;=&#32;300.0f;
+105 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.castsShadows&#32;=&#32;<emphasis role="keyword">true</emphasis>;
+106 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;light;
+107 &#32;&#32;&#32;&#32;}
+108 &#32;&#32;&#32;&#32;
+109 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<link linkend="_struct_light_1aeb5df09a25a32f19fdffa761268ba24f">Light</link>&#32;CreateSpotLight(
+110 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::Vec3&#32;position,
+111 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::Vec3&#32;direction,
+112 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::Vec4&#32;color&#32;=&#32;Color::WHITE,
+113 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;intensity&#32;=&#32;1.0f,
+114 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;range&#32;=&#32;10.0f,
+115 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;falloff&#32;=&#32;1.0f,
+116 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;spotAngle&#32;=&#32;45.0f
+117 &#32;&#32;&#32;&#32;)&#32;{
+118 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_light_1aeb5df09a25a32f19fdffa761268ba24f">Light</link>&#32;light;
+119 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.type&#32;=&#32;LightType::SPOT;
+120 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.position&#32;=&#32;position;
+121 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.direction&#32;=&#32;Math3D::Vec3(glm::normalize(glm::vec3(direction.x,&#32;direction.y,&#32;direction.z)));
+122 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.color&#32;=&#32;color;
+123 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.intensity&#32;=&#32;intensity;
+124 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.range&#32;=&#32;range;
+125 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.falloff&#32;=&#32;Math3D::Clamp(falloff,&#32;0.1f,&#32;3.0f);
+126 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.spotAngle&#32;=&#32;spotAngle;
+127 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.shadowRange&#32;=&#32;range;
+128 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;light.castsShadows&#32;=&#32;<emphasis role="keyword">true</emphasis>;
+129 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;light;
+130 &#32;&#32;&#32;&#32;}
+131 };
+132 
+134 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_light_manager_1a1eee8eb276ec7f041d961a567389754a">LightManager</link>&#32;{
+135 <emphasis role="keyword">private</emphasis>:
+136 &#32;&#32;&#32;&#32;std::vector&lt;Light&gt;&#32;lights;
+137 &#32;&#32;&#32;&#32;
+138 <emphasis role="keyword">public</emphasis>:
+142 &#32;&#32;&#32;&#32;<link linkend="_class_light_manager_1a1eee8eb276ec7f041d961a567389754a">LightManager</link>()&#32;:&#32;lights()&#32;{}
+143 &#32;&#32;&#32;&#32;
+144 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;addLight(<emphasis role="keyword">const</emphasis>&#32;<link linkend="_struct_light">Light</link>&amp;&#32;light)&#32;{
+145 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>&#32;(lights.size()&#32;&lt;&#32;MAX_LIGHTS)&#32;{
+146 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;lights.push_back(light);
+147 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+148 &#32;&#32;&#32;&#32;}
+149 &#32;&#32;&#32;&#32;
+150 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;removeLight(<emphasis role="keywordtype">size_t</emphasis>&#32;index)&#32;{
+151 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>&#32;(index&#32;&lt;&#32;lights.size())&#32;{
+152 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;lights.erase(lights.begin()&#32;+&#32;index);
+153 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+154 &#32;&#32;&#32;&#32;}
+155 &#32;&#32;&#32;&#32;
+156 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;clearLights()&#32;{
+157 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;lights.clear();
+158 &#32;&#32;&#32;&#32;}
+159 &#32;&#32;&#32;&#32;
+160 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">size_t</emphasis>&#32;getLightCount()<emphasis role="keyword">&#32;const&#32;</emphasis>{
+161 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;lights.size();
+162 &#32;&#32;&#32;&#32;}
+163 &#32;&#32;&#32;&#32;
+164 &#32;&#32;&#32;&#32;Light&amp;&#32;getLight(<emphasis role="keywordtype">size_t</emphasis>&#32;index)&#32;{
+165 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;lights[index];
+166 &#32;&#32;&#32;&#32;}
+167 &#32;&#32;&#32;&#32;
+168 &#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;Light&amp;&#32;getLight(<emphasis role="keywordtype">size_t</emphasis>&#32;index)<emphasis role="keyword">&#32;const&#32;</emphasis>{
+169 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;lights[index];
+170 &#32;&#32;&#32;&#32;}
+171 &#32;&#32;&#32;&#32;
+172 &#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::vector&lt;Light&gt;&amp;&#32;getAllLights()<emphasis role="keyword">&#32;const&#32;</emphasis>{
+173 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;lights;
+174 &#32;&#32;&#32;&#32;}
+175 &#32;&#32;&#32;&#32;
+176 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<link linkend="_class_light_manager_1a1eee8eb276ec7f041d961a567389754a">LightManager</link>&#32;GlobalLightManager;
+177 };
+178 
+179 <emphasis role="preprocessor">#endif&#32;</emphasis><emphasis role="comment">//&#32;LIGHT_H</emphasis>
+</programlisting></section>

@@ -1,0 +1,100 @@
+\doxysection{Material\+Registry Class Reference}
+\hypertarget{class_material_registry}{}\label{class_material_registry}\index{MaterialRegistry@{MaterialRegistry}}
+
+
+Represents the \doxylink{class_material_registry}{Material\+Registry} type.  
+
+
+
+
+{\ttfamily \+\#include $<$Material\+Registry.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \doxymbox{\hyperlink{class_material_registry_adc43e36965c220ba15527a3d8ac9526f}{Refresh}} (bool force=false)
+\begin{DoxyCompactList}\small\item\em Refreshes registry state. \end{DoxyCompactList}\item 
+const std::\+vector$<$ \doxymbox{\hyperlink{struct_material_registry_entry}{Material\+Registry\+Entry}} $>$ \& \doxymbox{\hyperlink{class_material_registry_a4c66f055d3c843419a613f70729ea276}{Get\+Entries}} () const
+\begin{DoxyCompactList}\small\item\em Returns the entries. \end{DoxyCompactList}\item 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material}{Material}} $>$ \doxymbox{\hyperlink{class_material_registry_a4e4f6ae18d50428c1352b197aaa4161b}{Create\+By\+Id}} (const std::\+string \&id, std::\+string \texorpdfstring{$\ast$}{*}out\+Error=nullptr) const
+\begin{DoxyCompactList}\small\item\em Creates by id. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \doxymbox{\hyperlink{class_material_registry}{Material\+Registry}} \& \doxymbox{\hyperlink{class_material_registry_a5ac1ab1993ba87006a53205026a7e289}{Instance}} ()
+\begin{DoxyCompactList}\small\item\em Returns the registry singleton instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the \doxylink{class_material_registry}{Material\+Registry} type. 
+
+\label{doc-func-members}
+\Hypertarget{class_material_registry_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_material_registry_a4e4f6ae18d50428c1352b197aaa4161b}\index{MaterialRegistry@{MaterialRegistry}!CreateById@{CreateById}}
+\index{CreateById@{CreateById}!MaterialRegistry@{MaterialRegistry}}
+\doxysubsubsection{\texorpdfstring{CreateById()}{CreateById()}}
+{\footnotesize\ttfamily \label{class_material_registry_a4e4f6ae18d50428c1352b197aaa4161b} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material}{Material}} $>$ Material\+Registry::\+\+Create\+By\+Id (\begin{DoxyParamCaption}\item[{const std::\+string \&}]{id}{, }\item[{std::\+string \texorpdfstring{$\ast$}{*}}]{out\+Error}{ = {\ttfamily nullptr}}\end{DoxyParamCaption}) const}
+
+
+
+Creates by id. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & Identifier or index value. \\
+\hline
+{\em out\+Error} & Output value for error. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the resulting object. 
+\end{DoxyReturn}
+\Hypertarget{class_material_registry_a4c66f055d3c843419a613f70729ea276}\index{MaterialRegistry@{MaterialRegistry}!GetEntries@{GetEntries}}
+\index{GetEntries@{GetEntries}!MaterialRegistry@{MaterialRegistry}}
+\doxysubsubsection{\texorpdfstring{GetEntries()}{GetEntries()}}
+{\footnotesize\ttfamily \label{class_material_registry_a4c66f055d3c843419a613f70729ea276} 
+const std::\+vector$<$ \doxymbox{\hyperlink{struct_material_registry_entry}{Material\+Registry\+Entry}} $>$ \& Material\+Registry::\+\+Get\+Entries (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+
+
+Returns the entries. 
+
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+\Hypertarget{class_material_registry_a5ac1ab1993ba87006a53205026a7e289}\index{MaterialRegistry@{MaterialRegistry}!Instance@{Instance}}
+\index{Instance@{Instance}!MaterialRegistry@{MaterialRegistry}}
+\doxysubsubsection{\texorpdfstring{Instance()}{Instance()}}
+{\footnotesize\ttfamily \label{class_material_registry_a5ac1ab1993ba87006a53205026a7e289} 
+\doxymbox{\hyperlink{class_material_registry}{Material\+Registry}} \& Material\+Registry::\+\+Instance (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Returns the registry singleton instance. 
+
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+\Hypertarget{class_material_registry_adc43e36965c220ba15527a3d8ac9526f}\index{MaterialRegistry@{MaterialRegistry}!Refresh@{Refresh}}
+\index{Refresh@{Refresh}!MaterialRegistry@{MaterialRegistry}}
+\doxysubsubsection{\texorpdfstring{Refresh()}{Refresh()}}
+{\footnotesize\ttfamily \label{class_material_registry_adc43e36965c220ba15527a3d8ac9526f} 
+void Material\+Registry::\+\+Refresh (\begin{DoxyParamCaption}\item[{bool}]{force}{ = {\ttfamily false}}\end{DoxyParamCaption})}
+
+
+
+Refreshes registry state. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em force} & Flag controlling force. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Materials/\+\doxymbox{\hyperlink{_material_registry_8h}{Material\+Registry.\+h}}\item 
+src/\+\+Rendering/\+\+Materials/\+\doxymbox{\hyperlink{_material_registry_8cpp}{Material\+Registry.\+cpp}}\end{DoxyCompactItemize}

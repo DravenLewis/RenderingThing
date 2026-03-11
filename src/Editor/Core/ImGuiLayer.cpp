@@ -1,3 +1,8 @@
+/**
+ * @file src/Editor/Core/ImGuiLayer.cpp
+ * @brief Implementation for ImGuiLayer.
+ */
+
 #include "Editor/Core/ImGuiLayer.h"
 
 #include "Platform/Window/RenderWindow.h"

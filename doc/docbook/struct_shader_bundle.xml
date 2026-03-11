@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_shader_bundle" xml:lang="en-US">
+<title>ShaderBundle Struct Reference</title>
+<indexterm><primary>ShaderBundle</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_shader_bundle">ShaderBundle</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;ShaderProgram.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_shader_bundle_1a56b986ba4b5b35f47e227087c0035ba2"/><emphasis role="strong">~ShaderBundle</emphasis> ()</para>
+
+<para>Destroys this <link linkend="_struct_shader_bundle">ShaderBundle</link> instance. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>static <link linkend="_struct_shader_bundle">ShaderBundle</link> <link linkend="_struct_shader_bundle_1a5cd28b8d8719d853d9201f0f35d2f695">Create</link> (std::string &amp;glsl)</para>
+
+<para>Creates a new object. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_shader_bundle_1a6fbb3d169bd1c1c5388fdfae7ae198dc"/>Shader <emphasis role="strong">shaderHandle</emphasis> = 0</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_shader_bundle_1a1206deb1163491bf5d5e758317dbebab"/>std::string <emphasis role="strong">shader_code</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_shader_bundle_1a618d88aa7b6aad2e7fc331b61a7adec9"/><link linkend="__shader_program_8h_1a6230e1b9ecbf2d82d10856fd7e1fde46">ShaderType</link> <emphasis role="strong">type</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_shader_bundle_1ad2f706686bc6c5dc7e0df0676f3abdca"/>bool <emphasis role="strong">valid</emphasis> = false</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_shader_bundle">ShaderBundle</link>. </para>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_struct_shader_bundle_1a5cd28b8d8719d853d9201f0f35d2f695"/><section>
+    <title>Create()</title>
+<indexterm><primary>Create</primary><secondary>ShaderBundle</secondary></indexterm>
+<indexterm><primary>ShaderBundle</primary><secondary>Create</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_shader_bundle">ShaderBundle</link> ShaderBundle::Create (std::string &amp; glsl)<computeroutput>[inline]</computeroutput>, <computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Creates a new object. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>glsl</entry><entry>
+<para>Shader source code. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Initialized shader bundle. </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Shaders/<link linkend="__shader_program_8h">ShaderProgram.h</link></section>
+</section>

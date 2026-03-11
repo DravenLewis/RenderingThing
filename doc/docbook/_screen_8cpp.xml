@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__screen_8cpp" xml:lang="en-US">
+<title>src/Rendering/Core/Screen.cpp File Reference</title>
+<indexterm><primary>src/Rendering/Core/Screen.cpp</primary></indexterm>
+<para>
+
+<para>Implementation for <link linkend="_class_screen">Screen</link>. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &quot;Rendering/Core/Screen.h&quot;<?linebreak?>#include &quot;Rendering/Lighting/ShadowRenderer.h&quot;<?linebreak?>#include &quot;Rendering/Core/View.h&quot;<?linebreak?>#include &lt;chrono&gt;<?linebreak?></programlisting><section>
+<title>Detailed Description</title>
+
+<para>Implementation for <link linkend="_class_screen">Screen</link>. </para>
+</section>
+</section>

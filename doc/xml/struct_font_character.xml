@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_font_character" kind="struct" language="C++" prot="public">
+    <compoundname>FontCharacter</compoundname>
+    <includes refid="_font_8h" local="no">Font.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_font_character_1a2b7d5fdb9191bf5c24a5d5441dbeca33" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float FontCharacter::u0</definition>
+        <argsstring></argsstring>
+        <name>u0</name>
+        <qualifiedname>FontCharacter::u0</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="47" column="11" bodyfile="src/Rendering/Fonts/Font.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_font_character_1a0affcf0980aab1f7d240bbb1496a8261" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float FontCharacter::v0</definition>
+        <argsstring></argsstring>
+        <name>v0</name>
+        <qualifiedname>FontCharacter::v0</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="47" column="14" bodyfile="src/Rendering/Fonts/Font.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_font_character_1abd4052e08b1febd4d35e7894a842982e" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float FontCharacter::u1</definition>
+        <argsstring></argsstring>
+        <name>u1</name>
+        <qualifiedname>FontCharacter::u1</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="47" column="17" bodyfile="src/Rendering/Fonts/Font.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_font_character_1aa54ed12e29c19ba1b9e8a17558c0f0a9" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float FontCharacter::v1</definition>
+        <argsstring></argsstring>
+        <name>v1</name>
+        <qualifiedname>FontCharacter::v1</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="47" column="20" bodyfile="src/Rendering/Fonts/Font.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_font_character_1a75e6b8b7546bb9b4a27dcff3e7893c2a" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float FontCharacter::sizeX</definition>
+        <argsstring></argsstring>
+        <name>sizeX</name>
+        <qualifiedname>FontCharacter::sizeX</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="48" column="11" bodyfile="src/Rendering/Fonts/Font.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_font_character_1a030eee36143d02f89f9b8e8ffb4fc9d1" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float FontCharacter::sizeY</definition>
+        <argsstring></argsstring>
+        <name>sizeY</name>
+        <qualifiedname>FontCharacter::sizeY</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="48" column="17" bodyfile="src/Rendering/Fonts/Font.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_font_character_1a12ad2f8ac08de0353e1141fe95a63823" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float FontCharacter::bearingX</definition>
+        <argsstring></argsstring>
+        <name>bearingX</name>
+        <qualifiedname>FontCharacter::bearingX</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="49" column="11" bodyfile="src/Rendering/Fonts/Font.h" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_font_character_1a5e6190257184fc7a9546b43e99045779" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float FontCharacter::bearingY</definition>
+        <argsstring></argsstring>
+        <name>bearingY</name>
+        <qualifiedname>FontCharacter::bearingY</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="49" column="20" bodyfile="src/Rendering/Fonts/Font.h" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_font_character_1a11e346d51c14094bd3eab7fe08a67dcb" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float FontCharacter::advance</definition>
+        <argsstring></argsstring>
+        <name>advance</name>
+        <qualifiedname>FontCharacter::advance</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="50" column="11" bodyfile="src/Rendering/Fonts/Font.h" bodystart="50" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_font_character" kindref="compound">FontCharacter</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Fonts/Font.h" line="46" column="1" bodyfile="src/Rendering/Fonts/Font.h" bodystart="46" bodyend="51"/>
+    <listofallmembers>
+      <member refid="struct_font_character_1a11e346d51c14094bd3eab7fe08a67dcb" prot="public" virt="non-virtual"><scope>FontCharacter</scope><name>advance</name></member>
+      <member refid="struct_font_character_1a12ad2f8ac08de0353e1141fe95a63823" prot="public" virt="non-virtual"><scope>FontCharacter</scope><name>bearingX</name></member>
+      <member refid="struct_font_character_1a5e6190257184fc7a9546b43e99045779" prot="public" virt="non-virtual"><scope>FontCharacter</scope><name>bearingY</name></member>
+      <member refid="struct_font_character_1a75e6b8b7546bb9b4a27dcff3e7893c2a" prot="public" virt="non-virtual"><scope>FontCharacter</scope><name>sizeX</name></member>
+      <member refid="struct_font_character_1a030eee36143d02f89f9b8e8ffb4fc9d1" prot="public" virt="non-virtual"><scope>FontCharacter</scope><name>sizeY</name></member>
+      <member refid="struct_font_character_1a2b7d5fdb9191bf5c24a5d5441dbeca33" prot="public" virt="non-virtual"><scope>FontCharacter</scope><name>u0</name></member>
+      <member refid="struct_font_character_1abd4052e08b1febd4d35e7894a842982e" prot="public" virt="non-virtual"><scope>FontCharacter</scope><name>u1</name></member>
+      <member refid="struct_font_character_1a0affcf0980aab1f7d240bbb1496a8261" prot="public" virt="non-virtual"><scope>FontCharacter</scope><name>v0</name></member>
+      <member refid="struct_font_character_1aa54ed12e29c19ba1b9e8a17558c0f0a9" prot="public" virt="non-virtual"><scope>FontCharacter</scope><name>v1</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

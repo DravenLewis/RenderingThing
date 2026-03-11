@@ -1,3 +1,8 @@
+/**
+ * @file src/Scene/FirstPersonController.h
+ * @brief First-person camera controller driven by keyboard and mouse input.
+ */
+
 #ifndef FIRST_PERSON_CONTROLLER_H
 #define FIRST_PERSON_CONTROLLER_H
 
@@ -8,8 +13,9 @@
 #include "Foundation/Math/Math3D.h"
 
 /**
- * A First Person Controller that implements IEventHandler.
- * Uses std::enable_shared_from_this for safe registration with InputManager.
+ * @brief Handles first-person movement and look controls for a camera.
+ *
+ * Implements `IEventHandler` so it can receive input callbacks from `InputManager`.
  */
 class FirstPersonController : public IEventHandler, public std::enable_shared_from_this<FirstPersonController> {
 private:
@@ -26,12 +32,16 @@ private:
 
 
 public:
-    FirstPersonController(std::shared_ptr<Camera> cam) 
+    /**
+     * @brief Constructs the controller for a camera.
+     * @param cam Camera instance controlled by this object.
+     */
+    FirstPersonController(std::shared_ptr<Camera> cam)
         : m_Camera(cam) {}
 
     /**
-     * Registers this controller with the InputManager.
-     * Must be called after the shared_ptr for the controller is created.
+     * @brief Registers this controller with the input manager.
+     * @param inputManager Input manager used to dispatch events.
      */
     void init(std::shared_ptr<InputManager> inputManager) {
         if (inputManager) {
@@ -40,9 +50,9 @@ public:
     }
 
     /**
-     * Call this every frame in your main loop.
-     * @param dt Delta time (time elapsed since last frame)
-     * @param input Reference to your InputManager to check key states
+     * @brief Applies per-frame movement and rotation input to the camera.
+     * @param dt Frame delta time in seconds.
+     * @param input Input manager used to query key state.
      */
     void update(float dt, std::shared_ptr<InputManager> input) {
         if (!m_Camera) return;
@@ -79,8 +89,13 @@ public:
         m_Camera->setTransform(transform);
     }
 
-    // --- IEventHandler Implementation ---
-
+    /**
+     * @brief Handles mouse movement events for look rotation.
+     * @param x Mouse delta X.
+     * @param y Mouse delta Y.
+     * @param manager Input manager dispatching the event.
+     * @return True when the event was handled; otherwise false.
+     */
     virtual bool onMouseMoved(int x, int y,InputManager& manager) override {
 
         if(manager.getMouseCaptureMode() != MouseLockMode::LOCKED) return false;
@@ -113,21 +128,50 @@ public:
 
     }
 
-    // Empty overrides for required pure virtuals
+    /**
+     * @brief Handles key release events.
+     * @param k Released key scan code.
+     * @param m Input manager dispatching the event.
+     * @return True when the event was handled; otherwise false.
+     */
     virtual bool onKeyUp(int k,InputManager& m) override { 
         if(k == SDL_SCANCODE_GRAVE && (m.getMouseCaptureMode() == MouseLockMode::LOCKED || m.getMouseCaptureMode() == MouseLockMode::CAPTURED)){
             m.setMouseCaptureMode(MouseLockMode::FREE);
         }
         return false;
     }
+    /**
+     * @brief Handles key press events.
+     * @param k Pressed key scan code.
+     * @param m Input manager dispatching the event.
+     * @return True when the event was handled; otherwise false.
+     */
     virtual bool onKeyDown(int k,InputManager& m) override { return false; }
+    /**
+     * @brief Handles mouse button press events.
+     * @param b Pressed mouse button code.
+     * @param m Input manager dispatching the event.
+     * @return True when the event was handled; otherwise false.
+     */
     virtual bool onMousePressed(int b,InputManager& m) override { 
         if(b == SDL_BUTTON_LEFT && m.getMouseCaptureMode() != MouseLockMode::LOCKED){
             m.setMouseCaptureMode(MouseLockMode::LOCKED); // lock the mouse if the player clicks the screen.
         }
         return false; 
     }
+    /**
+     * @brief Handles mouse button release events.
+     * @param b Released mouse button code.
+     * @param m Input manager dispatching the event.
+     * @return True when the event was handled; otherwise false.
+     */
     virtual bool onMouseReleased(int b,InputManager& m) override { return false; }
+    /**
+     * @brief Handles mouse wheel events used to adjust fast movement scaling.
+     * @param z Scroll delta.
+     * @param m Input manager dispatching the event.
+     * @return True when the event was handled; otherwise false.
+     */
     virtual bool onMouseScroll(float z,InputManager& m) override { 
         if(m.getMouseCaptureMode() == MouseLockMode::LOCKED) this->m_fastScale += z / 10.0f;
         if(this->m_fastScale < 0) this->m_fastScale = 0.1;
@@ -135,6 +179,10 @@ public:
     }
 
 private:
+    /**
+     * @brief Updates transform rotation from yaw and pitch state.
+     * @param tx Transform to update in place.
+     */
     void updateCameraRotation(Math3D::Transform& tx) {
         // Construct a Quaternion from our Euler angles
         // Note: Using YXZ or XYZ order depends on your math convention

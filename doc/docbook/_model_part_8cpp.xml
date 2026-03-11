@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__model_part_8cpp" xml:lang="en-US">
+<title>src/Rendering/Geometry/ModelPart.cpp File Reference</title>
+<indexterm><primary>src/Rendering/Geometry/ModelPart.cpp</primary></indexterm>
+<para>
+
+<para>Implementation for <link linkend="_struct_model_part">ModelPart</link>. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &quot;Rendering/Geometry/ModelPart.h&quot;<?linebreak?>#include &quot;Foundation/Logging/Logbot.h&quot;<?linebreak?>#include &quot;Rendering/Lighting/ShadowRenderer.h&quot;<?linebreak?></programlisting><section>
+<title>Detailed Description</title>
+
+<para>Implementation for <link linkend="_struct_model_part">ModelPart</link>. </para>
+</section>
+</section>

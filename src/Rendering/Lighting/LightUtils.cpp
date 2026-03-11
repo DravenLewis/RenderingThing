@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Lighting/LightUtils.cpp
+ * @brief Implementation for LightUtils.
+ */
+
 #include "Rendering/Lighting/LightUtils.h"
 
 #include <glad/glad.h>

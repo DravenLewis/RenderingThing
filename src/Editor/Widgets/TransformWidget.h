@@ -1,3 +1,8 @@
+/**
+ * @file src/Editor/Widgets/TransformWidget.h
+ * @brief Declarations for TransformWidget.
+ */
+
 #ifndef WIDGETS_TRANSFORM_WIDGET_H
 #define WIDGETS_TRANSFORM_WIDGET_H
 
@@ -7,8 +12,10 @@
 #include "Rendering/Core/View.h"
 #include "Scene/Camera.h"
 
+/// @brief Represents the TransformWidget type.
 class TransformWidget {
     public:
+        /// @brief Enumerates values for Mode.
         enum class Mode {
             Translate = 0,
             Rotate,
@@ -16,6 +23,7 @@ class TransformWidget {
             Combined
         };
 
+        /// @brief Enumerates values for Axis.
         enum class Axis {
             None = 0,
             X,
@@ -23,6 +31,7 @@ class TransformWidget {
             Z
         };
 
+        /// @brief Enumerates values for Handle.
         enum class Handle {
             None = 0,
             Translate,
@@ -31,6 +40,7 @@ class TransformWidget {
             UniformScale
         };
 
+        /// @brief Holds data for Viewport.
         struct Viewport {
             float x = 0.0f;
             float y = 0.0f;
@@ -39,9 +49,20 @@ class TransformWidget {
             bool valid = false;
         };
 
+        /**
+         * @brief Constructs a new TransformWidget instance.
+         */
         TransformWidget();
 
+        /**
+         * @brief Sets the mode.
+         * @param newMode Mode or type selector.
+         */
         void setMode(Mode newMode);
+        /**
+         * @brief Returns the mode.
+         * @return Result of this operation.
+         */
         Mode getMode() const { return mode; }
         bool isDragging() const { return dragging; }
 
@@ -93,6 +114,7 @@ class TransformWidget {
         Math3D::Vec3 dragAxisLocal = Math3D::Vec3(1,0,0);
         Math3D::Vec3 startPlaneVec = Math3D::Vec3(1,0,0);
 
+        /// @brief Holds data for HoverResult.
         struct HoverResult {
             Handle handle = Handle::None;
             Axis axis = Axis::None;

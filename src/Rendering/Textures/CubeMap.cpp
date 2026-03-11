@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Textures/CubeMap.cpp
+ * @brief Implementation for CubeMap.
+ */
+
 #include "Rendering/Textures/CubeMap.h"
 
 #include "Foundation/Logging/Logbot.h"

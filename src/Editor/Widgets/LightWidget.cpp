@@ -1,3 +1,8 @@
+/**
+ * @file src/Editor/Widgets/LightWidget.cpp
+ * @brief Implementation for LightWidget.
+ */
+
 #include "Editor/Widgets/LightWidget.h"
 
 #include <cmath>

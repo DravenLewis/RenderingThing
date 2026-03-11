@@ -1,3 +1,8 @@
+/**
+ * @file src/Editor/Widgets/PropertiesPanel.cpp
+ * @brief Implementation for PropertiesPanel.
+ */
+
 #include "Editor/Widgets/PropertiesPanel.h"
 
 #include "Assets/Core/AssetDescriptorUtils.h"
@@ -18,6 +23,7 @@ namespace {
         ImGuiWindowFlags_NoResize |
         ImGuiWindowFlags_NoCollapse;
 
+    /// @brief Enumerates Add Component Kind values.
     enum class AddComponentKind {
         Transform,
         MeshRenderer,
@@ -35,6 +41,7 @@ namespace {
         Script
     };
 
+    /// @brief Represents Script Asset Option data.
     struct ScriptAssetOption {
         std::string assetRef;
         std::string displayName;

@@ -1,0 +1,381 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_shadow_map_cube" kind="class" language="C++" prot="public">
+    <compoundname>ShadowMapCube</compoundname>
+    <includes refid="_shadow_map_8h" local="no">ShadowMap.h</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_shadow_map_cube_1a75dd17413311f1d5f2a9b101d0f77f73" prot="private" static="no" mutable="no">
+        <type>GLuint</type>
+        <definition>GLuint ShadowMapCube::fbo</definition>
+        <argsstring></argsstring>
+        <name>fbo</name>
+        <qualifiedname>ShadowMapCube::fbo</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="86" column="12" bodyfile="src/Rendering/Lighting/ShadowMap.h" bodystart="86" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_shadow_map_cube_1a1b229d26161b96363f7fc98a8574ba8b" prot="private" static="no" mutable="no">
+        <type>GLuint</type>
+        <definition>GLuint ShadowMapCube::depthCube</definition>
+        <argsstring></argsstring>
+        <name>depthCube</name>
+        <qualifiedname>ShadowMapCube::depthCube</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="87" column="12" bodyfile="src/Rendering/Lighting/ShadowMap.h" bodystart="87" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_shadow_map_cube_1a6ea8d03f47afa4351ee9c8f2b87d476e" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int ShadowMapCube::size</definition>
+        <argsstring></argsstring>
+        <name>size</name>
+        <qualifiedname>ShadowMapCube::size</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="88" column="9" bodyfile="src/Rendering/Lighting/ShadowMap.h" bodystart="88" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_shadow_map_cube_1a9ff58f8cb81164cda198be8039bb0e41" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowMapCube::init</definition>
+        <argsstring>()</argsstring>
+        <name>init</name>
+        <qualifiedname>ShadowMapCube::init</qualifiedname>
+        <briefdescription>
+<para>Initializes this object. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="93" column="10" bodyfile="src/Rendering/Lighting/ShadowMap.cpp" bodystart="154" bodyend="190"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_shadow_map_cube_1ad6bb31f5d7cc939a0c91a1b1d434a76a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>ShadowMapCube::ShadowMapCube</definition>
+        <argsstring>()=default</argsstring>
+        <name>ShadowMapCube</name>
+        <qualifiedname>ShadowMapCube::ShadowMapCube</qualifiedname>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_shadow_map_cube" kindref="compound">ShadowMapCube</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="99" column="5"/>
+        <referencedby refid="class_shadow_map_cube_1aa901c0f61f181dcaf8eeaf2aca97cc9f">operator=</referencedby>
+        <referencedby refid="class_shadow_map_cube_1a9ec157dfb27a1e0f183fad95d0ee128c" compoundref="_shadow_map_8cpp" startline="140" endline="152">operator=</referencedby>
+        <referencedby refid="class_shadow_map_cube_1a0aaaefa1c4de0b8da0ef9f4b37d619db">ShadowMapCube</referencedby>
+        <referencedby refid="class_shadow_map_cube_1acf4f6dc81cb39059f2df7352e667cc9a" compoundref="_shadow_map_8cpp" startline="131" endline="138">ShadowMapCube</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map_cube_1ae8b1dbe11963788d9f2661d7b57801e4" prot="public" static="no" const="no" explicit="yes" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>ShadowMapCube::ShadowMapCube</definition>
+        <argsstring>(int size)</argsstring>
+        <name>ShadowMapCube</name>
+        <qualifiedname>ShadowMapCube::ShadowMapCube</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_shadow_map_cube" kindref="compound">ShadowMapCube</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of elements or bytes. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Result of this operation. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="105" column="14" bodyfile="src/Rendering/Lighting/ShadowMap.cpp" bodystart="122" bodyend="124"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map_cube_1a35eb630aeabf2272a312f6a4a49f6712" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>ShadowMapCube::~ShadowMapCube</definition>
+        <argsstring>()</argsstring>
+        <name>~ShadowMapCube</name>
+        <qualifiedname>ShadowMapCube::~ShadowMapCube</qualifiedname>
+        <briefdescription>
+<para>Destroys this <ref refid="class_shadow_map_cube" kindref="compound">ShadowMapCube</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="109" column="5" bodyfile="src/Rendering/Lighting/ShadowMap.cpp" bodystart="126" bodyend="129"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map_cube_1a0aaaefa1c4de0b8da0ef9f4b37d619db" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>ShadowMapCube::ShadowMapCube</definition>
+        <argsstring>(const ShadowMapCube &amp;)=delete</argsstring>
+        <name>ShadowMapCube</name>
+        <qualifiedname>ShadowMapCube::ShadowMapCube</qualifiedname>
+        <param>
+          <type>const <ref refid="class_shadow_map_cube" kindref="compound">ShadowMapCube</ref> &amp;</type>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_shadow_map_cube" kindref="compound">ShadowMapCube</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="113" column="5"/>
+        <references refid="class_shadow_map_cube_1ad6bb31f5d7cc939a0c91a1b1d434a76a">ShadowMapCube</references>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map_cube_1aa901c0f61f181dcaf8eeaf2aca97cc9f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="class_shadow_map_cube" kindref="compound">ShadowMapCube</ref> &amp;</type>
+        <definition>ShadowMapCube &amp; ShadowMapCube::operator=</definition>
+        <argsstring>(const ShadowMapCube &amp;)=delete</argsstring>
+        <name>operator=</name>
+        <qualifiedname>ShadowMapCube::operator=</qualifiedname>
+        <param>
+          <type>const <ref refid="class_shadow_map_cube" kindref="compound">ShadowMapCube</ref> &amp;</type>
+        </param>
+        <briefdescription>
+<para>Assigns from another instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="117" column="19"/>
+        <references refid="class_shadow_map_cube_1ad6bb31f5d7cc939a0c91a1b1d434a76a">ShadowMapCube</references>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map_cube_1acf4f6dc81cb39059f2df7352e667cc9a" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type></type>
+        <definition>ShadowMapCube::ShadowMapCube</definition>
+        <argsstring>(ShadowMapCube &amp;&amp;other) noexcept</argsstring>
+        <name>ShadowMapCube</name>
+        <qualifiedname>ShadowMapCube::ShadowMapCube</qualifiedname>
+        <param>
+          <type><ref refid="class_shadow_map_cube" kindref="compound">ShadowMapCube</ref> &amp;&amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_shadow_map_cube" kindref="compound">ShadowMapCube</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>other</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for other. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="122" column="5" bodyfile="src/Rendering/Lighting/ShadowMap.cpp" bodystart="131" bodyend="138"/>
+        <references refid="class_shadow_map_cube_1ad6bb31f5d7cc939a0c91a1b1d434a76a">ShadowMapCube</references>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map_cube_1a9ec157dfb27a1e0f183fad95d0ee128c" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type><ref refid="class_shadow_map_cube" kindref="compound">ShadowMapCube</ref> &amp;</type>
+        <definition>ShadowMapCube &amp; ShadowMapCube::operator=</definition>
+        <argsstring>(ShadowMapCube &amp;&amp;other) noexcept</argsstring>
+        <name>operator=</name>
+        <qualifiedname>ShadowMapCube::operator=</qualifiedname>
+        <param>
+          <type><ref refid="class_shadow_map_cube" kindref="compound">ShadowMapCube</ref> &amp;&amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+<para>Assigns from another instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>other</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for other. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="127" column="19" bodyfile="src/Rendering/Lighting/ShadowMap.cpp" bodystart="140" bodyend="152"/>
+        <references refid="class_shadow_map_cube_1ad6bb31f5d7cc939a0c91a1b1d434a76a">ShadowMapCube</references>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map_cube_1a2b4bc34daef25168c05eb6a853919afc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowMapCube::resize</definition>
+        <argsstring>(int newSize)</argsstring>
+        <name>resize</name>
+        <qualifiedname>ShadowMapCube::resize</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>newSize</declname>
+        </param>
+        <briefdescription>
+<para>Resizes internal resources. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>newSize</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of elements or bytes. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="133" column="10" bodyfile="src/Rendering/Lighting/ShadowMap.cpp" bodystart="192" bodyend="200"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map_cube_1aa8bbe52175ec103726b6aa2e4dd4645b" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowMapCube::bindFace</definition>
+        <argsstring>(GLenum face) const</argsstring>
+        <name>bindFace</name>
+        <qualifiedname>ShadowMapCube::bindFace</qualifiedname>
+        <param>
+          <type>GLenum</type>
+          <declname>face</declname>
+        </param>
+        <briefdescription>
+<para>Binds face. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>face</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for face. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="138" column="10" bodyfile="src/Rendering/Lighting/ShadowMap.cpp" bodystart="202" bodyend="210"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map_cube_1aa977176a7596a0ba2baa70cb78dcfebf" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowMapCube::unbind</definition>
+        <argsstring>() const</argsstring>
+        <name>unbind</name>
+        <qualifiedname>ShadowMapCube::unbind</qualifiedname>
+        <briefdescription>
+<para>Unbinds this resource. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="142" column="10" bodyfile="src/Rendering/Lighting/ShadowMap.cpp" bodystart="212" bodyend="214"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map_cube_1a7d6e4c1116e8e0827ead05a08c70de5c" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShadowMapCube::clear</definition>
+        <argsstring>() const</argsstring>
+        <name>clear</name>
+        <qualifiedname>ShadowMapCube::clear</qualifiedname>
+        <briefdescription>
+<para>Clears the current state. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="146" column="10" bodyfile="src/Rendering/Lighting/ShadowMap.cpp" bodystart="216" bodyend="218"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map_cube_1ad1fcf694238173cea98f59fb0f3f1efe" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>GLuint</type>
+        <definition>GLuint ShadowMapCube::getDepthTexture</definition>
+        <argsstring>() const</argsstring>
+        <name>getDepthTexture</name>
+        <qualifiedname>ShadowMapCube::getDepthTexture</qualifiedname>
+        <briefdescription>
+<para>Returns the depth texture. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Result of this operation. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="152" column="12" bodyfile="src/Rendering/Lighting/ShadowMap.h" bodystart="152" bodyend="152"/>
+      </memberdef>
+      <memberdef kind="function" id="class_shadow_map_cube_1ab22b92b416ce0fcf00cd93863958a955" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int ShadowMapCube::getSize</definition>
+        <argsstring>() const</argsstring>
+        <name>getSize</name>
+        <qualifiedname>ShadowMapCube::getSize</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowMap.h" line="153" column="9" bodyfile="src/Rendering/Lighting/ShadowMap.h" bodystart="153" bodyend="153"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_shadow_map_cube" kindref="compound">ShadowMapCube</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Lighting/ShadowMap.h" line="84" column="1" bodyfile="src/Rendering/Lighting/ShadowMap.h" bodystart="84" bodyend="154"/>
+    <listofallmembers>
+      <member refid="class_shadow_map_cube_1aa8bbe52175ec103726b6aa2e4dd4645b" prot="public" virt="non-virtual"><scope>ShadowMapCube</scope><name>bindFace</name></member>
+      <member refid="class_shadow_map_cube_1a7d6e4c1116e8e0827ead05a08c70de5c" prot="public" virt="non-virtual"><scope>ShadowMapCube</scope><name>clear</name></member>
+      <member refid="class_shadow_map_cube_1a1b229d26161b96363f7fc98a8574ba8b" prot="private" virt="non-virtual"><scope>ShadowMapCube</scope><name>depthCube</name></member>
+      <member refid="class_shadow_map_cube_1a75dd17413311f1d5f2a9b101d0f77f73" prot="private" virt="non-virtual"><scope>ShadowMapCube</scope><name>fbo</name></member>
+      <member refid="class_shadow_map_cube_1ad1fcf694238173cea98f59fb0f3f1efe" prot="public" virt="non-virtual"><scope>ShadowMapCube</scope><name>getDepthTexture</name></member>
+      <member refid="class_shadow_map_cube_1ab22b92b416ce0fcf00cd93863958a955" prot="public" virt="non-virtual"><scope>ShadowMapCube</scope><name>getSize</name></member>
+      <member refid="class_shadow_map_cube_1a9ff58f8cb81164cda198be8039bb0e41" prot="private" virt="non-virtual"><scope>ShadowMapCube</scope><name>init</name></member>
+      <member refid="class_shadow_map_cube_1aa901c0f61f181dcaf8eeaf2aca97cc9f" prot="public" virt="non-virtual"><scope>ShadowMapCube</scope><name>operator=</name></member>
+      <member refid="class_shadow_map_cube_1a9ec157dfb27a1e0f183fad95d0ee128c" prot="public" virt="non-virtual"><scope>ShadowMapCube</scope><name>operator=</name></member>
+      <member refid="class_shadow_map_cube_1a2b4bc34daef25168c05eb6a853919afc" prot="public" virt="non-virtual"><scope>ShadowMapCube</scope><name>resize</name></member>
+      <member refid="class_shadow_map_cube_1ad6bb31f5d7cc939a0c91a1b1d434a76a" prot="public" virt="non-virtual"><scope>ShadowMapCube</scope><name>ShadowMapCube</name></member>
+      <member refid="class_shadow_map_cube_1ae8b1dbe11963788d9f2661d7b57801e4" prot="public" virt="non-virtual"><scope>ShadowMapCube</scope><name>ShadowMapCube</name></member>
+      <member refid="class_shadow_map_cube_1a0aaaefa1c4de0b8da0ef9f4b37d619db" prot="public" virt="non-virtual"><scope>ShadowMapCube</scope><name>ShadowMapCube</name></member>
+      <member refid="class_shadow_map_cube_1acf4f6dc81cb39059f2df7352e667cc9a" prot="public" virt="non-virtual"><scope>ShadowMapCube</scope><name>ShadowMapCube</name></member>
+      <member refid="class_shadow_map_cube_1a6ea8d03f47afa4351ee9c8f2b87d476e" prot="private" virt="non-virtual"><scope>ShadowMapCube</scope><name>size</name></member>
+      <member refid="class_shadow_map_cube_1aa977176a7596a0ba2baa70cb78dcfebf" prot="public" virt="non-virtual"><scope>ShadowMapCube</scope><name>unbind</name></member>
+      <member refid="class_shadow_map_cube_1a35eb630aeabf2272a312f6a4a49f6712" prot="public" virt="non-virtual"><scope>ShadowMapCube</scope><name>~ShadowMapCube</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

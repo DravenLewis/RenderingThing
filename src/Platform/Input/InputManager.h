@@ -1,3 +1,8 @@
+/**
+ * @file src/Platform/Input/InputManager.h
+ * @brief Declarations for InputManager.
+ */
+
 #ifndef INPUTMANAGER_H
 #define INPUTMANAGER_H
 
@@ -9,21 +14,61 @@
 
 class InputManager;
 
+/// @brief Enumerates values for MouseLockMode.
 enum class MouseLockMode{
     FREE,
     CAPTURED,
     LOCKED
 };
 
+/// @brief Holds data for IEventHandler.
 struct IEventHandler{
+    /**
+     * @brief Checks whether on key up.
+     * @param keyCode Value for key code.
+     * @param manager Value for manager.
+     * @return True when the operation succeeds; otherwise false.
+     */
     virtual bool onKeyUp(int keyCode, InputManager& manager) = 0;
+    /**
+     * @brief Checks whether on key down.
+     * @param keyCode Value for key code.
+     * @param manager Value for manager.
+     * @return True when the operation succeeds; otherwise false.
+     */
     virtual bool onKeyDown(int keyCode, InputManager& manager) = 0;
+    /**
+     * @brief Checks whether on mouse pressed.
+     * @param button Value for button.
+     * @param manager Value for manager.
+     * @return True when the operation succeeds; otherwise false.
+     */
     virtual bool onMousePressed(int button, InputManager& manager) = 0;
+    /**
+     * @brief Checks whether on mouse released.
+     * @param button Value for button.
+     * @param manager Value for manager.
+     * @return True when the operation succeeds; otherwise false.
+     */
     virtual bool onMouseReleased(int button, InputManager& manager) = 0;
+    /**
+     * @brief Checks whether on mouse moved.
+     * @param x Spatial value used by this operation.
+     * @param y Spatial value used by this operation.
+     * @param manager Value for manager.
+     * @return True when the operation succeeds; otherwise false.
+     */
     virtual bool onMouseMoved(int x, int y, InputManager& manager) = 0;
+    /**
+     * @brief Checks whether on mouse scroll.
+     * @param dz Value for dz.
+     * @param manager Value for manager.
+     * @return True when the operation succeeds; otherwise false.
+     */
     virtual bool onMouseScroll(float dz, InputManager& manager) = 0;
 };
 
+/// @brief Holds data for InputInformation.
 struct InputInformation{
     const static int KEYMAP_SIZE = 512;
 
@@ -41,6 +86,7 @@ struct InputInformation{
     float _wheelLast = wheel;
 };
 
+/// @brief Represents the InputManager type.
 class InputManager{
     private:
         std::shared_ptr<RenderWindow> windowPtr;
@@ -51,6 +97,9 @@ class InputManager{
         int lastMouseX = 0;
         int lastMouseY = 0;
     public:
+        /**
+         * @brief Constructs a new InputManager instance.
+         */
         InputManager() : windowPtr(nullptr) {};
         InputManager(std::shared_ptr<RenderWindow> window, bool attachHandlers = true);
         ~InputManager();

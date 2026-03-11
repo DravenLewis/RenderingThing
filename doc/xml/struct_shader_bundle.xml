@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_shader_bundle" kind="struct" language="C++" prot="public">
+    <compoundname>ShaderBundle</compoundname>
+    <includes refid="_shader_program_8h" local="no">ShaderProgram.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_shader_bundle_1a6fbb3d169bd1c1c5388fdfae7ae198dc" prot="public" static="no" mutable="no">
+        <type>Shader</type>
+        <definition>Shader ShaderBundle::shaderHandle</definition>
+        <argsstring></argsstring>
+        <name>shaderHandle</name>
+        <qualifiedname>ShaderBundle::shaderHandle</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="215" column="12" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="215" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_shader_bundle_1a1206deb1163491bf5d5e758317dbebab" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string ShaderBundle::shader_code</definition>
+        <argsstring></argsstring>
+        <name>shader_code</name>
+        <qualifiedname>ShaderBundle::shader_code</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="216" column="17" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="216" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_shader_bundle_1a618d88aa7b6aad2e7fc331b61a7adec9" prot="public" static="no" mutable="no">
+        <type><ref refid="_shader_program_8h_1a6230e1b9ecbf2d82d10856fd7e1fde46" kindref="member">ShaderType</ref></type>
+        <definition>ShaderType ShaderBundle::type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <qualifiedname>ShaderBundle::type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="217" column="16" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="217" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_shader_bundle_1ad2f706686bc6c5dc7e0df0676f3abdca" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool ShaderBundle::valid</definition>
+        <argsstring></argsstring>
+        <name>valid</name>
+        <qualifiedname>ShaderBundle::valid</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="218" column="10" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="218" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="struct_shader_bundle_1a5cd28b8d8719d853d9201f0f35d2f695" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="struct_shader_bundle" kindref="compound">ShaderBundle</ref></type>
+        <definition>static ShaderBundle ShaderBundle::Create</definition>
+        <argsstring>(std::string &amp;glsl)</argsstring>
+        <name>Create</name>
+        <qualifiedname>ShaderBundle::Create</qualifiedname>
+        <param>
+          <type>std::string &amp;</type>
+          <declname>glsl</declname>
+        </param>
+        <briefdescription>
+<para>Creates a new object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>glsl</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Shader source code. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Initialized shader bundle. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="225" column="25" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="225" bodyend="229"/>
+        <referencedby refid="class_shader_program_1a678c9074bbfe1304c471dfc3b1691249" compoundref="_shader_program_8cpp" startline="41" endline="46">ShaderProgram::setComputeShader</referencedby>
+        <referencedby refid="class_shader_program_1aa8c62c838e859d5368a98d0314d43d7f" compoundref="_shader_program_8cpp" startline="23" endline="28">ShaderProgram::setFragmentShader</referencedby>
+        <referencedby refid="class_shader_program_1adf9c56429772966970584e6f10043db1" compoundref="_shader_program_8cpp" startline="29" endline="34">ShaderProgram::setGeometryShader</referencedby>
+        <referencedby refid="class_shader_program_1a329ce6ce72892eb7356f8f52bd6d83dd" compoundref="_shader_program_8cpp" startline="53" endline="58">ShaderProgram::setRTXShader</referencedby>
+        <referencedby refid="class_shader_program_1a4db8cf4f7428ddd35bde1c89571f853e" compoundref="_shader_program_8cpp" startline="47" endline="52">ShaderProgram::setTaskShader</referencedby>
+        <referencedby refid="class_shader_program_1afcc0424f8d20bf2fef3293a029db46cd" compoundref="_shader_program_8cpp" startline="35" endline="40">ShaderProgram::setTesselationShader</referencedby>
+        <referencedby refid="class_shader_program_1a1fbce854a5384c6d74425eaff64910f2" compoundref="_shader_program_8cpp" startline="17" endline="22">ShaderProgram::setVertexShader</referencedby>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="struct_shader_bundle_1a56b986ba4b5b35f47e227087c0035ba2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ShaderBundle::~ShaderBundle</definition>
+        <argsstring>()</argsstring>
+        <name>~ShaderBundle</name>
+        <qualifiedname>ShaderBundle::~ShaderBundle</qualifiedname>
+        <briefdescription>
+<para>Destroys this <ref refid="struct_shader_bundle" kindref="compound">ShaderBundle</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="234" column="5" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="234" bodyend="239"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_shader_bundle" kindref="compound">ShaderBundle</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Shaders/ShaderProgram.h" line="213" column="1" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="213" bodyend="240"/>
+    <listofallmembers>
+      <member refid="struct_shader_bundle_1a5cd28b8d8719d853d9201f0f35d2f695" prot="public" virt="non-virtual"><scope>ShaderBundle</scope><name>Create</name></member>
+      <member refid="struct_shader_bundle_1a1206deb1163491bf5d5e758317dbebab" prot="public" virt="non-virtual"><scope>ShaderBundle</scope><name>shader_code</name></member>
+      <member refid="struct_shader_bundle_1a6fbb3d169bd1c1c5388fdfae7ae198dc" prot="public" virt="non-virtual"><scope>ShaderBundle</scope><name>shaderHandle</name></member>
+      <member refid="struct_shader_bundle_1a618d88aa7b6aad2e7fc331b61a7adec9" prot="public" virt="non-virtual"><scope>ShaderBundle</scope><name>type</name></member>
+      <member refid="struct_shader_bundle_1ad2f706686bc6c5dc7e0df0676f3abdca" prot="public" virt="non-virtual"><scope>ShaderBundle</scope><name>valid</name></member>
+      <member refid="struct_shader_bundle_1a56b986ba4b5b35f47e227087c0035ba2" prot="public" virt="non-virtual"><scope>ShaderBundle</scope><name>~ShaderBundle</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

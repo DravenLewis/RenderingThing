@@ -1,0 +1,120 @@
+.TH "FreeTypeFont" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+FreeTypeFont \- Represents the \fBFreeTypeFont\fP type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <FreeTypeFont\&.h>\fP
+.PP
+Inherits \fBFont\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBFreeTypeFont\fP ()"
+.br
+.RI "Constructs a new \fBFreeTypeFont\fP instance\&. "
+.ti -1c
+.RI "void \fB_initFont\fP () override"
+.br
+.RI "Initializes font resources\&. "
+.ti -1c
+.RI "void \fBdrawText\fP (std::string text, Math3D::Vec2 position, PCamera camera, Color color, bool useCache) override"
+.br
+.ti -1c
+.RI "bool \fBsupportsQueuedDrawing\fP () const override"
+.br
+.ti -1c
+.RI "void \fBbeginFrame\fP (PCamera camera) override"
+.br
+.ti -1c
+.RI "void \fBflushQueuedText\fP (PCamera camera) override"
+.br
+.in -1c
+
+Public Member Functions inherited from \fBFont\fP
+.in +1c
+.ti -1c
+.RI "\fBFont\fP ()"
+.br
+.RI "Constructs a new \fBFont\fP instance\&. "
+.ti -1c
+.RI "void \fBclearCache\fP ()"
+.br
+.ti -1c
+.RI "PAsset \fBgetAssetPointer\fP ()"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+
+
+Static Public Member Functions inherited from \fBFont\fP
+.in +1c
+.ti -1c
+.RI "template<typename T> static std::shared_ptr< T > \fBCreate\fP (PAsset asset, float fontSize=18\&.0f)"
+.br
+.in -1c
+
+Static Public Attributes inherited from \fBFont\fP
+.in +1c
+.ti -1c
+.RI "static Logbot \fBFontLogger\fP = Logbot::CreateInstance('Font')"
+.br
+.in -1c
+
+Protected Attributes inherited from \fBFont\fP
+.in +1c
+.ti -1c
+.RI "PAsset \fBassetPtr\fP"
+.br
+.ti -1c
+.RI "PTexture \fBtextureAtlasPtr\fP"
+.br
+.ti -1c
+.RI "PMaterial \fBmaterialCachePtr\fP"
+.br
+.ti -1c
+.RI "float \fBfontSize\fP"
+.br
+.ti -1c
+.RI "std::array< \fBFontCharacter\fP, 128 > \fBcharacters\fP"
+.br
+.ti -1c
+.RI "std::map< \fBTextCacheKey\fP, std::shared_ptr< \fBModelPart\fP > > \fBmeshCache\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the \fBFreeTypeFont\fP type\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "void FreeTypeFont::_initFont ()\fR [override]\fP, \fR [virtual]\fP"
+
+.PP
+Initializes font resources\&. 
+.PP
+Implements \fBFont\fP\&.
+.SS "void FreeTypeFont::beginFrame (PCamera camera)\fR [override]\fP, \fR [virtual]\fP"
+
+.PP
+Reimplemented from \fBFont\fP\&.
+.SS "void FreeTypeFont::drawText (std::string text, Math3D::Vec2 position, PCamera camera, Color color, bool useCache)\fR [override]\fP, \fR [virtual]\fP"
+
+.PP
+Implements \fBFont\fP\&.
+.SS "void FreeTypeFont::flushQueuedText (PCamera camera)\fR [override]\fP, \fR [virtual]\fP"
+
+.PP
+Reimplemented from \fBFont\fP\&.
+.SS "bool FreeTypeFont::supportsQueuedDrawing () const\fR [inline]\fP, \fR [override]\fP, \fR [virtual]\fP"
+
+.PP
+Reimplemented from \fBFont\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

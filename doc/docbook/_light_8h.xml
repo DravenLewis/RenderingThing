@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__light_8h" xml:lang="en-US">
+<title>src/Rendering/Lighting/Light.h File Reference</title>
+<indexterm><primary>src/Rendering/Lighting/Light.h</primary></indexterm>
+<para>
+
+<para>Declarations for <link linkend="_struct_light">Light</link>. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &quot;Foundation/Math/Math3D.h&quot;<?linebreak?>#include &quot;Foundation/Math/Color.h&quot;<?linebreak?>#include &lt;vector&gt;<?linebreak?>#include &lt;memory&gt;<?linebreak?></programlisting><simplesect>
+    <title>Classes    </title>
+        <itemizedlist>
+            <listitem><para>struct <link linkend="_struct_light">Light</link></para>
+
+<para>Holds data for <link linkend="_struct_light">Light</link>. </para>
+</listitem>
+            <listitem><para>class <link linkend="_class_light_manager">LightManager</link></para>
+
+<para>Represents the <link linkend="_class_light_manager">LightManager</link> type. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Macros    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="__light_8h_1a737b417f16ea225cf15e8d4c23df53dc"/>#define <emphasis role="strong">MAX_LIGHTS</emphasis>&#160;&#160;&#160;16</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Enumerations    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="__light_8h_1adc3ec8293e6a97ebe43f0196b9a7f638"/>enum class <link linkend="__light_8h_1adc3ec8293e6a97ebe43f0196b9a7f638">LightType</link> { <emphasis role="strong">POINT</emphasis>
+, <emphasis role="strong">DIRECTIONAL</emphasis>
+, <emphasis role="strong">SPOT</emphasis>
+ }</para>
+
+<para>Enumerates values for <link linkend="__light_8h_1adc3ec8293e6a97ebe43f0196b9a7f638">LightType</link>. </para>
+</listitem>
+            <listitem><para><anchor xml:id="__light_8h_1a5c50abf40600ee3c28c7fa04702a8bbc"/>enum class <link linkend="__light_8h_1a5c50abf40600ee3c28c7fa04702a8bbc">ShadowType</link> { <emphasis role="strong">Hard</emphasis>
+, <emphasis role="strong">Standard</emphasis>
+, <emphasis role="strong">Smooth</emphasis>
+ }</para>
+
+<para>Enumerates values for <link linkend="__light_8h_1a5c50abf40600ee3c28c7fa04702a8bbc">ShadowType</link>. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Declarations for <link linkend="_struct_light">Light</link>. </para>
+</section>
+</section>

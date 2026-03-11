@@ -1,0 +1,384 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="_material_defaults_8h" kind="file" language="C++">
+    <compoundname>MaterialDefaults.h</compoundname>
+    <includes local="no">string</includes>
+    <includes local="no">map</includes>
+    <includes local="no">memory</includes>
+    <includes local="yes">Foundation/Logging/Logbot.h</includes>
+    <includes refid="_material_8h" local="yes">Rendering/Materials/Material.h</includes>
+    <includes refid="_shader_program_8h" local="yes">Rendering/Shaders/ShaderProgram.h</includes>
+    <includes local="yes">Assets/Core/Asset.h</includes>
+    <includes local="yes">Foundation/Math/Color.h</includes>
+    <includes refid="_texture_8h" local="yes">Rendering/Textures/Texture.h</includes>
+    <includes refid="_light_8h" local="yes">Rendering/Lighting/Light.h</includes>
+    <includes refid="_light_utils_8h" local="yes">Rendering/Lighting/LightUtils.h</includes>
+    <includes local="yes">Foundation/Util/ValueContainer.h</includes>
+    <includedby refid="_graphics2_d_8h" local="yes">src/Rendering/Core/Graphics2D.h</includedby>
+    <includedby refid="_free_type_font_8cpp" local="yes">src/Rendering/Fonts/FreeTypeFont.cpp</includedby>
+    <includedby refid="_s_t_b_true_type_font_8cpp" local="yes">src/Rendering/Fonts/STBTrueTypeFont.cpp</includedby>
+    <includedby refid="_model_part_prefabs_8h" local="yes">src/Rendering/Geometry/ModelPartPrefabs.h</includedby>
+    <includedby refid="_model_prefabs_8h" local="yes">src/Rendering/Geometry/ModelPrefabs.h</includedby>
+    <includedby refid="_material_defaults_8cpp" local="yes">src/Rendering/Materials/MaterialDefaults.cpp</includedby>
+    <includedby refid="_material_registry_8cpp" local="yes">src/Rendering/Materials/MaterialRegistry.cpp</includedby>
+    <incdepgraph>
+      <node id="14">
+        <label>Assets/Core/Asset.h</label>
+      </node>
+      <node id="17">
+        <label>Rendering/Lighting/Light.h</label>
+        <link refid="_light_8h"/>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="18">
+        <label>Rendering/Lighting/LightUtils.h</label>
+        <link refid="_light_utils_8h"/>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>Rendering/Materials/Material.h</label>
+        <link refid="_material_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>src/Rendering/Materials/MaterialDefaults.h</label>
+        <link refid="_material_defaults_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>Rendering/Shaders/ShaderProgram.h</label>
+        <link refid="_shader_program_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+      </node>
+      <node id="15">
+        <label>Rendering/Textures/CubeMap.h</label>
+        <link refid="_cube_map_8h"/>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+      </node>
+      <node id="13">
+        <label>Rendering/Textures/Texture.h</label>
+        <link refid="_texture_8h"/>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>Foundation/Logging/Logbot.h</label>
+      </node>
+      <node id="16">
+        <label>Foundation/Math/Color.h</label>
+      </node>
+      <node id="12">
+        <label>Foundation/Math/Math3D.h</label>
+      </node>
+      <node id="19">
+        <label>Foundation/Util/ValueContainer.h</label>
+      </node>
+      <node id="11">
+        <label>SDL3/SDL_opengl.h</label>
+      </node>
+      <node id="10">
+        <label>glad/glad.h</label>
+      </node>
+      <node id="3">
+        <label>map</label>
+      </node>
+      <node id="4">
+        <label>memory</label>
+      </node>
+      <node id="2">
+        <label>string</label>
+      </node>
+      <node id="7">
+        <label>unordered_map</label>
+      </node>
+      <node id="9">
+        <label>vector</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="3">
+        <label>src/Rendering/Core/Graphics2D.cpp</label>
+        <link refid="_graphics2_d_8cpp"/>
+      </node>
+      <node id="2">
+        <label>src/Rendering/Core/Graphics2D.h</label>
+        <link refid="_graphics2_d_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>src/Rendering/Core/Screen.cpp</label>
+        <link refid="_screen_8cpp"/>
+      </node>
+      <node id="7">
+        <label>src/Rendering/Core/Screen.h</label>
+        <link refid="_screen_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>src/Rendering/Core/View.cpp</label>
+        <link refid="_view_8cpp"/>
+      </node>
+      <node id="9">
+        <label>src/Rendering/Core/View.h</label>
+        <link refid="_view_8h"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>src/Rendering/Fonts/FreeTypeFont.cpp</label>
+        <link refid="_free_type_font_8cpp"/>
+      </node>
+      <node id="5">
+        <label>src/Rendering/Fonts/STBTrueTypeFont.cpp</label>
+        <link refid="_s_t_b_true_type_font_8cpp"/>
+      </node>
+      <node id="6">
+        <label>src/Rendering/Geometry/ModelPartPrefabs.h</label>
+        <link refid="_model_part_prefabs_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+      </node>
+      <node id="14">
+        <label>src/Rendering/Geometry/ModelPrefabs.h</label>
+        <link refid="_model_prefabs_8h"/>
+      </node>
+      <node id="11">
+        <label>src/Rendering/Lighting/ShadowRenderer.cpp</label>
+        <link refid="_shadow_renderer_8cpp"/>
+      </node>
+      <node id="12">
+        <label>src/Rendering/Materials/MaterialDefaults.cpp</label>
+        <link refid="_material_defaults_8cpp"/>
+      </node>
+      <node id="1">
+        <label>src/Rendering/Materials/MaterialDefaults.h</label>
+        <link refid="_material_defaults_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="16">
+        <label>src/Rendering/Materials/MaterialRegistry.cpp</label>
+        <link refid="_material_registry_8cpp"/>
+      </node>
+      <node id="13">
+        <label>src/Rendering/Materials/PBRMaterial.cpp</label>
+        <link refid="_p_b_r_material_8cpp"/>
+      </node>
+      <node id="15">
+        <label>src/Rendering/Textures/SkyBox.cpp</label>
+        <link refid="_sky_box_8cpp"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="class_material_defaults_1_1_color_material" prot="public">MaterialDefaults::ColorMaterial</innerclass>
+    <innerclass refid="class_material_defaults_1_1_image_material" prot="public">MaterialDefaults::ImageMaterial</innerclass>
+    <innerclass refid="class_material_defaults_1_1_lit_color_material" prot="public">MaterialDefaults::LitColorMaterial</innerclass>
+    <innerclass refid="class_material_defaults_1_1_lit_image_material" prot="public">MaterialDefaults::LitImageMaterial</innerclass>
+    <innerclass refid="class_material_defaults_1_1_flat_color_material" prot="public">MaterialDefaults::FlatColorMaterial</innerclass>
+    <innerclass refid="class_material_defaults_1_1_flat_image_material" prot="public">MaterialDefaults::FlatImageMaterial</innerclass>
+    <innernamespace refid="namespace_material_defaults">MaterialDefaults</innernamespace>
+    <briefdescription>
+<para>Declarations for MaterialDefaults. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>MATERIAL_DEFAULTS_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>MATERIAL_DEFAULTS_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;string&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;map&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;memory&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Foundation/Logging/Logbot.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_material_8h" kindref="compound">Rendering/Materials/Material.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_shader_program_8h" kindref="compound">Rendering/Shaders/ShaderProgram.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Assets/Core/Asset.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Foundation/Math/Color.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_texture_8h" kindref="compound">Rendering/Textures/Texture.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_light_8h" kindref="compound">Rendering/Lighting/Light.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_light_utils_8h" kindref="compound">Rendering/Lighting/LightUtils.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;Foundation/Util/ValueContainer.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="class_screen" kindref="compound">Screen</ref>;</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">MaterialDefaults{</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="30" refid="class_material_defaults_1_1_color_material" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="class_material_defaults_1_1_color_material_1af4201c21c18e146bd0b1a4f707d89b5e" kindref="member">ColorMaterial</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="class_material_1ace810a426f4b488d2dc2a53070d85405" kindref="member">Material</ref>{</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;Math3D::Vec4&gt;<sp/>Color;</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="class_material_defaults_1_1_color_material_1af4201c21c18e146bd0b1a4f707d89b5e" kindref="member">ColorMaterial</ref>(std::shared_ptr&lt;ShaderProgram&gt;<sp/>program);</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;ColorMaterial&gt;<sp/><ref refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" kindref="member">Create</ref>(Math3D::Vec4<sp/>color<sp/>=<sp/>Color::MAGENTA);</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight></codeline>
+<codeline lineno="47" refid="class_material_defaults_1_1_image_material" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="class_material_defaults_1_1_image_material_1a132cf6ed173fb5c7a62664b5b791b6fe" kindref="member">ImageMaterial</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="class_material_1ace810a426f4b488d2dc2a53070d85405" kindref="member">Material</ref>{</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;Math3D::Vec4&gt;<sp/>Color;</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;<sp/>Tex;</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;Math3D::Vec2&gt;<sp/>UV;</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="class_material_defaults_1_1_image_material_1a132cf6ed173fb5c7a62664b5b791b6fe" kindref="member">ImageMaterial</ref>(std::shared_ptr&lt;ShaderProgram&gt;<sp/>program,<sp/>std::shared_ptr&lt;Texture&gt;<sp/>texture);</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;ImageMaterial&gt;<sp/><ref refid="class_material_defaults_1_1_image_material_1add720d0e294c8a6aaefcce9149d1c97e" kindref="member">Create</ref>(PTexture<sp/>tex,<sp/>Math3D::Vec4<sp/>color<sp/>=<sp/>Color::WHITE,<sp/>Math3D::Vec2<sp/>uv<sp/>=<sp/>Math3D::Vec2(0,0));</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight></codeline>
+<codeline lineno="71" refid="class_material_defaults_1_1_lit_color_material" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="class_material_defaults_1_1_lit_color_material_1a481808bb46099270f1547b25f1b6440c" kindref="member">LitColorMaterial</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="class_material_1ace810a426f4b488d2dc2a53070d85405" kindref="member">Material</ref>{</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;Math3D::Vec4&gt;<sp/>Color;</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;Math3D::Vec3&gt;<sp/>ViewPos;</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="class_material_defaults_1_1_lit_color_material_1a481808bb46099270f1547b25f1b6440c" kindref="member">LitColorMaterial</ref>(std::shared_ptr&lt;ShaderProgram&gt;<sp/>program);</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="class_material_defaults_1_1_lit_color_material_1a80c1908b825477e38e320f838708fac9" kindref="member">bind</ref>()<sp/></highlight><highlight class="keyword">override</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;LitColorMaterial&gt;<sp/><ref refid="class_material_defaults_1_1_lit_color_material_1a76d5ca70b46d87e5e185e958520a3e18" kindref="member">Create</ref>(Math3D::Vec4<sp/>color<sp/>=<sp/>Color::WHITE);</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"></highlight></codeline>
+<codeline lineno="95" refid="class_material_defaults_1_1_lit_image_material" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="class_material_defaults_1_1_lit_image_material_1a145f3af8bff8074b827846bf9df7b71d" kindref="member">LitImageMaterial</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="class_material_1ace810a426f4b488d2dc2a53070d85405" kindref="member">Material</ref>{</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"></highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;Math3D::Vec4&gt;<sp/>Color;</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;<sp/>Tex;</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;Math3D::Vec3&gt;<sp/>ViewPos;</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"></highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="class_material_defaults_1_1_lit_image_material_1a145f3af8bff8074b827846bf9df7b71d" kindref="member">LitImageMaterial</ref>(std::shared_ptr&lt;ShaderProgram&gt;<sp/>program,<sp/>std::shared_ptr&lt;Texture&gt;<sp/>texture);</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="class_material_defaults_1_1_lit_image_material_1ab48290d5a6ba088db4337a1b9f3c2137" kindref="member">bind</ref>()<sp/></highlight><highlight class="keyword">override</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="118"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;LitImageMaterial&gt;<sp/><ref refid="class_material_defaults_1_1_lit_image_material_1ade6592a4b94e47005ea95b1038b59d56" kindref="member">Create</ref>(PTexture<sp/>tex,<sp/>Math3D::Vec4<sp/>color<sp/>=<sp/>Color::WHITE);</highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"></highlight></codeline>
+<codeline lineno="122" refid="class_material_defaults_1_1_flat_color_material" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="class_material_defaults_1_1_flat_color_material_1ac7dc6be01211acd7b57c3cdc9c66465c" kindref="member">FlatColorMaterial</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="class_material_1ace810a426f4b488d2dc2a53070d85405" kindref="member">Material</ref><sp/>{</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;Math3D::Vec4&gt;<sp/>Color;</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;Math3D::Vec3&gt;<sp/>ViewPos;</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"></highlight></codeline>
+<codeline lineno="131"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="class_material_defaults_1_1_flat_color_material_1ac7dc6be01211acd7b57c3cdc9c66465c" kindref="member">FlatColorMaterial</ref>(std::shared_ptr&lt;ShaderProgram&gt;<sp/>program);</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="class_material_defaults_1_1_flat_color_material_1a3602a1f317d7e37c08e1f2c7e4fd4c2b" kindref="member">bind</ref>()<sp/></highlight><highlight class="keyword">override</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;FlatColorMaterial&gt;<sp/><ref refid="class_material_defaults_1_1_flat_color_material_1a4cde023f130787555ffd8f4b322a040e" kindref="member">Create</ref>(Math3D::Vec4<sp/>color<sp/>=<sp/>Color::WHITE);</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/><sp/><sp/>};<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="143"><highlight class="normal"></highlight></codeline>
+<codeline lineno="145" refid="class_material_defaults_1_1_flat_image_material" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="class_material_defaults_1_1_flat_image_material_1a9c3f9e57b779bf7b98422cb07f9fb5f2" kindref="member">FlatImageMaterial</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="class_material_1ace810a426f4b488d2dc2a53070d85405" kindref="member">Material</ref><sp/>{</highlight></codeline>
+<codeline lineno="146"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="147"><highlight class="normal"></highlight></codeline>
+<codeline lineno="148"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;Math3D::Vec4&gt;<sp/>Color;</highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;<sp/>Tex;</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueContainer&lt;Math3D::Vec3&gt;<sp/>ViewPos;</highlight></codeline>
+<codeline lineno="151"><highlight class="normal"></highlight></codeline>
+<codeline lineno="157"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="class_material_defaults_1_1_flat_image_material_1a9c3f9e57b779bf7b98422cb07f9fb5f2" kindref="member">FlatImageMaterial</ref>(std::shared_ptr&lt;ShaderProgram&gt;<sp/>program,<sp/>std::shared_ptr&lt;Texture&gt;<sp/>texture);</highlight></codeline>
+<codeline lineno="161"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="class_material_defaults_1_1_flat_image_material_1a61b269b2721d94022945e0bf31bbd6fc" kindref="member">bind</ref>()<sp/></highlight><highlight class="keyword">override</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="168"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;FlatImageMaterial&gt;<sp/><ref refid="class_material_defaults_1_1_flat_image_material_1a501a86e2432c06f23aae2b5f027c4e52" kindref="member">Create</ref>(std::shared_ptr&lt;Texture&gt;<sp/>tex,<sp/>Math3D::Vec4<sp/>color<sp/>=<sp/>Color::WHITE);</highlight></codeline>
+<codeline lineno="169"><highlight class="normal"><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="170"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="171"><highlight class="normal"></highlight></codeline>
+<codeline lineno="172"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">//MATERIAL_DEFAULTS_H</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="src/Rendering/Materials/MaterialDefaults.h"/>
+  </compounddef>
+</doxygen>

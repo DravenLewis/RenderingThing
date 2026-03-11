@@ -1,0 +1,504 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_view" kind="class" language="C++" prot="public">
+    <compoundname>View</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">std::enable_shared_from_this&lt; View &gt;</basecompoundref>
+    <includes refid="_view_8h" local="no">View.h</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_view_1ae039aa744b085db819ae149705b2c32b" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int View::width</definition>
+        <argsstring></argsstring>
+        <name>width</name>
+        <qualifiedname>View::width</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/View.h" line="18" column="13" bodyfile="src/Rendering/Core/View.h" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_view_1a6e3e5c18893617490f02166641356746" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int View::height</definition>
+        <argsstring></argsstring>
+        <name>height</name>
+        <qualifiedname>View::height</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/View.h" line="19" column="13" bodyfile="src/Rendering/Core/View.h" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_view_1ad90f2879b5a96bf246d06223df4daf6b" prot="private" static="no" mutable="no">
+        <type>RenderWindow *</type>
+        <definition>RenderWindow* View::window</definition>
+        <argsstring></argsstring>
+        <name>window</name>
+        <qualifiedname>View::window</qualifiedname>
+        <initializer>= nullptr</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/View.h" line="20" column="22" bodyfile="src/Rendering/Core/View.h" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_view_1a36fc9e6436a149de4c3f74ae75342a39" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; PScreen &gt;</type>
+        <definition>std::vector&lt;PScreen&gt; View::screens</definition>
+        <argsstring></argsstring>
+        <name>screens</name>
+        <qualifiedname>View::screens</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/View.h" line="21" column="21" bodyfile="src/Rendering/Core/View.h" bodystart="21" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_view_1a44ad60a768422d3fa8fbd7576950080a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>View::View</definition>
+        <argsstring>()</argsstring>
+        <name>View</name>
+        <qualifiedname>View::View</qualifiedname>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_view" kindref="compound">View</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/View.h" line="27" column="9" bodyfile="src/Rendering/Core/View.cpp" bodystart="9" bodyend="13"/>
+      </memberdef>
+      <memberdef kind="function" id="class_view_1a07132ba8235a9facabfd0594fc9e60f4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>View::View</definition>
+        <argsstring>(RenderWindow *window)</argsstring>
+        <name>View</name>
+        <qualifiedname>View::View</qualifiedname>
+        <param>
+          <type>RenderWindow *</type>
+          <declname>window</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_view" kindref="compound">View</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>window</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for window. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/View.h" line="32" column="9" bodyfile="src/Rendering/Core/View.cpp" bodystart="15" bodyend="20"/>
+        <references refid="class_view_1a2f776db693e8572fb8896f74fe86ef81" compoundref="_view_8cpp" startline="22" endline="36">attachWindow</references>
+      </memberdef>
+      <memberdef kind="function" id="class_view_1ad0f3ade04bca4e74b8868e63729bad86" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual View::~View</definition>
+        <argsstring>()=default</argsstring>
+        <name>~View</name>
+        <qualifiedname>View::~View</qualifiedname>
+        <briefdescription>
+<para>Destroys this <ref refid="class_view" kindref="compound">View</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/View.h" line="36" column="17"/>
+      </memberdef>
+      <memberdef kind="function" id="class_view_1a2f776db693e8572fb8896f74fe86ef81" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void View::attachWindow</definition>
+        <argsstring>(RenderWindow *window)</argsstring>
+        <name>attachWindow</name>
+        <qualifiedname>View::attachWindow</qualifiedname>
+        <param>
+          <type>RenderWindow *</type>
+          <declname>window</declname>
+        </param>
+        <briefdescription>
+<para>Attaches a render window to this view. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>window</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for window. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/View.h" line="42" column="14" bodyfile="src/Rendering/Core/View.cpp" bodystart="22" bodyend="36"/>
+        <referencedby refid="class_view_1a07132ba8235a9facabfd0594fc9e60f4" compoundref="_view_8cpp" startline="15" endline="20">View</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_view_1a3c012f511108db02bfe319f63a7c3153" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool View::hasWindow</definition>
+        <argsstring>() const</argsstring>
+        <name>hasWindow</name>
+        <qualifiedname>View::hasWindow</qualifiedname>
+        <briefdescription>
+<para>Checks whether window. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>True when the condition is satisfied; otherwise false. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/View.h" line="47" column="14" bodyfile="src/Rendering/Core/View.h" bodystart="47" bodyend="47"/>
+      </memberdef>
+      <memberdef kind="function" id="class_view_1ac04ab971b398247192797c536c894b71" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void View::resize</definition>
+        <argsstring>(int w, int h)</argsstring>
+        <name>resize</name>
+        <qualifiedname>View::resize</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>w</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>h</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/View.h" line="49" column="14" bodyfile="src/Rendering/Core/View.cpp" bodystart="38" bodyend="47"/>
+      </memberdef>
+      <memberdef kind="function" id="class_view_1aaf31c6402f7eff515fc7ffce37d9faef" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>PScreen</type>
+        <definition>PScreen View::getScreen</definition>
+        <argsstring>(size_t index) const</argsstring>
+        <name>getScreen</name>
+        <qualifiedname>View::getScreen</qualifiedname>
+        <param>
+          <type>size_t</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/View.h" line="51" column="17" bodyfile="src/Rendering/Core/View.cpp" bodystart="49" bodyend="52"/>
+      </memberdef>
+      <memberdef kind="function" id="class_view_1aef6eff19fba3651758f30520b48da2b5" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>PScreen</type>
+        <definition>PScreen View::getMainScreen</definition>
+        <argsstring>() const</argsstring>
+        <name>getMainScreen</name>
+        <qualifiedname>View::getMainScreen</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/View.h" line="52" column="17" bodyfile="src/Rendering/Core/View.cpp" bodystart="54" bodyend="56"/>
+      </memberdef>
+      <memberdef kind="function" id="class_view_1a3f39fe04bcdae2f40f2f2b5404831cf1" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>PScreen</type>
+        <definition>PScreen View::getUIScreen</definition>
+        <argsstring>() const</argsstring>
+        <name>getUIScreen</name>
+        <qualifiedname>View::getUIScreen</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/View.h" line="53" column="17" bodyfile="src/Rendering/Core/View.cpp" bodystart="58" bodyend="60"/>
+      </memberdef>
+      <memberdef kind="function" id="class_view_1afb006fefe82937f955da74db7d1238d0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>RenderWindow *</type>
+        <definition>RenderWindow * View::getWindow</definition>
+        <argsstring>() const</argsstring>
+        <name>getWindow</name>
+        <qualifiedname>View::getWindow</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/View.h" line="54" column="22" bodyfile="src/Rendering/Core/View.h" bodystart="54" bodyend="54"/>
+      </memberdef>
+      <memberdef kind="function" id="class_view_1a895ec1133236bfa64a0a1db15144bc8f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int View::getWidth</definition>
+        <argsstring>() const</argsstring>
+        <name>getWidth</name>
+        <qualifiedname>View::getWidth</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/View.h" line="55" column="13" bodyfile="src/Rendering/Core/View.h" bodystart="55" bodyend="55"/>
+      </memberdef>
+      <memberdef kind="function" id="class_view_1a8d99fa6159d6728d051df65d845bc45a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int View::getHeight</definition>
+        <argsstring>() const</argsstring>
+        <name>getHeight</name>
+        <qualifiedname>View::getHeight</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/View.h" line="56" column="13" bodyfile="src/Rendering/Core/View.h" bodystart="56" bodyend="56"/>
+      </memberdef>
+      <memberdef kind="function" id="class_view_1a3e8cb18218090a709a2ab6d86dccf770" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void View::addScreen</definition>
+        <argsstring>(PScreen screen)</argsstring>
+        <name>addScreen</name>
+        <qualifiedname>View::addScreen</qualifiedname>
+        <param>
+          <type>PScreen</type>
+          <declname>screen</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/View.h" line="58" column="14" bodyfile="src/Rendering/Core/View.cpp" bodystart="62" bodyend="66"/>
+      </memberdef>
+      <memberdef kind="function" id="class_view_1aec098fd90d4651a4d174c8e9aeb10d39" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t View::screenCount</definition>
+        <argsstring>() const</argsstring>
+        <name>screenCount</name>
+        <qualifiedname>View::screenCount</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/View.h" line="59" column="16" bodyfile="src/Rendering/Core/View.h" bodystart="59" bodyend="59"/>
+      </memberdef>
+      <memberdef kind="function" id="class_view_1a26ab8b83d0516d7af51a47ca2fdd3aa1" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void View::drawToWindow</definition>
+        <argsstring>(bool clearWindow=true, float x=-1, float y=-1, float w=-1, float h=-1)</argsstring>
+        <name>drawToWindow</name>
+        <qualifiedname>View::drawToWindow</qualifiedname>
+        <param>
+          <type>bool</type>
+          <declname>clearWindow</declname>
+          <defval>true</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>x</declname>
+          <defval>-1</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>y</declname>
+          <defval>-1</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>w</declname>
+          <defval>-1</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>h</declname>
+          <defval>-1</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/View.h" line="61" column="22" bodyfile="src/Rendering/Core/View.cpp" bodystart="68" bodyend="84"/>
+      </memberdef>
+      <memberdef kind="function" id="class_view_1a70c24a66d7aa2abc85564a4ac08883e2" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Math3D::Vec3</type>
+        <definition>Math3D::Vec3 View::screenToWorld</definition>
+        <argsstring>(PCamera cam, float x, float y, float depth=0.0f, float viewportX=0.0f, float viewportY=0.0f, float viewportW=-1.0f, float viewportH=-1.0f) const</argsstring>
+        <name>screenToWorld</name>
+        <qualifiedname>View::screenToWorld</qualifiedname>
+        <param>
+          <type>PCamera</type>
+          <declname>cam</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>depth</declname>
+          <defval>0.0f</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>viewportX</declname>
+          <defval>0.0f</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>viewportY</declname>
+          <defval>0.0f</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>viewportW</declname>
+          <defval>-1.0f</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>viewportH</declname>
+          <defval>-1.0f</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/View.h" line="63" column="22" bodyfile="src/Rendering/Core/View.cpp" bodystart="86" bodyend="103"/>
+      </memberdef>
+      <memberdef kind="function" id="class_view_1a4968e73c482870f93a6cfedb85c0ff21" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Math3D::Vec3</type>
+        <definition>Math3D::Vec3 View::worldToScreen</definition>
+        <argsstring>(PCamera cam, const Math3D::Vec3 &amp;world, float viewportX=0.0f, float viewportY=0.0f, float viewportW=-1.0f, float viewportH=-1.0f) const</argsstring>
+        <name>worldToScreen</name>
+        <qualifiedname>View::worldToScreen</qualifiedname>
+        <param>
+          <type>PCamera</type>
+          <declname>cam</declname>
+        </param>
+        <param>
+          <type>const Math3D::Vec3 &amp;</type>
+          <declname>world</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>viewportX</declname>
+          <defval>0.0f</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>viewportY</declname>
+          <defval>0.0f</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>viewportW</declname>
+          <defval>-1.0f</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>viewportH</declname>
+          <defval>-1.0f</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/View.h" line="66" column="22" bodyfile="src/Rendering/Core/View.cpp" bodystart="105" bodyend="121"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_view" kindref="compound">View</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>View</label>
+        <link refid="class_view"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>std::enable_shared_from_this&lt; View &gt;</label>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>View</label>
+        <link refid="class_view"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>std::enable_shared_from_this&lt; View &gt;</label>
+      </node>
+    </collaborationgraph>
+    <location file="src/Rendering/Core/View.h" line="16" column="1" bodyfile="src/Rendering/Core/View.h" bodystart="16" bodyend="69"/>
+    <listofallmembers>
+      <member refid="class_view_1a3e8cb18218090a709a2ab6d86dccf770" prot="public" virt="non-virtual"><scope>View</scope><name>addScreen</name></member>
+      <member refid="class_view_1a2f776db693e8572fb8896f74fe86ef81" prot="public" virt="non-virtual"><scope>View</scope><name>attachWindow</name></member>
+      <member refid="class_view_1a26ab8b83d0516d7af51a47ca2fdd3aa1" prot="public" virt="virtual"><scope>View</scope><name>drawToWindow</name></member>
+      <member refid="class_view_1a8d99fa6159d6728d051df65d845bc45a" prot="public" virt="non-virtual"><scope>View</scope><name>getHeight</name></member>
+      <member refid="class_view_1aef6eff19fba3651758f30520b48da2b5" prot="public" virt="non-virtual"><scope>View</scope><name>getMainScreen</name></member>
+      <member refid="class_view_1aaf31c6402f7eff515fc7ffce37d9faef" prot="public" virt="non-virtual"><scope>View</scope><name>getScreen</name></member>
+      <member refid="class_view_1a3f39fe04bcdae2f40f2f2b5404831cf1" prot="public" virt="non-virtual"><scope>View</scope><name>getUIScreen</name></member>
+      <member refid="class_view_1a895ec1133236bfa64a0a1db15144bc8f" prot="public" virt="non-virtual"><scope>View</scope><name>getWidth</name></member>
+      <member refid="class_view_1afb006fefe82937f955da74db7d1238d0" prot="public" virt="non-virtual"><scope>View</scope><name>getWindow</name></member>
+      <member refid="class_view_1a3c012f511108db02bfe319f63a7c3153" prot="public" virt="non-virtual"><scope>View</scope><name>hasWindow</name></member>
+      <member refid="class_view_1a6e3e5c18893617490f02166641356746" prot="private" virt="non-virtual"><scope>View</scope><name>height</name></member>
+      <member refid="class_view_1ac04ab971b398247192797c536c894b71" prot="public" virt="non-virtual"><scope>View</scope><name>resize</name></member>
+      <member refid="class_view_1aec098fd90d4651a4d174c8e9aeb10d39" prot="public" virt="non-virtual"><scope>View</scope><name>screenCount</name></member>
+      <member refid="class_view_1a36fc9e6436a149de4c3f74ae75342a39" prot="private" virt="non-virtual"><scope>View</scope><name>screens</name></member>
+      <member refid="class_view_1a70c24a66d7aa2abc85564a4ac08883e2" prot="public" virt="non-virtual"><scope>View</scope><name>screenToWorld</name></member>
+      <member refid="class_view_1a44ad60a768422d3fa8fbd7576950080a" prot="public" virt="non-virtual"><scope>View</scope><name>View</name></member>
+      <member refid="class_view_1a07132ba8235a9facabfd0594fc9e60f4" prot="public" virt="non-virtual"><scope>View</scope><name>View</name></member>
+      <member refid="class_view_1ae039aa744b085db819ae149705b2c32b" prot="private" virt="non-virtual"><scope>View</scope><name>width</name></member>
+      <member refid="class_view_1ad90f2879b5a96bf246d06223df4daf6b" prot="private" virt="non-virtual"><scope>View</scope><name>window</name></member>
+      <member refid="class_view_1a4968e73c482870f93a6cfedb85c0ff21" prot="public" virt="non-virtual"><scope>View</scope><name>worldToScreen</name></member>
+      <member refid="class_view_1ad0f3ade04bca4e74b8868e63729bad86" prot="public" virt="virtual"><scope>View</scope><name>~View</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

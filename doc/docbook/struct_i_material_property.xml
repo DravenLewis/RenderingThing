@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_i_material_property" xml:lang="en-US">
+<title>IMaterialProperty Struct Reference</title>
+<indexterm><primary>IMaterialProperty</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_i_material_property">IMaterialProperty</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;Material.h&gt;</computeroutput>
+</para>
+<para>Inheritance diagram for IMaterialProperty:    <informalfigure>
+        <mediaobject>
+            <imageobject>
+                <imagedata width="50%" align="center" valign="middle" scalefit="0" fileref="struct_i_material_property.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+    </informalfigure>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>virtual void <link linkend="_struct_i_material_property_1a020ed618177d8a68aaa97d691ef6fc66">apply</link> (<link linkend="_class_shader_program">ShaderProgram</link> &amp;shader, const std::string &amp;name, bool assumeBound)=0</para>
+
+<para>Applies current settings. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_i_material_property_1a7d5f7dbbd5af6e80c3242c553976b02e"/>virtual <emphasis role="strong">~IMaterialProperty</emphasis> ()=default</para>
+
+<para>Destroys this <link linkend="_struct_i_material_property">IMaterialProperty</link> instance. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_i_material_property">IMaterialProperty</link>. </para>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_struct_i_material_property_1a020ed618177d8a68aaa97d691ef6fc66"/><section>
+    <title>apply()</title>
+<indexterm><primary>apply</primary><secondary>IMaterialProperty</secondary></indexterm>
+<indexterm><primary>IMaterialProperty</primary><secondary>apply</secondary></indexterm>
+<para><computeroutput>virtual void IMaterialProperty::apply (<link linkend="_class_shader_program">ShaderProgram</link> &amp; shader, const std::string &amp; name, bool assumeBound)<computeroutput>[pure virtual]</computeroutput></computeroutput></para><para>
+
+<para>Applies current settings. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>shader</entry><entry>
+<para>Value for shader. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>name</entry><entry>
+<para>Name used for name. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>assumeBound</entry><entry>
+<para>Value for assume bound. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+<para>
+Implemented in <link linkend="_struct_material_property_1a5645edb77a40c19013dac45a0d21880b">MaterialProperty&lt; T &gt;</link>.</para>
+</section>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Materials/<link linkend="__material_8h">Material.h</link></section>
+</section>

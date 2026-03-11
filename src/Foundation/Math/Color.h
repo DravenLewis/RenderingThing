@@ -1,3 +1,8 @@
+/**
+ * @file src/Foundation/Math/Color.h
+ * @brief Declarations for Color.
+ */
+
 #ifndef COLOR_H
 #define COLOR_H
 
@@ -5,6 +10,7 @@
 
 #include <cstdint>
 
+/// @brief Holds data for Color.
 struct Color : public Math3D::Vec4{
 
     //Vec4(float x = 0.f, float y = 0.f, float z = 0.f, float w = 1.f) : x(x), y(y), z(z), w(w) {}

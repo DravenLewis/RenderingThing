@@ -1,0 +1,61 @@
+\doxysection{IMaterial\+Property Struct Reference}
+\hypertarget{struct_i_material_property}{}\label{struct_i_material_property}\index{IMaterialProperty@{IMaterialProperty}}
+
+
+Holds data for \doxylink{struct_i_material_property}{IMaterial\+Property}.  
+
+
+
+
+{\ttfamily \+\#include $<$Material.\+h$>$}
+
+Inheritance diagram for IMaterial\+Property:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{struct_i_material_property}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \doxymbox{\hyperlink{struct_i_material_property_a020ed618177d8a68aaa97d691ef6fc66}{apply}} (\doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} \&shader, const std::\+string \&name, bool assume\+Bound)=0
+\begin{DoxyCompactList}\small\item\em Applies current settings. \end{DoxyCompactList}\item 
+\Hypertarget{struct_i_material_property_a7d5f7dbbd5af6e80c3242c553976b02e}\label{struct_i_material_property_a7d5f7dbbd5af6e80c3242c553976b02e} 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+IMaterial\+Property} ()=default
+\begin{DoxyCompactList}\small\item\em Destroys this \doxylink{struct_i_material_property}{IMaterial\+Property} instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Holds data for \doxylink{struct_i_material_property}{IMaterial\+Property}. 
+
+\label{doc-func-members}
+\Hypertarget{struct_i_material_property_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{struct_i_material_property_a020ed618177d8a68aaa97d691ef6fc66}\index{IMaterialProperty@{IMaterialProperty}!apply@{apply}}
+\index{apply@{apply}!IMaterialProperty@{IMaterialProperty}}
+\doxysubsubsection{\texorpdfstring{apply()}{apply()}}
+{\footnotesize\ttfamily \label{struct_i_material_property_a020ed618177d8a68aaa97d691ef6fc66} 
+virtual void IMaterial\+Property::\+apply (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} \&}]{shader}{, }\item[{const std::\+string \&}]{name}{, }\item[{bool}]{assume\+Bound}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Applies current settings. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em shader} & Value for shader. \\
+\hline
+{\em name} & Name used for name. \\
+\hline
+{\em assume\+Bound} & Value for assume bound. \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \doxymbox{\hyperlink{struct_material_property_a5645edb77a40c19013dac45a0d21880b}{Material\+Property$<$ T $>$}}.
+
+
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Materials/\+\doxymbox{\hyperlink{_material_8h}{Material.\+h}}\end{DoxyCompactItemize}

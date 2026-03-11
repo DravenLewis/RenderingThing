@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Lighting/ShadowRenderer.cpp
+ * @brief Implementation for ShadowRenderer.
+ */
+
 #include "Rendering/Lighting/ShadowRenderer.h"
 
 #include <algorithm>
@@ -25,12 +30,14 @@ namespace {
     constexpr int SHADOW_MAP_SIZE_CUBE = 512;
     constexpr int DIRECTIONAL_CASCADE_COUNT = 4;
 
+    /// @brief Represents Shadow Slot2 D data.
     struct ShadowSlot2D {
         ShadowMap2D map;
         Math3D::Mat4 matrix;
         int lightIndex = -1;
     };
 
+    /// @brief Represents Shadow Slot Cube data.
     struct ShadowSlotCube {
         ShadowMapCube map;
         std::vector<Math3D::Mat4> matrices;
@@ -70,6 +77,7 @@ namespace {
     float g_directionalCascadeKernelMarginTexels = 8.0f;
     float g_shadowReceiverNormalBlend = 0.35f;
 
+    /// @brief Represents Light Debug State data.
     struct LightDebugState {
         int type = -1;
         bool castsShadows = false;
@@ -156,6 +164,7 @@ namespace {
         return std::isfinite(len) && len >= Math3D::EPSILON;
     }
 
+    /// @brief Represents Shadow Candidate data.
     struct ShadowCandidate {
         size_t lightIndex = 0;
         LightType type = LightType::POINT;

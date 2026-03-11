@@ -1,0 +1,95 @@
+.TH "MaterialRegistry" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+MaterialRegistry \- Represents the \fBMaterialRegistry\fP type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <MaterialRegistry\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBRefresh\fP (bool force=false)"
+.br
+.RI "Refreshes registry state\&. "
+.ti -1c
+.RI "const std::vector< \fBMaterialRegistryEntry\fP > & \fBGetEntries\fP () const"
+.br
+.RI "Returns the entries\&. "
+.ti -1c
+.RI "std::shared_ptr< \fBMaterial\fP > \fBCreateById\fP (const std::string &id, std::string *outError=nullptr) const"
+.br
+.RI "Creates by id\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBMaterialRegistry\fP & \fBInstance\fP ()"
+.br
+.RI "Returns the registry singleton instance\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the \fBMaterialRegistry\fP type\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "std::shared_ptr< \fBMaterial\fP > MaterialRegistry::CreateById (const std::string & id, std::string * outError = \fRnullptr\fP) const"
+
+.PP
+Creates by id\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIid\fP Identifier or index value\&. 
+.br
+\fIoutError\fP Output value for error\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+.SS "const std::vector< \fBMaterialRegistryEntry\fP > & MaterialRegistry::GetEntries () const"
+
+.PP
+Returns the entries\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "\fBMaterialRegistry\fP & MaterialRegistry::Instance ()\fR [static]\fP"
+
+.PP
+Returns the registry singleton instance\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "void MaterialRegistry::Refresh (bool force = \fRfalse\fP)"
+
+.PP
+Refreshes registry state\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIforce\fP Flag controlling force\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

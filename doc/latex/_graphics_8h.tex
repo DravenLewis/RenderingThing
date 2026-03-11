@@ -1,0 +1,44 @@
+\doxysection{src/\+\+Rendering/\+\+Core/\+\+Graphics.h File Reference}
+\hypertarget{_graphics_8h}{}\label{_graphics_8h}\index{src/Rendering/Core/Graphics.h@{src/Rendering/Core/Graphics.h}}
+
+
+Declarations for Graphics.  
+
+
+{\ttfamily \+\#include $<$vector$>$}\newline
+{\ttfamily \+\#include $<$cstdint$>$}\newline
+{\ttfamily \+\#include $<$memory$>$}\newline
+{\ttfamily \+\#include $<$stdexcept$>$}\newline
+{\ttfamily \+\#include "{}Foundation/\+\+Math/\+\+Color.\+h"{}}\newline
+{\ttfamily \+\#include "{}Rendering/\+\+Textures/\+\+Texture.\+h"{}}\newline
+{\ttfamily \+\#include "{}Rendering/\+\+Core/\+\+Frame\+Buffer.\+h"{}}\newline
+{\ttfamily \+\#include "{}Rendering/\+\+Geometry/\+\+Model\+Part.\+h"{}}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image}{Graphics::\+\+Image::\+\+Image}}
+\begin{DoxyCompactList}\small\item\em Holds data for \doxylink{struct_graphics_1_1_image_1_1_image}{Image}. \end{DoxyCompactList}\item 
+struct \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_buffered_image}{Graphics::\+\+Image::\+\+Buffered\+Image}}
+\begin{DoxyCompactList}\small\item\em Holds data for \doxylink{struct_graphics_1_1_image_1_1_buffered_image}{Buffered\+Image}. \end{DoxyCompactList}\item 
+class \doxymbox{\hyperlink{class_graphics_1_1_post_processing_1_1_post_processing_effect}{Graphics::\+\+Post\+Processing::\+\+Post\+Processing\+Effect}}
+\begin{DoxyCompactList}\small\item\em Represents the \doxylink{class_graphics_1_1_post_processing_1_1_post_processing_effect}{Post\+Processing\+Effect} type. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{_graphics_8h_aad5714f52ac2b492e6db435b8c62231f}\label{_graphics_8h_aad5714f52ac2b492e6db435b8c62231f} 
+typedef std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_graphics_1_1_post_processing_1_1_post_processing_effect}{Post\+Processing\+Effect}} $>$ {\bfseries Graphics::\+\+Post\+Processing::\+\+PPost\+Processing\+Effect}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{_graphics_8h_a96e46e27bc4147ee02570cf95681d0b3}\label{_graphics_8h_a96e46e27bc4147ee02570cf95681d0b3} 
+const std::\+string {\bfseries Graphics::\+\+Shader\+Defaults::\+\+SCREEN\+\_\+\+VERT\+\_\+\+SRC}
+\item 
+\Hypertarget{_graphics_8h_aeb9c40c1306243bfed07c8b2f4141a12}\label{_graphics_8h_aeb9c40c1306243bfed07c8b2f4141a12} 
+const std::\+string {\bfseries Graphics::\+\+Shader\+Defaults::\+\+SCREEN\+\_\+\+FRAG\+\_\+\+SRC}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Declarations for Graphics. 
+

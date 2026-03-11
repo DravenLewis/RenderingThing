@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Lighting/ShadowMap.cpp
+ * @brief Implementation for ShadowMap.
+ */
+
 #include "Rendering/Lighting/ShadowMap.h"
 
 #include <array>

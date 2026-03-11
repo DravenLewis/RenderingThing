@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_g_l_uniform_upload_1_1_cube_map_slot" xml:lang="en-US">
+<title>GLUniformUpload::CubeMapSlot Struct Reference</title>
+<indexterm><primary>GLUniformUpload::CubeMapSlot</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_g_l_uniform_upload_1_1_cube_map_slot">CubeMapSlot</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;ShaderProgram.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_g_l_uniform_upload_1_1_cube_map_slot_1aecea70a50c59eb990a8b3ff98030ce2a"/><emphasis role="strong">CubeMapSlot</emphasis> ()=default</para>
+
+<para>Constructs a new <link linkend="_struct_g_l_uniform_upload_1_1_cube_map_slot">CubeMapSlot</link> instance. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_g_l_uniform_upload_1_1_cube_map_slot_1a6c512f6b525bb9cdb8a90393370b0bda">CubeMapSlot</link> (std::shared_ptr&lt; <link linkend="_class_cube_map">CubeMap</link> &gt; map, int s=0)</para>
+
+<para>Constructs a new <link linkend="_struct_g_l_uniform_upload_1_1_cube_map_slot">CubeMapSlot</link> instance. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_g_l_uniform_upload_1_1_cube_map_slot_1aaf430c1b18833f4d705751c79e53e6f1"/>std::shared_ptr&lt; <link linkend="_class_cube_map">CubeMap</link> &gt; <emphasis role="strong">cubemap</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_g_l_uniform_upload_1_1_cube_map_slot_1a37b56833bdca0f8b53cd7b2e3f832087"/>int <emphasis role="strong">slot</emphasis> = 0</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_g_l_uniform_upload_1_1_cube_map_slot">CubeMapSlot</link>. </para>
+</section>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_struct_g_l_uniform_upload_1_1_cube_map_slot_1a6c512f6b525bb9cdb8a90393370b0bda"/><section>
+    <title>CubeMapSlot()</title>
+<indexterm><primary>CubeMapSlot</primary><secondary>GLUniformUpload::CubeMapSlot</secondary></indexterm>
+<indexterm><primary>GLUniformUpload::CubeMapSlot</primary><secondary>CubeMapSlot</secondary></indexterm>
+<para><computeroutput>GLUniformUpload::CubeMapSlot::CubeMapSlot (std::shared_ptr&lt; <link linkend="_class_cube_map">CubeMap</link> &gt; map, int s = <computeroutput>0</computeroutput>
+)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Constructs a new <link linkend="_struct_g_l_uniform_upload_1_1_cube_map_slot">CubeMapSlot</link> instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>map</entry><entry>
+<para>Value for map. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>s</entry><entry>
+<para>Value for s. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Shaders/<link linkend="__shader_program_8h">ShaderProgram.h</link></section>
+</section>

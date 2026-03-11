@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="namespace_graphics_1_1_shader_defaults" kind="namespace" language="C++">
+    <compoundname>Graphics::ShaderDefaults</compoundname>
+    <sectiondef kind="var">
+      <memberdef kind="variable" id="_graphics_8h_1a96e46e27bc4147ee02570cf95681d0b3" prot="public" static="no" mutable="no">
+        <type>const std::string</type>
+        <definition>const std::string Graphics::ShaderDefaults::SCREEN_VERT_SRC</definition>
+        <argsstring></argsstring>
+        <name>SCREEN_VERT_SRC</name>
+        <qualifiedname>Graphics::ShaderDefaults::SCREEN_VERT_SRC</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics.h" line="150" column="27" bodyfile="src/Rendering/Core/Graphics.h" bodystart="150" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="_graphics_8h_1aeb9c40c1306243bfed07c8b2f4141a12" prot="public" static="no" mutable="no">
+        <type>const std::string</type>
+        <definition>const std::string Graphics::ShaderDefaults::SCREEN_FRAG_SRC</definition>
+        <argsstring></argsstring>
+        <name>SCREEN_FRAG_SRC</name>
+        <qualifiedname>Graphics::ShaderDefaults::SCREEN_FRAG_SRC</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics.h" line="185" column="27" bodyfile="src/Rendering/Core/Graphics.h" bodystart="185" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Core/Graphics.h" line="148" column="5"/>
+  </compounddef>
+</doxygen>

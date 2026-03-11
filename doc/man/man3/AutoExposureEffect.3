@@ -1,0 +1,127 @@
+.TH "AutoExposureEffect" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+AutoExposureEffect \- Represents the \fBAutoExposureEffect\fP type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ScreenEffects\&.h>\fP
+.PP
+Inherits \fBGraphics::PostProcessing::PostProcessingEffect\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBAutoExposureEffect\fP ()"
+.br
+.RI "Constructs a new \fBAutoExposureEffect\fP instance\&. "
+.ti -1c
+.RI "\fB~AutoExposureEffect\fP () override"
+.br
+.RI "Destroys this \fBAutoExposureEffect\fP instance\&. "
+.ti -1c
+.RI "void \fBresetAdaptation\fP ()"
+.br
+.RI "Resets adaptation\&. "
+.ti -1c
+.RI "float \fBgetCurrentExposure\fP () const"
+.br
+.RI "Returns the current exposure\&. "
+.ti -1c
+.RI "bool \fBapply\fP (PTexture tex, PTexture, PFrameBuffer outFbo, std::shared_ptr< \fBModelPart\fP > quad) override"
+.br
+.RI "Applies current settings\&. "
+.in -1c
+
+Public Member Functions inherited from \fBGraphics::PostProcessing::PostProcessingEffect\fP
+.in +1c
+.ti -1c
+.RI "virtual \fB~PostProcessingEffect\fP ()=default"
+.br
+.RI "Destroys this \fBPostProcessingEffect\fP instance\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static std::shared_ptr< \fBAutoExposureEffect\fP > \fBNew\fP ()"
+.br
+.RI "Creates a new object\&. "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "float \fBminExposure\fP = 0\&.6f"
+.br
+.ti -1c
+.RI "float \fBmaxExposure\fP = 2\&.4f"
+.br
+.ti -1c
+.RI "float \fBexposureCompensation\fP = 0\&.0f"
+.br
+.ti -1c
+.RI "float \fBadaptationSpeedUp\fP = 1\&.2f"
+.br
+.ti -1c
+.RI "float \fBadaptationSpeedDown\fP = 0\&.7f"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the \fBAutoExposureEffect\fP type\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "bool AutoExposureEffect::apply (PTexture tex, PTexture , PFrameBuffer outFbo, std::shared_ptr< \fBModelPart\fP > quad)\fR [inline]\fP, \fR [override]\fP, \fR [virtual]\fP"
+
+.PP
+Applies current settings\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItex\fP Value for tex\&. 
+.br
+\fIPTexture\fP Value for p texture\&. 
+.br
+\fIoutFbo\fP Output value for fbo\&. 
+.br
+\fIquad\fP Value for quad\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True when the operation succeeds; otherwise false\&. 
+.RE
+.PP
+
+.PP
+Implements \fBGraphics::PostProcessing::PostProcessingEffect\fP\&.
+.SS "float AutoExposureEffect::getCurrentExposure () const\fR [inline]\fP"
+
+.PP
+Returns the current exposure\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Computed numeric result\&. 
+.RE
+.PP
+
+.SS "std::shared_ptr< \fBAutoExposureEffect\fP > AutoExposureEffect::New ()\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

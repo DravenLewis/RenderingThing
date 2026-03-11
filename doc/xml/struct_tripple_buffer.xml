@@ -1,0 +1,387 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_tripple_buffer" kind="struct" language="C++" prot="public">
+    <compoundname>TrippleBuffer</compoundname>
+    <includes refid="_frame_buffer_8h" local="no">FrameBuffer.h</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="struct_tripple_buffer_1ab21532dad5a02848265f8f0012268783" prot="private" static="no" mutable="no">
+        <type><ref refid="struct_frame_buffer_chain" kindref="compound">FrameBufferChain</ref></type>
+        <definition>FrameBufferChain TrippleBuffer::chain</definition>
+        <argsstring></argsstring>
+        <name>chain</name>
+        <qualifiedname>TrippleBuffer::chain</qualifiedname>
+        <initializer>= <ref refid="struct_frame_buffer_chain" kindref="compound">FrameBufferChain</ref>(3)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/FrameBuffer.h" line="418" column="26" bodyfile="src/Rendering/Core/FrameBuffer.h" bodystart="418" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_tripple_buffer_1a4a3304a4b3bc1448800ac07465621829" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int TrippleBuffer::width</definition>
+        <argsstring></argsstring>
+        <name>width</name>
+        <qualifiedname>TrippleBuffer::width</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/FrameBuffer.h" line="419" column="13" bodyfile="src/Rendering/Core/FrameBuffer.h" bodystart="419" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_tripple_buffer_1a9ca5dcc2ac82e896ec4f4069899c8335" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int TrippleBuffer::height</definition>
+        <argsstring></argsstring>
+        <name>height</name>
+        <qualifiedname>TrippleBuffer::height</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/FrameBuffer.h" line="419" column="19" bodyfile="src/Rendering/Core/FrameBuffer.h" bodystart="419" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="struct_tripple_buffer_1af6a568ca26e449ba41d77cd25b253663" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>TrippleBuffer::TrippleBuffer</definition>
+        <argsstring>()=delete</argsstring>
+        <name>TrippleBuffer</name>
+        <qualifiedname>TrippleBuffer::TrippleBuffer</qualifiedname>
+        <briefdescription>
+<para>Constructs a new <ref refid="struct_tripple_buffer" kindref="compound">TrippleBuffer</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/FrameBuffer.h" line="423" column="9"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="struct_tripple_buffer_1ade5ad21dfd69dd617dc59c35adddf8c9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>TrippleBuffer::TrippleBuffer</definition>
+        <argsstring>(int width, int height)</argsstring>
+        <name>TrippleBuffer</name>
+        <qualifiedname>TrippleBuffer::TrippleBuffer</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>width</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>height</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="struct_tripple_buffer" kindref="compound">TrippleBuffer</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>width</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Dimension value. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>height</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Dimension value. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/FrameBuffer.h" line="431" column="9" bodyfile="src/Rendering/Core/FrameBuffer.h" bodystart="431" bodyend="435"/>
+        <references refid="struct_frame_buffer_1ac9d501ed7d2c3065d73ab4bb3ac79aaa" compoundref="_frame_buffer_8h" startline="216" endline="219">FrameBuffer::Create</references>
+      </memberdef>
+      <memberdef kind="function" id="struct_tripple_buffer_1aa1580b077ee4b77e4cf0293e5fce37af" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="struct_frame_buffer" kindref="compound">FrameBuffer</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; FrameBuffer &gt; TrippleBuffer::getFront</definition>
+        <argsstring>()</argsstring>
+        <name>getFront</name>
+        <qualifiedname>TrippleBuffer::getFront</qualifiedname>
+        <briefdescription>
+<para>Returns the front. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Pointer to the resulting object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/FrameBuffer.h" line="441" column="25" bodyfile="src/Rendering/Core/FrameBuffer.h" bodystart="441" bodyend="443"/>
+        <referencedby refid="struct_tripple_buffer_1a2fe9ea51bbfae49182b81360da39b5df" compoundref="_frame_buffer_8h" startline="509" endline="517">swapBuffers</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="struct_tripple_buffer_1a27e3d899dc5c66e38fb6d240ad8ac0e6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="struct_frame_buffer" kindref="compound">FrameBuffer</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; FrameBuffer &gt; TrippleBuffer::getMiddle</definition>
+        <argsstring>()</argsstring>
+        <name>getMiddle</name>
+        <qualifiedname>TrippleBuffer::getMiddle</qualifiedname>
+        <briefdescription>
+<para>Returns the middle. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Pointer to the resulting object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/FrameBuffer.h" line="449" column="25" bodyfile="src/Rendering/Core/FrameBuffer.h" bodystart="449" bodyend="451"/>
+        <referencedby refid="struct_tripple_buffer_1a53cf73b5efe7ab4e33b47b4d1ef5f099" compoundref="_frame_buffer_8h" startline="472" endline="474">getEditBuffer</referencedby>
+        <referencedby refid="struct_tripple_buffer_1a2fe9ea51bbfae49182b81360da39b5df" compoundref="_frame_buffer_8h" startline="509" endline="517">swapBuffers</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="struct_tripple_buffer_1a841ad487a95331a841cd26ede3b8358d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="struct_frame_buffer" kindref="compound">FrameBuffer</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; FrameBuffer &gt; TrippleBuffer::getBack</definition>
+        <argsstring>()</argsstring>
+        <name>getBack</name>
+        <qualifiedname>TrippleBuffer::getBack</qualifiedname>
+        <briefdescription>
+<para>Returns the back. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Pointer to the resulting object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/FrameBuffer.h" line="457" column="25" bodyfile="src/Rendering/Core/FrameBuffer.h" bodystart="457" bodyend="459"/>
+        <referencedby refid="struct_tripple_buffer_1aaadfe8298e9fdbab9177084bf5bbc648" compoundref="_frame_buffer_8h" startline="480" endline="482">getDrawBuffer</referencedby>
+        <referencedby refid="struct_tripple_buffer_1a2fe9ea51bbfae49182b81360da39b5df" compoundref="_frame_buffer_8h" startline="509" endline="517">swapBuffers</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="struct_tripple_buffer_1a0b60b6f1e7e12dc0fd41287f66b6523c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="struct_frame_buffer" kindref="compound">FrameBuffer</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; FrameBuffer &gt; TrippleBuffer::getDisplayBuffer</definition>
+        <argsstring>()</argsstring>
+        <name>getDisplayBuffer</name>
+        <qualifiedname>TrippleBuffer::getDisplayBuffer</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/FrameBuffer.h" line="464" column="25" bodyfile="src/Rendering/Core/FrameBuffer.h" bodystart="464" bodyend="466"/>
+      </memberdef>
+      <memberdef kind="function" id="struct_tripple_buffer_1a53cf73b5efe7ab4e33b47b4d1ef5f099" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="struct_frame_buffer" kindref="compound">FrameBuffer</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; FrameBuffer &gt; TrippleBuffer::getEditBuffer</definition>
+        <argsstring>()</argsstring>
+        <name>getEditBuffer</name>
+        <qualifiedname>TrippleBuffer::getEditBuffer</qualifiedname>
+        <briefdescription>
+<para>Returns the edit buffer. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Pointer to the resulting object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/FrameBuffer.h" line="472" column="25" bodyfile="src/Rendering/Core/FrameBuffer.h" bodystart="472" bodyend="474"/>
+        <references refid="struct_tripple_buffer_1a27e3d899dc5c66e38fb6d240ad8ac0e6" compoundref="_frame_buffer_8h" startline="449" endline="451">getMiddle</references>
+      </memberdef>
+      <memberdef kind="function" id="struct_tripple_buffer_1aaadfe8298e9fdbab9177084bf5bbc648" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="struct_frame_buffer" kindref="compound">FrameBuffer</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; FrameBuffer &gt; TrippleBuffer::getDrawBuffer</definition>
+        <argsstring>()</argsstring>
+        <name>getDrawBuffer</name>
+        <qualifiedname>TrippleBuffer::getDrawBuffer</qualifiedname>
+        <briefdescription>
+<para>Returns the draw buffer. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Pointer to the resulting object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/FrameBuffer.h" line="480" column="25" bodyfile="src/Rendering/Core/FrameBuffer.h" bodystart="480" bodyend="482"/>
+        <references refid="struct_tripple_buffer_1a841ad487a95331a841cd26ede3b8358d" compoundref="_frame_buffer_8h" startline="457" endline="459">getBack</references>
+      </memberdef>
+      <memberdef kind="function" id="struct_tripple_buffer_1afa919e8a8ca329dd8b86ddb15e5a8bcb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void TrippleBuffer::setFront</definition>
+        <argsstring>(std::shared_ptr&lt; FrameBuffer &gt; framePtr)</argsstring>
+        <name>setFront</name>
+        <qualifiedname>TrippleBuffer::setFront</qualifiedname>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="struct_frame_buffer" kindref="compound">FrameBuffer</ref> &gt;</type>
+          <declname>framePtr</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/FrameBuffer.h" line="486" column="14" bodyfile="src/Rendering/Core/FrameBuffer.h" bodystart="486" bodyend="488"/>
+      </memberdef>
+      <memberdef kind="function" id="struct_tripple_buffer_1a21607aceb5b3dc8dbf987a595e67c567" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void TrippleBuffer::setMiddle</definition>
+        <argsstring>(std::shared_ptr&lt; FrameBuffer &gt; framePtr)</argsstring>
+        <name>setMiddle</name>
+        <qualifiedname>TrippleBuffer::setMiddle</qualifiedname>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="struct_frame_buffer" kindref="compound">FrameBuffer</ref> &gt;</type>
+          <declname>framePtr</declname>
+        </param>
+        <briefdescription>
+<para>Sets the middle. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>framePtr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to frame. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/FrameBuffer.h" line="494" column="14" bodyfile="src/Rendering/Core/FrameBuffer.h" bodystart="494" bodyend="496"/>
+        <referencedby refid="struct_tripple_buffer_1a2fe9ea51bbfae49182b81360da39b5df" compoundref="_frame_buffer_8h" startline="509" endline="517">swapBuffers</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="struct_tripple_buffer_1a807d0eac379ba76f82f0dda42f36100d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void TrippleBuffer::setBack</definition>
+        <argsstring>(std::shared_ptr&lt; FrameBuffer &gt; framePtr)</argsstring>
+        <name>setBack</name>
+        <qualifiedname>TrippleBuffer::setBack</qualifiedname>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="struct_frame_buffer" kindref="compound">FrameBuffer</ref> &gt;</type>
+          <declname>framePtr</declname>
+        </param>
+        <briefdescription>
+<para>Sets the back. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>framePtr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to frame. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/FrameBuffer.h" line="502" column="14" bodyfile="src/Rendering/Core/FrameBuffer.h" bodystart="502" bodyend="504"/>
+        <referencedby refid="struct_tripple_buffer_1a2fe9ea51bbfae49182b81360da39b5df" compoundref="_frame_buffer_8h" startline="509" endline="517">swapBuffers</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="struct_tripple_buffer_1a2fe9ea51bbfae49182b81360da39b5df" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void TrippleBuffer::swapBuffers</definition>
+        <argsstring>()</argsstring>
+        <name>swapBuffers</name>
+        <qualifiedname>TrippleBuffer::swapBuffers</qualifiedname>
+        <briefdescription>
+<para>Swaps buffers. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/FrameBuffer.h" line="509" column="14" bodyfile="src/Rendering/Core/FrameBuffer.h" bodystart="509" bodyend="517"/>
+        <references refid="struct_tripple_buffer_1a841ad487a95331a841cd26ede3b8358d" compoundref="_frame_buffer_8h" startline="457" endline="459">getBack</references>
+        <references refid="struct_tripple_buffer_1aa1580b077ee4b77e4cf0293e5fce37af" compoundref="_frame_buffer_8h" startline="441" endline="443">getFront</references>
+        <references refid="struct_tripple_buffer_1a27e3d899dc5c66e38fb6d240ad8ac0e6" compoundref="_frame_buffer_8h" startline="449" endline="451">getMiddle</references>
+        <references refid="struct_tripple_buffer_1a807d0eac379ba76f82f0dda42f36100d" compoundref="_frame_buffer_8h" startline="502" endline="504">setBack</references>
+        <references refid="struct_tripple_buffer_1a21607aceb5b3dc8dbf987a595e67c567" compoundref="_frame_buffer_8h" startline="494" endline="496">setMiddle</references>
+      </memberdef>
+      <memberdef kind="function" id="struct_tripple_buffer_1a3e121c9862627d785ba325e00e7aa3d7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void TrippleBuffer::resizeBuffers</definition>
+        <argsstring>(int width, int height)</argsstring>
+        <name>resizeBuffers</name>
+        <qualifiedname>TrippleBuffer::resizeBuffers</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>width</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>height</declname>
+        </param>
+        <briefdescription>
+<para>Resizes backing GPU buffers. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>width</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Dimension value. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>height</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Dimension value. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/FrameBuffer.h" line="524" column="14" bodyfile="src/Rendering/Core/FrameBuffer.h" bodystart="524" bodyend="526"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_tripple_buffer" kindref="compound">TrippleBuffer</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Core/FrameBuffer.h" line="416" column="1" bodyfile="src/Rendering/Core/FrameBuffer.h" bodystart="416" bodyend="527"/>
+    <listofallmembers>
+      <member refid="struct_tripple_buffer_1ab21532dad5a02848265f8f0012268783" prot="private" virt="non-virtual"><scope>TrippleBuffer</scope><name>chain</name></member>
+      <member refid="struct_tripple_buffer_1a841ad487a95331a841cd26ede3b8358d" prot="public" virt="non-virtual"><scope>TrippleBuffer</scope><name>getBack</name></member>
+      <member refid="struct_tripple_buffer_1a0b60b6f1e7e12dc0fd41287f66b6523c" prot="public" virt="non-virtual"><scope>TrippleBuffer</scope><name>getDisplayBuffer</name></member>
+      <member refid="struct_tripple_buffer_1aaadfe8298e9fdbab9177084bf5bbc648" prot="public" virt="non-virtual"><scope>TrippleBuffer</scope><name>getDrawBuffer</name></member>
+      <member refid="struct_tripple_buffer_1a53cf73b5efe7ab4e33b47b4d1ef5f099" prot="public" virt="non-virtual"><scope>TrippleBuffer</scope><name>getEditBuffer</name></member>
+      <member refid="struct_tripple_buffer_1aa1580b077ee4b77e4cf0293e5fce37af" prot="public" virt="non-virtual"><scope>TrippleBuffer</scope><name>getFront</name></member>
+      <member refid="struct_tripple_buffer_1a27e3d899dc5c66e38fb6d240ad8ac0e6" prot="public" virt="non-virtual"><scope>TrippleBuffer</scope><name>getMiddle</name></member>
+      <member refid="struct_tripple_buffer_1a9ca5dcc2ac82e896ec4f4069899c8335" prot="private" virt="non-virtual"><scope>TrippleBuffer</scope><name>height</name></member>
+      <member refid="struct_tripple_buffer_1a3e121c9862627d785ba325e00e7aa3d7" prot="public" virt="non-virtual"><scope>TrippleBuffer</scope><name>resizeBuffers</name></member>
+      <member refid="struct_tripple_buffer_1a807d0eac379ba76f82f0dda42f36100d" prot="public" virt="non-virtual"><scope>TrippleBuffer</scope><name>setBack</name></member>
+      <member refid="struct_tripple_buffer_1afa919e8a8ca329dd8b86ddb15e5a8bcb" prot="public" virt="non-virtual"><scope>TrippleBuffer</scope><name>setFront</name></member>
+      <member refid="struct_tripple_buffer_1a21607aceb5b3dc8dbf987a595e67c567" prot="public" virt="non-virtual"><scope>TrippleBuffer</scope><name>setMiddle</name></member>
+      <member refid="struct_tripple_buffer_1a2fe9ea51bbfae49182b81360da39b5df" prot="public" virt="non-virtual"><scope>TrippleBuffer</scope><name>swapBuffers</name></member>
+      <member refid="struct_tripple_buffer_1af6a568ca26e449ba41d77cd25b253663" prot="private" virt="non-virtual"><scope>TrippleBuffer</scope><name>TrippleBuffer</name></member>
+      <member refid="struct_tripple_buffer_1ade5ad21dfd69dd617dc59c35adddf8c9" prot="public" virt="non-virtual"><scope>TrippleBuffer</scope><name>TrippleBuffer</name></member>
+      <member refid="struct_tripple_buffer_1a4a3304a4b3bc1448800ac07465621829" prot="private" virt="non-virtual"><scope>TrippleBuffer</scope><name>width</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

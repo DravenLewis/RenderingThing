@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="dir_c81126972a1dd0bf41a2f587f31413b2" kind="dir">
+    <compoundname>src/Rendering/Textures</compoundname>
+    <innerfile refid="_cube_map_8cpp">CubeMap.cpp</innerfile>
+    <innerfile refid="_cube_map_8h">CubeMap.h</innerfile>
+    <innerfile refid="_sky_box_8cpp">SkyBox.cpp</innerfile>
+    <innerfile refid="_sky_box_8h">SkyBox.h</innerfile>
+    <innerfile refid="_texture_8cpp">Texture.cpp</innerfile>
+    <innerfile refid="_texture_8h">Texture.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Textures/"/>
+  </compounddef>
+</doxygen>

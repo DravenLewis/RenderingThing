@@ -1,3 +1,8 @@
+/**
+ * @file src/Serialization/Schema/ComponentSerializationRegistry.h
+ * @brief Declarations for ComponentSerializationRegistry.
+ */
+
 #ifndef SERIALIZATION_SCHEMA_COMPONENT_SERIALIZATION_REGISTRY_H
 #define SERIALIZATION_SCHEMA_COMPONENT_SERIALIZATION_REGISTRY_H
 
@@ -12,6 +17,7 @@
 
 namespace Serialization {
 
+/// @brief Represents the ComponentSerializationRegistry type.
 class ComponentSerializationRegistry {
     public:
         using ComponentRecord = JsonSchema::EntitySnapshotSchemaBase::ComponentRecord;
@@ -20,6 +26,7 @@ class ComponentSerializationRegistry {
         using GetComponentFn = std::function<NeoECS::ECSComponent*(NeoECS::ECSComponentManager* manager, NeoECS::ECSEntity* entity)>;
         using EnsureComponentFn = std::function<bool(NeoECS::GameObject* wrapper, std::string* outError)>;
 
+        /// @brief Holds data for SerializerEntry.
         struct SerializerEntry {
             std::string typeName;
             int version = 1;
@@ -29,8 +36,24 @@ class ComponentSerializationRegistry {
             DeserializePayloadFn deserializePayload;
         };
 
+        /**
+         * @brief Registers serializer.
+         * @param entry Value for entry.
+         * @param outError Output value for error.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool registerSerializer(SerializerEntry entry, std::string* outError = nullptr);
 
+        /**
+         * @brief Registers typed serializer.
+         * @param typeName Name used for type name.
+         * @param version Value for version.
+         * @param serializePayload Value for serialize payload.
+         * @param deserializePayload Value for deserialize payload.
+         * @param ensureComponent Value for ensure component.
+         * @param outError Output value for error.
+         * @return True when the operation succeeds; otherwise false.
+         */
         template<typename TComponent>
         bool registerTypedSerializer(
             const std::string& typeName,
@@ -100,7 +123,16 @@ class ComponentSerializationRegistry {
             return registerSerializer(std::move(entry), outError);
         }
 
+        /**
+         * @brief Checks whether serializer.
+         * @param typeName Name used for type name.
+         * @return True when the condition is satisfied; otherwise false.
+         */
         bool hasSerializer(const std::string& typeName) const;
+        /**
+         * @brief Registers ed count.
+         * @return Computed numeric result.
+         */
         size_t registeredCount() const { return orderedSerializers.size(); }
 
         bool serializeEntityComponents(
@@ -148,7 +180,16 @@ class ComponentSerializationRegistry {
         std::unordered_map<std::string, size_t> serializerIndexByType;
 };
 
+/**
+ * @brief Registers default component serializers.
+ * @param registry Value for registry.
+ * @param outError Output value for error.
+ */
 void RegisterDefaultComponentSerializers(ComponentSerializationRegistry& registry, std::string* outError = nullptr);
+/**
+ * @brief Builds the default component serialization registry.
+ * @return Reference to the resulting value.
+ */
 ComponentSerializationRegistry& DefaultComponentSerializationRegistry();
 
 } // namespace Serialization

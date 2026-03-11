@@ -1,3 +1,8 @@
+/**
+ * @file src/App/Main.cpp
+ * @brief Implementation for Main.
+ */
+
 #include "Engine/Core/GameEngine.h"
 #include "App/Demo/DemoScene.h"
 #include "Editor/Core/EditorScene.h"

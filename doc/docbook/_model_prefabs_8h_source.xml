@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__model_prefabs_8h_source" xml:lang="en-US">
+<title>ModelPrefabs.h</title>
+<indexterm><primary>src/Rendering/Geometry/ModelPrefabs.h</primary></indexterm>
+Go to the documentation of this file.<programlisting linenumbering="unnumbered">1 
+5 
+6 <emphasis role="preprocessor">#ifndef&#32;MODEL_PREFABS_H</emphasis>
+7 <emphasis role="preprocessor">#define&#32;MODEL_PREFABS_H</emphasis>
+8 
+9 <emphasis role="preprocessor">#include&#32;&lt;memory&gt;</emphasis>
+10 
+11 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__material_defaults_8h">Rendering/Materials/MaterialDefaults.h</link>&quot;</emphasis>
+12 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__model_part_prefabs_8h">Rendering/Geometry/ModelPartPrefabs.h</link>&quot;</emphasis>
+13 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__model_8h">Rendering/Geometry/Model.h</link>&quot;</emphasis>
+14 
+16 <emphasis role="keyword">struct&#32;</emphasis><link linkend="_struct_model_prefabs">ModelPrefabs</link>{
+18 &#32;&#32;&#32;&#32;<emphasis role="keyword">struct&#32;</emphasis><link linkend="_struct_model_prefabs_1_1_cube_material_definition">CubeMaterialDefinition</link>{
+19 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PMaterial&#32;matTop&#32;=&#32;<link linkend="_class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769">MaterialDefaults::ColorMaterial::Create</link>(Color::MAGENTA);
+20 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PMaterial&#32;matBottom&#32;=&#32;<link linkend="_class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769">MaterialDefaults::ColorMaterial::Create</link>(Color::MAGENTA);
+21 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PMaterial&#32;matLeft&#32;=&#32;<link linkend="_class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769">MaterialDefaults::ColorMaterial::Create</link>(Color::MAGENTA);
+22 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PMaterial&#32;matRight&#32;=&#32;<link linkend="_class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769">MaterialDefaults::ColorMaterial::Create</link>(Color::MAGENTA);
+23 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PMaterial&#32;matFront&#32;=&#32;<link linkend="_class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769">MaterialDefaults::ColorMaterial::Create</link>(Color::MAGENTA);
+24 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PMaterial&#32;matBack&#32;=&#32;<link linkend="_class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769">MaterialDefaults::ColorMaterial::Create</link>(Color::MAGENTA);
+25 
+26 
+31 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;CubeMaterialDefinition&gt;&#32;<link linkend="_struct_model_prefabs_1_1_cube_material_definition_1aba705d4394d425991f04fbfb85500839">Create</link>()&#32;{<emphasis role="keywordflow">return</emphasis>&#32;std::make_shared&lt;CubeMaterialDefinition&gt;();};
+32 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;CubeMaterialDefinition&gt;&#32;CreateSame(PMaterial&#32;mat)&#32;{
+33 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">auto</emphasis>&#32;def&#32;=&#32;std::make_shared&lt;CubeMaterialDefinition&gt;();
+34 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;def-&gt;matFront&#32;=&#32;mat;
+35 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;def-&gt;matBack&#32;=&#32;mat;
+36 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;def-&gt;matLeft&#32;=&#32;mat;
+37 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;def-&gt;matRight&#32;=&#32;mat;
+38 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;def-&gt;matTop&#32;=&#32;mat;
+39 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;def-&gt;matBottom&#32;=&#32;mat;
+40 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;def;
+41 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;};
+42 &#32;&#32;&#32;&#32;};
+43 
+50 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;Model&gt;&#32;<link linkend="_struct_model_prefabs_1ad5d5f5c2c36f3c39db66281afd4713ee">MakeCube</link>(<emphasis role="keywordtype">float</emphasis>&#32;scale&#32;=&#32;1.0f,&#32;std::shared_ptr&lt;CubeMaterialDefinition&gt;&#32;matDef&#32;=&#32;<link linkend="_struct_model_prefabs_1_1_cube_material_definition_1aba705d4394d425991f04fbfb85500839">CubeMaterialDefinition::Create</link>()){
+51 
+52 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">auto</emphasis>&#32;model&#32;=&#32;<link linkend="_struct_model_1a3f0b711fc427dce1d41b1c2122248482">Model::Create</link>();
+53 
+54 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;ModelPart&gt;&#32;cubeTop&#32;=&#32;<link linkend="_struct_model_part_prefabs_1ae5f37b441c2d40314487e103ada227a8">ModelPartPrefabs::MakePlane</link>(scale,&#32;scale,&#32;matDef-&gt;matTop);
+55 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;cubeTop-&gt;localTransform.setPosition(Math3D::Vec3(0.0f,1.0f,0.0f));
+56 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;cubeTop-&gt;localTransform.setRotation(0.0f,0.0f,0.0f);
+57 
+58 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;ModelPart&gt;&#32;cubeBottom&#32;=&#32;<link linkend="_struct_model_part_prefabs_1ae5f37b441c2d40314487e103ada227a8">ModelPartPrefabs::MakePlane</link>(scale,&#32;scale,&#32;matDef-&gt;matBottom);
+59 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;cubeBottom-&gt;localTransform.setPosition(Math3D::Vec3(0.0f,-1.0f,0.0f));
+60 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;cubeBottom-&gt;localTransform.setRotation(180.0f,0.0f,0.0f);
+61 
+62 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;ModelPart&gt;&#32;cubeLeft&#32;=&#32;<link linkend="_struct_model_part_prefabs_1ae5f37b441c2d40314487e103ada227a8">ModelPartPrefabs::MakePlane</link>(scale,&#32;scale,&#32;matDef-&gt;matLeft);
+63 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;cubeLeft-&gt;localTransform.setPosition(Math3D::Vec3(-1.0f,0.0f,0.0f));
+64 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;cubeLeft-&gt;localTransform.setRotation(0.0f,-90.0f,90.0f);
+65 
+66 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;ModelPart&gt;&#32;cubeRight&#32;=&#32;<link linkend="_struct_model_part_prefabs_1ae5f37b441c2d40314487e103ada227a8">ModelPartPrefabs::MakePlane</link>(scale,&#32;scale,&#32;matDef-&gt;matRight);
+67 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;cubeRight-&gt;localTransform.setPosition(Math3D::Vec3(1.0f,0.0f,0.0f));
+68 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;cubeRight-&gt;localTransform.setRotation(0.0f,90.0f,-90.0f);
+69 
+70 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;ModelPart&gt;&#32;cubeFront&#32;=&#32;<link linkend="_struct_model_part_prefabs_1ae5f37b441c2d40314487e103ada227a8">ModelPartPrefabs::MakePlane</link>(scale,&#32;scale,&#32;matDef-&gt;matFront);
+71 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;cubeFront-&gt;localTransform.setPosition(Math3D::Vec3(0.0f,0.0f,1.0f));
+72 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;cubeFront-&gt;localTransform.setRotation(-90.0f,180.0f,180.0f);
+73 
+74 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;ModelPart&gt;&#32;cubeBack&#32;=&#32;<link linkend="_struct_model_part_prefabs_1ae5f37b441c2d40314487e103ada227a8">ModelPartPrefabs::MakePlane</link>(scale,&#32;scale,&#32;matDef-&gt;matBack);
+75 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;cubeBack-&gt;localTransform.setPosition(Math3D::Vec3(0.0f,0.0f,-1.0f));
+76 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;cubeBack-&gt;localTransform.setRotation(90.0f,180.0f,0.0f);
+77 
+78 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;model-&gt;addPart(cubeTop).addPart(cubeBottom).addPart(cubeLeft).addPart(cubeRight).addPart(cubeFront).addPart(cubeBack);
+79 
+80 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;model;
+81 &#32;&#32;&#32;&#32;}
+82 };
+83 
+84 <emphasis role="preprocessor">#endif&#32;</emphasis><emphasis role="comment">//&#32;MODEL_PREFABS_H</emphasis>
+</programlisting></section>

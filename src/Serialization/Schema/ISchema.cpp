@@ -1,3 +1,8 @@
+/**
+ * @file src/Serialization/Schema/ISchema.cpp
+ * @brief Implementation for ISchema.
+ */
+
 #include "Serialization/Schema/ISchema.h"
 
 namespace {

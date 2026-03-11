@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_material_registry_entry" kind="struct" language="C++" prot="public">
+    <compoundname>MaterialRegistryEntry</compoundname>
+    <includes refid="_material_registry_8h" local="no">MaterialRegistry.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_material_registry_entry_1ade69a5fdad734180ac03ea76d20b65d9" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string MaterialRegistryEntry::id</definition>
+        <argsstring></argsstring>
+        <name>id</name>
+        <qualifiedname>MaterialRegistryEntry::id</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/MaterialRegistry.h" line="19" column="17" bodyfile="src/Rendering/Materials/MaterialRegistry.h" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_material_registry_entry_1a4f8ef8e3b79277475d36c07587e644f8" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string MaterialRegistryEntry::displayName</definition>
+        <argsstring></argsstring>
+        <name>displayName</name>
+        <qualifiedname>MaterialRegistryEntry::displayName</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/MaterialRegistry.h" line="20" column="17" bodyfile="src/Rendering/Materials/MaterialRegistry.h" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_material_registry_entry_1afa4b0d0f9a2afdb7780fae40c8167f9f" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool MaterialRegistryEntry::isBuiltIn</definition>
+        <argsstring></argsstring>
+        <name>isBuiltIn</name>
+        <qualifiedname>MaterialRegistryEntry::isBuiltIn</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/MaterialRegistry.h" line="21" column="10" bodyfile="src/Rendering/Materials/MaterialRegistry.h" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_material_registry_entry_1a4e21a9d2320505edfb3a70ddf31fe169" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string MaterialRegistryEntry::assetRef</definition>
+        <argsstring></argsstring>
+        <name>assetRef</name>
+        <qualifiedname>MaterialRegistryEntry::assetRef</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/MaterialRegistry.h" line="22" column="17" bodyfile="src/Rendering/Materials/MaterialRegistry.h" bodystart="22" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_material_registry_entry" kindref="compound">MaterialRegistryEntry</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Materials/MaterialRegistry.h" line="18" column="1" bodyfile="src/Rendering/Materials/MaterialRegistry.h" bodystart="18" bodyend="23"/>
+    <listofallmembers>
+      <member refid="struct_material_registry_entry_1a4e21a9d2320505edfb3a70ddf31fe169" prot="public" virt="non-virtual"><scope>MaterialRegistryEntry</scope><name>assetRef</name></member>
+      <member refid="struct_material_registry_entry_1a4f8ef8e3b79277475d36c07587e644f8" prot="public" virt="non-virtual"><scope>MaterialRegistryEntry</scope><name>displayName</name></member>
+      <member refid="struct_material_registry_entry_1ade69a5fdad734180ac03ea76d20b65d9" prot="public" virt="non-virtual"><scope>MaterialRegistryEntry</scope><name>id</name></member>
+      <member refid="struct_material_registry_entry_1afa4b0d0f9a2afdb7780fae40c8167f9f" prot="public" virt="non-virtual"><scope>MaterialRegistryEntry</scope><name>isBuiltIn</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

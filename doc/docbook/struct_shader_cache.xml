@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_shader_cache" xml:lang="en-US">
+<title>ShaderCache Struct Reference</title>
+<indexterm><primary>ShaderCache</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_shader_cache">ShaderCache</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;ShaderProgram.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; <link linkend="_struct_shader_cache_1af5f1cbf4ab7956b32d7bd121781705d4">getOrCompile</link> (std::string name, std::string vtx=&quot;&quot;, std::string frag=&quot;&quot;, std::string geom=&quot;&quot;, std::string tess=&quot;&quot;, std::string compute=&quot;&quot;, std::string task=&quot;&quot;, std::string srtx=&quot;&quot;)</para>
+
+<para>Returns a cached shader program, compiling and caching if missing. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_shader_cache_1ae36ea2f2f11454ea3df20212e3fffd25"/>void <emphasis role="strong">clear</emphasis> ()</para>
+
+<para>Clears the current state. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_shader_cache_1a04d6ef8cb95a509dc1b03e65e031bf91"/>std::map&lt; std::string, std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; &gt; <emphasis role="strong">programCache</emphasis></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_shader_cache">ShaderCache</link>. </para>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_struct_shader_cache_1af5f1cbf4ab7956b32d7bd121781705d4"/><section>
+    <title>getOrCompile()</title>
+<indexterm><primary>getOrCompile</primary><secondary>ShaderCache</secondary></indexterm>
+<indexterm><primary>ShaderCache</primary><secondary>getOrCompile</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; ShaderCache::getOrCompile (std::string name, std::string vtx = <computeroutput>&quot;&quot;</computeroutput>
+, std::string frag = <computeroutput>&quot;&quot;</computeroutput>
+, std::string geom = <computeroutput>&quot;&quot;</computeroutput>
+, std::string tess = <computeroutput>&quot;&quot;</computeroutput>
+, std::string compute = <computeroutput>&quot;&quot;</computeroutput>
+, std::string task = <computeroutput>&quot;&quot;</computeroutput>
+, std::string srtx = <computeroutput>&quot;&quot;</computeroutput>
+)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns a cached shader program, compiling and caching if missing. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>name</entry><entry>
+<para>Cache key for the shader program. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>vtx</entry><entry>
+<para><link linkend="_struct_vertex">Vertex</link> shader source. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>frag</entry><entry>
+<para>Fragment shader source. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>geom</entry><entry>
+<para>Geometry shader source. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>tess</entry><entry>
+<para>Tessellation shader source. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>compute</entry><entry>
+<para>Compute shader source. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>task</entry><entry>
+<para>Task shader source. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>srtx</entry><entry>
+<para>Ray-trace shader source. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Shared pointer to a compiled shader program. </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Shaders/<link linkend="__shader_program_8h">ShaderProgram.h</link></section>
+</section>

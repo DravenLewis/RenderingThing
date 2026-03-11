@@ -1,0 +1,112 @@
+\doxysection{Font.\+h}
+\hypertarget{_font_8h_source}{}\label{_font_8h_source}\index{src/Rendering/Fonts/Font.h@{src/Rendering/Fonts/Font.h}}
+\doxymbox{\hyperlink{_font_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ FONT\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ FONT\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#define\ ENGINE\_STB\_TRUETYPE\ \ 0x0FA25}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#define\ ENGINE\_FREETYPE\ \ 0x0E281}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#define\ FONT\_ENGINE\ ENGINE\_FREETYPE}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ <map>}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ <array>}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ "{}Assets/Core/Asset.h"{}}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ "{}Foundation/Math/Math3D.h"{}}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_drawable_8h}{Rendering/Geometry/Drawable.h}}"{}}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_model_part_8h}{Rendering/Geometry/ModelPart.h}}"{}}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_texture_8h}{Rendering/Textures/Texture.h}}"{}}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ "{}Foundation/Math/Color.h"{}}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ "{}Scene/Camera.h"{}}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ "{}Foundation/Logging/Logbot.h"{}}}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#define\ FONT\_BITMAP\_W\ 1024}}
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#define\ FONT\_BITMAP\_H\ 1024}}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00035\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_text_cache_key}{TextCacheKey}}\{\ \textcolor{comment}{//\ Store\ mesh\ of\ common\ reused\ texts,\ so\ we\ dont\ recreate\ them\ each\ frame,\ if\ the\ text\ changes.}}
+\DoxyCodeLine{00036\ \ \ \ \ std::string\ text;}
+\DoxyCodeLine{00037\ \ \ \ \ Color\ color;}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keywordtype}{bool}\ operator<(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{struct_text_cache_key}{TextCacheKey}}\&\ other)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(text\ !=\ other.text)\ \textcolor{keywordflow}{return}\ text\ <\ other.text;}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ color.toRGBA32()\ <\ other.color.toRGBA32();}
+\DoxyCodeLine{00042\ \ \ \ \ \}}
+\DoxyCodeLine{00043\ \};}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00046\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_font_character}{FontCharacter}}\{}
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keywordtype}{float}\ u0,\ v0,\ u1,\ v1;}
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keywordtype}{float}\ sizeX,\ sizeY;}
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keywordtype}{float}\ bearingX,\ bearingY;}
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keywordtype}{float}\ advance;}
+\DoxyCodeLine{00051\ \};}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00054\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_font_a4e6a119206f505522100221c1fafde45}{Font}}\{}
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ PAsset\ assetPtr;}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ PTexture\ textureAtlasPtr;}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ PMaterial\ materialCachePtr;}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ fontSize;}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ std::array<FontCharacter,\ 128>\ characters;}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ std::map<TextCacheKey,\ std::shared\_ptr<ModelPart>>\ meshCache;}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_font_aa6b8da140518e4282bbe81e7033e0081}{\_initFont}}()\ =\ 0;}
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ Logbot\ FontLogger\ =\ Logbot::CreateInstance(\textcolor{stringliteral}{"{}Font"{}});}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_font_a4e6a119206f505522100221c1fafde45}{Font}}()\ :\ fontSize(0)\ \{\};}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \doxymbox{\hyperlink{class_font}{\string~Font}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ drawText(std::string\ text\ =\ \textcolor{stringliteral}{"{}"{}},\ Math3D::Vec2\ position\ =\ Math3D::Vec2(0,0),\ PCamera\ camera\ =\ \textcolor{keyword}{nullptr},\ Color\ color\ =\ Color::WHITE,\ \textcolor{keywordtype}{bool}\ useCache\ =\ \textcolor{keyword}{true})\ =\ 0;}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{bool}\ supportsQueuedDrawing()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};\ \}}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ beginFrame(PCamera\ camera)\ \{\}}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ flushQueuedText(PCamera\ camera)\ \{\}}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ clearCache()\{}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>meshCache.clear();}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ The\ goal\ is\ to\ have\ multiple\ font\ engines\ for\ specific\ loading,}}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ so\ i\ could\ do\ auto\ font\ =\ Font::Create<FreeTypeFont>(assetPtr,\ 24.0f)}}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ std::shared\_ptr<T>\ Create(PAsset\ asset,\ \textcolor{keywordtype}{float}\ fontSize\ =\ 18.0f)\{}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(std::is\_base\_of<Font,\ T>::value,\ \textcolor{stringliteral}{"{}Class\ must\ inherit\ from\ Font."{}});}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!asset)\{}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FontLogger.Log(LOG\_ERRO,\ \textcolor{stringliteral}{"{}Asset\ was\ null"{}});}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!asset-\/>loaded())\{}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FontLogger.Log(LOG\_ERRO,\ \textcolor{stringliteral}{"{}Cannot\ create\ font\ from\ unloaded\ asset,\ make\ sure\ its\ loaded,\ call\ Asset::load()\ or\ AssetManager::getOrLoad()"{}});}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ font\ =\ std::make\_shared<T>();}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \ \ \ \ font-\/>assetPtr\ =\ asset;}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \ \ \ \ font-\/>fontSize\ =\ fontSize;}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \ \ \ \ font-\/>\_initFont();}
+\DoxyCodeLine{00107\ \ \ \ \ }
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ font;}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ PAsset\ getAssetPointer()\{}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ this-\/>assetPtr;}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00114\ \};\ }
+\DoxyCodeLine{00115\ }
+\DoxyCodeLine{00116\ \textcolor{keyword}{typedef}\ std::shared\_ptr<Font>\ PFont;}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ FONT\_H}}
+
+\end{DoxyCode}

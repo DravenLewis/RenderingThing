@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_graphics_1_1_post_processing_1_1_post_processing_effect" xml:lang="en-US">
+<title>Graphics::PostProcessing::PostProcessingEffect Class Reference</title>
+<indexterm><primary>Graphics::PostProcessing::PostProcessingEffect</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_graphics_1_1_post_processing_1_1_post_processing_effect">PostProcessingEffect</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;Graphics.h&gt;</computeroutput>
+</para>
+<para>Inheritance diagram for Graphics::PostProcessing::PostProcessingEffect:    <informalfigure>
+        <mediaobject>
+            <imageobject>
+                <imagedata width="50%" align="center" valign="middle" scalefit="0" fileref="class_graphics_1_1_post_processing_1_1_post_processing_effect.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+    </informalfigure>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_graphics_1_1_post_processing_1_1_post_processing_effect_1a956557ebb725734d270dd77ef8e40358"/>virtual <emphasis role="strong">~PostProcessingEffect</emphasis> ()=default</para>
+
+<para>Destroys this <link linkend="_class_graphics_1_1_post_processing_1_1_post_processing_effect">PostProcessingEffect</link> instance. </para>
+</listitem>
+            <listitem><para>virtual bool <link linkend="_class_graphics_1_1_post_processing_1_1_post_processing_effect_1a75b0263b1e53943ceb4f13d4aad0f5e6">apply</link> (PTexture inputTex, PTexture depthTex, PFrameBuffer frameBuffer, std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; quad)=0</para>
+
+<para>Applies current settings. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_graphics_1_1_post_processing_1_1_post_processing_effect">PostProcessingEffect</link> type. </para>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_graphics_1_1_post_processing_1_1_post_processing_effect_1a75b0263b1e53943ceb4f13d4aad0f5e6"/><section>
+    <title>apply()</title>
+<indexterm><primary>apply</primary><secondary>Graphics::PostProcessing::PostProcessingEffect</secondary></indexterm>
+<indexterm><primary>Graphics::PostProcessing::PostProcessingEffect</primary><secondary>apply</secondary></indexterm>
+<para><computeroutput>virtual bool Graphics::PostProcessing::PostProcessingEffect::apply (PTexture inputTex, PTexture depthTex, PFrameBuffer frameBuffer, std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; quad)<computeroutput>[pure virtual]</computeroutput></computeroutput></para><para>
+
+<para>Applies current settings. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>inputTex</entry><entry>
+<para>Value for put tex. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>depthTex</entry><entry>
+<para>Value for depth tex. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>frameBuffer</entry><entry>
+<para>Value for frame buffer. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>quad</entry><entry>
+<para>Value for quad. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>True when the operation succeeds; otherwise false. </para>
+</formalpara>
+</para>
+<para>
+Implemented in <link linkend="_class_auto_exposure_effect_1addcac25d10d86ac96887736dcf750e40">AutoExposureEffect</link>, <link linkend="_class_bloom_effect_1a0406096e8d58f6e752976df0121dfd64">BloomEffect</link>, <link linkend="_class_depth_of_field_effect_1a7c28be25a4f335b6cb15282996d50995">DepthOfFieldEffect</link>, <link linkend="_class_f_x_a_a_effect_1a350d2e34ca8351fb00fad5a571645f37">FXAAEffect</link>, <link linkend="_class_grayscale_effect_1a5e71990549a216be2b0f6901932c7692">GrayscaleEffect</link>, and <link linkend="_class_s_s_a_o_effect_1a7f1ff7cf52ff64340ee7789e89b0a16a">SSAOEffect</link>.</para>
+</section>
+<para>
+The documentation for this class was generated from the following file:</para>
+src/Rendering/Core/<link linkend="__graphics_8h">Graphics.h</link></section>
+</section>

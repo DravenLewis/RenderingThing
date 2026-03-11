@@ -1,3 +1,8 @@
+/**
+ * @file src/Assets/Core/AssetDescriptorUtils.cpp
+ * @brief Implementation for AssetDescriptorUtils.
+ */
+
 #include "Assets/Core/AssetDescriptorUtils.h"
 
 #include "Assets/Bundles/AssetBundleRegistry.h"

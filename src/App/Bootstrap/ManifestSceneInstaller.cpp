@@ -1,3 +1,8 @@
+/**
+ * @file src/App/Bootstrap/ManifestSceneInstaller.cpp
+ * @brief Implementation for ManifestSceneInstaller.
+ */
+
 #include "App/Bootstrap/ManifestSceneInstaller.h"
 
 #include <algorithm>

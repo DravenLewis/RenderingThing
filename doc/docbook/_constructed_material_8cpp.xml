@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__constructed_material_8cpp" xml:lang="en-US">
+<title>src/Rendering/Materials/ConstructedMaterial.cpp File Reference</title>
+<indexterm><primary>src/Rendering/Materials/ConstructedMaterial.cpp</primary></indexterm>
+<para>
+
+<para>Implementation for <link linkend="_class_constructed_material">ConstructedMaterial</link>. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &quot;Rendering/Materials/ConstructedMaterial.h&quot;<?linebreak?>#include &quot;Assets/Core/Asset.h&quot;<?linebreak?>#include &quot;Rendering/Materials/PBRMaterial.h&quot;<?linebreak?>#include &quot;Rendering/Textures/Texture.h&quot;<?linebreak?>#include &lt;utility&gt;<?linebreak?></programlisting><section>
+<title>Detailed Description</title>
+
+<para>Implementation for <link linkend="_class_constructed_material">ConstructedMaterial</link>. </para>
+</section>
+</section>

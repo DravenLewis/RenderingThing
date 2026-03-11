@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_shadow_caster_bounds" kind="struct" language="C++" prot="public">
+    <compoundname>ShadowCasterBounds</compoundname>
+    <includes refid="_shadow_renderer_8h" local="no">ShadowRenderer.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_shadow_caster_bounds_1abfa72c234b3af71c9ed722c38596a1c0" prot="public" static="no" mutable="no">
+        <type>Math3D::Vec3</type>
+        <definition>Math3D::Vec3 ShadowCasterBounds::min</definition>
+        <argsstring></argsstring>
+        <name>min</name>
+        <qualifiedname>ShadowCasterBounds::min</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="42" column="18" bodyfile="src/Rendering/Lighting/ShadowRenderer.h" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_shadow_caster_bounds_1a3bdaea826962ff29b21a20851c170bad" prot="public" static="no" mutable="no">
+        <type>Math3D::Vec3</type>
+        <definition>Math3D::Vec3 ShadowCasterBounds::max</definition>
+        <argsstring></argsstring>
+        <name>max</name>
+        <qualifiedname>ShadowCasterBounds::max</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/ShadowRenderer.h" line="43" column="18" bodyfile="src/Rendering/Lighting/ShadowRenderer.h" bodystart="43" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_shadow_caster_bounds" kindref="compound">ShadowCasterBounds</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Lighting/ShadowRenderer.h" line="41" column="1" bodyfile="src/Rendering/Lighting/ShadowRenderer.h" bodystart="41" bodyend="44"/>
+    <listofallmembers>
+      <member refid="struct_shadow_caster_bounds_1a3bdaea826962ff29b21a20851c170bad" prot="public" virt="non-virtual"><scope>ShadowCasterBounds</scope><name>max</name></member>
+      <member refid="struct_shadow_caster_bounds_1abfa72c234b3af71c9ed722c38596a1c0" prot="public" virt="non-virtual"><scope>ShadowCasterBounds</scope><name>min</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

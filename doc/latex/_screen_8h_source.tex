@@ -1,0 +1,103 @@
+\doxysection{Screen.\+h}
+\hypertarget{_screen_8h_source}{}\label{_screen_8h_source}\index{src/Rendering/Core/Screen.h@{src/Rendering/Core/Screen.h}}
+\doxymbox{\hyperlink{_screen_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ SCREEN\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ SCREEN\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <atomic>}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_frame_buffer_8h}{Rendering/Core/FrameBuffer.h}}"{}}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_texture_8h}{Rendering/Textures/Texture.h}}"{}}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ "{}Scene/Camera.h"{}}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ "{}Foundation/Math/Math3D.h"{}}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_shader_program_8h}{Rendering/Shaders/ShaderProgram.h}}"{}}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_model_part_prefabs_8h}{Rendering/Geometry/ModelPartPrefabs.h}}"{}}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ "{}Platform/Window/RenderWindow.h"{}}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_graphics_8h}{Rendering/Core/Graphics.h}}"{}}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ "{}Foundation/Math/Color.h"{}}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_environment_8h}{Rendering/Lighting/Environment.h}}"{}}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_view}{View}};}
+\DoxyCodeLine{00026\ \textcolor{keyword}{typedef}\ std::shared\_ptr<View>\ PView;}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00029\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_screen_a0d2f55f84802fb3d0348200cea71e59c}{Screen}}\{}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ width,\ height;}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ std::unique\_ptr<TrippleBuffer>\ buffer;}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ std::shared\_ptr<ModelPart>\ screenQuad;}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ std::shared\_ptr<ShaderProgram>\ screenShader;}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ std::vector<Graphics::PostProcessing::PPostProcessingEffect>\ effects;}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ PCamera\ camera;}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ PEnvironment\ environment;}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ PCamera\ uiCamera;}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ uiWidth\ =\ 0;}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ uiHeight\ =\ 0;}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ bound\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ std::atomic<float>\ lastPostProcessMs\{0.0f\};}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ std::atomic<int>\ lastPostProcessEffectCount\{0\};}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ std::uint32\_t\ presentFrameIndex\ =\ 0;}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ presentDebandStrength\ =\ 1.25f;}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ initScreenGeom();}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ initScreenShader();}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ PCamera\ CurrentCamera;}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ PEnvironment\ CurrentEnvironment;}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ Color\ clearColor\ =\ Color::BLACK;}
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_screen_a0d2f55f84802fb3d0348200cea71e59c}{Screen}}(\textcolor{keywordtype}{int}\ width,\ \textcolor{keywordtype}{int}\ height);}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_screen_a4243bc17596af96415b09ac48205676d}{\string~Screen}}();}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_screen_ab9f2169f953e728fa2614e0026b3b4a7}{processRenderPipeline}}();}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_screen_a958f0738b6aa94ae8aeaeffb78753ddf}{drawToWindow}}(RenderWindow*\ window,\ \textcolor{keywordtype}{bool}\ clearWindow\ =\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_screen_a0d0154807bb2d93c6896d9511378d2e1}{drawToView}}(PView\ view,\ \textcolor{keywordtype}{bool}\ clearWindow\ =\ \textcolor{keyword}{true},\ \textcolor{keywordtype}{float}\ x\ =\ -\/1,\ \textcolor{keywordtype}{float}\ y\ =\ -\/1,\ \textcolor{keywordtype}{float}\ width\ =\ -\/1,\ \textcolor{keywordtype}{float}\ height\ =\ -\/1);}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_screen_a5ba54872e8f2ab1fb14a24875db66866}{resize}}(\textcolor{keywordtype}{int}\ w,\ \textcolor{keywordtype}{int}\ h);}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{class_screen_ab71b25e991771611d4acab431f92b518}{getWidth}}();}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{class_screen_a4edca55b221da0326dc7de0ec0f4dc91}{getHeight}}();}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_screen_ab7a0796298adc6b6ffad439da2215b85}{bind}}(\textcolor{keywordtype}{bool}\ clear\ =\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_screen_a0581496c4bb1cd53273872bc0cbb0566}{unbind}}();}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_screen_a5af6bd5e04104a0220cea4f113f65a29}{addEffect}}(Graphics::PostProcessing::PPostProcessingEffect\ effect);}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_screen_a752d56573abe000eb842c99a9c068275}{clearEffects}}();}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ PTexture\ \doxymbox{\hyperlink{class_screen_a54581eb4483a0fbf4433855124c6a154}{getDisplayTexture}}();}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ PFrameBuffer\ \doxymbox{\hyperlink{class_screen_affe30f540e47e10ce7b4a6303c2a0ed6}{getDisplayBuffer}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ PFrameBuffer\ \doxymbox{\hyperlink{class_screen_afeb8a4072024504886db1f2dcc33504a}{getDrawBuffer}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ PCamera\ \doxymbox{\hyperlink{class_screen_a744f676a8bb30991ae2b4fb3eabf8952}{getCamera}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ camera;\ \}}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setCamera(PCamera\ cam,\ \textcolor{keywordtype}{bool}\ makeCurrent\ =\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ makeCameraCurrent();}
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ PEnvironment\ getEnvironment()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ environment;\ \}}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setEnvironment(PEnvironment\ env,\ \textcolor{keywordtype}{bool}\ makeCurrent\ =\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ makeEnvironmentCurrent();}
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ MakeCameraCurrent(PCamera\ camera);}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ PCamera\ GetCurrentCamera();}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ MakeEnvironmentCurrent(PEnvironment\ env);}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ PEnvironment\ GetCurrentEnvironment();}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setClearColor(Color\ color)\ \{\ this-\/>clearColor\ =\ color;\}\ }
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ Color\&\ getClearColor()\ \{\ \textcolor{keywordflow}{return}\ this-\/>clearColor;\ \}}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ clear(Color\ c\ =\ Color::BLACK);}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ isBound()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ bound;\ \}}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ getLastPostProcessMs()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ lastPostProcessMs.load(std::memory\_order\_relaxed);\ \}}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ getLastPostProcessEffectCount()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ lastPostProcessEffectCount.load(std::memory\_order\_relaxed);\ \}}
+\DoxyCodeLine{00171\ \};}
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00173\ \textcolor{keyword}{typedef}\ std::shared\_ptr<Screen>\ PScreen;}
+\DoxyCodeLine{00174\ }
+\DoxyCodeLine{00175\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//SCREEN\_H}}
+
+\end{DoxyCode}

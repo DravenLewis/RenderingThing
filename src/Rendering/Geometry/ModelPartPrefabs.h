@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Geometry/ModelPartPrefabs.h
+ * @brief Declarations for ModelPartPrefabs.
+ */
+
 
 #ifndef MODELPART_PREFABS_H
 #define MODELPART_PREFABS_H
@@ -12,7 +17,16 @@
 #include "Rendering/Materials/MaterialDefaults.h"
 #include "Foundation/Math/Math3D.h"
 
+/// @brief Holds data for ModelPartPrefabs.
 struct ModelPartPrefabs{
+    /**
+     * @brief Creates plane.
+     * @param width Dimension value.
+     * @param height Dimension value.
+     * @param mat Value for mat.
+     * @param normal Value for normal.
+     * @return Pointer to the resulting object.
+     */
     static std::shared_ptr<ModelPart> MakePlane(float width, float height, PMaterial mat = MaterialDefaults::ColorMaterial::Create(Color::RED), Math3D::Vec3 normal = Math3D::Vec3(0,1,0)){
         std::shared_ptr<ModelPart> part;
         auto factory = ModelPartFactory::Create(mat);
@@ -29,6 +43,14 @@ struct ModelPartPrefabs{
         return part;
     }
 
+    /**
+     * @brief Creates box.
+     * @param width Dimension value.
+     * @param height Dimension value.
+     * @param depth Value for depth.
+     * @param mat Value for mat.
+     * @return Pointer to the resulting object.
+     */
     static std::shared_ptr<ModelPart> MakeBox(float width, float height, float depth,PMaterial mat = MaterialDefaults::ColorMaterial::Create(Color::RED)){
         auto factory = ModelPartFactory::Create(mat);
         int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23;
@@ -83,6 +105,14 @@ struct ModelPartPrefabs{
         return part;
     }
 
+    /**
+     * @brief Creates circle plane.
+     * @param radius Value for radius.
+     * @param segments Value for segments.
+     * @param material Value for material.
+     * @param normal Value for normal.
+     * @return Pointer to the resulting object.
+     */
     static std::shared_ptr<ModelPart> MakeCirclePlane(
         float radius, 
         int segments = 32, 
@@ -122,6 +152,14 @@ struct ModelPartPrefabs{
         return part;
     }
 
+    /**
+     * @brief Creates sphere.
+     * @param radius Value for radius.
+     * @param slices Value for slices.
+     * @param stacks Value for stacks.
+     * @param material Value for material.
+     * @return Pointer to the resulting object.
+     */
     static std::shared_ptr<ModelPart> MakeSphere(
         float radius = 1.0f,
         int slices = 32,

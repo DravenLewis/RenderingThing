@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__sky_box_8h" xml:lang="en-US">
+<title>src/Rendering/Textures/SkyBox.h File Reference</title>
+<indexterm><primary>src/Rendering/Textures/SkyBox.h</primary></indexterm>
+<para>
+
+<para>Declarations for <link linkend="_class_sky_box">SkyBox</link>. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &quot;Rendering/Geometry/Model.h&quot;<?linebreak?>#include &quot;Rendering/Materials/SkyboxMaterial.h&quot;<?linebreak?>#include &quot;Rendering/Textures/CubeMap.h&quot;<?linebreak?>#include &quot;Assets/Core/Asset.h&quot;<?linebreak?>#include &quot;Scene/Camera.h&quot;<?linebreak?>#include &lt;memory&gt;<?linebreak?></programlisting><simplesect>
+    <title>Classes    </title>
+        <itemizedlist>
+            <listitem><para>struct <link linkend="_struct_sky_box6_face">SkyBox6Face</link></para>
+
+<para>Holds data for <link linkend="_struct_sky_box6_face">SkyBox6Face</link>. </para>
+</listitem>
+            <listitem><para>class <link linkend="_class_sky_box">SkyBox</link></para>
+
+<para>Represents the <link linkend="_class_sky_box">SkyBox</link> type. </para>
+</listitem>
+            <listitem><para>class <link linkend="_class_sky_box_loader">SkyBoxLoader</link></para>
+
+<para>Represents the <link linkend="_class_sky_box_loader">SkyBoxLoader</link> type. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Typedefs    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="__sky_box_8h_1afd8a7601588a5245102e77b8060dc790"/>typedef std::shared_ptr&lt; <link linkend="_class_sky_box">SkyBox</link> &gt; <emphasis role="strong">PSkyBox</emphasis></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Declarations for <link linkend="_class_sky_box">SkyBox</link>. </para>
+</section>
+</section>

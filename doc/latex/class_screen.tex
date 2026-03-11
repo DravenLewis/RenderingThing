@@ -1,0 +1,301 @@
+\doxysection{Screen Class Reference}
+\hypertarget{class_screen}{}\label{class_screen}\index{Screen@{Screen}}
+
+
+Represents the \doxylink{class_screen}{Screen} type.  
+
+
+
+
+{\ttfamily \+\#include $<$Screen.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{class_screen_a0d2f55f84802fb3d0348200cea71e59c}{Screen}} (int width, int height)
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_screen}{Screen} instance. \end{DoxyCompactList}\item 
+\Hypertarget{class_screen_a4243bc17596af96415b09ac48205676d}\label{class_screen_a4243bc17596af96415b09ac48205676d} 
+{\bfseries \texorpdfstring{$\sim$}{\string~}\+Screen} ()
+\begin{DoxyCompactList}\small\item\em Destroys this \doxylink{class_screen}{Screen} instance. \end{DoxyCompactList}\item 
+\Hypertarget{class_screen_ab9f2169f953e728fa2614e0026b3b4a7}\label{class_screen_ab9f2169f953e728fa2614e0026b3b4a7} 
+void {\bfseries process\+Render\+Pipeline} ()
+\begin{DoxyCompactList}\small\item\em Processes the post-\/processing pipeline. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_screen_a958f0738b6aa94ae8aeaeffb78753ddf}{draw\+To\+Window}} (Render\+Window \texorpdfstring{$\ast$}{*}window, bool clear\+Window=true)
+\begin{DoxyCompactList}\small\item\em Draws to window. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_screen_a0d0154807bb2d93c6896d9511378d2e1}{draw\+To\+View}} (PView view, bool clear\+Window=true, float x=-\/1, float y=-\/1, float width=-\/1, float height=-\/1)
+\begin{DoxyCompactList}\small\item\em Draws to view. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_screen_a5ba54872e8f2ab1fb14a24875db66866}{resize}} (int w, int h)
+\begin{DoxyCompactList}\small\item\em Resizes internal resources. \end{DoxyCompactList}\item 
+int \doxymbox{\hyperlink{class_screen_ab71b25e991771611d4acab431f92b518}{get\+Width}} ()
+\begin{DoxyCompactList}\small\item\em Returns the width. \end{DoxyCompactList}\item 
+int \doxymbox{\hyperlink{class_screen_a4edca55b221da0326dc7de0ec0f4dc91}{get\+Height}} ()
+\begin{DoxyCompactList}\small\item\em Returns the height. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_screen_ab7a0796298adc6b6ffad439da2215b85}{bind}} (bool clear=true)
+\begin{DoxyCompactList}\small\item\em Binds this resource. \end{DoxyCompactList}\item 
+\Hypertarget{class_screen_a0581496c4bb1cd53273872bc0cbb0566}\label{class_screen_a0581496c4bb1cd53273872bc0cbb0566} 
+void {\bfseries unbind} ()
+\begin{DoxyCompactList}\small\item\em Unbinds this resource. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_screen_a5af6bd5e04104a0220cea4f113f65a29}{add\+Effect}} (Graphics::\+\+Post\+Processing::\+\+PPost\+Processing\+Effect effect)
+\begin{DoxyCompactList}\small\item\em Adds effect. \end{DoxyCompactList}\item 
+\Hypertarget{class_screen_a752d56573abe000eb842c99a9c068275}\label{class_screen_a752d56573abe000eb842c99a9c068275} 
+void {\bfseries clear\+Effects} ()
+\begin{DoxyCompactList}\small\item\em Clears effects. \end{DoxyCompactList}\item 
+PTexture \doxymbox{\hyperlink{class_screen_a54581eb4483a0fbf4433855124c6a154}{get\+Display\+Texture}} ()
+\begin{DoxyCompactList}\small\item\em Returns the display texture. \end{DoxyCompactList}\item 
+PFrame\+Buffer \doxymbox{\hyperlink{class_screen_affe30f540e47e10ce7b4a6303c2a0ed6}{get\+Display\+Buffer}} () const
+\begin{DoxyCompactList}\small\item\em Returns the display buffer. \end{DoxyCompactList}\item 
+PFrame\+Buffer \doxymbox{\hyperlink{class_screen_afeb8a4072024504886db1f2dcc33504a}{get\+Draw\+Buffer}} () const
+\begin{DoxyCompactList}\small\item\em Returns the draw buffer. \end{DoxyCompactList}\item 
+PCamera \doxymbox{\hyperlink{class_screen_a744f676a8bb30991ae2b4fb3eabf8952}{get\+Camera}} () const
+\begin{DoxyCompactList}\small\item\em Returns the camera. \end{DoxyCompactList}\item 
+\Hypertarget{class_screen_aa57f801957701f8867371a870c4e2304}\label{class_screen_aa57f801957701f8867371a870c4e2304} 
+void {\bfseries set\+Camera} (PCamera cam, bool make\+Current=true)
+\item 
+\Hypertarget{class_screen_ad7a7f89561b4eda6ec40873951263cab}\label{class_screen_ad7a7f89561b4eda6ec40873951263cab} 
+void {\bfseries make\+Camera\+Current} ()
+\item 
+\Hypertarget{class_screen_a9faf64f4369655993e87d6a3cee7d00d}\label{class_screen_a9faf64f4369655993e87d6a3cee7d00d} 
+PEnvironment {\bfseries get\+Environment} () const
+\item 
+\Hypertarget{class_screen_abbefa1e654be150d9999af9ef39e0726}\label{class_screen_abbefa1e654be150d9999af9ef39e0726} 
+void {\bfseries set\+Environment} (PEnvironment env, bool make\+Current=true)
+\item 
+\Hypertarget{class_screen_adedfb6caec500ef9dce92e3734a2e7c2}\label{class_screen_adedfb6caec500ef9dce92e3734a2e7c2} 
+void {\bfseries make\+Environment\+Current} ()
+\item 
+\Hypertarget{class_screen_a8314f2f645a71d5f12dcbfeb52445240}\label{class_screen_a8314f2f645a71d5f12dcbfeb52445240} 
+void {\bfseries set\+Clear\+Color} (Color color)
+\item 
+\Hypertarget{class_screen_a097f90299492356d83b9f5b6b8580302}\label{class_screen_a097f90299492356d83b9f5b6b8580302} 
+Color \& {\bfseries get\+Clear\+Color} ()
+\item 
+\Hypertarget{class_screen_a88d41de8a456814a95a75c0f402354ff}\label{class_screen_a88d41de8a456814a95a75c0f402354ff} 
+void {\bfseries clear} (Color c=Color::\+\+BLACK)
+\item 
+\Hypertarget{class_screen_a1537033d361b07835ebdfe2fabe68d33}\label{class_screen_a1537033d361b07835ebdfe2fabe68d33} 
+bool {\bfseries is\+Bound} () const
+\item 
+\Hypertarget{class_screen_a7b09f5f97f11499b0e9a6851a66c38a7}\label{class_screen_a7b09f5f97f11499b0e9a6851a66c38a7} 
+float {\bfseries get\+Last\+Post\+Process\+Ms} () const
+\item 
+\Hypertarget{class_screen_a094fce9f7d229c82aa6590e1597fb008}\label{class_screen_a094fce9f7d229c82aa6590e1597fb008} 
+int {\bfseries get\+Last\+Post\+Process\+Effect\+Count} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_screen_a95dd5de25c923cb0c5a92bea6d455d1e}\label{class_screen_a95dd5de25c923cb0c5a92bea6d455d1e} 
+static void {\bfseries Make\+Camera\+Current} (PCamera camera)
+\item 
+\Hypertarget{class_screen_a07725080c44bc4d909a0bd36db04b728}\label{class_screen_a07725080c44bc4d909a0bd36db04b728} 
+static PCamera {\bfseries Get\+Current\+Camera} ()
+\item 
+\Hypertarget{class_screen_a60335c74b0e51c63df7821459706c06b}\label{class_screen_a60335c74b0e51c63df7821459706c06b} 
+static void {\bfseries Make\+Environment\+Current} (PEnvironment env)
+\item 
+\Hypertarget{class_screen_ac9ef56948fa161cc570d3f832598fe25}\label{class_screen_ac9ef56948fa161cc570d3f832598fe25} 
+static PEnvironment {\bfseries Get\+Current\+Environment} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the \doxylink{class_screen}{Screen} type. 
+
+\label{doc-constructors}
+\Hypertarget{class_screen_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_screen_a0d2f55f84802fb3d0348200cea71e59c}\index{Screen@{Screen}!Screen@{Screen}}
+\index{Screen@{Screen}!Screen@{Screen}}
+\doxysubsubsection{\texorpdfstring{Screen()}{Screen()}}
+{\footnotesize\ttfamily \label{class_screen_a0d2f55f84802fb3d0348200cea71e59c} 
+Screen::\+\+Screen (\begin{DoxyParamCaption}\item[{int}]{width}{, }\item[{int}]{height}{}\end{DoxyParamCaption})}
+
+
+
+Constructs a new \doxylink{class_screen}{Screen} instance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em width} & Dimension value. \\
+\hline
+{\em height} & Dimension value. \\
+\hline
+\end{DoxyParams}
+
+
+\label{doc-func-members}
+\Hypertarget{class_screen_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_screen_a5af6bd5e04104a0220cea4f113f65a29}\index{Screen@{Screen}!addEffect@{addEffect}}
+\index{addEffect@{addEffect}!Screen@{Screen}}
+\doxysubsubsection{\texorpdfstring{addEffect()}{addEffect()}}
+{\footnotesize\ttfamily \label{class_screen_a5af6bd5e04104a0220cea4f113f65a29} 
+void Screen::\+add\+Effect (\begin{DoxyParamCaption}\item[{Graphics::\+\+Post\+Processing::\+\+PPost\+Processing\+Effect}]{effect}{}\end{DoxyParamCaption})}
+
+
+
+Adds effect. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em effect} & Value for effect. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_screen_ab7a0796298adc6b6ffad439da2215b85}\index{Screen@{Screen}!bind@{bind}}
+\index{bind@{bind}!Screen@{Screen}}
+\doxysubsubsection{\texorpdfstring{bind()}{bind()}}
+{\footnotesize\ttfamily \label{class_screen_ab7a0796298adc6b6ffad439da2215b85} 
+void Screen::\+bind (\begin{DoxyParamCaption}\item[{bool}]{clear}{ = {\ttfamily true}}\end{DoxyParamCaption})}
+
+
+
+Binds this resource. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em clear} & Flag controlling clear. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_screen_a0d0154807bb2d93c6896d9511378d2e1}\index{Screen@{Screen}!drawToView@{drawToView}}
+\index{drawToView@{drawToView}!Screen@{Screen}}
+\doxysubsubsection{\texorpdfstring{drawToView()}{drawToView()}}
+{\footnotesize\ttfamily \label{class_screen_a0d0154807bb2d93c6896d9511378d2e1} 
+void Screen::\+draw\+To\+View (\begin{DoxyParamCaption}\item[{PView}]{view}{, }\item[{bool}]{clear\+Window}{ = {\ttfamily true}, }\item[{float}]{x}{ = {\ttfamily -\/1}, }\item[{float}]{y}{ = {\ttfamily -\/1}, }\item[{float}]{width}{ = {\ttfamily -\/1}, }\item[{float}]{height}{ = {\ttfamily -\/1}}\end{DoxyParamCaption})}
+
+
+
+Draws to view. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em view} & Value for view. \\
+\hline
+{\em clear\+Window} & Flag controlling clear window. \\
+\hline
+{\em x} & Spatial value used by this operation. \\
+\hline
+{\em y} & Spatial value used by this operation. \\
+\hline
+{\em width} & Dimension value. \\
+\hline
+{\em height} & Dimension value. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_screen_a958f0738b6aa94ae8aeaeffb78753ddf}\index{Screen@{Screen}!drawToWindow@{drawToWindow}}
+\index{drawToWindow@{drawToWindow}!Screen@{Screen}}
+\doxysubsubsection{\texorpdfstring{drawToWindow()}{drawToWindow()}}
+{\footnotesize\ttfamily \label{class_screen_a958f0738b6aa94ae8aeaeffb78753ddf} 
+void Screen::\+draw\+To\+Window (\begin{DoxyParamCaption}\item[{Render\+Window \texorpdfstring{$\ast$}{*}}]{window}{, }\item[{bool}]{clear\+Window}{ = {\ttfamily true}}\end{DoxyParamCaption})}
+
+
+
+Draws to window. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & Value for window. \\
+\hline
+{\em clear\+Window} & Flag controlling clear window. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_screen_a744f676a8bb30991ae2b4fb3eabf8952}\index{Screen@{Screen}!getCamera@{getCamera}}
+\index{getCamera@{getCamera}!Screen@{Screen}}
+\doxysubsubsection{\texorpdfstring{getCamera()}{getCamera()}}
+{\footnotesize\ttfamily \label{class_screen_a744f676a8bb30991ae2b4fb3eabf8952} 
+PCamera Screen::\+get\+Camera (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the camera. 
+
+\begin{DoxyReturn}{Returns}
+Result of this operation. 
+\end{DoxyReturn}
+\Hypertarget{class_screen_affe30f540e47e10ce7b4a6303c2a0ed6}\index{Screen@{Screen}!getDisplayBuffer@{getDisplayBuffer}}
+\index{getDisplayBuffer@{getDisplayBuffer}!Screen@{Screen}}
+\doxysubsubsection{\texorpdfstring{getDisplayBuffer()}{getDisplayBuffer()}}
+{\footnotesize\ttfamily \label{class_screen_affe30f540e47e10ce7b4a6303c2a0ed6} 
+PFrame\+Buffer Screen::\+get\+Display\+Buffer (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+
+
+Returns the display buffer. 
+
+\begin{DoxyReturn}{Returns}
+Result of this operation. 
+\end{DoxyReturn}
+\Hypertarget{class_screen_a54581eb4483a0fbf4433855124c6a154}\index{Screen@{Screen}!getDisplayTexture@{getDisplayTexture}}
+\index{getDisplayTexture@{getDisplayTexture}!Screen@{Screen}}
+\doxysubsubsection{\texorpdfstring{getDisplayTexture()}{getDisplayTexture()}}
+{\footnotesize\ttfamily \label{class_screen_a54581eb4483a0fbf4433855124c6a154} 
+PTexture Screen::\+get\+Display\+Texture (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Returns the display texture. 
+
+\begin{DoxyReturn}{Returns}
+Result of this operation. 
+\end{DoxyReturn}
+\Hypertarget{class_screen_afeb8a4072024504886db1f2dcc33504a}\index{Screen@{Screen}!getDrawBuffer@{getDrawBuffer}}
+\index{getDrawBuffer@{getDrawBuffer}!Screen@{Screen}}
+\doxysubsubsection{\texorpdfstring{getDrawBuffer()}{getDrawBuffer()}}
+{\footnotesize\ttfamily \label{class_screen_afeb8a4072024504886db1f2dcc33504a} 
+PFrame\+Buffer Screen::\+get\+Draw\+Buffer (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+
+
+Returns the draw buffer. 
+
+\begin{DoxyReturn}{Returns}
+Result of this operation. 
+\end{DoxyReturn}
+\Hypertarget{class_screen_a4edca55b221da0326dc7de0ec0f4dc91}\index{Screen@{Screen}!getHeight@{getHeight}}
+\index{getHeight@{getHeight}!Screen@{Screen}}
+\doxysubsubsection{\texorpdfstring{getHeight()}{getHeight()}}
+{\footnotesize\ttfamily \label{class_screen_a4edca55b221da0326dc7de0ec0f4dc91} 
+int Screen::\+get\+Height (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Returns the height. 
+
+\begin{DoxyReturn}{Returns}
+Computed numeric result. 
+\end{DoxyReturn}
+\Hypertarget{class_screen_ab71b25e991771611d4acab431f92b518}\index{Screen@{Screen}!getWidth@{getWidth}}
+\index{getWidth@{getWidth}!Screen@{Screen}}
+\doxysubsubsection{\texorpdfstring{getWidth()}{getWidth()}}
+{\footnotesize\ttfamily \label{class_screen_ab71b25e991771611d4acab431f92b518} 
+int Screen::\+get\+Width (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Returns the width. 
+
+\begin{DoxyReturn}{Returns}
+Computed numeric result. 
+\end{DoxyReturn}
+\Hypertarget{class_screen_a5ba54872e8f2ab1fb14a24875db66866}\index{Screen@{Screen}!resize@{resize}}
+\index{resize@{resize}!Screen@{Screen}}
+\doxysubsubsection{\texorpdfstring{resize()}{resize()}}
+{\footnotesize\ttfamily \label{class_screen_a5ba54872e8f2ab1fb14a24875db66866} 
+void Screen::\+resize (\begin{DoxyParamCaption}\item[{int}]{w}{, }\item[{int}]{h}{}\end{DoxyParamCaption})}
+
+
+
+Resizes internal resources. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em w} & Value for w. \\
+\hline
+{\em h} & Value for h. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Core/\+\doxymbox{\hyperlink{_screen_8h}{Screen.\+h}}\item 
+src/\+\+Rendering/\+\+Core/\+\doxymbox{\hyperlink{_screen_8cpp}{Screen.\+cpp}}\end{DoxyCompactItemize}

@@ -1,0 +1,213 @@
+\doxysection{Mesh.\+h}
+\hypertarget{_mesh_8h_source}{}\label{_mesh_8h_source}\index{src/Rendering/Geometry/Mesh.h@{src/Rendering/Geometry/Mesh.h}}
+\doxymbox{\hyperlink{_mesh_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ MESH\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ MESH\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <glad/glad.h>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <SDL3/SDL.h>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <SDL3/SDL\_opengl.h>}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ <algorithm>}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ "{}Foundation/Math/Math3D.h"{}}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_drawable_8h}{Rendering/Geometry/Drawable.h}}"{}}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{keyword}{typedef}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ VertexBufferObject,\ VertexArrayObject,\ ElementBufferObject;}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_vertex}{Vertex}}\{}
+\DoxyCodeLine{00024\ \ \ \ \ Math3D::Vec3\ Position;}
+\DoxyCodeLine{00025\ \ \ \ \ Math3D::Vec3\ Normal;}
+\DoxyCodeLine{00026\ \ \ \ \ Math3D::Vec2\ TexCoords;}
+\DoxyCodeLine{00027\ \ \ \ \ Math3D::Vec4\ Color;}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ VERTEX\_DATA\_WIDTH\ =\ 12;}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00036\ \ \ \ \ \doxymbox{\hyperlink{struct_vertex}{Vertex}}\&\ \doxymbox{\hyperlink{struct_vertex_a7828f036e4c200a53d499102997c2a30}{Pos}}(\textcolor{keyword}{const}\ Math3D::Vec3\&\ pos)\{}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ this-\/>Position\ =\ pos;}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00039\ \ \ \ \ \}}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00048\ \ \ \ \ \doxymbox{\hyperlink{struct_vertex}{Vertex}}\&\ \doxymbox{\hyperlink{struct_vertex_af1fe2694015b32b90d334bf46820bc04}{Pos}}(\textcolor{keywordtype}{float}\ x\ =\ 0,\ \textcolor{keywordtype}{float}\ y\ =\ 0,\ \textcolor{keywordtype}{float}\ z\ =\ 0)\{}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{struct_vertex_a7828f036e4c200a53d499102997c2a30}{Pos}}(Math3D::Vec3(x,y,z));}
+\DoxyCodeLine{00050\ \ \ \ \ \}}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00057\ \ \ \ \ \doxymbox{\hyperlink{struct_vertex}{Vertex}}\&\ \doxymbox{\hyperlink{struct_vertex_a85ad46ae0b05f963524684314d19fedd}{Norm}}(\textcolor{keyword}{const}\ Math3D::Vec3\&\ nml)\{}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ this-\/>Normal\ =\ nml;}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00060\ \ \ \ \ \}}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00069\ \ \ \ \ \doxymbox{\hyperlink{struct_vertex}{Vertex}}\&\ \doxymbox{\hyperlink{struct_vertex_a1380a6d23ae35eb199ae3f41628ec47d}{Norm}}(\textcolor{keywordtype}{float}\ x\ =\ 0,\ \textcolor{keywordtype}{float}\ y\ =\ 0,\ \textcolor{keywordtype}{float}\ z\ =\ 0)\{}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{struct_vertex_a85ad46ae0b05f963524684314d19fedd}{Norm}}(Math3D::Vec3(x,y,z));}
+\DoxyCodeLine{00071\ \ \ \ \ \}}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00078\ \ \ \ \ \doxymbox{\hyperlink{struct_vertex}{Vertex}}\&\ \doxymbox{\hyperlink{struct_vertex_a7ffc6ba8ee72602e3acbf54a164a031b}{UV}}(\textcolor{keyword}{const}\ Math3D::Vec2\&\ pos)\{}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ this-\/>TexCoords\ =\ pos;}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00081\ \ \ \ \ \}}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00089\ \ \ \ \ \doxymbox{\hyperlink{struct_vertex}{Vertex}}\&\ \doxymbox{\hyperlink{struct_vertex_aa1fb5d88ca585d9d07b5838dff9d0aff}{UV}}(\textcolor{keywordtype}{float}\ u\ =\ 0,\ \textcolor{keywordtype}{float}\ v\ =\ 0)\{}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{struct_vertex_a7ffc6ba8ee72602e3acbf54a164a031b}{UV}}(Math3D::Vec2(u,v));}
+\DoxyCodeLine{00091\ \ \ \ \ \}}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00098\ \ \ \ \ \doxymbox{\hyperlink{struct_vertex}{Vertex}}\&\ \doxymbox{\hyperlink{struct_vertex_a5ede97c061c4623a1472f5d11ef81726}{Col}}(\textcolor{keyword}{const}\ Math3D::Vec4\&\ col)\{}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ this-\/>Color\ =\ col;}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00101\ \ \ \ \ \}}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00111\ \ \ \ \ \doxymbox{\hyperlink{struct_vertex}{Vertex}}\&\ \doxymbox{\hyperlink{struct_vertex_a665c30113d1eb71a87f16e499c3d28a9}{Col}}(\textcolor{keywordtype}{float}\ r\ =\ 0,\ \textcolor{keywordtype}{float}\ g\ =\ 0,\ \textcolor{keywordtype}{float}\ b\ =\ 0,\ \textcolor{keywordtype}{float}\ a\ =\ 1)\{}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{struct_vertex_a5ede97c061c4623a1472f5d11ef81726}{Col}}(Math3D::Vec4(r,g,b,a));}
+\DoxyCodeLine{00113\ \ \ \ \ \}}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ }
+\DoxyCodeLine{00124\ \ \ \ \ \textcolor{keyword}{static}\ \doxymbox{\hyperlink{struct_vertex}{Vertex}}\ \doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Build}}(Math3D::Vec3\ pos\ =\ Math3D::Vec3::zero(),Math3D::Vec4\ color\ =\ Math3D::Vec4(1,1,1,1),\ Math3D::Vec3\ normal\ =\ Math3D::Vec3::zero(),\ Math3D::Vec2\ texcords\ =\ Math3D::Vec2(0,0))\{}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_vertex}{Vertex}}\ vtx;}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ vtx.Position\ =\ pos;}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ vtx.Normal\ =\ normal;}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ vtx.Color\ =\ color;}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ vtx.TexCoords\ =\ texcords;}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \textcolor{comment}{//Math3D::Random\ rand;}}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \textcolor{comment}{//vtx.id\ =\ (rand.next<uint16\_t>(INT16\_MAX));}}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ vtx;}
+\DoxyCodeLine{00133\ \ \ \ \ \}}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00141\ \ \ \ \ \textcolor{keyword}{static}\ \doxymbox{\hyperlink{struct_vertex}{Vertex}}\ \doxymbox{\hyperlink{struct_vertex_a392c050c56cbd414b0e541285ba1222a}{Compose}}(std::vector<float>\&\ floats,\ \textcolor{keywordtype}{int}\ dataSize\ =\ VERTEX\_DATA\_WIDTH\ \textcolor{comment}{/*\ XYZRGBANNUV\ */})\{}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ std::vector<float>\ first12;}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ floats.size();\ i++)\{}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(i\ <\ dataSize)\{}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ first12.push\_back(floats[i]);}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \ \ \ \ \}\textcolor{keywordflow}{else}\{}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_vertex}{Vertex}}\ vtx;}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(first12.size()\ >=\ 3)\{}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \ \ \ \ vtx.Position.x\ =\ first12[0];}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \ \ \ \ vtx.Position.y\ =\ first12[1];}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \ \ \ \ vtx.Position.z\ =\ first12[2];}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00158\ }
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(first12.size()\ >=\ 7)\{}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \ \ \ \ vtx.Color.x\ =\ first12[3];}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \ \ \ \ vtx.Color.y\ =\ first12[4];}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \ \ \ \ vtx.Color.z\ =\ first12[5];}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \ \ \ \ vtx.Color.w\ =\ first12[6];}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(first12.size()\ >=\ 10)\{}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \ \ \ \ vtx.Normal.x\ =\ first12[7];}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \ \ \ \ vtx.Normal.y\ =\ first12[8];}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \ \ \ \ vtx.Normal.z\ =\ first12[9];}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00171\ }
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(first12.size()\ >=\ 12)\{}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \ \ \ \ vtx.TexCoords.x\ =\ first12[10];}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \ \ \ \ vtx.TexCoords.y\ =\ first12[11];}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00176\ }
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ \textcolor{comment}{//Math3D::Random\ rand;}}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \textcolor{comment}{//vtx.id\ =\ (rand.next<uint16\_t>(INT16\_MAX));}}
+\DoxyCodeLine{00179\ }
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ vtx;}
+\DoxyCodeLine{00181\ \ \ \ \ \}}
+\DoxyCodeLine{00182\ }
+\DoxyCodeLine{00188\ \ \ \ \ \textcolor{keyword}{static}\ std::vector<float>\ \doxymbox{\hyperlink{struct_vertex_a32abbab0c0fd0e6cd90a030ab0812776}{Decompose}}(\doxymbox{\hyperlink{struct_vertex}{Vertex}}\ \&v)\{}
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ std::vector<float>\ vertexVector;}
+\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ XYZRGBANNUV\ */}}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ vertexVector.push\_back(v.Position.x);}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ vertexVector.push\_back(v.Position.y);}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ vertexVector.push\_back(v.Position.z);}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ vertexVector.push\_back(v.Color.x);}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ vertexVector.push\_back(v.Color.y);}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ vertexVector.push\_back(v.Color.z);}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ vertexVector.push\_back(v.Color.w);}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ vertexVector.push\_back(v.Normal.x);}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ vertexVector.push\_back(v.Normal.y);}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ vertexVector.push\_back(v.Normal.z);}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ vertexVector.push\_back(v.TexCoords.x);}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ vertexVector.push\_back(v.TexCoords.y);}
+\DoxyCodeLine{00203\ }
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ vertexVector;}
+\DoxyCodeLine{00205\ \ \ \ \ \}}
+\DoxyCodeLine{00206\ }
+\DoxyCodeLine{00207\ \ \ \ \ \textcolor{keywordtype}{bool}\ operator==(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{struct_vertex}{Vertex}}\&\ vtx)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \ \ \ \ Math3D::AreClose(Position.x,\ vtx.Position.x)\ \&\&}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \ \ \ \ Math3D::AreClose(Position.y,\ vtx.Position.y)\ \&\&}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \ \ \ \ Math3D::AreClose(Position.z,\ vtx.Position.z)\ \&\&}
+\DoxyCodeLine{00212\ }
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \ \ \ \ Math3D::AreClose(Normal.x,\ vtx.Normal.x)\ \&\&}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \ \ \ \ Math3D::AreClose(Normal.y,\ vtx.Normal.y)\ \&\&}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ \ \ \ \ Math3D::AreClose(Normal.z,\ vtx.Normal.z)\ \&\&}
+\DoxyCodeLine{00216\ }
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ \ \ \ \ Math3D::AreClose(TexCoords.x,\ vtx.TexCoords.x)\ \&\&}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ \ \ \ \ Math3D::AreClose(TexCoords.y,\ vtx.TexCoords.y)\ \ \&\&}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ \ \ \ \ Math3D::AreClose(Color.x,\ vtx.Color.x)\ \&\&}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \ \ \ \ \ \ Math3D::AreClose(Color.y,\ vtx.Color.y)\ \ \&\&}
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ \ \ \ \ Math3D::AreClose(Color.z,\ vtx.Color.z)\ \ \&\&}
+\DoxyCodeLine{00222\ \ \ \ \ \ \ \ \ \ \ \ \ Math3D::AreClose(Color.w,\ vtx.Color.w);}
+\DoxyCodeLine{00223\ \ \ \ \ \}}
+\DoxyCodeLine{00224\ }
+\DoxyCodeLine{00225\ \ \ \ \ \textcolor{keywordtype}{bool}\ operator!=(\textcolor{keyword}{const}\ Vertex\&\ vtx)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ !(*\textcolor{keyword}{this}\ ==\ vtx);}
+\DoxyCodeLine{00227\ \ \ \ \ \}}
+\DoxyCodeLine{00228\ \};}
+\DoxyCodeLine{00229\ }
+\DoxyCodeLine{00231\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_mesh_a2af137f1571af89172b9c102302c416b}{Mesh}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{struct_i_drawable}{IDrawable}}\{}
+\DoxyCodeLine{00232\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00233\ \ \ \ \ \ \ \ \ std::vector<Vertex>\ verticies;}
+\DoxyCodeLine{00234\ \ \ \ \ \ \ \ \ std::vector<uint32\_t>\ faces;}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \ \ VertexBufferObject\ VBO\ =\ 0;}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ VertexArrayObject\ VAO\ =\ 0;}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ ElementBufferObject\ EBO\ =\ 0;}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ Math3D::Vec3\ localBoundsMin\ =\ Math3D::Vec3(0.0f,\ 0.0f,\ 0.0f);}
+\DoxyCodeLine{00239\ \ \ \ \ \ \ \ \ Math3D::Vec3\ localBoundsMax\ =\ Math3D::Vec3(0.0f,\ 0.0f,\ 0.0f);}
+\DoxyCodeLine{00240\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ hasLocalBounds\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00241\ }
+\DoxyCodeLine{00246\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \_genBuffers(GLenum\ usage\ =\ GL\_STATIC\_DRAW);}
+\DoxyCodeLine{00251\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \_areBuffersBound();}
+\DoxyCodeLine{00255\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ computeLocalBounds();}
+\DoxyCodeLine{00256\ }
+\DoxyCodeLine{00257\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00261\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_mesh_a2af137f1571af89172b9c102302c416b}{Mesh}}()\{\};}
+\DoxyCodeLine{00262\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_mesh_a2af137f1571af89172b9c102302c416b}{Mesh}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{class_mesh}{Mesh}}\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00263\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_mesh_a2af137f1571af89172b9c102302c416b}{Mesh}}(\doxymbox{\hyperlink{class_mesh}{Mesh}}\&\&\ other)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00264\ }
+\DoxyCodeLine{00265\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ upload(\textcolor{keyword}{const}\ std::vector<Vertex>\&\ verts,\ \textcolor{keyword}{const}\ std::vector<uint32\_t>\&\ faces,\ GLenum\ usage\ =\ GL\_STATIC\_DRAW);}
+\DoxyCodeLine{00266\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ upload(std::vector<Vertex>\&\&\ verts,\ std::vector<uint32\_t>\&\&\ faces,\ GLenum\ usage\ =\ GL\_STATIC\_DRAW);}
+\DoxyCodeLine{00267\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ reload();}
+\DoxyCodeLine{00268\ }
+\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ bind();}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_mesh_abf58756040d4eb2bfe17766af91e3bc6}{draw}}(}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ Math3D::Mat4\&\ parent\ =\ Math3D::Mat4(),}
+\DoxyCodeLine{00272\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ Math3D::Mat4\&\ view\ =\ Math3D::Mat4(),}
+\DoxyCodeLine{00273\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ Math3D::Mat4\&\ projection\ =\ Math3D::Mat4()}
+\DoxyCodeLine{00274\ \ \ \ \ \ \ \ \ )\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00275\ }
+\DoxyCodeLine{00276\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ dispose();}
+\DoxyCodeLine{00277\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00278\ \ \ \ \ \ \ \ \ std::vector<Math3D::Vec3>\ getVerticiesVectorArray();}
+\DoxyCodeLine{00279\ \ \ \ \ \ \ \ \ std::vector<float>\ getVerticiesAsRawFloatArray();}
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ std::vector<float>\ getRawVertexData();}
+\DoxyCodeLine{00281\ }
+\DoxyCodeLine{00282\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setLocationAttributeOffset(\textcolor{keywordtype}{int}\ attribute,\ \textcolor{keywordtype}{int}\ dataSize,\ \textcolor{keywordtype}{int}\ dataOffset);}
+\DoxyCodeLine{00283\ }
+\DoxyCodeLine{00284\ \ \ \ \ \ \ \ \ std::vector<Vertex>\&\ getVertecies()\ \{\textcolor{keywordflow}{return}\ this-\/>verticies;\}}
+\DoxyCodeLine{00285\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<uint32\_t>\&\ getFaces()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ faces;\ \}}
+\DoxyCodeLine{00286\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ getLocalBounds(Math3D::Vec3\&\ outMin,\ Math3D::Vec3\&\ outMax)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00287\ }
+\DoxyCodeLine{00288\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ Unbind();}
+\DoxyCodeLine{00289\ }
+\DoxyCodeLine{00290\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_mesh_a2af137f1571af89172b9c102302c416b}{\string~Mesh}}();}
+\DoxyCodeLine{00291\ \};}
+\DoxyCodeLine{00292\ }
+\DoxyCodeLine{00293\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MESH\_H}}
+
+\end{DoxyCode}

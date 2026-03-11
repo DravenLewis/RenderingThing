@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__texture_8h" xml:lang="en-US">
+<title>src/Rendering/Textures/Texture.h File Reference</title>
+<indexterm><primary>src/Rendering/Textures/Texture.h</primary></indexterm>
+<para>
+
+<para>Declarations for <link linkend="_class_texture">Texture</link>. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &lt;glad/glad.h&gt;<?linebreak?>#include &lt;string&gt;<?linebreak?>#include &lt;memory&gt;<?linebreak?>#include &lt;vector&gt;<?linebreak?>#include &quot;Assets/Core/Asset.h&quot;<?linebreak?></programlisting><simplesect>
+    <title>Classes    </title>
+        <itemizedlist>
+            <listitem><para>class <link linkend="_class_texture">Texture</link></para>
+
+<para>Represents the <link linkend="_class_texture">Texture</link> type. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Typedefs    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="__texture_8h_1a26ea2099fa018b231d6865cf8ef63410"/>typedef std::shared_ptr&lt; <link linkend="_class_texture">Texture</link> &gt; <emphasis role="strong">PTexture</emphasis></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Declarations for <link linkend="_class_texture">Texture</link>. </para>
+</section>
+</section>

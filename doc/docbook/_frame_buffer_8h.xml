@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__frame_buffer_8h" xml:lang="en-US">
+<title>src/Rendering/Core/FrameBuffer.h File Reference</title>
+<indexterm><primary>src/Rendering/Core/FrameBuffer.h</primary></indexterm>
+<para>
+
+<para>Declarations for <link linkend="_struct_frame_buffer">FrameBuffer</link>. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &lt;memory&gt;<?linebreak?>#include &lt;vector&gt;<?linebreak?>#include &lt;cstdlib&gt;<?linebreak?>#include &quot;Rendering/Textures/Texture.h&quot;<?linebreak?>#include &quot;Foundation/Math/Math3D.h&quot;<?linebreak?>#include &quot;Foundation/Math/Color.h&quot;<?linebreak?>#include &quot;Foundation/Logging/Logbot.h&quot;<?linebreak?></programlisting><simplesect>
+    <title>Classes    </title>
+        <itemizedlist>
+            <listitem><para>struct <link linkend="_struct_frame_buffer">FrameBuffer</link></para>
+
+<para>Holds data for <link linkend="_struct_frame_buffer">FrameBuffer</link>. </para>
+</listitem>
+            <listitem><para>struct <link linkend="_struct_frame_buffer_chain">FrameBufferChain</link></para>
+
+<para>Holds data for <link linkend="_struct_frame_buffer_chain">FrameBufferChain</link>. </para>
+</listitem>
+            <listitem><para>struct <link linkend="_struct_tripple_buffer">TrippleBuffer</link></para>
+
+<para>Holds data for <link linkend="_struct_tripple_buffer">TrippleBuffer</link>. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Typedefs    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="__frame_buffer_8h_1afd697dc716b9df4a6e9684920596717c"/>typedef GLuint <emphasis role="strong">FrameBufferObject</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="__frame_buffer_8h_1aadc961de6cfc4dbb59b8b91553589cef"/>typedef std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; <emphasis role="strong">PFrameBuffer</emphasis></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Declarations for <link linkend="_struct_frame_buffer">FrameBuffer</link>. </para>
+</section>
+</section>

@@ -1,0 +1,188 @@
+\doxysection{Tripple\+Buffer Struct Reference}
+\hypertarget{struct_tripple_buffer}{}\label{struct_tripple_buffer}\index{TrippleBuffer@{TrippleBuffer}}
+
+
+Holds data for \doxylink{struct_tripple_buffer}{Tripple\+Buffer}.  
+
+
+
+
+{\ttfamily \+\#include $<$Frame\+Buffer.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{struct_tripple_buffer_ade5ad21dfd69dd617dc59c35adddf8c9}{Tripple\+Buffer}} (int width, int height)
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{struct_tripple_buffer}{Tripple\+Buffer} instance. \end{DoxyCompactList}\item 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_frame_buffer}{Frame\+Buffer}} $>$ \doxymbox{\hyperlink{struct_tripple_buffer_aa1580b077ee4b77e4cf0293e5fce37af}{get\+Front}} ()
+\begin{DoxyCompactList}\small\item\em Returns the front. \end{DoxyCompactList}\item 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_frame_buffer}{Frame\+Buffer}} $>$ \doxymbox{\hyperlink{struct_tripple_buffer_a27e3d899dc5c66e38fb6d240ad8ac0e6}{get\+Middle}} ()
+\begin{DoxyCompactList}\small\item\em Returns the middle. \end{DoxyCompactList}\item 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_frame_buffer}{Frame\+Buffer}} $>$ \doxymbox{\hyperlink{struct_tripple_buffer_a841ad487a95331a841cd26ede3b8358d}{get\+Back}} ()
+\begin{DoxyCompactList}\small\item\em Returns the back. \end{DoxyCompactList}\item 
+\Hypertarget{struct_tripple_buffer_a0b60b6f1e7e12dc0fd41287f66b6523c}\label{struct_tripple_buffer_a0b60b6f1e7e12dc0fd41287f66b6523c} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_frame_buffer}{Frame\+Buffer}} $>$ {\bfseries get\+Display\+Buffer} ()
+\item 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_frame_buffer}{Frame\+Buffer}} $>$ \doxymbox{\hyperlink{struct_tripple_buffer_a53cf73b5efe7ab4e33b47b4d1ef5f099}{get\+Edit\+Buffer}} ()
+\begin{DoxyCompactList}\small\item\em Returns the edit buffer. \end{DoxyCompactList}\item 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_frame_buffer}{Frame\+Buffer}} $>$ \doxymbox{\hyperlink{struct_tripple_buffer_aaadfe8298e9fdbab9177084bf5bbc648}{get\+Draw\+Buffer}} ()
+\begin{DoxyCompactList}\small\item\em Returns the draw buffer. \end{DoxyCompactList}\item 
+\Hypertarget{struct_tripple_buffer_afa919e8a8ca329dd8b86ddb15e5a8bcb}\label{struct_tripple_buffer_afa919e8a8ca329dd8b86ddb15e5a8bcb} 
+void {\bfseries set\+Front} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_frame_buffer}{Frame\+Buffer}} $>$ frame\+Ptr)
+\item 
+void \doxymbox{\hyperlink{struct_tripple_buffer_a21607aceb5b3dc8dbf987a595e67c567}{set\+Middle}} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_frame_buffer}{Frame\+Buffer}} $>$ frame\+Ptr)
+\begin{DoxyCompactList}\small\item\em Sets the middle. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{struct_tripple_buffer_a807d0eac379ba76f82f0dda42f36100d}{set\+Back}} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_frame_buffer}{Frame\+Buffer}} $>$ frame\+Ptr)
+\begin{DoxyCompactList}\small\item\em Sets the back. \end{DoxyCompactList}\item 
+\Hypertarget{struct_tripple_buffer_a2fe9ea51bbfae49182b81360da39b5df}\label{struct_tripple_buffer_a2fe9ea51bbfae49182b81360da39b5df} 
+void {\bfseries swap\+Buffers} ()
+\begin{DoxyCompactList}\small\item\em Swaps buffers. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{struct_tripple_buffer_a3e121c9862627d785ba325e00e7aa3d7}{resize\+Buffers}} (int width, int height)
+\begin{DoxyCompactList}\small\item\em Resizes backing GPU buffers. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Holds data for \doxylink{struct_tripple_buffer}{Tripple\+Buffer}. 
+
+\label{doc-constructors}
+\Hypertarget{struct_tripple_buffer_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{struct_tripple_buffer_ade5ad21dfd69dd617dc59c35adddf8c9}\index{TrippleBuffer@{TrippleBuffer}!TrippleBuffer@{TrippleBuffer}}
+\index{TrippleBuffer@{TrippleBuffer}!TrippleBuffer@{TrippleBuffer}}
+\doxysubsubsection{\texorpdfstring{TrippleBuffer()}{TrippleBuffer()}}
+{\footnotesize\ttfamily \label{struct_tripple_buffer_ade5ad21dfd69dd617dc59c35adddf8c9} 
+Tripple\+Buffer::\+\+Tripple\+Buffer (\begin{DoxyParamCaption}\item[{int}]{width}{, }\item[{int}]{height}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Constructs a new \doxylink{struct_tripple_buffer}{Tripple\+Buffer} instance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em width} & Dimension value. \\
+\hline
+{\em height} & Dimension value. \\
+\hline
+\end{DoxyParams}
+
+
+\label{doc-func-members}
+\Hypertarget{struct_tripple_buffer_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{struct_tripple_buffer_a841ad487a95331a841cd26ede3b8358d}\index{TrippleBuffer@{TrippleBuffer}!getBack@{getBack}}
+\index{getBack@{getBack}!TrippleBuffer@{TrippleBuffer}}
+\doxysubsubsection{\texorpdfstring{getBack()}{getBack()}}
+{\footnotesize\ttfamily \label{struct_tripple_buffer_a841ad487a95331a841cd26ede3b8358d} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_frame_buffer}{Frame\+Buffer}} $>$ Tripple\+Buffer::\+get\+Back (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the back. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the resulting object. 
+\end{DoxyReturn}
+\Hypertarget{struct_tripple_buffer_aaadfe8298e9fdbab9177084bf5bbc648}\index{TrippleBuffer@{TrippleBuffer}!getDrawBuffer@{getDrawBuffer}}
+\index{getDrawBuffer@{getDrawBuffer}!TrippleBuffer@{TrippleBuffer}}
+\doxysubsubsection{\texorpdfstring{getDrawBuffer()}{getDrawBuffer()}}
+{\footnotesize\ttfamily \label{struct_tripple_buffer_aaadfe8298e9fdbab9177084bf5bbc648} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_frame_buffer}{Frame\+Buffer}} $>$ Tripple\+Buffer::\+get\+Draw\+Buffer (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the draw buffer. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the resulting object. 
+\end{DoxyReturn}
+\Hypertarget{struct_tripple_buffer_a53cf73b5efe7ab4e33b47b4d1ef5f099}\index{TrippleBuffer@{TrippleBuffer}!getEditBuffer@{getEditBuffer}}
+\index{getEditBuffer@{getEditBuffer}!TrippleBuffer@{TrippleBuffer}}
+\doxysubsubsection{\texorpdfstring{getEditBuffer()}{getEditBuffer()}}
+{\footnotesize\ttfamily \label{struct_tripple_buffer_a53cf73b5efe7ab4e33b47b4d1ef5f099} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_frame_buffer}{Frame\+Buffer}} $>$ Tripple\+Buffer::\+get\+Edit\+Buffer (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the edit buffer. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the resulting object. 
+\end{DoxyReturn}
+\Hypertarget{struct_tripple_buffer_aa1580b077ee4b77e4cf0293e5fce37af}\index{TrippleBuffer@{TrippleBuffer}!getFront@{getFront}}
+\index{getFront@{getFront}!TrippleBuffer@{TrippleBuffer}}
+\doxysubsubsection{\texorpdfstring{getFront()}{getFront()}}
+{\footnotesize\ttfamily \label{struct_tripple_buffer_aa1580b077ee4b77e4cf0293e5fce37af} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_frame_buffer}{Frame\+Buffer}} $>$ Tripple\+Buffer::\+get\+Front (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the front. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the resulting object. 
+\end{DoxyReturn}
+\Hypertarget{struct_tripple_buffer_a27e3d899dc5c66e38fb6d240ad8ac0e6}\index{TrippleBuffer@{TrippleBuffer}!getMiddle@{getMiddle}}
+\index{getMiddle@{getMiddle}!TrippleBuffer@{TrippleBuffer}}
+\doxysubsubsection{\texorpdfstring{getMiddle()}{getMiddle()}}
+{\footnotesize\ttfamily \label{struct_tripple_buffer_a27e3d899dc5c66e38fb6d240ad8ac0e6} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_frame_buffer}{Frame\+Buffer}} $>$ Tripple\+Buffer::\+get\+Middle (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the middle. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the resulting object. 
+\end{DoxyReturn}
+\Hypertarget{struct_tripple_buffer_a3e121c9862627d785ba325e00e7aa3d7}\index{TrippleBuffer@{TrippleBuffer}!resizeBuffers@{resizeBuffers}}
+\index{resizeBuffers@{resizeBuffers}!TrippleBuffer@{TrippleBuffer}}
+\doxysubsubsection{\texorpdfstring{resizeBuffers()}{resizeBuffers()}}
+{\footnotesize\ttfamily \label{struct_tripple_buffer_a3e121c9862627d785ba325e00e7aa3d7} 
+void Tripple\+Buffer::\+resize\+Buffers (\begin{DoxyParamCaption}\item[{int}]{width}{, }\item[{int}]{height}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Resizes backing GPU buffers. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em width} & Dimension value. \\
+\hline
+{\em height} & Dimension value. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{struct_tripple_buffer_a807d0eac379ba76f82f0dda42f36100d}\index{TrippleBuffer@{TrippleBuffer}!setBack@{setBack}}
+\index{setBack@{setBack}!TrippleBuffer@{TrippleBuffer}}
+\doxysubsubsection{\texorpdfstring{setBack()}{setBack()}}
+{\footnotesize\ttfamily \label{struct_tripple_buffer_a807d0eac379ba76f82f0dda42f36100d} 
+void Tripple\+Buffer::\+set\+Back (\begin{DoxyParamCaption}\item[{std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_frame_buffer}{Frame\+Buffer}} $>$}]{frame\+Ptr}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the back. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em frame\+Ptr} & Pointer to frame. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{struct_tripple_buffer_a21607aceb5b3dc8dbf987a595e67c567}\index{TrippleBuffer@{TrippleBuffer}!setMiddle@{setMiddle}}
+\index{setMiddle@{setMiddle}!TrippleBuffer@{TrippleBuffer}}
+\doxysubsubsection{\texorpdfstring{setMiddle()}{setMiddle()}}
+{\footnotesize\ttfamily \label{struct_tripple_buffer_a21607aceb5b3dc8dbf987a595e67c567} 
+void Tripple\+Buffer::\+set\+Middle (\begin{DoxyParamCaption}\item[{std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_frame_buffer}{Frame\+Buffer}} $>$}]{frame\+Ptr}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the middle. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em frame\+Ptr} & Pointer to frame. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Core/\+\doxymbox{\hyperlink{_frame_buffer_8h}{Frame\+Buffer.\+h}}\end{DoxyCompactItemize}

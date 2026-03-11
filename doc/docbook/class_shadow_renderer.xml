@@ -1,0 +1,731 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_shadow_renderer" xml:lang="en-US">
+<title>ShadowRenderer Class Reference</title>
+<indexterm><primary>ShadowRenderer</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_shadow_renderer">ShadowRenderer</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;ShadowRenderer.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Classes    </title>
+        <itemizedlist>
+            <listitem><para>struct <link linkend="_struct_shadow_renderer_1_1_shadow_draw_item">ShadowDrawItem</link></para>
+
+<para>Holds data for <link linkend="_struct_shadow_renderer_1_1_shadow_draw_item">ShadowDrawItem</link>. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>static void <link linkend="_class_shadow_renderer_1afbb6c273a05d6646ee9705e4bd6b3233">BeginFrame</link> (PCamera camera, const std::vector&lt; <link linkend="_struct_shadow_caster_bounds">ShadowCasterBounds</link> &gt; *casters=nullptr)</para>
+
+<para>Begins frame. </para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_shadow_renderer_1aab58aceef40d58cbcb99197fb3b0b1c9">RenderShadows</link> (const std::shared_ptr&lt; <link linkend="_class_mesh">Mesh</link> &gt; &amp;mesh, const Math3D::Mat4 &amp;model, const std::shared_ptr&lt; <link linkend="_class_material">Material</link> &gt; &amp;material)</para>
+
+<para>Renders shadows. </para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_shadow_renderer_1a3ba920ae87f7206899c27bf206f7b88f">RenderShadowsBatch</link> (const std::vector&lt; <link linkend="_struct_shadow_renderer_1_1_shadow_draw_item">ShadowDrawItem</link> &gt; &amp;items)</para>
+
+<para>Renders shadows batch. </para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_shadow_renderer_1a294d22aa8a61404ca7741fb92179f759">BindShadowSamplers</link> (const std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; &amp;program)</para>
+
+<para>Binds shadow samplers. </para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_shadow_renderer_1a2a6a438bcb4909cfe0f049a418ca08a1">GetShadowDataForLight</link> (size_t index, const <link linkend="_struct_light">Light</link> &amp;light, <link linkend="_struct_shadow_light_data">ShadowLightData</link> &amp;outData)</para>
+
+<para>Returns the shadow data for light. </para>
+</listitem>
+            <listitem><para>static uint64_t <link linkend="_class_shadow_renderer_1a5b7b6245485e78e450e4f36511dc6028">GetFrameId</link> ()</para>
+
+<para>Returns the frame id. </para>
+</listitem>
+            <listitem><para>static bool <link linkend="_class_shadow_renderer_1abbd83290397f84630065b8593c6de72d">IsEnabled</link> ()</para>
+
+<para>Checks whether enabled. </para>
+</listitem>
+            <listitem><para>static std::shared_ptr&lt; <link linkend="_class_texture">Texture</link> &gt; <link linkend="_class_shadow_renderer_1a4968fee5aaeb90ca26b8237a4ad27fda">GetDepthBuffer</link> ()</para>
+
+<para>Returns the depth buffer. </para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_shadow_renderer_1aa3cbcea864992880c1e0e93cb2f03c2d">SetDebugShadows</link> (bool enabled)</para>
+
+<para>Sets the debug shadows. </para>
+</listitem>
+            <listitem><para>static bool <link linkend="_class_shadow_renderer_1a01a2fe136dac80bd65137ddd1163c05c">GetDebugShadows</link> ()</para>
+
+<para>Returns the debug shadows. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_shadow_renderer_1a4f8885763f78efa60d45121f1bc33e6a"/>static void <emphasis role="strong">CycleDebugShadows</emphasis> ()</para>
+
+<para>Cycles the active debug shadow visualization mode. </para>
+</listitem>
+            <listitem><para>static int <link linkend="_class_shadow_renderer_1ae8e997e98faa8a7dcee38355f0ba3412">GetDebugShadowsMode</link> ()</para>
+
+<para>Returns the debug shadows mode. </para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_shadow_renderer_1a1ad93fba9dbece24c39e04dfa0319b84">SetDebugShadowsMode</link> (int mode)</para>
+
+<para>Sets the debug shadows mode. </para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_shadow_renderer_1a92326cd13a40ee30ab8c1e41cee0cbd1">SetGlobalDebugOverrideEnabled</link> (bool enabled)</para>
+
+<para>Sets the global debug override enabled. </para>
+</listitem>
+            <listitem><para>static bool <link linkend="_class_shadow_renderer_1aab904aac799df7524a74571d2551ce9c">GetGlobalDebugOverrideEnabled</link> ()</para>
+
+<para>Returns the global debug override enabled. </para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_shadow_renderer_1af3e6f272f9f7fafa02a28c1684c43aa3">SetGlobalDebugOverrideMode</link> (int mode)</para>
+
+<para>Sets the global debug override mode. </para>
+</listitem>
+            <listitem><para>static int <link linkend="_class_shadow_renderer_1ab18542dd44e6199fe8baa8ed4beab5b3">GetGlobalDebugOverrideMode</link> ()</para>
+
+<para>Returns the global debug override mode. </para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_shadow_renderer_1a32ac240ccaf7b0d0d9402754663471c8">SetSelectedLightIndex</link> (int index)</para>
+
+<para>Sets the selected light index. </para>
+</listitem>
+            <listitem><para>static int <link linkend="_class_shadow_renderer_1ae8491189e251451f3803e8a96144188c">GetSelectedLightIndex</link> ()</para>
+
+<para>Returns the selected light index. </para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_shadow_renderer_1a8c06fcdbd9d643efd2c1821da281b460">SetDirectionalCascadeKernelMarginTexels</link> (float value)</para>
+
+<para>Sets the directional cascade kernel margin texels. </para>
+</listitem>
+            <listitem><para>static float <link linkend="_class_shadow_renderer_1a232a7bb315118202cb6f79cbb49b29dd">GetDirectionalCascadeKernelMarginTexels</link> ()</para>
+
+<para>Returns the directional cascade kernel margin texels. </para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_shadow_renderer_1aa010995c5c5868ce57940c2533741bff">SetShadowReceiverNormalBlend</link> (float value)</para>
+
+<para>Sets the shadow receiver normal blend. </para>
+</listitem>
+            <listitem><para>static float <link linkend="_class_shadow_renderer_1ac7c8e21bfe93f9d7ed4891c9a8e1e480">GetShadowReceiverNormalBlend</link> ()</para>
+
+<para>Returns the shadow receiver normal blend. </para>
+</listitem>
+            <listitem><para>static void <link linkend="_class_shadow_renderer_1ac292095aa08cd34a52c6d1bd498b9818">SetDebugLogging</link> (bool enabled)</para>
+
+<para>Sets the debug logging. </para>
+</listitem>
+            <listitem><para>static bool <link linkend="_class_shadow_renderer_1ac08a7c94e7678f7c0a7ed17c8970b5dd">GetDebugLogging</link> ()</para>
+
+<para>Returns the debug logging. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_shadow_renderer">ShadowRenderer</link> type. </para>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_shadow_renderer_1afbb6c273a05d6646ee9705e4bd6b3233"/><section>
+    <title>BeginFrame()</title>
+<indexterm><primary>BeginFrame</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>BeginFrame</secondary></indexterm>
+<para><computeroutput>void ShadowRenderer::BeginFrame (PCamera camera, const std::vector&lt; <link linkend="_struct_shadow_caster_bounds">ShadowCasterBounds</link> &gt; * casters = <computeroutput>nullptr</computeroutput>
+)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Begins frame. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>camera</entry><entry>
+<para>Value for camera. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>casters</entry><entry>
+<para>Value for casters. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_shadow_renderer_1a294d22aa8a61404ca7741fb92179f759"/><section>
+    <title>BindShadowSamplers()</title>
+<indexterm><primary>BindShadowSamplers</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>BindShadowSamplers</secondary></indexterm>
+<para><computeroutput>void ShadowRenderer::BindShadowSamplers (const std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; &amp; program)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Binds shadow samplers. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>program</entry><entry>
+<para>Value for program. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_shadow_renderer_1ac08a7c94e7678f7c0a7ed17c8970b5dd"/><section>
+    <title>GetDebugLogging()</title>
+<indexterm><primary>GetDebugLogging</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>GetDebugLogging</secondary></indexterm>
+<para><computeroutput>bool ShadowRenderer::GetDebugLogging ( )<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Returns the debug logging. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>True when the operation succeeds; otherwise false. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shadow_renderer_1a01a2fe136dac80bd65137ddd1163c05c"/><section>
+    <title>GetDebugShadows()</title>
+<indexterm><primary>GetDebugShadows</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>GetDebugShadows</secondary></indexterm>
+<para><computeroutput>bool ShadowRenderer::GetDebugShadows ( )<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Returns the debug shadows. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>True when the operation succeeds; otherwise false. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shadow_renderer_1ae8e997e98faa8a7dcee38355f0ba3412"/><section>
+    <title>GetDebugShadowsMode()</title>
+<indexterm><primary>GetDebugShadowsMode</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>GetDebugShadowsMode</secondary></indexterm>
+<para><computeroutput>int ShadowRenderer::GetDebugShadowsMode ( )<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Returns the debug shadows mode. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Computed numeric result. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shadow_renderer_1a4968fee5aaeb90ca26b8237a4ad27fda"/><section>
+    <title>GetDepthBuffer()</title>
+<indexterm><primary>GetDepthBuffer</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>GetDepthBuffer</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_class_texture">Texture</link> &gt; ShadowRenderer::GetDepthBuffer ( )<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Returns the depth buffer. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shadow_renderer_1a232a7bb315118202cb6f79cbb49b29dd"/><section>
+    <title>GetDirectionalCascadeKernelMarginTexels()</title>
+<indexterm><primary>GetDirectionalCascadeKernelMarginTexels</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>GetDirectionalCascadeKernelMarginTexels</secondary></indexterm>
+<para><computeroutput>float ShadowRenderer::GetDirectionalCascadeKernelMarginTexels ( )<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Returns the directional cascade kernel margin texels. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Computed numeric result. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shadow_renderer_1a5b7b6245485e78e450e4f36511dc6028"/><section>
+    <title>GetFrameId()</title>
+<indexterm><primary>GetFrameId</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>GetFrameId</secondary></indexterm>
+<para><computeroutput>uint64_t ShadowRenderer::GetFrameId ( )<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Returns the frame id. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Result of this operation. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shadow_renderer_1aab904aac799df7524a74571d2551ce9c"/><section>
+    <title>GetGlobalDebugOverrideEnabled()</title>
+<indexterm><primary>GetGlobalDebugOverrideEnabled</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>GetGlobalDebugOverrideEnabled</secondary></indexterm>
+<para><computeroutput>bool ShadowRenderer::GetGlobalDebugOverrideEnabled ( )<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Returns the global debug override enabled. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>True when the operation succeeds; otherwise false. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shadow_renderer_1ab18542dd44e6199fe8baa8ed4beab5b3"/><section>
+    <title>GetGlobalDebugOverrideMode()</title>
+<indexterm><primary>GetGlobalDebugOverrideMode</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>GetGlobalDebugOverrideMode</secondary></indexterm>
+<para><computeroutput>int ShadowRenderer::GetGlobalDebugOverrideMode ( )<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Returns the global debug override mode. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Computed numeric result. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shadow_renderer_1ae8491189e251451f3803e8a96144188c"/><section>
+    <title>GetSelectedLightIndex()</title>
+<indexterm><primary>GetSelectedLightIndex</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>GetSelectedLightIndex</secondary></indexterm>
+<para><computeroutput>int ShadowRenderer::GetSelectedLightIndex ( )<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Returns the selected light index. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Computed numeric result. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shadow_renderer_1a2a6a438bcb4909cfe0f049a418ca08a1"/><section>
+    <title>GetShadowDataForLight()</title>
+<indexterm><primary>GetShadowDataForLight</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>GetShadowDataForLight</secondary></indexterm>
+<para><computeroutput>void ShadowRenderer::GetShadowDataForLight (size_t index, const <link linkend="_struct_light">Light</link> &amp; light, <link linkend="_struct_shadow_light_data">ShadowLightData</link> &amp; outData)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Returns the shadow data for light. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>index</entry><entry>
+<para>Identifier or index value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>light</entry><entry>
+<para>Value for light. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>outData</entry><entry>
+<para>Buffer that receives data data. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_shadow_renderer_1ac7c8e21bfe93f9d7ed4891c9a8e1e480"/><section>
+    <title>GetShadowReceiverNormalBlend()</title>
+<indexterm><primary>GetShadowReceiverNormalBlend</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>GetShadowReceiverNormalBlend</secondary></indexterm>
+<para><computeroutput>float ShadowRenderer::GetShadowReceiverNormalBlend ( )<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Returns the shadow receiver normal blend. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Computed numeric result. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shadow_renderer_1abbd83290397f84630065b8593c6de72d"/><section>
+    <title>IsEnabled()</title>
+<indexterm><primary>IsEnabled</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>IsEnabled</secondary></indexterm>
+<para><computeroutput>bool ShadowRenderer::IsEnabled ( )<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Checks whether enabled. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>True when the condition is satisfied; otherwise false. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shadow_renderer_1aab58aceef40d58cbcb99197fb3b0b1c9"/><section>
+    <title>RenderShadows()</title>
+<indexterm><primary>RenderShadows</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>RenderShadows</secondary></indexterm>
+<para><computeroutput>void ShadowRenderer::RenderShadows (const std::shared_ptr&lt; <link linkend="_class_mesh">Mesh</link> &gt; &amp; mesh, const Math3D::Mat4 &amp; model, const std::shared_ptr&lt; <link linkend="_class_material">Material</link> &gt; &amp; material)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Renders shadows. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>mesh</entry><entry>
+<para>Value for mesh. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>model</entry><entry>
+<para>Mode or type selector. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>material</entry><entry>
+<para>Value for material. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_shadow_renderer_1a3ba920ae87f7206899c27bf206f7b88f"/><section>
+    <title>RenderShadowsBatch()</title>
+<indexterm><primary>RenderShadowsBatch</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>RenderShadowsBatch</secondary></indexterm>
+<para><computeroutput>void ShadowRenderer::RenderShadowsBatch (const std::vector&lt; <link linkend="_struct_shadow_renderer_1_1_shadow_draw_item">ShadowDrawItem</link> &gt; &amp; items)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Renders shadows batch. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>items</entry><entry>
+<para>Value for items. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_shadow_renderer_1ac292095aa08cd34a52c6d1bd498b9818"/><section>
+    <title>SetDebugLogging()</title>
+<indexterm><primary>SetDebugLogging</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>SetDebugLogging</secondary></indexterm>
+<para><computeroutput>void ShadowRenderer::SetDebugLogging (bool enabled)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Sets the debug logging. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>enabled</entry><entry>
+<para>Flag controlling enabled. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_shadow_renderer_1aa3cbcea864992880c1e0e93cb2f03c2d"/><section>
+    <title>SetDebugShadows()</title>
+<indexterm><primary>SetDebugShadows</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>SetDebugShadows</secondary></indexterm>
+<para><computeroutput>void ShadowRenderer::SetDebugShadows (bool enabled)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Sets the debug shadows. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>enabled</entry><entry>
+<para>Flag controlling enabled. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_shadow_renderer_1a1ad93fba9dbece24c39e04dfa0319b84"/><section>
+    <title>SetDebugShadowsMode()</title>
+<indexterm><primary>SetDebugShadowsMode</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>SetDebugShadowsMode</secondary></indexterm>
+<para><computeroutput>void ShadowRenderer::SetDebugShadowsMode (int mode)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Sets the debug shadows mode. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>mode</entry><entry>
+<para>Mode or type selector. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_shadow_renderer_1a8c06fcdbd9d643efd2c1821da281b460"/><section>
+    <title>SetDirectionalCascadeKernelMarginTexels()</title>
+<indexterm><primary>SetDirectionalCascadeKernelMarginTexels</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>SetDirectionalCascadeKernelMarginTexels</secondary></indexterm>
+<para><computeroutput>void ShadowRenderer::SetDirectionalCascadeKernelMarginTexels (float value)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Sets the directional cascade kernel margin texels. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>value</entry><entry>
+<para>Value for value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_shadow_renderer_1a92326cd13a40ee30ab8c1e41cee0cbd1"/><section>
+    <title>SetGlobalDebugOverrideEnabled()</title>
+<indexterm><primary>SetGlobalDebugOverrideEnabled</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>SetGlobalDebugOverrideEnabled</secondary></indexterm>
+<para><computeroutput>void ShadowRenderer::SetGlobalDebugOverrideEnabled (bool enabled)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Sets the global debug override enabled. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>enabled</entry><entry>
+<para>Flag controlling enabled. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_shadow_renderer_1af3e6f272f9f7fafa02a28c1684c43aa3"/><section>
+    <title>SetGlobalDebugOverrideMode()</title>
+<indexterm><primary>SetGlobalDebugOverrideMode</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>SetGlobalDebugOverrideMode</secondary></indexterm>
+<para><computeroutput>void ShadowRenderer::SetGlobalDebugOverrideMode (int mode)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Sets the global debug override mode. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>mode</entry><entry>
+<para>Mode or type selector. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_shadow_renderer_1a32ac240ccaf7b0d0d9402754663471c8"/><section>
+    <title>SetSelectedLightIndex()</title>
+<indexterm><primary>SetSelectedLightIndex</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>SetSelectedLightIndex</secondary></indexterm>
+<para><computeroutput>void ShadowRenderer::SetSelectedLightIndex (int index)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Sets the selected light index. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>index</entry><entry>
+<para>Identifier or index value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_shadow_renderer_1aa010995c5c5868ce57940c2533741bff"/><section>
+    <title>SetShadowReceiverNormalBlend()</title>
+<indexterm><primary>SetShadowReceiverNormalBlend</primary><secondary>ShadowRenderer</secondary></indexterm>
+<indexterm><primary>ShadowRenderer</primary><secondary>SetShadowReceiverNormalBlend</secondary></indexterm>
+<para><computeroutput>void ShadowRenderer::SetShadowReceiverNormalBlend (float value)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Sets the shadow receiver normal blend. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>value</entry><entry>
+<para>Value for value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<para>
+The documentation for this class was generated from the following files:</para>
+src/Rendering/Lighting/<link linkend="__shadow_renderer_8h">ShadowRenderer.h</link>src/Rendering/Lighting/<link linkend="__shadow_renderer_8cpp">ShadowRenderer.cpp</link></section>
+</section>

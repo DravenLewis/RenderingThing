@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__material_registry_8h" xml:lang="en-US">
+<title>src/Rendering/Materials/MaterialRegistry.h File Reference</title>
+<indexterm><primary>src/Rendering/Materials/MaterialRegistry.h</primary></indexterm>
+<para>
+
+<para>Declarations for <link linkend="_class_material_registry">MaterialRegistry</link>. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &lt;functional&gt;<?linebreak?>#include &lt;memory&gt;<?linebreak?>#include &lt;string&gt;<?linebreak?>#include &lt;vector&gt;<?linebreak?>#include &lt;chrono&gt;<?linebreak?>#include &quot;Rendering/Materials/Material.h&quot;<?linebreak?></programlisting><simplesect>
+    <title>Classes    </title>
+        <itemizedlist>
+            <listitem><para>struct <link linkend="_struct_material_registry_entry">MaterialRegistryEntry</link></para>
+
+<para>Holds data for <link linkend="_struct_material_registry_entry">MaterialRegistryEntry</link>. </para>
+</listitem>
+            <listitem><para>class <link linkend="_class_material_registry">MaterialRegistry</link></para>
+
+<para>Represents the <link linkend="_class_material_registry">MaterialRegistry</link> type. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Declarations for <link linkend="_class_material_registry">MaterialRegistry</link>. </para>
+</section>
+</section>

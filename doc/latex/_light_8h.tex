@@ -1,0 +1,44 @@
+\doxysection{src/\+\+Rendering/\+\+Lighting/\+\+Light.h File Reference}
+\hypertarget{_light_8h}{}\label{_light_8h}\index{src/Rendering/Lighting/Light.h@{src/Rendering/Lighting/Light.h}}
+
+
+Declarations for \doxylink{struct_light}{Light}.  
+
+
+{\ttfamily \+\#include "{}Foundation/\+\+Math/\+\+Math3\+D.\+h"{}}\newline
+{\ttfamily \+\#include "{}Foundation/\+\+Math/\+\+Color.\+h"{}}\newline
+{\ttfamily \+\#include $<$vector$>$}\newline
+{\ttfamily \+\#include $<$memory$>$}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \doxymbox{\hyperlink{struct_light}{Light}}
+\begin{DoxyCompactList}\small\item\em Holds data for \doxylink{struct_light}{Light}. \end{DoxyCompactList}\item 
+class \doxymbox{\hyperlink{class_light_manager}{Light\+Manager}}
+\begin{DoxyCompactList}\small\item\em Represents the \doxylink{class_light_manager}{Light\+Manager} type. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{_light_8h_a737b417f16ea225cf15e8d4c23df53dc}\label{_light_8h_a737b417f16ea225cf15e8d4c23df53dc} 
+\+\#define {\bfseries MAX\+\_\+\+LIGHTS}~16
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{_light_8h_adc3ec8293e6a97ebe43f0196b9a7f638}\label{_light_8h_adc3ec8293e6a97ebe43f0196b9a7f638} 
+enum class \doxymbox{\hyperlink{_light_8h_adc3ec8293e6a97ebe43f0196b9a7f638}{Light\+Type}} \{ {\bfseries POINT}
+, {\bfseries DIRECTIONAL}
+, {\bfseries SPOT}
+ \}
+\begin{DoxyCompactList}\small\item\em Enumerates values for \doxylink{_light_8h_adc3ec8293e6a97ebe43f0196b9a7f638}{Light\+Type}. \end{DoxyCompactList}\item 
+\Hypertarget{_light_8h_a5c50abf40600ee3c28c7fa04702a8bbc}\label{_light_8h_a5c50abf40600ee3c28c7fa04702a8bbc} 
+enum class \doxymbox{\hyperlink{_light_8h_a5c50abf40600ee3c28c7fa04702a8bbc}{Shadow\+Type}} \{ {\bfseries Hard}
+, {\bfseries Standard}
+, {\bfseries Smooth}
+ \}
+\begin{DoxyCompactList}\small\item\em Enumerates values for \doxylink{_light_8h_a5c50abf40600ee3c28c7fa04702a8bbc}{Shadow\+Type}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Declarations for \doxylink{struct_light}{Light}. 
+

@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="dir_d4e015951b263415729819c1a4b61808" kind="dir">
+    <compoundname>src/Rendering</compoundname>
+    <innerdir refid="dir_d7056e544613b93ef3f48389d812c75e">src/Rendering/Core</innerdir>
+    <innerdir refid="dir_1aa8c55c493a0d0e1495c103be011e33">src/Rendering/Fonts</innerdir>
+    <innerdir refid="dir_ad27c5e799b93ebaeff8f79fd9b7d324">src/Rendering/Geometry</innerdir>
+    <innerdir refid="dir_2b4f8c587d77a88f7914cf5c46849a39">src/Rendering/Lighting</innerdir>
+    <innerdir refid="dir_96fb6c566891e7f12f4bf101397ebc43">src/Rendering/Materials</innerdir>
+    <innerdir refid="dir_c11df6c3ad5785f32769b1a0fa5b9a13">src/Rendering/PostFX</innerdir>
+    <innerdir refid="dir_48510c05943b50a10c24618fc3c9f404">src/Rendering/Shaders</innerdir>
+    <innerdir refid="dir_c81126972a1dd0bf41a2f587f31413b2">src/Rendering/Textures</innerdir>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/"/>
+  </compounddef>
+</doxygen>

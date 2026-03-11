@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_light_uniform_uploader" xml:lang="en-US">
+<title>LightUniformUploader Class Reference</title>
+<indexterm><primary>LightUniformUploader</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_light_uniform_uploader">LightUniformUploader</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;LightUtils.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>static void <link linkend="_class_light_uniform_uploader_1a47d11f57dfb8557bd58dd6e9ca1cb51f">UploadLights</link> (std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; program, const std::vector&lt; <link linkend="_struct_light">Light</link> &gt; &amp;lights)</para>
+
+<para>Uploads light data to shader uniforms. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_light_uniform_uploader">LightUniformUploader</link> type. </para>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_light_uniform_uploader_1a47d11f57dfb8557bd58dd6e9ca1cb51f"/><section>
+    <title>UploadLights()</title>
+<indexterm><primary>UploadLights</primary><secondary>LightUniformUploader</secondary></indexterm>
+<indexterm><primary>LightUniformUploader</primary><secondary>UploadLights</secondary></indexterm>
+<para><computeroutput>void LightUniformUploader::UploadLights (std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; program, const std::vector&lt; <link linkend="_struct_light">Light</link> &gt; &amp; lights)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Uploads light data to shader uniforms. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>program</entry><entry>
+<para>Value for program. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>lights</entry><entry>
+<para>Value for lights. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<para>
+The documentation for this class was generated from the following files:</para>
+src/Rendering/Lighting/<link linkend="__light_utils_8h">LightUtils.h</link>src/Rendering/Lighting/<link linkend="__light_utils_8cpp">LightUtils.cpp</link></section>
+</section>

@@ -1,0 +1,454 @@
+.TH "ConstructedMaterial" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ConstructedMaterial \- Represents the \fBConstructedMaterial\fP type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ConstructedMaterial\&.h>\fP
+.PP
+Inherits \fBMaterial\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBField\fP"
+.br
+.RI "Holds data for \fBField\fP\&. "
+.in -1c
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBFieldType\fP { \fBFloat\fP = 0, \fBInt\fP, \fBBool\fP, \fBVec2\fP, \fBVec3\fP, \fBVec4\fP, \fBTexture2D\fP }"
+.br
+.RI "Enumerates values for \fBFieldType\fP\&. "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBConstructedMaterial\fP (const std::shared_ptr< \fBShaderProgram\fP > &shaderProgram)"
+.br
+.RI "Constructs a new \fBConstructedMaterial\fP instance\&. "
+.ti -1c
+.RI "void \fBsetSourceAssetRef\fP (const std::string &ref)"
+.br
+.RI "Sets the source asset ref\&. "
+.ti -1c
+.RI "const std::string & \fBgetSourceAssetRef\fP () const"
+.br
+.RI "Returns the source asset ref\&. "
+.ti -1c
+.RI "void \fBsetSourceMaterialName\fP (const std::string &name)"
+.br
+.RI "Sets the source material name\&. "
+.ti -1c
+.RI "const std::string & \fBgetSourceMaterialName\fP () const"
+.br
+.RI "Returns the source material name\&. "
+.ti -1c
+.RI "\fBField\fP & \fBaddFloatField\fP (const std::string &key, const std::string &displayName, const std::string &uniformName, float value, const std::string &mirrorUniformName='')"
+.br
+.RI "Adds a float field definition\&. "
+.ti -1c
+.RI "\fBField\fP & \fBaddIntField\fP (const std::string &key, const std::string &displayName, const std::string &uniformName, int value, const std::string &mirrorUniformName='')"
+.br
+.RI "Adds an integer field definition\&. "
+.ti -1c
+.RI "\fBField\fP & \fBaddBoolField\fP (const std::string &key, const std::string &displayName, const std::string &uniformName, bool value, const std::string &mirrorUniformName='')"
+.br
+.RI "Adds a boolean field definition\&. "
+.ti -1c
+.RI "\fBField\fP & \fBaddVec2Field\fP (const std::string &key, const std::string &displayName, const std::string &uniformName, const Math3D::Vec2 &value, const std::string &mirrorUniformName='')"
+.br
+.RI "Adds a vec2 field definition\&. "
+.ti -1c
+.RI "\fBField\fP & \fBaddVec3Field\fP (const std::string &key, const std::string &displayName, const std::string &uniformName, const Math3D::Vec3 &value, const std::string &mirrorUniformName='')"
+.br
+.RI "Adds a vec3 field definition\&. "
+.ti -1c
+.RI "\fBField\fP & \fBaddVec4Field\fP (const std::string &key, const std::string &displayName, const std::string &uniformName, const Math3D::Vec4 &value, const std::string &mirrorUniformName='')"
+.br
+.RI "Adds a vec4 field definition\&. "
+.ti -1c
+.RI "\fBField\fP & \fBaddTexture2DField\fP (const std::string &key, const std::string &displayName, const std::string &uniformName, const std::string &textureAssetRef, int textureSlot, const std::string &presenceUniformName='')"
+.br
+.RI "Adds a texture field definition\&. "
+.ti -1c
+.RI "std::vector< \fBField\fP > & \fBfields\fP ()"
+.br
+.RI "Returns the material field list\&. "
+.ti -1c
+.RI "const std::vector< \fBField\fP > & \fBfields\fP () const"
+.br
+.RI "Returns the material field list\&. "
+.ti -1c
+.RI "void \fBclearFields\fP ()"
+.br
+.RI "Clears fields\&. "
+.ti -1c
+.RI "void \fBmarkFieldsDirty\fP ()"
+.br
+.RI "Marks material fields dirty for reapply\&. "
+.ti -1c
+.RI "void \fBapplyField\fP (size_t index)"
+.br
+.RI "Applies field\&. "
+.ti -1c
+.RI "void \fBapplyAllFields\fP ()"
+.br
+.RI "Applies all fields\&. "
+.ti -1c
+.RI "void \fBbind\fP () override"
+.br
+.RI "Binds this resource\&. "
+.in -1c
+
+Public Member Functions inherited from \fBMaterial\fP
+.in +1c
+.ti -1c
+.RI "\fBMaterial\fP (std::shared_ptr< \fBShaderProgram\fP > program)"
+.br
+.RI "Constructs a new \fBMaterial\fP instance\&. "
+.ti -1c
+.RI "virtual \fB~Material\fP ()"
+.br
+.RI "Destroys this \fBMaterial\fP instance\&. "
+.ti -1c
+.RI "template<typename T> bool \fBset\fP (const std::string &name, T value)"
+.br
+.ti -1c
+.RI "void \fBunbind\fP ()"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBShaderProgram\fP > \fBgetShader\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetShader\fP (std::shared_ptr< \fBShaderProgram\fP > program)"
+.br
+.ti -1c
+.RI "void \fBsetCastsShadows\fP (bool value)"
+.br
+.ti -1c
+.RI "bool \fBcastsShadows\fP () const"
+.br
+.ti -1c
+.RI "void \fBsetReceivesShadows\fP (bool value)"
+.br
+.ti -1c
+.RI "bool \fBreceivesShadows\fP () const"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static std::shared_ptr< \fBConstructedMaterial\fP > \fBCreateWithPBRShader\fP ()"
+.br
+.RI "Creates with pbr shader\&. "
+.in -1c
+
+Static Public Member Functions inherited from \fBMaterial\fP
+.in +1c
+.ti -1c
+.RI "static std::shared_ptr< \fBMaterial\fP > \fBCopy\fP (std::shared_ptr< \fBMaterial\fP > material)"
+.br
+.ti -1c
+.RI "template<typename T> static std::shared_ptr< T > \fBGetAs\fP (std::shared_ptr< \fBMaterial\fP > matPtr)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the \fBConstructedMaterial\fP type\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ConstructedMaterial::ConstructedMaterial (const std::shared_ptr< \fBShaderProgram\fP > & shaderProgram)\fR [explicit]\fP"
+
+.PP
+Constructs a new \fBConstructedMaterial\fP instance\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIshaderProgram\fP Value for shader program\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Result of this operation\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBConstructedMaterial::Field\fP & ConstructedMaterial::addBoolField (const std::string & key, const std::string & displayName, const std::string & uniformName, bool value, const std::string & mirrorUniformName = \fR''\fP)"
+
+.PP
+Adds a boolean field definition\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIkey\fP Value for key\&. 
+.br
+\fIdisplayName\fP Name used for display name\&. 
+.br
+\fIuniformName\fP Name used for uniform name\&. 
+.br
+\fIvalue\fP Value for value\&. 
+.br
+\fImirrorUniformName\fP Name used for mirror uniform name\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "\fBConstructedMaterial::Field\fP & ConstructedMaterial::addFloatField (const std::string & key, const std::string & displayName, const std::string & uniformName, float value, const std::string & mirrorUniformName = \fR''\fP)"
+
+.PP
+Adds a float field definition\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIkey\fP Value for key\&. 
+.br
+\fIdisplayName\fP Name used for display name\&. 
+.br
+\fIuniformName\fP Name used for uniform name\&. 
+.br
+\fIvalue\fP Value for value\&. 
+.br
+\fImirrorUniformName\fP Name used for mirror uniform name\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "\fBConstructedMaterial::Field\fP & ConstructedMaterial::addIntField (const std::string & key, const std::string & displayName, const std::string & uniformName, int value, const std::string & mirrorUniformName = \fR''\fP)"
+
+.PP
+Adds an integer field definition\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIkey\fP Value for key\&. 
+.br
+\fIdisplayName\fP Name used for display name\&. 
+.br
+\fIuniformName\fP Name used for uniform name\&. 
+.br
+\fIvalue\fP Value for value\&. 
+.br
+\fImirrorUniformName\fP Name used for mirror uniform name\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "\fBConstructedMaterial::Field\fP & ConstructedMaterial::addTexture2DField (const std::string & key, const std::string & displayName, const std::string & uniformName, const std::string & textureAssetRef, int textureSlot, const std::string & presenceUniformName = \fR''\fP)"
+
+.PP
+Adds a texture field definition\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIkey\fP Value for key\&. 
+.br
+\fIdisplayName\fP Name used for display name\&. 
+.br
+\fIuniformName\fP Name used for uniform name\&. 
+.br
+\fItextureAssetRef\fP Reference to texture asset\&. 
+.br
+\fItextureSlot\fP Value for texture slot\&. 
+.br
+\fIpresenceUniformName\fP Name used for presence uniform name\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "\fBConstructedMaterial::Field\fP & ConstructedMaterial::addVec2Field (const std::string & key, const std::string & displayName, const std::string & uniformName, const Math3D::Vec2 & value, const std::string & mirrorUniformName = \fR''\fP)"
+
+.PP
+Adds a vec2 field definition\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIkey\fP Value for key\&. 
+.br
+\fIdisplayName\fP Name used for display name\&. 
+.br
+\fIuniformName\fP Name used for uniform name\&. 
+.br
+\fIvalue\fP Value for value\&. 
+.br
+\fImirrorUniformName\fP Name used for mirror uniform name\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "\fBConstructedMaterial::Field\fP & ConstructedMaterial::addVec3Field (const std::string & key, const std::string & displayName, const std::string & uniformName, const Math3D::Vec3 & value, const std::string & mirrorUniformName = \fR''\fP)"
+
+.PP
+Adds a vec3 field definition\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIkey\fP Value for key\&. 
+.br
+\fIdisplayName\fP Name used for display name\&. 
+.br
+\fIuniformName\fP Name used for uniform name\&. 
+.br
+\fIvalue\fP Value for value\&. 
+.br
+\fImirrorUniformName\fP Name used for mirror uniform name\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "\fBConstructedMaterial::Field\fP & ConstructedMaterial::addVec4Field (const std::string & key, const std::string & displayName, const std::string & uniformName, const Math3D::Vec4 & value, const std::string & mirrorUniformName = \fR''\fP)"
+
+.PP
+Adds a vec4 field definition\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIkey\fP Value for key\&. 
+.br
+\fIdisplayName\fP Name used for display name\&. 
+.br
+\fIuniformName\fP Name used for uniform name\&. 
+.br
+\fIvalue\fP Value for value\&. 
+.br
+\fImirrorUniformName\fP Name used for mirror uniform name\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "void ConstructedMaterial::applyField (size_t index)"
+
+.PP
+Applies field\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP Identifier or index value\&. 
+.RE
+.PP
+
+.SS "void ConstructedMaterial::bind ()\fR [override]\fP, \fR [virtual]\fP"
+
+.PP
+Binds this resource\&. 
+.PP
+Reimplemented from \fBMaterial\fP\&.
+.SS "std::shared_ptr< \fBConstructedMaterial\fP > ConstructedMaterial::CreateWithPBRShader ()\fR [static]\fP"
+
+.PP
+Creates with pbr shader\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+.SS "std::vector< \fBConstructedMaterial::Field\fP > & ConstructedMaterial::fields ()"
+
+.PP
+Returns the material field list\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "const std::vector< \fBConstructedMaterial::Field\fP > & ConstructedMaterial::fields () const"
+
+.PP
+Returns the material field list\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "const std::string & ConstructedMaterial::getSourceAssetRef () const"
+
+.PP
+Returns the source asset ref\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Resulting string value\&. 
+.RE
+.PP
+
+.SS "const std::string & ConstructedMaterial::getSourceMaterialName () const"
+
+.PP
+Returns the source material name\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Resulting string value\&. 
+.RE
+.PP
+
+.SS "void ConstructedMaterial::setSourceAssetRef (const std::string & ref)"
+
+.PP
+Sets the source asset ref\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIref\fP Reference to reference\&. 
+.RE
+.PP
+
+.SS "void ConstructedMaterial::setSourceMaterialName (const std::string & name)"
+
+.PP
+Sets the source material name\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP Name used for name\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

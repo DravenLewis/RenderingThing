@@ -1,0 +1,261 @@
+\doxysection{Frame\+Buffer Struct Reference}
+\hypertarget{struct_frame_buffer}{}\label{struct_frame_buffer}\index{FrameBuffer@{FrameBuffer}}
+
+
+Holds data for \doxylink{struct_frame_buffer}{Frame\+Buffer}.  
+
+
+
+
+{\ttfamily \+\#include $<$Frame\+Buffer.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{struct_frame_buffer_aab4c897d360f51c5a96b4782e67e98a9}{Frame\+Buffer}} (int width, int height)
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{struct_frame_buffer}{Frame\+Buffer} instance. \end{DoxyCompactList}\item 
+\Hypertarget{struct_frame_buffer_aef8be9884e8cc0fc3f3692e6c6968fa1}\label{struct_frame_buffer_aef8be9884e8cc0fc3f3692e6c6968fa1} 
+{\bfseries \texorpdfstring{$\sim$}{\string~}\+Frame\+Buffer} ()
+\begin{DoxyCompactList}\small\item\em Destroys this \doxylink{struct_frame_buffer}{Frame\+Buffer} instance. \end{DoxyCompactList}\item 
+\Hypertarget{struct_frame_buffer_a16fa30984714c6070f4c5bde5b5b87f7}\label{struct_frame_buffer_a16fa30984714c6070f4c5bde5b5b87f7} 
+void {\bfseries bind} ()
+\begin{DoxyCompactList}\small\item\em Binds this resource. \end{DoxyCompactList}\item 
+\Hypertarget{struct_frame_buffer_a3b82af89f1c0c0f4c0140e41863256c0}\label{struct_frame_buffer_a3b82af89f1c0c0f4c0140e41863256c0} 
+void {\bfseries unbind} ()
+\begin{DoxyCompactList}\small\item\em Unbinds this resource. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{struct_frame_buffer_a9d024ca8640a15ba5bc1b57bea53f520}{resize}} (int width, int height)
+\begin{DoxyCompactList}\small\item\em Resizes internal resources. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{struct_frame_buffer_a0c4622e1392380ac5f445ca896b8cfaf}{attach\+Texture}} (PTexture tex)
+\begin{DoxyCompactList}\small\item\em Attaches a texture to the framebuffer. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{struct_frame_buffer_a0cd55ff0fbb64f384e420ee01747baa9}{validate}} ()
+\begin{DoxyCompactList}\small\item\em Checks whether validate. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{struct_frame_buffer_a97b10220144ae378552526387dd74063}{clear}} (Color clear\+Color=Color::\+\+BLACK)
+\begin{DoxyCompactList}\small\item\em Clears the current state. \end{DoxyCompactList}\item 
+PTexture \doxymbox{\hyperlink{struct_frame_buffer_a7ccdbe4ef2127c1d95a6855326a411e8}{get\+Texture}} ()
+\begin{DoxyCompactList}\small\item\em Returns the texture. \end{DoxyCompactList}\item 
+PTexture \doxymbox{\hyperlink{struct_frame_buffer_ae1bb1d29cead16f8ed5bc3243ce670a7}{get\+Depth\+Texture}} ()
+\begin{DoxyCompactList}\small\item\em Returns the depth texture. \end{DoxyCompactList}\item 
+PTexture \doxymbox{\hyperlink{struct_frame_buffer_a90a260aa56cc237856abc3ccd2e4db3a}{get\+GBuffer\+Texture}} (size\+\_\+t index) const
+\begin{DoxyCompactList}\small\item\em Returns the g buffer texture. \end{DoxyCompactList}\item 
+size\+\_\+t \doxymbox{\hyperlink{struct_frame_buffer_aa79c4835cb0975e916fae02fb38370b6}{get\+GBuffer\+Count}} () const
+\begin{DoxyCompactList}\small\item\em Returns the g buffer count. \end{DoxyCompactList}\item 
+Frame\+Buffer\+Object \doxymbox{\hyperlink{struct_frame_buffer_ade3f6891bef5507f4efeeed8031674ee}{get\+ID}} () const
+\begin{DoxyCompactList}\small\item\em Returns the id. \end{DoxyCompactList}\item 
+\Hypertarget{struct_frame_buffer_a40c194d2dd9435c8094be569bb6602a8}\label{struct_frame_buffer_a40c194d2dd9435c8094be569bb6602a8} 
+int {\bfseries get\+Width} () const
+\item 
+\Hypertarget{struct_frame_buffer_a0b7c691dd5b08a9506bc2b52626f6b1d}\label{struct_frame_buffer_a0b7c691dd5b08a9506bc2b52626f6b1d} 
+int {\bfseries get\+Height} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_frame_buffer}{Frame\+Buffer}} $>$ \doxymbox{\hyperlink{struct_frame_buffer_ac9d501ed7d2c3065d73ab4bb3ac79aaa}{Create}} (int width, int height)
+\begin{DoxyCompactList}\small\item\em Creates a new object. \end{DoxyCompactList}\item 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_frame_buffer}{Frame\+Buffer}} $>$ \doxymbox{\hyperlink{struct_frame_buffer_ac84282b82629c78a650e7cb0aa653392}{Create\+GBuffer}} (int width, int height)
+\begin{DoxyCompactList}\small\item\em Creates g buffer. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Holds data for \doxylink{struct_frame_buffer}{Frame\+Buffer}. 
+
+\label{doc-constructors}
+\Hypertarget{struct_frame_buffer_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{struct_frame_buffer_aab4c897d360f51c5a96b4782e67e98a9}\index{FrameBuffer@{FrameBuffer}!FrameBuffer@{FrameBuffer}}
+\index{FrameBuffer@{FrameBuffer}!FrameBuffer@{FrameBuffer}}
+\doxysubsubsection{\texorpdfstring{FrameBuffer()}{FrameBuffer()}}
+{\footnotesize\ttfamily \label{struct_frame_buffer_aab4c897d360f51c5a96b4782e67e98a9} 
+Frame\+Buffer::\+\+Frame\+Buffer (\begin{DoxyParamCaption}\item[{int}]{width}{, }\item[{int}]{height}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Constructs a new \doxylink{struct_frame_buffer}{Frame\+Buffer} instance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em width} & Dimension value. \\
+\hline
+{\em height} & Dimension value. \\
+\hline
+\end{DoxyParams}
+
+
+\label{doc-func-members}
+\Hypertarget{struct_frame_buffer_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{struct_frame_buffer_a0c4622e1392380ac5f445ca896b8cfaf}\index{FrameBuffer@{FrameBuffer}!attachTexture@{attachTexture}}
+\index{attachTexture@{attachTexture}!FrameBuffer@{FrameBuffer}}
+\doxysubsubsection{\texorpdfstring{attachTexture()}{attachTexture()}}
+{\footnotesize\ttfamily \label{struct_frame_buffer_a0c4622e1392380ac5f445ca896b8cfaf} 
+void Frame\+Buffer::\+attach\+Texture (\begin{DoxyParamCaption}\item[{PTexture}]{tex}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Attaches a texture to the framebuffer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tex} & Value for tex. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{struct_frame_buffer_a97b10220144ae378552526387dd74063}\index{FrameBuffer@{FrameBuffer}!clear@{clear}}
+\index{clear@{clear}!FrameBuffer@{FrameBuffer}}
+\doxysubsubsection{\texorpdfstring{clear()}{clear()}}
+{\footnotesize\ttfamily \label{struct_frame_buffer_a97b10220144ae378552526387dd74063} 
+void Frame\+Buffer::\+clear (\begin{DoxyParamCaption}\item[{Color}]{clear\+Color}{ = {\ttfamily Color:\+:\+BLACK}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Clears the current state. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em clear\+Color} & Color value. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{struct_frame_buffer_ac9d501ed7d2c3065d73ab4bb3ac79aaa}\index{FrameBuffer@{FrameBuffer}!Create@{Create}}
+\index{Create@{Create}!FrameBuffer@{FrameBuffer}}
+\doxysubsubsection{\texorpdfstring{Create()}{Create()}}
+{\footnotesize\ttfamily \label{struct_frame_buffer_ac9d501ed7d2c3065d73ab4bb3ac79aaa} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_frame_buffer}{Frame\+Buffer}} $>$ Frame\+Buffer::\+\+Create (\begin{DoxyParamCaption}\item[{int}]{width}{, }\item[{int}]{height}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Creates a new object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em width} & Dimension value. \\
+\hline
+{\em height} & Dimension value. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the resulting object. 
+\end{DoxyReturn}
+\Hypertarget{struct_frame_buffer_ac84282b82629c78a650e7cb0aa653392}\index{FrameBuffer@{FrameBuffer}!CreateGBuffer@{CreateGBuffer}}
+\index{CreateGBuffer@{CreateGBuffer}!FrameBuffer@{FrameBuffer}}
+\doxysubsubsection{\texorpdfstring{CreateGBuffer()}{CreateGBuffer()}}
+{\footnotesize\ttfamily \label{struct_frame_buffer_ac84282b82629c78a650e7cb0aa653392} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_frame_buffer}{Frame\+Buffer}} $>$ Frame\+Buffer::\+\+Create\+GBuffer (\begin{DoxyParamCaption}\item[{int}]{width}{, }\item[{int}]{height}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Creates g buffer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em width} & Dimension value. \\
+\hline
+{\em height} & Dimension value. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the resulting object. 
+\end{DoxyReturn}
+\Hypertarget{struct_frame_buffer_ae1bb1d29cead16f8ed5bc3243ce670a7}\index{FrameBuffer@{FrameBuffer}!getDepthTexture@{getDepthTexture}}
+\index{getDepthTexture@{getDepthTexture}!FrameBuffer@{FrameBuffer}}
+\doxysubsubsection{\texorpdfstring{getDepthTexture()}{getDepthTexture()}}
+{\footnotesize\ttfamily \label{struct_frame_buffer_ae1bb1d29cead16f8ed5bc3243ce670a7} 
+PTexture Frame\+Buffer::\+get\+Depth\+Texture (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the depth texture. 
+
+\begin{DoxyReturn}{Returns}
+Result of this operation. 
+\end{DoxyReturn}
+\Hypertarget{struct_frame_buffer_aa79c4835cb0975e916fae02fb38370b6}\index{FrameBuffer@{FrameBuffer}!getGBufferCount@{getGBufferCount}}
+\index{getGBufferCount@{getGBufferCount}!FrameBuffer@{FrameBuffer}}
+\doxysubsubsection{\texorpdfstring{getGBufferCount()}{getGBufferCount()}}
+{\footnotesize\ttfamily \label{struct_frame_buffer_aa79c4835cb0975e916fae02fb38370b6} 
+size\+\_\+t Frame\+Buffer::\+get\+GBuffer\+Count (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the g buffer count. 
+
+\begin{DoxyReturn}{Returns}
+Computed numeric result. 
+\end{DoxyReturn}
+\Hypertarget{struct_frame_buffer_a90a260aa56cc237856abc3ccd2e4db3a}\index{FrameBuffer@{FrameBuffer}!getGBufferTexture@{getGBufferTexture}}
+\index{getGBufferTexture@{getGBufferTexture}!FrameBuffer@{FrameBuffer}}
+\doxysubsubsection{\texorpdfstring{getGBufferTexture()}{getGBufferTexture()}}
+{\footnotesize\ttfamily \label{struct_frame_buffer_a90a260aa56cc237856abc3ccd2e4db3a} 
+PTexture Frame\+Buffer::\+get\+GBuffer\+Texture (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{index}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the g buffer texture. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & Identifier or index value. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of this operation. 
+\end{DoxyReturn}
+\Hypertarget{struct_frame_buffer_ade3f6891bef5507f4efeeed8031674ee}\index{FrameBuffer@{FrameBuffer}!getID@{getID}}
+\index{getID@{getID}!FrameBuffer@{FrameBuffer}}
+\doxysubsubsection{\texorpdfstring{getID()}{getID()}}
+{\footnotesize\ttfamily \label{struct_frame_buffer_ade3f6891bef5507f4efeeed8031674ee} 
+Frame\+Buffer\+Object Frame\+Buffer::\+get\+ID (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the id. 
+
+\begin{DoxyReturn}{Returns}
+Result of this operation. 
+\end{DoxyReturn}
+\Hypertarget{struct_frame_buffer_a7ccdbe4ef2127c1d95a6855326a411e8}\index{FrameBuffer@{FrameBuffer}!getTexture@{getTexture}}
+\index{getTexture@{getTexture}!FrameBuffer@{FrameBuffer}}
+\doxysubsubsection{\texorpdfstring{getTexture()}{getTexture()}}
+{\footnotesize\ttfamily \label{struct_frame_buffer_a7ccdbe4ef2127c1d95a6855326a411e8} 
+PTexture Frame\+Buffer::\+get\+Texture (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the texture. 
+
+\begin{DoxyReturn}{Returns}
+Result of this operation. 
+\end{DoxyReturn}
+\Hypertarget{struct_frame_buffer_a9d024ca8640a15ba5bc1b57bea53f520}\index{FrameBuffer@{FrameBuffer}!resize@{resize}}
+\index{resize@{resize}!FrameBuffer@{FrameBuffer}}
+\doxysubsubsection{\texorpdfstring{resize()}{resize()}}
+{\footnotesize\ttfamily \label{struct_frame_buffer_a9d024ca8640a15ba5bc1b57bea53f520} 
+void Frame\+Buffer::\+resize (\begin{DoxyParamCaption}\item[{int}]{width}{, }\item[{int}]{height}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Resizes internal resources. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em width} & Dimension value. \\
+\hline
+{\em height} & Dimension value. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{struct_frame_buffer_a0cd55ff0fbb64f384e420ee01747baa9}\index{FrameBuffer@{FrameBuffer}!validate@{validate}}
+\index{validate@{validate}!FrameBuffer@{FrameBuffer}}
+\doxysubsubsection{\texorpdfstring{validate()}{validate()}}
+{\footnotesize\ttfamily \label{struct_frame_buffer_a0cd55ff0fbb64f384e420ee01747baa9} 
+bool Frame\+Buffer::\+validate (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Checks whether validate. 
+
+\begin{DoxyReturn}{Returns}
+True when the operation succeeds; otherwise false. 
+\end{DoxyReturn}
+
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Core/\+\doxymbox{\hyperlink{_frame_buffer_8h}{Frame\+Buffer.\+h}}\end{DoxyCompactItemize}

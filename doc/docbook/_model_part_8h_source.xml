@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__model_part_8h_source" xml:lang="en-US">
+<title>ModelPart.h</title>
+<indexterm><primary>src/Rendering/Geometry/ModelPart.h</primary></indexterm>
+Go to the documentation of this file.<programlisting linenumbering="unnumbered">1 
+5 
+6 <emphasis role="preprocessor">#ifndef&#32;MODELPART_H</emphasis>
+7 <emphasis role="preprocessor">#define&#32;MODELPART_H</emphasis>
+8 
+9 <emphasis role="preprocessor">#include&#32;&lt;memory&gt;</emphasis>
+10 <emphasis role="preprocessor">#include&#32;&lt;vector&gt;</emphasis>
+11 
+12 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__mesh_8h">Rendering/Geometry/Mesh.h</link>&quot;</emphasis>
+13 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__material_8h">Rendering/Materials/Material.h</link>&quot;</emphasis>
+14 <emphasis role="preprocessor">#include&#32;&quot;Foundation/Math/Math3D.h&quot;</emphasis>
+15 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__drawable_8h">Rendering/Geometry/Drawable.h</link>&quot;</emphasis>
+16 
+18 <emphasis role="keyword">struct&#32;</emphasis><link linkend="_struct_model_part">ModelPart</link>&#32;:&#32;<emphasis role="keyword">public</emphasis>&#32;<link linkend="_struct_i_drawable">IDrawable</link>{
+19 &#32;&#32;&#32;&#32;std::shared_ptr&lt;Mesh&gt;&#32;mesh;
+20 &#32;&#32;&#32;&#32;std::shared_ptr&lt;Material&gt;&#32;material;
+21 &#32;&#32;&#32;&#32;Math3D::Transform&#32;localTransform&#32;=&#32;Math3D::Transform();
+22 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;visible&#32;=&#32;<emphasis role="keyword">true</emphasis>;
+23 &#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;Model&#32;parts&#32;are&#32;hidden&#32;in&#32;the&#32;ECS&#32;tree&#32;by&#32;default&#32;to&#32;keep&#32;entity&#32;trees&#32;compact.</emphasis>
+24 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;hideInEditorTree&#32;=&#32;<emphasis role="keyword">true</emphasis>;
+25 &#32;&#32;&#32;&#32;
+32 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_struct_model_part_1a64fc6730fbf1273892e60fd4906beacc">draw</link>(<emphasis role="keyword">const</emphasis>&#32;Math3D::Mat4&amp;&#32;parent,&#32;<emphasis role="keyword">const</emphasis>&#32;Math3D::Mat4&amp;&#32;view,&#32;<emphasis role="keyword">const</emphasis>&#32;Math3D::Mat4&amp;&#32;proj);
+33 };
+34 
+36 <emphasis role="keyword">struct&#32;</emphasis><link linkend="_struct_model_part_factory_1a8b2d0eb06f0a9ade3093831338442085">ModelPartFactory</link>{
+37 &#32;&#32;&#32;&#32;<emphasis role="keyword">private</emphasis>:
+38 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;Mesh&gt;&#32;meshInstancePtr;
+39 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;Material&gt;&#32;materialInstancePtr;
+40 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::vector&lt;Vertex&gt;&#32;vertexCache;
+41 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::vector&lt;uint32_t&gt;&#32;faceCache;
+42 &#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+46 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_model_part_factory_1a8b2d0eb06f0a9ade3093831338442085">ModelPartFactory</link>()&#32;=&#32;<emphasis role="keywordflow">default</emphasis>;
+52 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<link linkend="_struct_model_part_factory_1a8b2d0eb06f0a9ade3093831338442085">ModelPartFactory</link>&#32;<link linkend="_struct_model_part_factory_1a3ef7855857c9e4a6106485c4d6dc13d1">Create</link>(std::shared_ptr&lt;Material&gt;&#32;material);
+59 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_model_part_factory_1a8b2d0eb06f0a9ade3093831338442085">ModelPartFactory</link>&amp;&#32;<link linkend="_struct_model_part_factory_1a0284fcedc4c25ac5b287327a2d7356f4">addVertex</link>(<link linkend="_struct_vertex">Vertex</link>&#32;vtx,&#32;<emphasis role="keywordtype">int</emphasis>*&#32;index&#32;=&#32;<emphasis role="keyword">nullptr</emphasis>);
+68 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_model_part_factory_1a8b2d0eb06f0a9ade3093831338442085">ModelPartFactory</link>&amp;&#32;<link linkend="_struct_model_part_factory_1a4af8f7d0f3a2958529bbe7aab3233f6d">defineFace</link>(<emphasis role="keywordtype">int</emphasis>&#32;vtx1,&#32;<emphasis role="keywordtype">int</emphasis>&#32;vtx2,&#32;<emphasis role="keywordtype">int</emphasis>&#32;vtx3,&#32;<emphasis role="keywordtype">int</emphasis>&#32;vtx4&#32;=&#32;-1);
+73 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;ModelPart&gt;&#32;<link linkend="_struct_model_part_factory_1a8f73e9678bb98f92144d6a36ff1bc41f">assemble</link>();
+74 };
+75 
+76 <emphasis role="preprocessor">#endif&#32;</emphasis><emphasis role="comment">//&#32;MODELPART_H</emphasis>
+</programlisting></section>

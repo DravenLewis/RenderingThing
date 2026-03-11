@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__environment_8h_source" xml:lang="en-US">
+<title>Environment.h</title>
+<indexterm><primary>src/Rendering/Lighting/Environment.h</primary></indexterm>
+Go to the documentation of this file.<programlisting linenumbering="unnumbered">1 
+5 
+6 <emphasis role="preprocessor">#ifndef&#32;ENVIRONMENT_H</emphasis>
+7 <emphasis role="preprocessor">#define&#32;ENVIRONMENT_H</emphasis>
+8 
+9 <emphasis role="preprocessor">#include&#32;&lt;memory&gt;</emphasis>
+10 <emphasis role="preprocessor">#include&#32;&lt;vector&gt;</emphasis>
+11 
+12 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__light_8h">Rendering/Lighting/Light.h</link>&quot;</emphasis>
+13 
+14 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_sky_box">SkyBox</link>;
+15 <emphasis role="keyword">typedef</emphasis>&#32;std::shared_ptr&lt;SkyBox&gt;&#32;PSkyBox;
+16 
+18 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_environment_1a5ec60bc420d1c8837fa0c429c7da7eef">Environment</link>&#32;{
+19 &#32;&#32;&#32;&#32;<emphasis role="keyword">private</emphasis>:
+20 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_light_manager">LightManager</link>&#32;lightManager;
+21 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PSkyBox&#32;skybox;
+22 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;lightingEnabled&#32;=&#32;<emphasis role="keyword">false</emphasis>;
+23 
+24 &#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+28 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_environment_1a5ec60bc420d1c8837fa0c429c7da7eef">Environment</link>()&#32;=&#32;<emphasis role="keywordflow">default</emphasis>;
+29 
+34 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_light_manager">LightManager</link>&amp;&#32;<link linkend="_class_environment_1ac4805d9a4e1da4f43d8f6cc7964cda38">getLightManager</link>()&#32;{&#32;<emphasis role="keywordflow">return</emphasis>&#32;lightManager;&#32;}
+35 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;<link linkend="_class_light_manager">LightManager</link>&amp;&#32;<link linkend="_class_environment_1ac4805d9a4e1da4f43d8f6cc7964cda38">getLightManager</link>()<emphasis role="keyword">&#32;const&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;lightManager;&#32;}
+36 
+37 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;setSkyBox(PSkyBox&#32;box)&#32;{&#32;skybox&#32;=&#32;box;&#32;}
+38 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PSkyBox&#32;getSkyBox()<emphasis role="keyword">&#32;const&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;skybox;&#32;}
+39 
+40 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;setLightingEnabled(<emphasis role="keywordtype">bool</emphasis>&#32;enabled)&#32;{&#32;lightingEnabled&#32;=&#32;enabled;&#32;}
+41 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;isLightingEnabled()<emphasis role="keyword">&#32;const&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;lightingEnabled;&#32;}
+42 
+43 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::vector&lt;Light&gt;&amp;&#32;getLightsForUpload()<emphasis role="keyword">&#32;const&#32;</emphasis>{
+44 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keyword">const</emphasis>&#32;std::vector&lt;Light&gt;&#32;EMPTY;
+45 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;lightingEnabled&#32;?&#32;lightManager.getAllLights()&#32;:&#32;EMPTY;
+46 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+47 };
+48 
+49 <emphasis role="keyword">typedef</emphasis>&#32;std::shared_ptr&lt;Environment&gt;&#32;PEnvironment;
+50 
+51 <emphasis role="preprocessor">#endif&#32;</emphasis><emphasis role="comment">//&#32;ENVIRONMENT_H</emphasis>
+</programlisting></section>

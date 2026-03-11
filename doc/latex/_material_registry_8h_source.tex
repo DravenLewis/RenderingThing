@@ -1,0 +1,47 @@
+\doxysection{Material\+Registry.\+h}
+\hypertarget{_material_registry_8h_source}{}\label{_material_registry_8h_source}\index{src/Rendering/Materials/MaterialRegistry.h@{src/Rendering/Materials/MaterialRegistry.h}}
+\doxymbox{\hyperlink{_material_registry_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ MATERIAL\_REGISTRY\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ MATERIAL\_REGISTRY\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <functional>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ <chrono>}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_material_8h}{Rendering/Materials/Material.h}}"{}}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00018\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_material_registry_entry}{MaterialRegistryEntry}}\ \{}
+\DoxyCodeLine{00019\ \ \ \ \ std::string\ id;}
+\DoxyCodeLine{00020\ \ \ \ \ std::string\ displayName;}
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keywordtype}{bool}\ isBuiltIn\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00022\ \ \ \ \ std::string\ assetRef;}
+\DoxyCodeLine{00023\ \};}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00026\ \textcolor{keyword}{class\ }MaterialRegistry\ \{}
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ MaterialRegistry\&\ \doxymbox{\hyperlink{class_material_registry_a5ac1ab1993ba87006a53205026a7e289}{Instance}}();}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_material_registry_adc43e36965c220ba15527a3d8ac9526f}{Refresh}}(\textcolor{keywordtype}{bool}\ force\ =\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<MaterialRegistryEntry>\&\ \doxymbox{\hyperlink{class_material_registry_a4c66f055d3c843419a613f70729ea276}{GetEntries}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ std::shared\_ptr<Material>\ \doxymbox{\hyperlink{class_material_registry_a4e4f6ae18d50428c1352b197aaa4161b}{CreateById}}(\textcolor{keyword}{const}\ std::string\&\ \textcolor{keywordtype}{id},\ std::string*\ outError\ =\ \textcolor{keyword}{nullptr})\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ MaterialRegistry()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ ensureBuiltIns();}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ rebuildEntries();}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ builtInsInitialized\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \textcolor{keyword}{mutable}\ std::vector<MaterialRegistryEntry>\ entries;}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \textcolor{keyword}{mutable}\ std::vector<std::pair<std::string,\ std::function<std::shared\_ptr<Material>()>>>\ builtInFactories;}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ std::chrono::steady\_clock::time\_point\ nextRefreshTime\ =\ std::chrono::steady\_clock::time\_point::min();}
+\DoxyCodeLine{00071\ \};}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MATERIAL\_REGISTRY\_H}}
+
+\end{DoxyCode}

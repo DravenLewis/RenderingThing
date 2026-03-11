@@ -1,3 +1,8 @@
+/**
+ * @file src/Assets/Importers/MtlMaterialImporter.cpp
+ * @brief Implementation for MtlMaterialImporter.
+ */
+
 #include "Assets/Importers/MtlMaterialImporter.h"
 
 #include "Assets/Core/AssetDescriptorUtils.h"

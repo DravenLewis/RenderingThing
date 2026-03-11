@@ -1,0 +1,136 @@
+\doxysection{Free\+Type\+Font Class Reference}
+\hypertarget{class_free_type_font}{}\label{class_free_type_font}\index{FreeTypeFont@{FreeTypeFont}}
+
+
+Represents the \doxylink{class_free_type_font}{Free\+Type\+Font} type.  
+
+
+
+
+{\ttfamily \+\#include $<$Free\+Type\+Font.\+h$>$}
+
+Inheritance diagram for Free\+Type\+Font:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_free_type_font}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_free_type_font_af5cf9314662b0bb7501c2ad300314abf}\label{class_free_type_font_af5cf9314662b0bb7501c2ad300314abf} 
+{\bfseries Free\+Type\+Font} ()
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_free_type_font}{Free\+Type\+Font} instance. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_free_type_font_ace8e8942ae61f4df9238bba96ec78b39}{\+\_\+init\+Font}} () override
+\begin{DoxyCompactList}\small\item\em Initializes font resources. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_free_type_font_aabd8450cc9c0f3158ce5ae414c92443f}{draw\+Text}} (std::\+string text, Math3\+D::\+\+Vec2 position, PCamera camera, Color color, bool use\+Cache) override
+\item 
+bool \doxymbox{\hyperlink{class_free_type_font_a409cd5f8a8f6e596fc654ed5f69167f2}{supports\+Queued\+Drawing}} () const override
+\item 
+void \doxymbox{\hyperlink{class_free_type_font_a8c52bd0af48e7001a33763ae79723e32}{begin\+Frame}} (PCamera camera) override
+\item 
+void \doxymbox{\hyperlink{class_free_type_font_a52a54d9bf92dcfb76bbf5d914d417d76}{flush\+Queued\+Text}} (PCamera camera) override
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{class_font}{Font}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Font} ()
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_font}{Font} instance. \end{DoxyCompactList}\item 
+void {\bfseries clear\+Cache} ()
+\item 
+PAsset {\bfseries get\+Asset\+Pointer} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Static Public Member Functions inherited from \doxymbox{\hyperlink{class_font}{Font}}}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T$>$ }\\static std::\+shared\+\_\+ptr$<$ T $>$ {\bfseries Create} (PAsset asset, float font\+Size=18.\+0f)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes inherited from \doxymbox{\hyperlink{class_font}{Font}}}
+\begin{DoxyCompactItemize}
+\item 
+static Logbot {\bfseries Font\+Logger} = Logbot::\+\+Create\+Instance("{}Font"{})
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \doxymbox{\hyperlink{class_font}{Font}}}
+\begin{DoxyCompactItemize}
+\item 
+PAsset {\bfseries asset\+Ptr}
+\item 
+PTexture {\bfseries texture\+Atlas\+Ptr}
+\item 
+PMaterial {\bfseries material\+Cache\+Ptr}
+\item 
+float {\bfseries font\+Size}
+\item 
+std::\+array$<$ \doxymbox{\hyperlink{struct_font_character}{Font\+Character}}, 128 $>$ {\bfseries characters}
+\item 
+std::\+map$<$ \doxymbox{\hyperlink{struct_text_cache_key}{Text\+Cache\+Key}}, std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$ $>$ {\bfseries mesh\+Cache}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the \doxylink{class_free_type_font}{Free\+Type\+Font} type. 
+
+\label{doc-func-members}
+\Hypertarget{class_free_type_font_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_free_type_font_ace8e8942ae61f4df9238bba96ec78b39}\index{FreeTypeFont@{FreeTypeFont}!\_initFont@{\_initFont}}
+\index{\_initFont@{\_initFont}!FreeTypeFont@{FreeTypeFont}}
+\doxysubsubsection{\texorpdfstring{\_initFont()}{\_initFont()}}
+{\footnotesize\ttfamily \label{class_free_type_font_ace8e8942ae61f4df9238bba96ec78b39} 
+void Free\+Type\+Font::\+\+\_\+init\+Font (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Initializes font resources. 
+
+
+
+Implements \doxymbox{\hyperlink{class_font_aa6b8da140518e4282bbe81e7033e0081}{Font}}.
+
+\Hypertarget{class_free_type_font_a8c52bd0af48e7001a33763ae79723e32}\index{FreeTypeFont@{FreeTypeFont}!beginFrame@{beginFrame}}
+\index{beginFrame@{beginFrame}!FreeTypeFont@{FreeTypeFont}}
+\doxysubsubsection{\texorpdfstring{beginFrame()}{beginFrame()}}
+{\footnotesize\ttfamily \label{class_free_type_font_a8c52bd0af48e7001a33763ae79723e32} 
+void Free\+Type\+Font::\+begin\+Frame (\begin{DoxyParamCaption}\item[{PCamera}]{camera}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \doxymbox{\hyperlink{class_font}{Font}}.
+
+\Hypertarget{class_free_type_font_aabd8450cc9c0f3158ce5ae414c92443f}\index{FreeTypeFont@{FreeTypeFont}!drawText@{drawText}}
+\index{drawText@{drawText}!FreeTypeFont@{FreeTypeFont}}
+\doxysubsubsection{\texorpdfstring{drawText()}{drawText()}}
+{\footnotesize\ttfamily \label{class_free_type_font_aabd8450cc9c0f3158ce5ae414c92443f} 
+void Free\+Type\+Font::\+draw\+Text (\begin{DoxyParamCaption}\item[{std::\+string}]{text}{, }\item[{Math3\+D::\+\+Vec2}]{position}{, }\item[{PCamera}]{camera}{, }\item[{Color}]{color}{, }\item[{bool}]{use\+Cache}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \doxymbox{\hyperlink{class_font}{Font}}.
+
+\Hypertarget{class_free_type_font_a52a54d9bf92dcfb76bbf5d914d417d76}\index{FreeTypeFont@{FreeTypeFont}!flushQueuedText@{flushQueuedText}}
+\index{flushQueuedText@{flushQueuedText}!FreeTypeFont@{FreeTypeFont}}
+\doxysubsubsection{\texorpdfstring{flushQueuedText()}{flushQueuedText()}}
+{\footnotesize\ttfamily \label{class_free_type_font_a52a54d9bf92dcfb76bbf5d914d417d76} 
+void Free\+Type\+Font::\+flush\+Queued\+Text (\begin{DoxyParamCaption}\item[{PCamera}]{camera}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \doxymbox{\hyperlink{class_font}{Font}}.
+
+\Hypertarget{class_free_type_font_a409cd5f8a8f6e596fc654ed5f69167f2}\index{FreeTypeFont@{FreeTypeFont}!supportsQueuedDrawing@{supportsQueuedDrawing}}
+\index{supportsQueuedDrawing@{supportsQueuedDrawing}!FreeTypeFont@{FreeTypeFont}}
+\doxysubsubsection{\texorpdfstring{supportsQueuedDrawing()}{supportsQueuedDrawing()}}
+{\footnotesize\ttfamily \label{class_free_type_font_a409cd5f8a8f6e596fc654ed5f69167f2} 
+bool Free\+Type\+Font::\+supports\+Queued\+Drawing (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \doxymbox{\hyperlink{class_font}{Font}}.
+
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Fonts/\+\doxymbox{\hyperlink{_free_type_font_8h}{Free\+Type\+Font.\+h}}\item 
+src/\+\+Rendering/\+\+Fonts/\+\doxymbox{\hyperlink{_free_type_font_8cpp}{Free\+Type\+Font.\+cpp}}\end{DoxyCompactItemize}

@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_sky_box" xml:lang="en-US">
+<title>SkyBox Class Reference</title>
+<indexterm><primary>SkyBox</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_sky_box">SkyBox</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;SkyBox.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><link linkend="_class_sky_box_1af6d94c1589304676eac958ce814ce546">SkyBox</link> (const <link linkend="_struct_sky_box6_face">SkyBox6Face</link> &amp;faceAssetDef)</para>
+
+<para>Constructs a new <link linkend="_class_sky_box">SkyBox</link> instance. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_sky_box_1a0994828d7cce6823083bc8445b9456d6">draw</link> (PCamera cam, bool depthTested=false)</para>
+
+<para>Draws this object. </para>
+</listitem>
+            <listitem><para>PCubeMap <link linkend="_class_sky_box_1a3870170d9350bfa50f6995853dad559f">getCubeMap</link> () const</para>
+
+<para>Returns the cube map. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_sky_box">SkyBox</link> type. </para>
+</section>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_class_sky_box_1af6d94c1589304676eac958ce814ce546"/><section>
+    <title>SkyBox()</title>
+<indexterm><primary>SkyBox</primary><secondary>SkyBox</secondary></indexterm>
+<indexterm><primary>SkyBox</primary><secondary>SkyBox</secondary></indexterm>
+<para><computeroutput>SkyBox::SkyBox (const <link linkend="_struct_sky_box6_face">SkyBox6Face</link> &amp; faceAssetDef)</computeroutput></para><para>
+
+<para>Constructs a new <link linkend="_class_sky_box">SkyBox</link> instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>faceAssetDef</entry><entry>
+<para>Value for face asset def. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_sky_box_1a0994828d7cce6823083bc8445b9456d6"/><section>
+    <title>draw()</title>
+<indexterm><primary>draw</primary><secondary>SkyBox</secondary></indexterm>
+<indexterm><primary>SkyBox</primary><secondary>draw</secondary></indexterm>
+<para><computeroutput>void SkyBox::draw (PCamera cam, bool depthTested = <computeroutput>false</computeroutput>
+)</computeroutput></para><para>
+
+<para>Draws this object. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>cam</entry><entry>
+<para>Value for cam. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>depthTested</entry><entry>
+<para>Value for depth tested. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_sky_box_1a3870170d9350bfa50f6995853dad559f"/><section>
+    <title>getCubeMap()</title>
+<indexterm><primary>getCubeMap</primary><secondary>SkyBox</secondary></indexterm>
+<indexterm><primary>SkyBox</primary><secondary>getCubeMap</secondary></indexterm>
+<para><computeroutput>PCubeMap SkyBox::getCubeMap ( ) const<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the cube map. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Result of this operation. </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this class was generated from the following files:</para>
+src/Rendering/Textures/<link linkend="__sky_box_8h">SkyBox.h</link>src/Rendering/Textures/<link linkend="__sky_box_8cpp">SkyBox.cpp</link></section>
+</section>

@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Materials/ConstructedMaterial.cpp
+ * @brief Implementation for ConstructedMaterial.
+ */
+
 #include "Rendering/Materials/ConstructedMaterial.h"
 
 #include "Assets/Core/Asset.h"

@@ -1,0 +1,196 @@
+.TH "PBRMaterial" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+PBRMaterial \- Represents the \fBPBRMaterial\fP type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <PBRMaterial\&.h>\fP
+.PP
+Inherits \fBMaterial\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPBRMaterial\fP (std::shared_ptr< \fBShaderProgram\fP > program)"
+.br
+.RI "Constructs a new \fBPBRMaterial\fP instance\&. "
+.ti -1c
+.RI "void \fBbind\fP () override"
+.br
+.RI "Binds this resource\&. "
+.in -1c
+
+Public Member Functions inherited from \fBMaterial\fP
+.in +1c
+.ti -1c
+.RI "\fBMaterial\fP (std::shared_ptr< \fBShaderProgram\fP > program)"
+.br
+.RI "Constructs a new \fBMaterial\fP instance\&. "
+.ti -1c
+.RI "virtual \fB~Material\fP ()"
+.br
+.RI "Destroys this \fBMaterial\fP instance\&. "
+.ti -1c
+.RI "template<typename T> bool \fBset\fP (const std::string &name, T value)"
+.br
+.ti -1c
+.RI "void \fBunbind\fP ()"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBShaderProgram\fP > \fBgetShader\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetShader\fP (std::shared_ptr< \fBShaderProgram\fP > program)"
+.br
+.ti -1c
+.RI "void \fBsetCastsShadows\fP (bool value)"
+.br
+.ti -1c
+.RI "bool \fBcastsShadows\fP () const"
+.br
+.ti -1c
+.RI "void \fBsetReceivesShadows\fP (bool value)"
+.br
+.ti -1c
+.RI "bool \fBreceivesShadows\fP () const"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static std::shared_ptr< \fBPBRMaterial\fP > \fBCreate\fP (Math3D::Vec4 baseColor=Color::WHITE)"
+.br
+.RI "Creates a new object\&. "
+.in -1c
+
+Static Public Member Functions inherited from \fBMaterial\fP
+.in +1c
+.ti -1c
+.RI "static std::shared_ptr< \fBMaterial\fP > \fBCopy\fP (std::shared_ptr< \fBMaterial\fP > material)"
+.br
+.ti -1c
+.RI "template<typename T> static std::shared_ptr< T > \fBGetAs\fP (std::shared_ptr< \fBMaterial\fP > matPtr)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "ValueContainer< Math3D::Vec4 > \fBBaseColor\fP"
+.br
+.ti -1c
+.RI "ValueContainer< std::shared_ptr< \fBTexture\fP > > \fBBaseColorTex\fP"
+.br
+.ti -1c
+.RI "ValueContainer< float > \fBMetallic\fP"
+.br
+.ti -1c
+.RI "ValueContainer< float > \fBRoughness\fP"
+.br
+.ti -1c
+.RI "ValueContainer< std::shared_ptr< \fBTexture\fP > > \fBRoughnessTex\fP"
+.br
+.ti -1c
+.RI "ValueContainer< std::shared_ptr< \fBTexture\fP > > \fBMetallicRoughnessTex\fP"
+.br
+.ti -1c
+.RI "ValueContainer< std::shared_ptr< \fBTexture\fP > > \fBNormalTex\fP"
+.br
+.ti -1c
+.RI "ValueContainer< float > \fBNormalScale\fP"
+.br
+.ti -1c
+.RI "ValueContainer< std::shared_ptr< \fBTexture\fP > > \fBHeightTex\fP"
+.br
+.ti -1c
+.RI "ValueContainer< float > \fBHeightScale\fP"
+.br
+.ti -1c
+.RI "ValueContainer< std::shared_ptr< \fBTexture\fP > > \fBEmissiveTex\fP"
+.br
+.ti -1c
+.RI "ValueContainer< Math3D::Vec3 > \fBEmissiveColor\fP"
+.br
+.ti -1c
+.RI "ValueContainer< float > \fBEmissiveStrength\fP"
+.br
+.ti -1c
+.RI "ValueContainer< std::shared_ptr< \fBTexture\fP > > \fBOcclusionTex\fP"
+.br
+.ti -1c
+.RI "ValueContainer< float > \fBOcclusionStrength\fP"
+.br
+.ti -1c
+.RI "ValueContainer< std::shared_ptr< \fBCubeMap\fP > > \fBEnvMap\fP"
+.br
+.ti -1c
+.RI "ValueContainer< float > \fBEnvStrength\fP"
+.br
+.ti -1c
+.RI "ValueContainer< int > \fBUseEnvMap\fP"
+.br
+.ti -1c
+.RI "ValueContainer< Math3D::Vec2 > \fBUVScale\fP"
+.br
+.ti -1c
+.RI "ValueContainer< Math3D::Vec2 > \fBUVOffset\fP"
+.br
+.ti -1c
+.RI "ValueContainer< float > \fBAlphaCutoff\fP"
+.br
+.ti -1c
+.RI "ValueContainer< int > \fBUseAlphaClip\fP"
+.br
+.ti -1c
+.RI "ValueContainer< Math3D::Vec3 > \fBViewPos\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the \fBPBRMaterial\fP type\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "PBRMaterial::PBRMaterial (std::shared_ptr< \fBShaderProgram\fP > program)"
+
+.PP
+Constructs a new \fBPBRMaterial\fP instance\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIprogram\fP Value for program\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void PBRMaterial::bind ()\fR [override]\fP, \fR [virtual]\fP"
+
+.PP
+Binds this resource\&. 
+.PP
+Reimplemented from \fBMaterial\fP\&.
+.SS "std::shared_ptr< \fBPBRMaterial\fP > PBRMaterial::Create (Math3D::Vec4 baseColor = \fRColor::WHITE\fP)\fR [static]\fP"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIbaseColor\fP Color value\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

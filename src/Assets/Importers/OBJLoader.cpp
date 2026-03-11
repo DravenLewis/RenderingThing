@@ -1,3 +1,8 @@
+/**
+ * @file src/Assets/Importers/OBJLoader.cpp
+ * @brief Implementation for OBJLoader.
+ */
+
 #include "Assets/Importers/OBJLoader.h"
 
 #include "Foundation/Logging/Logbot.h"
@@ -313,6 +318,7 @@ std::shared_ptr<Model> OBJLoader::LoadFromAsset(PAsset asset, PMaterial material
 
     const std::unordered_map<std::string, std::shared_ptr<Material>> importedMaterials = loadObjMaterials();
 
+    /// @brief Represents Part Build State data.
     struct PartBuildState {
         ModelPartFactory factory;
         std::map<std::tuple<int, int, int>, int> vertexMap;

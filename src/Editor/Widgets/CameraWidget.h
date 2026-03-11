@@ -1,3 +1,8 @@
+/**
+ * @file src/Editor/Widgets/CameraWidget.h
+ * @brief Declarations for CameraWidget.
+ */
+
 #ifndef WIDGETS_CAMERA_WIDGET_H
 #define WIDGETS_CAMERA_WIDGET_H
 
@@ -9,16 +14,25 @@
 #include "Rendering/Textures/Texture.h"
 #include "Editor/Widgets/TransformWidget.h"
 
+/// @brief Represents the CameraWidget type.
 class CameraWidget {
     public:
+        /// @brief Enumerates values for Handle.
         enum class Handle {
             None = 0,
             Fov,
             FarPlane
         };
 
+        /**
+         * @brief Constructs a new CameraWidget instance.
+         */
         CameraWidget() = default;
 
+        /**
+         * @brief Sets the icon.
+         * @param tex Value for tex.
+         */
         void setIcon(PTexture tex){ icon = tex; }
         void reset();
 

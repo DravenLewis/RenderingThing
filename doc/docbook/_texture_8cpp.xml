@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__texture_8cpp" xml:lang="en-US">
+<title>src/Rendering/Textures/Texture.cpp File Reference</title>
+<indexterm><primary>src/Rendering/Textures/Texture.cpp</primary></indexterm>
+<para>
+
+<para>Implementation for <link linkend="_class_texture">Texture</link>. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &quot;Rendering/Textures/Texture.h&quot;<?linebreak?>#include &quot;Assets/Core/AssetDescriptorUtils.h&quot;<?linebreak?>#include &quot;Foundation/Logging/Logbot.h&quot;<?linebreak?>#include &lt;iostream&gt;<?linebreak?>#include &lt;cstring&gt;<?linebreak?>#include &lt;mutex&gt;<?linebreak?>#include &lt;vector&gt;<?linebreak?>#include &lt;SDL3/SDL.h&gt;<?linebreak?>#include &quot;Rendering/Core/Graphics.h&quot;<?linebreak?>#include &quot;STB/stb_image.h&quot;<?linebreak?></programlisting><simplesect>
+    <title>Variables    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="__texture_8cpp_1ac95a72c6f2daf960c2d3dcc41b54def6"/>Logbot <emphasis role="strong">textureLogger</emphasis> = Logbot::CreateInstance(&quot;Texture&quot;)</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Implementation for <link linkend="_class_texture">Texture</link>. </para>
+</section>
+</section>

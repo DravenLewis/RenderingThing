@@ -1,0 +1,301 @@
+\doxysection{Vertex Struct Reference}
+\hypertarget{struct_vertex}{}\label{struct_vertex}\index{Vertex@{Vertex}}
+
+
+Holds data for \doxylink{struct_vertex}{Vertex}.  
+
+
+
+
+{\ttfamily \+\#include $<$Mesh.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{struct_vertex}{Vertex}} \& \doxymbox{\hyperlink{struct_vertex_a7828f036e4c200a53d499102997c2a30}{Pos}} (const Math3\+D::\+\+Vec3 \&pos)
+\begin{DoxyCompactList}\small\item\em Sets vertex position. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{struct_vertex}{Vertex}} \& \doxymbox{\hyperlink{struct_vertex_af1fe2694015b32b90d334bf46820bc04}{Pos}} (float x=0, float y=0, float z=0)
+\begin{DoxyCompactList}\small\item\em Sets vertex position. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{struct_vertex}{Vertex}} \& \doxymbox{\hyperlink{struct_vertex_a85ad46ae0b05f963524684314d19fedd}{Norm}} (const Math3\+D::\+\+Vec3 \&nml)
+\begin{DoxyCompactList}\small\item\em Sets vertex normal. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{struct_vertex}{Vertex}} \& \doxymbox{\hyperlink{struct_vertex_a1380a6d23ae35eb199ae3f41628ec47d}{Norm}} (float x=0, float y=0, float z=0)
+\begin{DoxyCompactList}\small\item\em Sets vertex normal. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{struct_vertex}{Vertex}} \& \doxymbox{\hyperlink{struct_vertex_a7ffc6ba8ee72602e3acbf54a164a031b}{UV}} (const Math3\+D::\+\+Vec2 \&pos)
+\begin{DoxyCompactList}\small\item\em Sets vertex UV coordinates. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{struct_vertex}{Vertex}} \& \doxymbox{\hyperlink{struct_vertex_aa1fb5d88ca585d9d07b5838dff9d0aff}{UV}} (float u=0, float v=0)
+\begin{DoxyCompactList}\small\item\em Sets vertex UV coordinates. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{struct_vertex}{Vertex}} \& \doxymbox{\hyperlink{struct_vertex_a5ede97c061c4623a1472f5d11ef81726}{Col}} (const Math3\+D::\+\+Vec4 \&col)
+\begin{DoxyCompactList}\small\item\em Sets vertex color. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{struct_vertex}{Vertex}} \& \doxymbox{\hyperlink{struct_vertex_a665c30113d1eb71a87f16e499c3d28a9}{Col}} (float r=0, float g=0, float b=0, float a=1)
+\begin{DoxyCompactList}\small\item\em Sets vertex color. \end{DoxyCompactList}\item 
+\Hypertarget{struct_vertex_a78a44236d3aa30c52652dd07212d9ca4}\label{struct_vertex_a78a44236d3aa30c52652dd07212d9ca4} 
+bool {\bfseries operator==} (const \doxymbox{\hyperlink{struct_vertex}{Vertex}} \&vtx) const
+\item 
+\Hypertarget{struct_vertex_a0368072537259b0222dc040710f682d9}\label{struct_vertex_a0368072537259b0222dc040710f682d9} 
+bool {\bfseries operator!=} (const \doxymbox{\hyperlink{struct_vertex}{Vertex}} \&vtx) const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \doxymbox{\hyperlink{struct_vertex}{Vertex}} \doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Build}} (Math3\+D::\+\+Vec3 pos=Math3\+D::\+\+Vec3::\+zero(), Math3\+D::\+\+Vec4 color=Math3\+D::\+\+Vec4(1, 1, 1, 1), Math3\+D::\+\+Vec3 normal=Math3\+D::\+\+Vec3::\+zero(), Math3\+D::\+\+Vec2 texcords=Math3\+D::\+\+Vec2(0, 0))
+\begin{DoxyCompactList}\small\item\em Builds the target output. \end{DoxyCompactList}\item 
+static \doxymbox{\hyperlink{struct_vertex}{Vertex}} \doxymbox{\hyperlink{struct_vertex_a392c050c56cbd414b0e541285ba1222a}{Compose}} (std::\+vector$<$ float $>$ \&floats, int data\+Size=VERTEX\+\_\+\+DATA\+\_\+\+WIDTH)
+\begin{DoxyCompactList}\small\item\em Composes a vertex from components. \end{DoxyCompactList}\item 
+static std::\+vector$<$ float $>$ \doxymbox{\hyperlink{struct_vertex_a32abbab0c0fd0e6cd90a030ab0812776}{Decompose}} (\doxymbox{\hyperlink{struct_vertex}{Vertex}} \&v)
+\begin{DoxyCompactList}\small\item\em Decomposes a vertex into scalar components. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_vertex_a55470b6176c680998d2b66bac14ae4da}\label{struct_vertex_a55470b6176c680998d2b66bac14ae4da} 
+Math3\+D::\+\+Vec3 {\bfseries Position}
+\item 
+\Hypertarget{struct_vertex_a39331a69bee042faef08b291f500419d}\label{struct_vertex_a39331a69bee042faef08b291f500419d} 
+Math3\+D::\+\+Vec3 {\bfseries Normal}
+\item 
+\Hypertarget{struct_vertex_a401257a06c2c05262857d31998b91646}\label{struct_vertex_a401257a06c2c05262857d31998b91646} 
+Math3\+D::\+\+Vec2 {\bfseries Tex\+Coords}
+\item 
+\Hypertarget{struct_vertex_ab0636b45174ef34e563efbc8024377eb}\label{struct_vertex_ab0636b45174ef34e563efbc8024377eb} 
+Math3\+D::\+\+Vec4 {\bfseries Color}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_vertex_a6ae4835e5fe1f9332acd97ec671279b5}\label{struct_vertex_a6ae4835e5fe1f9332acd97ec671279b5} 
+static const int {\bfseries VERTEX\+\_\+\+DATA\+\_\+\+WIDTH} = 12
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Holds data for \doxylink{struct_vertex}{Vertex}. 
+
+\label{doc-func-members}
+\Hypertarget{struct_vertex_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}\index{Vertex@{Vertex}!Build@{Build}}
+\index{Build@{Build}!Vertex@{Vertex}}
+\doxysubsubsection{\texorpdfstring{Build()}{Build()}}
+{\footnotesize\ttfamily \label{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8} 
+\doxymbox{\hyperlink{struct_vertex}{Vertex}} Vertex::\+\+Build (\begin{DoxyParamCaption}\item[{Math3\+D::\+\+Vec3}]{pos}{ = {\ttfamily Math3D:\+:\+Vec3:\+:\+zero()}, }\item[{Math3\+D::\+\+Vec4}]{color}{ = {\ttfamily Math3D:\+:\+Vec4(1,1,1,1)}, }\item[{Math3\+D::\+\+Vec3}]{normal}{ = {\ttfamily Math3D:\+:\+Vec3:\+:\+zero()}, }\item[{Math3\+D::\+\+Vec2}]{texcords}{ = {\ttfamily Math3D:\+:\+Vec2(0,0)}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Builds the target output. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pos} & Value for pos. \\
+\hline
+{\em color} & Color value. \\
+\hline
+{\em normal} & Value for normal. \\
+\hline
+{\em texcords} & Value for texcords. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of this operation. 
+\end{DoxyReturn}
+\Hypertarget{struct_vertex_a5ede97c061c4623a1472f5d11ef81726}\index{Vertex@{Vertex}!Col@{Col}}
+\index{Col@{Col}!Vertex@{Vertex}}
+\doxysubsubsection{\texorpdfstring{Col()}{Col()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{struct_vertex_a5ede97c061c4623a1472f5d11ef81726} 
+\doxymbox{\hyperlink{struct_vertex}{Vertex}} \& Vertex::\+\+Col (\begin{DoxyParamCaption}\item[{const Math3\+D::\+\+Vec4 \&}]{col}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets vertex color. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em col} & Value for col. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+\Hypertarget{struct_vertex_a665c30113d1eb71a87f16e499c3d28a9}\index{Vertex@{Vertex}!Col@{Col}}
+\index{Col@{Col}!Vertex@{Vertex}}
+\doxysubsubsection{\texorpdfstring{Col()}{Col()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{struct_vertex_a665c30113d1eb71a87f16e499c3d28a9} 
+\doxymbox{\hyperlink{struct_vertex}{Vertex}} \& Vertex::\+\+Col (\begin{DoxyParamCaption}\item[{float}]{r}{ = {\ttfamily 0}, }\item[{float}]{g}{ = {\ttfamily 0}, }\item[{float}]{b}{ = {\ttfamily 0}, }\item[{float}]{a}{ = {\ttfamily 1}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets vertex color. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em r} & Value for r. \\
+\hline
+{\em g} & Value for g. \\
+\hline
+{\em b} & Value for b. \\
+\hline
+{\em a} & Value for a. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+\Hypertarget{struct_vertex_a392c050c56cbd414b0e541285ba1222a}\index{Vertex@{Vertex}!Compose@{Compose}}
+\index{Compose@{Compose}!Vertex@{Vertex}}
+\doxysubsubsection{\texorpdfstring{Compose()}{Compose()}}
+{\footnotesize\ttfamily \label{struct_vertex_a392c050c56cbd414b0e541285ba1222a} 
+\doxymbox{\hyperlink{struct_vertex}{Vertex}} Vertex::\+\+Compose (\begin{DoxyParamCaption}\item[{std::\+vector$<$ float $>$ \&}]{floats}{, }\item[{int}]{data\+Size}{ = {\ttfamily VERTEX\+\_\+DATA\+\_\+WIDTH}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Composes a vertex from components. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em floats} & Value for floats. \\
+\hline
+{\em data\+Size} & Number of elements or bytes. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of this operation. 
+\end{DoxyReturn}
+\Hypertarget{struct_vertex_a32abbab0c0fd0e6cd90a030ab0812776}\index{Vertex@{Vertex}!Decompose@{Decompose}}
+\index{Decompose@{Decompose}!Vertex@{Vertex}}
+\doxysubsubsection{\texorpdfstring{Decompose()}{Decompose()}}
+{\footnotesize\ttfamily \label{struct_vertex_a32abbab0c0fd0e6cd90a030ab0812776} 
+std::\+vector$<$ float $>$ Vertex::\+\+Decompose (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{struct_vertex}{Vertex}} \&}]{v}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Decomposes a vertex into scalar components. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em v} & Value for v. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Computed numeric result. 
+\end{DoxyReturn}
+\Hypertarget{struct_vertex_a85ad46ae0b05f963524684314d19fedd}\index{Vertex@{Vertex}!Norm@{Norm}}
+\index{Norm@{Norm}!Vertex@{Vertex}}
+\doxysubsubsection{\texorpdfstring{Norm()}{Norm()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{struct_vertex_a85ad46ae0b05f963524684314d19fedd} 
+\doxymbox{\hyperlink{struct_vertex}{Vertex}} \& Vertex::\+\+Norm (\begin{DoxyParamCaption}\item[{const Math3\+D::\+\+Vec3 \&}]{nml}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets vertex normal. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em nml} & Value for nml. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+\Hypertarget{struct_vertex_a1380a6d23ae35eb199ae3f41628ec47d}\index{Vertex@{Vertex}!Norm@{Norm}}
+\index{Norm@{Norm}!Vertex@{Vertex}}
+\doxysubsubsection{\texorpdfstring{Norm()}{Norm()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{struct_vertex_a1380a6d23ae35eb199ae3f41628ec47d} 
+\doxymbox{\hyperlink{struct_vertex}{Vertex}} \& Vertex::\+\+Norm (\begin{DoxyParamCaption}\item[{float}]{x}{ = {\ttfamily 0}, }\item[{float}]{y}{ = {\ttfamily 0}, }\item[{float}]{z}{ = {\ttfamily 0}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets vertex normal. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & Spatial value used by this operation. \\
+\hline
+{\em y} & Spatial value used by this operation. \\
+\hline
+{\em z} & Spatial value used by this operation. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+\Hypertarget{struct_vertex_a7828f036e4c200a53d499102997c2a30}\index{Vertex@{Vertex}!Pos@{Pos}}
+\index{Pos@{Pos}!Vertex@{Vertex}}
+\doxysubsubsection{\texorpdfstring{Pos()}{Pos()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{struct_vertex_a7828f036e4c200a53d499102997c2a30} 
+\doxymbox{\hyperlink{struct_vertex}{Vertex}} \& Vertex::\+\+Pos (\begin{DoxyParamCaption}\item[{const Math3\+D::\+\+Vec3 \&}]{pos}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets vertex position. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pos} & Value for pos. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+\Hypertarget{struct_vertex_af1fe2694015b32b90d334bf46820bc04}\index{Vertex@{Vertex}!Pos@{Pos}}
+\index{Pos@{Pos}!Vertex@{Vertex}}
+\doxysubsubsection{\texorpdfstring{Pos()}{Pos()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{struct_vertex_af1fe2694015b32b90d334bf46820bc04} 
+\doxymbox{\hyperlink{struct_vertex}{Vertex}} \& Vertex::\+\+Pos (\begin{DoxyParamCaption}\item[{float}]{x}{ = {\ttfamily 0}, }\item[{float}]{y}{ = {\ttfamily 0}, }\item[{float}]{z}{ = {\ttfamily 0}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets vertex position. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & Spatial value used by this operation. \\
+\hline
+{\em y} & Spatial value used by this operation. \\
+\hline
+{\em z} & Spatial value used by this operation. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+\Hypertarget{struct_vertex_a7ffc6ba8ee72602e3acbf54a164a031b}\index{Vertex@{Vertex}!UV@{UV}}
+\index{UV@{UV}!Vertex@{Vertex}}
+\doxysubsubsection{\texorpdfstring{UV()}{UV()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{struct_vertex_a7ffc6ba8ee72602e3acbf54a164a031b} 
+\doxymbox{\hyperlink{struct_vertex}{Vertex}} \& Vertex::\+\+UV (\begin{DoxyParamCaption}\item[{const Math3\+D::\+\+Vec2 \&}]{pos}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets vertex UV coordinates. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pos} & Value for pos. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+\Hypertarget{struct_vertex_aa1fb5d88ca585d9d07b5838dff9d0aff}\index{Vertex@{Vertex}!UV@{UV}}
+\index{UV@{UV}!Vertex@{Vertex}}
+\doxysubsubsection{\texorpdfstring{UV()}{UV()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{struct_vertex_aa1fb5d88ca585d9d07b5838dff9d0aff} 
+\doxymbox{\hyperlink{struct_vertex}{Vertex}} \& Vertex::\+\+UV (\begin{DoxyParamCaption}\item[{float}]{u}{ = {\ttfamily 0}, }\item[{float}]{v}{ = {\ttfamily 0}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets vertex UV coordinates. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em u} & Value for u. \\
+\hline
+{\em v} & Value for v. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Geometry/\+\doxymbox{\hyperlink{_mesh_8h}{Mesh.\+h}}\end{DoxyCompactItemize}

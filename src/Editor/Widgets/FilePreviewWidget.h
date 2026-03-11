@@ -1,3 +1,8 @@
+/**
+ * @file src/Editor/Widgets/FilePreviewWidget.h
+ * @brief Declarations for FilePreviewWidget.
+ */
+
 #ifndef FILE_PREVIEW_WIDGET_H
 #define FILE_PREVIEW_WIDGET_H
 
@@ -22,31 +27,107 @@ class Material;
 class Environment;
 class SkyBox;
 
+/// @brief Represents the FilePreviewWidget type.
 class FilePreviewWidget {
     public:
+        /**
+         * @brief Sets the asset root.
+         * @param rootPath Filesystem path for root path.
+         */
         void setAssetRoot(const std::filesystem::path& rootPath);
+        /**
+         * @brief Sets the file path.
+         * @param path Filesystem path for path.
+         */
         void setFilePath(const std::filesystem::path& path);
+        /**
+         * @brief Draws this object.
+         */
         void draw();
 
     private:
+        /**
+         * @brief Reloads from disk.
+         * @param force Flag controlling force.
+         */
         void reloadFromDisk(bool force = false);
+        /**
+         * @brief Draws bundle asset editor.
+         */
         void drawBundleAssetEditor();
+        /**
+         * @brief Draws shader asset editor.
+         */
         void drawShaderAssetEditor();
+        /**
+         * @brief Draws skybox asset editor.
+         */
         void drawSkyboxAssetEditor();
+        /**
+         * @brief Draws material asset editor.
+         */
         void drawMaterialAssetEditor();
+        /**
+         * @brief Draws material object editor.
+         */
         void drawMaterialObjectEditor();
+        /**
+         * @brief Draws model asset editor.
+         */
         void drawModelAssetEditor();
+        /**
+         * @brief Draws mtl file preview.
+         */
         void drawMtlFilePreview();
+        /**
+         * @brief Draws model file preview.
+         */
         void drawModelFilePreview();
+        /**
+         * @brief Draws generic info.
+         */
         void drawGenericInfo() const;
+        /**
+         * @brief Draws error byte dump if needed.
+         */
         void drawErrorByteDumpIfNeeded();
+        /**
+         * @brief Refreshes error byte dump.
+         */
         void refreshErrorByteDump();
+        /**
+         * @brief Ensures material preview resources.
+         * @param size Number of elements or bytes.
+         */
         void ensureMaterialPreviewResources(int size);
+        /**
+         * @brief Updates preview camera from orbit.
+         */
         void updatePreviewCameraFromOrbit();
+        /**
+         * @brief Checks whether handle preview orbit input.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool handlePreviewOrbitInput();
+        /**
+         * @brief Renders material preview.
+         * @param material Value for material.
+         */
         void renderMaterialPreview(const std::shared_ptr<Material>& material);
+        /**
+         * @brief Renders model preview.
+         * @param model Mode or type selector.
+         */
         void renderModelPreview(const std::shared_ptr<Model>& model);
+        /**
+         * @brief Checks whether import selected mtl material.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool importSelectedMtlMaterial();
+        /**
+         * @brief Checks whether import current model as asset.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool importCurrentModelAsAsset();
 
         std::filesystem::path assetRoot;

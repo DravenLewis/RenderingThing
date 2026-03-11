@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_material_registry_entry" xml:lang="en-US">
+<title>MaterialRegistryEntry Struct Reference</title>
+<indexterm><primary>MaterialRegistryEntry</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_material_registry_entry">MaterialRegistryEntry</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;MaterialRegistry.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_material_registry_entry_1ade69a5fdad734180ac03ea76d20b65d9"/>std::string <emphasis role="strong">id</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_material_registry_entry_1a4f8ef8e3b79277475d36c07587e644f8"/>std::string <emphasis role="strong">displayName</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_material_registry_entry_1afa4b0d0f9a2afdb7780fae40c8167f9f"/>bool <emphasis role="strong">isBuiltIn</emphasis> = false</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_material_registry_entry_1a4e21a9d2320505edfb3a70ddf31fe169"/>std::string <emphasis role="strong">assetRef</emphasis></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_material_registry_entry">MaterialRegistryEntry</link>. </para>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Materials/<link linkend="__material_registry_8h">MaterialRegistry.h</link></section>
+</section>

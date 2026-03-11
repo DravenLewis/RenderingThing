@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_free_type_font" xml:lang="en-US">
+<title>FreeTypeFont Class Reference</title>
+<indexterm><primary>FreeTypeFont</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_free_type_font">FreeTypeFont</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;FreeTypeFont.h&gt;</computeroutput>
+</para>
+<para>Inheritance diagram for FreeTypeFont:    <informalfigure>
+        <mediaobject>
+            <imageobject>
+                <imagedata width="50%" align="center" valign="middle" scalefit="0" fileref="class_free_type_font.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+    </informalfigure>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_free_type_font_1af5cf9314662b0bb7501c2ad300314abf"/><emphasis role="strong">FreeTypeFont</emphasis> ()</para>
+
+<para>Constructs a new <link linkend="_class_free_type_font">FreeTypeFont</link> instance. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_free_type_font_1ace8e8942ae61f4df9238bba96ec78b39">_initFont</link> () override</para>
+
+<para>Initializes font resources. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_free_type_font_1aabd8450cc9c0f3158ce5ae414c92443f">drawText</link> (std::string text, Math3D::Vec2 position, PCamera camera, Color color, bool useCache) override</para>
+</listitem>
+            <listitem><para>bool <link linkend="_class_free_type_font_1a409cd5f8a8f6e596fc654ed5f69167f2">supportsQueuedDrawing</link> () const override</para>
+</listitem>
+            <listitem><para>void <link linkend="_class_free_type_font_1a8c52bd0af48e7001a33763ae79723e32">beginFrame</link> (PCamera camera) override</para>
+</listitem>
+            <listitem><para>void <link linkend="_class_free_type_font_1a52a54d9bf92dcfb76bbf5d914d417d76">flushQueuedText</link> (PCamera camera) override</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+Public Member Functions inherited from <link linkend="_class_font">Font</link>        <itemizedlist>
+            <listitem><para><emphasis role="strong">Font</emphasis> ()</para>
+
+<para>Constructs a new <link linkend="_class_font">Font</link> instance. </para>
+</listitem>
+            <listitem><para>void <emphasis role="strong">clearCache</emphasis> ()</para>
+</listitem>
+            <listitem><para>PAsset <emphasis role="strong">getAssetPointer</emphasis> ()</para>
+</listitem>
+        </itemizedlist>
+<simplesect>
+    <title>Additional Inherited Members    </title>
+Static Public Member Functions inherited from <link linkend="_class_font">Font</link>        <itemizedlist>
+            <listitem><para>template&lt;typename T&gt; </para><para>static std::shared_ptr&lt; T &gt; <emphasis role="strong">Create</emphasis> (PAsset asset, float fontSize=18.0f)</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+Static Public Attributes inherited from <link linkend="_class_font">Font</link>        <itemizedlist>
+            <listitem><para>static Logbot <emphasis role="strong">FontLogger</emphasis> = Logbot::CreateInstance(&quot;Font&quot;)</para>
+</listitem>
+        </itemizedlist>
+Protected Attributes inherited from <link linkend="_class_font">Font</link>        <itemizedlist>
+            <listitem><para>PAsset <emphasis role="strong">assetPtr</emphasis></para>
+</listitem>
+            <listitem><para>PTexture <emphasis role="strong">textureAtlasPtr</emphasis></para>
+</listitem>
+            <listitem><para>PMaterial <emphasis role="strong">materialCachePtr</emphasis></para>
+</listitem>
+            <listitem><para>float <emphasis role="strong">fontSize</emphasis></para>
+</listitem>
+            <listitem><para>std::array&lt; <link linkend="_struct_font_character">FontCharacter</link>, 128 &gt; <emphasis role="strong">characters</emphasis></para>
+</listitem>
+            <listitem><para>std::map&lt; <link linkend="_struct_text_cache_key">TextCacheKey</link>, std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; &gt; <emphasis role="strong">meshCache</emphasis></para>
+</listitem>
+        </itemizedlist>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_free_type_font">FreeTypeFont</link> type. </para>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_free_type_font_1ace8e8942ae61f4df9238bba96ec78b39"/><section>
+    <title>_initFont()</title>
+<indexterm><primary>_initFont</primary><secondary>FreeTypeFont</secondary></indexterm>
+<indexterm><primary>FreeTypeFont</primary><secondary>_initFont</secondary></indexterm>
+<para><computeroutput>void FreeTypeFont::_initFont ( )<computeroutput>[override]</computeroutput>, <computeroutput>[virtual]</computeroutput></computeroutput></para><para>
+
+<para>Initializes font resources. </para>
+</para>
+<para>
+Implements <link linkend="_class_font_1aa6b8da140518e4282bbe81e7033e0081">Font</link>.</para>
+</section>
+<anchor xml:id="_class_free_type_font_1a8c52bd0af48e7001a33763ae79723e32"/><section>
+    <title>beginFrame()</title>
+<indexterm><primary>beginFrame</primary><secondary>FreeTypeFont</secondary></indexterm>
+<indexterm><primary>FreeTypeFont</primary><secondary>beginFrame</secondary></indexterm>
+<para><computeroutput>void FreeTypeFont::beginFrame (PCamera camera)<computeroutput>[override]</computeroutput>, <computeroutput>[virtual]</computeroutput></computeroutput></para><para>
+Reimplemented from <link linkend="_class_font">Font</link>.</para>
+</section>
+<anchor xml:id="_class_free_type_font_1aabd8450cc9c0f3158ce5ae414c92443f"/><section>
+    <title>drawText()</title>
+<indexterm><primary>drawText</primary><secondary>FreeTypeFont</secondary></indexterm>
+<indexterm><primary>FreeTypeFont</primary><secondary>drawText</secondary></indexterm>
+<para><computeroutput>void FreeTypeFont::drawText (std::string text, Math3D::Vec2 position, PCamera camera, Color color, bool useCache)<computeroutput>[override]</computeroutput>, <computeroutput>[virtual]</computeroutput></computeroutput></para><para>
+Implements <link linkend="_class_font">Font</link>.</para>
+</section>
+<anchor xml:id="_class_free_type_font_1a52a54d9bf92dcfb76bbf5d914d417d76"/><section>
+    <title>flushQueuedText()</title>
+<indexterm><primary>flushQueuedText</primary><secondary>FreeTypeFont</secondary></indexterm>
+<indexterm><primary>FreeTypeFont</primary><secondary>flushQueuedText</secondary></indexterm>
+<para><computeroutput>void FreeTypeFont::flushQueuedText (PCamera camera)<computeroutput>[override]</computeroutput>, <computeroutput>[virtual]</computeroutput></computeroutput></para><para>
+Reimplemented from <link linkend="_class_font">Font</link>.</para>
+</section>
+<anchor xml:id="_class_free_type_font_1a409cd5f8a8f6e596fc654ed5f69167f2"/><section>
+    <title>supportsQueuedDrawing()</title>
+<indexterm><primary>supportsQueuedDrawing</primary><secondary>FreeTypeFont</secondary></indexterm>
+<indexterm><primary>FreeTypeFont</primary><secondary>supportsQueuedDrawing</secondary></indexterm>
+<para><computeroutput>bool FreeTypeFont::supportsQueuedDrawing ( ) const<computeroutput>[inline]</computeroutput>, <computeroutput>[override]</computeroutput>, <computeroutput>[virtual]</computeroutput></computeroutput></para><para>
+Reimplemented from <link linkend="_class_font">Font</link>.</para>
+</section>
+<para>
+The documentation for this class was generated from the following files:</para>
+src/Rendering/Fonts/<link linkend="__free_type_font_8h">FreeTypeFont.h</link>src/Rendering/Fonts/<link linkend="__free_type_font_8cpp">FreeTypeFont.cpp</link></section>
+</section>

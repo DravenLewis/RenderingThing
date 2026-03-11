@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_material_defaults_1_1_lit_image_material" xml:lang="en-US">
+<title>MaterialDefaults::LitImageMaterial Class Reference</title>
+<indexterm><primary>MaterialDefaults::LitImageMaterial</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_material_defaults_1_1_lit_image_material">LitImageMaterial</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;MaterialDefaults.h&gt;</computeroutput>
+</para>
+<para>Inheritance diagram for MaterialDefaults::LitImageMaterial:    <informalfigure>
+        <mediaobject>
+            <imageobject>
+                <imagedata width="50%" align="center" valign="middle" scalefit="0" fileref="class_material_defaults_1_1_lit_image_material.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+    </informalfigure>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><link linkend="_class_material_defaults_1_1_lit_image_material_1a145f3af8bff8074b827846bf9df7b71d">LitImageMaterial</link> (std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; program, std::shared_ptr&lt; <link linkend="_class_texture">Texture</link> &gt; texture)</para>
+
+<para>Constructs a new <link linkend="_class_material_defaults_1_1_lit_image_material">LitImageMaterial</link> instance. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_material_defaults_1_1_lit_image_material_1ab48290d5a6ba088db4337a1b9f3c2137">bind</link> () override</para>
+
+<para>Binds this resource. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+Public Member Functions inherited from <link linkend="_class_material">Material</link>        <itemizedlist>
+            <listitem><para><link linkend="_class_material_1ace810a426f4b488d2dc2a53070d85405">Material</link> (std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; program)</para>
+
+<para>Constructs a new <link linkend="_class_material">Material</link> instance. </para>
+</listitem>
+            <listitem><para>virtual <emphasis role="strong">~Material</emphasis> ()</para>
+
+<para>Destroys this <link linkend="_class_material">Material</link> instance. </para>
+</listitem>
+            <listitem><para>template&lt;typename T&gt; </para><para>bool <emphasis role="strong">set</emphasis> (const std::string &amp;name, T value)</para>
+</listitem>
+            <listitem><para>void <emphasis role="strong">unbind</emphasis> ()</para>
+</listitem>
+            <listitem><para>std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; <emphasis role="strong">getShader</emphasis> ()</para>
+</listitem>
+            <listitem><para>void <emphasis role="strong">setShader</emphasis> (std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; program)</para>
+</listitem>
+            <listitem><para>void <emphasis role="strong">setCastsShadows</emphasis> (bool value)</para>
+</listitem>
+            <listitem><para>bool <emphasis role="strong">castsShadows</emphasis> () const</para>
+</listitem>
+            <listitem><para>void <emphasis role="strong">setReceivesShadows</emphasis> (bool value)</para>
+</listitem>
+            <listitem><para>bool <emphasis role="strong">receivesShadows</emphasis> () const</para>
+</listitem>
+        </itemizedlist>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>static std::shared_ptr&lt; <link linkend="_class_material_defaults_1_1_lit_image_material_1a145f3af8bff8074b827846bf9df7b71d">LitImageMaterial</link> &gt; <link linkend="_class_material_defaults_1_1_lit_image_material_1ade6592a4b94e47005ea95b1038b59d56">Create</link> (PTexture tex, Math3D::Vec4 color=Color::WHITE)</para>
+
+<para>Creates a new object. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+Static Public Member Functions inherited from <link linkend="_class_material">Material</link>        <itemizedlist>
+            <listitem><para>static std::shared_ptr&lt; <link linkend="_class_material">Material</link> &gt; <emphasis role="strong">Copy</emphasis> (std::shared_ptr&lt; <link linkend="_class_material">Material</link> &gt; material)</para>
+</listitem>
+            <listitem><para>template&lt;typename T&gt; </para><para>static std::shared_ptr&lt; T &gt; <emphasis role="strong">GetAs</emphasis> (std::shared_ptr&lt; <link linkend="_class_material">Material</link> &gt; matPtr)</para>
+</listitem>
+        </itemizedlist>
+<simplesect>
+    <title>Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_material_defaults_1_1_lit_image_material_1a1a9904b6d726d0b97093dcb31808da9a"/>ValueContainer&lt; Math3D::Vec4 &gt; <emphasis role="strong">Color</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_material_defaults_1_1_lit_image_material_1ac96a2a5122be4afe12feb91277920657"/>ValueContainer&lt; std::shared_ptr&lt; <link linkend="_class_texture">Texture</link> &gt; &gt; <emphasis role="strong">Tex</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_material_defaults_1_1_lit_image_material_1ac064703c5eee9768cd53d2dac3e51282"/>ValueContainer&lt; Math3D::Vec3 &gt; <emphasis role="strong">ViewPos</emphasis></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_material_defaults_1_1_lit_image_material">LitImageMaterial</link> type. </para>
+</section>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_class_material_defaults_1_1_lit_image_material_1a145f3af8bff8074b827846bf9df7b71d"/><section>
+    <title>LitImageMaterial()</title>
+<indexterm><primary>LitImageMaterial</primary><secondary>MaterialDefaults::LitImageMaterial</secondary></indexterm>
+<indexterm><primary>MaterialDefaults::LitImageMaterial</primary><secondary>LitImageMaterial</secondary></indexterm>
+<para><computeroutput>LitImageMaterial::LitImageMaterial (std::shared_ptr&lt; <link linkend="_class_shader_program">ShaderProgram</link> &gt; program, std::shared_ptr&lt; <link linkend="_class_texture">Texture</link> &gt; texture)</computeroutput></para><para>
+
+<para>Constructs a new <link linkend="_class_material_defaults_1_1_lit_image_material">LitImageMaterial</link> instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>program</entry><entry>
+<para>Value for program. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>texture</entry><entry>
+<para>Value for texture. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_material_defaults_1_1_lit_image_material_1ab48290d5a6ba088db4337a1b9f3c2137"/><section>
+    <title>bind()</title>
+<indexterm><primary>bind</primary><secondary>MaterialDefaults::LitImageMaterial</secondary></indexterm>
+<indexterm><primary>MaterialDefaults::LitImageMaterial</primary><secondary>bind</secondary></indexterm>
+<para><computeroutput>void LitImageMaterial::bind ( )<computeroutput>[override]</computeroutput>, <computeroutput>[virtual]</computeroutput></computeroutput></para><para>
+
+<para>Binds this resource. </para>
+</para>
+<para>
+Reimplemented from <link linkend="_class_material">Material</link>.</para>
+</section>
+<anchor xml:id="_class_material_defaults_1_1_lit_image_material_1ade6592a4b94e47005ea95b1038b59d56"/><section>
+    <title>Create()</title>
+<indexterm><primary>Create</primary><secondary>MaterialDefaults::LitImageMaterial</secondary></indexterm>
+<indexterm><primary>MaterialDefaults::LitImageMaterial</primary><secondary>Create</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_class_material_defaults_1_1_lit_image_material_1a145f3af8bff8074b827846bf9df7b71d">LitImageMaterial</link> &gt; LitImageMaterial::Create (PTexture tex, Math3D::Vec4 color = <computeroutput>Color::WHITE</computeroutput>
+)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Creates a new object. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>tex</entry><entry>
+<para>Value for tex. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>color</entry><entry>
+<para>Color value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this class was generated from the following files:</para>
+src/Rendering/Materials/<link linkend="__material_defaults_8h">MaterialDefaults.h</link>src/Rendering/Materials/<link linkend="__material_defaults_8cpp">MaterialDefaults.cpp</link></section>
+</section>

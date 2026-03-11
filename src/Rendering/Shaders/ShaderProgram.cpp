@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Shaders/ShaderProgram.cpp
+ * @brief Implementation for ShaderProgram.
+ */
+
 
 #include "Rendering/Shaders/ShaderProgram.h"
 

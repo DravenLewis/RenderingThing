@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__material_defaults_8h_source" xml:lang="en-US">
+<title>MaterialDefaults.h</title>
+<indexterm><primary>src/Rendering/Materials/MaterialDefaults.h</primary></indexterm>
+Go to the documentation of this file.<programlisting linenumbering="unnumbered">1 
+5 
+6 <emphasis role="preprocessor">#ifndef&#32;MATERIAL_DEFAULTS_H</emphasis>
+7 <emphasis role="preprocessor">#define&#32;MATERIAL_DEFAULTS_H</emphasis>
+8 
+9 <emphasis role="preprocessor">#include&#32;&lt;string&gt;</emphasis>
+10 <emphasis role="preprocessor">#include&#32;&lt;map&gt;</emphasis>
+11 <emphasis role="preprocessor">#include&#32;&lt;memory&gt;</emphasis>
+12 
+13 <emphasis role="preprocessor">#include&#32;&quot;Foundation/Logging/Logbot.h&quot;</emphasis>
+14 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__material_8h">Rendering/Materials/Material.h</link>&quot;</emphasis>
+15 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__shader_program_8h">Rendering/Shaders/ShaderProgram.h</link>&quot;</emphasis>
+16 <emphasis role="preprocessor">#include&#32;&quot;Assets/Core/Asset.h&quot;</emphasis>
+17 <emphasis role="preprocessor">#include&#32;&quot;Foundation/Math/Color.h&quot;</emphasis>
+18 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__texture_8h">Rendering/Textures/Texture.h</link>&quot;</emphasis>
+19 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__light_8h">Rendering/Lighting/Light.h</link>&quot;</emphasis>
+20 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__light_utils_8h">Rendering/Lighting/LightUtils.h</link>&quot;</emphasis>
+21 
+22 
+23 <emphasis role="preprocessor">#include&#32;&quot;Foundation/Util/ValueContainer.h&quot;</emphasis>
+24 
+25 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_screen">Screen</link>;
+26 
+27 <emphasis role="keyword">namespace&#32;</emphasis>MaterialDefaults{
+28 &#32;&#32;&#32;&#32;
+30 &#32;&#32;&#32;&#32;<emphasis role="keyword">class&#32;</emphasis><link linkend="_class_material_defaults_1_1_color_material_1af4201c21c18e146bd0b1a4f707d89b5e">ColorMaterial</link>&#32;:&#32;<emphasis role="keyword">public</emphasis>&#32;<link linkend="_class_material_1ace810a426f4b488d2dc2a53070d85405">Material</link>{
+31 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+32 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;Math3D::Vec4&gt;&#32;Color;
+37 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_material_defaults_1_1_color_material_1af4201c21c18e146bd0b1a4f707d89b5e">ColorMaterial</link>(std::shared_ptr&lt;ShaderProgram&gt;&#32;program);
+43 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;ColorMaterial&gt;&#32;<link linkend="_class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769">Create</link>(Math3D::Vec4&#32;color&#32;=&#32;Color::MAGENTA);
+44 &#32;&#32;&#32;&#32;};
+45 
+47 &#32;&#32;&#32;&#32;<emphasis role="keyword">class&#32;</emphasis><link linkend="_class_material_defaults_1_1_image_material_1a132cf6ed173fb5c7a62664b5b791b6fe">ImageMaterial</link>&#32;:&#32;<emphasis role="keyword">public</emphasis>&#32;<link linkend="_class_material_1ace810a426f4b488d2dc2a53070d85405">Material</link>{
+48 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+49 
+50 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;Math3D::Vec4&gt;&#32;Color;
+51 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;&#32;Tex;
+52 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;Math3D::Vec2&gt;&#32;UV;
+53 
+59 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_material_defaults_1_1_image_material_1a132cf6ed173fb5c7a62664b5b791b6fe">ImageMaterial</link>(std::shared_ptr&lt;ShaderProgram&gt;&#32;program,&#32;std::shared_ptr&lt;Texture&gt;&#32;texture);
+67 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;ImageMaterial&gt;&#32;<link linkend="_class_material_defaults_1_1_image_material_1add720d0e294c8a6aaefcce9149d1c97e">Create</link>(PTexture&#32;tex,&#32;Math3D::Vec4&#32;color&#32;=&#32;Color::WHITE,&#32;Math3D::Vec2&#32;uv&#32;=&#32;Math3D::Vec2(0,0));
+68 &#32;&#32;&#32;&#32;};
+69 
+71 &#32;&#32;&#32;&#32;<emphasis role="keyword">class&#32;</emphasis><link linkend="_class_material_defaults_1_1_lit_color_material_1a481808bb46099270f1547b25f1b6440c">LitColorMaterial</link>&#32;:&#32;<emphasis role="keyword">public</emphasis>&#32;<link linkend="_class_material_1ace810a426f4b488d2dc2a53070d85405">Material</link>{
+72 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+73 
+74 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;Math3D::Vec4&gt;&#32;Color;
+75 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;Math3D::Vec3&gt;&#32;ViewPos;
+76 
+81 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_material_defaults_1_1_lit_color_material_1a481808bb46099270f1547b25f1b6440c">LitColorMaterial</link>(std::shared_ptr&lt;ShaderProgram&gt;&#32;program);
+85 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_material_defaults_1_1_lit_color_material_1a80c1908b825477e38e320f838708fac9">bind</link>()&#32;<emphasis role="keyword">override</emphasis>;
+91 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;LitColorMaterial&gt;&#32;<link linkend="_class_material_defaults_1_1_lit_color_material_1a76d5ca70b46d87e5e185e958520a3e18">Create</link>(Math3D::Vec4&#32;color&#32;=&#32;Color::WHITE);
+92 &#32;&#32;&#32;&#32;};
+93 
+95 &#32;&#32;&#32;&#32;<emphasis role="keyword">class&#32;</emphasis><link linkend="_class_material_defaults_1_1_lit_image_material_1a145f3af8bff8074b827846bf9df7b71d">LitImageMaterial</link>&#32;:&#32;<emphasis role="keyword">public</emphasis>&#32;<link linkend="_class_material_1ace810a426f4b488d2dc2a53070d85405">Material</link>{
+96 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+97 
+98 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;Math3D::Vec4&gt;&#32;Color;
+99 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;&#32;Tex;
+100 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;Math3D::Vec3&gt;&#32;ViewPos;
+101 
+107 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_material_defaults_1_1_lit_image_material_1a145f3af8bff8074b827846bf9df7b71d">LitImageMaterial</link>(std::shared_ptr&lt;ShaderProgram&gt;&#32;program,&#32;std::shared_ptr&lt;Texture&gt;&#32;texture);
+111 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_material_defaults_1_1_lit_image_material_1ab48290d5a6ba088db4337a1b9f3c2137">bind</link>()&#32;<emphasis role="keyword">override</emphasis>;
+118 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;LitImageMaterial&gt;&#32;<link linkend="_class_material_defaults_1_1_lit_image_material_1ade6592a4b94e47005ea95b1038b59d56">Create</link>(PTexture&#32;tex,&#32;Math3D::Vec4&#32;color&#32;=&#32;Color::WHITE);
+119 &#32;&#32;&#32;&#32;};
+120 
+122 &#32;&#32;&#32;&#32;<emphasis role="keyword">class&#32;</emphasis><link linkend="_class_material_defaults_1_1_flat_color_material_1ac7dc6be01211acd7b57c3cdc9c66465c">FlatColorMaterial</link>&#32;:&#32;<emphasis role="keyword">public</emphasis>&#32;<link linkend="_class_material_1ace810a426f4b488d2dc2a53070d85405">Material</link>&#32;{
+123 &#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+124 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;Math3D::Vec4&gt;&#32;Color;
+125 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;Math3D::Vec3&gt;&#32;ViewPos;
+126 
+131 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_material_defaults_1_1_flat_color_material_1ac7dc6be01211acd7b57c3cdc9c66465c">FlatColorMaterial</link>(std::shared_ptr&lt;ShaderProgram&gt;&#32;program);
+135 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_material_defaults_1_1_flat_color_material_1a3602a1f317d7e37c08e1f2c7e4fd4c2b">bind</link>()&#32;<emphasis role="keyword">override</emphasis>;
+141 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;FlatColorMaterial&gt;&#32;<link linkend="_class_material_defaults_1_1_flat_color_material_1a4cde023f130787555ffd8f4b322a040e">Create</link>(Math3D::Vec4&#32;color&#32;=&#32;Color::WHITE);
+142 &#32;&#32;&#32;&#32;};&#32;&#32;&#32;&#32;
+143 
+145 &#32;&#32;&#32;&#32;<emphasis role="keyword">class&#32;</emphasis><link linkend="_class_material_defaults_1_1_flat_image_material_1a9c3f9e57b779bf7b98422cb07f9fb5f2">FlatImageMaterial</link>&#32;:&#32;<emphasis role="keyword">public</emphasis>&#32;<link linkend="_class_material_1ace810a426f4b488d2dc2a53070d85405">Material</link>&#32;{
+146 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+147 
+148 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;Math3D::Vec4&gt;&#32;Color;
+149 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;std::shared_ptr&lt;Texture&gt;&gt;&#32;Tex;
+150 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;ValueContainer&lt;Math3D::Vec3&gt;&#32;ViewPos;
+151 
+157 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_material_defaults_1_1_flat_image_material_1a9c3f9e57b779bf7b98422cb07f9fb5f2">FlatImageMaterial</link>(std::shared_ptr&lt;ShaderProgram&gt;&#32;program,&#32;std::shared_ptr&lt;Texture&gt;&#32;texture);
+161 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_material_defaults_1_1_flat_image_material_1a61b269b2721d94022945e0bf31bbd6fc">bind</link>()&#32;<emphasis role="keyword">override</emphasis>;
+168 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;FlatImageMaterial&gt;&#32;<link linkend="_class_material_defaults_1_1_flat_image_material_1a501a86e2432c06f23aae2b5f027c4e52">Create</link>(std::shared_ptr&lt;Texture&gt;&#32;tex,&#32;Math3D::Vec4&#32;color&#32;=&#32;Color::WHITE);
+169 &#32;&#32;&#32;&#32;};
+170 };
+171 
+172 <emphasis role="preprocessor">#endif&#32;</emphasis><emphasis role="comment">//MATERIAL_DEFAULTS_H</emphasis>
+</programlisting></section>

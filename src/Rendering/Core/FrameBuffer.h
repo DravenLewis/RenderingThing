@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Core/FrameBuffer.h
+ * @brief Declarations for FrameBuffer.
+ */
+
 #ifndef FRAMEBUFFER_H
 #define FRAMEBUFFER_H
 
@@ -13,6 +18,7 @@
 
 typedef GLuint FrameBufferObject;
 
+/// @brief Holds data for FrameBuffer.
 struct FrameBuffer{
     private:
         FrameBufferObject fboID;
@@ -21,6 +27,7 @@ struct FrameBuffer{
         PTexture texturePtr;
         PTexture depthTexture;
 
+        /// @brief Holds data for GBufferAttachment.
         struct GBufferAttachment{
             PTexture texture;
             GLenum internalFormat = GL_RGBA8;
@@ -31,6 +38,11 @@ struct FrameBuffer{
         std::vector<GBufferAttachment> gbufferAttachments;
     
     public:
+        /**
+         * @brief Constructs a new FrameBuffer instance.
+         * @param width Dimension value.
+         * @param height Dimension value.
+         */
         FrameBuffer(int width, int height) : width(width), height(height) {
             glGenFramebuffers(1, &fboID);
             
@@ -81,19 +93,33 @@ struct FrameBuffer{
             unbind();
         }
 
+        /**
+         * @brief Destroys this FrameBuffer instance.
+         */
         ~FrameBuffer(){
             glDeleteFramebuffers(1, &fboID);
         }
 
+        /**
+         * @brief Binds this resource.
+         */
         void bind(){
             glBindFramebuffer(GL_FRAMEBUFFER, fboID);
             glViewport(0,0,width, height);
         }
 
+        /**
+         * @brief Unbinds this resource.
+         */
         void unbind(){
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
 
+        /**
+         * @brief Resizes internal resources.
+         * @param width Dimension value.
+         * @param height Dimension value.
+         */
         void resize(int width, int height){
             this->width = width;
             this->height = height;
@@ -125,6 +151,10 @@ struct FrameBuffer{
             }
         }
 
+        /**
+         * @brief Attaches a texture to the framebuffer.
+         * @param tex Value for tex.
+         */
         void attachTexture(PTexture tex){
 
             this->texturePtr = tex;
@@ -151,6 +181,10 @@ struct FrameBuffer{
             unbind();
         }
 
+        /**
+         * @brief Checks whether validate.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool validate(){
             bind();
             bool complete = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
@@ -158,6 +192,10 @@ struct FrameBuffer{
             return complete;
         }
 
+        /**
+         * @brief Clears the current state.
+         * @param clearColor Color value.
+         */
         void clear(Color clearColor = Color::BLACK){
             glClearColor(
                 clearColor.getRed(),
@@ -169,11 +207,23 @@ struct FrameBuffer{
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
 
+        /**
+         * @brief Creates a new object.
+         * @param width Dimension value.
+         * @param height Dimension value.
+         * @return Pointer to the resulting object.
+         */
         static std::shared_ptr<FrameBuffer> Create(int width, int height){
             auto fbuffer = std::make_shared<FrameBuffer>(width, height);
             return fbuffer;
         }
 
+        /**
+         * @brief Creates g buffer.
+         * @param width Dimension value.
+         * @param height Dimension value.
+         * @return Pointer to the resulting object.
+         */
         static std::shared_ptr<FrameBuffer> CreateGBuffer(int width, int height){
             auto fbuffer = std::make_shared<FrameBuffer>(width, height);
 
@@ -247,14 +297,27 @@ struct FrameBuffer{
             return fbuffer;
         }
 
+        /**
+         * @brief Returns the texture.
+         * @return Result of this operation.
+         */
         PTexture getTexture(){
             return texturePtr;
         }
 
+        /**
+         * @brief Returns the depth texture.
+         * @return Result of this operation.
+         */
         PTexture getDepthTexture(){
             return depthTexture;
         }
 
+        /**
+         * @brief Returns the g buffer texture.
+         * @param index Identifier or index value.
+         * @return Result of this operation.
+         */
         PTexture getGBufferTexture(size_t index) const{
             if(index >= gbufferAttachments.size()){
                 return nullptr;
@@ -262,45 +325,84 @@ struct FrameBuffer{
             return gbufferAttachments[index].texture;
         }
 
+        /**
+         * @brief Returns the g buffer count.
+         * @return Computed numeric result.
+         */
         size_t getGBufferCount() const{
             return gbufferAttachments.size();
         }
 
+        /**
+         * @brief Returns the id.
+         * @return Result of this operation.
+         */
         FrameBufferObject getID() const { return fboID; }
         int getWidth() const { return width; }
         int getHeight() const { return height; }
 };
 
+/// @brief Holds data for FrameBufferChain.
 struct FrameBufferChain{
     private:
+        /**
+         * @brief Constructs a new FrameBufferChain instance.
+         */
         FrameBufferChain() = delete;
         int size = 0;
         std::vector<std::shared_ptr<FrameBuffer>> frameBufferPtrArray;
     public:
+        /**
+         * @brief Constructs a new FrameBufferChain instance.
+         * @param s Value for s.
+         */
         FrameBufferChain(int s) : size(s) {
             frameBufferPtrArray.resize(s);
         };
 
+        /**
+         * @brief Returns the at index.
+         * @param index Identifier or index value.
+         * @return Pointer to the resulting object.
+         */
         std::shared_ptr<FrameBuffer> getAtIndex(int index){
             if(index < 0 || index >= size) return nullptr;
             return frameBufferPtrArray[index];
         }
 
+        /**
+         * @brief Sets the at index.
+         * @param index Identifier or index value.
+         * @param fbPtr Pointer to fb.
+         */
         void setAtIndex(int index, std::shared_ptr<FrameBuffer> fbPtr){
             if(index < 0 || index >= size) return;
             frameBufferPtrArray[index] = fbPtr;
         }
 
+        /**
+         * @brief Returns the size.
+         * @return Computed numeric result.
+         */
         int getSize(){
             return size;
         }
 
+        /**
+         * @brief Resizes internal resources.
+         * @param newSize Number of elements or bytes.
+         */
         void resize(int newSize){
             if(newSize <= 0) return;
             frameBufferPtrArray.resize(newSize);
             size = newSize;
         }
 
+        /**
+         * @brief Resizes backing GPU buffers.
+         * @param width Dimension value.
+         * @param height Dimension value.
+         */
         void resizeBuffers(int width, int height){
             for(auto buffer : frameBufferPtrArray){
                 if(buffer) {
@@ -310,27 +412,48 @@ struct FrameBufferChain{
         }
 };
 
+/// @brief Holds data for TrippleBuffer.
 struct TrippleBuffer{
     private:
         FrameBufferChain chain = FrameBufferChain(3);
         int width, height;
+        /**
+         * @brief Constructs a new TrippleBuffer instance.
+         */
         TrippleBuffer() = delete;
     public:
 
+        /**
+         * @brief Constructs a new TrippleBuffer instance.
+         * @param width Dimension value.
+         * @param height Dimension value.
+         */
         TrippleBuffer(int width, int height) : width(width), height(height) {
             chain.setAtIndex(0, FrameBuffer::Create(width, height));
             chain.setAtIndex(1, FrameBuffer::Create(width, height));
             chain.setAtIndex(2, FrameBuffer::Create(width, height));
         }
 
+        /**
+         * @brief Returns the front.
+         * @return Pointer to the resulting object.
+         */
         std::shared_ptr<FrameBuffer> getFront(){
             return chain.getAtIndex(0);
         }
         
+        /**
+         * @brief Returns the middle.
+         * @return Pointer to the resulting object.
+         */
         std::shared_ptr<FrameBuffer> getMiddle(){
             return chain.getAtIndex(1);
         }
 
+        /**
+         * @brief Returns the back.
+         * @return Pointer to the resulting object.
+         */
         std::shared_ptr<FrameBuffer> getBack(){
             return chain.getAtIndex(2);
         }
@@ -342,10 +465,18 @@ struct TrippleBuffer{
             return getFront();
         }
 
+        /**
+         * @brief Returns the edit buffer.
+         * @return Pointer to the resulting object.
+         */
         std::shared_ptr<FrameBuffer> getEditBuffer(){
             return getMiddle();
         }
 
+        /**
+         * @brief Returns the draw buffer.
+         * @return Pointer to the resulting object.
+         */
         std::shared_ptr<FrameBuffer> getDrawBuffer(){
             return getBack();
         }
@@ -356,14 +487,25 @@ struct TrippleBuffer{
             chain.setAtIndex(0,framePtr);
         }
 
+        /**
+         * @brief Sets the middle.
+         * @param framePtr Pointer to frame.
+         */
         void setMiddle(std::shared_ptr<FrameBuffer> framePtr){
             chain.setAtIndex(1,framePtr);
         }
 
+        /**
+         * @brief Sets the back.
+         * @param framePtr Pointer to frame.
+         */
         void setBack(std::shared_ptr<FrameBuffer> framePtr){
             chain.setAtIndex(2,framePtr);
         }
 
+        /**
+         * @brief Swaps buffers.
+         */
         void swapBuffers(){
             auto frontBuffer = getFront();
             auto middleBuffer = getMiddle();
@@ -374,6 +516,11 @@ struct TrippleBuffer{
             setBack(frontBuffer);
         }
 
+        /**
+         * @brief Resizes backing GPU buffers.
+         * @param width Dimension value.
+         * @param height Dimension value.
+         */
         void resizeBuffers(int width, int height){
             chain.resizeBuffers(width, height);
         }

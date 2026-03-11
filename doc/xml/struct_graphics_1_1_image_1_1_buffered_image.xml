@@ -1,0 +1,230 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_graphics_1_1_image_1_1_buffered_image" kind="struct" language="C++" prot="public">
+    <compoundname>Graphics::Image::BufferedImage</compoundname>
+    <basecompoundref refid="struct_graphics_1_1_image_1_1_image" prot="public" virt="non-virtual">Graphics::Image::Image</basecompoundref>
+    <includes refid="_graphics_8h" local="no">Graphics.h</includes>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="struct_graphics_1_1_image_1_1_buffered_image_1a95c739a0c8fb9150ab27d338819b209f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Graphics::Image::BufferedImage::BufferedImage</definition>
+        <argsstring>(int width, int height)</argsstring>
+        <name>BufferedImage</name>
+        <qualifiedname>Graphics::Image::BufferedImage::BufferedImage</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>width</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>height</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="struct_graphics_1_1_image_1_1_buffered_image" kindref="compound">BufferedImage</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>width</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Dimension value. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>height</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Dimension value. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics.h" line="91" column="17" bodyfile="src/Rendering/Core/Graphics.h" bodystart="91" bodyend="91"/>
+        <references refid="struct_graphics_1_1_image_1_1_image_1a86c6d37f21cb1b2c02837c4727e63cc8">Graphics::Image::Image::Image</references>
+      </memberdef>
+      <memberdef kind="function" id="struct_graphics_1_1_image_1_1_buffered_image_1a5980611f951eec88180757b9f1718c6d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Graphics::Image::BufferedImage::BufferedImage</definition>
+        <argsstring>(const Image &amp;src)</argsstring>
+        <name>BufferedImage</name>
+        <qualifiedname>Graphics::Image::BufferedImage::BufferedImage</qualifiedname>
+        <param>
+          <type>const <ref refid="struct_graphics_1_1_image_1_1_image_1a86c6d37f21cb1b2c02837c4727e63cc8" kindref="member">Image</ref> &amp;</type>
+          <declname>src</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics.h" line="92" column="17" bodyfile="src/Rendering/Core/Graphics.h" bodystart="92" bodyend="92"/>
+      </memberdef>
+      <memberdef kind="function" id="struct_graphics_1_1_image_1_1_buffered_image_1ac9a86a189f06d2a5f4fab51ed21b7bbc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>Graphics::Image::BufferedImage::BufferedImage</definition>
+        <argsstring>()=delete</argsstring>
+        <name>BufferedImage</name>
+        <qualifiedname>Graphics::Image::BufferedImage::BufferedImage</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics.h" line="93" column="17"/>
+      </memberdef>
+      <memberdef kind="function" id="struct_graphics_1_1_image_1_1_buffered_image_1afcf9ecd99a3771364918b46d135909af" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t Graphics::Image::BufferedImage::getValueAt</definition>
+        <argsstring>(int x, int y)</argsstring>
+        <name>getValueAt</name>
+        <qualifiedname>Graphics::Image::BufferedImage::getValueAt</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics.h" line="95" column="26" bodyfile="src/Rendering/Core/Graphics.h" bodystart="95" bodyend="99"/>
+      </memberdef>
+      <memberdef kind="function" id="struct_graphics_1_1_image_1_1_buffered_image_1ac29650e2e57885e0b1ad47d0322bf0ee" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics::Image::BufferedImage::setValueAt</definition>
+        <argsstring>(int x, int y, uint32_t value)</argsstring>
+        <name>setValueAt</name>
+        <qualifiedname>Graphics::Image::BufferedImage::setValueAt</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+<para>MAX RGBA value</para>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics.h" line="101" column="22" bodyfile="src/Rendering/Core/Graphics.h" bodystart="101" bodyend="105"/>
+      </memberdef>
+      <memberdef kind="function" id="struct_graphics_1_1_image_1_1_buffered_image_1a7f616c547a78bd7de90d25fd62348849" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Color</type>
+        <definition>Color Graphics::Image::BufferedImage::getPixelAt</definition>
+        <argsstring>(int x, int y)</argsstring>
+        <name>getPixelAt</name>
+        <qualifiedname>Graphics::Image::BufferedImage::getPixelAt</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics.h" line="107" column="23" bodyfile="src/Rendering/Core/Graphics.h" bodystart="107" bodyend="109"/>
+      </memberdef>
+      <memberdef kind="function" id="struct_graphics_1_1_image_1_1_buffered_image_1a43de2adb4fed4cd6d6b7cb1648137a26" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics::Image::BufferedImage::setPixelAt</definition>
+        <argsstring>(int x, int y, Color col)</argsstring>
+        <name>setPixelAt</name>
+        <qualifiedname>Graphics::Image::BufferedImage::setPixelAt</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>Color</type>
+          <declname>col</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics.h" line="111" column="22" bodyfile="src/Rendering/Core/Graphics.h" bodystart="111" bodyend="113"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_graphics_1_1_image_1_1_buffered_image" kindref="compound">BufferedImage</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>Graphics::Image::BufferedImage</label>
+        <link refid="struct_graphics_1_1_image_1_1_buffered_image"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Graphics::Image::Image</label>
+        <link refid="struct_graphics_1_1_image_1_1_image"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>Graphics::Image::BufferedImage</label>
+        <link refid="struct_graphics_1_1_image_1_1_buffered_image"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Graphics::Image::Image</label>
+        <link refid="struct_graphics_1_1_image_1_1_image"/>
+      </node>
+    </collaborationgraph>
+    <location file="src/Rendering/Core/Graphics.h" line="85" column="9" bodyfile="src/Rendering/Core/Graphics.h" bodystart="85" bodyend="114"/>
+    <listofallmembers>
+      <member refid="struct_graphics_1_1_image_1_1_buffered_image_1a95c739a0c8fb9150ab27d338819b209f" prot="public" virt="non-virtual"><scope>Graphics::Image::BufferedImage</scope><name>BufferedImage</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_buffered_image_1a5980611f951eec88180757b9f1718c6d" prot="public" virt="non-virtual"><scope>Graphics::Image::BufferedImage</scope><name>BufferedImage</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_buffered_image_1ac9a86a189f06d2a5f4fab51ed21b7bbc" prot="public" virt="non-virtual"><scope>Graphics::Image::BufferedImage</scope><name>BufferedImage</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_image_1a361c6bf49cc6cb69edb8bd6273542952" prot="public" virt="non-virtual"><scope>Graphics::Image::BufferedImage</scope><name>Create</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_image_1aba4553e8233d07c6439b10df97c68838" prot="public" virt="non-virtual"><scope>Graphics::Image::BufferedImage</scope><name>getHeight</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_buffered_image_1a7f616c547a78bd7de90d25fd62348849" prot="public" virt="non-virtual"><scope>Graphics::Image::BufferedImage</scope><name>getPixelAt</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_image_1a0ce32d2c88a124dfdc8ec4f074c70c40" prot="public" virt="non-virtual"><scope>Graphics::Image::BufferedImage</scope><name>getPixelData</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_buffered_image_1afcf9ecd99a3771364918b46d135909af" prot="public" virt="non-virtual"><scope>Graphics::Image::BufferedImage</scope><name>getValueAt</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_image_1a9360b8e858004f05fc0a87f1903bc1b7" prot="public" virt="non-virtual"><scope>Graphics::Image::BufferedImage</scope><name>getWidth</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_image_1a5603c843c966d9c2e248cc2badd081b1" prot="public" virt="non-virtual"><scope>Graphics::Image::BufferedImage</scope><name>height</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_image_1a86c6d37f21cb1b2c02837c4727e63cc8" prot="public" virt="non-virtual"><scope>Graphics::Image::BufferedImage</scope><name>Image</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_image_1af90cfae65c25b2c1aa8336635aa744a4" prot="public" virt="non-virtual"><scope>Graphics::Image::BufferedImage</scope><name>Image</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_image_1ac2dbaa50ab4653153402fa98d1b1e145" prot="public" virt="non-virtual"><scope>Graphics::Image::BufferedImage</scope><name>Image</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_image_1abd370c0682785decc0f8895a2a6b673a" prot="public" virt="non-virtual"><scope>Graphics::Image::BufferedImage</scope><name>pixelData</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_buffered_image_1a43de2adb4fed4cd6d6b7cb1648137a26" prot="public" virt="non-virtual"><scope>Graphics::Image::BufferedImage</scope><name>setPixelAt</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_buffered_image_1ac29650e2e57885e0b1ad47d0322bf0ee" prot="public" virt="non-virtual"><scope>Graphics::Image::BufferedImage</scope><name>setValueAt</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_image_1a5849ba86af777cde2ea3043123291542" prot="public" virt="non-virtual"><scope>Graphics::Image::BufferedImage</scope><name>width</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__shadow_renderer_8h_source" xml:lang="en-US">
+<title>ShadowRenderer.h</title>
+<indexterm><primary>src/Rendering/Lighting/ShadowRenderer.h</primary></indexterm>
+Go to the documentation of this file.<programlisting linenumbering="unnumbered">1 
+5 
+6 <emphasis role="preprocessor">#ifndef&#32;SHADOW_RENDERER_H</emphasis>
+7 <emphasis role="preprocessor">#define&#32;SHADOW_RENDERER_H</emphasis>
+8 
+9 <emphasis role="preprocessor">#include&#32;&lt;memory&gt;</emphasis>
+10 <emphasis role="preprocessor">#include&#32;&lt;vector&gt;</emphasis>
+11 <emphasis role="preprocessor">#include&#32;&lt;cstdint&gt;</emphasis>
+12 
+13 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__light_8h">Rendering/Lighting/Light.h</link>&quot;</emphasis>
+14 <emphasis role="preprocessor">#include&#32;&quot;Scene/Camera.h&quot;</emphasis>
+15 <emphasis role="preprocessor">#include&#32;&quot;Foundation/Math/Math3D.h&quot;</emphasis>
+16 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__shadow_map_8h">Rendering/Lighting/ShadowMap.h</link>&quot;</emphasis>
+17 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__texture_8h">Rendering/Textures/Texture.h</link>&quot;</emphasis>
+18 
+19 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_material">Material</link>;
+20 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_shader_program">ShaderProgram</link>;
+21 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_mesh">Mesh</link>;
+22 
+24 <emphasis role="keyword">struct&#32;</emphasis><link linkend="_struct_shadow_light_data">ShadowLightData</link>&#32;{
+25 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;shadowMapIndex&#32;=&#32;-1;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;Index&#32;into&#32;2D&#32;or&#32;cube&#32;shadow&#32;arrays</emphasis>
+26 &#32;&#32;&#32;&#32;<link linkend="__light_8h_1a5c50abf40600ee3c28c7fa04702a8bbc">ShadowType</link>&#32;shadowType&#32;=&#32;ShadowType::Standard;
+27 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;shadowStrength&#32;=&#32;1.0f;
+28 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;shadowBias&#32;=&#32;0.0025f;
+29 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;shadowNormalBias&#32;=&#32;0.005f;
+30 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;cascadeCount&#32;=&#32;1;
+31 &#32;&#32;&#32;&#32;Math3D::Vec4&#32;cascadeSplits&#32;=&#32;Math3D::Vec4(0,0,0,0);
+32 &#32;&#32;&#32;&#32;Math3D::Mat4&#32;lightMatrices[4]&#32;=&#32;{
+33 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::Mat4(1.0f),
+34 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::Mat4(1.0f),
+35 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::Mat4(1.0f),
+36 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::Mat4(1.0f)
+37 &#32;&#32;&#32;&#32;};
+38 };
+39 
+41 <emphasis role="keyword">struct&#32;</emphasis><link linkend="_struct_shadow_caster_bounds">ShadowCasterBounds</link>&#32;{
+42 &#32;&#32;&#32;&#32;Math3D::Vec3&#32;min;
+43 &#32;&#32;&#32;&#32;Math3D::Vec3&#32;max;
+44 };
+45 
+47 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_shadow_renderer">ShadowRenderer</link>&#32;{
+48 <emphasis role="keyword">public</emphasis>:
+50 &#32;&#32;&#32;&#32;<emphasis role="keyword">struct&#32;</emphasis><link linkend="_struct_shadow_renderer_1_1_shadow_draw_item">ShadowDrawItem</link>&#32;{
+51 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;Mesh&gt;&#32;mesh;
+52 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::Mat4&#32;model;
+53 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;Material&gt;&#32;material;
+54 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;enableBackfaceCulling&#32;=&#32;<emphasis role="keyword">true</emphasis>;
+55 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;hasBounds&#32;=&#32;<emphasis role="keyword">false</emphasis>;
+56 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::Vec3&#32;boundsMin&#32;=&#32;Math3D::Vec3(0.0f,&#32;0.0f,&#32;0.0f);
+57 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::Vec3&#32;boundsMax&#32;=&#32;Math3D::Vec3(0.0f,&#32;0.0f,&#32;0.0f);
+58 &#32;&#32;&#32;&#32;};
+59 
+65 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_shadow_renderer_1afbb6c273a05d6646ee9705e4bd6b3233">BeginFrame</link>(PCamera&#32;camera,&#32;<emphasis role="keyword">const</emphasis>&#32;std::vector&lt;ShadowCasterBounds&gt;*&#32;casters&#32;=&#32;<emphasis role="keyword">nullptr</emphasis>);
+72 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_shadow_renderer_1aab58aceef40d58cbcb99197fb3b0b1c9">RenderShadows</link>(<emphasis role="keyword">const</emphasis>&#32;std::shared_ptr&lt;Mesh&gt;&amp;&#32;mesh,&#32;<emphasis role="keyword">const</emphasis>&#32;Math3D::Mat4&amp;&#32;model,&#32;<emphasis role="keyword">const</emphasis>&#32;std::shared_ptr&lt;Material&gt;&amp;&#32;material);
+77 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_shadow_renderer_1a3ba920ae87f7206899c27bf206f7b88f">RenderShadowsBatch</link>(<emphasis role="keyword">const</emphasis>&#32;std::vector&lt;ShadowDrawItem&gt;&amp;&#32;items);
+82 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_shadow_renderer_1a294d22aa8a61404ca7741fb92179f759">BindShadowSamplers</link>(<emphasis role="keyword">const</emphasis>&#32;std::shared_ptr&lt;ShaderProgram&gt;&amp;&#32;program);
+89 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_shadow_renderer_1a2a6a438bcb4909cfe0f049a418ca08a1">GetShadowDataForLight</link>(<emphasis role="keywordtype">size_t</emphasis>&#32;index,&#32;<emphasis role="keyword">const</emphasis>&#32;<link linkend="_struct_light">Light</link>&amp;&#32;light,&#32;<link linkend="_struct_shadow_light_data">ShadowLightData</link>&amp;&#32;outData);
+94 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;uint64_t&#32;<link linkend="_class_shadow_renderer_1a5b7b6245485e78e450e4f36511dc6028">GetFrameId</link>();
+99 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">bool</emphasis>&#32;<link linkend="_class_shadow_renderer_1abbd83290397f84630065b8593c6de72d">IsEnabled</link>();
+104 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;Texture&gt;&#32;<link linkend="_class_shadow_renderer_1a4968fee5aaeb90ca26b8237a4ad27fda">GetDepthBuffer</link>();
+109 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_shadow_renderer_1aa3cbcea864992880c1e0e93cb2f03c2d">SetDebugShadows</link>(<emphasis role="keywordtype">bool</emphasis>&#32;enabled);
+114 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">bool</emphasis>&#32;<link linkend="_class_shadow_renderer_1a01a2fe136dac80bd65137ddd1163c05c">GetDebugShadows</link>();
+118 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_shadow_renderer_1a4f8885763f78efa60d45121f1bc33e6a">CycleDebugShadows</link>();
+123 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">int</emphasis>&#32;<link linkend="_class_shadow_renderer_1ae8e997e98faa8a7dcee38355f0ba3412">GetDebugShadowsMode</link>();
+128 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_shadow_renderer_1a1ad93fba9dbece24c39e04dfa0319b84">SetDebugShadowsMode</link>(<emphasis role="keywordtype">int</emphasis>&#32;mode);
+133 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_shadow_renderer_1a92326cd13a40ee30ab8c1e41cee0cbd1">SetGlobalDebugOverrideEnabled</link>(<emphasis role="keywordtype">bool</emphasis>&#32;enabled);
+138 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">bool</emphasis>&#32;<link linkend="_class_shadow_renderer_1aab904aac799df7524a74571d2551ce9c">GetGlobalDebugOverrideEnabled</link>();
+143 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_shadow_renderer_1af3e6f272f9f7fafa02a28c1684c43aa3">SetGlobalDebugOverrideMode</link>(<emphasis role="keywordtype">int</emphasis>&#32;mode);
+148 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">int</emphasis>&#32;<link linkend="_class_shadow_renderer_1ab18542dd44e6199fe8baa8ed4beab5b3">GetGlobalDebugOverrideMode</link>();
+153 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_shadow_renderer_1a32ac240ccaf7b0d0d9402754663471c8">SetSelectedLightIndex</link>(<emphasis role="keywordtype">int</emphasis>&#32;index);
+158 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">int</emphasis>&#32;<link linkend="_class_shadow_renderer_1ae8491189e251451f3803e8a96144188c">GetSelectedLightIndex</link>();
+163 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_shadow_renderer_1a8c06fcdbd9d643efd2c1821da281b460">SetDirectionalCascadeKernelMarginTexels</link>(<emphasis role="keywordtype">float</emphasis>&#32;value);
+168 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">float</emphasis>&#32;<link linkend="_class_shadow_renderer_1a232a7bb315118202cb6f79cbb49b29dd">GetDirectionalCascadeKernelMarginTexels</link>();
+173 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_shadow_renderer_1aa010995c5c5868ce57940c2533741bff">SetShadowReceiverNormalBlend</link>(<emphasis role="keywordtype">float</emphasis>&#32;value);
+178 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">float</emphasis>&#32;<link linkend="_class_shadow_renderer_1ac7c8e21bfe93f9d7ed4891c9a8e1e480">GetShadowReceiverNormalBlend</link>();
+183 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_shadow_renderer_1ac292095aa08cd34a52c6d1bd498b9818">SetDebugLogging</link>(<emphasis role="keywordtype">bool</emphasis>&#32;enabled);
+188 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">bool</emphasis>&#32;<link linkend="_class_shadow_renderer_1ac08a7c94e7678f7c0a7ed17c8970b5dd">GetDebugLogging</link>();
+189 
+190 <emphasis role="keyword">private</emphasis>:
+194 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;ensureShadowPrograms();
+201 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;Math3D::Mat4&#32;computeDirectionalMatrix(<emphasis role="keyword">const</emphasis>&#32;<link linkend="_struct_light">Light</link>&amp;&#32;light,&#32;PCamera&#32;camera);
+207 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;Math3D::Mat4&#32;computeSpotMatrix(<emphasis role="keyword">const</emphasis>&#32;<link linkend="_struct_light">Light</link>&amp;&#32;light);
+213 &#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;computePointMatrices(<emphasis role="keyword">const</emphasis>&#32;<link linkend="_struct_light">Light</link>&amp;&#32;light,&#32;std::vector&lt;Math3D::Mat4&gt;&amp;&#32;outMatrices);
+214 };
+215 
+216 <emphasis role="preprocessor">#endif&#32;</emphasis><emphasis role="comment">//&#32;SHADOW_RENDERER_H</emphasis>
+</programlisting></section>

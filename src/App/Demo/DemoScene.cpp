@@ -1,3 +1,8 @@
+/**
+ * @file src/App/Demo/DemoScene.cpp
+ * @brief Implementation for DemoScene.
+ */
+
 #include "App/Demo/DemoScene.h"
 
 #include "Rendering/Materials/MaterialDefaults.h"
@@ -21,6 +26,7 @@
 #include <SDL3/SDL.h>
 
 namespace {
+    /// @brief Represents Demo Scene Input Handler behavior.
     class DemoSceneInputHandler : public IEventHandler {
         public:
             explicit DemoSceneInputHandler(DemoScene* owner) : owner(owner) {}

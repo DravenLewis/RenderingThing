@@ -1,0 +1,27 @@
+\doxysection{Skybox\+Material.\+h}
+\hypertarget{_skybox_material_8h_source}{}\label{_skybox_material_8h_source}\index{src/Rendering/Materials/SkyboxMaterial.h@{src/Rendering/Materials/SkyboxMaterial.h}}
+\doxymbox{\hyperlink{_skybox_material_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ SKYBOX\_MATERIAL\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ SKYBOX\_MATERIAL\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_material_8h}{Rendering/Materials/Material.h}}"{}}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_cube_map_8h}{Rendering/Textures/CubeMap.h}}"{}}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ "{}Foundation/Util/ValueContainer.h"{}}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00016\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_skybox_material_a1aa19f0df9db4109ee056f7b109f98c0}{SkyboxMaterial}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{class_material_ace810a426f4b488d2dc2a53070d85405}{Material}}\ \{}
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ ValueContainer<std::shared\_ptr<CubeMap>>\ EnvMap;}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_skybox_material_a1aa19f0df9db4109ee056f7b109f98c0}{SkyboxMaterial}}(std::shared\_ptr<ShaderProgram>\ program);}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_skybox_material_acc843c2b1152fda9d10fbd964e7e9473}{bind}}()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<SkyboxMaterial>\ \doxymbox{\hyperlink{class_skybox_material_a25b97b60f3d10f4f586a3fcbd1d4f7cc}{Create}}(std::shared\_ptr<CubeMap>\ envMap);}
+\DoxyCodeLine{00035\ \};}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ SKYBOX\_MATERIAL\_H}}
+
+\end{DoxyCode}

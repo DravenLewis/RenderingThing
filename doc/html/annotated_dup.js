@@ -1,0 +1,76 @@
+var annotated_dup =
+[
+    [ "GLUniformUpload", null, [
+      [ "TextureSlot", "struct_g_l_uniform_upload_1_1_texture_slot.html", "struct_g_l_uniform_upload_1_1_texture_slot" ],
+      [ "CubeMapSlot", "struct_g_l_uniform_upload_1_1_cube_map_slot.html", "struct_g_l_uniform_upload_1_1_cube_map_slot" ]
+    ] ],
+    [ "Graphics", null, [
+      [ "Image", null, [
+        [ "Image", "struct_graphics_1_1_image_1_1_image.html", "struct_graphics_1_1_image_1_1_image" ],
+        [ "BufferedImage", "struct_graphics_1_1_image_1_1_buffered_image.html", "struct_graphics_1_1_image_1_1_buffered_image" ]
+      ] ],
+      [ "PostProcessing", null, [
+        [ "PostProcessingEffect", "class_graphics_1_1_post_processing_1_1_post_processing_effect.html", "class_graphics_1_1_post_processing_1_1_post_processing_effect" ]
+      ] ]
+    ] ],
+    [ "MaterialDefaults", null, [
+      [ "ColorMaterial", "class_material_defaults_1_1_color_material.html", "class_material_defaults_1_1_color_material" ],
+      [ "ImageMaterial", "class_material_defaults_1_1_image_material.html", "class_material_defaults_1_1_image_material" ],
+      [ "LitColorMaterial", "class_material_defaults_1_1_lit_color_material.html", "class_material_defaults_1_1_lit_color_material" ],
+      [ "LitImageMaterial", "class_material_defaults_1_1_lit_image_material.html", "class_material_defaults_1_1_lit_image_material" ],
+      [ "FlatColorMaterial", "class_material_defaults_1_1_flat_color_material.html", "class_material_defaults_1_1_flat_color_material" ],
+      [ "FlatImageMaterial", "class_material_defaults_1_1_flat_image_material.html", "class_material_defaults_1_1_flat_image_material" ]
+    ] ],
+    [ "AutoExposureEffect", "class_auto_exposure_effect.html", "class_auto_exposure_effect" ],
+    [ "BloomEffect", "class_bloom_effect.html", "class_bloom_effect" ],
+    [ "ConstructedMaterial", "class_constructed_material.html", "class_constructed_material" ],
+    [ "CubeMap", "class_cube_map.html", "class_cube_map" ],
+    [ "DepthOfFieldEffect", "class_depth_of_field_effect.html", "class_depth_of_field_effect" ],
+    [ "Environment", "class_environment.html", "class_environment" ],
+    [ "Font", "class_font.html", "class_font" ],
+    [ "FontCharacter", "struct_font_character.html", null ],
+    [ "FrameBuffer", "struct_frame_buffer.html", "struct_frame_buffer" ],
+    [ "FrameBufferChain", "struct_frame_buffer_chain.html", "struct_frame_buffer_chain" ],
+    [ "FreeTypeFont", "class_free_type_font.html", "class_free_type_font" ],
+    [ "FXAAEffect", "class_f_x_a_a_effect.html", "class_f_x_a_a_effect" ],
+    [ "Graphics2D", "class_graphics2_d.html", "class_graphics2_d" ],
+    [ "GraphicsContext", "struct_graphics_context.html", null ],
+    [ "GrayscaleEffect", "class_grayscale_effect.html", "class_grayscale_effect" ],
+    [ "IDrawable", "struct_i_drawable.html", "struct_i_drawable" ],
+    [ "IMaterialProperty", "struct_i_material_property.html", "struct_i_material_property" ],
+    [ "Light", "struct_light.html", "struct_light" ],
+    [ "LightManager", "class_light_manager.html", "class_light_manager" ],
+    [ "LightUniformUploader", "class_light_uniform_uploader.html", null ],
+    [ "Material", "class_material.html", "class_material" ],
+    [ "MaterialProperty", "struct_material_property.html", "struct_material_property" ],
+    [ "MaterialRegistry", "class_material_registry.html", "class_material_registry" ],
+    [ "MaterialRegistryEntry", "struct_material_registry_entry.html", null ],
+    [ "Mesh", "class_mesh.html", "class_mesh" ],
+    [ "Model", "struct_model.html", "struct_model" ],
+    [ "ModelPart", "struct_model_part.html", "struct_model_part" ],
+    [ "ModelPartFactory", "struct_model_part_factory.html", "struct_model_part_factory" ],
+    [ "ModelPartPrefabs", "struct_model_part_prefabs.html", null ],
+    [ "ModelPrefabs", "struct_model_prefabs.html", "struct_model_prefabs" ],
+    [ "PBRMaterial", "class_p_b_r_material.html", "class_p_b_r_material" ],
+    [ "Screen", "class_screen.html", "class_screen" ],
+    [ "ShaderBundle", "struct_shader_bundle.html", "struct_shader_bundle" ],
+    [ "ShaderCache", "struct_shader_cache.html", "struct_shader_cache" ],
+    [ "ShaderProgram", "class_shader_program.html", "class_shader_program" ],
+    [ "ShadowCasterBounds", "struct_shadow_caster_bounds.html", null ],
+    [ "ShadowLightData", "struct_shadow_light_data.html", null ],
+    [ "ShadowMap2D", "class_shadow_map2_d.html", "class_shadow_map2_d" ],
+    [ "ShadowMapCube", "class_shadow_map_cube.html", "class_shadow_map_cube" ],
+    [ "ShadowRenderer", "class_shadow_renderer.html", "class_shadow_renderer" ],
+    [ "SkyBox", "class_sky_box.html", "class_sky_box" ],
+    [ "SkyBox6Face", "struct_sky_box6_face.html", null ],
+    [ "SkyBoxLoader", "class_sky_box_loader.html", null ],
+    [ "SkyboxMaterial", "class_skybox_material.html", "class_skybox_material" ],
+    [ "SSAOEffect", "class_s_s_a_o_effect.html", "class_s_s_a_o_effect" ],
+    [ "TextCacheKey", "struct_text_cache_key.html", null ],
+    [ "Texture", "class_texture.html", "class_texture" ],
+    [ "TrippleBuffer", "struct_tripple_buffer.html", "struct_tripple_buffer" ],
+    [ "TrueTypeFont", "class_true_type_font.html", "class_true_type_font" ],
+    [ "Uniform", "class_uniform.html", "class_uniform" ],
+    [ "Vertex", "struct_vertex.html", "struct_vertex" ],
+    [ "View", "class_view.html", "class_view" ]
+];

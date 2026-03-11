@@ -1,3 +1,8 @@
+/**
+ * @file src/Serialization/Schema/ManifestSchemas.cpp
+ * @brief Implementation for ManifestSchemas.
+ */
+
 #include "Serialization/Schema/ManifestSchemas.h"
 
 #include <set>

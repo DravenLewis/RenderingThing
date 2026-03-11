@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__graphics2_d_8h" xml:lang="en-US">
+<title>src/Rendering/Core/Graphics2D.h File Reference</title>
+<indexterm><primary>src/Rendering/Core/Graphics2D.h</primary></indexterm>
+<para>
+
+<para>Declarations for <link linkend="_class_graphics2_d">Graphics2D</link>. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &quot;Foundation/Math/Math3D.h&quot;<?linebreak?>#include &quot;Rendering/Core/Screen.h&quot;<?linebreak?>#include &quot;Scene/Camera.h&quot;<?linebreak?>#include &quot;Rendering/Textures/Texture.h&quot;<?linebreak?>#include &quot;Rendering/Geometry/ModelPartPrefabs.h&quot;<?linebreak?>#include &quot;Rendering/Materials/MaterialDefaults.h&quot;<?linebreak?>#include &quot;Foundation/Util/ValueContainer.h&quot;<?linebreak?>#include &quot;Foundation/Math/Color.h&quot;<?linebreak?>#include &quot;Rendering/Fonts/Font.h&quot;<?linebreak?>#include &quot;Rendering/Fonts/FreeTypeFont.h&quot;<?linebreak?>#include &quot;Assets/Core/Asset.h&quot;<?linebreak?></programlisting><simplesect>
+    <title>Classes    </title>
+        <itemizedlist>
+            <listitem><para>struct <link linkend="_struct_graphics_context">GraphicsContext</link></para>
+
+<para>Holds data for <link linkend="_struct_graphics_context">GraphicsContext</link>. </para>
+</listitem>
+            <listitem><para>class <link linkend="_class_graphics2_d">Graphics2D</link></para>
+
+<para>Represents the <link linkend="_class_graphics2_d">Graphics2D</link> type. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Declarations for <link linkend="_class_graphics2_d">Graphics2D</link>. </para>
+</section>
+</section>

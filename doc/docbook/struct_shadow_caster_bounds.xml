@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_shadow_caster_bounds" xml:lang="en-US">
+<title>ShadowCasterBounds Struct Reference</title>
+<indexterm><primary>ShadowCasterBounds</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_shadow_caster_bounds">ShadowCasterBounds</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;ShadowRenderer.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_shadow_caster_bounds_1abfa72c234b3af71c9ed722c38596a1c0"/>Math3D::Vec3 <emphasis role="strong">min</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_shadow_caster_bounds_1a3bdaea826962ff29b21a20851c170bad"/>Math3D::Vec3 <emphasis role="strong">max</emphasis></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_shadow_caster_bounds">ShadowCasterBounds</link>. </para>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Lighting/<link linkend="__shadow_renderer_8h">ShadowRenderer.h</link></section>
+</section>

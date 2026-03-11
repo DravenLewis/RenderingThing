@@ -1,0 +1,1606 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_graphics2_d" kind="class" language="C++" prot="public">
+    <compoundname>Graphics2D</compoundname>
+    <includes refid="_graphics2_d_8h" local="no">Graphics2D.h</includes>
+    <sectiondef kind="private-type">
+      <memberdef kind="enum" id="class_graphics2_d_1a560ba855e5351d6c7bb904692867441d" prot="private" static="no" strong="yes">
+        <type></type>
+        <name>BatchMode2D</name>
+        <qualifiedname>Graphics2D::BatchMode2D</qualifiedname>
+        <enumvalue id="class_graphics2_d_1a560ba855e5351d6c7bb904692867441da6adf97f83acf6453d4a6a4b1070f3754" prot="private">
+          <name>None</name>
+          <initializer>= 0</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="class_graphics2_d_1a560ba855e5351d6c7bb904692867441dae41480b6bbfbf7407974a88d3d34f4fa" prot="private">
+          <name>Solid</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="class_graphics2_d_1a560ba855e5351d6c7bb904692867441da727faf49bd334ad8c6692934ff652843" prot="private">
+          <name>Textured</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Enumerates values for BatchMode2D. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="39" column="9" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="39" bodyend="43"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_graphics2_d_1a949b05c390f224404fde2639739e2b9e" prot="private" static="no" mutable="no">
+        <type><ref refid="struct_graphics_context" kindref="compound">GraphicsContext</ref></type>
+        <definition>GraphicsContext Graphics2D::context</definition>
+        <argsstring></argsstring>
+        <name>context</name>
+        <qualifiedname>Graphics2D::context</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="46" column="25" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_graphics2_d_1abedaa5759b87ff14313c9600753024df" prot="private" static="no" mutable="no">
+        <type>PScreen</type>
+        <definition>PScreen Graphics2D::target</definition>
+        <argsstring></argsstring>
+        <name>target</name>
+        <qualifiedname>Graphics2D::target</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="48" column="17" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_graphics2_d_1aec9dbb2eba29e747deaa7ed1a318b1cb" prot="private" static="no" mutable="no">
+        <type>PCamera</type>
+        <definition>PCamera Graphics2D::uiCamera</definition>
+        <argsstring></argsstring>
+        <name>uiCamera</name>
+        <qualifiedname>Graphics2D::uiCamera</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="49" column="17" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_graphics2_d_1ad7f1546dcb147d9b1e1945fbebd81967" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="struct_model_part" kindref="compound">ModelPart</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;ModelPart&gt; Graphics2D::unitQuad</definition>
+        <argsstring></argsstring>
+        <name>unitQuad</name>
+        <qualifiedname>Graphics2D::unitQuad</qualifiedname>
+        <initializer>= nullptr</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="52" column="25" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_graphics2_d_1a53aa65e391ad9a3e05e4d0c4bbb6e5e4" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="struct_model_part" kindref="compound">ModelPart</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;ModelPart&gt; Graphics2D::unitCircle</definition>
+        <argsstring></argsstring>
+        <name>unitCircle</name>
+        <qualifiedname>Graphics2D::unitCircle</qualifiedname>
+        <initializer>= nullptr</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="53" column="25" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_graphics2_d_1a9ea279eca78c3a017312afddfefca056" prot="private" static="no" mutable="no">
+        <type>PMaterial</type>
+        <definition>PMaterial Graphics2D::colorMaterial</definition>
+        <argsstring></argsstring>
+        <name>colorMaterial</name>
+        <qualifiedname>Graphics2D::colorMaterial</qualifiedname>
+        <initializer>= nullptr</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="54" column="19" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_graphics2_d_1ae3c8a24a99d30388a2e02955c09e1223" prot="private" static="no" mutable="no">
+        <type>PMaterial</type>
+        <definition>PMaterial Graphics2D::imageMaterial</definition>
+        <argsstring></argsstring>
+        <name>imageMaterial</name>
+        <qualifiedname>Graphics2D::imageMaterial</qualifiedname>
+        <initializer>= nullptr</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="55" column="19" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_graphics2_d_1aeb7762e72e210e6657d916ca90530afd" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="struct_model_part" kindref="compound">ModelPart</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;ModelPart&gt; Graphics2D::batchPart</definition>
+        <argsstring></argsstring>
+        <name>batchPart</name>
+        <qualifiedname>Graphics2D::batchPart</qualifiedname>
+        <initializer>= nullptr</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="56" column="25" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_graphics2_d_1a71b99464de372c2841cd64f55148cab4" prot="private" static="no" mutable="no">
+        <type>PMaterial</type>
+        <definition>PMaterial Graphics2D::batchMaterial</definition>
+        <argsstring></argsstring>
+        <name>batchMaterial</name>
+        <qualifiedname>Graphics2D::batchMaterial</qualifiedname>
+        <initializer>= nullptr</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="57" column="19" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_graphics2_d_1a7e3465c0325264c00ff779ae80eee926" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; <ref refid="struct_vertex" kindref="compound">Vertex</ref> &gt;</type>
+        <definition>std::vector&lt;Vertex&gt; Graphics2D::batchVertices</definition>
+        <argsstring></argsstring>
+        <name>batchVertices</name>
+        <qualifiedname>Graphics2D::batchVertices</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="58" column="21" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_graphics2_d_1a29acbdbde1597966551487dc23f1a72d" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; uint32_t &gt;</type>
+        <definition>std::vector&lt;uint32_t&gt; Graphics2D::batchIndices</definition>
+        <argsstring></argsstring>
+        <name>batchIndices</name>
+        <qualifiedname>Graphics2D::batchIndices</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="59" column="21" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="59" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_graphics2_d_1a6f5f63a3b80f7e3f6315240d06c12d17" prot="private" static="no" mutable="no">
+        <type>BatchMode2D</type>
+        <definition>BatchMode2D Graphics2D::batchMode</definition>
+        <argsstring></argsstring>
+        <name>batchMode</name>
+        <qualifiedname>Graphics2D::batchMode</qualifiedname>
+        <initializer>= BatchMode2D::None</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="60" column="21" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_graphics2_d_1aad6bb55edd5a92f78f25a0788e1de4ef" prot="private" static="no" mutable="no">
+        <type>PTexture</type>
+        <definition>PTexture Graphics2D::batchTexture</definition>
+        <argsstring></argsstring>
+        <name>batchTexture</name>
+        <qualifiedname>Graphics2D::batchTexture</qualifiedname>
+        <initializer>= nullptr</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="61" column="18" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="61" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_graphics2_d_1ae21528c87cedf3d35f47af4dac090740" prot="private" static="no" mutable="no">
+        <type>size_t</type>
+        <definition>size_t Graphics2D::maxBatchQuads</definition>
+        <argsstring></argsstring>
+        <name>maxBatchQuads</name>
+        <qualifiedname>Graphics2D::maxBatchQuads</qualifiedname>
+        <initializer>= 4096</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="62" column="16" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_graphics2_d_1a4e81b67a8dd2193aa0bccf5e038c192c" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; PFont &gt;</type>
+        <definition>std::vector&lt;PFont&gt; Graphics2D::queuedFonts</definition>
+        <argsstring></argsstring>
+        <name>queuedFonts</name>
+        <qualifiedname>Graphics2D::queuedFonts</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="63" column="21" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="63" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_graphics2_d_1a4d8b59040cf6156e5e7a24ae80944f24" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::drawMesh</definition>
+        <argsstring>(std::shared_ptr&lt; ModelPart &gt; part, const Math3D::Mat4 &amp;modelMatrix, PTexture tex=nullptr)</argsstring>
+        <name>drawMesh</name>
+        <qualifiedname>Graphics2D::drawMesh</qualifiedname>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="struct_model_part" kindref="compound">ModelPart</ref> &gt;</type>
+          <declname>part</declname>
+        </param>
+        <param>
+          <type>const Math3D::Mat4 &amp;</type>
+          <declname>modelMatrix</declname>
+        </param>
+        <param>
+          <type>PTexture</type>
+          <declname>tex</declname>
+          <defval>nullptr</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="67" column="14" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="468" bodyend="508"/>
+      </memberdef>
+      <memberdef kind="function" id="class_graphics2_d_1a59c896cccc7d033058017af389cb9bf7" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::ensureBatchResources</definition>
+        <argsstring>()</argsstring>
+        <name>ensureBatchResources</name>
+        <qualifiedname>Graphics2D::ensureBatchResources</qualifiedname>
+        <briefdescription>
+<para>Ensures batch resources. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="71" column="14" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="129" bodyend="145"/>
+      </memberdef>
+      <memberdef kind="function" id="class_graphics2_d_1ab21dc4feb0c026e24780a0fa9a25ec0f" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::resetBatch</definition>
+        <argsstring>()</argsstring>
+        <name>resetBatch</name>
+        <qualifiedname>Graphics2D::resetBatch</qualifiedname>
+        <briefdescription>
+<para>Resets batch. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="75" column="14" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="147" bodyend="152"/>
+      </memberdef>
+      <memberdef kind="function" id="class_graphics2_d_1a7da48834b5f17f81b7ba148b9a7905de" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::flushBatch</definition>
+        <argsstring>()</argsstring>
+        <name>flushBatch</name>
+        <qualifiedname>Graphics2D::flushBatch</qualifiedname>
+        <briefdescription>
+<para>Flushes queued 2D draw batches. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="79" column="14" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="230" bodyend="263"/>
+      </memberdef>
+      <memberdef kind="function" id="class_graphics2_d_1acb8423ea2d41720e6597ce01268648e6" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::queueFontForFlush</definition>
+        <argsstring>(PFont font)</argsstring>
+        <name>queueFontForFlush</name>
+        <qualifiedname>Graphics2D::queueFontForFlush</qualifiedname>
+        <param>
+          <type>PFont</type>
+          <declname>font</declname>
+        </param>
+        <briefdescription>
+<para>Queues a font for end-of-frame flush. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>font</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for font. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="84" column="14" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="154" bodyend="165"/>
+      </memberdef>
+      <memberdef kind="function" id="class_graphics2_d_1a98ad7a002b84e8699acaec88fdc33c63" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::flushQueuedFonts</definition>
+        <argsstring>()</argsstring>
+        <name>flushQueuedFonts</name>
+        <qualifiedname>Graphics2D::flushQueuedFonts</qualifiedname>
+        <briefdescription>
+<para>Flushes queued font draw calls. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="88" column="14" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="167" bodyend="178"/>
+      </memberdef>
+      <memberdef kind="function" id="class_graphics2_d_1a218f0c7d817e04d9c4156bd5cb6e4a69" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::beginBatch</definition>
+        <argsstring>(BatchMode2D mode, PTexture texture=nullptr)</argsstring>
+        <name>beginBatch</name>
+        <qualifiedname>Graphics2D::beginBatch</qualifiedname>
+        <param>
+          <type>BatchMode2D</type>
+          <declname>mode</declname>
+        </param>
+        <param>
+          <type>PTexture</type>
+          <declname>texture</declname>
+          <defval>nullptr</defval>
+        </param>
+        <briefdescription>
+<para>Begins batch. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>mode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Mode or type selector. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>texture</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for texture. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="94" column="14" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="180" bodyend="193"/>
+      </memberdef>
+      <memberdef kind="function" id="class_graphics2_d_1a2a32c721330681e1e49541606319c027" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::submitQuad</definition>
+        <argsstring>(const Math3D::Vec3 &amp;p0, const Math3D::Vec3 &amp;p1, const Math3D::Vec3 &amp;p2, const Math3D::Vec3 &amp;p3, const Math3D::Vec2 &amp;uv0, const Math3D::Vec2 &amp;uv1, const Math3D::Vec2 &amp;uv2, const Math3D::Vec2 &amp;uv3, const Math3D::Vec4 &amp;color, BatchMode2D mode, PTexture texture=nullptr)</argsstring>
+        <name>submitQuad</name>
+        <qualifiedname>Graphics2D::submitQuad</qualifiedname>
+        <param>
+          <type>const Math3D::Vec3 &amp;</type>
+          <declname>p0</declname>
+        </param>
+        <param>
+          <type>const Math3D::Vec3 &amp;</type>
+          <declname>p1</declname>
+        </param>
+        <param>
+          <type>const Math3D::Vec3 &amp;</type>
+          <declname>p2</declname>
+        </param>
+        <param>
+          <type>const Math3D::Vec3 &amp;</type>
+          <declname>p3</declname>
+        </param>
+        <param>
+          <type>const Math3D::Vec2 &amp;</type>
+          <declname>uv0</declname>
+        </param>
+        <param>
+          <type>const Math3D::Vec2 &amp;</type>
+          <declname>uv1</declname>
+        </param>
+        <param>
+          <type>const Math3D::Vec2 &amp;</type>
+          <declname>uv2</declname>
+        </param>
+        <param>
+          <type>const Math3D::Vec2 &amp;</type>
+          <declname>uv3</declname>
+        </param>
+        <param>
+          <type>const Math3D::Vec4 &amp;</type>
+          <declname>color</declname>
+        </param>
+        <param>
+          <type>BatchMode2D</type>
+          <declname>mode</declname>
+        </param>
+        <param>
+          <type>PTexture</type>
+          <declname>texture</declname>
+          <defval>nullptr</defval>
+        </param>
+        <briefdescription>
+<para>Submits a quad to the active batch. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>p0</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for p 0. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>p1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for p 1. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>p2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for p 2. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>p3</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for p 3. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>uv0</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for uv 0. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>uv1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for uv 1. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>uv2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for uv 2. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>uv3</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for uv 3. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>color</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Color value. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>mode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Mode or type selector. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>texture</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for texture. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="109" column="14" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="195" bodyend="228"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_graphics2_d_1a17535ece4965dc0eedad7fa5e5accbff" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>Graphics2D::Graphics2D</definition>
+        <argsstring>(PScreen screenContext)</argsstring>
+        <name>Graphics2D</name>
+        <qualifiedname>Graphics2D::Graphics2D</qualifiedname>
+        <param>
+          <type>PScreen</type>
+          <declname>screenContext</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_graphics2_d" kindref="compound">Graphics2D</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>screenContext</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for screen context. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="122" column="9" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="60" bodyend="107"/>
+        <references refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" compoundref="_mesh_8h" startline="124" endline="133">Vertex::Build</references>
+        <references refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" compoundref="_material_defaults_8cpp" startline="58" endline="76">MaterialDefaults::ColorMaterial::Create</references>
+        <references refid="class_material_defaults_1_1_image_material_1add720d0e294c8a6aaefcce9149d1c97e" compoundref="_material_defaults_8cpp" startline="107" endline="134">MaterialDefaults::ImageMaterial::Create</references>
+        <references refid="struct_model_part_factory_1a3ef7855857c9e4a6106485c4d6dc13d1" compoundref="_model_part_8cpp" startline="35" endline="40">ModelPartFactory::Create</references>
+        <references refid="struct_model_part_prefabs_1a3416bea1f8d1a22d55739bb58d7fc76e" compoundref="_model_part_prefabs_8h" startline="116" endline="153">ModelPartPrefabs::MakeCirclePlane</references>
+        <referencedby refid="class_graphics2_d_1adad7605dad2d438339e3179a569c6f28" compoundref="_graphics2_d_8cpp" startline="395" endline="420">DrawEllipse</referencedby>
+        <referencedby refid="class_graphics2_d_1a4496c5443a7a614690f1a7c4656a3854" compoundref="_graphics2_d_8cpp" startline="434" endline="452">DrawImage</referencedby>
+        <referencedby refid="class_graphics2_d_1a88fe3fbf759c21bd6a4bfaefd5c90d58" compoundref="_graphics2_d_8cpp" startline="288" endline="343">DrawLine</referencedby>
+        <referencedby refid="class_graphics2_d_1a5095fffb75a1249ee247c0fa73ebca75" compoundref="_graphics2_d_8cpp" startline="346" endline="355">DrawRect</referencedby>
+        <referencedby refid="class_graphics2_d_1ac7c6ea860d6bca44f1a4247d644d8dce" compoundref="_graphics2_d_8cpp" startline="454" endline="466">DrawString</referencedby>
+        <referencedby refid="class_graphics2_d_1a0843c9a23ec885b7d0fcb0554d559457" compoundref="_graphics2_d_8cpp" startline="422" endline="432">FillEllipse</referencedby>
+        <referencedby refid="class_graphics2_d_1a67fa147d1215bba962230b13154964f8" compoundref="_graphics2_d_8cpp" startline="358" endline="376">FillRect</referencedby>
+        <referencedby refid="class_graphics2_d_1a5c0cd288e641e8a8242740d2898ac3f2" compoundref="_graphics2_d_8cpp" startline="378" endline="392">FillTriangle</referencedby>
+        <referencedby refid="class_graphics2_d_1a9de097cc927aad3bf9c52ffda4a37a2a" compoundref="_graphics2_d_8cpp" startline="270" endline="272">SetBackgroundColor</referencedby>
+        <referencedby refid="class_graphics2_d_1a768b518945214fce84a03c574c1a9671" compoundref="_graphics2_d_8cpp" startline="282" endline="286">SetFont</referencedby>
+        <referencedby refid="class_graphics2_d_1a26636c9fbb1be08ef97b5cc4b97811c4" compoundref="_graphics2_d_8cpp" startline="278" endline="280">SetFontSize</referencedby>
+        <referencedby refid="class_graphics2_d_1a2efe101242a8dd701a448c29870ccdd2" compoundref="_graphics2_d_8cpp" startline="274" endline="276">SetStrokeWidth</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_graphics2_d_1afc5f54d2e36fb1130bafa6ae9a43217f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::resize</definition>
+        <argsstring>(int w, int h)</argsstring>
+        <name>resize</name>
+        <qualifiedname>Graphics2D::resize</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>w</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>h</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="125" column="14" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="109" bodyend="111"/>
+      </memberdef>
+      <memberdef kind="function" id="class_graphics2_d_1aa47dbfda9d2a9b21f89ce069397683f3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::begin</definition>
+        <argsstring>()</argsstring>
+        <name>begin</name>
+        <qualifiedname>Graphics2D::begin</qualifiedname>
+        <briefdescription>
+<para>Begins a 2D drawing batch. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="129" column="14" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="113" bodyend="117"/>
+      </memberdef>
+      <memberdef kind="function" id="class_graphics2_d_1a3a6498d0bc740072a5171a9458018e86" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::end</definition>
+        <argsstring>()</argsstring>
+        <name>end</name>
+        <qualifiedname>Graphics2D::end</qualifiedname>
+        <briefdescription>
+<para>Ends the current 2D drawing batch. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="133" column="14" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="119" bodyend="123"/>
+      </memberdef>
+      <memberdef kind="function" id="class_graphics2_d_1a22cd28ae0cd16c1d603e2cd42c4230b0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_graphics_context" kindref="compound">GraphicsContext</ref> &amp;</type>
+        <definition>GraphicsContext &amp; Graphics2D::getContext</definition>
+        <argsstring>()</argsstring>
+        <name>getContext</name>
+        <qualifiedname>Graphics2D::getContext</qualifiedname>
+        <briefdescription>
+<para>Returns the context. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="139" column="25" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="125" bodyend="127"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_graphics2_d_1a14a3674ae1be3737e6dfb868e9be3b3f" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::SetForegroundColor</definition>
+        <argsstring>(Graphics2D &amp;graphics, const Color &amp;foregroundColor=Color::WHITE)</argsstring>
+        <name>SetForegroundColor</name>
+        <qualifiedname>Graphics2D::SetForegroundColor</qualifiedname>
+        <param>
+          <type><ref refid="class_graphics2_d" kindref="compound">Graphics2D</ref> &amp;</type>
+          <declname>graphics</declname>
+        </param>
+        <param>
+          <type>const Color &amp;</type>
+          <declname>foregroundColor</declname>
+          <defval>Color::WHITE</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="144" column="21" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="266" bodyend="268"/>
+      </memberdef>
+      <memberdef kind="function" id="class_graphics2_d_1a9de097cc927aad3bf9c52ffda4a37a2a" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::SetBackgroundColor</definition>
+        <argsstring>(Graphics2D &amp;graphics, const Color &amp;backgroundColor=Color::BLACK)</argsstring>
+        <name>SetBackgroundColor</name>
+        <qualifiedname>Graphics2D::SetBackgroundColor</qualifiedname>
+        <param>
+          <type><ref refid="class_graphics2_d" kindref="compound">Graphics2D</ref> &amp;</type>
+          <declname>graphics</declname>
+        </param>
+        <param>
+          <type>const Color &amp;</type>
+          <declname>backgroundColor</declname>
+          <defval>Color::BLACK</defval>
+        </param>
+        <briefdescription>
+<para>Sets the background color. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graphics</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for graphics. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>backgroundColor</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Color value. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="150" column="21" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="270" bodyend="272"/>
+        <references refid="class_graphics2_d_1a17535ece4965dc0eedad7fa5e5accbff" compoundref="_graphics2_d_8cpp" startline="60" endline="107">Graphics2D</references>
+      </memberdef>
+      <memberdef kind="function" id="class_graphics2_d_1a2efe101242a8dd701a448c29870ccdd2" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::SetStrokeWidth</definition>
+        <argsstring>(Graphics2D &amp;graphics, float width=1.0f)</argsstring>
+        <name>SetStrokeWidth</name>
+        <qualifiedname>Graphics2D::SetStrokeWidth</qualifiedname>
+        <param>
+          <type><ref refid="class_graphics2_d" kindref="compound">Graphics2D</ref> &amp;</type>
+          <declname>graphics</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>width</declname>
+          <defval>1.0f</defval>
+        </param>
+        <briefdescription>
+<para>Sets the stroke width. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graphics</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for graphics. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>width</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Dimension value. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="156" column="21" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="274" bodyend="276"/>
+        <references refid="class_graphics2_d_1a17535ece4965dc0eedad7fa5e5accbff" compoundref="_graphics2_d_8cpp" startline="60" endline="107">Graphics2D</references>
+      </memberdef>
+      <memberdef kind="function" id="class_graphics2_d_1a26636c9fbb1be08ef97b5cc4b97811c4" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::SetFontSize</definition>
+        <argsstring>(Graphics2D &amp;graphics, float size=1.0f)</argsstring>
+        <name>SetFontSize</name>
+        <qualifiedname>Graphics2D::SetFontSize</qualifiedname>
+        <param>
+          <type><ref refid="class_graphics2_d" kindref="compound">Graphics2D</ref> &amp;</type>
+          <declname>graphics</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>size</declname>
+          <defval>1.0f</defval>
+        </param>
+        <briefdescription>
+<para>Sets the font size. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graphics</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for graphics. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of elements or bytes. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="162" column="21" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="278" bodyend="280"/>
+        <references refid="class_graphics2_d_1a17535ece4965dc0eedad7fa5e5accbff" compoundref="_graphics2_d_8cpp" startline="60" endline="107">Graphics2D</references>
+      </memberdef>
+      <memberdef kind="function" id="class_graphics2_d_1a768b518945214fce84a03c574c1a9671" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::SetFont</definition>
+        <argsstring>(Graphics2D &amp;graphics, PFont font)</argsstring>
+        <name>SetFont</name>
+        <qualifiedname>Graphics2D::SetFont</qualifiedname>
+        <param>
+          <type><ref refid="class_graphics2_d" kindref="compound">Graphics2D</ref> &amp;</type>
+          <declname>graphics</declname>
+        </param>
+        <param>
+          <type>PFont</type>
+          <declname>font</declname>
+        </param>
+        <briefdescription>
+<para>Sets the font. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graphics</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for graphics. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>font</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for font. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="168" column="21" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="282" bodyend="286"/>
+        <references refid="class_graphics2_d_1a17535ece4965dc0eedad7fa5e5accbff" compoundref="_graphics2_d_8cpp" startline="60" endline="107">Graphics2D</references>
+      </memberdef>
+      <memberdef kind="function" id="class_graphics2_d_1a88fe3fbf759c21bd6a4bfaefd5c90d58" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::DrawLine</definition>
+        <argsstring>(Graphics2D &amp;graphics, float x1, float y1, float x2, float y2)</argsstring>
+        <name>DrawLine</name>
+        <qualifiedname>Graphics2D::DrawLine</qualifiedname>
+        <param>
+          <type><ref refid="class_graphics2_d" kindref="compound">Graphics2D</ref> &amp;</type>
+          <declname>graphics</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>x1</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>y1</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>x2</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>y2</declname>
+        </param>
+        <briefdescription>
+<para>Draws line. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graphics</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for graphics. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>x1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for x 1. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>y1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for y 1. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>x2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for x 2. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>y2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for y 2. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="178" column="21" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="288" bodyend="343"/>
+        <references refid="class_graphics2_d_1a17535ece4965dc0eedad7fa5e5accbff" compoundref="_graphics2_d_8cpp" startline="60" endline="107">Graphics2D</references>
+        <referencedby refid="class_graphics2_d_1adad7605dad2d438339e3179a569c6f28" compoundref="_graphics2_d_8cpp" startline="395" endline="420">DrawEllipse</referencedby>
+        <referencedby refid="class_graphics2_d_1a5095fffb75a1249ee247c0fa73ebca75" compoundref="_graphics2_d_8cpp" startline="346" endline="355">DrawRect</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_graphics2_d_1a5095fffb75a1249ee247c0fa73ebca75" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::DrawRect</definition>
+        <argsstring>(Graphics2D &amp;graphics, float x, float y, float w, float h)</argsstring>
+        <name>DrawRect</name>
+        <qualifiedname>Graphics2D::DrawRect</qualifiedname>
+        <param>
+          <type><ref refid="class_graphics2_d" kindref="compound">Graphics2D</ref> &amp;</type>
+          <declname>graphics</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>w</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>h</declname>
+        </param>
+        <briefdescription>
+<para>Draws rect. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graphics</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for graphics. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>x</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>y</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>w</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for w. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>h</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for h. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="187" column="21" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="346" bodyend="355"/>
+        <references refid="class_graphics2_d_1a88fe3fbf759c21bd6a4bfaefd5c90d58" compoundref="_graphics2_d_8cpp" startline="288" endline="343">DrawLine</references>
+        <references refid="class_graphics2_d_1a17535ece4965dc0eedad7fa5e5accbff" compoundref="_graphics2_d_8cpp" startline="60" endline="107">Graphics2D</references>
+      </memberdef>
+      <memberdef kind="function" id="class_graphics2_d_1a67fa147d1215bba962230b13154964f8" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::FillRect</definition>
+        <argsstring>(Graphics2D &amp;graphics, float x, float y, float w, float h)</argsstring>
+        <name>FillRect</name>
+        <qualifiedname>Graphics2D::FillRect</qualifiedname>
+        <param>
+          <type><ref refid="class_graphics2_d" kindref="compound">Graphics2D</ref> &amp;</type>
+          <declname>graphics</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>w</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>h</declname>
+        </param>
+        <briefdescription>
+<para>Fills a rectangle. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graphics</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for graphics. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>x</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>y</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>w</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for w. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>h</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for h. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="196" column="21" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="358" bodyend="376"/>
+        <references refid="class_graphics2_d_1a17535ece4965dc0eedad7fa5e5accbff" compoundref="_graphics2_d_8cpp" startline="60" endline="107">Graphics2D</references>
+      </memberdef>
+      <memberdef kind="function" id="class_graphics2_d_1a5c0cd288e641e8a8242740d2898ac3f2" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::FillTriangle</definition>
+        <argsstring>(Graphics2D &amp;graphics, float x1, float y1, float x2, float y2, float x3, float y3)</argsstring>
+        <name>FillTriangle</name>
+        <qualifiedname>Graphics2D::FillTriangle</qualifiedname>
+        <param>
+          <type><ref refid="class_graphics2_d" kindref="compound">Graphics2D</ref> &amp;</type>
+          <declname>graphics</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>x1</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>y1</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>x2</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>y2</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>x3</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>y3</declname>
+        </param>
+        <briefdescription>
+<para>Fills a triangle. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graphics</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for graphics. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>x1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for x 1. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>y1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for y 1. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>x2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for x 2. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>y2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for y 2. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>x3</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for x 3. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>y3</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for y 3. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="207" column="21" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="378" bodyend="392"/>
+        <references refid="class_graphics2_d_1a17535ece4965dc0eedad7fa5e5accbff" compoundref="_graphics2_d_8cpp" startline="60" endline="107">Graphics2D</references>
+      </memberdef>
+      <memberdef kind="function" id="class_graphics2_d_1adad7605dad2d438339e3179a569c6f28" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::DrawEllipse</definition>
+        <argsstring>(Graphics2D &amp;graphics, float x, float y, float w, float h)</argsstring>
+        <name>DrawEllipse</name>
+        <qualifiedname>Graphics2D::DrawEllipse</qualifiedname>
+        <param>
+          <type><ref refid="class_graphics2_d" kindref="compound">Graphics2D</ref> &amp;</type>
+          <declname>graphics</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>w</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>h</declname>
+        </param>
+        <briefdescription>
+<para>Draws ellipse. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graphics</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for graphics. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>x</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>y</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>w</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for w. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>h</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for h. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="216" column="21" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="395" bodyend="420"/>
+        <references refid="class_graphics2_d_1a88fe3fbf759c21bd6a4bfaefd5c90d58" compoundref="_graphics2_d_8cpp" startline="288" endline="343">DrawLine</references>
+        <references refid="class_graphics2_d_1a17535ece4965dc0eedad7fa5e5accbff" compoundref="_graphics2_d_8cpp" startline="60" endline="107">Graphics2D</references>
+      </memberdef>
+      <memberdef kind="function" id="class_graphics2_d_1a0843c9a23ec885b7d0fcb0554d559457" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::FillEllipse</definition>
+        <argsstring>(Graphics2D &amp;graphics, float x, float y, float w, float h)</argsstring>
+        <name>FillEllipse</name>
+        <qualifiedname>Graphics2D::FillEllipse</qualifiedname>
+        <param>
+          <type><ref refid="class_graphics2_d" kindref="compound">Graphics2D</ref> &amp;</type>
+          <declname>graphics</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>w</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>h</declname>
+        </param>
+        <briefdescription>
+<para>Fills an ellipse. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graphics</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for graphics. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>x</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>y</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>w</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for w. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>h</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for h. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="225" column="21" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="422" bodyend="432"/>
+        <references refid="class_graphics2_d_1a17535ece4965dc0eedad7fa5e5accbff" compoundref="_graphics2_d_8cpp" startline="60" endline="107">Graphics2D</references>
+      </memberdef>
+      <memberdef kind="function" id="class_graphics2_d_1a4496c5443a7a614690f1a7c4656a3854" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::DrawImage</definition>
+        <argsstring>(Graphics2D &amp;graphics, PTexture tex, float x, float y, float w=-1, float h=-1)</argsstring>
+        <name>DrawImage</name>
+        <qualifiedname>Graphics2D::DrawImage</qualifiedname>
+        <param>
+          <type><ref refid="class_graphics2_d" kindref="compound">Graphics2D</ref> &amp;</type>
+          <declname>graphics</declname>
+        </param>
+        <param>
+          <type>PTexture</type>
+          <declname>tex</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>w</declname>
+          <defval>-1</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>h</declname>
+          <defval>-1</defval>
+        </param>
+        <briefdescription>
+<para>Draws image. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graphics</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for graphics. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>tex</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for tex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>x</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>y</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>w</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for w. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>h</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for h. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="236" column="21" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="434" bodyend="452"/>
+        <references refid="class_graphics2_d_1a17535ece4965dc0eedad7fa5e5accbff" compoundref="_graphics2_d_8cpp" startline="60" endline="107">Graphics2D</references>
+      </memberdef>
+      <memberdef kind="function" id="class_graphics2_d_1ac7c6ea860d6bca44f1a4247d644d8dce" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Graphics2D::DrawString</definition>
+        <argsstring>(Graphics2D &amp;graphics, std::string text, float x, float y, bool useCache=true)</argsstring>
+        <name>DrawString</name>
+        <qualifiedname>Graphics2D::DrawString</qualifiedname>
+        <param>
+          <type><ref refid="class_graphics2_d" kindref="compound">Graphics2D</ref> &amp;</type>
+          <declname>graphics</declname>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>text</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>useCache</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+<para>Draws string. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graphics</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for graphics. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>text</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for text. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>x</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>y</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>useCache</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Flag controlling use cache. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics2D.h" line="246" column="21" bodyfile="src/Rendering/Core/Graphics2D.cpp" bodystart="454" bodyend="466"/>
+        <references refid="class_graphics2_d_1a17535ece4965dc0eedad7fa5e5accbff" compoundref="_graphics2_d_8cpp" startline="60" endline="107">Graphics2D</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_graphics2_d" kindref="compound">Graphics2D</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Core/Graphics2D.h" line="36" column="1" bodyfile="src/Rendering/Core/Graphics2D.h" bodystart="36" bodyend="247"/>
+    <listofallmembers>
+      <member refid="class_graphics2_d_1a29acbdbde1597966551487dc23f1a72d" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>batchIndices</name></member>
+      <member refid="class_graphics2_d_1a71b99464de372c2841cd64f55148cab4" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>batchMaterial</name></member>
+      <member refid="class_graphics2_d_1a6f5f63a3b80f7e3f6315240d06c12d17" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>batchMode</name></member>
+      <member refid="class_graphics2_d_1a560ba855e5351d6c7bb904692867441d" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>BatchMode2D</name></member>
+      <member refid="class_graphics2_d_1aeb7762e72e210e6657d916ca90530afd" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>batchPart</name></member>
+      <member refid="class_graphics2_d_1aad6bb55edd5a92f78f25a0788e1de4ef" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>batchTexture</name></member>
+      <member refid="class_graphics2_d_1a7e3465c0325264c00ff779ae80eee926" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>batchVertices</name></member>
+      <member refid="class_graphics2_d_1aa47dbfda9d2a9b21f89ce069397683f3" prot="public" virt="non-virtual"><scope>Graphics2D</scope><name>begin</name></member>
+      <member refid="class_graphics2_d_1a218f0c7d817e04d9c4156bd5cb6e4a69" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>beginBatch</name></member>
+      <member refid="class_graphics2_d_1a9ea279eca78c3a017312afddfefca056" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>colorMaterial</name></member>
+      <member refid="class_graphics2_d_1a949b05c390f224404fde2639739e2b9e" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>context</name></member>
+      <member refid="class_graphics2_d_1adad7605dad2d438339e3179a569c6f28" prot="public" virt="non-virtual"><scope>Graphics2D</scope><name>DrawEllipse</name></member>
+      <member refid="class_graphics2_d_1a4496c5443a7a614690f1a7c4656a3854" prot="public" virt="non-virtual"><scope>Graphics2D</scope><name>DrawImage</name></member>
+      <member refid="class_graphics2_d_1a88fe3fbf759c21bd6a4bfaefd5c90d58" prot="public" virt="non-virtual"><scope>Graphics2D</scope><name>DrawLine</name></member>
+      <member refid="class_graphics2_d_1a4d8b59040cf6156e5e7a24ae80944f24" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>drawMesh</name></member>
+      <member refid="class_graphics2_d_1a5095fffb75a1249ee247c0fa73ebca75" prot="public" virt="non-virtual"><scope>Graphics2D</scope><name>DrawRect</name></member>
+      <member refid="class_graphics2_d_1ac7c6ea860d6bca44f1a4247d644d8dce" prot="public" virt="non-virtual"><scope>Graphics2D</scope><name>DrawString</name></member>
+      <member refid="class_graphics2_d_1a3a6498d0bc740072a5171a9458018e86" prot="public" virt="non-virtual"><scope>Graphics2D</scope><name>end</name></member>
+      <member refid="class_graphics2_d_1a59c896cccc7d033058017af389cb9bf7" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>ensureBatchResources</name></member>
+      <member refid="class_graphics2_d_1a0843c9a23ec885b7d0fcb0554d559457" prot="public" virt="non-virtual"><scope>Graphics2D</scope><name>FillEllipse</name></member>
+      <member refid="class_graphics2_d_1a67fa147d1215bba962230b13154964f8" prot="public" virt="non-virtual"><scope>Graphics2D</scope><name>FillRect</name></member>
+      <member refid="class_graphics2_d_1a5c0cd288e641e8a8242740d2898ac3f2" prot="public" virt="non-virtual"><scope>Graphics2D</scope><name>FillTriangle</name></member>
+      <member refid="class_graphics2_d_1a7da48834b5f17f81b7ba148b9a7905de" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>flushBatch</name></member>
+      <member refid="class_graphics2_d_1a98ad7a002b84e8699acaec88fdc33c63" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>flushQueuedFonts</name></member>
+      <member refid="class_graphics2_d_1a22cd28ae0cd16c1d603e2cd42c4230b0" prot="public" virt="non-virtual"><scope>Graphics2D</scope><name>getContext</name></member>
+      <member refid="class_graphics2_d_1a17535ece4965dc0eedad7fa5e5accbff" prot="public" virt="non-virtual"><scope>Graphics2D</scope><name>Graphics2D</name></member>
+      <member refid="class_graphics2_d_1ae3c8a24a99d30388a2e02955c09e1223" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>imageMaterial</name></member>
+      <member refid="class_graphics2_d_1ae21528c87cedf3d35f47af4dac090740" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>maxBatchQuads</name></member>
+      <member refid="class_graphics2_d_1a4e81b67a8dd2193aa0bccf5e038c192c" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>queuedFonts</name></member>
+      <member refid="class_graphics2_d_1acb8423ea2d41720e6597ce01268648e6" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>queueFontForFlush</name></member>
+      <member refid="class_graphics2_d_1ab21dc4feb0c026e24780a0fa9a25ec0f" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>resetBatch</name></member>
+      <member refid="class_graphics2_d_1afc5f54d2e36fb1130bafa6ae9a43217f" prot="public" virt="non-virtual"><scope>Graphics2D</scope><name>resize</name></member>
+      <member refid="class_graphics2_d_1a9de097cc927aad3bf9c52ffda4a37a2a" prot="public" virt="non-virtual"><scope>Graphics2D</scope><name>SetBackgroundColor</name></member>
+      <member refid="class_graphics2_d_1a768b518945214fce84a03c574c1a9671" prot="public" virt="non-virtual"><scope>Graphics2D</scope><name>SetFont</name></member>
+      <member refid="class_graphics2_d_1a26636c9fbb1be08ef97b5cc4b97811c4" prot="public" virt="non-virtual"><scope>Graphics2D</scope><name>SetFontSize</name></member>
+      <member refid="class_graphics2_d_1a14a3674ae1be3737e6dfb868e9be3b3f" prot="public" virt="non-virtual"><scope>Graphics2D</scope><name>SetForegroundColor</name></member>
+      <member refid="class_graphics2_d_1a2efe101242a8dd701a448c29870ccdd2" prot="public" virt="non-virtual"><scope>Graphics2D</scope><name>SetStrokeWidth</name></member>
+      <member refid="class_graphics2_d_1a2a32c721330681e1e49541606319c027" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>submitQuad</name></member>
+      <member refid="class_graphics2_d_1abedaa5759b87ff14313c9600753024df" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>target</name></member>
+      <member refid="class_graphics2_d_1aec9dbb2eba29e747deaa7ed1a318b1cb" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>uiCamera</name></member>
+      <member refid="class_graphics2_d_1a53aa65e391ad9a3e05e4d0c4bbb6e5e4" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>unitCircle</name></member>
+      <member refid="class_graphics2_d_1ad7f1546dcb147d9b1e1945fbebd81967" prot="private" virt="non-virtual"><scope>Graphics2D</scope><name>unitQuad</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

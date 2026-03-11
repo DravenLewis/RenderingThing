@@ -1,0 +1,265 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_constructed_material_1_1_field" kind="struct" language="C++" prot="public">
+    <compoundname>ConstructedMaterial::Field</compoundname>
+    <includes refid="_constructed_material_8h" local="no">ConstructedMaterial.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_constructed_material_1_1_field_1aea1b90ed2ac0fe5de9e0a621201f0de9" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string ConstructedMaterial::Field::key</definition>
+        <argsstring></argsstring>
+        <name>key</name>
+        <qualifiedname>ConstructedMaterial::Field::key</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="32" column="25" bodyfile="src/Rendering/Materials/ConstructedMaterial.h" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_constructed_material_1_1_field_1ae405ee0ef9675ae06d507aab0f283688" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string ConstructedMaterial::Field::displayName</definition>
+        <argsstring></argsstring>
+        <name>displayName</name>
+        <qualifiedname>ConstructedMaterial::Field::displayName</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="33" column="25" bodyfile="src/Rendering/Materials/ConstructedMaterial.h" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_constructed_material_1_1_field_1ab5df4e3a55fde3b53d143589624f0b1f" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string ConstructedMaterial::Field::uniformName</definition>
+        <argsstring></argsstring>
+        <name>uniformName</name>
+        <qualifiedname>ConstructedMaterial::Field::uniformName</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="34" column="25" bodyfile="src/Rendering/Materials/ConstructedMaterial.h" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_constructed_material_1_1_field_1a7b44889db8619b7baa3256f0ba041d0e" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string ConstructedMaterial::Field::mirrorUniformName</definition>
+        <argsstring></argsstring>
+        <name>mirrorUniformName</name>
+        <qualifiedname>ConstructedMaterial::Field::mirrorUniformName</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="35" column="25" bodyfile="src/Rendering/Materials/ConstructedMaterial.h" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_constructed_material_1_1_field_1a23e61dbecabc9437441853665e92cf2c" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string ConstructedMaterial::Field::presenceUniformName</definition>
+        <argsstring></argsstring>
+        <name>presenceUniformName</name>
+        <qualifiedname>ConstructedMaterial::Field::presenceUniformName</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="36" column="25" bodyfile="src/Rendering/Materials/ConstructedMaterial.h" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_constructed_material_1_1_field_1ac14f7a5aa053c48d0d900b223ea88254" prot="public" static="no" mutable="no">
+        <type><ref refid="class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cf" kindref="member">FieldType</ref></type>
+        <definition>FieldType ConstructedMaterial::Field::type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <qualifiedname>ConstructedMaterial::Field::type</qualifiedname>
+        <initializer>= FieldType::Float</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="37" column="23" bodyfile="src/Rendering/Materials/ConstructedMaterial.h" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_constructed_material_1_1_field_1a56a6a73b0e5400dad95b5517a81e3af7" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float ConstructedMaterial::Field::floatValue</definition>
+        <argsstring></argsstring>
+        <name>floatValue</name>
+        <qualifiedname>ConstructedMaterial::Field::floatValue</qualifiedname>
+        <initializer>= 0.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="39" column="19" bodyfile="src/Rendering/Materials/ConstructedMaterial.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_constructed_material_1_1_field_1af27efb334454d4ea12dfe9af6c084006" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int ConstructedMaterial::Field::intValue</definition>
+        <argsstring></argsstring>
+        <name>intValue</name>
+        <qualifiedname>ConstructedMaterial::Field::intValue</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="40" column="17" bodyfile="src/Rendering/Materials/ConstructedMaterial.h" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_constructed_material_1_1_field_1a018f2d065f4894bdcf4cfad8553139fe" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool ConstructedMaterial::Field::boolValue</definition>
+        <argsstring></argsstring>
+        <name>boolValue</name>
+        <qualifiedname>ConstructedMaterial::Field::boolValue</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="41" column="18" bodyfile="src/Rendering/Materials/ConstructedMaterial.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_constructed_material_1_1_field_1ac2bfb1bae96030da2ba422f95e946589" prot="public" static="no" mutable="no">
+        <type>Math3D::Vec2</type>
+        <definition>Math3D::Vec2 ConstructedMaterial::Field::vec2Value</definition>
+        <argsstring></argsstring>
+        <name>vec2Value</name>
+        <qualifiedname>ConstructedMaterial::Field::vec2Value</qualifiedname>
+        <initializer>= Math3D::Vec2(0.0f, 0.0f)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="42" column="26" bodyfile="src/Rendering/Materials/ConstructedMaterial.h" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_constructed_material_1_1_field_1ade83ca486b4a4aba7317c29a971cae73" prot="public" static="no" mutable="no">
+        <type>Math3D::Vec3</type>
+        <definition>Math3D::Vec3 ConstructedMaterial::Field::vec3Value</definition>
+        <argsstring></argsstring>
+        <name>vec3Value</name>
+        <qualifiedname>ConstructedMaterial::Field::vec3Value</qualifiedname>
+        <initializer>= Math3D::Vec3(0.0f, 0.0f, 0.0f)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="43" column="26" bodyfile="src/Rendering/Materials/ConstructedMaterial.h" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_constructed_material_1_1_field_1ae6d6329dc69a039a9ba1db500f95894a" prot="public" static="no" mutable="no">
+        <type>Math3D::Vec4</type>
+        <definition>Math3D::Vec4 ConstructedMaterial::Field::vec4Value</definition>
+        <argsstring></argsstring>
+        <name>vec4Value</name>
+        <qualifiedname>ConstructedMaterial::Field::vec4Value</qualifiedname>
+        <initializer>= Math3D::Vec4(0.0f, 0.0f, 0.0f, 1.0f)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="44" column="26" bodyfile="src/Rendering/Materials/ConstructedMaterial.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_constructed_material_1_1_field_1a4ff93fdebe30b55f3296f8cbb5ce6495" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string ConstructedMaterial::Field::textureAssetRef</definition>
+        <argsstring></argsstring>
+        <name>textureAssetRef</name>
+        <qualifiedname>ConstructedMaterial::Field::textureAssetRef</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="46" column="25" bodyfile="src/Rendering/Materials/ConstructedMaterial.h" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_constructed_material_1_1_field_1a17698bf08499c28b16489aee03b31a82" prot="public" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="class_texture" kindref="compound">Texture</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;Texture&gt; ConstructedMaterial::Field::texturePtr</definition>
+        <argsstring></argsstring>
+        <name>texturePtr</name>
+        <qualifiedname>ConstructedMaterial::Field::texturePtr</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="47" column="29" bodyfile="src/Rendering/Materials/ConstructedMaterial.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_constructed_material_1_1_field_1af96b1e10a7ec184a8c19d9ca6d8129c0" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string ConstructedMaterial::Field::loadedTextureRef</definition>
+        <argsstring></argsstring>
+        <name>loadedTextureRef</name>
+        <qualifiedname>ConstructedMaterial::Field::loadedTextureRef</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="48" column="25" bodyfile="src/Rendering/Materials/ConstructedMaterial.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_constructed_material_1_1_field_1a8653f76acd8f779bd48027574a36597f" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int ConstructedMaterial::Field::textureSlot</definition>
+        <argsstring></argsstring>
+        <name>textureSlot</name>
+        <qualifiedname>ConstructedMaterial::Field::textureSlot</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/ConstructedMaterial.h" line="49" column="17" bodyfile="src/Rendering/Materials/ConstructedMaterial.h" bodystart="49" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_constructed_material_1_1_field" kindref="compound">Field</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Materials/ConstructedMaterial.h" line="31" column="9" bodyfile="src/Rendering/Materials/ConstructedMaterial.h" bodystart="31" bodyend="50"/>
+    <listofallmembers>
+      <member refid="struct_constructed_material_1_1_field_1a018f2d065f4894bdcf4cfad8553139fe" prot="public" virt="non-virtual"><scope>ConstructedMaterial::Field</scope><name>boolValue</name></member>
+      <member refid="struct_constructed_material_1_1_field_1ae405ee0ef9675ae06d507aab0f283688" prot="public" virt="non-virtual"><scope>ConstructedMaterial::Field</scope><name>displayName</name></member>
+      <member refid="struct_constructed_material_1_1_field_1a56a6a73b0e5400dad95b5517a81e3af7" prot="public" virt="non-virtual"><scope>ConstructedMaterial::Field</scope><name>floatValue</name></member>
+      <member refid="struct_constructed_material_1_1_field_1af27efb334454d4ea12dfe9af6c084006" prot="public" virt="non-virtual"><scope>ConstructedMaterial::Field</scope><name>intValue</name></member>
+      <member refid="struct_constructed_material_1_1_field_1aea1b90ed2ac0fe5de9e0a621201f0de9" prot="public" virt="non-virtual"><scope>ConstructedMaterial::Field</scope><name>key</name></member>
+      <member refid="struct_constructed_material_1_1_field_1af96b1e10a7ec184a8c19d9ca6d8129c0" prot="public" virt="non-virtual"><scope>ConstructedMaterial::Field</scope><name>loadedTextureRef</name></member>
+      <member refid="struct_constructed_material_1_1_field_1a7b44889db8619b7baa3256f0ba041d0e" prot="public" virt="non-virtual"><scope>ConstructedMaterial::Field</scope><name>mirrorUniformName</name></member>
+      <member refid="struct_constructed_material_1_1_field_1a23e61dbecabc9437441853665e92cf2c" prot="public" virt="non-virtual"><scope>ConstructedMaterial::Field</scope><name>presenceUniformName</name></member>
+      <member refid="struct_constructed_material_1_1_field_1a4ff93fdebe30b55f3296f8cbb5ce6495" prot="public" virt="non-virtual"><scope>ConstructedMaterial::Field</scope><name>textureAssetRef</name></member>
+      <member refid="struct_constructed_material_1_1_field_1a17698bf08499c28b16489aee03b31a82" prot="public" virt="non-virtual"><scope>ConstructedMaterial::Field</scope><name>texturePtr</name></member>
+      <member refid="struct_constructed_material_1_1_field_1a8653f76acd8f779bd48027574a36597f" prot="public" virt="non-virtual"><scope>ConstructedMaterial::Field</scope><name>textureSlot</name></member>
+      <member refid="struct_constructed_material_1_1_field_1ac14f7a5aa053c48d0d900b223ea88254" prot="public" virt="non-virtual"><scope>ConstructedMaterial::Field</scope><name>type</name></member>
+      <member refid="struct_constructed_material_1_1_field_1ab5df4e3a55fde3b53d143589624f0b1f" prot="public" virt="non-virtual"><scope>ConstructedMaterial::Field</scope><name>uniformName</name></member>
+      <member refid="struct_constructed_material_1_1_field_1ac2bfb1bae96030da2ba422f95e946589" prot="public" virt="non-virtual"><scope>ConstructedMaterial::Field</scope><name>vec2Value</name></member>
+      <member refid="struct_constructed_material_1_1_field_1ade83ca486b4a4aba7317c29a971cae73" prot="public" virt="non-virtual"><scope>ConstructedMaterial::Field</scope><name>vec3Value</name></member>
+      <member refid="struct_constructed_material_1_1_field_1ae6d6329dc69a039a9ba1db500f95894a" prot="public" virt="non-virtual"><scope>ConstructedMaterial::Field</scope><name>vec4Value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

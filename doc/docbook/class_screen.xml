@@ -1,0 +1,453 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_screen" xml:lang="en-US">
+<title>Screen Class Reference</title>
+<indexterm><primary>Screen</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_screen">Screen</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;Screen.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><link linkend="_class_screen_1a0d2f55f84802fb3d0348200cea71e59c">Screen</link> (int width, int height)</para>
+
+<para>Constructs a new <link linkend="_class_screen">Screen</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_screen_1a4243bc17596af96415b09ac48205676d"/><emphasis role="strong">~Screen</emphasis> ()</para>
+
+<para>Destroys this <link linkend="_class_screen">Screen</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_screen_1ab9f2169f953e728fa2614e0026b3b4a7"/>void <emphasis role="strong">processRenderPipeline</emphasis> ()</para>
+
+<para>Processes the post-processing pipeline. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_screen_1a958f0738b6aa94ae8aeaeffb78753ddf">drawToWindow</link> (RenderWindow *window, bool clearWindow=true)</para>
+
+<para>Draws to window. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_screen_1a0d0154807bb2d93c6896d9511378d2e1">drawToView</link> (PView view, bool clearWindow=true, float x=-1, float y=-1, float width=-1, float height=-1)</para>
+
+<para>Draws to view. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_screen_1a5ba54872e8f2ab1fb14a24875db66866">resize</link> (int w, int h)</para>
+
+<para>Resizes internal resources. </para>
+</listitem>
+            <listitem><para>int <link linkend="_class_screen_1ab71b25e991771611d4acab431f92b518">getWidth</link> ()</para>
+
+<para>Returns the width. </para>
+</listitem>
+            <listitem><para>int <link linkend="_class_screen_1a4edca55b221da0326dc7de0ec0f4dc91">getHeight</link> ()</para>
+
+<para>Returns the height. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_screen_1ab7a0796298adc6b6ffad439da2215b85">bind</link> (bool clear=true)</para>
+
+<para>Binds this resource. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_screen_1a0581496c4bb1cd53273872bc0cbb0566"/>void <emphasis role="strong">unbind</emphasis> ()</para>
+
+<para>Unbinds this resource. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_screen_1a5af6bd5e04104a0220cea4f113f65a29">addEffect</link> (Graphics::PostProcessing::PPostProcessingEffect effect)</para>
+
+<para>Adds effect. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_screen_1a752d56573abe000eb842c99a9c068275"/>void <emphasis role="strong">clearEffects</emphasis> ()</para>
+
+<para>Clears effects. </para>
+</listitem>
+            <listitem><para>PTexture <link linkend="_class_screen_1a54581eb4483a0fbf4433855124c6a154">getDisplayTexture</link> ()</para>
+
+<para>Returns the display texture. </para>
+</listitem>
+            <listitem><para>PFrameBuffer <link linkend="_class_screen_1affe30f540e47e10ce7b4a6303c2a0ed6">getDisplayBuffer</link> () const</para>
+
+<para>Returns the display buffer. </para>
+</listitem>
+            <listitem><para>PFrameBuffer <link linkend="_class_screen_1afeb8a4072024504886db1f2dcc33504a">getDrawBuffer</link> () const</para>
+
+<para>Returns the draw buffer. </para>
+</listitem>
+            <listitem><para>PCamera <link linkend="_class_screen_1a744f676a8bb30991ae2b4fb3eabf8952">getCamera</link> () const</para>
+
+<para>Returns the camera. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_screen_1aa57f801957701f8867371a870c4e2304"/>void <emphasis role="strong">setCamera</emphasis> (PCamera cam, bool makeCurrent=true)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_screen_1ad7a7f89561b4eda6ec40873951263cab"/>void <emphasis role="strong">makeCameraCurrent</emphasis> ()</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_screen_1a9faf64f4369655993e87d6a3cee7d00d"/>PEnvironment <emphasis role="strong">getEnvironment</emphasis> () const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_screen_1abbefa1e654be150d9999af9ef39e0726"/>void <emphasis role="strong">setEnvironment</emphasis> (PEnvironment env, bool makeCurrent=true)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_screen_1adedfb6caec500ef9dce92e3734a2e7c2"/>void <emphasis role="strong">makeEnvironmentCurrent</emphasis> ()</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_screen_1a8314f2f645a71d5f12dcbfeb52445240"/>void <emphasis role="strong">setClearColor</emphasis> (Color color)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_screen_1a097f90299492356d83b9f5b6b8580302"/>Color &amp; <emphasis role="strong">getClearColor</emphasis> ()</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_screen_1a88d41de8a456814a95a75c0f402354ff"/>void <emphasis role="strong">clear</emphasis> (Color c=Color::BLACK)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_screen_1a1537033d361b07835ebdfe2fabe68d33"/>bool <emphasis role="strong">isBound</emphasis> () const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_screen_1a7b09f5f97f11499b0e9a6851a66c38a7"/>float <emphasis role="strong">getLastPostProcessMs</emphasis> () const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_screen_1a094fce9f7d229c82aa6590e1597fb008"/>int <emphasis role="strong">getLastPostProcessEffectCount</emphasis> () const</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_screen_1a95dd5de25c923cb0c5a92bea6d455d1e"/>static void <emphasis role="strong">MakeCameraCurrent</emphasis> (PCamera camera)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_screen_1a07725080c44bc4d909a0bd36db04b728"/>static PCamera <emphasis role="strong">GetCurrentCamera</emphasis> ()</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_screen_1a60335c74b0e51c63df7821459706c06b"/>static void <emphasis role="strong">MakeEnvironmentCurrent</emphasis> (PEnvironment env)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_screen_1ac9ef56948fa161cc570d3f832598fe25"/>static PEnvironment <emphasis role="strong">GetCurrentEnvironment</emphasis> ()</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_screen">Screen</link> type. </para>
+</section>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_class_screen_1a0d2f55f84802fb3d0348200cea71e59c"/><section>
+    <title>Screen()</title>
+<indexterm><primary>Screen</primary><secondary>Screen</secondary></indexterm>
+<indexterm><primary>Screen</primary><secondary>Screen</secondary></indexterm>
+<para><computeroutput>Screen::Screen (int width, int height)</computeroutput></para><para>
+
+<para>Constructs a new <link linkend="_class_screen">Screen</link> instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>width</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>height</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_screen_1a5af6bd5e04104a0220cea4f113f65a29"/><section>
+    <title>addEffect()</title>
+<indexterm><primary>addEffect</primary><secondary>Screen</secondary></indexterm>
+<indexterm><primary>Screen</primary><secondary>addEffect</secondary></indexterm>
+<para><computeroutput>void Screen::addEffect (Graphics::PostProcessing::PPostProcessingEffect effect)</computeroutput></para><para>
+
+<para>Adds effect. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>effect</entry><entry>
+<para>Value for effect. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_screen_1ab7a0796298adc6b6ffad439da2215b85"/><section>
+    <title>bind()</title>
+<indexterm><primary>bind</primary><secondary>Screen</secondary></indexterm>
+<indexterm><primary>Screen</primary><secondary>bind</secondary></indexterm>
+<para><computeroutput>void Screen::bind (bool clear = <computeroutput>true</computeroutput>
+)</computeroutput></para><para>
+
+<para>Binds this resource. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>clear</entry><entry>
+<para>Flag controlling clear. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_screen_1a0d0154807bb2d93c6896d9511378d2e1"/><section>
+    <title>drawToView()</title>
+<indexterm><primary>drawToView</primary><secondary>Screen</secondary></indexterm>
+<indexterm><primary>Screen</primary><secondary>drawToView</secondary></indexterm>
+<para><computeroutput>void Screen::drawToView (PView view, bool clearWindow = <computeroutput>true</computeroutput>
+, float x = <computeroutput>-1</computeroutput>
+, float y = <computeroutput>-1</computeroutput>
+, float width = <computeroutput>-1</computeroutput>
+, float height = <computeroutput>-1</computeroutput>
+)</computeroutput></para><para>
+
+<para>Draws to view. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>view</entry><entry>
+<para>Value for view. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>clearWindow</entry><entry>
+<para>Flag controlling clear window. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>x</entry><entry>
+<para>Spatial value used by this operation. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>y</entry><entry>
+<para>Spatial value used by this operation. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>width</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>height</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_screen_1a958f0738b6aa94ae8aeaeffb78753ddf"/><section>
+    <title>drawToWindow()</title>
+<indexterm><primary>drawToWindow</primary><secondary>Screen</secondary></indexterm>
+<indexterm><primary>Screen</primary><secondary>drawToWindow</secondary></indexterm>
+<para><computeroutput>void Screen::drawToWindow (RenderWindow * window, bool clearWindow = <computeroutput>true</computeroutput>
+)</computeroutput></para><para>
+
+<para>Draws to window. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>window</entry><entry>
+<para>Value for window. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>clearWindow</entry><entry>
+<para>Flag controlling clear window. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_screen_1a744f676a8bb30991ae2b4fb3eabf8952"/><section>
+    <title>getCamera()</title>
+<indexterm><primary>getCamera</primary><secondary>Screen</secondary></indexterm>
+<indexterm><primary>Screen</primary><secondary>getCamera</secondary></indexterm>
+<para><computeroutput>PCamera Screen::getCamera ( ) const<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the camera. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Result of this operation. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_screen_1affe30f540e47e10ce7b4a6303c2a0ed6"/><section>
+    <title>getDisplayBuffer()</title>
+<indexterm><primary>getDisplayBuffer</primary><secondary>Screen</secondary></indexterm>
+<indexterm><primary>Screen</primary><secondary>getDisplayBuffer</secondary></indexterm>
+<para><computeroutput>PFrameBuffer Screen::getDisplayBuffer ( ) const</computeroutput></para><para>
+
+<para>Returns the display buffer. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Result of this operation. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_screen_1a54581eb4483a0fbf4433855124c6a154"/><section>
+    <title>getDisplayTexture()</title>
+<indexterm><primary>getDisplayTexture</primary><secondary>Screen</secondary></indexterm>
+<indexterm><primary>Screen</primary><secondary>getDisplayTexture</secondary></indexterm>
+<para><computeroutput>PTexture Screen::getDisplayTexture ( )</computeroutput></para><para>
+
+<para>Returns the display texture. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Result of this operation. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_screen_1afeb8a4072024504886db1f2dcc33504a"/><section>
+    <title>getDrawBuffer()</title>
+<indexterm><primary>getDrawBuffer</primary><secondary>Screen</secondary></indexterm>
+<indexterm><primary>Screen</primary><secondary>getDrawBuffer</secondary></indexterm>
+<para><computeroutput>PFrameBuffer Screen::getDrawBuffer ( ) const</computeroutput></para><para>
+
+<para>Returns the draw buffer. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Result of this operation. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_screen_1a4edca55b221da0326dc7de0ec0f4dc91"/><section>
+    <title>getHeight()</title>
+<indexterm><primary>getHeight</primary><secondary>Screen</secondary></indexterm>
+<indexterm><primary>Screen</primary><secondary>getHeight</secondary></indexterm>
+<para><computeroutput>int Screen::getHeight ( )</computeroutput></para><para>
+
+<para>Returns the height. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Computed numeric result. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_screen_1ab71b25e991771611d4acab431f92b518"/><section>
+    <title>getWidth()</title>
+<indexterm><primary>getWidth</primary><secondary>Screen</secondary></indexterm>
+<indexterm><primary>Screen</primary><secondary>getWidth</secondary></indexterm>
+<para><computeroutput>int Screen::getWidth ( )</computeroutput></para><para>
+
+<para>Returns the width. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Computed numeric result. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_screen_1a5ba54872e8f2ab1fb14a24875db66866"/><section>
+    <title>resize()</title>
+<indexterm><primary>resize</primary><secondary>Screen</secondary></indexterm>
+<indexterm><primary>Screen</primary><secondary>resize</secondary></indexterm>
+<para><computeroutput>void Screen::resize (int w, int h)</computeroutput></para><para>
+
+<para>Resizes internal resources. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>w</entry><entry>
+<para>Value for w. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>h</entry><entry>
+<para>Value for h. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<para>
+The documentation for this class was generated from the following files:</para>
+src/Rendering/Core/<link linkend="__screen_8h">Screen.h</link>src/Rendering/Core/<link linkend="__screen_8cpp">Screen.cpp</link></section>
+</section>

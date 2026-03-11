@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Core/Graphics.h
+ * @brief Declarations for Graphics.
+ */
+
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
@@ -17,22 +22,42 @@ namespace Graphics{
 
     namespace Image{
 
+        /// @brief Holds data for Image.
         struct Image{
             public:
                 std::vector<uint32_t> pixelData;
                 int width, height;
+                /**
+                 * @brief Constructs a new Image instance.
+                 */
                 Image() = delete;
+                /**
+                 * @brief Constructs a new Image instance.
+                 * @param width Dimension value.
+                 * @param height Dimension value.
+                 */
                 Image(int width, int height){
                     if(width <= 0 || height <= 0) throw std::runtime_error("Cannot have 0 or Negative Dimension.");
                     this->width = width;
                     this->height = height;
                     pixelData.resize(static_cast<size_t>(width) * height);
                 }
+                /**
+                 * @brief Constructs a new Image instance.
+                 * @param src Value for src.
+                 */
                 Image(const Image& src) : width(src.width), height(src.height){
                     pixelData.resize(static_cast<size_t>(width) * height);
                     this->pixelData = src.pixelData;
                 }
 
+                /**
+                 * @brief Creates a new object.
+                 * @param width Dimension value.
+                 * @param height Dimension value.
+                 * @param src Value for src.
+                 * @return Pointer to the resulting object.
+                 */
                 static std::shared_ptr<Image> Create(int width, int height, const std::vector<uint32_t>& src = {}){
 
                     std::vector<uint32_t> pixDat(width * height, 0x000000FF);
@@ -47,12 +72,22 @@ namespace Graphics{
                     return image;
                 }
 
+                /**
+                 * @brief Returns the width.
+                 * @return Computed numeric result.
+                 */
                 int getWidth() const { return width;}
                 int getHeight() const {return height;}
                 std::vector<uint32_t> getPixelData() const {return pixelData;}
         };
 
+        /// @brief Holds data for BufferedImage.
         struct BufferedImage : public Image{
+                /**
+                 * @brief Constructs a new BufferedImage instance.
+                 * @param width Dimension value.
+                 * @param height Dimension value.
+                 */
                 BufferedImage(int width, int height) : Image(width, height){}
                 BufferedImage(const Image& src) : Image(src) {}
                 BufferedImage() = delete;
@@ -81,10 +116,22 @@ namespace Graphics{
 
     namespace PostProcessing{
 
+        /// @brief Represents the PostProcessingEffect type.
         class PostProcessingEffect{
             public:
+                /**
+                 * @brief Destroys this PostProcessingEffect instance.
+                 */
                 virtual ~PostProcessingEffect() = default;
 
+                /**
+                 * @brief Applies current settings.
+                 * @param inputTex Value for put tex.
+                 * @param depthTex Value for depth tex.
+                 * @param frameBuffer Value for frame buffer.
+                 * @param quad Value for quad.
+                 * @return True when the operation succeeds; otherwise false.
+                 */
                 virtual bool apply(
                     PTexture inputTex,
                     PTexture depthTex,
@@ -103,9 +150,21 @@ namespace Graphics{
         const std::string SCREEN_VERT_SRC = R"(
             #version 330 core
 
+            /**
+             * @brief Returns the shader layout declaration.
+             */
             layout (location = 0) in vec3 aPos;
+            /**
+             * @brief Returns the shader layout declaration.
+             */
             layout (location = 1) in vec4 aColor;     // Mesh class has color at loc 1
+            /**
+             * @brief Returns the shader layout declaration.
+             */
             layout (location = 2) in vec3 aNormal;    // Mesh class has normal at loc 2
+            /**
+             * @brief Returns the shader layout declaration.
+             */
             layout (location = 3) in vec2 aTexCoords; // Mesh class has UV at loc 3
 
             out vec2 TexCoords;
@@ -114,6 +173,9 @@ namespace Graphics{
             uniform mat4 u_view;
             uniform mat4 u_projection;
 
+            /**
+             * @brief Executes the main shader pass.
+             */
             void main() {
                 TexCoords = aTexCoords;
                 gl_Position = u_projection * u_view * u_model * vec4(aPos, 1.0);
@@ -131,21 +193,41 @@ namespace Graphics{
             uniform int u_frameIndex;
             uniform float u_debandStrength;
 
+            /**
+             * @brief Computes luminance.
+             * @param c Value for c.
+             * @return Computed numeric result.
+             */
             float luma(vec3 c){
                 return dot(c, vec3(0.299, 0.587, 0.114));
             }
 
+            /**
+             * @brief Generates interleaved gradient noise.
+             * @param p Value for p.
+             * @param frame Value for frame.
+             * @return Computed numeric result.
+             */
             float interleavedGradientNoise(vec2 p, float frame){
                 vec2 jitter = vec2(frame * 0.75487765, frame * 0.56984026);
                 return fract(52.9829189 * fract(dot(p + jitter, vec2(0.06711056, 0.00583715))));
             }
 
+            /**
+             * @brief Generates triangular-distribution noise.
+             * @param p Value for p.
+             * @param frame Value for frame.
+             * @return Computed numeric result.
+             */
             float triangularNoise(vec2 p, float frame){
                 float a = interleavedGradientNoise(p + vec2(0.5, 0.25), frame);
                 float b = interleavedGradientNoise(p + vec2(1.25, 2.75), frame + 17.0);
                 return a - b;
             }
 
+            /**
+             * @brief Executes the main shader pass.
+             */
             void main() {
                 vec4 color = texture(screenTexture, TexCoords);
 

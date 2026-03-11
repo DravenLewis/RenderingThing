@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Textures/SkyBox.cpp
+ * @brief Implementation for SkyBox.
+ */
+
 #include "Rendering/Textures/SkyBox.h"
 
 #include "Rendering/Geometry/ModelPartPrefabs.h"

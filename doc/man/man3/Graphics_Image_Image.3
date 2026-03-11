@@ -1,0 +1,126 @@
+.TH "Graphics::Image::Image" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Graphics::Image::Image \- Holds data for \fBImage\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <Graphics\&.h>\fP
+.PP
+Inherited by \fBGraphics::Image::BufferedImage\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBImage\fP ()=delete"
+.br
+.RI "Constructs a new \fBImage\fP instance\&. "
+.ti -1c
+.RI "\fBImage\fP (int width, int height)"
+.br
+.RI "Constructs a new \fBImage\fP instance\&. "
+.ti -1c
+.RI "\fBImage\fP (const Image &src)"
+.br
+.RI "Constructs a new \fBImage\fP instance\&. "
+.ti -1c
+.RI "int \fBgetWidth\fP () const"
+.br
+.RI "Returns the width\&. "
+.ti -1c
+.RI "int \fBgetHeight\fP () const"
+.br
+.ti -1c
+.RI "std::vector< uint32_t > \fBgetPixelData\fP () const"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static std::shared_ptr< \fBImage\fP > \fBCreate\fP (int width, int height, const std::vector< uint32_t > &src={})"
+.br
+.RI "Creates a new object\&. "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::vector< uint32_t > \fBpixelData\fP"
+.br
+.ti -1c
+.RI "int \fBwidth\fP"
+.br
+.ti -1c
+.RI "int \fBheight\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Holds data for \fBImage\fP\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Graphics::Image::Image::Image (int width, int height)\fR [inline]\fP"
+
+.PP
+Constructs a new \fBImage\fP instance\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIwidth\fP Dimension value\&. 
+.br
+\fIheight\fP Dimension value\&. 
+.RE
+.PP
+
+.SS "Graphics::Image::Image::Image (const Image & src)\fR [inline]\fP"
+
+.PP
+Constructs a new \fBImage\fP instance\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsrc\fP Value for src\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "std::shared_ptr< \fBImage\fP > Graphics::Image::Image::Create (int width, int height, const std::vector< uint32_t > & src = \fR{}\fP)\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIwidth\fP Dimension value\&. 
+.br
+\fIheight\fP Dimension value\&. 
+.br
+\fIsrc\fP Value for src\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+.SS "int Graphics::Image::Image::getWidth () const\fR [inline]\fP"
+
+.PP
+Returns the width\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Computed numeric result\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

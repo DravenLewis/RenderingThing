@@ -1,3 +1,8 @@
+/**
+ * @file src/Scene/Scene.cpp
+ * @brief Implementation for Scene.
+ */
+
 #include "Scene/Scene.h"
 
 #include "Rendering/Core/Screen.h"
@@ -705,6 +710,7 @@ bool Scene::computeAdaptiveFocusDistanceFromSnapshot(NeoECS::ECSEntity* cameraEn
         return true;
     };
 
+    /// @brief Represents Adaptive Focus Tap data.
     struct AdaptiveFocusTap {
         float x;
         float y;

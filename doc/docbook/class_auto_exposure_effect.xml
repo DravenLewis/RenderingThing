@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_auto_exposure_effect" xml:lang="en-US">
+<title>AutoExposureEffect Class Reference</title>
+<indexterm><primary>AutoExposureEffect</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_auto_exposure_effect">AutoExposureEffect</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;ScreenEffects.h&gt;</computeroutput>
+</para>
+<para>Inheritance diagram for AutoExposureEffect:    <informalfigure>
+        <mediaobject>
+            <imageobject>
+                <imagedata width="50%" align="center" valign="middle" scalefit="0" fileref="class_auto_exposure_effect.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+    </informalfigure>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_auto_exposure_effect_1a47347afe30cc06c30cc94ce7bd9bc28e"/><emphasis role="strong">AutoExposureEffect</emphasis> ()</para>
+
+<para>Constructs a new <link linkend="_class_auto_exposure_effect">AutoExposureEffect</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_auto_exposure_effect_1ab7f60c587637d4528d2742459ca0b0bb"/><emphasis role="strong">~AutoExposureEffect</emphasis> () override</para>
+
+<para>Destroys this <link linkend="_class_auto_exposure_effect">AutoExposureEffect</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_auto_exposure_effect_1ab72cd49d8c43c7ea6dc10c71891f8320"/>void <emphasis role="strong">resetAdaptation</emphasis> ()</para>
+
+<para>Resets adaptation. </para>
+</listitem>
+            <listitem><para>float <link linkend="_class_auto_exposure_effect_1a7b5e8266e87eb3b70992a02335b87ce7">getCurrentExposure</link> () const</para>
+
+<para>Returns the current exposure. </para>
+</listitem>
+            <listitem><para>bool <link linkend="_class_auto_exposure_effect_1addcac25d10d86ac96887736dcf750e40">apply</link> (PTexture tex, PTexture, PFrameBuffer outFbo, std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; quad) override</para>
+
+<para>Applies current settings. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+Public Member Functions inherited from <link linkend="_class_graphics_1_1_post_processing_1_1_post_processing_effect">Graphics::PostProcessing::PostProcessingEffect</link>        <itemizedlist>
+            <listitem><para>virtual <emphasis role="strong">~PostProcessingEffect</emphasis> ()=default</para>
+
+<para>Destroys this <link linkend="_class_graphics_1_1_post_processing_1_1_post_processing_effect">PostProcessingEffect</link> instance. </para>
+</listitem>
+        </itemizedlist>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>static std::shared_ptr&lt; <link linkend="_class_auto_exposure_effect">AutoExposureEffect</link> &gt; <link linkend="_class_auto_exposure_effect_1a3ea1f05e72ecd506feff02ec9ec3fb24">New</link> ()</para>
+
+<para>Creates a new object. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_auto_exposure_effect_1a3aa0cb468abac292b01662f622f1beaf"/>float <emphasis role="strong">minExposure</emphasis> = 0.6f</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_auto_exposure_effect_1a8f51263e0edecd2ef05444e5ca468755"/>float <emphasis role="strong">maxExposure</emphasis> = 2.4f</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_auto_exposure_effect_1ab143c327307826b8eacf5a024ec5a827"/>float <emphasis role="strong">exposureCompensation</emphasis> = 0.0f</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_auto_exposure_effect_1a7967e743d11b714431a2200eb9babaec"/>float <emphasis role="strong">adaptationSpeedUp</emphasis> = 1.2f</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_auto_exposure_effect_1a8f57d4f60965436e3263d3e9fbdad930"/>float <emphasis role="strong">adaptationSpeedDown</emphasis> = 0.7f</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_auto_exposure_effect">AutoExposureEffect</link> type. </para>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_auto_exposure_effect_1addcac25d10d86ac96887736dcf750e40"/><section>
+    <title>apply()</title>
+<indexterm><primary>apply</primary><secondary>AutoExposureEffect</secondary></indexterm>
+<indexterm><primary>AutoExposureEffect</primary><secondary>apply</secondary></indexterm>
+<para><computeroutput>bool AutoExposureEffect::apply (PTexture tex, PTexture , PFrameBuffer outFbo, std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; quad)<computeroutput>[inline]</computeroutput>, <computeroutput>[override]</computeroutput>, <computeroutput>[virtual]</computeroutput></computeroutput></para><para>
+
+<para>Applies current settings. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>tex</entry><entry>
+<para>Value for tex. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>PTexture</entry><entry>
+<para>Value for p texture. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>outFbo</entry><entry>
+<para>Output value for fbo. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>quad</entry><entry>
+<para>Value for quad. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>True when the operation succeeds; otherwise false. </para>
+</formalpara>
+</para>
+<para>
+Implements <link linkend="_class_graphics_1_1_post_processing_1_1_post_processing_effect_1a75b0263b1e53943ceb4f13d4aad0f5e6">Graphics::PostProcessing::PostProcessingEffect</link>.</para>
+</section>
+<anchor xml:id="_class_auto_exposure_effect_1a7b5e8266e87eb3b70992a02335b87ce7"/><section>
+    <title>getCurrentExposure()</title>
+<indexterm><primary>getCurrentExposure</primary><secondary>AutoExposureEffect</secondary></indexterm>
+<indexterm><primary>AutoExposureEffect</primary><secondary>getCurrentExposure</secondary></indexterm>
+<para><computeroutput>float AutoExposureEffect::getCurrentExposure ( ) const<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the current exposure. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Computed numeric result. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_auto_exposure_effect_1a3ea1f05e72ecd506feff02ec9ec3fb24"/><section>
+    <title>New()</title>
+<indexterm><primary>New</primary><secondary>AutoExposureEffect</secondary></indexterm>
+<indexterm><primary>AutoExposureEffect</primary><secondary>New</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_class_auto_exposure_effect">AutoExposureEffect</link> &gt; AutoExposureEffect::New ( )<computeroutput>[inline]</computeroutput>, <computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Creates a new object. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this class was generated from the following file:</para>
+src/Rendering/PostFX/<link linkend="__screen_effects_8h">ScreenEffects.h</link></section>
+</section>

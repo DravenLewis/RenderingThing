@@ -1,3 +1,8 @@
+/**
+ * @file src/Editor/Widgets/ECSViewPanel.h
+ * @brief Declarations for ECSViewPanel.
+ */
+
 #ifndef ECS_VIEW_PANEL_H
 #define ECS_VIEW_PANEL_H
 
@@ -9,6 +14,7 @@
 #include "Scene/Scene.h"
 #include "neoecs.hpp"
 
+/// @brief Represents the ECSViewPanel type.
 class ECSViewPanel {
     public:
         static constexpr const char* EntityDragPayloadType = "ECS_ENTITY_DND";
@@ -16,6 +22,18 @@ class ECSViewPanel {
                                                                const std::string& parentEntityId,
                                                                std::string* outError)>;
 
+        /**
+         * @brief Draws this object.
+         * @param x Spatial value used by this operation.
+         * @param y Spatial value used by this operation.
+         * @param w Value for w.
+         * @param h Value for h.
+         * @param targetScene Value for target scene.
+         * @param selectedEntityId Identifier or index value.
+         * @param onSelectEntity Callback for on select entity.
+         * @param onCreatePrefabForEntity Callback for on create prefab for entity.
+         * @param onInstantiatePrefabAtEntity Callback for on instantiate prefab at entity.
+         */
         void draw(
             float x,
             float y,
@@ -31,6 +49,7 @@ class ECSViewPanel {
     private:
         static constexpr size_t kEntityRenameBufferSize = 256;
 
+        /// @brief Enumerates values for PendingActionKind.
         enum class PendingActionKind {
             CreateEmpty,
             CreateLight,
@@ -40,6 +59,7 @@ class ECSViewPanel {
             ReparentToRoot
         };
 
+        /// @brief Holds data for PendingAction.
         struct PendingAction {
             PendingActionKind kind = PendingActionKind::CreateEmpty;
             std::string entityId;
@@ -54,10 +74,35 @@ class ECSViewPanel {
         char entityRenameBuffer[kEntityRenameBufferSize] = {};
         std::vector<PendingAction> pendingActions;
 
+        /**
+         * @brief Begins entity rename.
+         * @param targetScene Value for target scene.
+         * @param entityId Identifier or index value.
+         */
         void beginEntityRename(PScene targetScene, const std::string& entityId);
+        /**
+         * @brief Commits entity rename.
+         * @param targetScene Value for target scene.
+         */
         void commitEntityRename(PScene targetScene);
+        /**
+         * @brief Checks whether cel entity rename.
+         */
         void cancelEntityRename();
+        /**
+         * @brief Draws rename popup.
+         * @param targetScene Value for target scene.
+         */
         void drawRenamePopup(PScene targetScene);
+        /**
+         * @brief Draws entity tree.
+         * @param entity Value for entity.
+         * @param targetScene Value for target scene.
+         * @param selectedEntityId Identifier or index value.
+         * @param onSelectEntity Callback for on select entity.
+         * @param onCreatePrefabForEntity Callback for on create prefab for entity.
+         * @param onInstantiatePrefabAtEntity Callback for on instantiate prefab at entity.
+         */
         void drawEntityTree(
             NeoECS::ECSEntity* entity,
             PScene targetScene,
@@ -66,6 +111,12 @@ class ECSViewPanel {
             const std::function<void(const std::string&)>& onCreatePrefabForEntity,
             const InstantiatePrefabAtEntityFn& onInstantiatePrefabAtEntity
         );
+        /**
+         * @brief Applies pending actions.
+         * @param targetScene Value for target scene.
+         * @param selectedEntityId Identifier or index value.
+         * @param onSelectEntity Callback for on select entity.
+         */
         void applyPendingActions(
             PScene targetScene,
             const std::string& selectedEntityId,

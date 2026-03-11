@@ -1,3 +1,8 @@
+/**
+ * @file src/Editor/Widgets/BoundsWidget.h
+ * @brief Declarations for BoundsWidget.
+ */
+
 #ifndef WIDGETS_BOUNDS_WIDGET_H
 #define WIDGETS_BOUNDS_WIDGET_H
 
@@ -12,11 +17,22 @@
 
 struct BoundsComponent;
 
+/// @brief Represents the BoundsWidget type.
 class BoundsWidget {
     public:
+        /**
+         * @brief Constructs a new BoundsWidget instance.
+         */
         BoundsWidget() = default;
 
+        /**
+         * @brief Resets this object state.
+         */
         void reset();
+        /**
+         * @brief Checks whether dragging.
+         * @return True when the condition is satisfied; otherwise false.
+         */
         bool isDragging() const { return dragging; }
 
         bool update(View* view,
@@ -38,6 +54,7 @@ class BoundsWidget {
                   const BoundsComponent& bounds) const;
 
     private:
+        /// @brief Enumerates values for Handle.
         enum class Handle {
             None = 0,
             OffsetX,
@@ -54,6 +71,7 @@ class BoundsWidget {
             CapsuleHeight
         };
 
+        /// @brief Holds data for HandleCandidate.
         struct HandleCandidate {
             Handle handle = Handle::None;
             Math3D::Vec3 localPos = Math3D::Vec3(0.0f, 0.0f, 0.0f);

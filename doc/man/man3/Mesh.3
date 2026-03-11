@@ -1,0 +1,108 @@
+.TH "Mesh" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Mesh \- Represents the \fBMesh\fP type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <Mesh\&.h>\fP
+.PP
+Inherits \fBIDrawable\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBMesh\fP ()"
+.br
+.RI "Constructs a new \fBMesh\fP instance\&. "
+.ti -1c
+.RI "\fBMesh\fP (const \fBMesh\fP &)=delete"
+.br
+.ti -1c
+.RI "\fBMesh\fP (\fBMesh\fP &&other) noexcept"
+.br
+.ti -1c
+.RI "void \fBupload\fP (const std::vector< \fBVertex\fP > &verts, const std::vector< uint32_t > &faces, GLenum usage=GL_STATIC_DRAW)"
+.br
+.ti -1c
+.RI "void \fBupload\fP (std::vector< \fBVertex\fP > &&verts, std::vector< uint32_t > &&faces, GLenum usage=GL_STATIC_DRAW)"
+.br
+.ti -1c
+.RI "void \fBreload\fP ()"
+.br
+.ti -1c
+.RI "void \fBbind\fP ()"
+.br
+.ti -1c
+.RI "void \fBdraw\fP (const Math3D::Mat4 &parent=Math3D::Mat4(), const Math3D::Mat4 &view=Math3D::Mat4(), const Math3D::Mat4 &projection=Math3D::Mat4()) override"
+.br
+.RI "Draws this object\&. "
+.ti -1c
+.RI "void \fBdispose\fP ()"
+.br
+.ti -1c
+.RI "std::vector< Math3D::Vec3 > \fBgetVerticiesVectorArray\fP ()"
+.br
+.ti -1c
+.RI "std::vector< float > \fBgetVerticiesAsRawFloatArray\fP ()"
+.br
+.ti -1c
+.RI "std::vector< float > \fBgetRawVertexData\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetLocationAttributeOffset\fP (int attribute, int dataSize, int dataOffset)"
+.br
+.ti -1c
+.RI "std::vector< \fBVertex\fP > & \fBgetVertecies\fP ()"
+.br
+.ti -1c
+.RI "const std::vector< uint32_t > & \fBgetFaces\fP () const"
+.br
+.ti -1c
+.RI "bool \fBgetLocalBounds\fP (Math3D::Vec3 &outMin, Math3D::Vec3 &outMax) const"
+.br
+.in -1c
+
+Public Member Functions inherited from \fBIDrawable\fP
+.in +1c
+.ti -1c
+.RI "\fB~IDrawable\fP ()=default"
+.br
+.RI "Destroys this \fBIDrawable\fP instance\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBUnbind\fP ()"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the \fBMesh\fP type\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "void Mesh::draw (const Math3D::Mat4 & parent = \fRMath3D::Mat4()\fP, const Math3D::Mat4 & viewMtx = \fRMath3D::Mat4()\fP, const Math3D::Mat4 & projectionMtx = \fRMath3D::Mat4()\fP)\fR [override]\fP, \fR [virtual]\fP"
+
+.PP
+Draws this object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIparent\fP Value for parent\&. 
+.br
+\fIviewMtx\fP Value for view mtx\&. 
+.br
+\fIprojectionMtx\fP Value for projection mtx\&. 
+.RE
+.PP
+
+.PP
+Implements \fBIDrawable\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

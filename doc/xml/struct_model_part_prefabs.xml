@@ -1,0 +1,316 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_model_part_prefabs" kind="struct" language="C++" prot="public">
+    <compoundname>ModelPartPrefabs</compoundname>
+    <includes refid="_model_part_prefabs_8h" local="no">ModelPartPrefabs.h</includes>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="struct_model_part_prefabs_1ae5f37b441c2d40314487e103ada227a8" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="struct_model_part" kindref="compound">ModelPart</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt; ModelPart &gt; ModelPartPrefabs::MakePlane</definition>
+        <argsstring>(float width, float height, PMaterial mat=MaterialDefaults::ColorMaterial::Create(Color::RED), Math3D::Vec3 normal=Math3D::Vec3(0, 1, 0))</argsstring>
+        <name>MakePlane</name>
+        <qualifiedname>ModelPartPrefabs::MakePlane</qualifiedname>
+        <param>
+          <type>float</type>
+          <declname>width</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>height</declname>
+        </param>
+        <param>
+          <type>PMaterial</type>
+          <declname>mat</declname>
+          <defval><ref refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" kindref="member">MaterialDefaults::ColorMaterial::Create</ref>(Color::RED)</defval>
+        </param>
+        <param>
+          <type>Math3D::Vec3</type>
+          <declname>normal</declname>
+          <defval>Math3D::Vec3(0, 1, 0)</defval>
+        </param>
+        <briefdescription>
+<para>Creates plane. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>width</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Dimension value. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>height</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Dimension value. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>mat</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for mat. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>normal</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for normal. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Pointer to the resulting object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/ModelPartPrefabs.h" line="30" column="28" bodyfile="src/Rendering/Geometry/ModelPartPrefabs.h" bodystart="30" bodyend="44"/>
+        <references refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" compoundref="_mesh_8h" startline="124" endline="133">Vertex::Build</references>
+        <references refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" compoundref="_material_defaults_8cpp" startline="58" endline="76">MaterialDefaults::ColorMaterial::Create</references>
+        <references refid="struct_model_part_factory_1a3ef7855857c9e4a6106485c4d6dc13d1" compoundref="_model_part_8cpp" startline="35" endline="40">ModelPartFactory::Create</references>
+        <referencedby refid="struct_model_prefabs_1ad5d5f5c2c36f3c39db66281afd4713ee" compoundref="_model_prefabs_8h" startline="50" endline="81">ModelPrefabs::MakeCube</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="struct_model_part_prefabs_1af662a7f490b997301237d4b33f4a7372" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="struct_model_part" kindref="compound">ModelPart</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt; ModelPart &gt; ModelPartPrefabs::MakeBox</definition>
+        <argsstring>(float width, float height, float depth, PMaterial mat=MaterialDefaults::ColorMaterial::Create(Color::RED))</argsstring>
+        <name>MakeBox</name>
+        <qualifiedname>ModelPartPrefabs::MakeBox</qualifiedname>
+        <param>
+          <type>float</type>
+          <declname>width</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>height</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>depth</declname>
+        </param>
+        <param>
+          <type>PMaterial</type>
+          <declname>mat</declname>
+          <defval><ref refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" kindref="member">MaterialDefaults::ColorMaterial::Create</ref>(Color::RED)</defval>
+        </param>
+        <briefdescription>
+<para>Creates box. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>width</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Dimension value. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>height</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Dimension value. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>depth</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for depth. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>mat</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for mat. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Pointer to the resulting object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/ModelPartPrefabs.h" line="54" column="28" bodyfile="src/Rendering/Geometry/ModelPartPrefabs.h" bodystart="54" bodyend="106"/>
+        <references refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" compoundref="_mesh_8h" startline="124" endline="133">Vertex::Build</references>
+        <references refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" compoundref="_material_defaults_8cpp" startline="58" endline="76">MaterialDefaults::ColorMaterial::Create</references>
+        <references refid="struct_model_part_factory_1a3ef7855857c9e4a6106485c4d6dc13d1" compoundref="_model_part_8cpp" startline="35" endline="40">ModelPartFactory::Create</references>
+        <referencedby refid="class_sky_box_1af6d94c1589304676eac958ce814ce546" compoundref="_sky_box_8cpp" startline="12" endline="35">SkyBox::SkyBox</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="struct_model_part_prefabs_1a3416bea1f8d1a22d55739bb58d7fc76e" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="struct_model_part" kindref="compound">ModelPart</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt; ModelPart &gt; ModelPartPrefabs::MakeCirclePlane</definition>
+        <argsstring>(float radius, int segments=32, PMaterial material=MaterialDefaults::ColorMaterial::Create(Color::RED), Math3D::Vec3 normal=Math3D::Vec3(0, 1, 0))</argsstring>
+        <name>MakeCirclePlane</name>
+        <qualifiedname>ModelPartPrefabs::MakeCirclePlane</qualifiedname>
+        <param>
+          <type>float</type>
+          <declname>radius</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>segments</declname>
+          <defval>32</defval>
+        </param>
+        <param>
+          <type>PMaterial</type>
+          <declname>material</declname>
+          <defval><ref refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" kindref="member">MaterialDefaults::ColorMaterial::Create</ref>(Color::RED)</defval>
+        </param>
+        <param>
+          <type>Math3D::Vec3</type>
+          <declname>normal</declname>
+          <defval>Math3D::Vec3(0, 1, 0)</defval>
+        </param>
+        <briefdescription>
+<para>Creates circle plane. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>radius</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for radius. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>segments</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for segments. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>material</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for material. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>normal</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for normal. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Pointer to the resulting object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/ModelPartPrefabs.h" line="116" column="28" bodyfile="src/Rendering/Geometry/ModelPartPrefabs.h" bodystart="116" bodyend="153"/>
+        <references refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" compoundref="_mesh_8h" startline="124" endline="133">Vertex::Build</references>
+        <references refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" compoundref="_material_defaults_8cpp" startline="58" endline="76">MaterialDefaults::ColorMaterial::Create</references>
+        <references refid="struct_model_part_factory_1a3ef7855857c9e4a6106485c4d6dc13d1" compoundref="_model_part_8cpp" startline="35" endline="40">ModelPartFactory::Create</references>
+        <referencedby refid="class_graphics2_d_1a17535ece4965dc0eedad7fa5e5accbff" compoundref="_graphics2_d_8cpp" startline="60" endline="107">Graphics2D::Graphics2D</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="struct_model_part_prefabs_1aa8e35dc9f7dab334b963ab19c722c948" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="struct_model_part" kindref="compound">ModelPart</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt; ModelPart &gt; ModelPartPrefabs::MakeSphere</definition>
+        <argsstring>(float radius=1.0f, int slices=32, int stacks=18, PMaterial material=MaterialDefaults::ColorMaterial::Create(Color::WHITE))</argsstring>
+        <name>MakeSphere</name>
+        <qualifiedname>ModelPartPrefabs::MakeSphere</qualifiedname>
+        <param>
+          <type>float</type>
+          <declname>radius</declname>
+          <defval>1.0f</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>slices</declname>
+          <defval>32</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>stacks</declname>
+          <defval>18</defval>
+        </param>
+        <param>
+          <type>PMaterial</type>
+          <declname>material</declname>
+          <defval><ref refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" kindref="member">MaterialDefaults::ColorMaterial::Create</ref>(Color::WHITE)</defval>
+        </param>
+        <briefdescription>
+<para>Creates sphere. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>radius</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for radius. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>slices</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for slices. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>stacks</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for stacks. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>material</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for material. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Pointer to the resulting object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/ModelPartPrefabs.h" line="163" column="28" bodyfile="src/Rendering/Geometry/ModelPartPrefabs.h" bodystart="163" bodyend="228"/>
+        <references refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" compoundref="_mesh_8h" startline="124" endline="133">Vertex::Build</references>
+        <references refid="class_material_defaults_1_1_color_material_1a2564a57120b10a3b17e87a04413db769" compoundref="_material_defaults_8cpp" startline="58" endline="76">MaterialDefaults::ColorMaterial::Create</references>
+        <references refid="struct_model_part_factory_1a3ef7855857c9e4a6106485c4d6dc13d1" compoundref="_model_part_8cpp" startline="35" endline="40">ModelPartFactory::Create</references>
+        <references refid="struct_vertex_1a85ad46ae0b05f963524684314d19fedd" compoundref="_mesh_8h" startline="57" endline="60">Vertex::Norm</references>
+        <references refid="struct_vertex_1a7ffc6ba8ee72602e3acbf54a164a031b" compoundref="_mesh_8h" startline="78" endline="81">Vertex::UV</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_model_part_prefabs" kindref="compound">ModelPartPrefabs</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Geometry/ModelPartPrefabs.h" line="21" column="1" bodyfile="src/Rendering/Geometry/ModelPartPrefabs.h" bodystart="21" bodyend="229"/>
+    <listofallmembers>
+      <member refid="struct_model_part_prefabs_1af662a7f490b997301237d4b33f4a7372" prot="public" virt="non-virtual"><scope>ModelPartPrefabs</scope><name>MakeBox</name></member>
+      <member refid="struct_model_part_prefabs_1a3416bea1f8d1a22d55739bb58d7fc76e" prot="public" virt="non-virtual"><scope>ModelPartPrefabs</scope><name>MakeCirclePlane</name></member>
+      <member refid="struct_model_part_prefabs_1ae5f37b441c2d40314487e103ada227a8" prot="public" virt="non-virtual"><scope>ModelPartPrefabs</scope><name>MakePlane</name></member>
+      <member refid="struct_model_part_prefabs_1aa8e35dc9f7dab334b963ab19c722c948" prot="public" virt="non-virtual"><scope>ModelPartPrefabs</scope><name>MakeSphere</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

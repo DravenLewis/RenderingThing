@@ -1,0 +1,362 @@
+\doxysection{Graphics2D Class Reference}
+\hypertarget{class_graphics2_d}{}\label{class_graphics2_d}\index{Graphics2D@{Graphics2D}}
+
+
+Represents the \doxylink{class_graphics2_d}{Graphics2D} type.  
+
+
+
+
+{\ttfamily \+\#include $<$Graphics2\+D.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{class_graphics2_d_a17535ece4965dc0eedad7fa5e5accbff}{Graphics2D}} (PScreen screen\+Context)
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_graphics2_d}{Graphics2D} instance. \end{DoxyCompactList}\item 
+\Hypertarget{class_graphics2_d_afc5f54d2e36fb1130bafa6ae9a43217f}\label{class_graphics2_d_afc5f54d2e36fb1130bafa6ae9a43217f} 
+void {\bfseries resize} (int w, int h)
+\item 
+\Hypertarget{class_graphics2_d_aa47dbfda9d2a9b21f89ce069397683f3}\label{class_graphics2_d_aa47dbfda9d2a9b21f89ce069397683f3} 
+void {\bfseries begin} ()
+\begin{DoxyCompactList}\small\item\em Begins a 2D drawing batch. \end{DoxyCompactList}\item 
+\Hypertarget{class_graphics2_d_a3a6498d0bc740072a5171a9458018e86}\label{class_graphics2_d_a3a6498d0bc740072a5171a9458018e86} 
+void {\bfseries end} ()
+\begin{DoxyCompactList}\small\item\em Ends the current 2D drawing batch. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{struct_graphics_context}{Graphics\+Context}} \& \doxymbox{\hyperlink{class_graphics2_d_a22cd28ae0cd16c1d603e2cd42c4230b0}{get\+Context}} ()
+\begin{DoxyCompactList}\small\item\em Returns the context. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_graphics2_d_a14a3674ae1be3737e6dfb868e9be3b3f}\label{class_graphics2_d_a14a3674ae1be3737e6dfb868e9be3b3f} 
+static void {\bfseries Set\+Foreground\+Color} (\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&graphics, const Color \&foreground\+Color=Color::\+\+WHITE)
+\item 
+static void \doxymbox{\hyperlink{class_graphics2_d_a9de097cc927aad3bf9c52ffda4a37a2a}{Set\+Background\+Color}} (\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&graphics, const Color \&background\+Color=Color::\+\+BLACK)
+\begin{DoxyCompactList}\small\item\em Sets the background color. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{class_graphics2_d_a2efe101242a8dd701a448c29870ccdd2}{Set\+Stroke\+Width}} (\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&graphics, float width=1.\+0f)
+\begin{DoxyCompactList}\small\item\em Sets the stroke width. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{class_graphics2_d_a26636c9fbb1be08ef97b5cc4b97811c4}{Set\+Font\+Size}} (\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&graphics, float size=1.\+0f)
+\begin{DoxyCompactList}\small\item\em Sets the font size. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{class_graphics2_d_a768b518945214fce84a03c574c1a9671}{Set\+Font}} (\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&graphics, PFont font)
+\begin{DoxyCompactList}\small\item\em Sets the font. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{class_graphics2_d_a88fe3fbf759c21bd6a4bfaefd5c90d58}{Draw\+Line}} (\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&graphics, float x1, float y1, float x2, float y2)
+\begin{DoxyCompactList}\small\item\em Draws line. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{class_graphics2_d_a5095fffb75a1249ee247c0fa73ebca75}{Draw\+Rect}} (\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&graphics, float x, float y, float w, float h)
+\begin{DoxyCompactList}\small\item\em Draws rect. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{class_graphics2_d_a67fa147d1215bba962230b13154964f8}{Fill\+Rect}} (\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&graphics, float x, float y, float w, float h)
+\begin{DoxyCompactList}\small\item\em Fills a rectangle. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{class_graphics2_d_a5c0cd288e641e8a8242740d2898ac3f2}{Fill\+Triangle}} (\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&graphics, float x1, float y1, float x2, float y2, float x3, float y3)
+\begin{DoxyCompactList}\small\item\em Fills a triangle. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{class_graphics2_d_adad7605dad2d438339e3179a569c6f28}{Draw\+Ellipse}} (\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&graphics, float x, float y, float w, float h)
+\begin{DoxyCompactList}\small\item\em Draws ellipse. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{class_graphics2_d_a0843c9a23ec885b7d0fcb0554d559457}{Fill\+Ellipse}} (\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&graphics, float x, float y, float w, float h)
+\begin{DoxyCompactList}\small\item\em Fills an ellipse. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{class_graphics2_d_a4496c5443a7a614690f1a7c4656a3854}{Draw\+Image}} (\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&graphics, PTexture tex, float x, float y, float w=-\/1, float h=-\/1)
+\begin{DoxyCompactList}\small\item\em Draws image. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{class_graphics2_d_ac7c6ea860d6bca44f1a4247d644d8dce}{Draw\+String}} (\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&graphics, std::\+string text, float x, float y, bool use\+Cache=true)
+\begin{DoxyCompactList}\small\item\em Draws string. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the \doxylink{class_graphics2_d}{Graphics2D} type. 
+
+\label{doc-constructors}
+\Hypertarget{class_graphics2_d_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_graphics2_d_a17535ece4965dc0eedad7fa5e5accbff}\index{Graphics2D@{Graphics2D}!Graphics2D@{Graphics2D}}
+\index{Graphics2D@{Graphics2D}!Graphics2D@{Graphics2D}}
+\doxysubsubsection{\texorpdfstring{Graphics2D()}{Graphics2D()}}
+{\footnotesize\ttfamily \label{class_graphics2_d_a17535ece4965dc0eedad7fa5e5accbff} 
+Graphics2\+D::\+\+Graphics2D (\begin{DoxyParamCaption}\item[{PScreen}]{screen\+Context}{}\end{DoxyParamCaption})}
+
+
+
+Constructs a new \doxylink{class_graphics2_d}{Graphics2D} instance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em screen\+Context} & Value for screen context. \\
+\hline
+\end{DoxyParams}
+
+
+\label{doc-func-members}
+\Hypertarget{class_graphics2_d_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_graphics2_d_adad7605dad2d438339e3179a569c6f28}\index{Graphics2D@{Graphics2D}!DrawEllipse@{DrawEllipse}}
+\index{DrawEllipse@{DrawEllipse}!Graphics2D@{Graphics2D}}
+\doxysubsubsection{\texorpdfstring{DrawEllipse()}{DrawEllipse()}}
+{\footnotesize\ttfamily \label{class_graphics2_d_adad7605dad2d438339e3179a569c6f28} 
+void Graphics2\+D::\+\+Draw\+Ellipse (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&}]{graphics}{, }\item[{float}]{x}{, }\item[{float}]{y}{, }\item[{float}]{w}{, }\item[{float}]{h}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Draws ellipse. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em graphics} & Value for graphics. \\
+\hline
+{\em x} & Spatial value used by this operation. \\
+\hline
+{\em y} & Spatial value used by this operation. \\
+\hline
+{\em w} & Value for w. \\
+\hline
+{\em h} & Value for h. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_graphics2_d_a4496c5443a7a614690f1a7c4656a3854}\index{Graphics2D@{Graphics2D}!DrawImage@{DrawImage}}
+\index{DrawImage@{DrawImage}!Graphics2D@{Graphics2D}}
+\doxysubsubsection{\texorpdfstring{DrawImage()}{DrawImage()}}
+{\footnotesize\ttfamily \label{class_graphics2_d_a4496c5443a7a614690f1a7c4656a3854} 
+void Graphics2\+D::\+\+Draw\+Image (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&}]{graphics}{, }\item[{PTexture}]{tex}{, }\item[{float}]{x}{, }\item[{float}]{y}{, }\item[{float}]{w}{ = {\ttfamily -\/1}, }\item[{float}]{h}{ = {\ttfamily -\/1}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Draws image. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em graphics} & Value for graphics. \\
+\hline
+{\em tex} & Value for tex. \\
+\hline
+{\em x} & Spatial value used by this operation. \\
+\hline
+{\em y} & Spatial value used by this operation. \\
+\hline
+{\em w} & Value for w. \\
+\hline
+{\em h} & Value for h. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_graphics2_d_a88fe3fbf759c21bd6a4bfaefd5c90d58}\index{Graphics2D@{Graphics2D}!DrawLine@{DrawLine}}
+\index{DrawLine@{DrawLine}!Graphics2D@{Graphics2D}}
+\doxysubsubsection{\texorpdfstring{DrawLine()}{DrawLine()}}
+{\footnotesize\ttfamily \label{class_graphics2_d_a88fe3fbf759c21bd6a4bfaefd5c90d58} 
+void Graphics2\+D::\+\+Draw\+Line (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&}]{graphics}{, }\item[{float}]{x1}{, }\item[{float}]{y1}{, }\item[{float}]{x2}{, }\item[{float}]{y2}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Draws line. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em graphics} & Value for graphics. \\
+\hline
+{\em x1} & Value for x 1. \\
+\hline
+{\em y1} & Value for y 1. \\
+\hline
+{\em x2} & Value for x 2. \\
+\hline
+{\em y2} & Value for y 2. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_graphics2_d_a5095fffb75a1249ee247c0fa73ebca75}\index{Graphics2D@{Graphics2D}!DrawRect@{DrawRect}}
+\index{DrawRect@{DrawRect}!Graphics2D@{Graphics2D}}
+\doxysubsubsection{\texorpdfstring{DrawRect()}{DrawRect()}}
+{\footnotesize\ttfamily \label{class_graphics2_d_a5095fffb75a1249ee247c0fa73ebca75} 
+void Graphics2\+D::\+\+Draw\+Rect (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&}]{graphics}{, }\item[{float}]{x}{, }\item[{float}]{y}{, }\item[{float}]{w}{, }\item[{float}]{h}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Draws rect. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em graphics} & Value for graphics. \\
+\hline
+{\em x} & Spatial value used by this operation. \\
+\hline
+{\em y} & Spatial value used by this operation. \\
+\hline
+{\em w} & Value for w. \\
+\hline
+{\em h} & Value for h. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_graphics2_d_ac7c6ea860d6bca44f1a4247d644d8dce}\index{Graphics2D@{Graphics2D}!DrawString@{DrawString}}
+\index{DrawString@{DrawString}!Graphics2D@{Graphics2D}}
+\doxysubsubsection{\texorpdfstring{DrawString()}{DrawString()}}
+{\footnotesize\ttfamily \label{class_graphics2_d_ac7c6ea860d6bca44f1a4247d644d8dce} 
+void Graphics2\+D::\+\+Draw\+String (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&}]{graphics}{, }\item[{std::\+string}]{text}{, }\item[{float}]{x}{, }\item[{float}]{y}{, }\item[{bool}]{use\+Cache}{ = {\ttfamily true}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Draws string. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em graphics} & Value for graphics. \\
+\hline
+{\em text} & Value for text. \\
+\hline
+{\em x} & Spatial value used by this operation. \\
+\hline
+{\em y} & Spatial value used by this operation. \\
+\hline
+{\em use\+Cache} & Flag controlling use cache. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_graphics2_d_a0843c9a23ec885b7d0fcb0554d559457}\index{Graphics2D@{Graphics2D}!FillEllipse@{FillEllipse}}
+\index{FillEllipse@{FillEllipse}!Graphics2D@{Graphics2D}}
+\doxysubsubsection{\texorpdfstring{FillEllipse()}{FillEllipse()}}
+{\footnotesize\ttfamily \label{class_graphics2_d_a0843c9a23ec885b7d0fcb0554d559457} 
+void Graphics2\+D::\+\+Fill\+Ellipse (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&}]{graphics}{, }\item[{float}]{x}{, }\item[{float}]{y}{, }\item[{float}]{w}{, }\item[{float}]{h}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Fills an ellipse. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em graphics} & Value for graphics. \\
+\hline
+{\em x} & Spatial value used by this operation. \\
+\hline
+{\em y} & Spatial value used by this operation. \\
+\hline
+{\em w} & Value for w. \\
+\hline
+{\em h} & Value for h. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_graphics2_d_a67fa147d1215bba962230b13154964f8}\index{Graphics2D@{Graphics2D}!FillRect@{FillRect}}
+\index{FillRect@{FillRect}!Graphics2D@{Graphics2D}}
+\doxysubsubsection{\texorpdfstring{FillRect()}{FillRect()}}
+{\footnotesize\ttfamily \label{class_graphics2_d_a67fa147d1215bba962230b13154964f8} 
+void Graphics2\+D::\+\+Fill\+Rect (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&}]{graphics}{, }\item[{float}]{x}{, }\item[{float}]{y}{, }\item[{float}]{w}{, }\item[{float}]{h}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Fills a rectangle. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em graphics} & Value for graphics. \\
+\hline
+{\em x} & Spatial value used by this operation. \\
+\hline
+{\em y} & Spatial value used by this operation. \\
+\hline
+{\em w} & Value for w. \\
+\hline
+{\em h} & Value for h. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_graphics2_d_a5c0cd288e641e8a8242740d2898ac3f2}\index{Graphics2D@{Graphics2D}!FillTriangle@{FillTriangle}}
+\index{FillTriangle@{FillTriangle}!Graphics2D@{Graphics2D}}
+\doxysubsubsection{\texorpdfstring{FillTriangle()}{FillTriangle()}}
+{\footnotesize\ttfamily \label{class_graphics2_d_a5c0cd288e641e8a8242740d2898ac3f2} 
+void Graphics2\+D::\+\+Fill\+Triangle (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&}]{graphics}{, }\item[{float}]{x1}{, }\item[{float}]{y1}{, }\item[{float}]{x2}{, }\item[{float}]{y2}{, }\item[{float}]{x3}{, }\item[{float}]{y3}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Fills a triangle. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em graphics} & Value for graphics. \\
+\hline
+{\em x1} & Value for x 1. \\
+\hline
+{\em y1} & Value for y 1. \\
+\hline
+{\em x2} & Value for x 2. \\
+\hline
+{\em y2} & Value for y 2. \\
+\hline
+{\em x3} & Value for x 3. \\
+\hline
+{\em y3} & Value for y 3. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_graphics2_d_a22cd28ae0cd16c1d603e2cd42c4230b0}\index{Graphics2D@{Graphics2D}!getContext@{getContext}}
+\index{getContext@{getContext}!Graphics2D@{Graphics2D}}
+\doxysubsubsection{\texorpdfstring{getContext()}{getContext()}}
+{\footnotesize\ttfamily \label{class_graphics2_d_a22cd28ae0cd16c1d603e2cd42c4230b0} 
+\doxymbox{\hyperlink{struct_graphics_context}{Graphics\+Context}} \& Graphics2\+D::\+get\+Context (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Returns the context. 
+
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+\Hypertarget{class_graphics2_d_a9de097cc927aad3bf9c52ffda4a37a2a}\index{Graphics2D@{Graphics2D}!SetBackgroundColor@{SetBackgroundColor}}
+\index{SetBackgroundColor@{SetBackgroundColor}!Graphics2D@{Graphics2D}}
+\doxysubsubsection{\texorpdfstring{SetBackgroundColor()}{SetBackgroundColor()}}
+{\footnotesize\ttfamily \label{class_graphics2_d_a9de097cc927aad3bf9c52ffda4a37a2a} 
+void Graphics2\+D::\+\+Set\+Background\+Color (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&}]{graphics}{, }\item[{const Color \&}]{background\+Color}{ = {\ttfamily Color:\+:\+BLACK}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Sets the background color. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em graphics} & Value for graphics. \\
+\hline
+{\em background\+Color} & Color value. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_graphics2_d_a768b518945214fce84a03c574c1a9671}\index{Graphics2D@{Graphics2D}!SetFont@{SetFont}}
+\index{SetFont@{SetFont}!Graphics2D@{Graphics2D}}
+\doxysubsubsection{\texorpdfstring{SetFont()}{SetFont()}}
+{\footnotesize\ttfamily \label{class_graphics2_d_a768b518945214fce84a03c574c1a9671} 
+void Graphics2\+D::\+\+Set\+Font (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&}]{graphics}{, }\item[{PFont}]{font}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Sets the font. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em graphics} & Value for graphics. \\
+\hline
+{\em font} & Value for font. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_graphics2_d_a26636c9fbb1be08ef97b5cc4b97811c4}\index{Graphics2D@{Graphics2D}!SetFontSize@{SetFontSize}}
+\index{SetFontSize@{SetFontSize}!Graphics2D@{Graphics2D}}
+\doxysubsubsection{\texorpdfstring{SetFontSize()}{SetFontSize()}}
+{\footnotesize\ttfamily \label{class_graphics2_d_a26636c9fbb1be08ef97b5cc4b97811c4} 
+void Graphics2\+D::\+\+Set\+Font\+Size (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&}]{graphics}{, }\item[{float}]{size}{ = {\ttfamily 1.0f}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Sets the font size. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em graphics} & Value for graphics. \\
+\hline
+{\em size} & Number of elements or bytes. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_graphics2_d_a2efe101242a8dd701a448c29870ccdd2}\index{Graphics2D@{Graphics2D}!SetStrokeWidth@{SetStrokeWidth}}
+\index{SetStrokeWidth@{SetStrokeWidth}!Graphics2D@{Graphics2D}}
+\doxysubsubsection{\texorpdfstring{SetStrokeWidth()}{SetStrokeWidth()}}
+{\footnotesize\ttfamily \label{class_graphics2_d_a2efe101242a8dd701a448c29870ccdd2} 
+void Graphics2\+D::\+\+Set\+Stroke\+Width (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_graphics2_d}{Graphics2D}} \&}]{graphics}{, }\item[{float}]{width}{ = {\ttfamily 1.0f}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Sets the stroke width. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em graphics} & Value for graphics. \\
+\hline
+{\em width} & Dimension value. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Core/\+\doxymbox{\hyperlink{_graphics2_d_8h}{Graphics2\+D.\+h}}\item 
+src/\+\+Rendering/\+\+Core/\+\doxymbox{\hyperlink{_graphics2_d_8cpp}{Graphics2\+D.\+cpp}}\end{DoxyCompactItemize}

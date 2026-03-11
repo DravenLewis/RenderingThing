@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Core/Graphics2D.cpp
+ * @brief Implementation for Graphics2D.
+ */
+
 #include "Rendering/Core/Graphics2D.h"
 #include <algorithm>
 

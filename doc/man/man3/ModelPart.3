@@ -1,0 +1,74 @@
+.TH "ModelPart" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ModelPart \- Holds data for \fBModelPart\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ModelPart\&.h>\fP
+.PP
+Inherits \fBIDrawable\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBdraw\fP (const Math3D::Mat4 &parent, const Math3D::Mat4 &view, const Math3D::Mat4 &proj)"
+.br
+.RI "Draws this object\&. "
+.in -1c
+
+Public Member Functions inherited from \fBIDrawable\fP
+.in +1c
+.ti -1c
+.RI "\fB~IDrawable\fP ()=default"
+.br
+.RI "Destroys this \fBIDrawable\fP instance\&. "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::shared_ptr< \fBMesh\fP > \fBmesh\fP"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBMaterial\fP > \fBmaterial\fP"
+.br
+.ti -1c
+.RI "Math3D::Transform \fBlocalTransform\fP = Math3D::Transform()"
+.br
+.ti -1c
+.RI "bool \fBvisible\fP = true"
+.br
+.ti -1c
+.RI "bool \fBhideInEditorTree\fP = true"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Holds data for \fBModelPart\fP\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "void ModelPart::draw (const Math3D::Mat4 & parent, const Math3D::Mat4 & view, const Math3D::Mat4 & proj)\fR [virtual]\fP"
+
+.PP
+Draws this object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIparent\fP Value for parent\&. 
+.br
+\fIview\fP Value for view\&. 
+.br
+\fIproj\fP Value for proj\&. 
+.RE
+.PP
+
+.PP
+Implements \fBIDrawable\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

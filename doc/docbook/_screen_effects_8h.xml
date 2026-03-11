@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__screen_effects_8h" xml:lang="en-US">
+<title>src/Rendering/PostFX/ScreenEffects.h File Reference</title>
+<indexterm><primary>src/Rendering/PostFX/ScreenEffects.h</primary></indexterm>
+<para>
+
+<para>Declarations for ScreenEffects. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &quot;Rendering/Core/Graphics.h&quot;<?linebreak?>#include &quot;Rendering/Shaders/ShaderProgram.h&quot;<?linebreak?>#include &quot;Foundation/Math/Color.h&quot;<?linebreak?>#include &quot;Foundation/Logging/Logbot.h&quot;<?linebreak?>#include &lt;algorithm&gt;<?linebreak?>#include &lt;array&gt;<?linebreak?>#include &lt;chrono&gt;<?linebreak?>#include &lt;cmath&gt;<?linebreak?>#include &lt;vector&gt;<?linebreak?></programlisting><simplesect>
+    <title>Classes    </title>
+        <itemizedlist>
+            <listitem><para>class <link linkend="_class_grayscale_effect">GrayscaleEffect</link></para>
+
+<para>Represents the <link linkend="_class_grayscale_effect">GrayscaleEffect</link> type. </para>
+</listitem>
+            <listitem><para>class <link linkend="_class_s_s_a_o_effect">SSAOEffect</link></para>
+
+<para>Represents the <link linkend="_class_s_s_a_o_effect">SSAOEffect</link> type. </para>
+</listitem>
+            <listitem><para>class <link linkend="_class_depth_of_field_effect">DepthOfFieldEffect</link></para>
+
+<para>Represents the <link linkend="_class_depth_of_field_effect">DepthOfFieldEffect</link> type. </para>
+</listitem>
+            <listitem><para>class <link linkend="_class_bloom_effect">BloomEffect</link></para>
+
+<para>Represents the <link linkend="_class_bloom_effect">BloomEffect</link> type. </para>
+</listitem>
+            <listitem><para>class <link linkend="_class_auto_exposure_effect">AutoExposureEffect</link></para>
+
+<para>Represents the <link linkend="_class_auto_exposure_effect">AutoExposureEffect</link> type. </para>
+</listitem>
+            <listitem><para>class <link linkend="_class_f_x_a_a_effect">FXAAEffect</link></para>
+
+<para>Represents the <link linkend="_class_f_x_a_a_effect">FXAAEffect</link> type. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Enumerations    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="__screen_effects_8h_1a253b4cf4d7c392a00e85057fab843598"/>enum class <link linkend="__screen_effects_8h_1a253b4cf4d7c392a00e85057fab843598">AntiAliasingPreset</link> { <emphasis role="strong">Off</emphasis> = 0
+, <emphasis role="strong">FXAA_Low</emphasis>
+, <emphasis role="strong">FXAA_Medium</emphasis>
+, <emphasis role="strong">FXAA_High</emphasis>
+ }</para>
+
+<para>Enumerates values for <link linkend="__screen_effects_8h_1a253b4cf4d7c392a00e85057fab843598">AntiAliasingPreset</link>. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Declarations for ScreenEffects. </para>
+</section>
+</section>

@@ -1,3 +1,8 @@
+/**
+ * @file src/Scene/Camera.h
+ * @brief Declarations for Camera.
+ */
+
 #ifndef CAMERA_H
 #define CAMERA_H
 
@@ -7,6 +12,7 @@
 #include "Foundation/Math/Math3D.h" 
 
 
+/// @brief Holds data for CameraSettings.
 struct CameraSettings{
     float fov = 45.0f;
     float aspect = 1.33f;
@@ -16,16 +22,30 @@ struct CameraSettings{
     bool isOrtho = false;
 };
 
+/// @brief Holds data for Camera.
 struct Camera{
     private:
         Math3D::Transform cameraTransform;
         CameraSettings settings;
+        /**
+         * @brief Constructs a new Camera instance.
+         */
         Camera(const Camera&) = delete;
+        /**
+         * @brief Assigns from another instance.
+         */
         Camera& operator=(const Camera&) = delete;
+        /**
+         * @brief Constructs a new Camera instance.
+         */
         Camera() = default;
 
     public:
 
+        /**
+         * @brief Returns the transform value.
+         * @return Reference to the resulting value.
+         */
         Math3D::Transform& transform() { return cameraTransform; }
         void setTransform(const Math3D::Transform& tfm) {this->cameraTransform = tfm;}
         CameraSettings& getSettings() {return this->settings; }

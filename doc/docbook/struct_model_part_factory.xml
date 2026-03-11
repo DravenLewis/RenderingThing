@@ -1,0 +1,195 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_model_part_factory" xml:lang="en-US">
+<title>ModelPartFactory Struct Reference</title>
+<indexterm><primary>ModelPartFactory</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_model_part_factory">ModelPartFactory</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;ModelPart.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_model_part_factory_1a8b2d0eb06f0a9ade3093831338442085"/><emphasis role="strong">ModelPartFactory</emphasis> ()=default</para>
+
+<para>Constructs a new <link linkend="_struct_model_part_factory">ModelPartFactory</link> instance. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_model_part_factory">ModelPartFactory</link> &amp; <link linkend="_struct_model_part_factory_1a0284fcedc4c25ac5b287327a2d7356f4">addVertex</link> (<link linkend="_struct_vertex">Vertex</link> vtx, int *index=nullptr)</para>
+
+<para>Adds vertex. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_model_part_factory">ModelPartFactory</link> &amp; <link linkend="_struct_model_part_factory_1a4af8f7d0f3a2958529bbe7aab3233f6d">defineFace</link> (int vtx1, int vtx2, int vtx3, int vtx4=-1)</para>
+
+<para>Adds a face definition to the model part. </para>
+</listitem>
+            <listitem><para>std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; <link linkend="_struct_model_part_factory_1a8f73e9678bb98f92144d6a36ff1bc41f">assemble</link> ()</para>
+
+<para>Builds a model part from accumulated data. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>static <link linkend="_struct_model_part_factory">ModelPartFactory</link> <link linkend="_struct_model_part_factory_1a3ef7855857c9e4a6106485c4d6dc13d1">Create</link> (std::shared_ptr&lt; <link linkend="_class_material">Material</link> &gt; material)</para>
+
+<para>Creates a new object. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_model_part_factory">ModelPartFactory</link>. </para>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_struct_model_part_factory_1a0284fcedc4c25ac5b287327a2d7356f4"/><section>
+    <title>addVertex()</title>
+<indexterm><primary>addVertex</primary><secondary>ModelPartFactory</secondary></indexterm>
+<indexterm><primary>ModelPartFactory</primary><secondary>addVertex</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_model_part_factory">ModelPartFactory</link> &amp; ModelPartFactory::addVertex (<link linkend="_struct_vertex">Vertex</link> vtx, int * index = <computeroutput>nullptr</computeroutput>
+)</computeroutput></para><para>
+
+<para>Adds vertex. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>vtx</entry><entry>
+<para>Value for vtx. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>index</entry><entry>
+<para>Identifier or index value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_model_part_factory_1a8f73e9678bb98f92144d6a36ff1bc41f"/><section>
+    <title>assemble()</title>
+<indexterm><primary>assemble</primary><secondary>ModelPartFactory</secondary></indexterm>
+<indexterm><primary>ModelPartFactory</primary><secondary>assemble</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_struct_model_part">ModelPart</link> &gt; ModelPartFactory::assemble ( )</computeroutput></para><para>
+
+<para>Builds a model part from accumulated data. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_model_part_factory_1a3ef7855857c9e4a6106485c4d6dc13d1"/><section>
+    <title>Create()</title>
+<indexterm><primary>Create</primary><secondary>ModelPartFactory</secondary></indexterm>
+<indexterm><primary>ModelPartFactory</primary><secondary>Create</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_model_part_factory">ModelPartFactory</link> ModelPartFactory::Create (std::shared_ptr&lt; <link linkend="_class_material">Material</link> &gt; material)<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Creates a new object. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>material</entry><entry>
+<para>Value for material. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Result of this operation. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_model_part_factory_1a4af8f7d0f3a2958529bbe7aab3233f6d"/><section>
+    <title>defineFace()</title>
+<indexterm><primary>defineFace</primary><secondary>ModelPartFactory</secondary></indexterm>
+<indexterm><primary>ModelPartFactory</primary><secondary>defineFace</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_model_part_factory">ModelPartFactory</link> &amp; ModelPartFactory::defineFace (int vtx1, int vtx2, int vtx3, int vtx4 = <computeroutput>-1</computeroutput>
+)</computeroutput></para><para>
+
+<para>Adds a face definition to the model part. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>vtx1</entry><entry>
+<para>Value for vtx 1. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>vtx2</entry><entry>
+<para>Value for vtx 2. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>vtx3</entry><entry>
+<para>Value for vtx 3. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>vtx4</entry><entry>
+<para>Value for vtx 4. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this struct was generated from the following files:</para>
+src/Rendering/Geometry/<link linkend="__model_part_8h">ModelPart.h</link>src/Rendering/Geometry/<link linkend="__model_part_8cpp">ModelPart.cpp</link></section>
+</section>

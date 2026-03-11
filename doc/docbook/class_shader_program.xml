@@ -1,0 +1,579 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_shader_program" xml:lang="en-US">
+<title>ShaderProgram Class Reference</title>
+<indexterm><primary>ShaderProgram</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_shader_program">ShaderProgram</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;ShaderProgram.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>void <link linkend="_class_shader_program_1a1fbce854a5384c6d74425eaff64910f2">setVertexShader</link> (std::string glsl)</para>
+
+<para>Sets the vertex shader. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_shader_program_1aa8c62c838e859d5368a98d0314d43d7f">setFragmentShader</link> (std::string glsl)</para>
+
+<para>Sets the fragment shader. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_shader_program_1adf9c56429772966970584e6f10043db1">setGeometryShader</link> (std::string glsl)</para>
+
+<para>Sets the geometry shader. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_shader_program_1afcc0424f8d20bf2fef3293a029db46cd">setTesselationShader</link> (std::string glsl)</para>
+
+<para>Sets the tesselation shader. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_shader_program_1a678c9074bbfe1304c471dfc3b1691249">setComputeShader</link> (std::string glsl)</para>
+
+<para>Sets the compute shader. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_shader_program_1a4db8cf4f7428ddd35bde1c89571f853e">setTaskShader</link> (std::string glsl)</para>
+
+<para>Sets the task shader. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_shader_program_1a329ce6ce72892eb7356f8f52bd6d83dd">setRTXShader</link> (std::string glsl)</para>
+
+<para>Sets the rtx shader. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_shader_bundle">ShaderBundle</link> &amp; <link linkend="_class_shader_program_1a8e8f135b343c8de2ef8b93345dce51e2">getVertexShader</link> ()</para>
+
+<para>Returns the vertex shader. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_shader_bundle">ShaderBundle</link> &amp; <link linkend="_class_shader_program_1ac0af058463af00f5951b7393322ada78">getFragmentShader</link> ()</para>
+
+<para>Returns the fragment shader. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_shader_bundle">ShaderBundle</link> &amp; <link linkend="_class_shader_program_1ac0a7fd97206d529bd045ee5ed13336e7">getGeometryShader</link> ()</para>
+
+<para>Returns the geometry shader. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_shader_bundle">ShaderBundle</link> &amp; <link linkend="_class_shader_program_1a49eaef37b8e67cb852549758d0d8668f">getTesselationShader</link> ()</para>
+
+<para>Returns the tesselation shader. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_shader_bundle">ShaderBundle</link> &amp; <link linkend="_class_shader_program_1a6c3e875914b744e360f728c6c4326a16">getComputeShader</link> ()</para>
+
+<para>Returns the compute shader. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_shader_bundle">ShaderBundle</link> &amp; <link linkend="_class_shader_program_1a611d55ef08eff2e7dc5a6acec08b0881">getTaskShader</link> ()</para>
+
+<para>Returns the task shader. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_shader_bundle">ShaderBundle</link> &amp; <link linkend="_class_shader_program_1abc9cb3056b3625883f16472767ee5df6">getRTXShader</link> ()</para>
+
+<para>Returns the rtx shader. </para>
+</listitem>
+            <listitem><para>std::string <link linkend="_class_shader_program_1a47a8190cccad34baedeafe7e672123ab">getLog</link> ()</para>
+
+<para>Returns the last compile/link log message. </para>
+</listitem>
+            <listitem><para>Shader <link linkend="_class_shader_program_1a2b248c28a509a559831cb86253a13a2c">compile</link> ()</para>
+
+<para>Compiles and links all configured shader stages. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_shader_program_1ab3c3e75ddf54504b5e9f53bf85c34736"/>void <emphasis role="strong">bind</emphasis> ()</para>
+
+<para>Binds this resource. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_shader_program_1aeb6df1f103db0e67efbb37ab31983e7f"/>void <emphasis role="strong">unbind</emphasis> ()</para>
+
+<para>Unbinds this resource. </para>
+</listitem>
+            <listitem><para>template&lt;typename T&gt; </para><para>void <link linkend="_class_shader_program_1a2c8a90e6624a306ca146759ae24268dc">setUniform</link> (const std::string &amp;name, const <link linkend="_class_uniform">Uniform</link>&lt; T &gt; &amp;uniform)</para>
+
+<para>Sets the uniform. </para>
+</listitem>
+            <listitem><para>template&lt;typename T&gt; </para><para>void <link linkend="_class_shader_program_1a793652af8a2d1dede36481c8146de003">setUniformFast</link> (const std::string &amp;name, const <link linkend="_class_uniform">Uniform</link>&lt; T &gt; &amp;uniform)</para>
+
+<para>Sets the uniform fast. </para>
+</listitem>
+            <listitem><para>Shader <link linkend="_class_shader_program_1a7b464da4889af38a911e52a4dc496f29">getID</link> ()</para>
+
+<para>Returns the OpenGL program id. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_shader_program_1a2d2eadcfc48cc2e2ddb82aba70553a9f"/><emphasis role="strong">~ShaderProgram</emphasis> ()</para>
+
+<para>Destroys this <link linkend="_class_shader_program">ShaderProgram</link> instance. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>static Shader <link linkend="_class_shader_program_1a5f0fd68887a4e8228467d85efca7c286">GetCurrentShaderProgram</link> ()</para>
+
+<para>Returns the currently bound OpenGL program id. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_shader_program">ShaderProgram</link> type. </para>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_shader_program_1a2b248c28a509a559831cb86253a13a2c"/><section>
+    <title>compile()</title>
+<indexterm><primary>compile</primary><secondary>ShaderProgram</secondary></indexterm>
+<indexterm><primary>ShaderProgram</primary><secondary>compile</secondary></indexterm>
+<para><computeroutput>Shader ShaderProgram::compile ( )</computeroutput></para><para>
+
+<para>Compiles and links all configured shader stages. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Program handle, or <computeroutput>0</computeroutput> on failure. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shader_program_1a6c3e875914b744e360f728c6c4326a16"/><section>
+    <title>getComputeShader()</title>
+<indexterm><primary>getComputeShader</primary><secondary>ShaderProgram</secondary></indexterm>
+<indexterm><primary>ShaderProgram</primary><secondary>getComputeShader</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_shader_bundle">ShaderBundle</link> &amp; ShaderProgram::getComputeShader ( )</computeroutput></para><para>
+
+<para>Returns the compute shader. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shader_program_1a5f0fd68887a4e8228467d85efca7c286"/><section>
+    <title>GetCurrentShaderProgram()</title>
+<indexterm><primary>GetCurrentShaderProgram</primary><secondary>ShaderProgram</secondary></indexterm>
+<indexterm><primary>ShaderProgram</primary><secondary>GetCurrentShaderProgram</secondary></indexterm>
+<para><computeroutput>Shader ShaderProgram::GetCurrentShaderProgram ( )<computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Returns the currently bound OpenGL program id. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Active program handle. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shader_program_1ac0af058463af00f5951b7393322ada78"/><section>
+    <title>getFragmentShader()</title>
+<indexterm><primary>getFragmentShader</primary><secondary>ShaderProgram</secondary></indexterm>
+<indexterm><primary>ShaderProgram</primary><secondary>getFragmentShader</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_shader_bundle">ShaderBundle</link> &amp; ShaderProgram::getFragmentShader ( )</computeroutput></para><para>
+
+<para>Returns the fragment shader. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shader_program_1ac0a7fd97206d529bd045ee5ed13336e7"/><section>
+    <title>getGeometryShader()</title>
+<indexterm><primary>getGeometryShader</primary><secondary>ShaderProgram</secondary></indexterm>
+<indexterm><primary>ShaderProgram</primary><secondary>getGeometryShader</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_shader_bundle">ShaderBundle</link> &amp; ShaderProgram::getGeometryShader ( )</computeroutput></para><para>
+
+<para>Returns the geometry shader. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shader_program_1a7b464da4889af38a911e52a4dc496f29"/><section>
+    <title>getID()</title>
+<indexterm><primary>getID</primary><secondary>ShaderProgram</secondary></indexterm>
+<indexterm><primary>ShaderProgram</primary><secondary>getID</secondary></indexterm>
+<para><computeroutput>Shader ShaderProgram::getID ( )</computeroutput></para><para>
+
+<para>Returns the OpenGL program id. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Program handle. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shader_program_1a47a8190cccad34baedeafe7e672123ab"/><section>
+    <title>getLog()</title>
+<indexterm><primary>getLog</primary><secondary>ShaderProgram</secondary></indexterm>
+<indexterm><primary>ShaderProgram</primary><secondary>getLog</secondary></indexterm>
+<para><computeroutput>std::string ShaderProgram::getLog ( )</computeroutput></para><para>
+
+<para>Returns the last compile/link log message. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Log message text. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shader_program_1abc9cb3056b3625883f16472767ee5df6"/><section>
+    <title>getRTXShader()</title>
+<indexterm><primary>getRTXShader</primary><secondary>ShaderProgram</secondary></indexterm>
+<indexterm><primary>ShaderProgram</primary><secondary>getRTXShader</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_shader_bundle">ShaderBundle</link> &amp; ShaderProgram::getRTXShader ( )</computeroutput></para><para>
+
+<para>Returns the rtx shader. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shader_program_1a611d55ef08eff2e7dc5a6acec08b0881"/><section>
+    <title>getTaskShader()</title>
+<indexterm><primary>getTaskShader</primary><secondary>ShaderProgram</secondary></indexterm>
+<indexterm><primary>ShaderProgram</primary><secondary>getTaskShader</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_shader_bundle">ShaderBundle</link> &amp; ShaderProgram::getTaskShader ( )</computeroutput></para><para>
+
+<para>Returns the task shader. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shader_program_1a49eaef37b8e67cb852549758d0d8668f"/><section>
+    <title>getTesselationShader()</title>
+<indexterm><primary>getTesselationShader</primary><secondary>ShaderProgram</secondary></indexterm>
+<indexterm><primary>ShaderProgram</primary><secondary>getTesselationShader</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_shader_bundle">ShaderBundle</link> &amp; ShaderProgram::getTesselationShader ( )</computeroutput></para><para>
+
+<para>Returns the tesselation shader. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shader_program_1a8e8f135b343c8de2ef8b93345dce51e2"/><section>
+    <title>getVertexShader()</title>
+<indexterm><primary>getVertexShader</primary><secondary>ShaderProgram</secondary></indexterm>
+<indexterm><primary>ShaderProgram</primary><secondary>getVertexShader</secondary></indexterm>
+<para><computeroutput><link linkend="_struct_shader_bundle">ShaderBundle</link> &amp; ShaderProgram::getVertexShader ( )</computeroutput></para><para>
+
+<para>Returns the vertex shader. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Reference to the resulting value. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shader_program_1a678c9074bbfe1304c471dfc3b1691249"/><section>
+    <title>setComputeShader()</title>
+<indexterm><primary>setComputeShader</primary><secondary>ShaderProgram</secondary></indexterm>
+<indexterm><primary>ShaderProgram</primary><secondary>setComputeShader</secondary></indexterm>
+<para><computeroutput>void ShaderProgram::setComputeShader (std::string glsl)</computeroutput></para><para>
+
+<para>Sets the compute shader. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>glsl</entry><entry>
+<para>GLSL source code. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_shader_program_1aa8c62c838e859d5368a98d0314d43d7f"/><section>
+    <title>setFragmentShader()</title>
+<indexterm><primary>setFragmentShader</primary><secondary>ShaderProgram</secondary></indexterm>
+<indexterm><primary>ShaderProgram</primary><secondary>setFragmentShader</secondary></indexterm>
+<para><computeroutput>void ShaderProgram::setFragmentShader (std::string glsl)</computeroutput></para><para>
+
+<para>Sets the fragment shader. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>glsl</entry><entry>
+<para>GLSL source code. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_shader_program_1adf9c56429772966970584e6f10043db1"/><section>
+    <title>setGeometryShader()</title>
+<indexterm><primary>setGeometryShader</primary><secondary>ShaderProgram</secondary></indexterm>
+<indexterm><primary>ShaderProgram</primary><secondary>setGeometryShader</secondary></indexterm>
+<para><computeroutput>void ShaderProgram::setGeometryShader (std::string glsl)</computeroutput></para><para>
+
+<para>Sets the geometry shader. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>glsl</entry><entry>
+<para>GLSL source code. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_shader_program_1a329ce6ce72892eb7356f8f52bd6d83dd"/><section>
+    <title>setRTXShader()</title>
+<indexterm><primary>setRTXShader</primary><secondary>ShaderProgram</secondary></indexterm>
+<indexterm><primary>ShaderProgram</primary><secondary>setRTXShader</secondary></indexterm>
+<para><computeroutput>void ShaderProgram::setRTXShader (std::string glsl)</computeroutput></para><para>
+
+<para>Sets the rtx shader. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>glsl</entry><entry>
+<para>GLSL source code. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_shader_program_1a4db8cf4f7428ddd35bde1c89571f853e"/><section>
+    <title>setTaskShader()</title>
+<indexterm><primary>setTaskShader</primary><secondary>ShaderProgram</secondary></indexterm>
+<indexterm><primary>ShaderProgram</primary><secondary>setTaskShader</secondary></indexterm>
+<para><computeroutput>void ShaderProgram::setTaskShader (std::string glsl)</computeroutput></para><para>
+
+<para>Sets the task shader. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>glsl</entry><entry>
+<para>GLSL source code. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_shader_program_1afcc0424f8d20bf2fef3293a029db46cd"/><section>
+    <title>setTesselationShader()</title>
+<indexterm><primary>setTesselationShader</primary><secondary>ShaderProgram</secondary></indexterm>
+<indexterm><primary>ShaderProgram</primary><secondary>setTesselationShader</secondary></indexterm>
+<para><computeroutput>void ShaderProgram::setTesselationShader (std::string glsl)</computeroutput></para><para>
+
+<para>Sets the tesselation shader. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>glsl</entry><entry>
+<para>GLSL source code. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_shader_program_1a2c8a90e6624a306ca146759ae24268dc"/><section>
+    <title>setUniform()</title>
+<indexterm><primary>setUniform</primary><secondary>ShaderProgram</secondary></indexterm>
+<indexterm><primary>ShaderProgram</primary><secondary>setUniform</secondary></indexterm>
+<computeroutput>template&lt;typename T&gt; </computeroutput><para><computeroutput>void ShaderProgram::setUniform (const std::string &amp; name, const <link linkend="_class_uniform">Uniform</link>&lt; T &gt; &amp; uniform)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Sets the uniform. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>name</entry><entry>
+<para><link linkend="_class_uniform">Uniform</link> name. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>uniform</entry><entry>
+<para><link linkend="_class_uniform">Uniform</link> wrapper containing the value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_shader_program_1a793652af8a2d1dede36481c8146de003"/><section>
+    <title>setUniformFast()</title>
+<indexterm><primary>setUniformFast</primary><secondary>ShaderProgram</secondary></indexterm>
+<indexterm><primary>ShaderProgram</primary><secondary>setUniformFast</secondary></indexterm>
+<computeroutput>template&lt;typename T&gt; </computeroutput><para><computeroutput>void ShaderProgram::setUniformFast (const std::string &amp; name, const <link linkend="_class_uniform">Uniform</link>&lt; T &gt; &amp; uniform)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Sets the uniform fast. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>name</entry><entry>
+<para><link linkend="_class_uniform">Uniform</link> name. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>uniform</entry><entry>
+<para><link linkend="_class_uniform">Uniform</link> wrapper containing the value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_shader_program_1a1fbce854a5384c6d74425eaff64910f2"/><section>
+    <title>setVertexShader()</title>
+<indexterm><primary>setVertexShader</primary><secondary>ShaderProgram</secondary></indexterm>
+<indexterm><primary>ShaderProgram</primary><secondary>setVertexShader</secondary></indexterm>
+<para><computeroutput>void ShaderProgram::setVertexShader (std::string glsl)</computeroutput></para><para>
+
+<para>Sets the vertex shader. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>glsl</entry><entry>
+<para>GLSL source code. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<para>
+The documentation for this class was generated from the following files:</para>
+src/Rendering/Shaders/<link linkend="__shader_program_8h">ShaderProgram.h</link>src/Rendering/Shaders/<link linkend="__shader_program_8cpp">ShaderProgram.cpp</link></section>
+</section>

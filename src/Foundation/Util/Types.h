@@ -1,3 +1,8 @@
+/**
+ * @file src/Foundation/Util/Types.h
+ * @brief Declarations for Types.
+ */
+
 #ifndef TYPES_H
 #define TYPES_H
 
@@ -8,6 +13,7 @@
 typedef std::vector<uint8_t> BinaryBuffer;
 
 
+/// @brief Represents the Nullable type.
 template<typename T>
 class Nullable{
     private:
@@ -15,6 +21,9 @@ class Nullable{
 
     public:
         
+        /**
+         * @brief Constructs a new Nullable instance.
+         */
         Nullable() : tPtr(nullptr) {};
         Nullable(std::nullptr_t) : tPtr(nullptr) {};
         Nullable(std::shared_ptr<T> valuePtr) : tPtr(valuePtr) {};

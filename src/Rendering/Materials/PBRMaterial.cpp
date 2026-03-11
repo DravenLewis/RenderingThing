@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Materials/PBRMaterial.cpp
+ * @brief Implementation for PBRMaterial.
+ */
+
 #include "Rendering/Materials/PBRMaterial.h"
 
 #include "Assets/Core/Asset.h"

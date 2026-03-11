@@ -1,3 +1,8 @@
+/**
+ * @file src/Editor/Widgets/TransformWidget.cpp
+ * @brief Implementation for TransformWidget.
+ */
+
 #include "Editor/Widgets/TransformWidget.h"
 
 #include <cmath>

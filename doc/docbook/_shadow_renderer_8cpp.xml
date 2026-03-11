@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__shadow_renderer_8cpp" xml:lang="en-US">
+<title>src/Rendering/Lighting/ShadowRenderer.cpp File Reference</title>
+<indexterm><primary>src/Rendering/Lighting/ShadowRenderer.cpp</primary></indexterm>
+<para>
+
+<para>Implementation for <link linkend="_class_shadow_renderer">ShadowRenderer</link>. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &quot;Rendering/Lighting/ShadowRenderer.h&quot;<?linebreak?>#include &lt;algorithm&gt;<?linebreak?>#include &lt;array&gt;<?linebreak?>#include &lt;limits&gt;<?linebreak?>#include &lt;string&gt;<?linebreak?>#include &lt;unordered_map&gt;<?linebreak?>#include &quot;Rendering/Lighting/Light.h&quot;<?linebreak?>#include &quot;Rendering/Materials/Material.h&quot;<?linebreak?>#include &quot;Rendering/Geometry/Mesh.h&quot;<?linebreak?>#include &quot;Rendering/Shaders/ShaderProgram.h&quot;<?linebreak?>#include &quot;Rendering/Core/Screen.h&quot;<?linebreak?>#include &quot;Foundation/Logging/Logbot.h&quot;<?linebreak?>#include &quot;Rendering/Geometry/ModelPart.h&quot;<?linebreak?>#include &lt;cmath&gt;<?linebreak?></programlisting><section>
+<title>Detailed Description</title>
+
+<para>Implementation for <link linkend="_class_shadow_renderer">ShadowRenderer</link>. </para>
+</section>
+</section>

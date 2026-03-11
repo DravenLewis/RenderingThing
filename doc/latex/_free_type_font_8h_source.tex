@@ -1,0 +1,41 @@
+\doxysection{Free\+Type\+Font.\+h}
+\hypertarget{_free_type_font_8h_source}{}\label{_free_type_font_8h_source}\index{src/Rendering/Fonts/FreeTypeFont.h@{src/Rendering/Fonts/FreeTypeFont.h}}
+\doxymbox{\hyperlink{_free_type_font_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ FREETYPE\_FONT\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ FREETYPE\_FONT\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <ft2build.h>}\ \textcolor{comment}{//\ Free\ Type\ Headers.}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ FT\_FREETYPE\_H}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_font_8h}{Rendering/Fonts/Font.h}}"{}}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00014\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_free_type_font_af5cf9314662b0bb7501c2ad300314abf}{FreeTypeFont}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{class_font_a4e6a119206f505522100221c1fafde45}{Font}}\ \{}
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_free_type_font_af5cf9314662b0bb7501c2ad300314abf}{FreeTypeFont}}()\ :\ \doxymbox{\hyperlink{class_font_a4e6a119206f505522100221c1fafde45}{Font}}()\ \{\};}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Override\ the\ pure\ virtual\ functions\ from\ Base\ Font}}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_free_type_font_ace8e8942ae61f4df9238bba96ec78b39}{\_initFont}}()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ drawText(std::string\ text,\ Math3D::Vec2\ position,\ PCamera\ camera,\ Color\ color,\ \textcolor{keywordtype}{bool}\ useCache)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ supportsQueuedDrawing()\textcolor{keyword}{\ const\ override\ }\{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};\ \}}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ beginFrame(PCamera\ camera)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ flushQueuedText(PCamera\ camera)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }DeferredBatch\ \{}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ colorKey\ =\ 0;}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \ \ \ \ Color\ color\ =\ Color::WHITE;}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<Vertex>\ vertices;}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<uint32\_t>\ indices;}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ DeferredBatch\&\ getOrCreateBatch(\textcolor{keyword}{const}\ Color\&\ color);}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ std::shared\_ptr<ModelPart>\ transientTextPart;}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ std::vector<DeferredBatch>\ deferredBatches;}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ frameActive\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00041\ \};}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

@@ -1,0 +1,266 @@
+\doxysection{Model Struct Reference}
+\hypertarget{struct_model}{}\label{struct_model}\index{Model@{Model}}
+
+
+Holds data for \doxylink{struct_model}{Model}.  
+
+
+
+
+{\ttfamily \+\#include $<$Model.\+h$>$}
+
+Inheritance diagram for Model:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{struct_model}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_model_ab5bdabea36b1d1bee80151e2da913373}\label{struct_model_ab5bdabea36b1d1bee80151e2da913373} 
+{\bfseries Model} ()=default
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{struct_model}{Model} instance. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{struct_model}{Model}} \& \doxymbox{\hyperlink{struct_model_a6ca1896be673957f3c333e08d27c3e86}{add\+Part}} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$ part)
+\begin{DoxyCompactList}\small\item\em Adds part. \end{DoxyCompactList}\item 
+const std::\+vector$<$ std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$ $>$ \& \doxymbox{\hyperlink{struct_model_aebf1f6007849e52f3864f7af2bbb5e3e}{get\+Parts}} () const
+\begin{DoxyCompactList}\small\item\em Returns the parts. \end{DoxyCompactList}\item 
+Math3\+D::\+\+Transform \& \doxymbox{\hyperlink{struct_model_a57d503051c77f3585f1dc672d925eca9}{transform}} ()
+\begin{DoxyCompactList}\small\item\em Returns the transform value. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{struct_model_a5966666c7878e08e03ee1b1e201d6828}{set\+Backface\+Culling}} (bool enabled)
+\begin{DoxyCompactList}\small\item\em Sets the backface culling. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{struct_model_a00a24b569d808c3adf5a5f07ec774fa8}{is\+Backface\+Culling\+Enabled}} () const
+\begin{DoxyCompactList}\small\item\em Checks whether backface culling enabled. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{struct_model_ac139238f33a813689a00d63e9fe58aef}{set\+Source\+Asset\+Ref}} (const std::\+string \&source\+Ref)
+\begin{DoxyCompactList}\small\item\em Sets the source asset ref. \end{DoxyCompactList}\item 
+const std::\+string \& \doxymbox{\hyperlink{struct_model_a0a083629248c6964dc26d7d305585058}{get\+Source\+Asset\+Ref}} () const
+\begin{DoxyCompactList}\small\item\em Returns the source asset ref. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{struct_model_ac2983e7aa824b3feb46232fe57aa9af9}{set\+Source\+Force\+Smooth\+Normals}} (bool enabled)
+\begin{DoxyCompactList}\small\item\em Sets the source force smooth normals. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{struct_model_a27afa06ccde28393e0563a053819d701}{get\+Source\+Force\+Smooth\+Normals}} () const
+\begin{DoxyCompactList}\small\item\em Returns the source force smooth normals. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{struct_model_a70a71199719d002f9cd089af3a5c69eb}{draw}} (const Math3\+D::\+\+Mat4 \&parent=Math3\+D::\+\+Mat4(), const Math3\+D::\+\+Mat4 \&view=Math3\+D::\+\+Mat4(), const Math3\+D::\+\+Mat4 \&projection=Math3\+D::\+\+Mat4()) override
+\begin{DoxyCompactList}\small\item\em Draws this object. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{struct_model_aa010c342dc045a0ac5f97ae6f4cdef4c}{draw\+Shadows}} (const Math3\+D::\+\+Mat4 \&parent=Math3\+D::\+\+Mat4())
+\begin{DoxyCompactList}\small\item\em Draws shadows. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{struct_model_ab693c2ae374906f8a19ad2817bd7eceb}{draw}} (PCamera cam, Nullable$<$ Math3\+D::\+\+Transform $>$ parent\+Transform=nullptr)
+\begin{DoxyCompactList}\small\item\em Draws this object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{struct_i_drawable}{IDrawable}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries \texorpdfstring{$\sim$}{\string~}\+IDrawable} ()=default
+\begin{DoxyCompactList}\small\item\em Destroys this \doxylink{struct_i_drawable}{IDrawable} instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model}{Model}} $>$ \doxymbox{\hyperlink{struct_model_a3f0b711fc427dce1d41b1c2122248482}{Create}} ()
+\begin{DoxyCompactList}\small\item\em Creates a new object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Holds data for \doxylink{struct_model}{Model}. 
+
+\label{doc-func-members}
+\Hypertarget{struct_model_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{struct_model_a6ca1896be673957f3c333e08d27c3e86}\index{Model@{Model}!addPart@{addPart}}
+\index{addPart@{addPart}!Model@{Model}}
+\doxysubsubsection{\texorpdfstring{addPart()}{addPart()}}
+{\footnotesize\ttfamily \label{struct_model_a6ca1896be673957f3c333e08d27c3e86} 
+\doxymbox{\hyperlink{struct_model}{Model}} \& Model::\+add\+Part (\begin{DoxyParamCaption}\item[{std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$}]{part}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Adds part. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em part} & Value for part. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+\Hypertarget{struct_model_a3f0b711fc427dce1d41b1c2122248482}\index{Model@{Model}!Create@{Create}}
+\index{Create@{Create}!Model@{Model}}
+\doxysubsubsection{\texorpdfstring{Create()}{Create()}}
+{\footnotesize\ttfamily \label{struct_model_a3f0b711fc427dce1d41b1c2122248482} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model}{Model}} $>$ Model::\+\+Create (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Creates a new object. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the resulting object. 
+\end{DoxyReturn}
+\Hypertarget{struct_model_a70a71199719d002f9cd089af3a5c69eb}\index{Model@{Model}!draw@{draw}}
+\index{draw@{draw}!Model@{Model}}
+\doxysubsubsection{\texorpdfstring{draw()}{draw()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{struct_model_a70a71199719d002f9cd089af3a5c69eb} 
+void Model::\+draw (\begin{DoxyParamCaption}\item[{const Math3\+D::\+\+Mat4 \&}]{parent}{ = {\ttfamily Math3D:\+:\+Mat4()}, }\item[{const Math3\+D::\+\+Mat4 \&}]{view}{ = {\ttfamily Math3D:\+:\+Mat4()}, }\item[{const Math3\+D::\+\+Mat4 \&}]{projection}{ = {\ttfamily Math3D:\+:\+Mat4()}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Draws this object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parent} & Value for parent. \\
+\hline
+{\em view} & Value for view. \\
+\hline
+{\em projection} & Value for projection. \\
+\hline
+\end{DoxyParams}
+
+
+Implements \doxymbox{\hyperlink{struct_i_drawable_a9fb10215e48d952bd9f6a4c52656ebb8}{IDrawable}}.
+
+\Hypertarget{struct_model_ab693c2ae374906f8a19ad2817bd7eceb}\index{Model@{Model}!draw@{draw}}
+\index{draw@{draw}!Model@{Model}}
+\doxysubsubsection{\texorpdfstring{draw()}{draw()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{struct_model_ab693c2ae374906f8a19ad2817bd7eceb} 
+void Model::\+draw (\begin{DoxyParamCaption}\item[{PCamera}]{cam}{, }\item[{Nullable$<$ Math3\+D::\+\+Transform $>$}]{parent\+Transform}{ = {\ttfamily nullptr}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Draws this object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em cam} & Value for cam. \\
+\hline
+{\em parent\+Transform} & Spatial value used by this operation. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{struct_model_aa010c342dc045a0ac5f97ae6f4cdef4c}\index{Model@{Model}!drawShadows@{drawShadows}}
+\index{drawShadows@{drawShadows}!Model@{Model}}
+\doxysubsubsection{\texorpdfstring{drawShadows()}{drawShadows()}}
+{\footnotesize\ttfamily \label{struct_model_aa010c342dc045a0ac5f97ae6f4cdef4c} 
+void Model::\+draw\+Shadows (\begin{DoxyParamCaption}\item[{const Math3\+D::\+\+Mat4 \&}]{parent}{ = {\ttfamily Math3D:\+:\+Mat4()}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Draws shadows. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parent} & Value for parent. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{struct_model_aebf1f6007849e52f3864f7af2bbb5e3e}\index{Model@{Model}!getParts@{getParts}}
+\index{getParts@{getParts}!Model@{Model}}
+\doxysubsubsection{\texorpdfstring{getParts()}{getParts()}}
+{\footnotesize\ttfamily \label{struct_model_aebf1f6007849e52f3864f7af2bbb5e3e} 
+const std::\+vector$<$ std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$ $>$ \& Model::\+get\+Parts (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the parts. 
+
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+\Hypertarget{struct_model_a0a083629248c6964dc26d7d305585058}\index{Model@{Model}!getSourceAssetRef@{getSourceAssetRef}}
+\index{getSourceAssetRef@{getSourceAssetRef}!Model@{Model}}
+\doxysubsubsection{\texorpdfstring{getSourceAssetRef()}{getSourceAssetRef()}}
+{\footnotesize\ttfamily \label{struct_model_a0a083629248c6964dc26d7d305585058} 
+const std::\+string \& Model::\+get\+Source\+Asset\+Ref (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the source asset ref. 
+
+\begin{DoxyReturn}{Returns}
+Resulting string value. 
+\end{DoxyReturn}
+\Hypertarget{struct_model_a27afa06ccde28393e0563a053819d701}\index{Model@{Model}!getSourceForceSmoothNormals@{getSourceForceSmoothNormals}}
+\index{getSourceForceSmoothNormals@{getSourceForceSmoothNormals}!Model@{Model}}
+\doxysubsubsection{\texorpdfstring{getSourceForceSmoothNormals()}{getSourceForceSmoothNormals()}}
+{\footnotesize\ttfamily \label{struct_model_a27afa06ccde28393e0563a053819d701} 
+bool Model::\+get\+Source\+Force\+Smooth\+Normals (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the source force smooth normals. 
+
+\begin{DoxyReturn}{Returns}
+True when the operation succeeds; otherwise false. 
+\end{DoxyReturn}
+\Hypertarget{struct_model_a00a24b569d808c3adf5a5f07ec774fa8}\index{Model@{Model}!isBackfaceCullingEnabled@{isBackfaceCullingEnabled}}
+\index{isBackfaceCullingEnabled@{isBackfaceCullingEnabled}!Model@{Model}}
+\doxysubsubsection{\texorpdfstring{isBackfaceCullingEnabled()}{isBackfaceCullingEnabled()}}
+{\footnotesize\ttfamily \label{struct_model_a00a24b569d808c3adf5a5f07ec774fa8} 
+bool Model::\+is\+Backface\+Culling\+Enabled (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Checks whether backface culling enabled. 
+
+\begin{DoxyReturn}{Returns}
+True when the condition is satisfied; otherwise false. 
+\end{DoxyReturn}
+\Hypertarget{struct_model_a5966666c7878e08e03ee1b1e201d6828}\index{Model@{Model}!setBackfaceCulling@{setBackfaceCulling}}
+\index{setBackfaceCulling@{setBackfaceCulling}!Model@{Model}}
+\doxysubsubsection{\texorpdfstring{setBackfaceCulling()}{setBackfaceCulling()}}
+{\footnotesize\ttfamily \label{struct_model_a5966666c7878e08e03ee1b1e201d6828} 
+void Model::\+set\+Backface\+Culling (\begin{DoxyParamCaption}\item[{bool}]{enabled}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the backface culling. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em enabled} & Flag controlling enabled. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{struct_model_ac139238f33a813689a00d63e9fe58aef}\index{Model@{Model}!setSourceAssetRef@{setSourceAssetRef}}
+\index{setSourceAssetRef@{setSourceAssetRef}!Model@{Model}}
+\doxysubsubsection{\texorpdfstring{setSourceAssetRef()}{setSourceAssetRef()}}
+{\footnotesize\ttfamily \label{struct_model_ac139238f33a813689a00d63e9fe58aef} 
+void Model::\+set\+Source\+Asset\+Ref (\begin{DoxyParamCaption}\item[{const std::\+string \&}]{source\+Ref}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the source asset ref. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em source\+Ref} & Reference to source. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{struct_model_ac2983e7aa824b3feb46232fe57aa9af9}\index{Model@{Model}!setSourceForceSmoothNormals@{setSourceForceSmoothNormals}}
+\index{setSourceForceSmoothNormals@{setSourceForceSmoothNormals}!Model@{Model}}
+\doxysubsubsection{\texorpdfstring{setSourceForceSmoothNormals()}{setSourceForceSmoothNormals()}}
+{\footnotesize\ttfamily \label{struct_model_ac2983e7aa824b3feb46232fe57aa9af9} 
+void Model::\+set\+Source\+Force\+Smooth\+Normals (\begin{DoxyParamCaption}\item[{bool}]{enabled}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the source force smooth normals. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em enabled} & Flag controlling enabled. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{struct_model_a57d503051c77f3585f1dc672d925eca9}\index{Model@{Model}!transform@{transform}}
+\index{transform@{transform}!Model@{Model}}
+\doxysubsubsection{\texorpdfstring{transform()}{transform()}}
+{\footnotesize\ttfamily \label{struct_model_a57d503051c77f3585f1dc672d925eca9} 
+Math3\+D::\+\+Transform \& Model::\+transform (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the transform value. 
+
+\begin{DoxyReturn}{Returns}
+Reference to the resulting value. 
+\end{DoxyReturn}
+
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Geometry/\+\doxymbox{\hyperlink{_model_8h}{Model.\+h}}\end{DoxyCompactItemize}

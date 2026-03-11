@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Materials/MaterialDefaults.cpp
+ * @brief Implementation for MaterialDefaults.
+ */
+
 
 #include "Rendering/Materials/MaterialDefaults.h"
 #include "Rendering/Core/Screen.h"

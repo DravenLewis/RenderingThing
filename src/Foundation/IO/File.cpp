@@ -1,3 +1,8 @@
+/**
+ * @file src/Foundation/IO/File.cpp
+ * @brief Implementation for File.
+ */
+
 #include "Foundation/IO/File.h"
 #include "Foundation/Logging/Logbot.h"
 #include "Foundation/Util/StringUtils.h"

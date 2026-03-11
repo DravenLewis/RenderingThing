@@ -1,0 +1,175 @@
+.TH "TrippleBuffer" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+TrippleBuffer \- Holds data for \fBTrippleBuffer\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <FrameBuffer\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBTrippleBuffer\fP (int width, int height)"
+.br
+.RI "Constructs a new \fBTrippleBuffer\fP instance\&. "
+.ti -1c
+.RI "std::shared_ptr< \fBFrameBuffer\fP > \fBgetFront\fP ()"
+.br
+.RI "Returns the front\&. "
+.ti -1c
+.RI "std::shared_ptr< \fBFrameBuffer\fP > \fBgetMiddle\fP ()"
+.br
+.RI "Returns the middle\&. "
+.ti -1c
+.RI "std::shared_ptr< \fBFrameBuffer\fP > \fBgetBack\fP ()"
+.br
+.RI "Returns the back\&. "
+.ti -1c
+.RI "std::shared_ptr< \fBFrameBuffer\fP > \fBgetDisplayBuffer\fP ()"
+.br
+.ti -1c
+.RI "std::shared_ptr< \fBFrameBuffer\fP > \fBgetEditBuffer\fP ()"
+.br
+.RI "Returns the edit buffer\&. "
+.ti -1c
+.RI "std::shared_ptr< \fBFrameBuffer\fP > \fBgetDrawBuffer\fP ()"
+.br
+.RI "Returns the draw buffer\&. "
+.ti -1c
+.RI "void \fBsetFront\fP (std::shared_ptr< \fBFrameBuffer\fP > framePtr)"
+.br
+.ti -1c
+.RI "void \fBsetMiddle\fP (std::shared_ptr< \fBFrameBuffer\fP > framePtr)"
+.br
+.RI "Sets the middle\&. "
+.ti -1c
+.RI "void \fBsetBack\fP (std::shared_ptr< \fBFrameBuffer\fP > framePtr)"
+.br
+.RI "Sets the back\&. "
+.ti -1c
+.RI "void \fBswapBuffers\fP ()"
+.br
+.RI "Swaps buffers\&. "
+.ti -1c
+.RI "void \fBresizeBuffers\fP (int width, int height)"
+.br
+.RI "Resizes backing GPU buffers\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Holds data for \fBTrippleBuffer\fP\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "TrippleBuffer::TrippleBuffer (int width, int height)\fR [inline]\fP"
+
+.PP
+Constructs a new \fBTrippleBuffer\fP instance\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIwidth\fP Dimension value\&. 
+.br
+\fIheight\fP Dimension value\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "std::shared_ptr< \fBFrameBuffer\fP > TrippleBuffer::getBack ()\fR [inline]\fP"
+
+.PP
+Returns the back\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+.SS "std::shared_ptr< \fBFrameBuffer\fP > TrippleBuffer::getDrawBuffer ()\fR [inline]\fP"
+
+.PP
+Returns the draw buffer\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+.SS "std::shared_ptr< \fBFrameBuffer\fP > TrippleBuffer::getEditBuffer ()\fR [inline]\fP"
+
+.PP
+Returns the edit buffer\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+.SS "std::shared_ptr< \fBFrameBuffer\fP > TrippleBuffer::getFront ()\fR [inline]\fP"
+
+.PP
+Returns the front\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+.SS "std::shared_ptr< \fBFrameBuffer\fP > TrippleBuffer::getMiddle ()\fR [inline]\fP"
+
+.PP
+Returns the middle\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+.SS "void TrippleBuffer::resizeBuffers (int width, int height)\fR [inline]\fP"
+
+.PP
+Resizes backing GPU buffers\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIwidth\fP Dimension value\&. 
+.br
+\fIheight\fP Dimension value\&. 
+.RE
+.PP
+
+.SS "void TrippleBuffer::setBack (std::shared_ptr< \fBFrameBuffer\fP > framePtr)\fR [inline]\fP"
+
+.PP
+Sets the back\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIframePtr\fP Pointer to frame\&. 
+.RE
+.PP
+
+.SS "void TrippleBuffer::setMiddle (std::shared_ptr< \fBFrameBuffer\fP > framePtr)\fR [inline]\fP"
+
+.PP
+Sets the middle\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIframePtr\fP Pointer to frame\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

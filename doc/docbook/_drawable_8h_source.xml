@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__drawable_8h_source" xml:lang="en-US">
+<title>Drawable.h</title>
+<indexterm><primary>src/Rendering/Geometry/Drawable.h</primary></indexterm>
+Go to the documentation of this file.<programlisting linenumbering="unnumbered">1 
+5 
+6 <emphasis role="preprocessor">#ifndef&#32;DRAWABLE_H</emphasis>
+7 <emphasis role="preprocessor">#define&#32;DRAWABLE_H</emphasis>
+8 
+9 <emphasis role="preprocessor">#include&#32;&quot;Foundation/Math/Math3D.h&quot;</emphasis>
+10 
+12 <emphasis role="keyword">struct&#32;</emphasis><link linkend="_struct_i_drawable">IDrawable</link>{
+19 &#32;&#32;&#32;&#32;<emphasis role="keyword">virtual</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_struct_i_drawable_1a9fb10215e48d952bd9f6a4c52656ebb8">draw</link>(
+20 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;Math3D::Mat4&amp;&#32;parent&#32;=&#32;Math3D::Mat4(),
+21 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;Math3D::Mat4&amp;&#32;viewMtx&#32;=&#32;Math3D::Mat4(),
+22 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;Math3D::Mat4&amp;&#32;projectionMtx&#32;=&#32;Math3D::Mat4()
+23 &#32;&#32;&#32;&#32;)&#32;=&#32;0;
+24 &#32;&#32;&#32;&#32;
+28 &#32;&#32;&#32;&#32;<link linkend="_struct_i_drawable_1a618506be098b21fe0b9cae2c4219eb57">~IDrawable</link>()&#32;=&#32;<emphasis role="keywordflow">default</emphasis>;
+29 };
+30 
+31 <emphasis role="preprocessor">#endif&#32;</emphasis><emphasis role="comment">//DRAWABLE_H</emphasis>
+</programlisting></section>

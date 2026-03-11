@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_mesh" xml:lang="en-US">
+<title>Mesh Class Reference</title>
+<indexterm><primary>Mesh</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_mesh">Mesh</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;Mesh.h&gt;</computeroutput>
+</para>
+<para>Inheritance diagram for Mesh:    <informalfigure>
+        <mediaobject>
+            <imageobject>
+                <imagedata width="50%" align="center" valign="middle" scalefit="0" fileref="class_mesh.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+    </informalfigure>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_mesh_1a2af137f1571af89172b9c102302c416b"/><emphasis role="strong">Mesh</emphasis> ()</para>
+
+<para>Constructs a new <link linkend="_class_mesh">Mesh</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_mesh_1adecf9ab32fac64e846ad6b7753e8996b"/><emphasis role="strong">Mesh</emphasis> (const <link linkend="_class_mesh">Mesh</link> &amp;)=delete</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_mesh_1a54099ce7b9d2999f36af9da5a96a16a7"/><emphasis role="strong">Mesh</emphasis> (<link linkend="_class_mesh">Mesh</link> &amp;&amp;other) noexcept</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_mesh_1adb906e89a504562d6bc6dedf82e2c7d1"/>void <emphasis role="strong">upload</emphasis> (const std::vector&lt; <link linkend="_struct_vertex">Vertex</link> &gt; &amp;verts, const std::vector&lt; uint32_t &gt; &amp;faces, GLenum usage=GL_STATIC_DRAW)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_mesh_1ac50ddfe20d707224dc3de44817da120a"/>void <emphasis role="strong">upload</emphasis> (std::vector&lt; <link linkend="_struct_vertex">Vertex</link> &gt; &amp;&amp;verts, std::vector&lt; uint32_t &gt; &amp;&amp;faces, GLenum usage=GL_STATIC_DRAW)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_mesh_1ad331a787fe94be45d100c8cf4ca43a57"/>void <emphasis role="strong">reload</emphasis> ()</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_mesh_1a5237bc1186c7ecaa1af79738e3d7db50"/>void <emphasis role="strong">bind</emphasis> ()</para>
+</listitem>
+            <listitem><para>void <link linkend="_class_mesh_1abf58756040d4eb2bfe17766af91e3bc6">draw</link> (const Math3D::Mat4 &amp;parent=Math3D::Mat4(), const Math3D::Mat4 &amp;view=Math3D::Mat4(), const Math3D::Mat4 &amp;projection=Math3D::Mat4()) override</para>
+
+<para>Draws this object. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_mesh_1ac4933429e71411c8141d4a69760a0839"/>void <emphasis role="strong">dispose</emphasis> ()</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_mesh_1a8378cbc10e3d72c1b3d08c0a46380a2d"/>std::vector&lt; Math3D::Vec3 &gt; <emphasis role="strong">getVerticiesVectorArray</emphasis> ()</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_mesh_1ac8ad00d31216387f8f75072a4b3ee97f"/>std::vector&lt; float &gt; <emphasis role="strong">getVerticiesAsRawFloatArray</emphasis> ()</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_mesh_1a05b891bd19229c3def1ac1179b1ad73e"/>std::vector&lt; float &gt; <emphasis role="strong">getRawVertexData</emphasis> ()</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_mesh_1ab1a77a703b1d871fbeb0529b85fb8cc9"/>void <emphasis role="strong">setLocationAttributeOffset</emphasis> (int attribute, int dataSize, int dataOffset)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_mesh_1a56d7f936e780cc493559501576eb4850"/>std::vector&lt; <link linkend="_struct_vertex">Vertex</link> &gt; &amp; <emphasis role="strong">getVertecies</emphasis> ()</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_mesh_1a248f4a3f8d0914d98551562bc41a6e6c"/>const std::vector&lt; uint32_t &gt; &amp; <emphasis role="strong">getFaces</emphasis> () const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_mesh_1acbde7dd724a2dcb654622cca1daecad9"/>bool <emphasis role="strong">getLocalBounds</emphasis> (Math3D::Vec3 &amp;outMin, Math3D::Vec3 &amp;outMax) const</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+Public Member Functions inherited from <link linkend="_struct_i_drawable">IDrawable</link>        <itemizedlist>
+            <listitem><para><emphasis role="strong">~IDrawable</emphasis> ()=default</para>
+
+<para>Destroys this <link linkend="_struct_i_drawable">IDrawable</link> instance. </para>
+</listitem>
+        </itemizedlist>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_mesh_1a3967159b14011d7c2ea2f844b4391da7"/>static void <emphasis role="strong">Unbind</emphasis> ()</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_mesh">Mesh</link> type. </para>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_mesh_1abf58756040d4eb2bfe17766af91e3bc6"/><section>
+    <title>draw()</title>
+<indexterm><primary>draw</primary><secondary>Mesh</secondary></indexterm>
+<indexterm><primary>Mesh</primary><secondary>draw</secondary></indexterm>
+<para><computeroutput>void Mesh::draw (const Math3D::Mat4 &amp; parent = <computeroutput>Math3D::Mat4()</computeroutput>
+, const Math3D::Mat4 &amp; viewMtx = <computeroutput>Math3D::Mat4()</computeroutput>
+, const Math3D::Mat4 &amp; projectionMtx = <computeroutput>Math3D::Mat4()</computeroutput>
+)<computeroutput>[override]</computeroutput>, <computeroutput>[virtual]</computeroutput></computeroutput></para><para>
+
+<para>Draws this object. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>parent</entry><entry>
+<para>Value for parent. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>viewMtx</entry><entry>
+<para>Value for view mtx. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>projectionMtx</entry><entry>
+<para>Value for projection mtx. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+<para>
+Implements <link linkend="_struct_i_drawable_1a9fb10215e48d952bd9f6a4c52656ebb8">IDrawable</link>.</para>
+</section>
+<para>
+The documentation for this class was generated from the following files:</para>
+src/Rendering/Geometry/<link linkend="__mesh_8h">Mesh.h</link>src/Rendering/Geometry/<link linkend="__mesh_8cpp">Mesh.cpp</link></section>
+</section>

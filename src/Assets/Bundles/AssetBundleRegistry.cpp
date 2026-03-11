@@ -1,3 +1,8 @@
+/**
+ * @file src/Assets/Bundles/AssetBundleRegistry.cpp
+ * @brief Implementation for AssetBundleRegistry.
+ */
+
 #include "Assets/Bundles/AssetBundleRegistry.h"
 
 #include "Foundation/IO/File.h"

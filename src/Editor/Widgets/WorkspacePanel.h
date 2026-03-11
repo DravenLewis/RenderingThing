@@ -1,3 +1,8 @@
+/**
+ * @file src/Editor/Widgets/WorkspacePanel.h
+ * @brief Declarations for WorkspacePanel.
+ */
+
 #ifndef WORKSPACE_PANEL_H
 #define WORKSPACE_PANEL_H
 
@@ -10,19 +15,37 @@
 
 #include "imgui.h"
 
+/// @brief Represents the WorkspacePanel type.
 class WorkspacePanel {
     public:
         using EntityDropToPrefabFn = std::function<bool(const std::string& entityId,
                                                         const std::filesystem::path& exportDirectory,
                                                         std::string* outError)>;
 
+        /**
+         * @brief Sets the asset root.
+         * @param rootPath Filesystem path for root path.
+         */
         void setAssetRoot(const std::filesystem::path& rootPath);
+        /**
+         * @brief Draws this object.
+         * @param x Spatial value used by this operation.
+         * @param y Spatial value used by this operation.
+         * @param w Value for w.
+         * @param h Value for h.
+         * @param selectedAssetPath Filesystem path for selected asset path.
+         * @param onEntityDropToPrefab Callback for on entity drop to prefab.
+         */
         void draw(float x,
                   float y,
                   float w,
                   float h,
                   std::filesystem::path& selectedAssetPath,
                   const EntityDropToPrefabFn& onEntityDropToPrefab = EntityDropToPrefabFn());
+        /**
+         * @brief Returns the current directory.
+         * @return Reference to the resulting value.
+         */
         const std::filesystem::path& getCurrentDirectory() const { return assetDir; }
 
     private:

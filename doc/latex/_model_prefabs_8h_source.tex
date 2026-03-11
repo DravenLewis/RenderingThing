@@ -1,0 +1,75 @@
+\doxysection{Model\+Prefabs.\+h}
+\hypertarget{_model_prefabs_8h_source}{}\label{_model_prefabs_8h_source}\index{src/Rendering/Geometry/ModelPrefabs.h@{src/Rendering/Geometry/ModelPrefabs.h}}
+\doxymbox{\hyperlink{_model_prefabs_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ MODEL\_PREFABS\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ MODEL\_PREFABS\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_material_defaults_8h}{Rendering/Materials/MaterialDefaults.h}}"{}}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_model_part_prefabs_8h}{Rendering/Geometry/ModelPartPrefabs.h}}"{}}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_model_8h}{Rendering/Geometry/Model.h}}"{}}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00016\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_model_prefabs}{ModelPrefabs}}\{}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_model_prefabs_1_1_cube_material_definition}{CubeMaterialDefinition}}\{}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ PMaterial\ matTop\ =\ \doxymbox{\hyperlink{class_material_defaults_1_1_color_material_a2564a57120b10a3b17e87a04413db769}{MaterialDefaults::ColorMaterial::Create}}(Color::MAGENTA);}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ PMaterial\ matBottom\ =\ \doxymbox{\hyperlink{class_material_defaults_1_1_color_material_a2564a57120b10a3b17e87a04413db769}{MaterialDefaults::ColorMaterial::Create}}(Color::MAGENTA);}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ PMaterial\ matLeft\ =\ \doxymbox{\hyperlink{class_material_defaults_1_1_color_material_a2564a57120b10a3b17e87a04413db769}{MaterialDefaults::ColorMaterial::Create}}(Color::MAGENTA);}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ PMaterial\ matRight\ =\ \doxymbox{\hyperlink{class_material_defaults_1_1_color_material_a2564a57120b10a3b17e87a04413db769}{MaterialDefaults::ColorMaterial::Create}}(Color::MAGENTA);}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ PMaterial\ matFront\ =\ \doxymbox{\hyperlink{class_material_defaults_1_1_color_material_a2564a57120b10a3b17e87a04413db769}{MaterialDefaults::ColorMaterial::Create}}(Color::MAGENTA);}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ PMaterial\ matBack\ =\ \doxymbox{\hyperlink{class_material_defaults_1_1_color_material_a2564a57120b10a3b17e87a04413db769}{MaterialDefaults::ColorMaterial::Create}}(Color::MAGENTA);}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<CubeMaterialDefinition>\ \doxymbox{\hyperlink{struct_model_prefabs_1_1_cube_material_definition_aba705d4394d425991f04fbfb85500839}{Create}}()\ \{\textcolor{keywordflow}{return}\ std::make\_shared<CubeMaterialDefinition>();\};}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<CubeMaterialDefinition>\ CreateSame(PMaterial\ mat)\ \{}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ def\ =\ std::make\_shared<CubeMaterialDefinition>();}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \ \ \ \ def-\/>matFront\ =\ mat;}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \ \ \ \ def-\/>matBack\ =\ mat;}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \ \ \ \ def-\/>matLeft\ =\ mat;}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ def-\/>matRight\ =\ mat;}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \ \ \ \ def-\/>matTop\ =\ mat;}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \ \ \ \ def-\/>matBottom\ =\ mat;}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ def;}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00042\ \ \ \ \ \};}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<Model>\ \doxymbox{\hyperlink{struct_model_prefabs_ad5d5f5c2c36f3c39db66281afd4713ee}{MakeCube}}(\textcolor{keywordtype}{float}\ scale\ =\ 1.0f,\ std::shared\_ptr<CubeMaterialDefinition>\ matDef\ =\ \doxymbox{\hyperlink{struct_model_prefabs_1_1_cube_material_definition_aba705d4394d425991f04fbfb85500839}{CubeMaterialDefinition::Create}}())\{}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ model\ =\ \doxymbox{\hyperlink{struct_model_a3f0b711fc427dce1d41b1c2122248482}{Model::Create}}();}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ std::shared\_ptr<ModelPart>\ cubeTop\ =\ \doxymbox{\hyperlink{struct_model_part_prefabs_ae5f37b441c2d40314487e103ada227a8}{ModelPartPrefabs::MakePlane}}(scale,\ scale,\ matDef-\/>matTop);}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ cubeTop-\/>localTransform.setPosition(Math3D::Vec3(0.0f,1.0f,0.0f));}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ cubeTop-\/>localTransform.setRotation(0.0f,0.0f,0.0f);}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ std::shared\_ptr<ModelPart>\ cubeBottom\ =\ \doxymbox{\hyperlink{struct_model_part_prefabs_ae5f37b441c2d40314487e103ada227a8}{ModelPartPrefabs::MakePlane}}(scale,\ scale,\ matDef-\/>matBottom);}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ cubeBottom-\/>localTransform.setPosition(Math3D::Vec3(0.0f,-\/1.0f,0.0f));}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ cubeBottom-\/>localTransform.setRotation(180.0f,0.0f,0.0f);}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ std::shared\_ptr<ModelPart>\ cubeLeft\ =\ \doxymbox{\hyperlink{struct_model_part_prefabs_ae5f37b441c2d40314487e103ada227a8}{ModelPartPrefabs::MakePlane}}(scale,\ scale,\ matDef-\/>matLeft);}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ cubeLeft-\/>localTransform.setPosition(Math3D::Vec3(-\/1.0f,0.0f,0.0f));}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ cubeLeft-\/>localTransform.setRotation(0.0f,-\/90.0f,90.0f);}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ std::shared\_ptr<ModelPart>\ cubeRight\ =\ \doxymbox{\hyperlink{struct_model_part_prefabs_ae5f37b441c2d40314487e103ada227a8}{ModelPartPrefabs::MakePlane}}(scale,\ scale,\ matDef-\/>matRight);}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ cubeRight-\/>localTransform.setPosition(Math3D::Vec3(1.0f,0.0f,0.0f));}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ cubeRight-\/>localTransform.setRotation(0.0f,90.0f,-\/90.0f);}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ std::shared\_ptr<ModelPart>\ cubeFront\ =\ \doxymbox{\hyperlink{struct_model_part_prefabs_ae5f37b441c2d40314487e103ada227a8}{ModelPartPrefabs::MakePlane}}(scale,\ scale,\ matDef-\/>matFront);}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ cubeFront-\/>localTransform.setPosition(Math3D::Vec3(0.0f,0.0f,1.0f));}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ cubeFront-\/>localTransform.setRotation(-\/90.0f,180.0f,180.0f);}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ std::shared\_ptr<ModelPart>\ cubeBack\ =\ \doxymbox{\hyperlink{struct_model_part_prefabs_ae5f37b441c2d40314487e103ada227a8}{ModelPartPrefabs::MakePlane}}(scale,\ scale,\ matDef-\/>matBack);}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ cubeBack-\/>localTransform.setPosition(Math3D::Vec3(0.0f,0.0f,-\/1.0f));}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ cubeBack-\/>localTransform.setRotation(90.0f,180.0f,0.0f);}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ model-\/>addPart(cubeTop).addPart(cubeBottom).addPart(cubeLeft).addPart(cubeRight).addPart(cubeFront).addPart(cubeBack);}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ model;}
+\DoxyCodeLine{00081\ \ \ \ \ \}}
+\DoxyCodeLine{00082\ \};}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODEL\_PREFABS\_H}}
+
+\end{DoxyCode}

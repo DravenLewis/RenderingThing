@@ -1,3 +1,8 @@
+/**
+ * @file src/Serialization/IO/EntitySnapshotIO.cpp
+ * @brief Implementation for EntitySnapshotIO.
+ */
+
 #include "Serialization/IO/EntitySnapshotIO.h"
 
 #include <algorithm>

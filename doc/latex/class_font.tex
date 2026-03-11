@@ -1,0 +1,106 @@
+\doxysection{Font Class Reference}
+\hypertarget{class_font}{}\label{class_font}\index{Font@{Font}}
+
+
+Represents the \doxylink{class_font}{Font} type.  
+
+
+
+
+{\ttfamily \+\#include $<$Font.\+h$>$}
+
+Inheritance diagram for Font:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_font}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_font_a4e6a119206f505522100221c1fafde45}\label{class_font_a4e6a119206f505522100221c1fafde45} 
+{\bfseries Font} ()
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_font}{Font} instance. \end{DoxyCompactList}\item 
+\Hypertarget{class_font_abd1403ab126a898f00e431b3adde8f48}\label{class_font_abd1403ab126a898f00e431b3adde8f48} 
+virtual void {\bfseries draw\+Text} (std::\+string text="{}"{}, Math3\+D::\+\+Vec2 position=Math3\+D::\+\+Vec2(0, 0), PCamera camera=nullptr, Color color=Color::\+\+WHITE, bool use\+Cache=true)=0
+\item 
+\Hypertarget{class_font_a7993238290811753bb502c58a85a79d3}\label{class_font_a7993238290811753bb502c58a85a79d3} 
+virtual bool {\bfseries supports\+Queued\+Drawing} () const
+\item 
+\Hypertarget{class_font_a916aaa8940335189a855c32a9736388a}\label{class_font_a916aaa8940335189a855c32a9736388a} 
+virtual void {\bfseries begin\+Frame} (PCamera camera)
+\item 
+\Hypertarget{class_font_a535034c260677663264cd4971c89ebc2}\label{class_font_a535034c260677663264cd4971c89ebc2} 
+virtual void {\bfseries flush\+Queued\+Text} (PCamera camera)
+\item 
+\Hypertarget{class_font_abf7846fb0e62fe8c5132bd67a2fc332a}\label{class_font_abf7846fb0e62fe8c5132bd67a2fc332a} 
+void {\bfseries clear\+Cache} ()
+\item 
+\Hypertarget{class_font_abe9fd046d6125b62151232808b64e855}\label{class_font_abe9fd046d6125b62151232808b64e855} 
+PAsset {\bfseries get\+Asset\+Pointer} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_font_a23554a9888274dac6143a7a206eb71ef}\label{class_font_a23554a9888274dac6143a7a206eb71ef} 
+{\footnotesize template$<$typename T$>$ }\\static std::\+shared\+\_\+ptr$<$ T $>$ {\bfseries Create} (PAsset asset, float font\+Size=18.\+0f)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_font_a6707f3ecdb11b9a99892369650c80568}\label{class_font_a6707f3ecdb11b9a99892369650c80568} 
+static Logbot {\bfseries Font\+Logger} = Logbot::\+\+Create\+Instance("{}Font"{})
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \doxymbox{\hyperlink{class_font_aa6b8da140518e4282bbe81e7033e0081}{\+\_\+init\+Font}} ()=0
+\begin{DoxyCompactList}\small\item\em Initializes font resources. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_font_ae722d440cb9bf8ed62b1ce36b1ae1a73}\label{class_font_ae722d440cb9bf8ed62b1ce36b1ae1a73} 
+PAsset {\bfseries asset\+Ptr}
+\item 
+\Hypertarget{class_font_a6443ae8ba782461ee9fb0ebfdb89980f}\label{class_font_a6443ae8ba782461ee9fb0ebfdb89980f} 
+PTexture {\bfseries texture\+Atlas\+Ptr}
+\item 
+\Hypertarget{class_font_a3464ec0edc51ad004b5223c87c198136}\label{class_font_a3464ec0edc51ad004b5223c87c198136} 
+PMaterial {\bfseries material\+Cache\+Ptr}
+\item 
+\Hypertarget{class_font_a05386ef6c0908902bfd468c8cd03bf3a}\label{class_font_a05386ef6c0908902bfd468c8cd03bf3a} 
+float {\bfseries font\+Size}
+\item 
+\Hypertarget{class_font_afb3941e314ea743a47e9423bafa93385}\label{class_font_afb3941e314ea743a47e9423bafa93385} 
+std::\+array$<$ \doxymbox{\hyperlink{struct_font_character}{Font\+Character}}, 128 $>$ {\bfseries characters}
+\item 
+\Hypertarget{class_font_a34353d7ac57dd55d339a3f360ecd780c}\label{class_font_a34353d7ac57dd55d339a3f360ecd780c} 
+std::\+map$<$ \doxymbox{\hyperlink{struct_text_cache_key}{Text\+Cache\+Key}}, std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$ $>$ {\bfseries mesh\+Cache}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the \doxylink{class_font}{Font} type. 
+
+\label{doc-func-members}
+\Hypertarget{class_font_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_font_aa6b8da140518e4282bbe81e7033e0081}\index{Font@{Font}!\_initFont@{\_initFont}}
+\index{\_initFont@{\_initFont}!Font@{Font}}
+\doxysubsubsection{\texorpdfstring{\_initFont()}{\_initFont()}}
+{\footnotesize\ttfamily \label{class_font_aa6b8da140518e4282bbe81e7033e0081} 
+virtual void Font::\+\+\_\+init\+Font (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [pure virtual]}}
+
+
+
+Initializes font resources. 
+
+
+
+Implemented in \doxymbox{\hyperlink{class_free_type_font_ace8e8942ae61f4df9238bba96ec78b39}{Free\+Type\+Font}}, and \doxymbox{\hyperlink{class_true_type_font_a4af92a8e28331e8a35e1624f98706944}{True\+Type\+Font}}.
+
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Fonts/\+\doxymbox{\hyperlink{_font_8h}{Font.\+h}}\end{DoxyCompactItemize}

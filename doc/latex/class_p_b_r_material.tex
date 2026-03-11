@@ -1,0 +1,197 @@
+\doxysection{PBRMaterial Class Reference}
+\hypertarget{class_p_b_r_material}{}\label{class_p_b_r_material}\index{PBRMaterial@{PBRMaterial}}
+
+
+Represents the \doxylink{class_p_b_r_material}{PBRMaterial} type.  
+
+
+
+
+{\ttfamily \+\#include $<$PBRMaterial.\+h$>$}
+
+Inheritance diagram for PBRMaterial:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_p_b_r_material}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{class_p_b_r_material_aa95501f255a91cf9c2572ed4ea38fe27}{PBRMaterial}} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ program)
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_p_b_r_material}{PBRMaterial} instance. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_p_b_r_material_a30db1aa8fdf92f2a7310b864d79ee159}{bind}} () override
+\begin{DoxyCompactList}\small\item\em Binds this resource. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{class_material}{Material}}}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{class_material_ace810a426f4b488d2dc2a53070d85405}{Material}} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ program)
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_material}{Material} instance. \end{DoxyCompactList}\item 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+Material} ()
+\begin{DoxyCompactList}\small\item\em Destroys this \doxylink{class_material}{Material} instance. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T$>$ }\\bool {\bfseries set} (const std::\+string \&name, T value)
+\item 
+void {\bfseries unbind} ()
+\item 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ {\bfseries get\+Shader} ()
+\item 
+void {\bfseries set\+Shader} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ program)
+\item 
+void {\bfseries set\+Casts\+Shadows} (bool value)
+\item 
+bool {\bfseries casts\+Shadows} () const
+\item 
+void {\bfseries set\+Receives\+Shadows} (bool value)
+\item 
+bool {\bfseries receives\+Shadows} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_p_b_r_material}{PBRMaterial}} $>$ \doxymbox{\hyperlink{class_p_b_r_material_aa0579a45ec0d6fa8c1203c0bc582fe39}{Create}} (Math3\+D::\+\+Vec4 base\+Color=Color::\+\+WHITE)
+\begin{DoxyCompactList}\small\item\em Creates a new object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \doxymbox{\hyperlink{class_material}{Material}}}
+\begin{DoxyCompactItemize}
+\item 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material}{Material}} $>$ {\bfseries Copy} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material}{Material}} $>$ material)
+\item 
+{\footnotesize template$<$typename T$>$ }\\static std::\+shared\+\_\+ptr$<$ T $>$ {\bfseries Get\+As} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material}{Material}} $>$ mat\+Ptr)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_p_b_r_material_aceadfc9d5272d87388c1139a900c5dc5}\label{class_p_b_r_material_aceadfc9d5272d87388c1139a900c5dc5} 
+Value\+Container$<$ Math3\+D::\+\+Vec4 $>$ {\bfseries Base\+Color}
+\item 
+\Hypertarget{class_p_b_r_material_a554713fd5b2b272244887f7e6c8170f0}\label{class_p_b_r_material_a554713fd5b2b272244887f7e6c8170f0} 
+Value\+Container$<$ std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$ $>$ {\bfseries Base\+Color\+Tex}
+\item 
+\Hypertarget{class_p_b_r_material_a09ce716134fd081ae25bb63a46e9b907}\label{class_p_b_r_material_a09ce716134fd081ae25bb63a46e9b907} 
+Value\+Container$<$ float $>$ {\bfseries Metallic}
+\item 
+\Hypertarget{class_p_b_r_material_a2ef8c1065bd047f102140426894c7954}\label{class_p_b_r_material_a2ef8c1065bd047f102140426894c7954} 
+Value\+Container$<$ float $>$ {\bfseries Roughness}
+\item 
+\Hypertarget{class_p_b_r_material_ab9f974c13a97a14510cf5b7f5acff9ff}\label{class_p_b_r_material_ab9f974c13a97a14510cf5b7f5acff9ff} 
+Value\+Container$<$ std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$ $>$ {\bfseries Roughness\+Tex}
+\item 
+\Hypertarget{class_p_b_r_material_a9cbfd6085711037cff3578c967976d71}\label{class_p_b_r_material_a9cbfd6085711037cff3578c967976d71} 
+Value\+Container$<$ std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$ $>$ {\bfseries Metallic\+Roughness\+Tex}
+\item 
+\Hypertarget{class_p_b_r_material_a06282a8995ad8c24f578cfeda071ff21}\label{class_p_b_r_material_a06282a8995ad8c24f578cfeda071ff21} 
+Value\+Container$<$ std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$ $>$ {\bfseries Normal\+Tex}
+\item 
+\Hypertarget{class_p_b_r_material_a0b76aab4d122040de8b4f51f9e842619}\label{class_p_b_r_material_a0b76aab4d122040de8b4f51f9e842619} 
+Value\+Container$<$ float $>$ {\bfseries Normal\+Scale}
+\item 
+\Hypertarget{class_p_b_r_material_a8869ab4f3e0a14afbd1742b5d1966c96}\label{class_p_b_r_material_a8869ab4f3e0a14afbd1742b5d1966c96} 
+Value\+Container$<$ std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$ $>$ {\bfseries Height\+Tex}
+\item 
+\Hypertarget{class_p_b_r_material_ad3283b93fb82302a6944a367d23f4f78}\label{class_p_b_r_material_ad3283b93fb82302a6944a367d23f4f78} 
+Value\+Container$<$ float $>$ {\bfseries Height\+Scale}
+\item 
+\Hypertarget{class_p_b_r_material_a3f730409b9806bac6976b31b09f5aee3}\label{class_p_b_r_material_a3f730409b9806bac6976b31b09f5aee3} 
+Value\+Container$<$ std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$ $>$ {\bfseries Emissive\+Tex}
+\item 
+\Hypertarget{class_p_b_r_material_a6b75b41513664cba45750cfd3d511b09}\label{class_p_b_r_material_a6b75b41513664cba45750cfd3d511b09} 
+Value\+Container$<$ Math3\+D::\+\+Vec3 $>$ {\bfseries Emissive\+Color}
+\item 
+\Hypertarget{class_p_b_r_material_a561aaaf91f221fedad7c516bacaf8028}\label{class_p_b_r_material_a561aaaf91f221fedad7c516bacaf8028} 
+Value\+Container$<$ float $>$ {\bfseries Emissive\+Strength}
+\item 
+\Hypertarget{class_p_b_r_material_a0259fb2a84584f677d42b9243b018c4c}\label{class_p_b_r_material_a0259fb2a84584f677d42b9243b018c4c} 
+Value\+Container$<$ std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_texture}{Texture}} $>$ $>$ {\bfseries Occlusion\+Tex}
+\item 
+\Hypertarget{class_p_b_r_material_a08e589d6f14c84c24e82efd9b7ca2656}\label{class_p_b_r_material_a08e589d6f14c84c24e82efd9b7ca2656} 
+Value\+Container$<$ float $>$ {\bfseries Occlusion\+Strength}
+\item 
+\Hypertarget{class_p_b_r_material_a2a80cfcdca578ead8304fcd4ad5a5ea5}\label{class_p_b_r_material_a2a80cfcdca578ead8304fcd4ad5a5ea5} 
+Value\+Container$<$ std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_cube_map}{Cube\+Map}} $>$ $>$ {\bfseries Env\+Map}
+\item 
+\Hypertarget{class_p_b_r_material_ae402b765161c57dd6d10cdbf82ce83c1}\label{class_p_b_r_material_ae402b765161c57dd6d10cdbf82ce83c1} 
+Value\+Container$<$ float $>$ {\bfseries Env\+Strength}
+\item 
+\Hypertarget{class_p_b_r_material_a6fba5827bb23b0e63044a0bbbc6970c4}\label{class_p_b_r_material_a6fba5827bb23b0e63044a0bbbc6970c4} 
+Value\+Container$<$ int $>$ {\bfseries Use\+Env\+Map}
+\item 
+\Hypertarget{class_p_b_r_material_a40a3b2b384fce5cb177e860bbfc4a6fd}\label{class_p_b_r_material_a40a3b2b384fce5cb177e860bbfc4a6fd} 
+Value\+Container$<$ Math3\+D::\+\+Vec2 $>$ {\bfseries UVScale}
+\item 
+\Hypertarget{class_p_b_r_material_adea8484440177fa1036b3801f3ba60b0}\label{class_p_b_r_material_adea8484440177fa1036b3801f3ba60b0} 
+Value\+Container$<$ Math3\+D::\+\+Vec2 $>$ {\bfseries UVOffset}
+\item 
+\Hypertarget{class_p_b_r_material_a1b33d53a2febf1f2f982dd78ee803654}\label{class_p_b_r_material_a1b33d53a2febf1f2f982dd78ee803654} 
+Value\+Container$<$ float $>$ {\bfseries Alpha\+Cutoff}
+\item 
+\Hypertarget{class_p_b_r_material_ae26d427d389914c55beec601ddb27d9d}\label{class_p_b_r_material_ae26d427d389914c55beec601ddb27d9d} 
+Value\+Container$<$ int $>$ {\bfseries Use\+Alpha\+Clip}
+\item 
+\Hypertarget{class_p_b_r_material_a23b5acddbf3484d77c7aff0820abcb5a}\label{class_p_b_r_material_a23b5acddbf3484d77c7aff0820abcb5a} 
+Value\+Container$<$ Math3\+D::\+\+Vec3 $>$ {\bfseries View\+Pos}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the \doxylink{class_p_b_r_material}{PBRMaterial} type. 
+
+\label{doc-constructors}
+\Hypertarget{class_p_b_r_material_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_p_b_r_material_aa95501f255a91cf9c2572ed4ea38fe27}\index{PBRMaterial@{PBRMaterial}!PBRMaterial@{PBRMaterial}}
+\index{PBRMaterial@{PBRMaterial}!PBRMaterial@{PBRMaterial}}
+\doxysubsubsection{\texorpdfstring{PBRMaterial()}{PBRMaterial()}}
+{\footnotesize\ttfamily \label{class_p_b_r_material_aa95501f255a91cf9c2572ed4ea38fe27} 
+PBRMaterial::\+\+PBRMaterial (\begin{DoxyParamCaption}\item[{std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$}]{program}{}\end{DoxyParamCaption})}
+
+
+
+Constructs a new \doxylink{class_p_b_r_material}{PBRMaterial} instance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em program} & Value for program. \\
+\hline
+\end{DoxyParams}
+
+
+\label{doc-func-members}
+\Hypertarget{class_p_b_r_material_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_p_b_r_material_a30db1aa8fdf92f2a7310b864d79ee159}\index{PBRMaterial@{PBRMaterial}!bind@{bind}}
+\index{bind@{bind}!PBRMaterial@{PBRMaterial}}
+\doxysubsubsection{\texorpdfstring{bind()}{bind()}}
+{\footnotesize\ttfamily \label{class_p_b_r_material_a30db1aa8fdf92f2a7310b864d79ee159} 
+void PBRMaterial::\+bind (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Binds this resource. 
+
+
+
+Reimplemented from \doxymbox{\hyperlink{class_material}{Material}}.
+
+\Hypertarget{class_p_b_r_material_aa0579a45ec0d6fa8c1203c0bc582fe39}\index{PBRMaterial@{PBRMaterial}!Create@{Create}}
+\index{Create@{Create}!PBRMaterial@{PBRMaterial}}
+\doxysubsubsection{\texorpdfstring{Create()}{Create()}}
+{\footnotesize\ttfamily \label{class_p_b_r_material_aa0579a45ec0d6fa8c1203c0bc582fe39} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_p_b_r_material}{PBRMaterial}} $>$ PBRMaterial::\+\+Create (\begin{DoxyParamCaption}\item[{Math3\+D::\+\+Vec4}]{base\+Color}{ = {\ttfamily Color:\+:\+WHITE}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Creates a new object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em base\+Color} & Color value. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the resulting object. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Materials/\+\doxymbox{\hyperlink{_p_b_r_material_8h}{PBRMaterial.\+h}}\item 
+src/\+\+Rendering/\+\+Materials/\+\doxymbox{\hyperlink{_p_b_r_material_8cpp}{PBRMaterial.\+cpp}}\end{DoxyCompactItemize}

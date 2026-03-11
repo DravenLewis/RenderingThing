@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_g_l_uniform_upload_1_1_texture_slot" xml:lang="en-US">
+<title>GLUniformUpload::TextureSlot Struct Reference</title>
+<indexterm><primary>GLUniformUpload::TextureSlot</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_g_l_uniform_upload_1_1_texture_slot">TextureSlot</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;ShaderProgram.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_g_l_uniform_upload_1_1_texture_slot_1adb577d818d2eb350952f0fa05386ce89"/><emphasis role="strong">TextureSlot</emphasis> ()=default</para>
+
+<para>Constructs a new <link linkend="_struct_g_l_uniform_upload_1_1_texture_slot">TextureSlot</link> instance. </para>
+</listitem>
+            <listitem><para><link linkend="_struct_g_l_uniform_upload_1_1_texture_slot_1a23c7092a8763c531ee97288674086c1a">TextureSlot</link> (std::shared_ptr&lt; <link linkend="_class_texture">Texture</link> &gt; tex, int s=0)</para>
+
+<para>Constructs a new <link linkend="_struct_g_l_uniform_upload_1_1_texture_slot">TextureSlot</link> instance. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_g_l_uniform_upload_1_1_texture_slot_1ac8b4d2e94bfd9d37af8127bdacc5a66f"/>std::shared_ptr&lt; <link linkend="_class_texture">Texture</link> &gt; <emphasis role="strong">texture</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_g_l_uniform_upload_1_1_texture_slot_1a99f465321a697ee5adf9aad1bc11731c"/>int <emphasis role="strong">slot</emphasis> = 0</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_g_l_uniform_upload_1_1_texture_slot">TextureSlot</link>. </para>
+</section>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_struct_g_l_uniform_upload_1_1_texture_slot_1a23c7092a8763c531ee97288674086c1a"/><section>
+    <title>TextureSlot()</title>
+<indexterm><primary>TextureSlot</primary><secondary>GLUniformUpload::TextureSlot</secondary></indexterm>
+<indexterm><primary>GLUniformUpload::TextureSlot</primary><secondary>TextureSlot</secondary></indexterm>
+<para><computeroutput>GLUniformUpload::TextureSlot::TextureSlot (std::shared_ptr&lt; <link linkend="_class_texture">Texture</link> &gt; tex, int s = <computeroutput>0</computeroutput>
+)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Constructs a new <link linkend="_struct_g_l_uniform_upload_1_1_texture_slot">TextureSlot</link> instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>tex</entry><entry>
+<para>Value for tex. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>s</entry><entry>
+<para>Value for s. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Shaders/<link linkend="__shader_program_8h">ShaderProgram.h</link></section>
+</section>

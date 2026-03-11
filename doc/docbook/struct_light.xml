@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_light" xml:lang="en-US">
+<title>Light Struct Reference</title>
+<indexterm><primary>Light</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_light">Light</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;Light.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><link linkend="_struct_light_1aeb5df09a25a32f19fdffa761268ba24f">Light</link> ()</para>
+
+<para>Constructs a new <link linkend="_struct_light">Light</link> instance. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_light_1a50daa44245fcf1446cc862cad8d31cd0"/>static <link linkend="_struct_light">Light</link> <emphasis role="strong">CreatePointLight</emphasis> (Math3D::Vec3 position, Math3D::Vec4 color=Color::WHITE, float intensity=1.0f, float range=10.0f, float falloff=1.0f)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_light_1a6f64dcae681aed7a7ddb2e499a49ad50"/>static <link linkend="_struct_light">Light</link> <emphasis role="strong">CreateDirectionalLight</emphasis> (Math3D::Vec3 direction, Math3D::Vec4 color=Color::WHITE, float intensity=1.0f)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_light_1a4493641cc4348121e6ec4d351133d747"/>static <link linkend="_struct_light">Light</link> <emphasis role="strong">CreateSpotLight</emphasis> (Math3D::Vec3 position, Math3D::Vec3 direction, Math3D::Vec4 color=Color::WHITE, float intensity=1.0f, float range=10.0f, float falloff=1.0f, float spotAngle=45.0f)</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_light_1a86e648b4a80a5c1e194c97ef52f9efc6"/><link linkend="__light_8h_1adc3ec8293e6a97ebe43f0196b9a7f638">LightType</link> <emphasis role="strong">type</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_light_1a4fdcd58e8f93eb16418bb9852f19bc4e"/>Math3D::Vec3 <emphasis role="strong">position</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_light_1a512f8ab10a31d68e55eade804f13a683"/>Math3D::Vec3 <emphasis role="strong">direction</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_light_1a9969f685e27f38f876702e3dd5bd1cf1"/>Math3D::Vec4 <emphasis role="strong">color</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_light_1a1071eaa556f4bb2a9345fdfba7e6f220"/>float <emphasis role="strong">intensity</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_light_1ad8de02f467484d8e8b08518ddb581e5a"/>float <emphasis role="strong">range</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_light_1ae0d1b643bb7ce302ecd9a0fe78d12335"/>float <emphasis role="strong">falloff</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_light_1a2092ef2339edd1cd4d69e63a0bf51e77"/>float <emphasis role="strong">spotAngle</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_light_1abb7298439012ddc5939562608c2076ee"/>float <emphasis role="strong">shadowRange</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_light_1a7a240b12a17f558f36963ed6aaaa290e"/>bool <emphasis role="strong">castsShadows</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_light_1a77256a30d9ce51a8e4e3504b04fd4cc2"/><link linkend="__light_8h_1a5c50abf40600ee3c28c7fa04702a8bbc">ShadowType</link> <emphasis role="strong">shadowType</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_light_1ad7fa07ea245e48d0fd47d279abd58d3c"/>float <emphasis role="strong">shadowBias</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_light_1aebcc2cc2d05ef5ad585cd240f2850959"/>float <emphasis role="strong">shadowNormalBias</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_light_1a1b12738944d36263610dfc70a8b2021a"/>float <emphasis role="strong">shadowStrength</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_light_1a69610e383b6a6230f3723089880c0038"/>float <emphasis role="strong">cascadeLambda</emphasis></para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_light_1aaefd3dd16a8649fc81cbfbc83b6888cc"/>int <emphasis role="strong">shadowDebugMode</emphasis></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_light">Light</link>. </para>
+</section>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_struct_light_1aeb5df09a25a32f19fdffa761268ba24f"/><section>
+    <title>Light()</title>
+<indexterm><primary>Light</primary><secondary>Light</secondary></indexterm>
+<indexterm><primary>Light</primary><secondary>Light</secondary></indexterm>
+<para><computeroutput>Light::Light ( )<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Constructs a new <link linkend="_struct_light">Light</link> instance. </para>
+</para>
+
+<para>Returns shadow debug mode text. </para>
+</section>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Lighting/<link linkend="__light_8h">Light.h</link></section>
+</section>

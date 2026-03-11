@@ -1,0 +1,120 @@
+.TH "BloomEffect" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+BloomEffect \- Represents the \fBBloomEffect\fP type\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ScreenEffects\&.h>\fP
+.PP
+Inherits \fBGraphics::PostProcessing::PostProcessingEffect\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBloomEffect\fP ()"
+.br
+.RI "Constructs a new \fBBloomEffect\fP instance\&. "
+.ti -1c
+.RI "\fB~BloomEffect\fP () override"
+.br
+.RI "Destroys this \fBBloomEffect\fP instance\&. "
+.ti -1c
+.RI "bool \fBapply\fP (PTexture tex, PTexture, PFrameBuffer outFbo, std::shared_ptr< \fBModelPart\fP > quad) override"
+.br
+.RI "Applies current settings\&. "
+.in -1c
+
+Public Member Functions inherited from \fBGraphics::PostProcessing::PostProcessingEffect\fP
+.in +1c
+.ti -1c
+.RI "virtual \fB~PostProcessingEffect\fP ()=default"
+.br
+.RI "Destroys this \fBPostProcessingEffect\fP instance\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static std::shared_ptr< \fBBloomEffect\fP > \fBNew\fP ()"
+.br
+.RI "Creates a new object\&. "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fBadaptiveBloom\fP = false"
+.br
+.ti -1c
+.RI "float \fBthreshold\fP = 0\&.75f"
+.br
+.ti -1c
+.RI "float \fBsoftKnee\fP = 0\&.5f"
+.br
+.ti -1c
+.RI "float \fBintensity\fP = 0\&.65f"
+.br
+.ti -1c
+.RI "float \fBradiusPx\fP = 6\&.0f"
+.br
+.ti -1c
+.RI "int \fBsampleCount\fP = 8"
+.br
+.ti -1c
+.RI "Math3D::Vec3 \fBtint\fP = Math3D::Vec3(1\&.0f, 1\&.0f, 1\&.0f)"
+.br
+.ti -1c
+.RI "float \fBautoExposureIntensityScale\fP = 1\&.0f"
+.br
+.ti -1c
+.RI "float \fBautoExposureThresholdScale\fP = 1\&.0f"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the \fBBloomEffect\fP type\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "bool BloomEffect::apply (PTexture tex, PTexture , PFrameBuffer outFbo, std::shared_ptr< \fBModelPart\fP > quad)\fR [inline]\fP, \fR [override]\fP, \fR [virtual]\fP"
+
+.PP
+Applies current settings\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItex\fP Value for tex\&. 
+.br
+\fIPTexture\fP Value for p texture\&. 
+.br
+\fIoutFbo\fP Output value for fbo\&. 
+.br
+\fIquad\fP Value for quad\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True when the operation succeeds; otherwise false\&. 
+.RE
+.PP
+
+.PP
+Implements \fBGraphics::PostProcessing::PostProcessingEffect\fP\&.
+.SS "std::shared_ptr< \fBBloomEffect\fP > BloomEffect::New ()\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+Creates a new object\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

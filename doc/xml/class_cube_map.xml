@@ -1,0 +1,347 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_cube_map" kind="class" language="C++" prot="public">
+    <compoundname>CubeMap</compoundname>
+    <includes refid="_cube_map_8h" local="no">CubeMap.h</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_cube_map_1a3bb99a4d6d1c438738cd519363aa8f95" prot="private" static="no" mutable="no">
+        <type>GLuint</type>
+        <definition>GLuint CubeMap::textureID</definition>
+        <argsstring></argsstring>
+        <name>textureID</name>
+        <qualifiedname>CubeMap::textureID</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/CubeMap.h" line="17" column="16" bodyfile="src/Rendering/Textures/CubeMap.h" bodystart="17" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cube_map_1ae74d3b76f6f7fe0386201ec7d57e336e" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int CubeMap::size</definition>
+        <argsstring></argsstring>
+        <name>size</name>
+        <qualifiedname>CubeMap::size</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/CubeMap.h" line="18" column="13" bodyfile="src/Rendering/Textures/CubeMap.h" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cube_map_1a2b70cf1c6e42fff9606592b722562c81" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool CubeMap::ownsTexture</definition>
+        <argsstring></argsstring>
+        <name>ownsTexture</name>
+        <qualifiedname>CubeMap::ownsTexture</qualifiedname>
+        <initializer>= true</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/CubeMap.h" line="19" column="14" bodyfile="src/Rendering/Textures/CubeMap.h" bodystart="19" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_cube_map_1abafcc08996f6f10f5c0cdcd34c0c68d3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CubeMap::CubeMap</definition>
+        <argsstring>()=default</argsstring>
+        <name>CubeMap</name>
+        <qualifiedname>CubeMap::CubeMap</qualifiedname>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_cube_map" kindref="compound">CubeMap</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/CubeMap.h" line="25" column="9"/>
+        <referencedby refid="class_cube_map_1ab580566fd193af8a9b1ec59bb0bef307">CubeMap</referencedby>
+        <referencedby refid="class_cube_map_1ab33a6cc349723eec527b7499f883de2d" compoundref="_cube_map_8cpp" startline="21" endline="27">CubeMap</referencedby>
+        <referencedby refid="class_cube_map_1a4258cd7b4b21d93ebf4438684e6b5689">operator=</referencedby>
+        <referencedby refid="class_cube_map_1a60528a083c9443cf1d33bcdd3e4e57a4" compoundref="_cube_map_8cpp" startline="29" endline="39">operator=</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_cube_map_1ac4c453248cd7022d3b268755b2dd218e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CubeMap::~CubeMap</definition>
+        <argsstring>()</argsstring>
+        <name>~CubeMap</name>
+        <qualifiedname>CubeMap::~CubeMap</qualifiedname>
+        <briefdescription>
+<para>Destroys this <ref refid="class_cube_map" kindref="compound">CubeMap</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/CubeMap.h" line="29" column="9" bodyfile="src/Rendering/Textures/CubeMap.cpp" bodystart="17" bodyend="19"/>
+        <references refid="class_cube_map_1a1257f0ccf0fc38c412ea4e3eb5303e3a" compoundref="_cube_map_8cpp" startline="50" endline="57">dispose</references>
+      </memberdef>
+      <memberdef kind="function" id="class_cube_map_1ab580566fd193af8a9b1ec59bb0bef307" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CubeMap::CubeMap</definition>
+        <argsstring>(const CubeMap &amp;)=delete</argsstring>
+        <name>CubeMap</name>
+        <qualifiedname>CubeMap::CubeMap</qualifiedname>
+        <param>
+          <type>const <ref refid="class_cube_map" kindref="compound">CubeMap</ref> &amp;</type>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_cube_map" kindref="compound">CubeMap</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/CubeMap.h" line="33" column="9"/>
+        <references refid="class_cube_map_1abafcc08996f6f10f5c0cdcd34c0c68d3">CubeMap</references>
+      </memberdef>
+      <memberdef kind="function" id="class_cube_map_1a4258cd7b4b21d93ebf4438684e6b5689" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="class_cube_map" kindref="compound">CubeMap</ref> &amp;</type>
+        <definition>CubeMap &amp; CubeMap::operator=</definition>
+        <argsstring>(const CubeMap &amp;)=delete</argsstring>
+        <name>operator=</name>
+        <qualifiedname>CubeMap::operator=</qualifiedname>
+        <param>
+          <type>const <ref refid="class_cube_map" kindref="compound">CubeMap</ref> &amp;</type>
+        </param>
+        <briefdescription>
+<para>Assigns from another instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/CubeMap.h" line="37" column="17"/>
+        <references refid="class_cube_map_1abafcc08996f6f10f5c0cdcd34c0c68d3">CubeMap</references>
+      </memberdef>
+      <memberdef kind="function" id="class_cube_map_1ab33a6cc349723eec527b7499f883de2d" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type></type>
+        <definition>CubeMap::CubeMap</definition>
+        <argsstring>(CubeMap &amp;&amp;other) noexcept</argsstring>
+        <name>CubeMap</name>
+        <qualifiedname>CubeMap::CubeMap</qualifiedname>
+        <param>
+          <type><ref refid="class_cube_map" kindref="compound">CubeMap</ref> &amp;&amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_cube_map" kindref="compound">CubeMap</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>other</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for other. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/CubeMap.h" line="42" column="9" bodyfile="src/Rendering/Textures/CubeMap.cpp" bodystart="21" bodyend="27"/>
+        <references refid="class_cube_map_1abafcc08996f6f10f5c0cdcd34c0c68d3">CubeMap</references>
+      </memberdef>
+      <memberdef kind="function" id="class_cube_map_1a60528a083c9443cf1d33bcdd3e4e57a4" prot="public" static="no" const="no" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type><ref refid="class_cube_map" kindref="compound">CubeMap</ref> &amp;</type>
+        <definition>CubeMap &amp; CubeMap::operator=</definition>
+        <argsstring>(CubeMap &amp;&amp;other) noexcept</argsstring>
+        <name>operator=</name>
+        <qualifiedname>CubeMap::operator=</qualifiedname>
+        <param>
+          <type><ref refid="class_cube_map" kindref="compound">CubeMap</ref> &amp;&amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+<para>Assigns from another instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>other</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for other. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/CubeMap.h" line="47" column="17" bodyfile="src/Rendering/Textures/CubeMap.cpp" bodystart="29" bodyend="39"/>
+        <references refid="class_cube_map_1abafcc08996f6f10f5c0cdcd34c0c68d3">CubeMap</references>
+        <references refid="class_cube_map_1a1257f0ccf0fc38c412ea4e3eb5303e3a" compoundref="_cube_map_8cpp" startline="50" endline="57">dispose</references>
+      </memberdef>
+      <memberdef kind="function" id="class_cube_map_1a60762e1cc3859756d5f63b71d147f83c" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CubeMap::bind</definition>
+        <argsstring>(unsigned int slot=0) const</argsstring>
+        <name>bind</name>
+        <qualifiedname>CubeMap::bind</qualifiedname>
+        <param>
+          <type>unsigned int</type>
+          <declname>slot</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Binds this resource. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>slot</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for slot. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/CubeMap.h" line="53" column="14" bodyfile="src/Rendering/Textures/CubeMap.cpp" bodystart="41" bodyend="44"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cube_map_1ae1991169c4fb0bddf66ab9b7a6fd9d1d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CubeMap::unbind</definition>
+        <argsstring>() const</argsstring>
+        <name>unbind</name>
+        <qualifiedname>CubeMap::unbind</qualifiedname>
+        <briefdescription>
+<para>Unbinds this resource. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/CubeMap.h" line="57" column="14" bodyfile="src/Rendering/Textures/CubeMap.cpp" bodystart="46" bodyend="48"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cube_map_1a1257f0ccf0fc38c412ea4e3eb5303e3a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CubeMap::dispose</definition>
+        <argsstring>()</argsstring>
+        <name>dispose</name>
+        <qualifiedname>CubeMap::dispose</qualifiedname>
+        <briefdescription>
+<para>Disposes this object. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/CubeMap.h" line="61" column="14" bodyfile="src/Rendering/Textures/CubeMap.cpp" bodystart="50" bodyend="57"/>
+        <referencedby refid="class_cube_map_1a60528a083c9443cf1d33bcdd3e4e57a4" compoundref="_cube_map_8cpp" startline="29" endline="39">operator=</referencedby>
+        <referencedby refid="class_cube_map_1ac4c453248cd7022d3b268755b2dd218e" compoundref="_cube_map_8cpp" startline="17" endline="19">~CubeMap</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_cube_map_1ae9d52b975e1d891d4f3084ee36185dea" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int CubeMap::getSize</definition>
+        <argsstring>() const</argsstring>
+        <name>getSize</name>
+        <qualifiedname>CubeMap::getSize</qualifiedname>
+        <briefdescription>
+<para>Returns the size. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Computed numeric result. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/CubeMap.h" line="67" column="13" bodyfile="src/Rendering/Textures/CubeMap.h" bodystart="67" bodyend="67"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cube_map_1a38d1149c94c10c888b4671a6f5bb9937" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>GLuint</type>
+        <definition>GLuint CubeMap::getID</definition>
+        <argsstring>() const</argsstring>
+        <name>getID</name>
+        <qualifiedname>CubeMap::getID</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/CubeMap.h" line="68" column="16" bodyfile="src/Rendering/Textures/CubeMap.h" bodystart="68" bodyend="68"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_cube_map_1a281d34b324b830dc56f7e177bff1cb78" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="class_cube_map" kindref="compound">CubeMap</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; CubeMap &gt; CubeMap::Load</definition>
+        <argsstring>(PAsset posX, PAsset negX, PAsset posY, PAsset negY, PAsset posZ, PAsset negZ)</argsstring>
+        <name>Load</name>
+        <qualifiedname>CubeMap::Load</qualifiedname>
+        <param>
+          <type>PAsset</type>
+          <declname>posX</declname>
+        </param>
+        <param>
+          <type>PAsset</type>
+          <declname>negX</declname>
+        </param>
+        <param>
+          <type>PAsset</type>
+          <declname>posY</declname>
+        </param>
+        <param>
+          <type>PAsset</type>
+          <declname>negY</declname>
+        </param>
+        <param>
+          <type>PAsset</type>
+          <declname>posZ</declname>
+        </param>
+        <param>
+          <type>PAsset</type>
+          <declname>negZ</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/CubeMap.h" line="70" column="32" bodyfile="src/Rendering/Textures/CubeMap.cpp" bodystart="123" bodyend="178"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_cube_map" kindref="compound">CubeMap</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Textures/CubeMap.h" line="15" column="1" bodyfile="src/Rendering/Textures/CubeMap.h" bodystart="15" bodyend="78"/>
+    <listofallmembers>
+      <member refid="class_cube_map_1a60762e1cc3859756d5f63b71d147f83c" prot="public" virt="non-virtual"><scope>CubeMap</scope><name>bind</name></member>
+      <member refid="class_cube_map_1abafcc08996f6f10f5c0cdcd34c0c68d3" prot="public" virt="non-virtual"><scope>CubeMap</scope><name>CubeMap</name></member>
+      <member refid="class_cube_map_1ab580566fd193af8a9b1ec59bb0bef307" prot="public" virt="non-virtual"><scope>CubeMap</scope><name>CubeMap</name></member>
+      <member refid="class_cube_map_1ab33a6cc349723eec527b7499f883de2d" prot="public" virt="non-virtual"><scope>CubeMap</scope><name>CubeMap</name></member>
+      <member refid="class_cube_map_1a1257f0ccf0fc38c412ea4e3eb5303e3a" prot="public" virt="non-virtual"><scope>CubeMap</scope><name>dispose</name></member>
+      <member refid="class_cube_map_1a38d1149c94c10c888b4671a6f5bb9937" prot="public" virt="non-virtual"><scope>CubeMap</scope><name>getID</name></member>
+      <member refid="class_cube_map_1ae9d52b975e1d891d4f3084ee36185dea" prot="public" virt="non-virtual"><scope>CubeMap</scope><name>getSize</name></member>
+      <member refid="class_cube_map_1a281d34b324b830dc56f7e177bff1cb78" prot="public" virt="non-virtual"><scope>CubeMap</scope><name>Load</name></member>
+      <member refid="class_cube_map_1a4258cd7b4b21d93ebf4438684e6b5689" prot="public" virt="non-virtual"><scope>CubeMap</scope><name>operator=</name></member>
+      <member refid="class_cube_map_1a60528a083c9443cf1d33bcdd3e4e57a4" prot="public" virt="non-virtual"><scope>CubeMap</scope><name>operator=</name></member>
+      <member refid="class_cube_map_1a2b70cf1c6e42fff9606592b722562c81" prot="private" virt="non-virtual"><scope>CubeMap</scope><name>ownsTexture</name></member>
+      <member refid="class_cube_map_1ae74d3b76f6f7fe0386201ec7d57e336e" prot="private" virt="non-virtual"><scope>CubeMap</scope><name>size</name></member>
+      <member refid="class_cube_map_1a3bb99a4d6d1c438738cd519363aa8f95" prot="private" virt="non-virtual"><scope>CubeMap</scope><name>textureID</name></member>
+      <member refid="class_cube_map_1ae1991169c4fb0bddf66ab9b7a6fd9d1d" prot="public" virt="non-virtual"><scope>CubeMap</scope><name>unbind</name></member>
+      <member refid="class_cube_map_1ac4c453248cd7022d3b268755b2dd218e" prot="public" virt="non-virtual"><scope>CubeMap</scope><name>~CubeMap</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

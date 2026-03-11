@@ -1,0 +1,276 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_graphics_1_1_image_1_1_image" kind="struct" language="C++" prot="public">
+    <compoundname>Graphics::Image::Image</compoundname>
+    <derivedcompoundref refid="struct_graphics_1_1_image_1_1_buffered_image" prot="public" virt="non-virtual">Graphics::Image::BufferedImage</derivedcompoundref>
+    <includes refid="_graphics_8h" local="no">Graphics.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_graphics_1_1_image_1_1_image_1abd370c0682785decc0f8895a2a6b673a" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; uint32_t &gt;</type>
+        <definition>std::vector&lt;uint32_t&gt; Graphics::Image::Image::pixelData</definition>
+        <argsstring></argsstring>
+        <name>pixelData</name>
+        <qualifiedname>Graphics::Image::Image::pixelData</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics.h" line="28" column="29" bodyfile="src/Rendering/Core/Graphics.h" bodystart="28" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_graphics_1_1_image_1_1_image_1a5849ba86af777cde2ea3043123291542" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int Graphics::Image::Image::width</definition>
+        <argsstring></argsstring>
+        <name>width</name>
+        <qualifiedname>Graphics::Image::Image::width</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics.h" line="29" column="21" bodyfile="src/Rendering/Core/Graphics.h" bodystart="29" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_graphics_1_1_image_1_1_image_1a5603c843c966d9c2e248cc2badd081b1" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int Graphics::Image::Image::height</definition>
+        <argsstring></argsstring>
+        <name>height</name>
+        <qualifiedname>Graphics::Image::Image::height</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics.h" line="29" column="27" bodyfile="src/Rendering/Core/Graphics.h" bodystart="29" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="struct_graphics_1_1_image_1_1_image_1a86c6d37f21cb1b2c02837c4727e63cc8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>Graphics::Image::Image::Image</definition>
+        <argsstring>()=delete</argsstring>
+        <name>Image</name>
+        <qualifiedname>Graphics::Image::Image::Image</qualifiedname>
+        <briefdescription>
+<para>Constructs a new <ref refid="struct_graphics_1_1_image_1_1_image" kindref="compound">Image</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics.h" line="33" column="17"/>
+        <referencedby refid="struct_graphics_1_1_image_1_1_buffered_image_1a95c739a0c8fb9150ab27d338819b209f" compoundref="_graphics_8h" startline="91" endline="91">Graphics::Image::BufferedImage::BufferedImage</referencedby>
+        <referencedby refid="struct_graphics_1_1_image_1_1_image_1ac2dbaa50ab4653153402fa98d1b1e145" compoundref="_graphics_8h" startline="49" endline="52">Image</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="struct_graphics_1_1_image_1_1_image_1af90cfae65c25b2c1aa8336635aa744a4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Graphics::Image::Image::Image</definition>
+        <argsstring>(int width, int height)</argsstring>
+        <name>Image</name>
+        <qualifiedname>Graphics::Image::Image::Image</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>width</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>height</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="struct_graphics_1_1_image_1_1_image" kindref="compound">Image</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>width</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Dimension value. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>height</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Dimension value. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics.h" line="39" column="17" bodyfile="src/Rendering/Core/Graphics.h" bodystart="39" bodyend="44"/>
+      </memberdef>
+      <memberdef kind="function" id="struct_graphics_1_1_image_1_1_image_1ac2dbaa50ab4653153402fa98d1b1e145" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Graphics::Image::Image::Image</definition>
+        <argsstring>(const Image &amp;src)</argsstring>
+        <name>Image</name>
+        <qualifiedname>Graphics::Image::Image::Image</qualifiedname>
+        <param>
+          <type>const Image &amp;</type>
+          <declname>src</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="struct_graphics_1_1_image_1_1_image" kindref="compound">Image</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>src</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for src. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics.h" line="49" column="17" bodyfile="src/Rendering/Core/Graphics.h" bodystart="49" bodyend="52"/>
+        <references refid="struct_graphics_1_1_image_1_1_image_1a86c6d37f21cb1b2c02837c4727e63cc8">Image</references>
+      </memberdef>
+      <memberdef kind="function" id="struct_graphics_1_1_image_1_1_image_1a9360b8e858004f05fc0a87f1903bc1b7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int Graphics::Image::Image::getWidth</definition>
+        <argsstring>() const</argsstring>
+        <name>getWidth</name>
+        <qualifiedname>Graphics::Image::Image::getWidth</qualifiedname>
+        <briefdescription>
+<para>Returns the width. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Computed numeric result. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics.h" line="79" column="21" bodyfile="src/Rendering/Core/Graphics.h" bodystart="79" bodyend="79"/>
+      </memberdef>
+      <memberdef kind="function" id="struct_graphics_1_1_image_1_1_image_1aba4553e8233d07c6439b10df97c68838" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int Graphics::Image::Image::getHeight</definition>
+        <argsstring>() const</argsstring>
+        <name>getHeight</name>
+        <qualifiedname>Graphics::Image::Image::getHeight</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics.h" line="80" column="21" bodyfile="src/Rendering/Core/Graphics.h" bodystart="80" bodyend="80"/>
+      </memberdef>
+      <memberdef kind="function" id="struct_graphics_1_1_image_1_1_image_1a0ce32d2c88a124dfdc8ec4f074c70c40" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::vector&lt; uint32_t &gt;</type>
+        <definition>std::vector&lt; uint32_t &gt; Graphics::Image::Image::getPixelData</definition>
+        <argsstring>() const</argsstring>
+        <name>getPixelData</name>
+        <qualifiedname>Graphics::Image::Image::getPixelData</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics.h" line="81" column="29" bodyfile="src/Rendering/Core/Graphics.h" bodystart="81" bodyend="81"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="struct_graphics_1_1_image_1_1_image_1a361c6bf49cc6cb69edb8bd6273542952" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="struct_graphics_1_1_image_1_1_image_1a86c6d37f21cb1b2c02837c4727e63cc8" kindref="member">Image</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt; Image &gt; Graphics::Image::Image::Create</definition>
+        <argsstring>(int width, int height, const std::vector&lt; uint32_t &gt; &amp;src={})</argsstring>
+        <name>Create</name>
+        <qualifiedname>Graphics::Image::Image::Create</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>width</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>height</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; uint32_t &gt; &amp;</type>
+          <declname>src</declname>
+          <defval>{}</defval>
+        </param>
+        <briefdescription>
+<para>Creates a new object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>width</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Dimension value. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>height</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Dimension value. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>src</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for src. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Pointer to the resulting object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Core/Graphics.h" line="61" column="40" bodyfile="src/Rendering/Core/Graphics.h" bodystart="61" bodyend="73"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_graphics_1_1_image_1_1_image" kindref="compound">Image</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>Graphics::Image::BufferedImage</label>
+        <link refid="struct_graphics_1_1_image_1_1_buffered_image"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>Graphics::Image::Image</label>
+        <link refid="struct_graphics_1_1_image_1_1_image"/>
+      </node>
+    </inheritancegraph>
+    <location file="src/Rendering/Core/Graphics.h" line="26" column="9" bodyfile="src/Rendering/Core/Graphics.h" bodystart="26" bodyend="82"/>
+    <listofallmembers>
+      <member refid="struct_graphics_1_1_image_1_1_image_1a361c6bf49cc6cb69edb8bd6273542952" prot="public" virt="non-virtual"><scope>Graphics::Image::Image</scope><name>Create</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_image_1aba4553e8233d07c6439b10df97c68838" prot="public" virt="non-virtual"><scope>Graphics::Image::Image</scope><name>getHeight</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_image_1a0ce32d2c88a124dfdc8ec4f074c70c40" prot="public" virt="non-virtual"><scope>Graphics::Image::Image</scope><name>getPixelData</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_image_1a9360b8e858004f05fc0a87f1903bc1b7" prot="public" virt="non-virtual"><scope>Graphics::Image::Image</scope><name>getWidth</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_image_1a5603c843c966d9c2e248cc2badd081b1" prot="public" virt="non-virtual"><scope>Graphics::Image::Image</scope><name>height</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_image_1a86c6d37f21cb1b2c02837c4727e63cc8" prot="public" virt="non-virtual"><scope>Graphics::Image::Image</scope><name>Image</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_image_1af90cfae65c25b2c1aa8336635aa744a4" prot="public" virt="non-virtual"><scope>Graphics::Image::Image</scope><name>Image</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_image_1ac2dbaa50ab4653153402fa98d1b1e145" prot="public" virt="non-virtual"><scope>Graphics::Image::Image</scope><name>Image</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_image_1abd370c0682785decc0f8895a2a6b673a" prot="public" virt="non-virtual"><scope>Graphics::Image::Image</scope><name>pixelData</name></member>
+      <member refid="struct_graphics_1_1_image_1_1_image_1a5849ba86af777cde2ea3043123291542" prot="public" virt="non-virtual"><scope>Graphics::Image::Image</scope><name>width</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,3 +1,8 @@
+/**
+ * @file src/Assets/Core/Asset.cpp
+ * @brief Implementation for Asset.
+ */
+
 
 #include <cstdlib>
 #include <cstdint>

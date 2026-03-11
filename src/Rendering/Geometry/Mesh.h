@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Geometry/Mesh.h
+ * @brief Declarations for Mesh.
+ */
+
 #ifndef MESH_H
 #define MESH_H
 
@@ -14,6 +19,7 @@
 
 typedef unsigned int VertexBufferObject, VertexArrayObject, ElementBufferObject;
 
+/// @brief Holds data for Vertex.
 struct Vertex{
     Math3D::Vec3 Position;
     Math3D::Vec3 Normal;
@@ -22,43 +28,99 @@ struct Vertex{
 
     static const int VERTEX_DATA_WIDTH = 12;
 
+    /**
+     * @brief Sets vertex position.
+     * @param pos Value for pos.
+     * @return Reference to the resulting value.
+     */
     Vertex& Pos(const Math3D::Vec3& pos){
         this->Position = pos;
         return *this;
     }
 
+    /**
+     * @brief Sets vertex position.
+     * @param x Spatial value used by this operation.
+     * @param y Spatial value used by this operation.
+     * @param z Spatial value used by this operation.
+     * @return Reference to the resulting value.
+     */
     Vertex& Pos(float x = 0, float y = 0, float z = 0){
         return Pos(Math3D::Vec3(x,y,z));
     }
 
+    /**
+     * @brief Sets vertex normal.
+     * @param nml Value for nml.
+     * @return Reference to the resulting value.
+     */
     Vertex& Norm(const Math3D::Vec3& nml){
         this->Normal = nml;
         return *this;
     }
 
+    /**
+     * @brief Sets vertex normal.
+     * @param x Spatial value used by this operation.
+     * @param y Spatial value used by this operation.
+     * @param z Spatial value used by this operation.
+     * @return Reference to the resulting value.
+     */
     Vertex& Norm(float x = 0, float y = 0, float z = 0){
         return Norm(Math3D::Vec3(x,y,z));
     }
 
+    /**
+     * @brief Sets vertex UV coordinates.
+     * @param pos Value for pos.
+     * @return Reference to the resulting value.
+     */
     Vertex& UV(const Math3D::Vec2& pos){
         this->TexCoords = pos;
         return *this;
     }
 
+    /**
+     * @brief Sets vertex UV coordinates.
+     * @param u Value for u.
+     * @param v Value for v.
+     * @return Reference to the resulting value.
+     */
     Vertex& UV(float u = 0, float v = 0){
         return UV(Math3D::Vec2(u,v));
     }
 
+    /**
+     * @brief Sets vertex color.
+     * @param col Value for col.
+     * @return Reference to the resulting value.
+     */
     Vertex& Col(const Math3D::Vec4& col){
         this->Color = col;
         return *this;
     }
 
+    /**
+     * @brief Sets vertex color.
+     * @param r Value for r.
+     * @param g Value for g.
+     * @param b Value for b.
+     * @param a Value for a.
+     * @return Reference to the resulting value.
+     */
     Vertex& Col(float r = 0, float g = 0, float b = 0, float a = 1){
         return Col(Math3D::Vec4(r,g,b,a));
     }
 
 
+    /**
+     * @brief Builds the target output.
+     * @param pos Value for pos.
+     * @param color Color value.
+     * @param normal Value for normal.
+     * @param texcords Value for texcords.
+     * @return Result of this operation.
+     */
     static Vertex Build(Math3D::Vec3 pos = Math3D::Vec3::zero(),Math3D::Vec4 color = Math3D::Vec4(1,1,1,1), Math3D::Vec3 normal = Math3D::Vec3::zero(), Math3D::Vec2 texcords = Math3D::Vec2(0,0)){
         Vertex vtx;
         vtx.Position = pos;
@@ -70,6 +132,12 @@ struct Vertex{
         return vtx;
     }
 
+    /**
+     * @brief Composes a vertex from components.
+     * @param floats Value for floats.
+     * @param dataSize Number of elements or bytes.
+     * @return Result of this operation.
+     */
     static Vertex Compose(std::vector<float>& floats, int dataSize = VERTEX_DATA_WIDTH /* XYZRGBANNUV */){
         std::vector<float> first12;
         for(int i = 0; i < floats.size(); i++){
@@ -112,6 +180,11 @@ struct Vertex{
         return vtx;
     }
 
+    /**
+     * @brief Decomposes a vertex into scalar components.
+     * @param v Value for v.
+     * @return Computed numeric result.
+     */
     static std::vector<float> Decompose(Vertex &v){
         std::vector<float> vertexVector;
         /* XYZRGBANNUV */
@@ -154,6 +227,7 @@ struct Vertex{
     }
 };
 
+/// @brief Represents the Mesh type.
 class Mesh : public IDrawable{
     private:
         std::vector<Vertex> verticies;
@@ -165,11 +239,25 @@ class Mesh : public IDrawable{
         Math3D::Vec3 localBoundsMax = Math3D::Vec3(0.0f, 0.0f, 0.0f);
         bool hasLocalBounds = false;
 
+        /**
+         * @brief Generates mesh GPU buffers.
+         * @param usage Value for usage.
+         */
         void _genBuffers(GLenum usage = GL_STATIC_DRAW);
+        /**
+         * @brief Checks whether are buffers bound.
+         * @return True when the operation succeeds; otherwise false.
+         */
         bool _areBuffersBound();
+        /**
+         * @brief Computes local bounds.
+         */
         void computeLocalBounds();
 
     public:
+        /**
+         * @brief Constructs a new Mesh instance.
+         */
         Mesh(){};
         Mesh(const Mesh&) = delete;
         Mesh(Mesh&& other) noexcept;

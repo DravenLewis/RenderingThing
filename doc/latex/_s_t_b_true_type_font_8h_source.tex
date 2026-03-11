@@ -1,0 +1,25 @@
+\doxysection{STBTrue\+Type\+Font.\+h}
+\hypertarget{_s_t_b_true_type_font_8h_source}{}\label{_s_t_b_true_type_font_8h_source}\index{src/Rendering/Fonts/STBTrueTypeFont.h@{src/Rendering/Fonts/STBTrueTypeFont.h}}
+\doxymbox{\hyperlink{_s_t_b_true_type_font_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ STB\_TTF\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ STB\_TTF\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}STB/stb\_truetype.h"{}}\ \textcolor{comment}{//\ STB\ Headers.}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_font_8h}{Rendering/Fonts/Font.h}}"{}}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00013\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_true_type_font_ad32c45a5111d82794f1d8fe9d3a0f708}{TrueTypeFont}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{class_font_a4e6a119206f505522100221c1fafde45}{Font}}\{}
+\DoxyCodeLine{00014\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00015\ \ \ \ \ \ \ \ \ stbtt\_packedchar\ cdata[96];}
+\DoxyCodeLine{00016\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_true_type_font_ad32c45a5111d82794f1d8fe9d3a0f708}{TrueTypeFont}}()\ :\ \doxymbox{\hyperlink{class_font_a4e6a119206f505522100221c1fafde45}{Font}}()\ \{\};}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_true_type_font_a4af92a8e28331e8a35e1624f98706944}{\_initFont}}()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ drawText(std::string\ text,\ Math3D::Vec2\ position,\ PCamera\ camera,\ Color\ color,\ \textcolor{keywordtype}{bool}\ useCache)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00023\ \};}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//STB\_TTF\_H}}
+
+\end{DoxyCode}

@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_g_l_uniform_upload_1_1_cube_map_slot" kind="struct" language="C++" prot="public">
+    <compoundname>GLUniformUpload::CubeMapSlot</compoundname>
+    <includes refid="_shader_program_8h" local="no">ShaderProgram.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_g_l_uniform_upload_1_1_cube_map_slot_1aaf430c1b18833f4d705751c79e53e6f1" prot="public" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="class_cube_map" kindref="compound">CubeMap</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;CubeMap&gt; GLUniformUpload::CubeMapSlot::cubemap</definition>
+        <argsstring></argsstring>
+        <name>cubemap</name>
+        <qualifiedname>GLUniformUpload::CubeMapSlot::cubemap</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="64" column="25" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_g_l_uniform_upload_1_1_cube_map_slot_1a37b56833bdca0f8b53cd7b2e3f832087" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int GLUniformUpload::CubeMapSlot::slot</definition>
+        <argsstring></argsstring>
+        <name>slot</name>
+        <qualifiedname>GLUniformUpload::CubeMapSlot::slot</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="65" column="13" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="65" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="struct_g_l_uniform_upload_1_1_cube_map_slot_1aecea70a50c59eb990a8b3ff98030ce2a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>GLUniformUpload::CubeMapSlot::CubeMapSlot</definition>
+        <argsstring>()=default</argsstring>
+        <name>CubeMapSlot</name>
+        <qualifiedname>GLUniformUpload::CubeMapSlot::CubeMapSlot</qualifiedname>
+        <briefdescription>
+<para>Constructs a new <ref refid="struct_g_l_uniform_upload_1_1_cube_map_slot" kindref="compound">CubeMapSlot</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="70" column="9"/>
+      </memberdef>
+      <memberdef kind="function" id="struct_g_l_uniform_upload_1_1_cube_map_slot_1a6c512f6b525bb9cdb8a90393370b0bda" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>GLUniformUpload::CubeMapSlot::CubeMapSlot</definition>
+        <argsstring>(std::shared_ptr&lt; CubeMap &gt; map, int s=0)</argsstring>
+        <name>CubeMapSlot</name>
+        <qualifiedname>GLUniformUpload::CubeMapSlot::CubeMapSlot</qualifiedname>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="class_cube_map" kindref="compound">CubeMap</ref> &gt;</type>
+          <declname>map</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>s</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="struct_g_l_uniform_upload_1_1_cube_map_slot" kindref="compound">CubeMapSlot</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>map</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for map. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>s</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for s. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="76" column="9" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="76" bodyend="76"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_g_l_uniform_upload_1_1_cube_map_slot" kindref="compound">CubeMapSlot</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Shaders/ShaderProgram.h" line="63" column="5" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="63" bodyend="77"/>
+    <listofallmembers>
+      <member refid="struct_g_l_uniform_upload_1_1_cube_map_slot_1aaf430c1b18833f4d705751c79e53e6f1" prot="public" virt="non-virtual"><scope>GLUniformUpload::CubeMapSlot</scope><name>cubemap</name></member>
+      <member refid="struct_g_l_uniform_upload_1_1_cube_map_slot_1aecea70a50c59eb990a8b3ff98030ce2a" prot="public" virt="non-virtual"><scope>GLUniformUpload::CubeMapSlot</scope><name>CubeMapSlot</name></member>
+      <member refid="struct_g_l_uniform_upload_1_1_cube_map_slot_1a6c512f6b525bb9cdb8a90393370b0bda" prot="public" virt="non-virtual"><scope>GLUniformUpload::CubeMapSlot</scope><name>CubeMapSlot</name></member>
+      <member refid="struct_g_l_uniform_upload_1_1_cube_map_slot_1a37b56833bdca0f8b53cd7b2e3f832087" prot="public" virt="non-virtual"><scope>GLUniformUpload::CubeMapSlot</scope><name>slot</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,89 @@
+\doxysection{Grayscale\+Effect Class Reference}
+\hypertarget{class_grayscale_effect}{}\label{class_grayscale_effect}\index{GrayscaleEffect@{GrayscaleEffect}}
+
+
+Represents the \doxylink{class_grayscale_effect}{Grayscale\+Effect} type.  
+
+
+
+
+{\ttfamily \+\#include $<$Screen\+Effects.\+h$>$}
+
+Inheritance diagram for Grayscale\+Effect:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_grayscale_effect}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_grayscale_effect_a6c026cfc72b5a3f2bf2674503183452c}\label{class_grayscale_effect_a6c026cfc72b5a3f2bf2674503183452c} 
+{\bfseries Grayscale\+Effect} ()
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_grayscale_effect}{Grayscale\+Effect} instance. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{class_grayscale_effect_a5e71990549a216be2b0f6901932c7692}{apply}} (PTexture tex, PTexture depth\+Tex, PFrame\+Buffer out\+Fbo, std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$ quad) override
+\begin{DoxyCompactList}\small\item\em Applies current settings. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{class_graphics_1_1_post_processing_1_1_post_processing_effect}{Graphics::\+\+Post\+Processing::\+\+Post\+Processing\+Effect}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+Post\+Processing\+Effect} ()=default
+\begin{DoxyCompactList}\small\item\em Destroys this \doxylink{class_graphics_1_1_post_processing_1_1_post_processing_effect}{Post\+Processing\+Effect} instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static Graphics::\+\+Post\+Processing::\+\+PPost\+Processing\+Effect \doxymbox{\hyperlink{class_grayscale_effect_acf79b860ba6ab7cd1fbc6bb62fbca723}{New}} ()
+\begin{DoxyCompactList}\small\item\em Creates a new object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the \doxylink{class_grayscale_effect}{Grayscale\+Effect} type. 
+
+\label{doc-func-members}
+\Hypertarget{class_grayscale_effect_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_grayscale_effect_a5e71990549a216be2b0f6901932c7692}\index{GrayscaleEffect@{GrayscaleEffect}!apply@{apply}}
+\index{apply@{apply}!GrayscaleEffect@{GrayscaleEffect}}
+\doxysubsubsection{\texorpdfstring{apply()}{apply()}}
+{\footnotesize\ttfamily \label{class_grayscale_effect_a5e71990549a216be2b0f6901932c7692} 
+bool Grayscale\+Effect::\+apply (\begin{DoxyParamCaption}\item[{PTexture}]{tex}{, }\item[{PTexture}]{depth\+Tex}{, }\item[{PFrame\+Buffer}]{out\+Fbo}{, }\item[{std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$}]{quad}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Applies current settings. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tex} & Value for tex. \\
+\hline
+{\em depth\+Tex} & Value for depth tex. \\
+\hline
+{\em out\+Fbo} & Output value for fbo. \\
+\hline
+{\em quad} & Value for quad. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True when the operation succeeds; otherwise false. 
+\end{DoxyReturn}
+
+
+Implements \doxymbox{\hyperlink{class_graphics_1_1_post_processing_1_1_post_processing_effect_a75b0263b1e53943ceb4f13d4aad0f5e6}{Graphics::\+\+Post\+Processing::\+\+Post\+Processing\+Effect}}.
+
+\Hypertarget{class_grayscale_effect_acf79b860ba6ab7cd1fbc6bb62fbca723}\index{GrayscaleEffect@{GrayscaleEffect}!New@{New}}
+\index{New@{New}!GrayscaleEffect@{GrayscaleEffect}}
+\doxysubsubsection{\texorpdfstring{New()}{New()}}
+{\footnotesize\ttfamily \label{class_grayscale_effect_acf79b860ba6ab7cd1fbc6bb62fbca723} 
+Graphics::\+\+Post\+Processing::\+\+PPost\+Processing\+Effect Grayscale\+Effect::\+\+New (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Creates a new object. 
+
+\begin{DoxyReturn}{Returns}
+Result of this operation. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Post\+FX/\+\doxymbox{\hyperlink{_screen_effects_8h}{Screen\+Effects.\+h}}\end{DoxyCompactItemize}

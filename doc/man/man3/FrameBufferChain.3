@@ -1,0 +1,125 @@
+.TH "FrameBufferChain" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+FrameBufferChain \- Holds data for \fBFrameBufferChain\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <FrameBuffer\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBFrameBufferChain\fP (int s)"
+.br
+.RI "Constructs a new \fBFrameBufferChain\fP instance\&. "
+.ti -1c
+.RI "std::shared_ptr< \fBFrameBuffer\fP > \fBgetAtIndex\fP (int index)"
+.br
+.RI "Returns the at index\&. "
+.ti -1c
+.RI "void \fBsetAtIndex\fP (int index, std::shared_ptr< \fBFrameBuffer\fP > fbPtr)"
+.br
+.RI "Sets the at index\&. "
+.ti -1c
+.RI "int \fBgetSize\fP ()"
+.br
+.RI "Returns the size\&. "
+.ti -1c
+.RI "void \fBresize\fP (int newSize)"
+.br
+.RI "Resizes internal resources\&. "
+.ti -1c
+.RI "void \fBresizeBuffers\fP (int width, int height)"
+.br
+.RI "Resizes backing GPU buffers\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Holds data for \fBFrameBufferChain\fP\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "FrameBufferChain::FrameBufferChain (int s)\fR [inline]\fP"
+
+.PP
+Constructs a new \fBFrameBufferChain\fP instance\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIs\fP Value for s\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "std::shared_ptr< \fBFrameBuffer\fP > FrameBufferChain::getAtIndex (int index)\fR [inline]\fP"
+
+.PP
+Returns the at index\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP Identifier or index value\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the resulting object\&. 
+.RE
+.PP
+
+.SS "int FrameBufferChain::getSize ()\fR [inline]\fP"
+
+.PP
+Returns the size\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Computed numeric result\&. 
+.RE
+.PP
+
+.SS "void FrameBufferChain::resize (int newSize)\fR [inline]\fP"
+
+.PP
+Resizes internal resources\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fInewSize\fP Number of elements or bytes\&. 
+.RE
+.PP
+
+.SS "void FrameBufferChain::resizeBuffers (int width, int height)\fR [inline]\fP"
+
+.PP
+Resizes backing GPU buffers\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIwidth\fP Dimension value\&. 
+.br
+\fIheight\fP Dimension value\&. 
+.RE
+.PP
+
+.SS "void FrameBufferChain::setAtIndex (int index, std::shared_ptr< \fBFrameBuffer\fP > fbPtr)\fR [inline]\fP"
+
+.PP
+Sets the at index\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIindex\fP Identifier or index value\&. 
+.br
+\fIfbPtr\fP Pointer to fb\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

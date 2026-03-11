@@ -1,0 +1,1010 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_depth_of_field_effect" kind="class" language="C++" prot="public">
+    <compoundname>DepthOfFieldEffect</compoundname>
+    <basecompoundref refid="class_graphics_1_1_post_processing_1_1_post_processing_effect" prot="public" virt="non-virtual">Graphics::PostProcessing::PostProcessingEffect</basecompoundref>
+    <includes refid="_screen_effects_8h" local="no">ScreenEffects.h</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a8c8686b2bf67cfdd23323eba03fde27b" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="class_shader_program" kindref="compound">ShaderProgram</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;ShaderProgram&gt; DepthOfFieldEffect::shader</definition>
+        <argsstring></argsstring>
+        <name>shader</name>
+        <qualifiedname>DepthOfFieldEffect::shader</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="386" column="25" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="386" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a68cb567793deea48fc5a40dcf69639db" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool DepthOfFieldEffect::compileAttempted</definition>
+        <argsstring></argsstring>
+        <name>compileAttempted</name>
+        <qualifiedname>DepthOfFieldEffect::compileAttempted</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="387" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="387" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a4ab83c07318569e2bc03d16cd329efc9" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::resolvedFocusDistance</definition>
+        <argsstring></argsstring>
+        <name>resolvedFocusDistance</name>
+        <qualifiedname>DepthOfFieldEffect::resolvedFocusDistance</qualifiedname>
+        <initializer>= 8.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="388" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="388" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1ad1c7224b3e935e4352713208a35d3ec5" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::resolvedFocusRange</definition>
+        <argsstring></argsstring>
+        <name>resolvedFocusRange</name>
+        <qualifiedname>DepthOfFieldEffect::resolvedFocusRange</qualifiedname>
+        <initializer>= 4.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="389" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="389" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a4764fb2fec17f67c34a59681a2c9c657" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool DepthOfFieldEffect::focusAdaptationInitialized</definition>
+        <argsstring></argsstring>
+        <name>focusAdaptationInitialized</name>
+        <qualifiedname>DepthOfFieldEffect::focusAdaptationInitialized</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="390" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="390" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1aaa44254149463dd8c5c1ca97c3502556" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::smoothedFocusDistance</definition>
+        <argsstring></argsstring>
+        <name>smoothedFocusDistance</name>
+        <qualifiedname>DepthOfFieldEffect::smoothedFocusDistance</qualifiedname>
+        <initializer>= 8.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="391" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="391" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a0d286e481dc9d8008f7db6581a39f19b" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::smoothedFocusRange</definition>
+        <argsstring></argsstring>
+        <name>smoothedFocusRange</name>
+        <qualifiedname>DepthOfFieldEffect::smoothedFocusRange</qualifiedname>
+        <initializer>= 4.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="392" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="392" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a5e571bc13953a7cf6bd716c366ecaf72" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::focusPullBackRate</definition>
+        <argsstring></argsstring>
+        <name>focusPullBackRate</name>
+        <qualifiedname>DepthOfFieldEffect::focusPullBackRate</qualifiedname>
+        <initializer>= 10.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="393" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="393" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a32307568884fa683484635efb9247051" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::focusPushOutRate</definition>
+        <argsstring></argsstring>
+        <name>focusPushOutRate</name>
+        <qualifiedname>DepthOfFieldEffect::focusPushOutRate</qualifiedname>
+        <initializer>= 3.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="394" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="394" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a28a7fa777fe02a1683746c5cd887eaf9" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::focusFallbackRate</definition>
+        <argsstring></argsstring>
+        <name>focusFallbackRate</name>
+        <qualifiedname>DepthOfFieldEffect::focusFallbackRate</qualifiedname>
+        <initializer>= 2.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="395" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="395" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a5d6d417a72b60646057b0c4d1f5ccbd0" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool DepthOfFieldEffect::debugAdaptiveCenterValid</definition>
+        <argsstring></argsstring>
+        <name>debugAdaptiveCenterValid</name>
+        <qualifiedname>DepthOfFieldEffect::debugAdaptiveCenterValid</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="396" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="396" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1ad5ffb03096c2dd1500050039c2847b25" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::debugAdaptiveCenterDistance</definition>
+        <argsstring></argsstring>
+        <name>debugAdaptiveCenterDistance</name>
+        <qualifiedname>DepthOfFieldEffect::debugAdaptiveCenterDistance</qualifiedname>
+        <initializer>= 0.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="397" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="397" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a8879223b3ce4c1f516197ddc9459b4fb" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool DepthOfFieldEffect::debugAdaptiveRayValid</definition>
+        <argsstring></argsstring>
+        <name>debugAdaptiveRayValid</name>
+        <qualifiedname>DepthOfFieldEffect::debugAdaptiveRayValid</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="398" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="398" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a106f150896e340e745d50acbad771488" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::debugAdaptiveRayDistance</definition>
+        <argsstring></argsstring>
+        <name>debugAdaptiveRayDistance</name>
+        <qualifiedname>DepthOfFieldEffect::debugAdaptiveRayDistance</qualifiedname>
+        <initializer>= 0.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="399" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="399" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a5fb6654f4f0f3308c48832e8fb559d7a" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool DepthOfFieldEffect::debugAdaptiveUsedFallback</definition>
+        <argsstring></argsstring>
+        <name>debugAdaptiveUsedFallback</name>
+        <qualifiedname>DepthOfFieldEffect::debugAdaptiveUsedFallback</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="400" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="400" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1ae25191c12c75e32fe7db3186b47ca72e" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::debugAdaptiveTargetDistance</definition>
+        <argsstring></argsstring>
+        <name>debugAdaptiveTargetDistance</name>
+        <qualifiedname>DepthOfFieldEffect::debugAdaptiveTargetDistance</qualifiedname>
+        <initializer>= 0.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="401" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="401" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1ab00f8bb9ecf5431fe36e535dd7b9e251" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::debugAdaptiveFallbackDistance</definition>
+        <argsstring></argsstring>
+        <name>debugAdaptiveFallbackDistance</name>
+        <qualifiedname>DepthOfFieldEffect::debugAdaptiveFallbackDistance</qualifiedname>
+        <initializer>= 0.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="402" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="402" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a9ed7ecf6797168b4574f8ffc52997a23" prot="private" static="no" mutable="no">
+        <type>std::chrono::steady_clock::time_point</type>
+        <definition>std::chrono::steady_clock::time_point DepthOfFieldEffect::lastFocusAdaptationTime</definition>
+        <argsstring></argsstring>
+        <name>lastFocusAdaptationTime</name>
+        <qualifiedname>DepthOfFieldEffect::lastFocusAdaptationTime</qualifiedname>
+        <initializer>= std::chrono::steady_clock::now()</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="403" column="47" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="403" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1adca6be1552b5ea715d69afbcc10dd705" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; float &gt;</type>
+        <definition>std::vector&lt;float&gt; DepthOfFieldEffect::adaptiveFocusDepthCpu</definition>
+        <argsstring></argsstring>
+        <name>adaptiveFocusDepthCpu</name>
+        <qualifiedname>DepthOfFieldEffect::adaptiveFocusDepthCpu</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="404" column="21" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="404" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a7d1b3bf76fa093e109c9a1fff1568fbc" prot="private" static="no" mutable="no">
+        <type>const std::string</type>
+        <definition>const std::string DepthOfFieldEffect::DOF_FRAG_SHADER</definition>
+        <argsstring></argsstring>
+        <name>DOF_FRAG_SHADER</name>
+        <qualifiedname>DepthOfFieldEffect::DOF_FRAG_SHADER</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="405" column="27" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="405" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="class_depth_of_field_effect_1aed77233b43c93a02caf1c9563b8d8f82" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::focusDistance</definition>
+        <argsstring></argsstring>
+        <name>focusDistance</name>
+        <qualifiedname>DepthOfFieldEffect::focusDistance</qualifiedname>
+        <initializer>= 8.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="660" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="660" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1abff26a84812a982f17b5c3f83472b971" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::focusRange</definition>
+        <argsstring></argsstring>
+        <name>focusRange</name>
+        <qualifiedname>DepthOfFieldEffect::focusRange</qualifiedname>
+        <initializer>= 4.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="661" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="661" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a1b785e3c455c301bdf3967f2f61f8ebc" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::focusBandWidth</definition>
+        <argsstring></argsstring>
+        <name>focusBandWidth</name>
+        <qualifiedname>DepthOfFieldEffect::focusBandWidth</qualifiedname>
+        <initializer>= 0.85f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="662" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="662" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a97b7f448b8aef83631a8f762ef26597a" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::blurRamp</definition>
+        <argsstring></argsstring>
+        <name>blurRamp</name>
+        <qualifiedname>DepthOfFieldEffect::blurRamp</qualifiedname>
+        <initializer>= 2.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="663" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="663" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a965b2e6ece1590308f1540d747bcaf8e" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::blurDistanceLerp</definition>
+        <argsstring></argsstring>
+        <name>blurDistanceLerp</name>
+        <qualifiedname>DepthOfFieldEffect::blurDistanceLerp</qualifiedname>
+        <initializer>= 0.35f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="664" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="664" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a587e82b68e9b522963570045e1fcfdc3" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::fallbackFocusRange</definition>
+        <argsstring></argsstring>
+        <name>fallbackFocusRange</name>
+        <qualifiedname>DepthOfFieldEffect::fallbackFocusRange</qualifiedname>
+        <initializer>= 6.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="665" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="665" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a9aed3ef01808ad4edb83a7b5c66d10e7" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::blurStrength</definition>
+        <argsstring></argsstring>
+        <name>blurStrength</name>
+        <qualifiedname>DepthOfFieldEffect::blurStrength</qualifiedname>
+        <initializer>= 0.65f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="666" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="666" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a6e404fae6af94150b1bf2f8b2cec5e0b" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::maxBlurPx</definition>
+        <argsstring></argsstring>
+        <name>maxBlurPx</name>
+        <qualifiedname>DepthOfFieldEffect::maxBlurPx</qualifiedname>
+        <initializer>= 7.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="667" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="667" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1afe6aae8c43a5b42286728935dc0fe9d6" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int DepthOfFieldEffect::sampleCount</definition>
+        <argsstring></argsstring>
+        <name>sampleCount</name>
+        <qualifiedname>DepthOfFieldEffect::sampleCount</qualifiedname>
+        <initializer>= 6</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="668" column="13" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="668" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1aee1361a77b67aca399453db65b563a6a" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool DepthOfFieldEffect::debugCocView</definition>
+        <argsstring></argsstring>
+        <name>debugCocView</name>
+        <qualifiedname>DepthOfFieldEffect::debugCocView</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="669" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="669" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a97f3f5cf3a9c7e909351eebbcc430787" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool DepthOfFieldEffect::adaptiveFocus</definition>
+        <argsstring></argsstring>
+        <name>adaptiveFocus</name>
+        <qualifiedname>DepthOfFieldEffect::adaptiveFocus</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="670" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="670" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a2450651e49854c448f928d084bc94652" prot="public" static="no" mutable="no">
+        <type>Math3D::Vec2</type>
+        <definition>Math3D::Vec2 DepthOfFieldEffect::focusUv</definition>
+        <argsstring></argsstring>
+        <name>focusUv</name>
+        <qualifiedname>DepthOfFieldEffect::focusUv</qualifiedname>
+        <initializer>= Math3D::Vec2(0.5f, 0.5f)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="671" column="22" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="671" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a7a927b00613ce433ff6c1dfbcb2808d0" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::nearPlane</definition>
+        <argsstring></argsstring>
+        <name>nearPlane</name>
+        <qualifiedname>DepthOfFieldEffect::nearPlane</qualifiedname>
+        <initializer>= 0.1f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="672" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="672" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a889d74f9be28b5a306771abf09b75ec7" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::farPlane</definition>
+        <argsstring></argsstring>
+        <name>farPlane</name>
+        <qualifiedname>DepthOfFieldEffect::farPlane</qualifiedname>
+        <initializer>= 1000.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="673" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="673" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a20d4095b74acc71980e59577a46e7288" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool DepthOfFieldEffect::externalAdaptiveFocusValid</definition>
+        <argsstring></argsstring>
+        <name>externalAdaptiveFocusValid</name>
+        <qualifiedname>DepthOfFieldEffect::externalAdaptiveFocusValid</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="674" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="674" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_depth_of_field_effect_1a121a586d348ae198dc68d91d86bd04c4" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::externalAdaptiveFocusDistance</definition>
+        <argsstring></argsstring>
+        <name>externalAdaptiveFocusDistance</name>
+        <qualifiedname>DepthOfFieldEffect::externalAdaptiveFocusDistance</qualifiedname>
+        <initializer>= 0.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="675" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="675" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_depth_of_field_effect_1a806703000076b0f289124d635b3869ee" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool DepthOfFieldEffect::ensureCompiled</definition>
+        <argsstring>()</argsstring>
+        <name>ensureCompiled</name>
+        <qualifiedname>DepthOfFieldEffect::ensureCompiled</qualifiedname>
+        <briefdescription>
+<para>Checks whether ensure compiled. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>True when the operation succeeds; otherwise false. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="574" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="574" bodyend="590"/>
+      </memberdef>
+      <memberdef kind="function" id="class_depth_of_field_effect_1a2150e696121542896b3e6d37dc59f629" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::linearizeDepthCpu</definition>
+        <argsstring>(float depth) const</argsstring>
+        <name>linearizeDepthCpu</name>
+        <qualifiedname>DepthOfFieldEffect::linearizeDepthCpu</qualifiedname>
+        <param>
+          <type>float</type>
+          <declname>depth</declname>
+        </param>
+        <briefdescription>
+<para>Converts device depth to linear depth on CPU. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>depth</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for depth. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Computed numeric result. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="597" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="597" bodyend="601"/>
+      </memberdef>
+      <memberdef kind="function" id="class_depth_of_field_effect_1a550776bb252f35924fb2b2ea5c8be869" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool DepthOfFieldEffect::sampleAdaptiveFocusDistance</definition>
+        <argsstring>(PTexture depthTex, float &amp;outDistance)</argsstring>
+        <name>sampleAdaptiveFocusDistance</name>
+        <qualifiedname>DepthOfFieldEffect::sampleAdaptiveFocusDistance</qualifiedname>
+        <param>
+          <type>PTexture</type>
+          <declname>depthTex</declname>
+        </param>
+        <param>
+          <type>float &amp;</type>
+          <declname>outDistance</declname>
+        </param>
+        <briefdescription>
+<para>Checks whether sample adaptive focus distance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>depthTex</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for depth tex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>outDistance</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output value for distance. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>True when the operation succeeds; otherwise false. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="609" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="609" bodyend="657"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_depth_of_field_effect_1a156dc1b753fbf841b0f8176a26d58b45" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>DepthOfFieldEffect::DepthOfFieldEffect</definition>
+        <argsstring>()</argsstring>
+        <name>DepthOfFieldEffect</name>
+        <qualifiedname>DepthOfFieldEffect::DepthOfFieldEffect</qualifiedname>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_depth_of_field_effect" kindref="compound">DepthOfFieldEffect</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="680" column="9" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="680" bodyend="684"/>
+      </memberdef>
+      <memberdef kind="function" id="class_depth_of_field_effect_1a71ff3039585ef902e8c5325d9f2c8543" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>DepthOfFieldEffect::~DepthOfFieldEffect</definition>
+        <argsstring>() override=default</argsstring>
+        <name>~DepthOfFieldEffect</name>
+        <qualifiedname>DepthOfFieldEffect::~DepthOfFieldEffect</qualifiedname>
+        <briefdescription>
+<para>Destroys this <ref refid="class_depth_of_field_effect" kindref="compound">DepthOfFieldEffect</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="689" column="9"/>
+      </memberdef>
+      <memberdef kind="function" id="class_depth_of_field_effect_1a89866922b7bfdc7e1b39cd339996afbc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::getResolvedFocusDistance</definition>
+        <argsstring>() const</argsstring>
+        <name>getResolvedFocusDistance</name>
+        <qualifiedname>DepthOfFieldEffect::getResolvedFocusDistance</qualifiedname>
+        <briefdescription>
+<para>Returns the resolved focus distance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Computed numeric result. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="695" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="695" bodyend="697"/>
+      </memberdef>
+      <memberdef kind="function" id="class_depth_of_field_effect_1a3b3084c5e7f4fbc0acc22c2d407cba19" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::getResolvedFocusRange</definition>
+        <argsstring>() const</argsstring>
+        <name>getResolvedFocusRange</name>
+        <qualifiedname>DepthOfFieldEffect::getResolvedFocusRange</qualifiedname>
+        <briefdescription>
+<para>Returns the resolved focus range. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Computed numeric result. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="703" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="703" bodyend="705"/>
+      </memberdef>
+      <memberdef kind="function" id="class_depth_of_field_effect_1a2b6c470cc2298d4e7f9638ab02fd6339" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool DepthOfFieldEffect::getDebugAdaptiveCenterValid</definition>
+        <argsstring>() const</argsstring>
+        <name>getDebugAdaptiveCenterValid</name>
+        <qualifiedname>DepthOfFieldEffect::getDebugAdaptiveCenterValid</qualifiedname>
+        <briefdescription>
+<para>Returns the debug adaptive center valid. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>True when the operation succeeds; otherwise false. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="711" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="711" bodyend="713"/>
+      </memberdef>
+      <memberdef kind="function" id="class_depth_of_field_effect_1a0702ba093291383aec8a394bd58b4da3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::getDebugAdaptiveCenterDistance</definition>
+        <argsstring>() const</argsstring>
+        <name>getDebugAdaptiveCenterDistance</name>
+        <qualifiedname>DepthOfFieldEffect::getDebugAdaptiveCenterDistance</qualifiedname>
+        <briefdescription>
+<para>Returns the debug adaptive center distance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Computed numeric result. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="719" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="719" bodyend="721"/>
+      </memberdef>
+      <memberdef kind="function" id="class_depth_of_field_effect_1a00464f8858539d0013ea8e9de66f7505" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool DepthOfFieldEffect::getDebugAdaptiveRayValid</definition>
+        <argsstring>() const</argsstring>
+        <name>getDebugAdaptiveRayValid</name>
+        <qualifiedname>DepthOfFieldEffect::getDebugAdaptiveRayValid</qualifiedname>
+        <briefdescription>
+<para>Returns the debug adaptive ray valid. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>True when the operation succeeds; otherwise false. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="727" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="727" bodyend="729"/>
+      </memberdef>
+      <memberdef kind="function" id="class_depth_of_field_effect_1afb17fd27b66d9a68d9cc46d2fbc71f08" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::getDebugAdaptiveRayDistance</definition>
+        <argsstring>() const</argsstring>
+        <name>getDebugAdaptiveRayDistance</name>
+        <qualifiedname>DepthOfFieldEffect::getDebugAdaptiveRayDistance</qualifiedname>
+        <briefdescription>
+<para>Returns the debug adaptive ray distance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Computed numeric result. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="735" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="735" bodyend="737"/>
+      </memberdef>
+      <memberdef kind="function" id="class_depth_of_field_effect_1a47ced74a994feca82c1628689e9f8cc0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool DepthOfFieldEffect::getDebugAdaptiveUsedFallback</definition>
+        <argsstring>() const</argsstring>
+        <name>getDebugAdaptiveUsedFallback</name>
+        <qualifiedname>DepthOfFieldEffect::getDebugAdaptiveUsedFallback</qualifiedname>
+        <briefdescription>
+<para>Returns the debug adaptive used fallback. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>True when the operation succeeds; otherwise false. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="743" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="743" bodyend="745"/>
+      </memberdef>
+      <memberdef kind="function" id="class_depth_of_field_effect_1a0651cbdf436d209ce86174cfb9c7884e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::getDebugAdaptiveTargetDistance</definition>
+        <argsstring>() const</argsstring>
+        <name>getDebugAdaptiveTargetDistance</name>
+        <qualifiedname>DepthOfFieldEffect::getDebugAdaptiveTargetDistance</qualifiedname>
+        <briefdescription>
+<para>Returns the debug adaptive target distance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Computed numeric result. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="751" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="751" bodyend="753"/>
+      </memberdef>
+      <memberdef kind="function" id="class_depth_of_field_effect_1ae7717684c372c1cbc62e7894479d206c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>float</type>
+        <definition>float DepthOfFieldEffect::getDebugAdaptiveFallbackDistance</definition>
+        <argsstring>() const</argsstring>
+        <name>getDebugAdaptiveFallbackDistance</name>
+        <qualifiedname>DepthOfFieldEffect::getDebugAdaptiveFallbackDistance</qualifiedname>
+        <briefdescription>
+<para>Returns the debug adaptive fallback distance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Computed numeric result. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="759" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="759" bodyend="761"/>
+      </memberdef>
+      <memberdef kind="function" id="class_depth_of_field_effect_1a7c28be25a4f335b6cb15282996d50995" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>bool</type>
+        <definition>bool DepthOfFieldEffect::apply</definition>
+        <argsstring>(PTexture tex, PTexture depthTex, PFrameBuffer outFbo, std::shared_ptr&lt; ModelPart &gt; quad) override</argsstring>
+        <name>apply</name>
+        <qualifiedname>DepthOfFieldEffect::apply</qualifiedname>
+        <reimplements refid="class_graphics_1_1_post_processing_1_1_post_processing_effect_1a75b0263b1e53943ceb4f13d4aad0f5e6">apply</reimplements>
+        <param>
+          <type>PTexture</type>
+          <declname>tex</declname>
+        </param>
+        <param>
+          <type>PTexture</type>
+          <declname>depthTex</declname>
+        </param>
+        <param>
+          <type>PFrameBuffer</type>
+          <declname>outFbo</declname>
+        </param>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="struct_model_part" kindref="compound">ModelPart</ref> &gt;</type>
+          <declname>quad</declname>
+        </param>
+        <briefdescription>
+<para>Applies current settings. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>tex</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for tex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>depthTex</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for depth tex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>outFbo</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output value for fbo. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>quad</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for quad. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>True when the operation succeeds; otherwise false. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="771" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="771" bodyend="903"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_depth_of_field_effect_1a5b2434a9c622430d7fb62cbc305722fe" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="class_depth_of_field_effect" kindref="compound">DepthOfFieldEffect</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt; DepthOfFieldEffect &gt; DepthOfFieldEffect::New</definition>
+        <argsstring>()</argsstring>
+        <name>New</name>
+        <qualifiedname>DepthOfFieldEffect::New</qualifiedname>
+        <briefdescription>
+<para>Creates a new object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Pointer to the resulting object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="909" column="32" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="909" bodyend="911"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_depth_of_field_effect" kindref="compound">DepthOfFieldEffect</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>DepthOfFieldEffect</label>
+        <link refid="class_depth_of_field_effect"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Graphics::PostProcessing::PostProcessingEffect</label>
+        <link refid="class_graphics_1_1_post_processing_1_1_post_processing_effect"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>DepthOfFieldEffect</label>
+        <link refid="class_depth_of_field_effect"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Graphics::PostProcessing::PostProcessingEffect</label>
+        <link refid="class_graphics_1_1_post_processing_1_1_post_processing_effect"/>
+      </node>
+    </collaborationgraph>
+    <location file="src/Rendering/PostFX/ScreenEffects.h" line="384" column="1" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="384" bodyend="912"/>
+    <listofallmembers>
+      <member refid="class_depth_of_field_effect_1a97f3f5cf3a9c7e909351eebbcc430787" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>adaptiveFocus</name></member>
+      <member refid="class_depth_of_field_effect_1adca6be1552b5ea715d69afbcc10dd705" prot="private" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>adaptiveFocusDepthCpu</name></member>
+      <member refid="class_depth_of_field_effect_1a7c28be25a4f335b6cb15282996d50995" prot="public" virt="virtual"><scope>DepthOfFieldEffect</scope><name>apply</name></member>
+      <member refid="class_depth_of_field_effect_1a965b2e6ece1590308f1540d747bcaf8e" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>blurDistanceLerp</name></member>
+      <member refid="class_depth_of_field_effect_1a97b7f448b8aef83631a8f762ef26597a" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>blurRamp</name></member>
+      <member refid="class_depth_of_field_effect_1a9aed3ef01808ad4edb83a7b5c66d10e7" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>blurStrength</name></member>
+      <member refid="class_depth_of_field_effect_1a68cb567793deea48fc5a40dcf69639db" prot="private" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>compileAttempted</name></member>
+      <member refid="class_depth_of_field_effect_1ad5ffb03096c2dd1500050039c2847b25" prot="private" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>debugAdaptiveCenterDistance</name></member>
+      <member refid="class_depth_of_field_effect_1a5d6d417a72b60646057b0c4d1f5ccbd0" prot="private" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>debugAdaptiveCenterValid</name></member>
+      <member refid="class_depth_of_field_effect_1ab00f8bb9ecf5431fe36e535dd7b9e251" prot="private" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>debugAdaptiveFallbackDistance</name></member>
+      <member refid="class_depth_of_field_effect_1a106f150896e340e745d50acbad771488" prot="private" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>debugAdaptiveRayDistance</name></member>
+      <member refid="class_depth_of_field_effect_1a8879223b3ce4c1f516197ddc9459b4fb" prot="private" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>debugAdaptiveRayValid</name></member>
+      <member refid="class_depth_of_field_effect_1ae25191c12c75e32fe7db3186b47ca72e" prot="private" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>debugAdaptiveTargetDistance</name></member>
+      <member refid="class_depth_of_field_effect_1a5fb6654f4f0f3308c48832e8fb559d7a" prot="private" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>debugAdaptiveUsedFallback</name></member>
+      <member refid="class_depth_of_field_effect_1aee1361a77b67aca399453db65b563a6a" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>debugCocView</name></member>
+      <member refid="class_depth_of_field_effect_1a156dc1b753fbf841b0f8176a26d58b45" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>DepthOfFieldEffect</name></member>
+      <member refid="class_depth_of_field_effect_1a7d1b3bf76fa093e109c9a1fff1568fbc" prot="private" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>DOF_FRAG_SHADER</name></member>
+      <member refid="class_depth_of_field_effect_1a806703000076b0f289124d635b3869ee" prot="private" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>ensureCompiled</name></member>
+      <member refid="class_depth_of_field_effect_1a121a586d348ae198dc68d91d86bd04c4" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>externalAdaptiveFocusDistance</name></member>
+      <member refid="class_depth_of_field_effect_1a20d4095b74acc71980e59577a46e7288" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>externalAdaptiveFocusValid</name></member>
+      <member refid="class_depth_of_field_effect_1a587e82b68e9b522963570045e1fcfdc3" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>fallbackFocusRange</name></member>
+      <member refid="class_depth_of_field_effect_1a889d74f9be28b5a306771abf09b75ec7" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>farPlane</name></member>
+      <member refid="class_depth_of_field_effect_1a4764fb2fec17f67c34a59681a2c9c657" prot="private" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>focusAdaptationInitialized</name></member>
+      <member refid="class_depth_of_field_effect_1a1b785e3c455c301bdf3967f2f61f8ebc" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>focusBandWidth</name></member>
+      <member refid="class_depth_of_field_effect_1aed77233b43c93a02caf1c9563b8d8f82" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>focusDistance</name></member>
+      <member refid="class_depth_of_field_effect_1a28a7fa777fe02a1683746c5cd887eaf9" prot="private" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>focusFallbackRate</name></member>
+      <member refid="class_depth_of_field_effect_1a5e571bc13953a7cf6bd716c366ecaf72" prot="private" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>focusPullBackRate</name></member>
+      <member refid="class_depth_of_field_effect_1a32307568884fa683484635efb9247051" prot="private" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>focusPushOutRate</name></member>
+      <member refid="class_depth_of_field_effect_1abff26a84812a982f17b5c3f83472b971" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>focusRange</name></member>
+      <member refid="class_depth_of_field_effect_1a2450651e49854c448f928d084bc94652" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>focusUv</name></member>
+      <member refid="class_depth_of_field_effect_1a0702ba093291383aec8a394bd58b4da3" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>getDebugAdaptiveCenterDistance</name></member>
+      <member refid="class_depth_of_field_effect_1a2b6c470cc2298d4e7f9638ab02fd6339" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>getDebugAdaptiveCenterValid</name></member>
+      <member refid="class_depth_of_field_effect_1ae7717684c372c1cbc62e7894479d206c" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>getDebugAdaptiveFallbackDistance</name></member>
+      <member refid="class_depth_of_field_effect_1afb17fd27b66d9a68d9cc46d2fbc71f08" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>getDebugAdaptiveRayDistance</name></member>
+      <member refid="class_depth_of_field_effect_1a00464f8858539d0013ea8e9de66f7505" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>getDebugAdaptiveRayValid</name></member>
+      <member refid="class_depth_of_field_effect_1a0651cbdf436d209ce86174cfb9c7884e" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>getDebugAdaptiveTargetDistance</name></member>
+      <member refid="class_depth_of_field_effect_1a47ced74a994feca82c1628689e9f8cc0" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>getDebugAdaptiveUsedFallback</name></member>
+      <member refid="class_depth_of_field_effect_1a89866922b7bfdc7e1b39cd339996afbc" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>getResolvedFocusDistance</name></member>
+      <member refid="class_depth_of_field_effect_1a3b3084c5e7f4fbc0acc22c2d407cba19" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>getResolvedFocusRange</name></member>
+      <member refid="class_depth_of_field_effect_1a9ed7ecf6797168b4574f8ffc52997a23" prot="private" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>lastFocusAdaptationTime</name></member>
+      <member refid="class_depth_of_field_effect_1a2150e696121542896b3e6d37dc59f629" prot="private" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>linearizeDepthCpu</name></member>
+      <member refid="class_depth_of_field_effect_1a6e404fae6af94150b1bf2f8b2cec5e0b" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>maxBlurPx</name></member>
+      <member refid="class_depth_of_field_effect_1a7a927b00613ce433ff6c1dfbcb2808d0" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>nearPlane</name></member>
+      <member refid="class_depth_of_field_effect_1a5b2434a9c622430d7fb62cbc305722fe" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>New</name></member>
+      <member refid="class_depth_of_field_effect_1a4ab83c07318569e2bc03d16cd329efc9" prot="private" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>resolvedFocusDistance</name></member>
+      <member refid="class_depth_of_field_effect_1ad1c7224b3e935e4352713208a35d3ec5" prot="private" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>resolvedFocusRange</name></member>
+      <member refid="class_depth_of_field_effect_1a550776bb252f35924fb2b2ea5c8be869" prot="private" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>sampleAdaptiveFocusDistance</name></member>
+      <member refid="class_depth_of_field_effect_1afe6aae8c43a5b42286728935dc0fe9d6" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>sampleCount</name></member>
+      <member refid="class_depth_of_field_effect_1a8c8686b2bf67cfdd23323eba03fde27b" prot="private" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>shader</name></member>
+      <member refid="class_depth_of_field_effect_1aaa44254149463dd8c5c1ca97c3502556" prot="private" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>smoothedFocusDistance</name></member>
+      <member refid="class_depth_of_field_effect_1a0d286e481dc9d8008f7db6581a39f19b" prot="private" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>smoothedFocusRange</name></member>
+      <member refid="class_depth_of_field_effect_1a71ff3039585ef902e8c5325d9f2c8543" prot="public" virt="non-virtual"><scope>DepthOfFieldEffect</scope><name>~DepthOfFieldEffect</name></member>
+      <member refid="class_graphics_1_1_post_processing_1_1_post_processing_effect_1a956557ebb725734d270dd77ef8e40358" prot="public" virt="virtual"><scope>DepthOfFieldEffect</scope><name>~PostProcessingEffect</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

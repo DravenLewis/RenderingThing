@@ -1,3 +1,8 @@
+/**
+ * @file src/Debug/FrameTimeGraph.h
+ * @brief Declarations for FrameTimeGraph.
+ */
+
 #ifndef FRAMETIMEGRAPH_H
 #define FRAMETIMEGRAPH_H
 
@@ -7,6 +12,7 @@
 #include <cstdio>
 #include <algorithm>
 
+/// @brief Represents the FrameTimeGraph type.
 class FrameTimeGraph {
 public:
     inline static constexpr int MAX_SAMPLES = 500;
@@ -38,6 +44,7 @@ public:
     float overlayRefreshIntervalSec = 0.0f; // 0 = poll sources every frame
     bool captureEnabled = false;
 
+    /// @brief Holds data for EcsInfo.
     struct EcsInfo {
         float snapshotMs = 0.0f;
         float shadowMs = 0.0f;
@@ -51,6 +58,7 @@ public:
 
     EcsInfo ecsInfo{};
 
+    /// @brief Holds data for EngineInfo.
     struct EngineInfo {
         float updateMs = 0.0f;
         float updateWaitMs = 0.0f;
@@ -65,12 +73,19 @@ public:
 
     EngineInfo engineInfo{};
 
+    /**
+     * @brief Constructs a new FrameTimeGraph instance.
+     */
     FrameTimeGraph(){
         for(int i = 0; i < MAX_SAMPLES; i++){
             samples[i] = 0.0f;
         }
     }
 
+    /**
+     * @brief Sets the capture enabled.
+     * @param enabled Flag controlling enabled.
+     */
     void setCaptureEnabled(bool enabled){
         if(captureEnabled == enabled){
             return;
@@ -82,6 +97,12 @@ public:
         overlayRefreshAccum = enabled ? overlayRefreshIntervalSec : 0.0f; // force refresh on next update when enabled
     }
 
+    /**
+     * @brief Updates from sources.
+     * @param deltaTime Delta time in seconds.
+     * @param stats Value for stats.
+     * @param engine Value for engine.
+     */
     void updateFromSources(float deltaTime, const Scene::DebugStats& stats, const GameEngine* engine = nullptr){
         if(!captureEnabled){
             return;
@@ -131,6 +152,10 @@ public:
         overlayRefreshAccum = 0.0f;
     }
 
+    /**
+     * @brief Pushes a new sample into the history buffer.
+     * @param dtSeconds Value for dt seconds.
+     */
     void push(float dtSeconds){
         // 1. Update Global Timer
         globalTime += dtSeconds;
@@ -159,6 +184,16 @@ public:
         }
     }
 
+    /**
+     * @brief Sets the ecs info.
+     * @param snapshotMs Value for snapshot ms.
+     * @param shadowMs Value for shadow ms.
+     * @param drawMs Flag controlling draw ms.
+     * @param postFxMs Value for post fx ms.
+     * @param drawCount Number of elements or bytes.
+     * @param lightCount Number of elements or bytes.
+     * @param postFxEffectCount Number of elements or bytes.
+     */
     void setEcsInfo(float snapshotMs, float shadowMs, float drawMs, float postFxMs, int drawCount, int lightCount, int postFxEffectCount){
         ecsInfo.snapshotMs = snapshotMs;
         ecsInfo.shadowMs = shadowMs;
@@ -189,6 +224,14 @@ public:
         engineInfo.hasData = true;
     }
 
+    /**
+     * @brief Draws this object.
+     * @param g Value for g.
+     * @param x Spatial value used by this operation.
+     * @param y Spatial value used by this operation.
+     * @param w Value for w.
+     * @param h Value for h.
+     */
     void draw(Graphics2D& g, float x, float y, float w, float h){
         // Downsample bars to reduce debug overlay draw calls.
         const int barCount = std::max(1, std::min(MAX_SAMPLES, (int)(w / 3.0f)));

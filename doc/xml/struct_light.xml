@@ -1,0 +1,394 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_light" kind="struct" language="C++" prot="public">
+    <compoundname>Light</compoundname>
+    <includes refid="_light_8h" local="no">Light.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_light_1a86e648b4a80a5c1e194c97ef52f9efc6" prot="public" static="no" mutable="no">
+        <type><ref refid="_light_8h_1adc3ec8293e6a97ebe43f0196b9a7f638" kindref="member">LightType</ref></type>
+        <definition>LightType Light::type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <qualifiedname>Light::type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="32" column="15" bodyfile="src/Rendering/Lighting/Light.h" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_light_1a4fdcd58e8f93eb16418bb9852f19bc4e" prot="public" static="no" mutable="no">
+        <type>Math3D::Vec3</type>
+        <definition>Math3D::Vec3 Light::position</definition>
+        <argsstring></argsstring>
+        <name>position</name>
+        <qualifiedname>Light::position</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="33" column="18" bodyfile="src/Rendering/Lighting/Light.h" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_light_1a512f8ab10a31d68e55eade804f13a683" prot="public" static="no" mutable="no">
+        <type>Math3D::Vec3</type>
+        <definition>Math3D::Vec3 Light::direction</definition>
+        <argsstring></argsstring>
+        <name>direction</name>
+        <qualifiedname>Light::direction</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="34" column="18" bodyfile="src/Rendering/Lighting/Light.h" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_light_1a9969f685e27f38f876702e3dd5bd1cf1" prot="public" static="no" mutable="no">
+        <type>Math3D::Vec4</type>
+        <definition>Math3D::Vec4 Light::color</definition>
+        <argsstring></argsstring>
+        <name>color</name>
+        <qualifiedname>Light::color</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="35" column="18" bodyfile="src/Rendering/Lighting/Light.h" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_light_1a1071eaa556f4bb2a9345fdfba7e6f220" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float Light::intensity</definition>
+        <argsstring></argsstring>
+        <name>intensity</name>
+        <qualifiedname>Light::intensity</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="36" column="11" bodyfile="src/Rendering/Lighting/Light.h" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_light_1ad8de02f467484d8e8b08518ddb581e5a" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float Light::range</definition>
+        <argsstring></argsstring>
+        <name>range</name>
+        <qualifiedname>Light::range</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="37" column="11" bodyfile="src/Rendering/Lighting/Light.h" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_light_1ae0d1b643bb7ce302ecd9a0fe78d12335" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float Light::falloff</definition>
+        <argsstring></argsstring>
+        <name>falloff</name>
+        <qualifiedname>Light::falloff</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="38" column="11" bodyfile="src/Rendering/Lighting/Light.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_light_1a2092ef2339edd1cd4d69e63a0bf51e77" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float Light::spotAngle</definition>
+        <argsstring></argsstring>
+        <name>spotAngle</name>
+        <qualifiedname>Light::spotAngle</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="39" column="11" bodyfile="src/Rendering/Lighting/Light.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_light_1abb7298439012ddc5939562608c2076ee" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float Light::shadowRange</definition>
+        <argsstring></argsstring>
+        <name>shadowRange</name>
+        <qualifiedname>Light::shadowRange</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="40" column="11" bodyfile="src/Rendering/Lighting/Light.h" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_light_1a7a240b12a17f558f36963ed6aaaa290e" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool Light::castsShadows</definition>
+        <argsstring></argsstring>
+        <name>castsShadows</name>
+        <qualifiedname>Light::castsShadows</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="41" column="10" bodyfile="src/Rendering/Lighting/Light.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_light_1a77256a30d9ce51a8e4e3504b04fd4cc2" prot="public" static="no" mutable="no">
+        <type><ref refid="_light_8h_1a5c50abf40600ee3c28c7fa04702a8bbc" kindref="member">ShadowType</ref></type>
+        <definition>ShadowType Light::shadowType</definition>
+        <argsstring></argsstring>
+        <name>shadowType</name>
+        <qualifiedname>Light::shadowType</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="42" column="16" bodyfile="src/Rendering/Lighting/Light.h" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_light_1ad7fa07ea245e48d0fd47d279abd58d3c" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float Light::shadowBias</definition>
+        <argsstring></argsstring>
+        <name>shadowBias</name>
+        <qualifiedname>Light::shadowBias</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="43" column="11" bodyfile="src/Rendering/Lighting/Light.h" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_light_1aebcc2cc2d05ef5ad585cd240f2850959" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float Light::shadowNormalBias</definition>
+        <argsstring></argsstring>
+        <name>shadowNormalBias</name>
+        <qualifiedname>Light::shadowNormalBias</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="44" column="11" bodyfile="src/Rendering/Lighting/Light.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_light_1a1b12738944d36263610dfc70a8b2021a" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float Light::shadowStrength</definition>
+        <argsstring></argsstring>
+        <name>shadowStrength</name>
+        <qualifiedname>Light::shadowStrength</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="45" column="11" bodyfile="src/Rendering/Lighting/Light.h" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_light_1a69610e383b6a6230f3723089880c0038" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float Light::cascadeLambda</definition>
+        <argsstring></argsstring>
+        <name>cascadeLambda</name>
+        <qualifiedname>Light::cascadeLambda</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="46" column="11" bodyfile="src/Rendering/Lighting/Light.h" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_light_1aaefd3dd16a8649fc81cbfbc83b6888cc" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int Light::shadowDebugMode</definition>
+        <argsstring></argsstring>
+        <name>shadowDebugMode</name>
+        <qualifiedname>Light::shadowDebugMode</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="47" column="9" bodyfile="src/Rendering/Lighting/Light.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="struct_light_1aeb5df09a25a32f19fdffa761268ba24f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Light::Light</definition>
+        <argsstring>()</argsstring>
+        <name>Light</name>
+        <qualifiedname>Light::Light</qualifiedname>
+        <briefdescription>
+<para>Constructs a new <ref refid="struct_light" kindref="compound">Light</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns shadow debug mode text. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="52" column="5" bodyfile="src/Rendering/Lighting/Light.h" bodystart="52" bodyend="72"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="struct_light_1a50daa44245fcf1446cc862cad8d31cd0" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="struct_light" kindref="compound">Light</ref></type>
+        <definition>static Light Light::CreatePointLight</definition>
+        <argsstring>(Math3D::Vec3 position, Math3D::Vec4 color=Color::WHITE, float intensity=1.0f, float range=10.0f, float falloff=1.0f)</argsstring>
+        <name>CreatePointLight</name>
+        <qualifiedname>Light::CreatePointLight</qualifiedname>
+        <param>
+          <type>Math3D::Vec3</type>
+          <declname>position</declname>
+        </param>
+        <param>
+          <type>Math3D::Vec4</type>
+          <declname>color</declname>
+          <defval>Color::WHITE</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>intensity</declname>
+          <defval>1.0f</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>range</declname>
+          <defval>10.0f</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>falloff</declname>
+          <defval>1.0f</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="74" column="18" bodyfile="src/Rendering/Lighting/Light.h" bodystart="74" bodyend="91"/>
+      </memberdef>
+      <memberdef kind="function" id="struct_light_1a6f64dcae681aed7a7ddb2e499a49ad50" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="struct_light" kindref="compound">Light</ref></type>
+        <definition>static Light Light::CreateDirectionalLight</definition>
+        <argsstring>(Math3D::Vec3 direction, Math3D::Vec4 color=Color::WHITE, float intensity=1.0f)</argsstring>
+        <name>CreateDirectionalLight</name>
+        <qualifiedname>Light::CreateDirectionalLight</qualifiedname>
+        <param>
+          <type>Math3D::Vec3</type>
+          <declname>direction</declname>
+        </param>
+        <param>
+          <type>Math3D::Vec4</type>
+          <declname>color</declname>
+          <defval>Color::WHITE</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>intensity</declname>
+          <defval>1.0f</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="93" column="18" bodyfile="src/Rendering/Lighting/Light.h" bodystart="93" bodyend="107"/>
+      </memberdef>
+      <memberdef kind="function" id="struct_light_1a4493641cc4348121e6ec4d351133d747" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="struct_light" kindref="compound">Light</ref></type>
+        <definition>static Light Light::CreateSpotLight</definition>
+        <argsstring>(Math3D::Vec3 position, Math3D::Vec3 direction, Math3D::Vec4 color=Color::WHITE, float intensity=1.0f, float range=10.0f, float falloff=1.0f, float spotAngle=45.0f)</argsstring>
+        <name>CreateSpotLight</name>
+        <qualifiedname>Light::CreateSpotLight</qualifiedname>
+        <param>
+          <type>Math3D::Vec3</type>
+          <declname>position</declname>
+        </param>
+        <param>
+          <type>Math3D::Vec3</type>
+          <declname>direction</declname>
+        </param>
+        <param>
+          <type>Math3D::Vec4</type>
+          <declname>color</declname>
+          <defval>Color::WHITE</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>intensity</declname>
+          <defval>1.0f</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>range</declname>
+          <defval>10.0f</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>falloff</declname>
+          <defval>1.0f</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>spotAngle</declname>
+          <defval>45.0f</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/Light.h" line="109" column="18" bodyfile="src/Rendering/Lighting/Light.h" bodystart="109" bodyend="130"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_light" kindref="compound">Light</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Lighting/Light.h" line="31" column="1" bodyfile="src/Rendering/Lighting/Light.h" bodystart="31" bodyend="131"/>
+    <listofallmembers>
+      <member refid="struct_light_1a69610e383b6a6230f3723089880c0038" prot="public" virt="non-virtual"><scope>Light</scope><name>cascadeLambda</name></member>
+      <member refid="struct_light_1a7a240b12a17f558f36963ed6aaaa290e" prot="public" virt="non-virtual"><scope>Light</scope><name>castsShadows</name></member>
+      <member refid="struct_light_1a9969f685e27f38f876702e3dd5bd1cf1" prot="public" virt="non-virtual"><scope>Light</scope><name>color</name></member>
+      <member refid="struct_light_1a6f64dcae681aed7a7ddb2e499a49ad50" prot="public" virt="non-virtual"><scope>Light</scope><name>CreateDirectionalLight</name></member>
+      <member refid="struct_light_1a50daa44245fcf1446cc862cad8d31cd0" prot="public" virt="non-virtual"><scope>Light</scope><name>CreatePointLight</name></member>
+      <member refid="struct_light_1a4493641cc4348121e6ec4d351133d747" prot="public" virt="non-virtual"><scope>Light</scope><name>CreateSpotLight</name></member>
+      <member refid="struct_light_1a512f8ab10a31d68e55eade804f13a683" prot="public" virt="non-virtual"><scope>Light</scope><name>direction</name></member>
+      <member refid="struct_light_1ae0d1b643bb7ce302ecd9a0fe78d12335" prot="public" virt="non-virtual"><scope>Light</scope><name>falloff</name></member>
+      <member refid="struct_light_1a1071eaa556f4bb2a9345fdfba7e6f220" prot="public" virt="non-virtual"><scope>Light</scope><name>intensity</name></member>
+      <member refid="struct_light_1aeb5df09a25a32f19fdffa761268ba24f" prot="public" virt="non-virtual"><scope>Light</scope><name>Light</name></member>
+      <member refid="struct_light_1a4fdcd58e8f93eb16418bb9852f19bc4e" prot="public" virt="non-virtual"><scope>Light</scope><name>position</name></member>
+      <member refid="struct_light_1ad8de02f467484d8e8b08518ddb581e5a" prot="public" virt="non-virtual"><scope>Light</scope><name>range</name></member>
+      <member refid="struct_light_1ad7fa07ea245e48d0fd47d279abd58d3c" prot="public" virt="non-virtual"><scope>Light</scope><name>shadowBias</name></member>
+      <member refid="struct_light_1aaefd3dd16a8649fc81cbfbc83b6888cc" prot="public" virt="non-virtual"><scope>Light</scope><name>shadowDebugMode</name></member>
+      <member refid="struct_light_1aebcc2cc2d05ef5ad585cd240f2850959" prot="public" virt="non-virtual"><scope>Light</scope><name>shadowNormalBias</name></member>
+      <member refid="struct_light_1abb7298439012ddc5939562608c2076ee" prot="public" virt="non-virtual"><scope>Light</scope><name>shadowRange</name></member>
+      <member refid="struct_light_1a1b12738944d36263610dfc70a8b2021a" prot="public" virt="non-virtual"><scope>Light</scope><name>shadowStrength</name></member>
+      <member refid="struct_light_1a77256a30d9ce51a8e4e3504b04fd4cc2" prot="public" virt="non-virtual"><scope>Light</scope><name>shadowType</name></member>
+      <member refid="struct_light_1a2092ef2339edd1cd4d69e63a0bf51e77" prot="public" virt="non-virtual"><scope>Light</scope><name>spotAngle</name></member>
+      <member refid="struct_light_1a86e648b4a80a5c1e194c97ef52f9efc6" prot="public" virt="non-virtual"><scope>Light</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

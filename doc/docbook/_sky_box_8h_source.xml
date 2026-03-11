@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__sky_box_8h_source" xml:lang="en-US">
+<title>SkyBox.h</title>
+<indexterm><primary>src/Rendering/Textures/SkyBox.h</primary></indexterm>
+Go to the documentation of this file.<programlisting linenumbering="unnumbered">1 
+5 
+6 <emphasis role="preprocessor">#ifndef&#32;SKYBOX_H</emphasis>
+7 <emphasis role="preprocessor">#define&#32;SKYBOX_H</emphasis>
+8 
+9 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__model_8h">Rendering/Geometry/Model.h</link>&quot;</emphasis>
+10 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__skybox_material_8h">Rendering/Materials/SkyboxMaterial.h</link>&quot;</emphasis>
+11 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__cube_map_8h">Rendering/Textures/CubeMap.h</link>&quot;</emphasis>
+12 <emphasis role="preprocessor">#include&#32;&quot;Assets/Core/Asset.h&quot;</emphasis>
+13 <emphasis role="preprocessor">#include&#32;&quot;Scene/Camera.h&quot;</emphasis>
+14 
+15 <emphasis role="preprocessor">#include&#32;&lt;memory&gt;</emphasis>
+16 
+18 <emphasis role="keyword">struct&#32;</emphasis><link linkend="_struct_sky_box6_face">SkyBox6Face</link>{
+19 &#32;&#32;&#32;&#32;PAsset&#32;topFaceAsset&#32;=&#32;<emphasis role="keyword">nullptr</emphasis>;
+20 &#32;&#32;&#32;&#32;PAsset&#32;bottomFaceAsset&#32;=&#32;<emphasis role="keyword">nullptr</emphasis>;
+21 &#32;&#32;&#32;&#32;PAsset&#32;leftFaceAsset&#32;=&#32;<emphasis role="keyword">nullptr</emphasis>;
+22 &#32;&#32;&#32;&#32;PAsset&#32;rightFaceAsset&#32;=&#32;<emphasis role="keyword">nullptr</emphasis>;
+23 &#32;&#32;&#32;&#32;PAsset&#32;frontFaceAsset&#32;=&#32;<emphasis role="keyword">nullptr</emphasis>;
+24 &#32;&#32;&#32;&#32;PAsset&#32;backFaceAsset&#32;=&#32;<emphasis role="keyword">nullptr</emphasis>;
+25 };
+26 
+28 <emphasis role="keyword">class&#32;</emphasis>SkyBox{
+29 &#32;&#32;&#32;&#32;<emphasis role="keyword">private</emphasis>:
+30 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PModel&#32;skyboxModel;
+31 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PMaterial&#32;skyboxMaterial;
+32 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PCubeMap&#32;skyboxCubeMap;
+36 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;SkyBox()&#32;=&#32;<emphasis role="keyword">delete</emphasis>;
+37 &#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+42 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;SkyBox(<emphasis role="keyword">const</emphasis>&#32;<link linkend="_struct_sky_box6_face">SkyBox6Face</link>&amp;&#32;faceAssetDef);
+48 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_sky_box_1a0994828d7cce6823083bc8445b9456d6">draw</link>(PCamera&#32;cam,&#32;<emphasis role="keywordtype">bool</emphasis>&#32;depthTested&#32;=&#32;<emphasis role="keyword">false</emphasis>);
+53 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PCubeMap&#32;<link linkend="_class_sky_box_1a3870170d9350bfa50f6995853dad559f">getCubeMap</link>()<emphasis role="keyword">&#32;const&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;skyboxCubeMap;&#32;}
+54 
+55 };
+56 
+58 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_sky_box_loader">SkyBoxLoader</link>{
+59 &#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+66 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;SkyBox&gt;&#32;<link linkend="_class_sky_box_loader_1a7a70cc83351435d79408ef2fbcdab277">CreateSkyBox</link>(<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;directoryAssetPath,&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;skyboxName);
+67 };
+68 
+69 <emphasis role="keyword">typedef</emphasis>&#32;std::shared_ptr&lt;SkyBox&gt;&#32;PSkyBox;
+70 
+71 <emphasis role="preprocessor">#endif</emphasis><emphasis role="comment">//SKYBOX_H</emphasis>
+</programlisting></section>

@@ -1,0 +1,52 @@
+\doxysection{PBRMaterial.\+h}
+\hypertarget{_p_b_r_material_8h_source}{}\label{_p_b_r_material_8h_source}\index{src/Rendering/Materials/PBRMaterial.h@{src/Rendering/Materials/PBRMaterial.h}}
+\doxymbox{\hyperlink{_p_b_r_material_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ PBR\_MATERIAL\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ PBR\_MATERIAL\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_material_8h}{Rendering/Materials/Material.h}}"{}}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_texture_8h}{Rendering/Textures/Texture.h}}"{}}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_cube_map_8h}{Rendering/Textures/CubeMap.h}}"{}}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ "{}Foundation/Util/ValueContainer.h"{}}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}Foundation/Math/Color.h"{}}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00018\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_p_b_r_material_aa95501f255a91cf9c2572ed4ea38fe27}{PBRMaterial}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{class_material_ace810a426f4b488d2dc2a53070d85405}{Material}}\ \{}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ ValueContainer<Math3D::Vec4>\ BaseColor;}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ ValueContainer<std::shared\_ptr<Texture>>\ BaseColorTex;}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ ValueContainer<float>\ Metallic;}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ ValueContainer<float>\ Roughness;}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ ValueContainer<std::shared\_ptr<Texture>>\ RoughnessTex;}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ ValueContainer<std::shared\_ptr<Texture>>\ MetallicRoughnessTex;}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ ValueContainer<std::shared\_ptr<Texture>>\ NormalTex;}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ ValueContainer<float>\ NormalScale;}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ ValueContainer<std::shared\_ptr<Texture>>\ HeightTex;}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ ValueContainer<float>\ HeightScale;}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ ValueContainer<std::shared\_ptr<Texture>>\ EmissiveTex;}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ ValueContainer<Math3D::Vec3>\ EmissiveColor;}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ ValueContainer<float>\ EmissiveStrength;}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ ValueContainer<std::shared\_ptr<Texture>>\ OcclusionTex;}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ ValueContainer<float>\ OcclusionStrength;}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ ValueContainer<std::shared\_ptr<CubeMap>>\ EnvMap;}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ ValueContainer<float>\ EnvStrength;}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ ValueContainer<int>\ UseEnvMap;}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ ValueContainer<Math3D::Vec2>\ UVScale;}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ ValueContainer<Math3D::Vec2>\ UVOffset;}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ ValueContainer<float>\ AlphaCutoff;}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ ValueContainer<int>\ UseAlphaClip;}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ ValueContainer<Math3D::Vec3>\ ViewPos;}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_p_b_r_material_aa95501f255a91cf9c2572ed4ea38fe27}{PBRMaterial}}(std::shared\_ptr<ShaderProgram>\ program);}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_p_b_r_material_a30db1aa8fdf92f2a7310b864d79ee159}{bind}}()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<PBRMaterial>\ \doxymbox{\hyperlink{class_p_b_r_material_aa0579a45ec0d6fa8c1203c0bc582fe39}{Create}}(Math3D::Vec4\ baseColor\ =\ Color::WHITE);}
+\DoxyCodeLine{00060\ \};}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ PBR\_MATERIAL\_H}}
+
+\end{DoxyCode}

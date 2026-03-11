@@ -1,0 +1,11 @@
+digraph "ShaderProgram::setUniform"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="LR";
+  Node1 [id="Node000001",label="ShaderProgram::setUniform",height=0.2,width=0.4,color="gray40", fillcolor="grey60", style="filled", fontcolor="black",tooltip="Sets the uniform."];
+  Node1 -> Node2 [id="edge3_Node000001_Node000002",color="steelblue1",style="solid",tooltip=" "];
+  Node2 [id="Node000002",label="ShaderProgram::bind",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$class_shader_program.html#ab3c3e75ddf54504b5e9f53bf85c34736",tooltip="Binds this resource."];
+}

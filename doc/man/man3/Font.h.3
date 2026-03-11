@@ -1,0 +1,84 @@
+.TH "src/Rendering/Fonts/Font.h" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+src/Rendering/Fonts/Font.h \- Declarations for \fBFont\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <memory>\fP
+.br
+\fR#include <map>\fP
+.br
+\fR#include <array>\fP
+.br
+\fR#include <vector>\fP
+.br
+\fR#include 'Assets/Core/Asset\&.h'\fP
+.br
+\fR#include 'Foundation/Math/Math3D\&.h'\fP
+.br
+\fR#include 'Rendering/Geometry/Drawable\&.h'\fP
+.br
+\fR#include 'Rendering/Geometry/ModelPart\&.h'\fP
+.br
+\fR#include 'Rendering/Textures/Texture\&.h'\fP
+.br
+\fR#include 'Foundation/Math/Color\&.h'\fP
+.br
+\fR#include 'Scene/Camera\&.h'\fP
+.br
+\fR#include 'Foundation/Logging/Logbot\&.h'\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBTextCacheKey\fP"
+.br
+.RI "Holds data for \fBTextCacheKey\fP\&. "
+.ti -1c
+.RI "struct \fBFontCharacter\fP"
+.br
+.RI "Holds data for \fBFontCharacter\fP\&. "
+.ti -1c
+.RI "class \fBFont\fP"
+.br
+.RI "Represents the \fBFont\fP type\&. "
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBENGINE_STB_TRUETYPE\fP   0x0FA25"
+.br
+.ti -1c
+.RI "#define \fBENGINE_FREETYPE\fP   0x0E281"
+.br
+.ti -1c
+.RI "#define \fBFONT_ENGINE\fP   ENGINE_FREETYPE"
+.br
+.ti -1c
+.RI "#define \fBFONT_BITMAP_W\fP   1024"
+.br
+.ti -1c
+.RI "#define \fBFONT_BITMAP_H\fP   1024"
+.br
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef std::shared_ptr< \fBFont\fP > \fBPFont\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Declarations for \fBFont\fP\&. 
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

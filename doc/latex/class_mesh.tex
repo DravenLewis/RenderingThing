@@ -1,0 +1,115 @@
+\doxysection{Mesh Class Reference}
+\hypertarget{class_mesh}{}\label{class_mesh}\index{Mesh@{Mesh}}
+
+
+Represents the \doxylink{class_mesh}{Mesh} type.  
+
+
+
+
+{\ttfamily \+\#include $<$Mesh.\+h$>$}
+
+Inheritance diagram for Mesh:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_mesh}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_mesh_a2af137f1571af89172b9c102302c416b}\label{class_mesh_a2af137f1571af89172b9c102302c416b} 
+{\bfseries Mesh} ()
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_mesh}{Mesh} instance. \end{DoxyCompactList}\item 
+\Hypertarget{class_mesh_adecf9ab32fac64e846ad6b7753e8996b}\label{class_mesh_adecf9ab32fac64e846ad6b7753e8996b} 
+{\bfseries Mesh} (const \doxymbox{\hyperlink{class_mesh}{Mesh}} \&)=delete
+\item 
+\Hypertarget{class_mesh_a54099ce7b9d2999f36af9da5a96a16a7}\label{class_mesh_a54099ce7b9d2999f36af9da5a96a16a7} 
+{\bfseries Mesh} (\doxymbox{\hyperlink{class_mesh}{Mesh}} \&\&other) noexcept
+\item 
+\Hypertarget{class_mesh_adb906e89a504562d6bc6dedf82e2c7d1}\label{class_mesh_adb906e89a504562d6bc6dedf82e2c7d1} 
+void {\bfseries upload} (const std::\+vector$<$ \doxymbox{\hyperlink{struct_vertex}{Vertex}} $>$ \&verts, const std::\+vector$<$ uint32\+\_\+t $>$ \&faces, GLenum usage=GL\+\_\+\+STATIC\+\_\+\+DRAW)
+\item 
+\Hypertarget{class_mesh_ac50ddfe20d707224dc3de44817da120a}\label{class_mesh_ac50ddfe20d707224dc3de44817da120a} 
+void {\bfseries upload} (std::\+vector$<$ \doxymbox{\hyperlink{struct_vertex}{Vertex}} $>$ \&\&verts, std::\+vector$<$ uint32\+\_\+t $>$ \&\&faces, GLenum usage=GL\+\_\+\+STATIC\+\_\+\+DRAW)
+\item 
+\Hypertarget{class_mesh_ad331a787fe94be45d100c8cf4ca43a57}\label{class_mesh_ad331a787fe94be45d100c8cf4ca43a57} 
+void {\bfseries reload} ()
+\item 
+\Hypertarget{class_mesh_a5237bc1186c7ecaa1af79738e3d7db50}\label{class_mesh_a5237bc1186c7ecaa1af79738e3d7db50} 
+void {\bfseries bind} ()
+\item 
+void \doxymbox{\hyperlink{class_mesh_abf58756040d4eb2bfe17766af91e3bc6}{draw}} (const Math3\+D::\+\+Mat4 \&parent=Math3\+D::\+\+Mat4(), const Math3\+D::\+\+Mat4 \&view=Math3\+D::\+\+Mat4(), const Math3\+D::\+\+Mat4 \&projection=Math3\+D::\+\+Mat4()) override
+\begin{DoxyCompactList}\small\item\em Draws this object. \end{DoxyCompactList}\item 
+\Hypertarget{class_mesh_ac4933429e71411c8141d4a69760a0839}\label{class_mesh_ac4933429e71411c8141d4a69760a0839} 
+void {\bfseries dispose} ()
+\item 
+\Hypertarget{class_mesh_a8378cbc10e3d72c1b3d08c0a46380a2d}\label{class_mesh_a8378cbc10e3d72c1b3d08c0a46380a2d} 
+std::\+vector$<$ Math3\+D::\+\+Vec3 $>$ {\bfseries get\+Verticies\+Vector\+Array} ()
+\item 
+\Hypertarget{class_mesh_ac8ad00d31216387f8f75072a4b3ee97f}\label{class_mesh_ac8ad00d31216387f8f75072a4b3ee97f} 
+std::\+vector$<$ float $>$ {\bfseries get\+Verticies\+As\+Raw\+Float\+Array} ()
+\item 
+\Hypertarget{class_mesh_a05b891bd19229c3def1ac1179b1ad73e}\label{class_mesh_a05b891bd19229c3def1ac1179b1ad73e} 
+std::\+vector$<$ float $>$ {\bfseries get\+Raw\+Vertex\+Data} ()
+\item 
+\Hypertarget{class_mesh_ab1a77a703b1d871fbeb0529b85fb8cc9}\label{class_mesh_ab1a77a703b1d871fbeb0529b85fb8cc9} 
+void {\bfseries set\+Location\+Attribute\+Offset} (int attribute, int data\+Size, int data\+Offset)
+\item 
+\Hypertarget{class_mesh_a56d7f936e780cc493559501576eb4850}\label{class_mesh_a56d7f936e780cc493559501576eb4850} 
+std::\+vector$<$ \doxymbox{\hyperlink{struct_vertex}{Vertex}} $>$ \& {\bfseries get\+Vertecies} ()
+\item 
+\Hypertarget{class_mesh_a248f4a3f8d0914d98551562bc41a6e6c}\label{class_mesh_a248f4a3f8d0914d98551562bc41a6e6c} 
+const std::\+vector$<$ uint32\+\_\+t $>$ \& {\bfseries get\+Faces} () const
+\item 
+\Hypertarget{class_mesh_acbde7dd724a2dcb654622cca1daecad9}\label{class_mesh_acbde7dd724a2dcb654622cca1daecad9} 
+bool {\bfseries get\+Local\+Bounds} (Math3\+D::\+\+Vec3 \&out\+Min, Math3\+D::\+\+Vec3 \&out\+Max) const
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{struct_i_drawable}{IDrawable}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries \texorpdfstring{$\sim$}{\string~}\+IDrawable} ()=default
+\begin{DoxyCompactList}\small\item\em Destroys this \doxylink{struct_i_drawable}{IDrawable} instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_mesh_a3967159b14011d7c2ea2f844b4391da7}\label{class_mesh_a3967159b14011d7c2ea2f844b4391da7} 
+static void {\bfseries Unbind} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the \doxylink{class_mesh}{Mesh} type. 
+
+\label{doc-func-members}
+\Hypertarget{class_mesh_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_mesh_abf58756040d4eb2bfe17766af91e3bc6}\index{Mesh@{Mesh}!draw@{draw}}
+\index{draw@{draw}!Mesh@{Mesh}}
+\doxysubsubsection{\texorpdfstring{draw()}{draw()}}
+{\footnotesize\ttfamily \label{class_mesh_abf58756040d4eb2bfe17766af91e3bc6} 
+void Mesh::\+draw (\begin{DoxyParamCaption}\item[{const Math3\+D::\+\+Mat4 \&}]{parent}{ = {\ttfamily Math3D:\+:\+Mat4()}, }\item[{const Math3\+D::\+\+Mat4 \&}]{view\+Mtx}{ = {\ttfamily Math3D:\+:\+Mat4()}, }\item[{const Math3\+D::\+\+Mat4 \&}]{projection\+Mtx}{ = {\ttfamily Math3D:\+:\+Mat4()}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Draws this object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parent} & Value for parent. \\
+\hline
+{\em view\+Mtx} & Value for view mtx. \\
+\hline
+{\em projection\+Mtx} & Value for projection mtx. \\
+\hline
+\end{DoxyParams}
+
+
+Implements \doxymbox{\hyperlink{struct_i_drawable_a9fb10215e48d952bd9f6a4c52656ebb8}{IDrawable}}.
+
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Geometry/\+\doxymbox{\hyperlink{_mesh_8h}{Mesh.\+h}}\item 
+src/\+\+Rendering/\+\+Geometry/\+\doxymbox{\hyperlink{_mesh_8cpp}{Mesh.\+cpp}}\end{DoxyCompactItemize}

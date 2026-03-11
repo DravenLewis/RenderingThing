@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Fonts/FreeTypeFont.h
+ * @brief Declarations for FreeTypeFont.
+ */
+
 #ifndef FREETYPE_FONT_H
 #define FREETYPE_FONT_H
 
@@ -5,8 +10,12 @@
 #include FT_FREETYPE_H
 #include "Rendering/Fonts/Font.h"
 
+/// @brief Represents the FreeTypeFont type.
 class FreeTypeFont : public Font {
     public:
+        /**
+         * @brief Constructs a new FreeTypeFont instance.
+         */
         FreeTypeFont() : Font() {};
         
         // Override the pure virtual functions from Base Font
@@ -17,6 +26,7 @@ class FreeTypeFont : public Font {
         void flushQueuedText(PCamera camera) override;
 
     private:
+        /// @brief Holds data for DeferredBatch.
         struct DeferredBatch {
             uint32_t colorKey = 0;
             Color color = Color::WHITE;

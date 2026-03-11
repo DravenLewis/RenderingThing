@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Materials/MaterialRegistry.cpp
+ * @brief Implementation for MaterialRegistry.
+ */
+
 #include "Rendering/Materials/MaterialRegistry.h"
 
 #include "Assets/Core/Asset.h"

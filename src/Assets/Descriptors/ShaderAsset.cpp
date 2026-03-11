@@ -1,3 +1,8 @@
+/**
+ * @file src/Assets/Descriptors/ShaderAsset.cpp
+ * @brief Implementation for ShaderAsset.
+ */
+
 #include "Assets/Descriptors/ShaderAsset.h"
 
 #include "Assets/Core/Asset.h"

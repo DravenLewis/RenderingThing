@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__screen_8h_source" xml:lang="en-US">
+<title>Screen.h</title>
+<indexterm><primary>src/Rendering/Core/Screen.h</primary></indexterm>
+Go to the documentation of this file.<programlisting linenumbering="unnumbered">1 
+5 
+6 <emphasis role="preprocessor">#ifndef&#32;SCREEN_H</emphasis>
+7 <emphasis role="preprocessor">#define&#32;SCREEN_H</emphasis>
+8 
+9 <emphasis role="preprocessor">#include&#32;&lt;memory&gt;</emphasis>
+10 <emphasis role="preprocessor">#include&#32;&lt;vector&gt;</emphasis>
+11 <emphasis role="preprocessor">#include&#32;&lt;atomic&gt;</emphasis>
+12 <emphasis role="preprocessor">#include&#32;&lt;cstdint&gt;</emphasis>
+13 
+14 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__frame_buffer_8h">Rendering/Core/FrameBuffer.h</link>&quot;</emphasis>
+15 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__texture_8h">Rendering/Textures/Texture.h</link>&quot;</emphasis>
+16 <emphasis role="preprocessor">#include&#32;&quot;Scene/Camera.h&quot;</emphasis>
+17 <emphasis role="preprocessor">#include&#32;&quot;Foundation/Math/Math3D.h&quot;</emphasis>
+18 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__shader_program_8h">Rendering/Shaders/ShaderProgram.h</link>&quot;</emphasis>
+19 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__model_part_prefabs_8h">Rendering/Geometry/ModelPartPrefabs.h</link>&quot;</emphasis>
+20 <emphasis role="preprocessor">#include&#32;&quot;Platform/Window/RenderWindow.h&quot;</emphasis>
+21 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__graphics_8h">Rendering/Core/Graphics.h</link>&quot;</emphasis>
+22 <emphasis role="preprocessor">#include&#32;&quot;Foundation/Math/Color.h&quot;</emphasis>
+23 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__environment_8h">Rendering/Lighting/Environment.h</link>&quot;</emphasis>
+24 
+25 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_view">View</link>;
+26 <emphasis role="keyword">typedef</emphasis>&#32;std::shared_ptr&lt;View&gt;&#32;PView;
+27 
+29 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_screen_1a0d2f55f84802fb3d0348200cea71e59c">Screen</link>{
+30 &#32;&#32;&#32;&#32;<emphasis role="keyword">private</emphasis>:
+31 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;width,&#32;height;
+32 
+33 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::unique_ptr&lt;TrippleBuffer&gt;&#32;buffer;
+34 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;ModelPart&gt;&#32;screenQuad;
+35 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;ShaderProgram&gt;&#32;screenShader;
+36 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::vector&lt;Graphics::PostProcessing::PPostProcessingEffect&gt;&#32;effects;
+37 
+38 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PCamera&#32;camera;
+39 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PEnvironment&#32;environment;
+40 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PCamera&#32;uiCamera;
+41 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;uiWidth&#32;=&#32;0;
+42 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;uiHeight&#32;=&#32;0;
+43 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;bound&#32;=&#32;<emphasis role="keyword">false</emphasis>;
+44 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::atomic&lt;float&gt;&#32;lastPostProcessMs{0.0f};
+45 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::atomic&lt;int&gt;&#32;lastPostProcessEffectCount{0};
+46 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::uint32_t&#32;presentFrameIndex&#32;=&#32;0;
+47 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;presentDebandStrength&#32;=&#32;1.25f;
+48 
+52 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;initScreenGeom();
+56 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;initScreenShader();
+57 
+58 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;PCamera&#32;CurrentCamera;
+59 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;PEnvironment&#32;CurrentEnvironment;
+60 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Color&#32;clearColor&#32;=&#32;Color::BLACK;
+61 &#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+67 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_screen_1a0d2f55f84802fb3d0348200cea71e59c">Screen</link>(<emphasis role="keywordtype">int</emphasis>&#32;width,&#32;<emphasis role="keywordtype">int</emphasis>&#32;height);
+71 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_screen_1a4243bc17596af96415b09ac48205676d">~Screen</link>();
+72 
+76 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_screen_1ab9f2169f953e728fa2614e0026b3b4a7">processRenderPipeline</link>();
+82 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_screen_1a958f0738b6aa94ae8aeaeffb78753ddf">drawToWindow</link>(RenderWindow*&#32;window,&#32;<emphasis role="keywordtype">bool</emphasis>&#32;clearWindow&#32;=&#32;<emphasis role="keyword">true</emphasis>);
+92 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_screen_1a0d0154807bb2d93c6896d9511378d2e1">drawToView</link>(PView&#32;view,&#32;<emphasis role="keywordtype">bool</emphasis>&#32;clearWindow&#32;=&#32;<emphasis role="keyword">true</emphasis>,&#32;<emphasis role="keywordtype">float</emphasis>&#32;x&#32;=&#32;-1,&#32;<emphasis role="keywordtype">float</emphasis>&#32;y&#32;=&#32;-1,&#32;<emphasis role="keywordtype">float</emphasis>&#32;width&#32;=&#32;-1,&#32;<emphasis role="keywordtype">float</emphasis>&#32;height&#32;=&#32;-1);
+93 
+99 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_screen_1a5ba54872e8f2ab1fb14a24875db66866">resize</link>(<emphasis role="keywordtype">int</emphasis>&#32;w,&#32;<emphasis role="keywordtype">int</emphasis>&#32;h);
+104 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;<link linkend="_class_screen_1ab71b25e991771611d4acab431f92b518">getWidth</link>();
+109 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;<link linkend="_class_screen_1a4edca55b221da0326dc7de0ec0f4dc91">getHeight</link>();
+110 
+115 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_screen_1ab7a0796298adc6b6ffad439da2215b85">bind</link>(<emphasis role="keywordtype">bool</emphasis>&#32;clear&#32;=&#32;<emphasis role="keyword">true</emphasis>);
+119 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_screen_1a0581496c4bb1cd53273872bc0cbb0566">unbind</link>();
+120 
+125 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_screen_1a5af6bd5e04104a0220cea4f113f65a29">addEffect</link>(Graphics::PostProcessing::PPostProcessingEffect&#32;effect);
+129 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_screen_1a752d56573abe000eb842c99a9c068275">clearEffects</link>();
+130 
+131 
+136 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PTexture&#32;<link linkend="_class_screen_1a54581eb4483a0fbf4433855124c6a154">getDisplayTexture</link>();
+141 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PFrameBuffer&#32;<link linkend="_class_screen_1affe30f540e47e10ce7b4a6303c2a0ed6">getDisplayBuffer</link>()&#32;<emphasis role="keyword">const</emphasis>;
+146 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PFrameBuffer&#32;<link linkend="_class_screen_1afeb8a4072024504886db1f2dcc33504a">getDrawBuffer</link>()&#32;<emphasis role="keyword">const</emphasis>;
+147 
+152 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PCamera&#32;<link linkend="_class_screen_1a744f676a8bb30991ae2b4fb3eabf8952">getCamera</link>()<emphasis role="keyword">&#32;const&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;camera;&#32;}
+153 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;setCamera(PCamera&#32;cam,&#32;<emphasis role="keywordtype">bool</emphasis>&#32;makeCurrent&#32;=&#32;<emphasis role="keyword">true</emphasis>);
+154 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;makeCameraCurrent();
+155 
+156 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PEnvironment&#32;getEnvironment()<emphasis role="keyword">&#32;const&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;environment;&#32;}
+157 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;setEnvironment(PEnvironment&#32;env,&#32;<emphasis role="keywordtype">bool</emphasis>&#32;makeCurrent&#32;=&#32;<emphasis role="keyword">true</emphasis>);
+158 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;makeEnvironmentCurrent();
+159 
+160 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;MakeCameraCurrent(PCamera&#32;camera);
+161 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;PCamera&#32;GetCurrentCamera();
+162 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;MakeEnvironmentCurrent(PEnvironment&#32;env);
+163 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;PEnvironment&#32;GetCurrentEnvironment();
+164 
+165 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;setClearColor(Color&#32;color)&#32;{&#32;this-&gt;clearColor&#32;=&#32;color;}&#32;
+166 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Color&amp;&#32;getClearColor()&#32;{&#32;<emphasis role="keywordflow">return</emphasis>&#32;this-&gt;clearColor;&#32;}
+167 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;clear(Color&#32;c&#32;=&#32;Color::BLACK);
+168 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;isBound()<emphasis role="keyword">&#32;const&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;bound;&#32;}
+169 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;getLastPostProcessMs()<emphasis role="keyword">&#32;const&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;lastPostProcessMs.load(std::memory_order_relaxed);&#32;}
+170 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;getLastPostProcessEffectCount()<emphasis role="keyword">&#32;const&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;lastPostProcessEffectCount.load(std::memory_order_relaxed);&#32;}
+171 };
+172 
+173 <emphasis role="keyword">typedef</emphasis>&#32;std::shared_ptr&lt;Screen&gt;&#32;PScreen;
+174 
+175 <emphasis role="preprocessor">#endif&#32;</emphasis><emphasis role="comment">//SCREEN_H</emphasis>
+</programlisting></section>

@@ -1,0 +1,247 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_material_registry" kind="class" language="C++" prot="public">
+    <compoundname>MaterialRegistry</compoundname>
+    <includes refid="_material_registry_8h" local="no">MaterialRegistry.h</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_material_registry_1a62539b60c93fbe4e0f465ac329767bc5" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool MaterialRegistry::builtInsInitialized</definition>
+        <argsstring></argsstring>
+        <name>builtInsInitialized</name>
+        <qualifiedname>MaterialRegistry::builtInsInitialized</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/MaterialRegistry.h" line="67" column="14" bodyfile="src/Rendering/Materials/MaterialRegistry.h" bodystart="67" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_material_registry_1a566f4db6ca9f8a79f1ac3829577edffc" prot="private" static="no" mutable="yes">
+        <type>std::vector&lt; <ref refid="struct_material_registry_entry" kindref="compound">MaterialRegistryEntry</ref> &gt;</type>
+        <definition>std::vector&lt;MaterialRegistryEntry&gt; MaterialRegistry::entries</definition>
+        <argsstring></argsstring>
+        <name>entries</name>
+        <qualifiedname>MaterialRegistry::entries</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/MaterialRegistry.h" line="68" column="29" bodyfile="src/Rendering/Materials/MaterialRegistry.h" bodystart="68" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_material_registry_1a23db5b3c73f1c3fae8a3675f817a6e65" prot="private" static="no" mutable="yes">
+        <type>std::vector&lt; std::pair&lt; std::string, std::function&lt; std::shared_ptr&lt; <ref refid="class_material" kindref="compound">Material</ref> &gt;()&gt; &gt; &gt;</type>
+        <definition>std::vector&lt;std::pair&lt;std::string, std::function&lt;std::shared_ptr&lt;Material&gt;()&gt; &gt; &gt; MaterialRegistry::builtInFactories</definition>
+        <argsstring></argsstring>
+        <name>builtInFactories</name>
+        <qualifiedname>MaterialRegistry::builtInFactories</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/MaterialRegistry.h" line="69" column="31" bodyfile="src/Rendering/Materials/MaterialRegistry.h" bodystart="69" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_material_registry_1a870f0a6e01b4d0ec47dca82786961575" prot="private" static="no" mutable="no">
+        <type>std::chrono::steady_clock::time_point</type>
+        <definition>std::chrono::steady_clock::time_point MaterialRegistry::nextRefreshTime</definition>
+        <argsstring></argsstring>
+        <name>nextRefreshTime</name>
+        <qualifiedname>MaterialRegistry::nextRefreshTime</qualifiedname>
+        <initializer>= std::chrono::steady_clock::time_point::min()</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/MaterialRegistry.h" line="70" column="47" bodyfile="src/Rendering/Materials/MaterialRegistry.h" bodystart="70" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_material_registry_1a5ac1ab1993ba87006a53205026a7e289" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="class_material_registry" kindref="compound">MaterialRegistry</ref> &amp;</type>
+        <definition>MaterialRegistry &amp; MaterialRegistry::Instance</definition>
+        <argsstring>()</argsstring>
+        <name>Instance</name>
+        <qualifiedname>MaterialRegistry::Instance</qualifiedname>
+        <briefdescription>
+<para>Returns the registry singleton instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/MaterialRegistry.h" line="32" column="33" bodyfile="src/Rendering/Materials/MaterialRegistry.cpp" bodystart="38" bodyend="41"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_material_registry_1adc43e36965c220ba15527a3d8ac9526f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void MaterialRegistry::Refresh</definition>
+        <argsstring>(bool force=false)</argsstring>
+        <name>Refresh</name>
+        <qualifiedname>MaterialRegistry::Refresh</qualifiedname>
+        <param>
+          <type>bool</type>
+          <declname>force</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+<para>Refreshes registry state. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>force</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Flag controlling force. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/MaterialRegistry.h" line="38" column="14" bodyfile="src/Rendering/Materials/MaterialRegistry.cpp" bodystart="153" bodyend="160"/>
+      </memberdef>
+      <memberdef kind="function" id="class_material_registry_1a4c66f055d3c843419a613f70729ea276" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const std::vector&lt; <ref refid="struct_material_registry_entry" kindref="compound">MaterialRegistryEntry</ref> &gt; &amp;</type>
+        <definition>const std::vector&lt; MaterialRegistryEntry &gt; &amp; MaterialRegistry::GetEntries</definition>
+        <argsstring>() const</argsstring>
+        <name>GetEntries</name>
+        <qualifiedname>MaterialRegistry::GetEntries</qualifiedname>
+        <briefdescription>
+<para>Returns the entries. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/MaterialRegistry.h" line="43" column="27" bodyfile="src/Rendering/Materials/MaterialRegistry.cpp" bodystart="162" bodyend="164"/>
+      </memberdef>
+      <memberdef kind="function" id="class_material_registry_1a4e4f6ae18d50428c1352b197aaa4161b" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="class_material" kindref="compound">Material</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; Material &gt; MaterialRegistry::CreateById</definition>
+        <argsstring>(const std::string &amp;id, std::string *outError=nullptr) const</argsstring>
+        <name>CreateById</name>
+        <qualifiedname>MaterialRegistry::CreateById</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>std::string *</type>
+          <declname>outError</declname>
+          <defval>nullptr</defval>
+        </param>
+        <briefdescription>
+<para>Creates by id. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Identifier or index value. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>outError</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output value for error. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Pointer to the resulting object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/MaterialRegistry.h" line="50" column="25" bodyfile="src/Rendering/Materials/MaterialRegistry.cpp" bodystart="166" bodyend="201"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_material_registry_1a7c312f7f354335cb3a363222f475a060" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>MaterialRegistry::MaterialRegistry</definition>
+        <argsstring>()=default</argsstring>
+        <name>MaterialRegistry</name>
+        <qualifiedname>MaterialRegistry::MaterialRegistry</qualifiedname>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_material_registry" kindref="compound">MaterialRegistry</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/MaterialRegistry.h" line="56" column="9"/>
+      </memberdef>
+      <memberdef kind="function" id="class_material_registry_1ac874952f4899f3d3419953808c32ad88" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void MaterialRegistry::ensureBuiltIns</definition>
+        <argsstring>()</argsstring>
+        <name>ensureBuiltIns</name>
+        <qualifiedname>MaterialRegistry::ensureBuiltIns</qualifiedname>
+        <briefdescription>
+<para>Ensures built ins. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/MaterialRegistry.h" line="61" column="14" bodyfile="src/Rendering/Materials/MaterialRegistry.cpp" bodystart="43" bodyend="72"/>
+      </memberdef>
+      <memberdef kind="function" id="class_material_registry_1a187e35f9a9ed7913a17acfd7bc8dfa34" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void MaterialRegistry::rebuildEntries</definition>
+        <argsstring>()</argsstring>
+        <name>rebuildEntries</name>
+        <qualifiedname>MaterialRegistry::rebuildEntries</qualifiedname>
+        <briefdescription>
+<para>Rebuilds registry entries from scene data. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Materials/MaterialRegistry.h" line="65" column="14" bodyfile="src/Rendering/Materials/MaterialRegistry.cpp" bodystart="74" bodyend="151"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_material_registry" kindref="compound">MaterialRegistry</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Materials/MaterialRegistry.h" line="26" column="1" bodyfile="src/Rendering/Materials/MaterialRegistry.h" bodystart="26" bodyend="71"/>
+    <listofallmembers>
+      <member refid="class_material_registry_1a23db5b3c73f1c3fae8a3675f817a6e65" prot="private" virt="non-virtual"><scope>MaterialRegistry</scope><name>builtInFactories</name></member>
+      <member refid="class_material_registry_1a62539b60c93fbe4e0f465ac329767bc5" prot="private" virt="non-virtual"><scope>MaterialRegistry</scope><name>builtInsInitialized</name></member>
+      <member refid="class_material_registry_1a4e4f6ae18d50428c1352b197aaa4161b" prot="public" virt="non-virtual"><scope>MaterialRegistry</scope><name>CreateById</name></member>
+      <member refid="class_material_registry_1ac874952f4899f3d3419953808c32ad88" prot="private" virt="non-virtual"><scope>MaterialRegistry</scope><name>ensureBuiltIns</name></member>
+      <member refid="class_material_registry_1a566f4db6ca9f8a79f1ac3829577edffc" prot="private" virt="non-virtual"><scope>MaterialRegistry</scope><name>entries</name></member>
+      <member refid="class_material_registry_1a4c66f055d3c843419a613f70729ea276" prot="public" virt="non-virtual"><scope>MaterialRegistry</scope><name>GetEntries</name></member>
+      <member refid="class_material_registry_1a5ac1ab1993ba87006a53205026a7e289" prot="public" virt="non-virtual"><scope>MaterialRegistry</scope><name>Instance</name></member>
+      <member refid="class_material_registry_1a7c312f7f354335cb3a363222f475a060" prot="private" virt="non-virtual"><scope>MaterialRegistry</scope><name>MaterialRegistry</name></member>
+      <member refid="class_material_registry_1a870f0a6e01b4d0ec47dca82786961575" prot="private" virt="non-virtual"><scope>MaterialRegistry</scope><name>nextRefreshTime</name></member>
+      <member refid="class_material_registry_1a187e35f9a9ed7913a17acfd7bc8dfa34" prot="private" virt="non-virtual"><scope>MaterialRegistry</scope><name>rebuildEntries</name></member>
+      <member refid="class_material_registry_1adc43e36965c220ba15527a3d8ac9526f" prot="public" virt="non-virtual"><scope>MaterialRegistry</scope><name>Refresh</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

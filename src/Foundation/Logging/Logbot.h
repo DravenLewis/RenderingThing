@@ -1,3 +1,8 @@
+/**
+ * @file src/Foundation/Logging/Logbot.h
+ * @brief Declarations for Logbot.
+ */
+
 #ifndef LOGBOT_H
 #define LOGBOT_H
 
@@ -15,10 +20,15 @@
 #include "Foundation/Util/StringUtils.h"
 #include "Foundation/IO/File.h"
 
+/// @brief Holds data for LogType.
 struct LogType {
 private:
     std::string value;
 public:
+    /**
+     * @brief Constructs a new LogType instance.
+     * @param value Value for value.
+     */
     LogType(std::string value) : value(value) {}
     std::string asText() { return value; }
 };
@@ -26,6 +36,7 @@ public:
 // Global Log Type Instances
 inline LogType LOG_INFO("Info"), LOG_WARN("Warning"), LOG_ERRO("ERROR"), LOG_FATL("FATAL ERROR"), LOG_UNKN("Unknown");
 
+/// @brief Represents the Logbot type.
 class Logbot {
 private:
     static thread_local int activeDepth;
@@ -44,15 +55,27 @@ private:
     static constexpr size_t kLogFileFlushLineInterval = 32;
 
     // RAII Guard to handle depth logic automatically
+    /// @brief Holds data for DepthGuard.
     struct DepthGuard {
+        /**
+         * @brief Constructs a new DepthGuard instance.
+         */
         DepthGuard() { ++activeDepth; }
         ~DepthGuard() { --activeDepth; }
     };
 
+    /**
+     * @brief Checks whether top level call.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     bool isTopLevelCall() {
         return activeDepth == 1;
     }
 
+    /**
+     * @brief Returns the current time string.
+     * @return Resulting string value.
+     */
     std::string getCurrentTimeString() {
         const auto now = std::chrono::system_clock::now();
         const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
@@ -71,6 +94,11 @@ private:
         return oss.str();
     }
 
+    /**
+     * @brief Writes a formatted log line.
+     * @param msg Value for msg.
+     * @param override Value for override.
+     */
     void internalPrint(const std::string& msg ,bool override) {
         if (isTopLevelCall() || override) {
             std::lock_guard<std::mutex> lock(logMutex);
@@ -115,11 +143,19 @@ private:
         }
     }
 
+    /**
+     * @brief Writes a formatted log line.
+     * @param msg Value for msg.
+     */
     void internalPrint(const std::string& msg){
         internalPrint(msg, false);
     }
 
 public:
+    /**
+     * @brief Constructs a new Logbot instance.
+     * @param name Name used for name.
+     */
     Logbot(std::string name) : loggingName(name) {}
 
     template<typename... Args>
@@ -197,6 +233,10 @@ inline std::ofstream Logbot::logFile;
 inline std::string Logbot::logFilePath;
 inline std::atomic<bool> Logbot::logFileReady{false};
 inline size_t Logbot::logLinesSinceFlush = 0;
+/**
+ * @brief Creates a new logger instance.
+ * @return Result of this operation.
+ */
 inline Logbot LogBot("DefaultLogger");
 
 #endif // LOGBOT_H

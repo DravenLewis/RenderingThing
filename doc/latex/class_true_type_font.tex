@@ -1,0 +1,106 @@
+\doxysection{True\+Type\+Font Class Reference}
+\hypertarget{class_true_type_font}{}\label{class_true_type_font}\index{TrueTypeFont@{TrueTypeFont}}
+
+
+Represents the \doxylink{class_true_type_font}{True\+Type\+Font} type.  
+
+
+
+
+{\ttfamily \+\#include $<$STBTrue\+Type\+Font.\+h$>$}
+
+Inheritance diagram for True\+Type\+Font:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_true_type_font}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_true_type_font_ad32c45a5111d82794f1d8fe9d3a0f708}\label{class_true_type_font_ad32c45a5111d82794f1d8fe9d3a0f708} 
+{\bfseries True\+Type\+Font} ()
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_true_type_font}{True\+Type\+Font} instance. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_true_type_font_a4af92a8e28331e8a35e1624f98706944}{\+\_\+init\+Font}} () override
+\begin{DoxyCompactList}\small\item\em Initializes font resources. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_true_type_font_a988b328a7c02ab8509e054f9128c9884}{draw\+Text}} (std::\+string text, Math3\+D::\+\+Vec2 position, PCamera camera, Color color, bool use\+Cache) override
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{class_font}{Font}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Font} ()
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_font}{Font} instance. \end{DoxyCompactList}\item 
+virtual bool {\bfseries supports\+Queued\+Drawing} () const
+\item 
+virtual void {\bfseries begin\+Frame} (PCamera camera)
+\item 
+virtual void {\bfseries flush\+Queued\+Text} (PCamera camera)
+\item 
+void {\bfseries clear\+Cache} ()
+\item 
+PAsset {\bfseries get\+Asset\+Pointer} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Static Public Member Functions inherited from \doxymbox{\hyperlink{class_font}{Font}}}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T$>$ }\\static std::\+shared\+\_\+ptr$<$ T $>$ {\bfseries Create} (PAsset asset, float font\+Size=18.\+0f)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes inherited from \doxymbox{\hyperlink{class_font}{Font}}}
+\begin{DoxyCompactItemize}
+\item 
+static Logbot {\bfseries Font\+Logger} = Logbot::\+\+Create\+Instance("{}Font"{})
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \doxymbox{\hyperlink{class_font}{Font}}}
+\begin{DoxyCompactItemize}
+\item 
+PAsset {\bfseries asset\+Ptr}
+\item 
+PTexture {\bfseries texture\+Atlas\+Ptr}
+\item 
+PMaterial {\bfseries material\+Cache\+Ptr}
+\item 
+float {\bfseries font\+Size}
+\item 
+std::\+array$<$ \doxymbox{\hyperlink{struct_font_character}{Font\+Character}}, 128 $>$ {\bfseries characters}
+\item 
+std::\+map$<$ \doxymbox{\hyperlink{struct_text_cache_key}{Text\+Cache\+Key}}, std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$ $>$ {\bfseries mesh\+Cache}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the \doxylink{class_true_type_font}{True\+Type\+Font} type. 
+
+\label{doc-func-members}
+\Hypertarget{class_true_type_font_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_true_type_font_a4af92a8e28331e8a35e1624f98706944}\index{TrueTypeFont@{TrueTypeFont}!\_initFont@{\_initFont}}
+\index{\_initFont@{\_initFont}!TrueTypeFont@{TrueTypeFont}}
+\doxysubsubsection{\texorpdfstring{\_initFont()}{\_initFont()}}
+{\footnotesize\ttfamily \label{class_true_type_font_a4af92a8e28331e8a35e1624f98706944} 
+void True\+Type\+Font::\+\+\_\+init\+Font (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Initializes font resources. 
+
+
+
+Implements \doxymbox{\hyperlink{class_font_aa6b8da140518e4282bbe81e7033e0081}{Font}}.
+
+\Hypertarget{class_true_type_font_a988b328a7c02ab8509e054f9128c9884}\index{TrueTypeFont@{TrueTypeFont}!drawText@{drawText}}
+\index{drawText@{drawText}!TrueTypeFont@{TrueTypeFont}}
+\doxysubsubsection{\texorpdfstring{drawText()}{drawText()}}
+{\footnotesize\ttfamily \label{class_true_type_font_a988b328a7c02ab8509e054f9128c9884} 
+void True\+Type\+Font::\+draw\+Text (\begin{DoxyParamCaption}\item[{std::\+string}]{text}{, }\item[{Math3\+D::\+\+Vec2}]{position}{, }\item[{PCamera}]{camera}{, }\item[{Color}]{color}{, }\item[{bool}]{use\+Cache}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \doxymbox{\hyperlink{class_font}{Font}}.
+
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Fonts/\+\doxymbox{\hyperlink{_s_t_b_true_type_font_8h}{STBTrue\+Type\+Font.\+h}}\item 
+src/\+\+Rendering/\+\+Fonts/\+\doxymbox{\hyperlink{_s_t_b_true_type_font_8cpp}{STBTrue\+Type\+Font.\+cpp}}\end{DoxyCompactItemize}

@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="namespace_graphics_1_1_image" kind="namespace" language="C++">
+    <compoundname>Graphics::Image</compoundname>
+    <innerclass refid="struct_graphics_1_1_image_1_1_image" prot="public">Graphics::Image::Image</innerclass>
+    <innerclass refid="struct_graphics_1_1_image_1_1_buffered_image" prot="public">Graphics::Image::BufferedImage</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Core/Graphics.h" line="23" column="5"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,425 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_frame_buffer" xml:lang="en-US">
+<title>FrameBuffer Struct Reference</title>
+<indexterm><primary>FrameBuffer</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_frame_buffer">FrameBuffer</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;FrameBuffer.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><link linkend="_struct_frame_buffer_1aab4c897d360f51c5a96b4782e67e98a9">FrameBuffer</link> (int width, int height)</para>
+
+<para>Constructs a new <link linkend="_struct_frame_buffer">FrameBuffer</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_frame_buffer_1aef8be9884e8cc0fc3f3692e6c6968fa1"/><emphasis role="strong">~FrameBuffer</emphasis> ()</para>
+
+<para>Destroys this <link linkend="_struct_frame_buffer">FrameBuffer</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_frame_buffer_1a16fa30984714c6070f4c5bde5b5b87f7"/>void <emphasis role="strong">bind</emphasis> ()</para>
+
+<para>Binds this resource. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_frame_buffer_1a3b82af89f1c0c0f4c0140e41863256c0"/>void <emphasis role="strong">unbind</emphasis> ()</para>
+
+<para>Unbinds this resource. </para>
+</listitem>
+            <listitem><para>void <link linkend="_struct_frame_buffer_1a9d024ca8640a15ba5bc1b57bea53f520">resize</link> (int width, int height)</para>
+
+<para>Resizes internal resources. </para>
+</listitem>
+            <listitem><para>void <link linkend="_struct_frame_buffer_1a0c4622e1392380ac5f445ca896b8cfaf">attachTexture</link> (PTexture tex)</para>
+
+<para>Attaches a texture to the framebuffer. </para>
+</listitem>
+            <listitem><para>bool <link linkend="_struct_frame_buffer_1a0cd55ff0fbb64f384e420ee01747baa9">validate</link> ()</para>
+
+<para>Checks whether validate. </para>
+</listitem>
+            <listitem><para>void <link linkend="_struct_frame_buffer_1a97b10220144ae378552526387dd74063">clear</link> (Color clearColor=Color::BLACK)</para>
+
+<para>Clears the current state. </para>
+</listitem>
+            <listitem><para>PTexture <link linkend="_struct_frame_buffer_1a7ccdbe4ef2127c1d95a6855326a411e8">getTexture</link> ()</para>
+
+<para>Returns the texture. </para>
+</listitem>
+            <listitem><para>PTexture <link linkend="_struct_frame_buffer_1ae1bb1d29cead16f8ed5bc3243ce670a7">getDepthTexture</link> ()</para>
+
+<para>Returns the depth texture. </para>
+</listitem>
+            <listitem><para>PTexture <link linkend="_struct_frame_buffer_1a90a260aa56cc237856abc3ccd2e4db3a">getGBufferTexture</link> (size_t index) const</para>
+
+<para>Returns the g buffer texture. </para>
+</listitem>
+            <listitem><para>size_t <link linkend="_struct_frame_buffer_1aa79c4835cb0975e916fae02fb38370b6">getGBufferCount</link> () const</para>
+
+<para>Returns the g buffer count. </para>
+</listitem>
+            <listitem><para>FrameBufferObject <link linkend="_struct_frame_buffer_1ade3f6891bef5507f4efeeed8031674ee">getID</link> () const</para>
+
+<para>Returns the id. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_frame_buffer_1a40c194d2dd9435c8094be569bb6602a8"/>int <emphasis role="strong">getWidth</emphasis> () const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_frame_buffer_1a0b7c691dd5b08a9506bc2b52626f6b1d"/>int <emphasis role="strong">getHeight</emphasis> () const</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Static Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para>static std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; <link linkend="_struct_frame_buffer_1ac9d501ed7d2c3065d73ab4bb3ac79aaa">Create</link> (int width, int height)</para>
+
+<para>Creates a new object. </para>
+</listitem>
+            <listitem><para>static std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; <link linkend="_struct_frame_buffer_1ac84282b82629c78a650e7cb0aa653392">CreateGBuffer</link> (int width, int height)</para>
+
+<para>Creates g buffer. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_frame_buffer">FrameBuffer</link>. </para>
+</section>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_struct_frame_buffer_1aab4c897d360f51c5a96b4782e67e98a9"/><section>
+    <title>FrameBuffer()</title>
+<indexterm><primary>FrameBuffer</primary><secondary>FrameBuffer</secondary></indexterm>
+<indexterm><primary>FrameBuffer</primary><secondary>FrameBuffer</secondary></indexterm>
+<para><computeroutput>FrameBuffer::FrameBuffer (int width, int height)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Constructs a new <link linkend="_struct_frame_buffer">FrameBuffer</link> instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>width</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>height</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_struct_frame_buffer_1a0c4622e1392380ac5f445ca896b8cfaf"/><section>
+    <title>attachTexture()</title>
+<indexterm><primary>attachTexture</primary><secondary>FrameBuffer</secondary></indexterm>
+<indexterm><primary>FrameBuffer</primary><secondary>attachTexture</secondary></indexterm>
+<para><computeroutput>void FrameBuffer::attachTexture (PTexture tex)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Attaches a texture to the framebuffer. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>tex</entry><entry>
+<para>Value for tex. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_struct_frame_buffer_1a97b10220144ae378552526387dd74063"/><section>
+    <title>clear()</title>
+<indexterm><primary>clear</primary><secondary>FrameBuffer</secondary></indexterm>
+<indexterm><primary>FrameBuffer</primary><secondary>clear</secondary></indexterm>
+<para><computeroutput>void FrameBuffer::clear (Color clearColor = <computeroutput>Color::BLACK</computeroutput>
+)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Clears the current state. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>clearColor</entry><entry>
+<para>Color value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_struct_frame_buffer_1ac9d501ed7d2c3065d73ab4bb3ac79aaa"/><section>
+    <title>Create()</title>
+<indexterm><primary>Create</primary><secondary>FrameBuffer</secondary></indexterm>
+<indexterm><primary>FrameBuffer</primary><secondary>Create</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; FrameBuffer::Create (int width, int height)<computeroutput>[inline]</computeroutput>, <computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Creates a new object. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>width</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>height</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_frame_buffer_1ac84282b82629c78a650e7cb0aa653392"/><section>
+    <title>CreateGBuffer()</title>
+<indexterm><primary>CreateGBuffer</primary><secondary>FrameBuffer</secondary></indexterm>
+<indexterm><primary>FrameBuffer</primary><secondary>CreateGBuffer</secondary></indexterm>
+<para><computeroutput>std::shared_ptr&lt; <link linkend="_struct_frame_buffer">FrameBuffer</link> &gt; FrameBuffer::CreateGBuffer (int width, int height)<computeroutput>[inline]</computeroutput>, <computeroutput>[static]</computeroutput></computeroutput></para><para>
+
+<para>Creates g buffer. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>width</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>height</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Pointer to the resulting object. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_frame_buffer_1ae1bb1d29cead16f8ed5bc3243ce670a7"/><section>
+    <title>getDepthTexture()</title>
+<indexterm><primary>getDepthTexture</primary><secondary>FrameBuffer</secondary></indexterm>
+<indexterm><primary>FrameBuffer</primary><secondary>getDepthTexture</secondary></indexterm>
+<para><computeroutput>PTexture FrameBuffer::getDepthTexture ( )<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the depth texture. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Result of this operation. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_frame_buffer_1aa79c4835cb0975e916fae02fb38370b6"/><section>
+    <title>getGBufferCount()</title>
+<indexterm><primary>getGBufferCount</primary><secondary>FrameBuffer</secondary></indexterm>
+<indexterm><primary>FrameBuffer</primary><secondary>getGBufferCount</secondary></indexterm>
+<para><computeroutput>size_t FrameBuffer::getGBufferCount ( ) const<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the g buffer count. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Computed numeric result. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_frame_buffer_1a90a260aa56cc237856abc3ccd2e4db3a"/><section>
+    <title>getGBufferTexture()</title>
+<indexterm><primary>getGBufferTexture</primary><secondary>FrameBuffer</secondary></indexterm>
+<indexterm><primary>FrameBuffer</primary><secondary>getGBufferTexture</secondary></indexterm>
+<para><computeroutput>PTexture FrameBuffer::getGBufferTexture (size_t index) const<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the g buffer texture. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>index</entry><entry>
+<para>Identifier or index value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Result of this operation. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_frame_buffer_1ade3f6891bef5507f4efeeed8031674ee"/><section>
+    <title>getID()</title>
+<indexterm><primary>getID</primary><secondary>FrameBuffer</secondary></indexterm>
+<indexterm><primary>FrameBuffer</primary><secondary>getID</secondary></indexterm>
+<para><computeroutput>FrameBufferObject FrameBuffer::getID ( ) const<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the id. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Result of this operation. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_frame_buffer_1a7ccdbe4ef2127c1d95a6855326a411e8"/><section>
+    <title>getTexture()</title>
+<indexterm><primary>getTexture</primary><secondary>FrameBuffer</secondary></indexterm>
+<indexterm><primary>FrameBuffer</primary><secondary>getTexture</secondary></indexterm>
+<para><computeroutput>PTexture FrameBuffer::getTexture ( )<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the texture. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Result of this operation. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_struct_frame_buffer_1a9d024ca8640a15ba5bc1b57bea53f520"/><section>
+    <title>resize()</title>
+<indexterm><primary>resize</primary><secondary>FrameBuffer</secondary></indexterm>
+<indexterm><primary>FrameBuffer</primary><secondary>resize</secondary></indexterm>
+<para><computeroutput>void FrameBuffer::resize (int width, int height)<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Resizes internal resources. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>width</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                            <row>
+<entry>height</entry><entry>
+<para>Dimension value. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_struct_frame_buffer_1a0cd55ff0fbb64f384e420ee01747baa9"/><section>
+    <title>validate()</title>
+<indexterm><primary>validate</primary><secondary>FrameBuffer</secondary></indexterm>
+<indexterm><primary>FrameBuffer</primary><secondary>validate</secondary></indexterm>
+<para><computeroutput>bool FrameBuffer::validate ( )<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Checks whether validate. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>True when the operation succeeds; otherwise false. </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Core/<link linkend="__frame_buffer_8h">FrameBuffer.h</link></section>
+</section>

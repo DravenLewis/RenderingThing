@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_sky_box6_face" kind="struct" language="C++" prot="public">
+    <compoundname>SkyBox6Face</compoundname>
+    <includes refid="_sky_box_8h" local="no">SkyBox.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_sky_box6_face_1ab6f1ce5be59e6d4873e5c09ad56913cc" prot="public" static="no" mutable="no">
+        <type>PAsset</type>
+        <definition>PAsset SkyBox6Face::topFaceAsset</definition>
+        <argsstring></argsstring>
+        <name>topFaceAsset</name>
+        <qualifiedname>SkyBox6Face::topFaceAsset</qualifiedname>
+        <initializer>= nullptr</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/SkyBox.h" line="19" column="12" bodyfile="src/Rendering/Textures/SkyBox.h" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_sky_box6_face_1a171fc45a05df7e4d879a04eb714cf9a7" prot="public" static="no" mutable="no">
+        <type>PAsset</type>
+        <definition>PAsset SkyBox6Face::bottomFaceAsset</definition>
+        <argsstring></argsstring>
+        <name>bottomFaceAsset</name>
+        <qualifiedname>SkyBox6Face::bottomFaceAsset</qualifiedname>
+        <initializer>= nullptr</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/SkyBox.h" line="20" column="12" bodyfile="src/Rendering/Textures/SkyBox.h" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_sky_box6_face_1a4bf8919a218153bfd1174f86a045dcd5" prot="public" static="no" mutable="no">
+        <type>PAsset</type>
+        <definition>PAsset SkyBox6Face::leftFaceAsset</definition>
+        <argsstring></argsstring>
+        <name>leftFaceAsset</name>
+        <qualifiedname>SkyBox6Face::leftFaceAsset</qualifiedname>
+        <initializer>= nullptr</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/SkyBox.h" line="21" column="12" bodyfile="src/Rendering/Textures/SkyBox.h" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_sky_box6_face_1a480e2da0e85450f5f6862aee821305ce" prot="public" static="no" mutable="no">
+        <type>PAsset</type>
+        <definition>PAsset SkyBox6Face::rightFaceAsset</definition>
+        <argsstring></argsstring>
+        <name>rightFaceAsset</name>
+        <qualifiedname>SkyBox6Face::rightFaceAsset</qualifiedname>
+        <initializer>= nullptr</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/SkyBox.h" line="22" column="12" bodyfile="src/Rendering/Textures/SkyBox.h" bodystart="22" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_sky_box6_face_1abb7ee5f7056c9c4d1cd63e7955f06041" prot="public" static="no" mutable="no">
+        <type>PAsset</type>
+        <definition>PAsset SkyBox6Face::frontFaceAsset</definition>
+        <argsstring></argsstring>
+        <name>frontFaceAsset</name>
+        <qualifiedname>SkyBox6Face::frontFaceAsset</qualifiedname>
+        <initializer>= nullptr</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/SkyBox.h" line="23" column="12" bodyfile="src/Rendering/Textures/SkyBox.h" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_sky_box6_face_1a369835ab8dff41effb1178fc2e0fa28f" prot="public" static="no" mutable="no">
+        <type>PAsset</type>
+        <definition>PAsset SkyBox6Face::backFaceAsset</definition>
+        <argsstring></argsstring>
+        <name>backFaceAsset</name>
+        <qualifiedname>SkyBox6Face::backFaceAsset</qualifiedname>
+        <initializer>= nullptr</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/SkyBox.h" line="24" column="12" bodyfile="src/Rendering/Textures/SkyBox.h" bodystart="24" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_sky_box6_face" kindref="compound">SkyBox6Face</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Textures/SkyBox.h" line="18" column="1" bodyfile="src/Rendering/Textures/SkyBox.h" bodystart="18" bodyend="25"/>
+    <listofallmembers>
+      <member refid="struct_sky_box6_face_1a369835ab8dff41effb1178fc2e0fa28f" prot="public" virt="non-virtual"><scope>SkyBox6Face</scope><name>backFaceAsset</name></member>
+      <member refid="struct_sky_box6_face_1a171fc45a05df7e4d879a04eb714cf9a7" prot="public" virt="non-virtual"><scope>SkyBox6Face</scope><name>bottomFaceAsset</name></member>
+      <member refid="struct_sky_box6_face_1abb7ee5f7056c9c4d1cd63e7955f06041" prot="public" virt="non-virtual"><scope>SkyBox6Face</scope><name>frontFaceAsset</name></member>
+      <member refid="struct_sky_box6_face_1a4bf8919a218153bfd1174f86a045dcd5" prot="public" virt="non-virtual"><scope>SkyBox6Face</scope><name>leftFaceAsset</name></member>
+      <member refid="struct_sky_box6_face_1a480e2da0e85450f5f6862aee821305ce" prot="public" virt="non-virtual"><scope>SkyBox6Face</scope><name>rightFaceAsset</name></member>
+      <member refid="struct_sky_box6_face_1ab6f1ce5be59e6d4873e5c09ad56913cc" prot="public" virt="non-virtual"><scope>SkyBox6Face</scope><name>topFaceAsset</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

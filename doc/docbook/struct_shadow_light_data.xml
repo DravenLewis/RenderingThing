@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_struct_shadow_light_data" xml:lang="en-US">
+<title>ShadowLightData Struct Reference</title>
+<indexterm><primary>ShadowLightData</primary></indexterm>
+<para>
+
+<para>Holds data for <link linkend="_struct_shadow_light_data">ShadowLightData</link>. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;ShadowRenderer.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Attributes    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_struct_shadow_light_data_1ac702ae146acae8df77f8e23246868f02"/>int <emphasis role="strong">shadowMapIndex</emphasis> = -1</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_shadow_light_data_1aff377f9a74c61bb3aa681dfaa75917e6"/><link linkend="__light_8h_1a5c50abf40600ee3c28c7fa04702a8bbc">ShadowType</link> <emphasis role="strong">shadowType</emphasis> = ShadowType::Standard</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_shadow_light_data_1ac2324b8b78ba3f0edcaef7b926790bcd"/>float <emphasis role="strong">shadowStrength</emphasis> = 1.0f</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_shadow_light_data_1acd237982292f828f6a4577fa18a04679"/>float <emphasis role="strong">shadowBias</emphasis> = 0.0025f</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_shadow_light_data_1a8b3ea850c47b09d9e9427bbc5d4f620b"/>float <emphasis role="strong">shadowNormalBias</emphasis> = 0.005f</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_shadow_light_data_1ab20943a984a1a12945d9024812041dfb"/>int <emphasis role="strong">cascadeCount</emphasis> = 1</para>
+</listitem>
+            <listitem><para><anchor xml:id="_struct_shadow_light_data_1ab2e59ee0fbcc6b8f63af23de9a5fe940"/>Math3D::Vec4 <emphasis role="strong">cascadeSplits</emphasis> = Math3D::Vec4(0,0,0,0)</para>
+</listitem>
+            <listitem><para>Math3D::Mat4 <link linkend="_struct_shadow_light_data_1a26d9fea3b61c1c703c8002ac5a72ef69">lightMatrices</link> [4]</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Holds data for <link linkend="_struct_shadow_light_data">ShadowLightData</link>. </para>
+</section>
+<section>
+<title>Member Data Documentation</title>
+<anchor xml:id="_struct_shadow_light_data_1a26d9fea3b61c1c703c8002ac5a72ef69"/><section>
+    <title>lightMatrices</title>
+<indexterm><primary>lightMatrices</primary><secondary>ShadowLightData</secondary></indexterm>
+<indexterm><primary>ShadowLightData</primary><secondary>lightMatrices</secondary></indexterm>
+<para><computeroutput>Math3D::Mat4 ShadowLightData::lightMatrices[4]</computeroutput></para><emphasis role="strong">Initial value:</emphasis><programlisting linenumbering="unnumbered">&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;=&#32;{
+&#32;&#32;&#32;&#32;Math3D::Mat4(1.0f),
+&#32;&#32;&#32;&#32;Math3D::Mat4(1.0f),
+&#32;&#32;&#32;&#32;Math3D::Mat4(1.0f),
+&#32;&#32;&#32;&#32;Math3D::Mat4(1.0f)
+}
+</programlisting></section>
+<para>
+The documentation for this struct was generated from the following file:</para>
+src/Rendering/Lighting/<link linkend="__shadow_renderer_8h">ShadowRenderer.h</link></section>
+</section>

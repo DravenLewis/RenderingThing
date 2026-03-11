@@ -1,0 +1,535 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_auto_exposure_effect" kind="class" language="C++" prot="public">
+    <compoundname>AutoExposureEffect</compoundname>
+    <basecompoundref refid="class_graphics_1_1_post_processing_1_1_post_processing_effect" prot="public" virt="non-virtual">Graphics::PostProcessing::PostProcessingEffect</basecompoundref>
+    <includes refid="_screen_effects_8h" local="no">ScreenEffects.h</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_auto_exposure_effect_1a30a4c380602a406a8a18784e7d671e31" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="class_shader_program" kindref="compound">ShaderProgram</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;ShaderProgram&gt; AutoExposureEffect::shader</definition>
+        <argsstring></argsstring>
+        <name>shader</name>
+        <qualifiedname>AutoExposureEffect::shader</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1268" column="25" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1268" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_auto_exposure_effect_1a70a5cce66c309592eda1f92b5b3c365c" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool AutoExposureEffect::compileAttempted</definition>
+        <argsstring></argsstring>
+        <name>compileAttempted</name>
+        <qualifiedname>AutoExposureEffect::compileAttempted</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1269" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1269" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_auto_exposure_effect_1a0e0398017f5d9a2b400c675baf81fb1d" prot="private" static="no" mutable="no">
+        <type>GLuint</type>
+        <definition>GLuint AutoExposureEffect::meteringReadFbo</definition>
+        <argsstring></argsstring>
+        <name>meteringReadFbo</name>
+        <qualifiedname>AutoExposureEffect::meteringReadFbo</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1270" column="16" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1270" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_auto_exposure_effect_1ade83301b0cdcacc5e29daa8339b4de08" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool AutoExposureEffect::adaptationInitialized</definition>
+        <argsstring></argsstring>
+        <name>adaptationInitialized</name>
+        <qualifiedname>AutoExposureEffect::adaptationInitialized</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1271" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1271" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_auto_exposure_effect_1a904e08126ca7fa6d362bbb938e249857" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float AutoExposureEffect::adaptedExposure</definition>
+        <argsstring></argsstring>
+        <name>adaptedExposure</name>
+        <qualifiedname>AutoExposureEffect::adaptedExposure</qualifiedname>
+        <initializer>= 1.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1272" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1272" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_auto_exposure_effect_1a976e6df989329777faa743463871f5af" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float AutoExposureEffect::filteredLogLuminance</definition>
+        <argsstring></argsstring>
+        <name>filteredLogLuminance</name>
+        <qualifiedname>AutoExposureEffect::filteredLogLuminance</qualifiedname>
+        <initializer>= std::log2(0.18f)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1273" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1273" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_auto_exposure_effect_1ad9a3c269b93c8dd6b885e147d6f7a9c9" prot="private" static="no" mutable="no">
+        <type>std::chrono::steady_clock::time_point</type>
+        <definition>std::chrono::steady_clock::time_point AutoExposureEffect::lastAdaptationTime</definition>
+        <argsstring></argsstring>
+        <name>lastAdaptationTime</name>
+        <qualifiedname>AutoExposureEffect::lastAdaptationTime</qualifiedname>
+        <initializer>= std::chrono::steady_clock::now()</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1274" column="47" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1274" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_auto_exposure_effect_1acf2811de372cfcdf82a247b7e8fc897b" prot="private" static="no" mutable="no">
+        <type>const std::string</type>
+        <definition>const std::string AutoExposureEffect::AUTO_EXPOSURE_FRAG_SHADER</definition>
+        <argsstring></argsstring>
+        <name>AUTO_EXPOSURE_FRAG_SHADER</name>
+        <qualifiedname>AutoExposureEffect::AUTO_EXPOSURE_FRAG_SHADER</qualifiedname>
+        <initializer>                                            = R&quot;(
+    #version 330 core
+
+    out vec4 FragColor;
+    in vec2 TexCoords;
+
+    uniform sampler2D screenTexture;
+    uniform float u_exposure;
+
+    /**
+     * @brief Converts to nemap aces.
+     * @param color Color value.
+     * @return Result of this operation.
+     */
+    vec3 tonemapAces(vec3 color){
+        vec3 a = color * (color * 2.51 + 0.03);
+        vec3 b = color * (color * 2.43 + 0.59) + 0.14;
+        return clamp(a / max(b, vec3(0.0001)), 0.0, 1.0);
+    }
+
+    /**
+     * @brief Executes the main shader pass.
+     */
+    void main() {
+        vec4 base = texture(screenTexture, TexCoords);
+        vec3 exposed = max(base.rgb, vec3(0.0)) * max(u_exposure, 0.0001);
+        vec3 mapped = tonemapAces(exposed);
+        FragColor = vec4(mapped, base.a);
+    }
+)&quot;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1276" column="27" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1276" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="class_auto_exposure_effect_1a3aa0cb468abac292b01662f622f1beaf" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float AutoExposureEffect::minExposure</definition>
+        <argsstring></argsstring>
+        <name>minExposure</name>
+        <qualifiedname>AutoExposureEffect::minExposure</qualifiedname>
+        <initializer>= 0.6f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1485" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1485" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_auto_exposure_effect_1a8f51263e0edecd2ef05444e5ca468755" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float AutoExposureEffect::maxExposure</definition>
+        <argsstring></argsstring>
+        <name>maxExposure</name>
+        <qualifiedname>AutoExposureEffect::maxExposure</qualifiedname>
+        <initializer>= 2.4f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1486" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1486" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_auto_exposure_effect_1ab143c327307826b8eacf5a024ec5a827" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float AutoExposureEffect::exposureCompensation</definition>
+        <argsstring></argsstring>
+        <name>exposureCompensation</name>
+        <qualifiedname>AutoExposureEffect::exposureCompensation</qualifiedname>
+        <initializer>= 0.0f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1487" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1487" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_auto_exposure_effect_1a7967e743d11b714431a2200eb9babaec" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float AutoExposureEffect::adaptationSpeedUp</definition>
+        <argsstring></argsstring>
+        <name>adaptationSpeedUp</name>
+        <qualifiedname>AutoExposureEffect::adaptationSpeedUp</qualifiedname>
+        <initializer>= 1.2f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1488" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1488" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_auto_exposure_effect_1a8f57d4f60965436e3263d3e9fbdad930" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float AutoExposureEffect::adaptationSpeedDown</definition>
+        <argsstring></argsstring>
+        <name>adaptationSpeedDown</name>
+        <qualifiedname>AutoExposureEffect::adaptationSpeedDown</qualifiedname>
+        <initializer>= 0.7f</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1489" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1489" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_auto_exposure_effect_1a85d7d4e97a93c15b1e44aefb1c78df1d" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool AutoExposureEffect::sampleSceneLuminance</definition>
+        <argsstring>(PTexture tex, float &amp;outLuminance)</argsstring>
+        <name>sampleSceneLuminance</name>
+        <qualifiedname>AutoExposureEffect::sampleSceneLuminance</qualifiedname>
+        <param>
+          <type>PTexture</type>
+          <declname>tex</declname>
+        </param>
+        <param>
+          <type>float &amp;</type>
+          <declname>outLuminance</declname>
+        </param>
+        <briefdescription>
+<para>Checks whether sample scene luminance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>tex</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for tex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>outLuminance</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output value for luminance. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>True when the operation succeeds; otherwise false. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+<para>Holds data for MeterTap.</para>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1313" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1313" bodyend="1406"/>
+      </memberdef>
+      <memberdef kind="function" id="class_auto_exposure_effect_1a91e7346af9e3e503d85f2aa8c0629a6d" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void AutoExposureEffect::updateAdaptation</definition>
+        <argsstring>(PTexture tex)</argsstring>
+        <name>updateAdaptation</name>
+        <qualifiedname>AutoExposureEffect::updateAdaptation</qualifiedname>
+        <param>
+          <type>PTexture</type>
+          <declname>tex</declname>
+        </param>
+        <briefdescription>
+<para>Updates adaptation. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>tex</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for tex. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1412" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1412" bodyend="1460"/>
+      </memberdef>
+      <memberdef kind="function" id="class_auto_exposure_effect_1a986c9a284ee97889add7898f1e85e96b" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool AutoExposureEffect::ensureCompiled</definition>
+        <argsstring>()</argsstring>
+        <name>ensureCompiled</name>
+        <qualifiedname>AutoExposureEffect::ensureCompiled</qualifiedname>
+        <briefdescription>
+<para>Checks whether ensure compiled. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>True when the operation succeeds; otherwise false. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1466" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1466" bodyend="1482"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_auto_exposure_effect_1a47347afe30cc06c30cc94ce7bd9bc28e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>AutoExposureEffect::AutoExposureEffect</definition>
+        <argsstring>()</argsstring>
+        <name>AutoExposureEffect</name>
+        <qualifiedname>AutoExposureEffect::AutoExposureEffect</qualifiedname>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_auto_exposure_effect" kindref="compound">AutoExposureEffect</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1494" column="9" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1494" bodyend="1498"/>
+      </memberdef>
+      <memberdef kind="function" id="class_auto_exposure_effect_1ab7f60c587637d4528d2742459ca0b0bb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>AutoExposureEffect::~AutoExposureEffect</definition>
+        <argsstring>() override</argsstring>
+        <name>~AutoExposureEffect</name>
+        <qualifiedname>AutoExposureEffect::~AutoExposureEffect</qualifiedname>
+        <briefdescription>
+<para>Destroys this <ref refid="class_auto_exposure_effect" kindref="compound">AutoExposureEffect</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1503" column="9" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1503" bodyend="1508"/>
+      </memberdef>
+      <memberdef kind="function" id="class_auto_exposure_effect_1ab72cd49d8c43c7ea6dc10c71891f8320" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void AutoExposureEffect::resetAdaptation</definition>
+        <argsstring>()</argsstring>
+        <name>resetAdaptation</name>
+        <qualifiedname>AutoExposureEffect::resetAdaptation</qualifiedname>
+        <briefdescription>
+<para>Resets adaptation. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1513" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1513" bodyend="1518"/>
+      </memberdef>
+      <memberdef kind="function" id="class_auto_exposure_effect_1a7b5e8266e87eb3b70992a02335b87ce7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>float</type>
+        <definition>float AutoExposureEffect::getCurrentExposure</definition>
+        <argsstring>() const</argsstring>
+        <name>getCurrentExposure</name>
+        <qualifiedname>AutoExposureEffect::getCurrentExposure</qualifiedname>
+        <briefdescription>
+<para>Returns the current exposure. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Computed numeric result. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1524" column="15" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1524" bodyend="1526"/>
+      </memberdef>
+      <memberdef kind="function" id="class_auto_exposure_effect_1addcac25d10d86ac96887736dcf750e40" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>bool</type>
+        <definition>bool AutoExposureEffect::apply</definition>
+        <argsstring>(PTexture tex, PTexture, PFrameBuffer outFbo, std::shared_ptr&lt; ModelPart &gt; quad) override</argsstring>
+        <name>apply</name>
+        <qualifiedname>AutoExposureEffect::apply</qualifiedname>
+        <reimplements refid="class_graphics_1_1_post_processing_1_1_post_processing_effect_1a75b0263b1e53943ceb4f13d4aad0f5e6">apply</reimplements>
+        <param>
+          <type>PTexture</type>
+          <declname>tex</declname>
+        </param>
+        <param>
+          <type>PTexture</type>
+        </param>
+        <param>
+          <type>PFrameBuffer</type>
+          <declname>outFbo</declname>
+        </param>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="struct_model_part" kindref="compound">ModelPart</ref> &gt;</type>
+          <declname>quad</declname>
+        </param>
+        <briefdescription>
+<para>Applies current settings. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>tex</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for tex. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>PTexture</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for p texture. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>outFbo</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output value for fbo. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>quad</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for quad. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>True when the operation succeeds; otherwise false. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1536" column="14" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1536" bodyend="1562"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_auto_exposure_effect_1a3ea1f05e72ecd506feff02ec9ec3fb24" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="class_auto_exposure_effect" kindref="compound">AutoExposureEffect</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt; AutoExposureEffect &gt; AutoExposureEffect::New</definition>
+        <argsstring>()</argsstring>
+        <name>New</name>
+        <qualifiedname>AutoExposureEffect::New</qualifiedname>
+        <briefdescription>
+<para>Creates a new object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Pointer to the resulting object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/PostFX/ScreenEffects.h" line="1568" column="32" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1568" bodyend="1570"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_auto_exposure_effect" kindref="compound">AutoExposureEffect</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>AutoExposureEffect</label>
+        <link refid="class_auto_exposure_effect"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Graphics::PostProcessing::PostProcessingEffect</label>
+        <link refid="class_graphics_1_1_post_processing_1_1_post_processing_effect"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>AutoExposureEffect</label>
+        <link refid="class_auto_exposure_effect"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Graphics::PostProcessing::PostProcessingEffect</label>
+        <link refid="class_graphics_1_1_post_processing_1_1_post_processing_effect"/>
+      </node>
+    </collaborationgraph>
+    <location file="src/Rendering/PostFX/ScreenEffects.h" line="1266" column="1" bodyfile="src/Rendering/PostFX/ScreenEffects.h" bodystart="1266" bodyend="1571"/>
+    <listofallmembers>
+      <member refid="class_auto_exposure_effect_1ade83301b0cdcacc5e29daa8339b4de08" prot="private" virt="non-virtual"><scope>AutoExposureEffect</scope><name>adaptationInitialized</name></member>
+      <member refid="class_auto_exposure_effect_1a8f57d4f60965436e3263d3e9fbdad930" prot="public" virt="non-virtual"><scope>AutoExposureEffect</scope><name>adaptationSpeedDown</name></member>
+      <member refid="class_auto_exposure_effect_1a7967e743d11b714431a2200eb9babaec" prot="public" virt="non-virtual"><scope>AutoExposureEffect</scope><name>adaptationSpeedUp</name></member>
+      <member refid="class_auto_exposure_effect_1a904e08126ca7fa6d362bbb938e249857" prot="private" virt="non-virtual"><scope>AutoExposureEffect</scope><name>adaptedExposure</name></member>
+      <member refid="class_auto_exposure_effect_1addcac25d10d86ac96887736dcf750e40" prot="public" virt="virtual"><scope>AutoExposureEffect</scope><name>apply</name></member>
+      <member refid="class_auto_exposure_effect_1acf2811de372cfcdf82a247b7e8fc897b" prot="private" virt="non-virtual"><scope>AutoExposureEffect</scope><name>AUTO_EXPOSURE_FRAG_SHADER</name></member>
+      <member refid="class_auto_exposure_effect_1a47347afe30cc06c30cc94ce7bd9bc28e" prot="public" virt="non-virtual"><scope>AutoExposureEffect</scope><name>AutoExposureEffect</name></member>
+      <member refid="class_auto_exposure_effect_1a70a5cce66c309592eda1f92b5b3c365c" prot="private" virt="non-virtual"><scope>AutoExposureEffect</scope><name>compileAttempted</name></member>
+      <member refid="class_auto_exposure_effect_1a986c9a284ee97889add7898f1e85e96b" prot="private" virt="non-virtual"><scope>AutoExposureEffect</scope><name>ensureCompiled</name></member>
+      <member refid="class_auto_exposure_effect_1ab143c327307826b8eacf5a024ec5a827" prot="public" virt="non-virtual"><scope>AutoExposureEffect</scope><name>exposureCompensation</name></member>
+      <member refid="class_auto_exposure_effect_1a976e6df989329777faa743463871f5af" prot="private" virt="non-virtual"><scope>AutoExposureEffect</scope><name>filteredLogLuminance</name></member>
+      <member refid="class_auto_exposure_effect_1a7b5e8266e87eb3b70992a02335b87ce7" prot="public" virt="non-virtual"><scope>AutoExposureEffect</scope><name>getCurrentExposure</name></member>
+      <member refid="class_auto_exposure_effect_1ad9a3c269b93c8dd6b885e147d6f7a9c9" prot="private" virt="non-virtual"><scope>AutoExposureEffect</scope><name>lastAdaptationTime</name></member>
+      <member refid="class_auto_exposure_effect_1a8f51263e0edecd2ef05444e5ca468755" prot="public" virt="non-virtual"><scope>AutoExposureEffect</scope><name>maxExposure</name></member>
+      <member refid="class_auto_exposure_effect_1a0e0398017f5d9a2b400c675baf81fb1d" prot="private" virt="non-virtual"><scope>AutoExposureEffect</scope><name>meteringReadFbo</name></member>
+      <member refid="class_auto_exposure_effect_1a3aa0cb468abac292b01662f622f1beaf" prot="public" virt="non-virtual"><scope>AutoExposureEffect</scope><name>minExposure</name></member>
+      <member refid="class_auto_exposure_effect_1a3ea1f05e72ecd506feff02ec9ec3fb24" prot="public" virt="non-virtual"><scope>AutoExposureEffect</scope><name>New</name></member>
+      <member refid="class_auto_exposure_effect_1ab72cd49d8c43c7ea6dc10c71891f8320" prot="public" virt="non-virtual"><scope>AutoExposureEffect</scope><name>resetAdaptation</name></member>
+      <member refid="class_auto_exposure_effect_1a85d7d4e97a93c15b1e44aefb1c78df1d" prot="private" virt="non-virtual"><scope>AutoExposureEffect</scope><name>sampleSceneLuminance</name></member>
+      <member refid="class_auto_exposure_effect_1a30a4c380602a406a8a18784e7d671e31" prot="private" virt="non-virtual"><scope>AutoExposureEffect</scope><name>shader</name></member>
+      <member refid="class_auto_exposure_effect_1a91e7346af9e3e503d85f2aa8c0629a6d" prot="private" virt="non-virtual"><scope>AutoExposureEffect</scope><name>updateAdaptation</name></member>
+      <member refid="class_auto_exposure_effect_1ab7f60c587637d4528d2742459ca0b0bb" prot="public" virt="non-virtual"><scope>AutoExposureEffect</scope><name>~AutoExposureEffect</name></member>
+      <member refid="class_graphics_1_1_post_processing_1_1_post_processing_effect_1a956557ebb725734d270dd77ef8e40358" prot="public" virt="virtual"><scope>AutoExposureEffect</scope><name>~PostProcessingEffect</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

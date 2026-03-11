@@ -1,0 +1,137 @@
+\doxysection{Graphics::\+Image::\+Image Struct Reference}
+\hypertarget{struct_graphics_1_1_image_1_1_image}{}\label{struct_graphics_1_1_image_1_1_image}\index{Graphics::Image::Image@{Graphics::Image::Image}}
+
+
+Holds data for \doxylink{struct_graphics_1_1_image_1_1_image}{Image}.  
+
+
+
+
+{\ttfamily \+\#include $<$Graphics.\+h$>$}
+
+Inheritance diagram for Graphics::\+Image::\+Image:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{struct_graphics_1_1_image_1_1_image}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_graphics_1_1_image_1_1_image_a86c6d37f21cb1b2c02837c4727e63cc8}\label{struct_graphics_1_1_image_1_1_image_a86c6d37f21cb1b2c02837c4727e63cc8} 
+{\bfseries Image} ()=delete
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{struct_graphics_1_1_image_1_1_image}{Image} instance. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image_af90cfae65c25b2c1aa8336635aa744a4}{Image}} (int width, int height)
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{struct_graphics_1_1_image_1_1_image}{Image} instance. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image_ac2dbaa50ab4653153402fa98d1b1e145}{Image}} (const Image \&src)
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{struct_graphics_1_1_image_1_1_image}{Image} instance. \end{DoxyCompactList}\item 
+int \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image_a9360b8e858004f05fc0a87f1903bc1b7}{get\+Width}} () const
+\begin{DoxyCompactList}\small\item\em Returns the width. \end{DoxyCompactList}\item 
+\Hypertarget{struct_graphics_1_1_image_1_1_image_aba4553e8233d07c6439b10df97c68838}\label{struct_graphics_1_1_image_1_1_image_aba4553e8233d07c6439b10df97c68838} 
+int {\bfseries get\+Height} () const
+\item 
+\Hypertarget{struct_graphics_1_1_image_1_1_image_a0ce32d2c88a124dfdc8ec4f074c70c40}\label{struct_graphics_1_1_image_1_1_image_a0ce32d2c88a124dfdc8ec4f074c70c40} 
+std::\+vector$<$ uint32\+\_\+t $>$ {\bfseries get\+Pixel\+Data} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image_a86c6d37f21cb1b2c02837c4727e63cc8}{Image}} $>$ \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image_a361c6bf49cc6cb69edb8bd6273542952}{Create}} (int width, int height, const std::\+vector$<$ uint32\+\_\+t $>$ \&src=\{\})
+\begin{DoxyCompactList}\small\item\em Creates a new object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_graphics_1_1_image_1_1_image_abd370c0682785decc0f8895a2a6b673a}\label{struct_graphics_1_1_image_1_1_image_abd370c0682785decc0f8895a2a6b673a} 
+std::\+vector$<$ uint32\+\_\+t $>$ {\bfseries pixel\+Data}
+\item 
+\Hypertarget{struct_graphics_1_1_image_1_1_image_a5849ba86af777cde2ea3043123291542}\label{struct_graphics_1_1_image_1_1_image_a5849ba86af777cde2ea3043123291542} 
+int {\bfseries width}
+\item 
+\Hypertarget{struct_graphics_1_1_image_1_1_image_a5603c843c966d9c2e248cc2badd081b1}\label{struct_graphics_1_1_image_1_1_image_a5603c843c966d9c2e248cc2badd081b1} 
+int {\bfseries height}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Holds data for \doxylink{struct_graphics_1_1_image_1_1_image}{Image}. 
+
+\label{doc-constructors}
+\Hypertarget{struct_graphics_1_1_image_1_1_image_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{struct_graphics_1_1_image_1_1_image_af90cfae65c25b2c1aa8336635aa744a4}\index{Graphics::Image::Image@{Graphics::Image::Image}!Image@{Image}}
+\index{Image@{Image}!Graphics::Image::Image@{Graphics::Image::Image}}
+\doxysubsubsection{\texorpdfstring{Image()}{Image()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{struct_graphics_1_1_image_1_1_image_af90cfae65c25b2c1aa8336635aa744a4} 
+Graphics::\+\+Image::\+\+Image::\+\+Image (\begin{DoxyParamCaption}\item[{int}]{width}{, }\item[{int}]{height}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Constructs a new \doxylink{struct_graphics_1_1_image_1_1_image}{Image} instance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em width} & Dimension value. \\
+\hline
+{\em height} & Dimension value. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{struct_graphics_1_1_image_1_1_image_ac2dbaa50ab4653153402fa98d1b1e145}\index{Graphics::Image::Image@{Graphics::Image::Image}!Image@{Image}}
+\index{Image@{Image}!Graphics::Image::Image@{Graphics::Image::Image}}
+\doxysubsubsection{\texorpdfstring{Image()}{Image()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{struct_graphics_1_1_image_1_1_image_ac2dbaa50ab4653153402fa98d1b1e145} 
+Graphics::\+\+Image::\+\+Image::\+\+Image (\begin{DoxyParamCaption}\item[{const Image \&}]{src}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Constructs a new \doxylink{struct_graphics_1_1_image_1_1_image}{Image} instance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em src} & Value for src. \\
+\hline
+\end{DoxyParams}
+
+
+\label{doc-func-members}
+\Hypertarget{struct_graphics_1_1_image_1_1_image_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{struct_graphics_1_1_image_1_1_image_a361c6bf49cc6cb69edb8bd6273542952}\index{Graphics::Image::Image@{Graphics::Image::Image}!Create@{Create}}
+\index{Create@{Create}!Graphics::Image::Image@{Graphics::Image::Image}}
+\doxysubsubsection{\texorpdfstring{Create()}{Create()}}
+{\footnotesize\ttfamily \label{struct_graphics_1_1_image_1_1_image_a361c6bf49cc6cb69edb8bd6273542952} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image_a86c6d37f21cb1b2c02837c4727e63cc8}{Image}} $>$ Graphics::\+\+Image::\+\+Image::\+\+Create (\begin{DoxyParamCaption}\item[{int}]{width}{, }\item[{int}]{height}{, }\item[{const std::\+vector$<$ uint32\+\_\+t $>$ \&}]{src}{ = {\ttfamily \{\}}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Creates a new object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em width} & Dimension value. \\
+\hline
+{\em height} & Dimension value. \\
+\hline
+{\em src} & Value for src. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the resulting object. 
+\end{DoxyReturn}
+\Hypertarget{struct_graphics_1_1_image_1_1_image_a9360b8e858004f05fc0a87f1903bc1b7}\index{Graphics::Image::Image@{Graphics::Image::Image}!getWidth@{getWidth}}
+\index{getWidth@{getWidth}!Graphics::Image::Image@{Graphics::Image::Image}}
+\doxysubsubsection{\texorpdfstring{getWidth()}{getWidth()}}
+{\footnotesize\ttfamily \label{struct_graphics_1_1_image_1_1_image_a9360b8e858004f05fc0a87f1903bc1b7} 
+int Graphics::\+\+Image::\+\+Image::\+get\+Width (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the width. 
+
+\begin{DoxyReturn}{Returns}
+Computed numeric result. 
+\end{DoxyReturn}
+
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Core/\+\doxymbox{\hyperlink{_graphics_8h}{Graphics.\+h}}\end{DoxyCompactItemize}

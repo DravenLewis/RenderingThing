@@ -1,0 +1,173 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_shader_cache" kind="struct" language="C++" prot="public">
+    <compoundname>ShaderCache</compoundname>
+    <includes refid="_shader_program_8h" local="no">ShaderProgram.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_shader_cache_1a04d6ef8cb95a509dc1b03e65e031bf91" prot="public" static="no" mutable="no">
+        <type>std::map&lt; std::string, std::shared_ptr&lt; <ref refid="class_shader_program" kindref="compound">ShaderProgram</ref> &gt; &gt;</type>
+        <definition>std::map&lt;std::string, std::shared_ptr&lt;ShaderProgram&gt; &gt; ShaderCache::programCache</definition>
+        <argsstring></argsstring>
+        <name>programCache</name>
+        <qualifiedname>ShaderCache::programCache</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="500" column="14" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="500" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="struct_shader_cache_1af5f1cbf4ab7956b32d7bd121781705d4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="class_shader_program" kindref="compound">ShaderProgram</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; ShaderProgram &gt; ShaderCache::getOrCompile</definition>
+        <argsstring>(std::string name, std::string vtx=&quot;&quot;, std::string frag=&quot;&quot;, std::string geom=&quot;&quot;, std::string tess=&quot;&quot;, std::string compute=&quot;&quot;, std::string task=&quot;&quot;, std::string srtx=&quot;&quot;)</argsstring>
+        <name>getOrCompile</name>
+        <qualifiedname>ShaderCache::getOrCompile</qualifiedname>
+        <param>
+          <type>std::string</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>vtx</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>frag</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>geom</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>tess</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>compute</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>task</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>srtx</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <briefdescription>
+<para>Returns a cached shader program, compiling and caching if missing. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>name</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Cache key for the shader program. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>vtx</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="struct_vertex" kindref="compound">Vertex</ref> shader source. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>frag</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Fragment shader source. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>geom</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Geometry shader source. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>tess</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Tessellation shader source. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>compute</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Compute shader source. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>task</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Task shader source. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>srtx</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Ray-trace shader source. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Shared pointer to a compiled shader program. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="514" column="21" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="514" bodyend="549"/>
+      </memberdef>
+      <memberdef kind="function" id="struct_shader_cache_1ae36ea2f2f11454ea3df20212e3fffd25" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void ShaderCache::clear</definition>
+        <argsstring>()</argsstring>
+        <name>clear</name>
+        <qualifiedname>ShaderCache::clear</qualifiedname>
+        <briefdescription>
+<para>Clears the current state. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="554" column="10" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="554" bodyend="556"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_shader_cache" kindref="compound">ShaderCache</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Shaders/ShaderProgram.h" line="499" column="1" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="499" bodyend="557"/>
+    <listofallmembers>
+      <member refid="struct_shader_cache_1ae36ea2f2f11454ea3df20212e3fffd25" prot="public" virt="non-virtual"><scope>ShaderCache</scope><name>clear</name></member>
+      <member refid="struct_shader_cache_1af5f1cbf4ab7956b32d7bd121781705d4" prot="public" virt="non-virtual"><scope>ShaderCache</scope><name>getOrCompile</name></member>
+      <member refid="struct_shader_cache_1a04d6ef8cb95a509dc1b03e65e031bf91" prot="public" virt="non-virtual"><scope>ShaderCache</scope><name>programCache</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

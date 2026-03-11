@@ -1,3 +1,8 @@
+/**
+ * @file src/Assets/Descriptors/SkyboxAsset.cpp
+ * @brief Implementation for SkyboxAsset.
+ */
+
 #include "Assets/Descriptors/SkyboxAsset.h"
 
 #include "Assets/Core/Asset.h"

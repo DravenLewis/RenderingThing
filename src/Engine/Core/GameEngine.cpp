@@ -1,3 +1,8 @@
+/**
+ * @file src/Engine/Core/GameEngine.cpp
+ * @brief Implementation for GameEngine.
+ */
+
 
 #include "Engine/Core/GameEngine.h"
 

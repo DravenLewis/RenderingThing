@@ -1,0 +1,301 @@
+.TH "Vertex" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Vertex \- Holds data for \fBVertex\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <Mesh\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBVertex\fP & \fBPos\fP (const Math3D::Vec3 &pos)"
+.br
+.RI "Sets vertex position\&. "
+.ti -1c
+.RI "\fBVertex\fP & \fBPos\fP (float x=0, float y=0, float z=0)"
+.br
+.RI "Sets vertex position\&. "
+.ti -1c
+.RI "\fBVertex\fP & \fBNorm\fP (const Math3D::Vec3 &nml)"
+.br
+.RI "Sets vertex normal\&. "
+.ti -1c
+.RI "\fBVertex\fP & \fBNorm\fP (float x=0, float y=0, float z=0)"
+.br
+.RI "Sets vertex normal\&. "
+.ti -1c
+.RI "\fBVertex\fP & \fBUV\fP (const Math3D::Vec2 &pos)"
+.br
+.RI "Sets vertex UV coordinates\&. "
+.ti -1c
+.RI "\fBVertex\fP & \fBUV\fP (float u=0, float v=0)"
+.br
+.RI "Sets vertex UV coordinates\&. "
+.ti -1c
+.RI "\fBVertex\fP & \fBCol\fP (const Math3D::Vec4 &col)"
+.br
+.RI "Sets vertex color\&. "
+.ti -1c
+.RI "\fBVertex\fP & \fBCol\fP (float r=0, float g=0, float b=0, float a=1)"
+.br
+.RI "Sets vertex color\&. "
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBVertex\fP &vtx) const"
+.br
+.ti -1c
+.RI "bool \fBoperator!=\fP (const \fBVertex\fP &vtx) const"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBVertex\fP \fBBuild\fP (Math3D::Vec3 pos=Math3D::Vec3::zero(), Math3D::Vec4 color=Math3D::Vec4(1, 1, 1, 1), Math3D::Vec3 normal=Math3D::Vec3::zero(), Math3D::Vec2 texcords=Math3D::Vec2(0, 0))"
+.br
+.RI "Builds the target output\&. "
+.ti -1c
+.RI "static \fBVertex\fP \fBCompose\fP (std::vector< float > &floats, int dataSize=VERTEX_DATA_WIDTH)"
+.br
+.RI "Composes a vertex from components\&. "
+.ti -1c
+.RI "static std::vector< float > \fBDecompose\fP (\fBVertex\fP &v)"
+.br
+.RI "Decomposes a vertex into scalar components\&. "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "Math3D::Vec3 \fBPosition\fP"
+.br
+.ti -1c
+.RI "Math3D::Vec3 \fBNormal\fP"
+.br
+.ti -1c
+.RI "Math3D::Vec2 \fBTexCoords\fP"
+.br
+.ti -1c
+.RI "Math3D::Vec4 \fBColor\fP"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const int \fBVERTEX_DATA_WIDTH\fP = 12"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Holds data for \fBVertex\fP\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBVertex\fP Vertex::Build (Math3D::Vec3 pos = \fRMath3D::Vec3::zero()\fP, Math3D::Vec4 color = \fRMath3D::Vec4(1,1,1,1)\fP, Math3D::Vec3 normal = \fRMath3D::Vec3::zero()\fP, Math3D::Vec2 texcords = \fRMath3D::Vec2(0,0)\fP)\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+Builds the target output\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpos\fP Value for pos\&. 
+.br
+\fIcolor\fP Color value\&. 
+.br
+\fInormal\fP Value for normal\&. 
+.br
+\fItexcords\fP Value for texcords\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Result of this operation\&. 
+.RE
+.PP
+
+.SS "\fBVertex\fP & Vertex::Col (const Math3D::Vec4 & col)\fR [inline]\fP"
+
+.PP
+Sets vertex color\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcol\fP Value for col\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "\fBVertex\fP & Vertex::Col (float r = \fR0\fP, float g = \fR0\fP, float b = \fR0\fP, float a = \fR1\fP)\fR [inline]\fP"
+
+.PP
+Sets vertex color\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIr\fP Value for r\&. 
+.br
+\fIg\fP Value for g\&. 
+.br
+\fIb\fP Value for b\&. 
+.br
+\fIa\fP Value for a\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "\fBVertex\fP Vertex::Compose (std::vector< float > & floats, int dataSize = \fRVERTEX_DATA_WIDTH\fP)\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+Composes a vertex from components\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfloats\fP Value for floats\&. 
+.br
+\fIdataSize\fP Number of elements or bytes\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Result of this operation\&. 
+.RE
+.PP
+
+.SS "std::vector< float > Vertex::Decompose (\fBVertex\fP & v)\fR [inline]\fP, \fR [static]\fP"
+
+.PP
+Decomposes a vertex into scalar components\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIv\fP Value for v\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Computed numeric result\&. 
+.RE
+.PP
+
+.SS "\fBVertex\fP & Vertex::Norm (const Math3D::Vec3 & nml)\fR [inline]\fP"
+
+.PP
+Sets vertex normal\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fInml\fP Value for nml\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "\fBVertex\fP & Vertex::Norm (float x = \fR0\fP, float y = \fR0\fP, float z = \fR0\fP)\fR [inline]\fP"
+
+.PP
+Sets vertex normal\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIx\fP Spatial value used by this operation\&. 
+.br
+\fIy\fP Spatial value used by this operation\&. 
+.br
+\fIz\fP Spatial value used by this operation\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "\fBVertex\fP & Vertex::Pos (const Math3D::Vec3 & pos)\fR [inline]\fP"
+
+.PP
+Sets vertex position\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpos\fP Value for pos\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "\fBVertex\fP & Vertex::Pos (float x = \fR0\fP, float y = \fR0\fP, float z = \fR0\fP)\fR [inline]\fP"
+
+.PP
+Sets vertex position\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIx\fP Spatial value used by this operation\&. 
+.br
+\fIy\fP Spatial value used by this operation\&. 
+.br
+\fIz\fP Spatial value used by this operation\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "\fBVertex\fP & Vertex::UV (const Math3D::Vec2 & pos)\fR [inline]\fP"
+
+.PP
+Sets vertex UV coordinates\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpos\fP Value for pos\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+.SS "\fBVertex\fP & Vertex::UV (float u = \fR0\fP, float v = \fR0\fP)\fR [inline]\fP"
+
+.PP
+Sets vertex UV coordinates\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIu\fP Value for u\&. 
+.br
+\fIv\fP Value for v\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the resulting value\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

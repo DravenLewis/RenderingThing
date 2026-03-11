@@ -1,0 +1,102 @@
+\doxysection{Light Struct Reference}
+\hypertarget{struct_light}{}\label{struct_light}\index{Light@{Light}}
+
+
+Holds data for \doxylink{struct_light}{Light}.  
+
+
+
+
+{\ttfamily \+\#include $<$Light.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{struct_light_aeb5df09a25a32f19fdffa761268ba24f}{Light}} ()
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{struct_light}{Light} instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_light_a50daa44245fcf1446cc862cad8d31cd0}\label{struct_light_a50daa44245fcf1446cc862cad8d31cd0} 
+static \doxymbox{\hyperlink{struct_light}{Light}} {\bfseries Create\+Point\+Light} (Math3\+D::\+\+Vec3 position, Math3\+D::\+\+Vec4 color=Color::\+\+WHITE, float intensity=1.\+0f, float range=10.\+0f, float falloff=1.\+0f)
+\item 
+\Hypertarget{struct_light_a6f64dcae681aed7a7ddb2e499a49ad50}\label{struct_light_a6f64dcae681aed7a7ddb2e499a49ad50} 
+static \doxymbox{\hyperlink{struct_light}{Light}} {\bfseries Create\+Directional\+Light} (Math3\+D::\+\+Vec3 direction, Math3\+D::\+\+Vec4 color=Color::\+\+WHITE, float intensity=1.\+0f)
+\item 
+\Hypertarget{struct_light_a4493641cc4348121e6ec4d351133d747}\label{struct_light_a4493641cc4348121e6ec4d351133d747} 
+static \doxymbox{\hyperlink{struct_light}{Light}} {\bfseries Create\+Spot\+Light} (Math3\+D::\+\+Vec3 position, Math3\+D::\+\+Vec3 direction, Math3\+D::\+\+Vec4 color=Color::\+\+WHITE, float intensity=1.\+0f, float range=10.\+0f, float falloff=1.\+0f, float spot\+Angle=45.\+0f)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_light_a86e648b4a80a5c1e194c97ef52f9efc6}\label{struct_light_a86e648b4a80a5c1e194c97ef52f9efc6} 
+\doxymbox{\hyperlink{_light_8h_adc3ec8293e6a97ebe43f0196b9a7f638}{Light\+Type}} {\bfseries type}
+\item 
+\Hypertarget{struct_light_a4fdcd58e8f93eb16418bb9852f19bc4e}\label{struct_light_a4fdcd58e8f93eb16418bb9852f19bc4e} 
+Math3\+D::\+\+Vec3 {\bfseries position}
+\item 
+\Hypertarget{struct_light_a512f8ab10a31d68e55eade804f13a683}\label{struct_light_a512f8ab10a31d68e55eade804f13a683} 
+Math3\+D::\+\+Vec3 {\bfseries direction}
+\item 
+\Hypertarget{struct_light_a9969f685e27f38f876702e3dd5bd1cf1}\label{struct_light_a9969f685e27f38f876702e3dd5bd1cf1} 
+Math3\+D::\+\+Vec4 {\bfseries color}
+\item 
+\Hypertarget{struct_light_a1071eaa556f4bb2a9345fdfba7e6f220}\label{struct_light_a1071eaa556f4bb2a9345fdfba7e6f220} 
+float {\bfseries intensity}
+\item 
+\Hypertarget{struct_light_ad8de02f467484d8e8b08518ddb581e5a}\label{struct_light_ad8de02f467484d8e8b08518ddb581e5a} 
+float {\bfseries range}
+\item 
+\Hypertarget{struct_light_ae0d1b643bb7ce302ecd9a0fe78d12335}\label{struct_light_ae0d1b643bb7ce302ecd9a0fe78d12335} 
+float {\bfseries falloff}
+\item 
+\Hypertarget{struct_light_a2092ef2339edd1cd4d69e63a0bf51e77}\label{struct_light_a2092ef2339edd1cd4d69e63a0bf51e77} 
+float {\bfseries spot\+Angle}
+\item 
+\Hypertarget{struct_light_abb7298439012ddc5939562608c2076ee}\label{struct_light_abb7298439012ddc5939562608c2076ee} 
+float {\bfseries shadow\+Range}
+\item 
+\Hypertarget{struct_light_a7a240b12a17f558f36963ed6aaaa290e}\label{struct_light_a7a240b12a17f558f36963ed6aaaa290e} 
+bool {\bfseries casts\+Shadows}
+\item 
+\Hypertarget{struct_light_a77256a30d9ce51a8e4e3504b04fd4cc2}\label{struct_light_a77256a30d9ce51a8e4e3504b04fd4cc2} 
+\doxymbox{\hyperlink{_light_8h_a5c50abf40600ee3c28c7fa04702a8bbc}{Shadow\+Type}} {\bfseries shadow\+Type}
+\item 
+\Hypertarget{struct_light_ad7fa07ea245e48d0fd47d279abd58d3c}\label{struct_light_ad7fa07ea245e48d0fd47d279abd58d3c} 
+float {\bfseries shadow\+Bias}
+\item 
+\Hypertarget{struct_light_aebcc2cc2d05ef5ad585cd240f2850959}\label{struct_light_aebcc2cc2d05ef5ad585cd240f2850959} 
+float {\bfseries shadow\+Normal\+Bias}
+\item 
+\Hypertarget{struct_light_a1b12738944d36263610dfc70a8b2021a}\label{struct_light_a1b12738944d36263610dfc70a8b2021a} 
+float {\bfseries shadow\+Strength}
+\item 
+\Hypertarget{struct_light_a69610e383b6a6230f3723089880c0038}\label{struct_light_a69610e383b6a6230f3723089880c0038} 
+float {\bfseries cascade\+Lambda}
+\item 
+\Hypertarget{struct_light_aaefd3dd16a8649fc81cbfbc83b6888cc}\label{struct_light_aaefd3dd16a8649fc81cbfbc83b6888cc} 
+int {\bfseries shadow\+Debug\+Mode}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Holds data for \doxylink{struct_light}{Light}. 
+
+\label{doc-constructors}
+\Hypertarget{struct_light_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{struct_light_aeb5df09a25a32f19fdffa761268ba24f}\index{Light@{Light}!Light@{Light}}
+\index{Light@{Light}!Light@{Light}}
+\doxysubsubsection{\texorpdfstring{Light()}{Light()}}
+{\footnotesize\ttfamily \label{struct_light_aeb5df09a25a32f19fdffa761268ba24f} 
+Light::\+\+Light (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Constructs a new \doxylink{struct_light}{Light} instance. 
+
+Returns shadow debug mode text. 
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Lighting/\+\doxymbox{\hyperlink{_light_8h}{Light.\+h}}\end{DoxyCompactItemize}

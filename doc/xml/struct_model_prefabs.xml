@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_model_prefabs" kind="struct" language="C++" prot="public">
+    <compoundname>ModelPrefabs</compoundname>
+    <includes refid="_model_prefabs_8h" local="no">ModelPrefabs.h</includes>
+    <innerclass refid="struct_model_prefabs_1_1_cube_material_definition" prot="public">ModelPrefabs::CubeMaterialDefinition</innerclass>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="struct_model_prefabs_1ad5d5f5c2c36f3c39db66281afd4713ee" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="struct_model" kindref="compound">Model</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt; Model &gt; ModelPrefabs::MakeCube</definition>
+        <argsstring>(float scale=1.0f, std::shared_ptr&lt; CubeMaterialDefinition &gt; matDef=CubeMaterialDefinition::Create())</argsstring>
+        <name>MakeCube</name>
+        <qualifiedname>ModelPrefabs::MakeCube</qualifiedname>
+        <param>
+          <type>float</type>
+          <declname>scale</declname>
+          <defval>1.0f</defval>
+        </param>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="struct_model_prefabs_1_1_cube_material_definition" kindref="compound">CubeMaterialDefinition</ref> &gt;</type>
+          <declname>matDef</declname>
+          <defval><ref refid="struct_model_prefabs_1_1_cube_material_definition_1aba705d4394d425991f04fbfb85500839" kindref="member">CubeMaterialDefinition::Create</ref>()</defval>
+        </param>
+        <briefdescription>
+<para>Creates cube. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>scale</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>matDef</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for mat def. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Pointer to the resulting object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/ModelPrefabs.h" line="50" column="28" bodyfile="src/Rendering/Geometry/ModelPrefabs.h" bodystart="50" bodyend="81"/>
+        <references refid="struct_model_1a3f0b711fc427dce1d41b1c2122248482" compoundref="_model_8h" startline="179" endline="181">Model::Create</references>
+        <references refid="struct_model_prefabs_1_1_cube_material_definition_1aba705d4394d425991f04fbfb85500839" compoundref="_model_prefabs_8h" startline="31" endline="31">ModelPrefabs::CubeMaterialDefinition::Create</references>
+        <references refid="struct_model_part_prefabs_1ae5f37b441c2d40314487e103ada227a8" compoundref="_model_part_prefabs_8h" startline="30" endline="44">ModelPartPrefabs::MakePlane</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_model_prefabs" kindref="compound">ModelPrefabs</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Geometry/ModelPrefabs.h" line="16" column="1" bodyfile="src/Rendering/Geometry/ModelPrefabs.h" bodystart="16" bodyend="82"/>
+    <listofallmembers>
+      <member refid="struct_model_prefabs_1ad5d5f5c2c36f3c39db66281afd4713ee" prot="public" virt="non-virtual"><scope>ModelPrefabs</scope><name>MakeCube</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,103 @@
+\doxysection{Material Class Reference}
+\hypertarget{class_material}{}\label{class_material}\index{Material@{Material}}
+
+
+Represents the \doxylink{class_material}{Material} type.  
+
+
+
+
+{\ttfamily \+\#include $<$Material.\+h$>$}
+
+Inheritance diagram for Material:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=10.000000cm]{class_material}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{class_material_ace810a426f4b488d2dc2a53070d85405}{Material}} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ program)
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_material}{Material} instance. \end{DoxyCompactList}\item 
+\Hypertarget{class_material_a179e16d6a1bd4a0f039b8e4cbf2ade30}\label{class_material_a179e16d6a1bd4a0f039b8e4cbf2ade30} 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+Material} ()
+\begin{DoxyCompactList}\small\item\em Destroys this \doxylink{class_material}{Material} instance. \end{DoxyCompactList}\item 
+\Hypertarget{class_material_afebe6792e3275332e491ce2ca396069b}\label{class_material_afebe6792e3275332e491ce2ca396069b} 
+{\footnotesize template$<$typename T$>$ }\\bool {\bfseries set} (const std::\+string \&name, T value)
+\item 
+virtual void \doxymbox{\hyperlink{class_material_aa9acc36e80cc1874dc69da8dedf54695}{bind}} ()
+\item 
+\Hypertarget{class_material_a3b4ef589843fde30b1844bde9bcbad19}\label{class_material_a3b4ef589843fde30b1844bde9bcbad19} 
+void {\bfseries unbind} ()
+\item 
+\Hypertarget{class_material_a3fbc05a83a35eb9e07a7b84cba22eb6e}\label{class_material_a3fbc05a83a35eb9e07a7b84cba22eb6e} 
+std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ {\bfseries get\+Shader} ()
+\item 
+\Hypertarget{class_material_add6d2e03a3dc1ac8dfac431b9641d5cc}\label{class_material_add6d2e03a3dc1ac8dfac431b9641d5cc} 
+void {\bfseries set\+Shader} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$ program)
+\item 
+\Hypertarget{class_material_ab98237e9210f21b7b8600966f6b66c5f}\label{class_material_ab98237e9210f21b7b8600966f6b66c5f} 
+void {\bfseries set\+Casts\+Shadows} (bool value)
+\item 
+\Hypertarget{class_material_aaf9a94eb8335d955b4a58a1f036bb3aa}\label{class_material_aaf9a94eb8335d955b4a58a1f036bb3aa} 
+bool {\bfseries casts\+Shadows} () const
+\item 
+\Hypertarget{class_material_acef042dc3f4671a78a172aa90a12b694}\label{class_material_acef042dc3f4671a78a172aa90a12b694} 
+void {\bfseries set\+Receives\+Shadows} (bool value)
+\item 
+\Hypertarget{class_material_adfd452b4ff41ff6d818278e8adf9b9d5}\label{class_material_adfd452b4ff41ff6d818278e8adf9b9d5} 
+bool {\bfseries receives\+Shadows} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_material_a55fb7dcfa5f72a8997b6423ac099caa6}\label{class_material_a55fb7dcfa5f72a8997b6423ac099caa6} 
+static std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material}{Material}} $>$ {\bfseries Copy} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material}{Material}} $>$ material)
+\item 
+\Hypertarget{class_material_a00c4c29d23d53171fa11ccbe1d91f14d}\label{class_material_a00c4c29d23d53171fa11ccbe1d91f14d} 
+{\footnotesize template$<$typename T$>$ }\\static std::\+shared\+\_\+ptr$<$ T $>$ {\bfseries Get\+As} (std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_material}{Material}} $>$ mat\+Ptr)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the \doxylink{class_material}{Material} type. 
+
+\label{doc-constructors}
+\Hypertarget{class_material_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_material_ace810a426f4b488d2dc2a53070d85405}\index{Material@{Material}!Material@{Material}}
+\index{Material@{Material}!Material@{Material}}
+\doxysubsubsection{\texorpdfstring{Material()}{Material()}}
+{\footnotesize\ttfamily \label{class_material_ace810a426f4b488d2dc2a53070d85405} 
+Material::\+\+Material (\begin{DoxyParamCaption}\item[{std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{class_shader_program}{Shader\+Program}} $>$}]{program}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Constructs a new \doxylink{class_material}{Material} instance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em program} & Value for program. \\
+\hline
+\end{DoxyParams}
+
+
+\label{doc-func-members}
+\Hypertarget{class_material_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_material_aa9acc36e80cc1874dc69da8dedf54695}\index{Material@{Material}!bind@{bind}}
+\index{bind@{bind}!Material@{Material}}
+\doxysubsubsection{\texorpdfstring{bind()}{bind()}}
+{\footnotesize\ttfamily \label{class_material_aa9acc36e80cc1874dc69da8dedf54695} 
+virtual void Material::\+bind (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented in \doxymbox{\hyperlink{class_constructed_material_a20ec1258bcfcd504150134f3d12dbb4a}{Constructed\+Material}}, \doxymbox{\hyperlink{class_material_defaults_1_1_flat_color_material_a3602a1f317d7e37c08e1f2c7e4fd4c2b}{Material\+Defaults::\+\+Flat\+Color\+Material}}, \doxymbox{\hyperlink{class_material_defaults_1_1_flat_image_material_a61b269b2721d94022945e0bf31bbd6fc}{Material\+Defaults::\+\+Flat\+Image\+Material}}, \doxymbox{\hyperlink{class_material_defaults_1_1_lit_color_material_a80c1908b825477e38e320f838708fac9}{Material\+Defaults::\+\+Lit\+Color\+Material}}, \doxymbox{\hyperlink{class_material_defaults_1_1_lit_image_material_ab48290d5a6ba088db4337a1b9f3c2137}{Material\+Defaults::\+\+Lit\+Image\+Material}}, \doxymbox{\hyperlink{class_p_b_r_material_a30db1aa8fdf92f2a7310b864d79ee159}{PBRMaterial}}, and \doxymbox{\hyperlink{class_skybox_material_acc843c2b1152fda9d10fbd964e7e9473}{Skybox\+Material}}.
+
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Materials/\+\doxymbox{\hyperlink{_material_8h}{Material.\+h}}\end{DoxyCompactItemize}

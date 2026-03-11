@@ -1,0 +1,160 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_view" xml:lang="en-US">
+<title>View Class Reference</title>
+<indexterm><primary>View</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_view">View</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;View.h&gt;</computeroutput>
+</para>
+<para>Inheritance diagram for View:    <informalfigure>
+        <mediaobject>
+            <imageobject>
+                <imagedata width="50%" align="center" valign="middle" scalefit="0" fileref="class_view.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+    </informalfigure>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_view_1a44ad60a768422d3fa8fbd7576950080a"/><emphasis role="strong">View</emphasis> ()</para>
+
+<para>Constructs a new <link linkend="_class_view">View</link> instance. </para>
+</listitem>
+            <listitem><para><link linkend="_class_view_1a07132ba8235a9facabfd0594fc9e60f4">View</link> (RenderWindow *window)</para>
+
+<para>Constructs a new <link linkend="_class_view">View</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_view_1ad0f3ade04bca4e74b8868e63729bad86"/>virtual <emphasis role="strong">~View</emphasis> ()=default</para>
+
+<para>Destroys this <link linkend="_class_view">View</link> instance. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_view_1a2f776db693e8572fb8896f74fe86ef81">attachWindow</link> (RenderWindow *window)</para>
+
+<para>Attaches a render window to this view. </para>
+</listitem>
+            <listitem><para>bool <link linkend="_class_view_1a3c012f511108db02bfe319f63a7c3153">hasWindow</link> () const</para>
+
+<para>Checks whether window. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_view_1ac04ab971b398247192797c536c894b71"/>void <emphasis role="strong">resize</emphasis> (int w, int h)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_view_1aaf31c6402f7eff515fc7ffce37d9faef"/>PScreen <emphasis role="strong">getScreen</emphasis> (size_t index) const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_view_1aef6eff19fba3651758f30520b48da2b5"/>PScreen <emphasis role="strong">getMainScreen</emphasis> () const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_view_1a3f39fe04bcdae2f40f2f2b5404831cf1"/>PScreen <emphasis role="strong">getUIScreen</emphasis> () const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_view_1afb006fefe82937f955da74db7d1238d0"/>RenderWindow * <emphasis role="strong">getWindow</emphasis> () const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_view_1a895ec1133236bfa64a0a1db15144bc8f"/>int <emphasis role="strong">getWidth</emphasis> () const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_view_1a8d99fa6159d6728d051df65d845bc45a"/>int <emphasis role="strong">getHeight</emphasis> () const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_view_1a3e8cb18218090a709a2ab6d86dccf770"/>void <emphasis role="strong">addScreen</emphasis> (PScreen screen)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_view_1aec098fd90d4651a4d174c8e9aeb10d39"/>size_t <emphasis role="strong">screenCount</emphasis> () const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_view_1a26ab8b83d0516d7af51a47ca2fdd3aa1"/>virtual void <emphasis role="strong">drawToWindow</emphasis> (bool clearWindow=true, float x=-1, float y=-1, float w=-1, float h=-1)</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_view_1a70c24a66d7aa2abc85564a4ac08883e2"/>Math3D::Vec3 <emphasis role="strong">screenToWorld</emphasis> (PCamera cam, float x, float y, float depth=0.0f, float viewportX=0.0f, float viewportY=0.0f, float viewportW=-1.0f, float viewportH=-1.0f) const</para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_view_1a4968e73c482870f93a6cfedb85c0ff21"/>Math3D::Vec3 <emphasis role="strong">worldToScreen</emphasis> (PCamera cam, const Math3D::Vec3 &amp;world, float viewportX=0.0f, float viewportY=0.0f, float viewportW=-1.0f, float viewportH=-1.0f) const</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_view">View</link> type. </para>
+</section>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_class_view_1a07132ba8235a9facabfd0594fc9e60f4"/><section>
+    <title>View()</title>
+<indexterm><primary>View</primary><secondary>View</secondary></indexterm>
+<indexterm><primary>View</primary><secondary>View</secondary></indexterm>
+<para><computeroutput>View::View (RenderWindow * window)</computeroutput></para><para>
+
+<para>Constructs a new <link linkend="_class_view">View</link> instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>window</entry><entry>
+<para>Value for window. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_view_1a2f776db693e8572fb8896f74fe86ef81"/><section>
+    <title>attachWindow()</title>
+<indexterm><primary>attachWindow</primary><secondary>View</secondary></indexterm>
+<indexterm><primary>View</primary><secondary>attachWindow</secondary></indexterm>
+<para><computeroutput>void View::attachWindow (RenderWindow * window)</computeroutput></para><para>
+
+<para>Attaches a render window to this view. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>window</entry><entry>
+<para>Value for window. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_view_1a3c012f511108db02bfe319f63a7c3153"/><section>
+    <title>hasWindow()</title>
+<indexterm><primary>hasWindow</primary><secondary>View</secondary></indexterm>
+<indexterm><primary>View</primary><secondary>hasWindow</secondary></indexterm>
+<para><computeroutput>bool View::hasWindow ( ) const<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Checks whether window. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>True when the condition is satisfied; otherwise false. </para>
+</formalpara>
+</para>
+</section>
+<para>
+The documentation for this class was generated from the following files:</para>
+src/Rendering/Core/<link linkend="__view_8h">View.h</link>src/Rendering/Core/<link linkend="__view_8cpp">View.cpp</link></section>
+</section>

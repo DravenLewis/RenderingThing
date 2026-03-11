@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_light_uniform_uploader" kind="class" language="C++" prot="public">
+    <compoundname>LightUniformUploader</compoundname>
+    <includes refid="_light_utils_8h" local="no">LightUtils.h</includes>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_light_uniform_uploader_1a47d11f57dfb8557bd58dd6e9ca1cb51f" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void LightUniformUploader::UploadLights</definition>
+        <argsstring>(std::shared_ptr&lt; ShaderProgram &gt; program, const std::vector&lt; Light &gt; &amp;lights)</argsstring>
+        <name>UploadLights</name>
+        <qualifiedname>LightUniformUploader::UploadLights</qualifiedname>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="class_shader_program" kindref="compound">ShaderProgram</ref> &gt;</type>
+          <declname>program</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; <ref refid="struct_light" kindref="compound">Light</ref> &gt; &amp;</type>
+          <declname>lights</declname>
+        </param>
+        <briefdescription>
+<para>Uploads light data to shader uniforms. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>program</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for program. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>lights</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for lights. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Lighting/LightUtils.h" line="21" column="17" bodyfile="src/Rendering/Lighting/LightUtils.cpp" bodystart="107" bodyend="266"/>
+        <references refid="class_shadow_renderer_1a5b7b6245485e78e450e4f36511dc6028" compoundref="_shadow_renderer_8cpp" startline="1136" endline="1138">ShadowRenderer::GetFrameId</references>
+        <references refid="class_shadow_renderer_1a2a6a438bcb4909cfe0f049a418ca08a1" compoundref="_shadow_renderer_8cpp" startline="1581" endline="1598">ShadowRenderer::GetShadowDataForLight</references>
+        <referencedby refid="class_material_defaults_1_1_flat_color_material_1a3602a1f317d7e37c08e1f2c7e4fd4c2b" compoundref="_material_defaults_8cpp" startline="281" endline="293">MaterialDefaults::FlatColorMaterial::bind</referencedby>
+        <referencedby refid="class_material_defaults_1_1_flat_image_material_1a61b269b2721d94022945e0bf31bbd6fc" compoundref="_material_defaults_8cpp" startline="344" endline="355">MaterialDefaults::FlatImageMaterial::bind</referencedby>
+        <referencedby refid="class_material_defaults_1_1_lit_color_material_1a80c1908b825477e38e320f838708fac9" compoundref="_material_defaults_8cpp" startline="156" endline="168">MaterialDefaults::LitColorMaterial::bind</referencedby>
+        <referencedby refid="class_material_defaults_1_1_lit_image_material_1ab48290d5a6ba088db4337a1b9f3c2137" compoundref="_material_defaults_8cpp" startline="218" endline="230">MaterialDefaults::LitImageMaterial::bind</referencedby>
+        <referencedby refid="class_p_b_r_material_1a30db1aa8fdf92f2a7310b864d79ee159" compoundref="_p_b_r_material_8cpp" startline="228" endline="238">PBRMaterial::bind</referencedby>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_light_uniform_uploader" kindref="compound">LightUniformUploader</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Lighting/LightUtils.h" line="14" column="1" bodyfile="src/Rendering/Lighting/LightUtils.h" bodystart="14" bodyend="22"/>
+    <listofallmembers>
+      <member refid="class_light_uniform_uploader_1a47d11f57dfb8557bd58dd6e9ca1cb51f" prot="public" virt="non-virtual"><scope>LightUniformUploader</scope><name>UploadLights</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

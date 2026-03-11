@@ -1,3 +1,8 @@
+/**
+ * @file src/Serialization/IO/ManifestIO.cpp
+ * @brief Implementation for ManifestIO.
+ */
+
 #include "Serialization/IO/ManifestIO.h"
 
 namespace {

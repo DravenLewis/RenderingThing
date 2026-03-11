@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_text_cache_key" kind="struct" language="C++" prot="public">
+    <compoundname>TextCacheKey</compoundname>
+    <includes refid="_font_8h" local="no">Font.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_text_cache_key_1a6ee3f612bb5fd9a9c3f3bbda7a03ff3a" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string TextCacheKey::text</definition>
+        <argsstring></argsstring>
+        <name>text</name>
+        <qualifiedname>TextCacheKey::text</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="36" column="17" bodyfile="src/Rendering/Fonts/Font.h" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_text_cache_key_1a8064f8a9e1fa77a26657476eb14ebf12" prot="public" static="no" mutable="no">
+        <type>Color</type>
+        <definition>Color TextCacheKey::color</definition>
+        <argsstring></argsstring>
+        <name>color</name>
+        <qualifiedname>TextCacheKey::color</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="37" column="11" bodyfile="src/Rendering/Fonts/Font.h" bodystart="37" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="struct_text_cache_key_1abe35541d54da32fbae45e17f405a47a5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool TextCacheKey::operator&lt;</definition>
+        <argsstring>(const TextCacheKey &amp;other) const</argsstring>
+        <name>operator&lt;</name>
+        <qualifiedname>TextCacheKey::operator&lt;</qualifiedname>
+        <param>
+          <type>const <ref refid="struct_text_cache_key" kindref="compound">TextCacheKey</ref> &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/Font.h" line="39" column="5" bodyfile="src/Rendering/Fonts/Font.h" bodystart="39" bodyend="42"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_text_cache_key" kindref="compound">TextCacheKey</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Fonts/Font.h" line="35" column="1" bodyfile="src/Rendering/Fonts/Font.h" bodystart="35" bodyend="43"/>
+    <listofallmembers>
+      <member refid="struct_text_cache_key_1a8064f8a9e1fa77a26657476eb14ebf12" prot="public" virt="non-virtual"><scope>TextCacheKey</scope><name>color</name></member>
+      <member refid="struct_text_cache_key_1abe35541d54da32fbae45e17f405a47a5" prot="public" virt="non-virtual"><scope>TextCacheKey</scope><name>operator&lt;</name></member>
+      <member refid="struct_text_cache_key_1a6ee3f612bb5fd9a9c3f3bbda7a03ff3a" prot="public" virt="non-virtual"><scope>TextCacheKey</scope><name>text</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

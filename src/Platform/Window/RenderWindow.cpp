@@ -1,3 +1,8 @@
+/**
+ * @file src/Platform/Window/RenderWindow.cpp
+ * @brief Implementation for RenderWindow.
+ */
+
 
 #include "Platform/Window/RenderWindow.h"
 #include "Foundation/Logging/Logbot.h"

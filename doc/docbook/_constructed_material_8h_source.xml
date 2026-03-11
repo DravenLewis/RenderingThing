@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__constructed_material_8h_source" xml:lang="en-US">
+<title>ConstructedMaterial.h</title>
+<indexterm><primary>src/Rendering/Materials/ConstructedMaterial.h</primary></indexterm>
+Go to the documentation of this file.<programlisting linenumbering="unnumbered">1 
+5 
+6 <emphasis role="preprocessor">#ifndef&#32;CONSTRUCTED_MATERIAL_H</emphasis>
+7 <emphasis role="preprocessor">#define&#32;CONSTRUCTED_MATERIAL_H</emphasis>
+8 
+9 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__material_8h">Rendering/Materials/Material.h</link>&quot;</emphasis>
+10 
+11 <emphasis role="preprocessor">#include&#32;&lt;string&gt;</emphasis>
+12 <emphasis role="preprocessor">#include&#32;&lt;vector&gt;</emphasis>
+13 
+14 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_texture">Texture</link>;
+15 
+17 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_constructed_material_1a6e513e5615be7d3b0fa75894b2c58dd1">ConstructedMaterial</link>&#32;:&#32;<emphasis role="keyword">public</emphasis>&#32;<link linkend="_class_material_1ace810a426f4b488d2dc2a53070d85405">Material</link>&#32;{
+18 &#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+20 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">enum&#32;class</emphasis>&#32;<link linkend="_class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cf">FieldType</link>&#32;{
+21 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Float&#32;=&#32;0,
+22 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Int,
+23 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Bool,
+24 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Vec2,
+25 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Vec3,
+26 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Vec4,
+27 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Texture2D
+28 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;};
+29 
+31 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">struct&#32;</emphasis><link linkend="_struct_constructed_material_1_1_field">Field</link>&#32;{
+32 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::string&#32;key;
+33 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::string&#32;displayName;
+34 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::string&#32;uniformName;
+35 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::string&#32;mirrorUniformName;
+36 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::string&#32;presenceUniformName;
+37 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_constructed_material_1a7944a0525d83161b63f7cef5d90c58cf">FieldType</link>&#32;type&#32;=&#32;FieldType::Float;
+38 
+39 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;floatValue&#32;=&#32;0.0f;
+40 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;intValue&#32;=&#32;0;
+41 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;boolValue&#32;=&#32;<emphasis role="keyword">false</emphasis>;
+42 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::Vec2&#32;vec2Value&#32;=&#32;Math3D::Vec2(0.0f,&#32;0.0f);
+43 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::Vec3&#32;vec3Value&#32;=&#32;Math3D::Vec3(0.0f,&#32;0.0f,&#32;0.0f);
+44 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;Math3D::Vec4&#32;vec4Value&#32;=&#32;Math3D::Vec4(0.0f,&#32;0.0f,&#32;0.0f,&#32;1.0f);
+45 
+46 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::string&#32;textureAssetRef;
+47 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::shared_ptr&lt;Texture&gt;&#32;texturePtr;
+48 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::string&#32;loadedTextureRef;
+49 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;textureSlot&#32;=&#32;0;
+50 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;};
+51 
+57 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">explicit</emphasis>&#32;<link linkend="_class_constructed_material_1a6e513e5615be7d3b0fa75894b2c58dd1">ConstructedMaterial</link>(<emphasis role="keyword">const</emphasis>&#32;std::shared_ptr&lt;ShaderProgram&gt;&amp;&#32;shaderProgram);
+58 
+63 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;std::shared_ptr&lt;ConstructedMaterial&gt;&#32;<link linkend="_class_constructed_material_1a3a3f4b57dfe35059b73a40e6cac44684">CreateWithPBRShader</link>();
+64 
+69 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_constructed_material_1a21bc4a9062326ce5c0cd79a8a702a6be">setSourceAssetRef</link>(<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;ref);
+74 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;<link linkend="_class_constructed_material_1a71a8ad0b3f9b7332cbeb6f83f40b7c9c">getSourceAssetRef</link>()&#32;<emphasis role="keyword">const</emphasis>;
+75 
+80 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_constructed_material_1ac61016aad3fbd3d73ec68b6bbb1ddada">setSourceMaterialName</link>(<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;name);
+85 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;<link linkend="_class_constructed_material_1aa0808c55319a66dcef4948cca0f68a20">getSourceMaterialName</link>()&#32;<emphasis role="keyword">const</emphasis>;
+86 
+96 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_constructed_material_1_1_field">Field</link>&amp;&#32;<link linkend="_class_constructed_material_1a2f30d4fbf1fdb26e428b33d23dbf10c6">addFloatField</link>(<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;key,
+97 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;displayName,
+98 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;uniformName,
+99 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;value,
+100 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;mirrorUniformName&#32;=&#32;<emphasis role="stringliteral">&quot;&quot;</emphasis>);
+110 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_constructed_material_1_1_field">Field</link>&amp;&#32;<link linkend="_class_constructed_material_1a284816c36fa3df24c2a4078166d2e542">addIntField</link>(<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;key,
+111 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;displayName,
+112 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;uniformName,
+113 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;value,
+114 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;mirrorUniformName&#32;=&#32;<emphasis role="stringliteral">&quot;&quot;</emphasis>);
+124 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_constructed_material_1_1_field">Field</link>&amp;&#32;<link linkend="_class_constructed_material_1a3aede6f45921adc753bb60b2f312a894">addBoolField</link>(<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;key,
+125 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;displayName,
+126 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;uniformName,
+127 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;value,
+128 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;mirrorUniformName&#32;=&#32;<emphasis role="stringliteral">&quot;&quot;</emphasis>);
+138 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_constructed_material_1_1_field">Field</link>&amp;&#32;<link linkend="_class_constructed_material_1a5e730682b49c7d07f4e3213b7c8e936f">addVec2Field</link>(<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;key,
+139 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;displayName,
+140 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;uniformName,
+141 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;Math3D::Vec2&amp;&#32;value,
+142 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;mirrorUniformName&#32;=&#32;<emphasis role="stringliteral">&quot;&quot;</emphasis>);
+152 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_constructed_material_1_1_field">Field</link>&amp;&#32;<link linkend="_class_constructed_material_1afa38f16b02e4428ab401779f626db4bb">addVec3Field</link>(<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;key,
+153 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;displayName,
+154 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;uniformName,
+155 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;Math3D::Vec3&amp;&#32;value,
+156 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;mirrorUniformName&#32;=&#32;<emphasis role="stringliteral">&quot;&quot;</emphasis>);
+166 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_constructed_material_1_1_field">Field</link>&amp;&#32;<link linkend="_class_constructed_material_1acf1ea6cee12a7e291049b2bcd93e418a">addVec4Field</link>(<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;key,
+167 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;displayName,
+168 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;uniformName,
+169 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;Math3D::Vec4&amp;&#32;value,
+170 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;mirrorUniformName&#32;=&#32;<emphasis role="stringliteral">&quot;&quot;</emphasis>);
+181 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_constructed_material_1_1_field">Field</link>&amp;&#32;<link linkend="_class_constructed_material_1a4a1b88134f55b0f679212db40941c87b">addTexture2DField</link>(<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;key,
+182 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;displayName,
+183 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;uniformName,
+184 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;textureAssetRef,
+185 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">int</emphasis>&#32;textureSlot,
+186 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::string&amp;&#32;presenceUniformName&#32;=&#32;<emphasis role="stringliteral">&quot;&quot;</emphasis>);
+187 
+192 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::vector&lt;Field&gt;&amp;&#32;<link linkend="_class_constructed_material_1a7d29c3cf5ab8b761637884dd53ccb531">fields</link>();
+197 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">const</emphasis>&#32;std::vector&lt;Field&gt;&amp;&#32;<link linkend="_class_constructed_material_1a7d29c3cf5ab8b761637884dd53ccb531">fields</link>()&#32;<emphasis role="keyword">const</emphasis>;
+198 
+202 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_constructed_material_1a1672cf71fcbe34b381fe784c9dcafa5c">clearFields</link>();
+206 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_constructed_material_1ad41964516b374f85c9dbe03d70285388">markFieldsDirty</link>();
+211 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_constructed_material_1a0b89ef6b1940504648859f840dd78a4b">applyField</link>(<emphasis role="keywordtype">size_t</emphasis>&#32;index);
+215 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_constructed_material_1a2d9ac90844fa0e951bdb8a2f90bd1aea">applyAllFields</link>();
+216 
+220 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_constructed_material_1a20ec1258bcfcd504150134f3d12dbb4a">bind</link>()&#32;<emphasis role="keyword">override</emphasis>;
+221 
+222 &#32;&#32;&#32;&#32;<emphasis role="keyword">private</emphasis>:
+228 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_struct_constructed_material_1_1_field">Field</link>&amp;&#32;emplaceField(<link linkend="_struct_constructed_material_1_1_field">Field</link>&amp;&amp;&#32;field);
+233 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;applyFieldInternal(<link linkend="_struct_constructed_material_1_1_field">Field</link>&amp;&#32;field);
+234 
+235 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::vector&lt;Field&gt;&#32;dynamicFields;
+236 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;fieldsDirty&#32;=&#32;<emphasis role="keyword">true</emphasis>;
+237 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::string&#32;sourceAssetRef;
+238 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::string&#32;sourceMaterialName;
+239 };
+240 
+241 <emphasis role="preprocessor">#endif&#32;</emphasis><emphasis role="comment">//&#32;CONSTRUCTED_MATERIAL_H</emphasis>
+</programlisting></section>

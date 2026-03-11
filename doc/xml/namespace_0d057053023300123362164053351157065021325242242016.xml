@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="namespace_0d057053023300123362164053351157065021325242242016" kind="namespace" language="C++">
+    <compoundname>@057053023300123362164053351157065021325242242016</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Materials/PBRMaterial.cpp" line="14" column="1"/>
+  </compounddef>
+</doxygen>

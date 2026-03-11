@@ -1,0 +1,66 @@
+\doxysection{Graphics::\+Post\+Processing::\+Post\+Processing\+Effect Class Reference}
+\hypertarget{class_graphics_1_1_post_processing_1_1_post_processing_effect}{}\label{class_graphics_1_1_post_processing_1_1_post_processing_effect}\index{Graphics::PostProcessing::PostProcessingEffect@{Graphics::PostProcessing::PostProcessingEffect}}
+
+
+Represents the \doxylink{class_graphics_1_1_post_processing_1_1_post_processing_effect}{Post\+Processing\+Effect} type.  
+
+
+
+
+{\ttfamily \+\#include $<$Graphics.\+h$>$}
+
+Inheritance diagram for Graphics::\+Post\+Processing::\+Post\+Processing\+Effect:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=0.643678cm]{class_graphics_1_1_post_processing_1_1_post_processing_effect}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_graphics_1_1_post_processing_1_1_post_processing_effect_a956557ebb725734d270dd77ef8e40358}\label{class_graphics_1_1_post_processing_1_1_post_processing_effect_a956557ebb725734d270dd77ef8e40358} 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+Post\+Processing\+Effect} ()=default
+\begin{DoxyCompactList}\small\item\em Destroys this \doxylink{class_graphics_1_1_post_processing_1_1_post_processing_effect}{Post\+Processing\+Effect} instance. \end{DoxyCompactList}\item 
+virtual bool \doxymbox{\hyperlink{class_graphics_1_1_post_processing_1_1_post_processing_effect_a75b0263b1e53943ceb4f13d4aad0f5e6}{apply}} (PTexture input\+Tex, PTexture depth\+Tex, PFrame\+Buffer frame\+Buffer, std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$ quad)=0
+\begin{DoxyCompactList}\small\item\em Applies current settings. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the \doxylink{class_graphics_1_1_post_processing_1_1_post_processing_effect}{Post\+Processing\+Effect} type. 
+
+\label{doc-func-members}
+\Hypertarget{class_graphics_1_1_post_processing_1_1_post_processing_effect_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_graphics_1_1_post_processing_1_1_post_processing_effect_a75b0263b1e53943ceb4f13d4aad0f5e6}\index{Graphics::PostProcessing::PostProcessingEffect@{Graphics::PostProcessing::PostProcessingEffect}!apply@{apply}}
+\index{apply@{apply}!Graphics::PostProcessing::PostProcessingEffect@{Graphics::PostProcessing::PostProcessingEffect}}
+\doxysubsubsection{\texorpdfstring{apply()}{apply()}}
+{\footnotesize\ttfamily \label{class_graphics_1_1_post_processing_1_1_post_processing_effect_a75b0263b1e53943ceb4f13d4aad0f5e6} 
+virtual bool Graphics::\+\+Post\+Processing::\+\+Post\+Processing\+Effect::\+apply (\begin{DoxyParamCaption}\item[{PTexture}]{input\+Tex}{, }\item[{PTexture}]{depth\+Tex}{, }\item[{PFrame\+Buffer}]{frame\+Buffer}{, }\item[{std::\+shared\+\_\+ptr$<$ \doxymbox{\hyperlink{struct_model_part}{Model\+Part}} $>$}]{quad}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Applies current settings. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em input\+Tex} & Value for put tex. \\
+\hline
+{\em depth\+Tex} & Value for depth tex. \\
+\hline
+{\em frame\+Buffer} & Value for frame buffer. \\
+\hline
+{\em quad} & Value for quad. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True when the operation succeeds; otherwise false. 
+\end{DoxyReturn}
+
+
+Implemented in \doxymbox{\hyperlink{class_auto_exposure_effect_addcac25d10d86ac96887736dcf750e40}{Auto\+Exposure\+Effect}}, \doxymbox{\hyperlink{class_bloom_effect_a0406096e8d58f6e752976df0121dfd64}{Bloom\+Effect}}, \doxymbox{\hyperlink{class_depth_of_field_effect_a7c28be25a4f335b6cb15282996d50995}{Depth\+Of\+Field\+Effect}}, \doxymbox{\hyperlink{class_f_x_a_a_effect_a350d2e34ca8351fb00fad5a571645f37}{FXAAEffect}}, \doxymbox{\hyperlink{class_grayscale_effect_a5e71990549a216be2b0f6901932c7692}{Grayscale\+Effect}}, and \doxymbox{\hyperlink{class_s_s_a_o_effect_a7f1ff7cf52ff64340ee7789e89b0a16a}{SSAOEffect}}.
+
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Core/\+\doxymbox{\hyperlink{_graphics_8h}{Graphics.\+h}}\end{DoxyCompactItemize}

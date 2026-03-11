@@ -1,3 +1,8 @@
+/**
+ * @file src/Foundation/Math/Math3D.h
+ * @brief Declarations for Math3D.
+ */
+
 #ifndef $MATH_H_
 #define $MATH_H_
 
@@ -21,6 +26,11 @@ namespace Math3D{
     inline static const float PI = 3.14159265359f; // Close enough.
     inline static const float EPSILON = 1e-5f;
 
+    /**
+     * @brief Computes the sine.
+     * @param i Value for i.
+     * @return Computed numeric result.
+     */
     inline float Sin(float i){ return glm::sin(i); }
     inline float Cos(float i){ return glm::cos(i); }
     inline float Tan(float i){ return glm::tan(i); }
@@ -77,6 +87,7 @@ namespace Math3D{
     struct Quat;
 
     // --- Vector 2 ---
+    /// @brief Holds data for Vec2.
     struct Vec2 {
         float x, y;
         Vec2(float x = 0.f, float y = 0.f) : x(x), y(y) {}
@@ -96,6 +107,7 @@ namespace Math3D{
     };
 
     // --- Vector 3 ---
+    /// @brief Holds data for Vec3.
     struct Vec3 {
         float x, y, z;
         Vec3(float x = 0.f, float y = 0.f, float z = 0.f) : x(x), y(y), z(z) {}
@@ -141,6 +153,7 @@ namespace Math3D{
     };
 
     // --- Vector 4 ---
+    /// @brief Holds data for Vec4.
     struct Vec4 {
         float x, y, z, w;
         Vec4(float x = 0.f, float y = 0.f, float z = 0.f, float w = 1.f) : x(x), y(y), z(z), w(w) {}
@@ -155,6 +168,7 @@ namespace Math3D{
     };
 
     // --- Quaternion ---
+    /// @brief Holds data for Quat.
     struct Quat {
         float x, y, z, w; // GLM Quat is w, x, y, z in constructor usually, but stored as x,y,z,w
         
@@ -218,6 +232,7 @@ namespace Math3D{
         glm::mat4 toMat4() const { return glm::toMat4((glm::quat)*this); }
     };
 
+    /// @brief Holds data for Mat4.
     struct Mat4 {
         glm::mat4 data;
 
@@ -248,6 +263,7 @@ namespace Math3D{
     };
 
     // --- Robust Transform ---
+    /// @brief Holds data for Transform.
     struct Transform {
         Vec3 position;
         Quat rotation;
@@ -399,6 +415,7 @@ namespace Math3D{
         }
     };
 
+    /// @brief Holds data for Random.
     struct Random{
         private:
             uint64_t seed;
@@ -439,6 +456,7 @@ namespace Math3D{
             }
     };
 
+    /// @brief Holds data for Rect.
     struct Rect{
         private:
             const int RECTANGLE_SIZE = 10;

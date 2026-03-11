@@ -1,0 +1,51 @@
+.TH "IMaterialProperty" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+IMaterialProperty \- Holds data for \fBIMaterialProperty\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <Material\&.h>\fP
+.PP
+Inherited by \fBMaterialProperty< T >\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void \fBapply\fP (\fBShaderProgram\fP &shader, const std::string &name, bool assumeBound)=0"
+.br
+.RI "Applies current settings\&. "
+.ti -1c
+.RI "virtual \fB~IMaterialProperty\fP ()=default"
+.br
+.RI "Destroys this \fBIMaterialProperty\fP instance\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Holds data for \fBIMaterialProperty\fP\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual void IMaterialProperty::apply (\fBShaderProgram\fP & shader, const std::string & name, bool assumeBound)\fR [pure virtual]\fP"
+
+.PP
+Applies current settings\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIshader\fP Value for shader\&. 
+.br
+\fIname\fP Name used for name\&. 
+.br
+\fIassumeBound\fP Value for assume bound\&. 
+.RE
+.PP
+
+.PP
+Implemented in \fBMaterialProperty< T >\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

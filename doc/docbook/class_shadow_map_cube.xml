@@ -1,0 +1,255 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_class_shadow_map_cube" xml:lang="en-US">
+<title>ShadowMapCube Class Reference</title>
+<indexterm><primary>ShadowMapCube</primary></indexterm>
+<para>
+
+<para>Represents the <link linkend="_class_shadow_map_cube">ShadowMapCube</link> type. </para>
+ 
+</para>
+<para>
+<computeroutput>#include &lt;ShadowMap.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Public Member Functions    </title>
+        <itemizedlist>
+            <listitem><para><anchor xml:id="_class_shadow_map_cube_1ad6bb31f5d7cc939a0c91a1b1d434a76a"/><emphasis role="strong">ShadowMapCube</emphasis> ()=default</para>
+
+<para>Constructs a new <link linkend="_class_shadow_map_cube">ShadowMapCube</link> instance. </para>
+</listitem>
+            <listitem><para><link linkend="_class_shadow_map_cube_1ae8b1dbe11963788d9f2661d7b57801e4">ShadowMapCube</link> (int size)</para>
+
+<para>Constructs a new <link linkend="_class_shadow_map_cube">ShadowMapCube</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_shadow_map_cube_1a35eb630aeabf2272a312f6a4a49f6712"/><emphasis role="strong">~ShadowMapCube</emphasis> ()</para>
+
+<para>Destroys this <link linkend="_class_shadow_map_cube">ShadowMapCube</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_shadow_map_cube_1a0aaaefa1c4de0b8da0ef9f4b37d619db"/><emphasis role="strong">ShadowMapCube</emphasis> (const <link linkend="_class_shadow_map_cube">ShadowMapCube</link> &amp;)=delete</para>
+
+<para>Constructs a new <link linkend="_class_shadow_map_cube">ShadowMapCube</link> instance. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_shadow_map_cube_1aa901c0f61f181dcaf8eeaf2aca97cc9f"/><link linkend="_class_shadow_map_cube">ShadowMapCube</link> &amp; <emphasis role="strong">operator=</emphasis> (const <link linkend="_class_shadow_map_cube">ShadowMapCube</link> &amp;)=delete</para>
+
+<para>Assigns from another instance. </para>
+</listitem>
+            <listitem><para><link linkend="_class_shadow_map_cube_1acf4f6dc81cb39059f2df7352e667cc9a">ShadowMapCube</link> (<link linkend="_class_shadow_map_cube">ShadowMapCube</link> &amp;&amp;other) noexcept</para>
+
+<para>Constructs a new <link linkend="_class_shadow_map_cube">ShadowMapCube</link> instance. </para>
+</listitem>
+            <listitem><para><link linkend="_class_shadow_map_cube">ShadowMapCube</link> &amp; <link linkend="_class_shadow_map_cube_1a9ec157dfb27a1e0f183fad95d0ee128c">operator=</link> (<link linkend="_class_shadow_map_cube">ShadowMapCube</link> &amp;&amp;other) noexcept</para>
+
+<para>Assigns from another instance. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_shadow_map_cube_1a2b4bc34daef25168c05eb6a853919afc">resize</link> (int newSize)</para>
+
+<para>Resizes internal resources. </para>
+</listitem>
+            <listitem><para>void <link linkend="_class_shadow_map_cube_1aa8bbe52175ec103726b6aa2e4dd4645b">bindFace</link> (GLenum face) const</para>
+
+<para>Binds face. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_shadow_map_cube_1aa977176a7596a0ba2baa70cb78dcfebf"/>void <emphasis role="strong">unbind</emphasis> () const</para>
+
+<para>Unbinds this resource. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_shadow_map_cube_1a7d6e4c1116e8e0827ead05a08c70de5c"/>void <emphasis role="strong">clear</emphasis> () const</para>
+
+<para>Clears the current state. </para>
+</listitem>
+            <listitem><para>GLuint <link linkend="_class_shadow_map_cube_1ad1fcf694238173cea98f59fb0f3f1efe">getDepthTexture</link> () const</para>
+
+<para>Returns the depth texture. </para>
+</listitem>
+            <listitem><para><anchor xml:id="_class_shadow_map_cube_1ab22b92b416ce0fcf00cd93863958a955"/>int <emphasis role="strong">getSize</emphasis> () const</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Represents the <link linkend="_class_shadow_map_cube">ShadowMapCube</link> type. </para>
+</section>
+<section>
+<title>Constructor &amp; Destructor Documentation</title>
+<anchor xml:id="_class_shadow_map_cube_1ae8b1dbe11963788d9f2661d7b57801e4"/><section>
+    <title>ShadowMapCube()<computeroutput>[1/2]</computeroutput></title>
+<indexterm><primary>ShadowMapCube</primary><secondary>ShadowMapCube</secondary></indexterm>
+<indexterm><primary>ShadowMapCube</primary><secondary>ShadowMapCube</secondary></indexterm>
+<para><computeroutput>ShadowMapCube::ShadowMapCube (int size)<computeroutput>[explicit]</computeroutput></computeroutput></para><para>
+
+<para>Constructs a new <link linkend="_class_shadow_map_cube">ShadowMapCube</link> instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>size</entry><entry>
+<para>Number of elements or bytes. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>Result of this operation. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shadow_map_cube_1acf4f6dc81cb39059f2df7352e667cc9a"/><section>
+    <title>ShadowMapCube()<computeroutput>[2/2]</computeroutput></title>
+<indexterm><primary>ShadowMapCube</primary><secondary>ShadowMapCube</secondary></indexterm>
+<indexterm><primary>ShadowMapCube</primary><secondary>ShadowMapCube</secondary></indexterm>
+<para><computeroutput>ShadowMapCube::ShadowMapCube (<link linkend="_class_shadow_map_cube">ShadowMapCube</link> &amp;&amp; other)<computeroutput>[noexcept]</computeroutput></computeroutput></para><para>
+
+<para>Constructs a new <link linkend="_class_shadow_map_cube">ShadowMapCube</link> instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>other</entry><entry>
+<para>Value for other. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+</section>
+<section>
+<title>Member Function Documentation</title>
+<anchor xml:id="_class_shadow_map_cube_1aa8bbe52175ec103726b6aa2e4dd4645b"/><section>
+    <title>bindFace()</title>
+<indexterm><primary>bindFace</primary><secondary>ShadowMapCube</secondary></indexterm>
+<indexterm><primary>ShadowMapCube</primary><secondary>bindFace</secondary></indexterm>
+<para><computeroutput>void ShadowMapCube::bindFace (GLenum face) const</computeroutput></para><para>
+
+<para>Binds face. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>face</entry><entry>
+<para>Value for face. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_shadow_map_cube_1ad1fcf694238173cea98f59fb0f3f1efe"/><section>
+    <title>getDepthTexture()</title>
+<indexterm><primary>getDepthTexture</primary><secondary>ShadowMapCube</secondary></indexterm>
+<indexterm><primary>ShadowMapCube</primary><secondary>getDepthTexture</secondary></indexterm>
+<para><computeroutput>GLuint ShadowMapCube::getDepthTexture ( ) const<computeroutput>[inline]</computeroutput></computeroutput></para><para>
+
+<para>Returns the depth texture. </para>
+</para>
+
+<para><formalpara><title>Returns</title>
+
+<para>Result of this operation. </para>
+</formalpara>
+</para>
+</section>
+<anchor xml:id="_class_shadow_map_cube_1a9ec157dfb27a1e0f183fad95d0ee128c"/><section>
+    <title>operator=()</title>
+<indexterm><primary>operator=</primary><secondary>ShadowMapCube</secondary></indexterm>
+<indexterm><primary>ShadowMapCube</primary><secondary>operator=</secondary></indexterm>
+<para><computeroutput><link linkend="_class_shadow_map_cube">ShadowMapCube</link> &amp; ShadowMapCube::operator= (<link linkend="_class_shadow_map_cube">ShadowMapCube</link> &amp;&amp; other)<computeroutput>[noexcept]</computeroutput></computeroutput></para><para>
+
+<para>Assigns from another instance. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>other</entry><entry>
+<para>Value for other. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<anchor xml:id="_class_shadow_map_cube_1a2b4bc34daef25168c05eb6a853919afc"/><section>
+    <title>resize()</title>
+<indexterm><primary>resize</primary><secondary>ShadowMapCube</secondary></indexterm>
+<indexterm><primary>ShadowMapCube</primary><secondary>resize</secondary></indexterm>
+<para><computeroutput>void ShadowMapCube::resize (int newSize)</computeroutput></para><para>
+
+<para>Resizes internal resources. </para>
+</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>newSize</entry><entry>
+<para>Number of elements or bytes. </para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                </para>
+</section>
+<para>
+The documentation for this class was generated from the following files:</para>
+src/Rendering/Lighting/<link linkend="__shadow_map_8h">ShadowMap.h</link>src/Rendering/Lighting/<link linkend="__shadow_map_8cpp">ShadowMap.cpp</link></section>
+</section>

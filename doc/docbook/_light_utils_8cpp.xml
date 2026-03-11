@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__light_utils_8cpp" xml:lang="en-US">
+<title>src/Rendering/Lighting/LightUtils.cpp File Reference</title>
+<indexterm><primary>src/Rendering/Lighting/LightUtils.cpp</primary></indexterm>
+<para>
+
+<para>Implementation for LightUtils. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &quot;Rendering/Lighting/LightUtils.h&quot;<?linebreak?>#include &lt;glad/glad.h&gt;<?linebreak?>#include &lt;unordered_map&gt;<?linebreak?>#include &lt;unordered_set&gt;<?linebreak?>#include &lt;cstring&gt;<?linebreak?>#include &quot;Foundation/Logging/Logbot.h&quot;<?linebreak?>#include &quot;Rendering/Lighting/ShadowRenderer.h&quot;<?linebreak?>#include &quot;Foundation/Math/Math3D.h&quot;<?linebreak?>#include &lt;cmath&gt;<?linebreak?></programlisting><section>
+<title>Detailed Description</title>
+
+<para>Implementation for LightUtils. </para>
+</section>
+</section>

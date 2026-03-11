@@ -1,0 +1,130 @@
+\doxysection{View Class Reference}
+\hypertarget{class_view}{}\label{class_view}\index{View@{View}}
+
+
+Represents the \doxylink{class_view}{View} type.  
+
+
+
+
+{\ttfamily \+\#include $<$View.\+h$>$}
+
+Inheritance diagram for View:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_view}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_view_a44ad60a768422d3fa8fbd7576950080a}\label{class_view_a44ad60a768422d3fa8fbd7576950080a} 
+{\bfseries View} ()
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_view}{View} instance. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{class_view_a07132ba8235a9facabfd0594fc9e60f4}{View}} (Render\+Window \texorpdfstring{$\ast$}{*}window)
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_view}{View} instance. \end{DoxyCompactList}\item 
+\Hypertarget{class_view_ad0f3ade04bca4e74b8868e63729bad86}\label{class_view_ad0f3ade04bca4e74b8868e63729bad86} 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+View} ()=default
+\begin{DoxyCompactList}\small\item\em Destroys this \doxylink{class_view}{View} instance. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_view_a2f776db693e8572fb8896f74fe86ef81}{attach\+Window}} (Render\+Window \texorpdfstring{$\ast$}{*}window)
+\begin{DoxyCompactList}\small\item\em Attaches a render window to this view. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{class_view_a3c012f511108db02bfe319f63a7c3153}{has\+Window}} () const
+\begin{DoxyCompactList}\small\item\em Checks whether window. \end{DoxyCompactList}\item 
+\Hypertarget{class_view_ac04ab971b398247192797c536c894b71}\label{class_view_ac04ab971b398247192797c536c894b71} 
+void {\bfseries resize} (int w, int h)
+\item 
+\Hypertarget{class_view_aaf31c6402f7eff515fc7ffce37d9faef}\label{class_view_aaf31c6402f7eff515fc7ffce37d9faef} 
+PScreen {\bfseries get\+Screen} (size\+\_\+t index) const
+\item 
+\Hypertarget{class_view_aef6eff19fba3651758f30520b48da2b5}\label{class_view_aef6eff19fba3651758f30520b48da2b5} 
+PScreen {\bfseries get\+Main\+Screen} () const
+\item 
+\Hypertarget{class_view_a3f39fe04bcdae2f40f2f2b5404831cf1}\label{class_view_a3f39fe04bcdae2f40f2f2b5404831cf1} 
+PScreen {\bfseries get\+UIScreen} () const
+\item 
+\Hypertarget{class_view_afb006fefe82937f955da74db7d1238d0}\label{class_view_afb006fefe82937f955da74db7d1238d0} 
+Render\+Window \texorpdfstring{$\ast$}{*} {\bfseries get\+Window} () const
+\item 
+\Hypertarget{class_view_a895ec1133236bfa64a0a1db15144bc8f}\label{class_view_a895ec1133236bfa64a0a1db15144bc8f} 
+int {\bfseries get\+Width} () const
+\item 
+\Hypertarget{class_view_a8d99fa6159d6728d051df65d845bc45a}\label{class_view_a8d99fa6159d6728d051df65d845bc45a} 
+int {\bfseries get\+Height} () const
+\item 
+\Hypertarget{class_view_a3e8cb18218090a709a2ab6d86dccf770}\label{class_view_a3e8cb18218090a709a2ab6d86dccf770} 
+void {\bfseries add\+Screen} (PScreen screen)
+\item 
+\Hypertarget{class_view_aec098fd90d4651a4d174c8e9aeb10d39}\label{class_view_aec098fd90d4651a4d174c8e9aeb10d39} 
+size\+\_\+t {\bfseries screen\+Count} () const
+\item 
+\Hypertarget{class_view_a26ab8b83d0516d7af51a47ca2fdd3aa1}\label{class_view_a26ab8b83d0516d7af51a47ca2fdd3aa1} 
+virtual void {\bfseries draw\+To\+Window} (bool clear\+Window=true, float x=-\/1, float y=-\/1, float w=-\/1, float h=-\/1)
+\item 
+\Hypertarget{class_view_a70c24a66d7aa2abc85564a4ac08883e2}\label{class_view_a70c24a66d7aa2abc85564a4ac08883e2} 
+Math3\+D::\+\+Vec3 {\bfseries screen\+To\+World} (PCamera cam, float x, float y, float depth=0.\+0f, float viewportX=0.\+0f, float viewportY=0.\+0f, float viewportW=-\/1.\+0f, float viewportH=-\/1.\+0f) const
+\item 
+\Hypertarget{class_view_a4968e73c482870f93a6cfedb85c0ff21}\label{class_view_a4968e73c482870f93a6cfedb85c0ff21} 
+Math3\+D::\+\+Vec3 {\bfseries world\+To\+Screen} (PCamera cam, const Math3\+D::\+\+Vec3 \&world, float viewportX=0.\+0f, float viewportY=0.\+0f, float viewportW=-\/1.\+0f, float viewportH=-\/1.\+0f) const
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the \doxylink{class_view}{View} type. 
+
+\label{doc-constructors}
+\Hypertarget{class_view_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_view_a07132ba8235a9facabfd0594fc9e60f4}\index{View@{View}!View@{View}}
+\index{View@{View}!View@{View}}
+\doxysubsubsection{\texorpdfstring{View()}{View()}}
+{\footnotesize\ttfamily \label{class_view_a07132ba8235a9facabfd0594fc9e60f4} 
+View::\+\+View (\begin{DoxyParamCaption}\item[{Render\+Window \texorpdfstring{$\ast$}{*}}]{window}{}\end{DoxyParamCaption})}
+
+
+
+Constructs a new \doxylink{class_view}{View} instance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & Value for window. \\
+\hline
+\end{DoxyParams}
+
+
+\label{doc-func-members}
+\Hypertarget{class_view_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_view_a2f776db693e8572fb8896f74fe86ef81}\index{View@{View}!attachWindow@{attachWindow}}
+\index{attachWindow@{attachWindow}!View@{View}}
+\doxysubsubsection{\texorpdfstring{attachWindow()}{attachWindow()}}
+{\footnotesize\ttfamily \label{class_view_a2f776db693e8572fb8896f74fe86ef81} 
+void View::\+attach\+Window (\begin{DoxyParamCaption}\item[{Render\+Window \texorpdfstring{$\ast$}{*}}]{window}{}\end{DoxyParamCaption})}
+
+
+
+Attaches a render window to this view. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & Value for window. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_view_a3c012f511108db02bfe319f63a7c3153}\index{View@{View}!hasWindow@{hasWindow}}
+\index{hasWindow@{hasWindow}!View@{View}}
+\doxysubsubsection{\texorpdfstring{hasWindow()}{hasWindow()}}
+{\footnotesize\ttfamily \label{class_view_a3c012f511108db02bfe319f63a7c3153} 
+bool View::\+has\+Window (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Checks whether window. 
+
+\begin{DoxyReturn}{Returns}
+True when the condition is satisfied; otherwise false. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+\+Rendering/\+\+Core/\+\doxymbox{\hyperlink{_view_8h}{View.\+h}}\item 
+src/\+\+Rendering/\+\+Core/\+\doxymbox{\hyperlink{_view_8cpp}{View.\+cpp}}\end{DoxyCompactItemize}

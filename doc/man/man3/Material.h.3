@@ -1,0 +1,49 @@
+.TH "src/Rendering/Materials/Material.h" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+src/Rendering/Materials/Material.h \- Declarations for \fBMaterial\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <string>\fP
+.br
+\fR#include <unordered_map>\fP
+.br
+\fR#include <memory>\fP
+.br
+\fR#include 'Rendering/Shaders/ShaderProgram\&.h'\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBIMaterialProperty\fP"
+.br
+.RI "Holds data for \fBIMaterialProperty\fP\&. "
+.ti -1c
+.RI "struct \fBMaterialProperty< T >\fP"
+.br
+.RI "Holds data for \fBMaterialProperty\fP\&. "
+.ti -1c
+.RI "class \fBMaterial\fP"
+.br
+.RI "Represents the \fBMaterial\fP type\&. "
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef std::shared_ptr< \fBMaterial\fP > \fBPMaterial\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Declarations for \fBMaterial\fP\&. 
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

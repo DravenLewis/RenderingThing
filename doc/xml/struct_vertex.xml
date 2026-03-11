@@ -1,0 +1,665 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="struct_vertex" kind="struct" language="C++" prot="public">
+    <compoundname>Vertex</compoundname>
+    <includes refid="_mesh_8h" local="no">Mesh.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_vertex_1a55470b6176c680998d2b66bac14ae4da" prot="public" static="no" mutable="no">
+        <type>Math3D::Vec3</type>
+        <definition>Math3D::Vec3 Vertex::Position</definition>
+        <argsstring></argsstring>
+        <name>Position</name>
+        <qualifiedname>Vertex::Position</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/Mesh.h" line="24" column="18" bodyfile="src/Rendering/Geometry/Mesh.h" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_vertex_1a39331a69bee042faef08b291f500419d" prot="public" static="no" mutable="no">
+        <type>Math3D::Vec3</type>
+        <definition>Math3D::Vec3 Vertex::Normal</definition>
+        <argsstring></argsstring>
+        <name>Normal</name>
+        <qualifiedname>Vertex::Normal</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/Mesh.h" line="25" column="18" bodyfile="src/Rendering/Geometry/Mesh.h" bodystart="25" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_vertex_1a401257a06c2c05262857d31998b91646" prot="public" static="no" mutable="no">
+        <type>Math3D::Vec2</type>
+        <definition>Math3D::Vec2 Vertex::TexCoords</definition>
+        <argsstring></argsstring>
+        <name>TexCoords</name>
+        <qualifiedname>Vertex::TexCoords</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/Mesh.h" line="26" column="18" bodyfile="src/Rendering/Geometry/Mesh.h" bodystart="26" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_vertex_1ab0636b45174ef34e563efbc8024377eb" prot="public" static="no" mutable="no">
+        <type>Math3D::Vec4</type>
+        <definition>Math3D::Vec4 Vertex::Color</definition>
+        <argsstring></argsstring>
+        <name>Color</name>
+        <qualifiedname>Vertex::Color</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/Mesh.h" line="27" column="18" bodyfile="src/Rendering/Geometry/Mesh.h" bodystart="27" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="struct_vertex_1a6ae4835e5fe1f9332acd97ec671279b5" prot="public" static="yes" mutable="no">
+        <type>const int</type>
+        <definition>const int Vertex::VERTEX_DATA_WIDTH</definition>
+        <argsstring></argsstring>
+        <name>VERTEX_DATA_WIDTH</name>
+        <qualifiedname>Vertex::VERTEX_DATA_WIDTH</qualifiedname>
+        <initializer>= 12</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/Mesh.h" line="29" column="22" bodyfile="src/Rendering/Geometry/Mesh.h" bodystart="29" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="struct_vertex_1a7828f036e4c200a53d499102997c2a30" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="struct_vertex" kindref="compound">Vertex</ref> &amp;</type>
+        <definition>Vertex &amp; Vertex::Pos</definition>
+        <argsstring>(const Math3D::Vec3 &amp;pos)</argsstring>
+        <name>Pos</name>
+        <qualifiedname>Vertex::Pos</qualifiedname>
+        <param>
+          <type>const Math3D::Vec3 &amp;</type>
+          <declname>pos</declname>
+        </param>
+        <briefdescription>
+<para>Sets vertex position. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>pos</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for pos. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/Mesh.h" line="36" column="12" bodyfile="src/Rendering/Geometry/Mesh.h" bodystart="36" bodyend="39"/>
+        <referencedby refid="struct_vertex_1af1fe2694015b32b90d334bf46820bc04" compoundref="_mesh_8h" startline="48" endline="50">Pos</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="struct_vertex_1af1fe2694015b32b90d334bf46820bc04" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="struct_vertex" kindref="compound">Vertex</ref> &amp;</type>
+        <definition>Vertex &amp; Vertex::Pos</definition>
+        <argsstring>(float x=0, float y=0, float z=0)</argsstring>
+        <name>Pos</name>
+        <qualifiedname>Vertex::Pos</qualifiedname>
+        <param>
+          <type>float</type>
+          <declname>x</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>y</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>z</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Sets vertex position. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>x</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>y</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>z</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/Mesh.h" line="48" column="12" bodyfile="src/Rendering/Geometry/Mesh.h" bodystart="48" bodyend="50"/>
+        <references refid="struct_vertex_1a7828f036e4c200a53d499102997c2a30" compoundref="_mesh_8h" startline="36" endline="39">Pos</references>
+      </memberdef>
+      <memberdef kind="function" id="struct_vertex_1a85ad46ae0b05f963524684314d19fedd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="struct_vertex" kindref="compound">Vertex</ref> &amp;</type>
+        <definition>Vertex &amp; Vertex::Norm</definition>
+        <argsstring>(const Math3D::Vec3 &amp;nml)</argsstring>
+        <name>Norm</name>
+        <qualifiedname>Vertex::Norm</qualifiedname>
+        <param>
+          <type>const Math3D::Vec3 &amp;</type>
+          <declname>nml</declname>
+        </param>
+        <briefdescription>
+<para>Sets vertex normal. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>nml</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for nml. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/Mesh.h" line="57" column="12" bodyfile="src/Rendering/Geometry/Mesh.h" bodystart="57" bodyend="60"/>
+        <referencedby refid="struct_model_part_prefabs_1aa8e35dc9f7dab334b963ab19c722c948" compoundref="_model_part_prefabs_8h" startline="163" endline="228">ModelPartPrefabs::MakeSphere</referencedby>
+        <referencedby refid="struct_vertex_1a1380a6d23ae35eb199ae3f41628ec47d" compoundref="_mesh_8h" startline="69" endline="71">Norm</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="struct_vertex_1a1380a6d23ae35eb199ae3f41628ec47d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="struct_vertex" kindref="compound">Vertex</ref> &amp;</type>
+        <definition>Vertex &amp; Vertex::Norm</definition>
+        <argsstring>(float x=0, float y=0, float z=0)</argsstring>
+        <name>Norm</name>
+        <qualifiedname>Vertex::Norm</qualifiedname>
+        <param>
+          <type>float</type>
+          <declname>x</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>y</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>z</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Sets vertex normal. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>x</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>y</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>z</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Spatial value used by this operation. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/Mesh.h" line="69" column="12" bodyfile="src/Rendering/Geometry/Mesh.h" bodystart="69" bodyend="71"/>
+        <references refid="struct_vertex_1a85ad46ae0b05f963524684314d19fedd" compoundref="_mesh_8h" startline="57" endline="60">Norm</references>
+      </memberdef>
+      <memberdef kind="function" id="struct_vertex_1a7ffc6ba8ee72602e3acbf54a164a031b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="struct_vertex" kindref="compound">Vertex</ref> &amp;</type>
+        <definition>Vertex &amp; Vertex::UV</definition>
+        <argsstring>(const Math3D::Vec2 &amp;pos)</argsstring>
+        <name>UV</name>
+        <qualifiedname>Vertex::UV</qualifiedname>
+        <param>
+          <type>const Math3D::Vec2 &amp;</type>
+          <declname>pos</declname>
+        </param>
+        <briefdescription>
+<para>Sets vertex UV coordinates. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>pos</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for pos. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/Mesh.h" line="78" column="12" bodyfile="src/Rendering/Geometry/Mesh.h" bodystart="78" bodyend="81"/>
+        <referencedby refid="struct_model_part_prefabs_1aa8e35dc9f7dab334b963ab19c722c948" compoundref="_model_part_prefabs_8h" startline="163" endline="228">ModelPartPrefabs::MakeSphere</referencedby>
+        <referencedby refid="struct_vertex_1aa1fb5d88ca585d9d07b5838dff9d0aff" compoundref="_mesh_8h" startline="89" endline="91">UV</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="struct_vertex_1aa1fb5d88ca585d9d07b5838dff9d0aff" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="struct_vertex" kindref="compound">Vertex</ref> &amp;</type>
+        <definition>Vertex &amp; Vertex::UV</definition>
+        <argsstring>(float u=0, float v=0)</argsstring>
+        <name>UV</name>
+        <qualifiedname>Vertex::UV</qualifiedname>
+        <param>
+          <type>float</type>
+          <declname>u</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>v</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Sets vertex UV coordinates. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>u</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for u. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>v</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for v. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/Mesh.h" line="89" column="12" bodyfile="src/Rendering/Geometry/Mesh.h" bodystart="89" bodyend="91"/>
+        <references refid="struct_vertex_1a7ffc6ba8ee72602e3acbf54a164a031b" compoundref="_mesh_8h" startline="78" endline="81">UV</references>
+      </memberdef>
+      <memberdef kind="function" id="struct_vertex_1a5ede97c061c4623a1472f5d11ef81726" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="struct_vertex" kindref="compound">Vertex</ref> &amp;</type>
+        <definition>Vertex &amp; Vertex::Col</definition>
+        <argsstring>(const Math3D::Vec4 &amp;col)</argsstring>
+        <name>Col</name>
+        <qualifiedname>Vertex::Col</qualifiedname>
+        <param>
+          <type>const Math3D::Vec4 &amp;</type>
+          <declname>col</declname>
+        </param>
+        <briefdescription>
+<para>Sets vertex color. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>col</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for col. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/Mesh.h" line="98" column="12" bodyfile="src/Rendering/Geometry/Mesh.h" bodystart="98" bodyend="101"/>
+        <referencedby refid="struct_vertex_1a665c30113d1eb71a87f16e499c3d28a9" compoundref="_mesh_8h" startline="111" endline="113">Col</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="struct_vertex_1a665c30113d1eb71a87f16e499c3d28a9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="struct_vertex" kindref="compound">Vertex</ref> &amp;</type>
+        <definition>Vertex &amp; Vertex::Col</definition>
+        <argsstring>(float r=0, float g=0, float b=0, float a=1)</argsstring>
+        <name>Col</name>
+        <qualifiedname>Vertex::Col</qualifiedname>
+        <param>
+          <type>float</type>
+          <declname>r</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>g</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>b</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>a</declname>
+          <defval>1</defval>
+        </param>
+        <briefdescription>
+<para>Sets vertex color. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>r</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for r. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>g</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for g. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>b</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for b. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>a</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for a. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Reference to the resulting value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/Mesh.h" line="111" column="12" bodyfile="src/Rendering/Geometry/Mesh.h" bodystart="111" bodyend="113"/>
+        <references refid="struct_vertex_1a5ede97c061c4623a1472f5d11ef81726" compoundref="_mesh_8h" startline="98" endline="101">Col</references>
+      </memberdef>
+      <memberdef kind="function" id="struct_vertex_1a78a44236d3aa30c52652dd07212d9ca4" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool Vertex::operator==</definition>
+        <argsstring>(const Vertex &amp;vtx) const</argsstring>
+        <name>operator==</name>
+        <qualifiedname>Vertex::operator==</qualifiedname>
+        <param>
+          <type>const <ref refid="struct_vertex" kindref="compound">Vertex</ref> &amp;</type>
+          <declname>vtx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/Mesh.h" line="207" column="10" bodyfile="src/Rendering/Geometry/Mesh.h" bodystart="207" bodyend="223"/>
+      </memberdef>
+      <memberdef kind="function" id="struct_vertex_1a0368072537259b0222dc040710f682d9" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool Vertex::operator!=</definition>
+        <argsstring>(const Vertex &amp;vtx) const</argsstring>
+        <name>operator!=</name>
+        <qualifiedname>Vertex::operator!=</qualifiedname>
+        <param>
+          <type>const <ref refid="struct_vertex" kindref="compound">Vertex</ref> &amp;</type>
+          <declname>vtx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/Mesh.h" line="225" column="10" bodyfile="src/Rendering/Geometry/Mesh.h" bodystart="225" bodyend="227"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="struct_vertex" kindref="compound">Vertex</ref></type>
+        <definition>static Vertex Vertex::Build</definition>
+        <argsstring>(Math3D::Vec3 pos=Math3D::Vec3::zero(), Math3D::Vec4 color=Math3D::Vec4(1, 1, 1, 1), Math3D::Vec3 normal=Math3D::Vec3::zero(), Math3D::Vec2 texcords=Math3D::Vec2(0, 0))</argsstring>
+        <name>Build</name>
+        <qualifiedname>Vertex::Build</qualifiedname>
+        <param>
+          <type>Math3D::Vec3</type>
+          <declname>pos</declname>
+          <defval>Math3D::Vec3::zero()</defval>
+        </param>
+        <param>
+          <type>Math3D::Vec4</type>
+          <declname>color</declname>
+          <defval>Math3D::Vec4(1, 1, 1, 1)</defval>
+        </param>
+        <param>
+          <type>Math3D::Vec3</type>
+          <declname>normal</declname>
+          <defval>Math3D::Vec3::zero()</defval>
+        </param>
+        <param>
+          <type>Math3D::Vec2</type>
+          <declname>texcords</declname>
+          <defval>Math3D::Vec2(0, 0)</defval>
+        </param>
+        <briefdescription>
+<para>Builds the target output. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>pos</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for pos. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>color</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Color value. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>normal</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for normal. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>texcords</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for texcords. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Result of this operation. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/Mesh.h" line="124" column="19" bodyfile="src/Rendering/Geometry/Mesh.h" bodystart="124" bodyend="133"/>
+        <referencedby refid="class_graphics2_d_1a17535ece4965dc0eedad7fa5e5accbff" compoundref="_graphics2_d_8cpp" startline="60" endline="107">Graphics2D::Graphics2D</referencedby>
+        <referencedby refid="struct_model_part_prefabs_1af662a7f490b997301237d4b33f4a7372" compoundref="_model_part_prefabs_8h" startline="54" endline="106">ModelPartPrefabs::MakeBox</referencedby>
+        <referencedby refid="struct_model_part_prefabs_1a3416bea1f8d1a22d55739bb58d7fc76e" compoundref="_model_part_prefabs_8h" startline="116" endline="153">ModelPartPrefabs::MakeCirclePlane</referencedby>
+        <referencedby refid="struct_model_part_prefabs_1ae5f37b441c2d40314487e103ada227a8" compoundref="_model_part_prefabs_8h" startline="30" endline="44">ModelPartPrefabs::MakePlane</referencedby>
+        <referencedby refid="struct_model_part_prefabs_1aa8e35dc9f7dab334b963ab19c722c948" compoundref="_model_part_prefabs_8h" startline="163" endline="228">ModelPartPrefabs::MakeSphere</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="struct_vertex_1a392c050c56cbd414b0e541285ba1222a" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="struct_vertex" kindref="compound">Vertex</ref></type>
+        <definition>static Vertex Vertex::Compose</definition>
+        <argsstring>(std::vector&lt; float &gt; &amp;floats, int dataSize=VERTEX_DATA_WIDTH)</argsstring>
+        <name>Compose</name>
+        <qualifiedname>Vertex::Compose</qualifiedname>
+        <param>
+          <type>std::vector&lt; float &gt; &amp;</type>
+          <declname>floats</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>dataSize</declname>
+          <defval>VERTEX_DATA_WIDTH</defval>
+        </param>
+        <briefdescription>
+<para>Composes a vertex from components. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>floats</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for floats. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>dataSize</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of elements or bytes. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Result of this operation. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/Mesh.h" line="141" column="19" bodyfile="src/Rendering/Geometry/Mesh.h" bodystart="141" bodyend="181"/>
+      </memberdef>
+      <memberdef kind="function" id="struct_vertex_1a32abbab0c0fd0e6cd90a030ab0812776" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::vector&lt; float &gt;</type>
+        <definition>static std::vector&lt; float &gt; Vertex::Decompose</definition>
+        <argsstring>(Vertex &amp;v)</argsstring>
+        <name>Decompose</name>
+        <qualifiedname>Vertex::Decompose</qualifiedname>
+        <param>
+          <type><ref refid="struct_vertex" kindref="compound">Vertex</ref> &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>Decomposes a vertex into scalar components. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>v</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for v. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Computed numeric result. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Geometry/Mesh.h" line="188" column="24" bodyfile="src/Rendering/Geometry/Mesh.h" bodystart="188" bodyend="205"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Holds data for <ref refid="struct_vertex" kindref="compound">Vertex</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Geometry/Mesh.h" line="23" column="1" bodyfile="src/Rendering/Geometry/Mesh.h" bodystart="23" bodyend="228"/>
+    <listofallmembers>
+      <member refid="struct_vertex_1a128e401f2f9b16e17cca7fb9d52658d8" prot="public" virt="non-virtual"><scope>Vertex</scope><name>Build</name></member>
+      <member refid="struct_vertex_1a5ede97c061c4623a1472f5d11ef81726" prot="public" virt="non-virtual"><scope>Vertex</scope><name>Col</name></member>
+      <member refid="struct_vertex_1a665c30113d1eb71a87f16e499c3d28a9" prot="public" virt="non-virtual"><scope>Vertex</scope><name>Col</name></member>
+      <member refid="struct_vertex_1ab0636b45174ef34e563efbc8024377eb" prot="public" virt="non-virtual"><scope>Vertex</scope><name>Color</name></member>
+      <member refid="struct_vertex_1a392c050c56cbd414b0e541285ba1222a" prot="public" virt="non-virtual"><scope>Vertex</scope><name>Compose</name></member>
+      <member refid="struct_vertex_1a32abbab0c0fd0e6cd90a030ab0812776" prot="public" virt="non-virtual"><scope>Vertex</scope><name>Decompose</name></member>
+      <member refid="struct_vertex_1a85ad46ae0b05f963524684314d19fedd" prot="public" virt="non-virtual"><scope>Vertex</scope><name>Norm</name></member>
+      <member refid="struct_vertex_1a1380a6d23ae35eb199ae3f41628ec47d" prot="public" virt="non-virtual"><scope>Vertex</scope><name>Norm</name></member>
+      <member refid="struct_vertex_1a39331a69bee042faef08b291f500419d" prot="public" virt="non-virtual"><scope>Vertex</scope><name>Normal</name></member>
+      <member refid="struct_vertex_1a0368072537259b0222dc040710f682d9" prot="public" virt="non-virtual"><scope>Vertex</scope><name>operator!=</name></member>
+      <member refid="struct_vertex_1a78a44236d3aa30c52652dd07212d9ca4" prot="public" virt="non-virtual"><scope>Vertex</scope><name>operator==</name></member>
+      <member refid="struct_vertex_1a7828f036e4c200a53d499102997c2a30" prot="public" virt="non-virtual"><scope>Vertex</scope><name>Pos</name></member>
+      <member refid="struct_vertex_1af1fe2694015b32b90d334bf46820bc04" prot="public" virt="non-virtual"><scope>Vertex</scope><name>Pos</name></member>
+      <member refid="struct_vertex_1a55470b6176c680998d2b66bac14ae4da" prot="public" virt="non-virtual"><scope>Vertex</scope><name>Position</name></member>
+      <member refid="struct_vertex_1a401257a06c2c05262857d31998b91646" prot="public" virt="non-virtual"><scope>Vertex</scope><name>TexCoords</name></member>
+      <member refid="struct_vertex_1a7ffc6ba8ee72602e3acbf54a164a031b" prot="public" virt="non-virtual"><scope>Vertex</scope><name>UV</name></member>
+      <member refid="struct_vertex_1aa1fb5d88ca585d9d07b5838dff9d0aff" prot="public" virt="non-virtual"><scope>Vertex</scope><name>UV</name></member>
+      <member refid="struct_vertex_1a6ae4835e5fe1f9332acd97ec671279b5" prot="public" virt="non-virtual"><scope>Vertex</scope><name>VERTEX_DATA_WIDTH</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

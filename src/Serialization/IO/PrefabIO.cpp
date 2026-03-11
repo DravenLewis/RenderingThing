@@ -1,3 +1,8 @@
+/**
+ * @file src/Serialization/IO/PrefabIO.cpp
+ * @brief Implementation for PrefabIO.
+ */
+
 #include "Serialization/IO/PrefabIO.h"
 
 #include "Serialization/IO/ComponentDependencyCollector.h"
@@ -64,6 +69,7 @@ bool captureJsonValue(yyjson_val* value, std::string& outJson, std::string* outE
 using ComponentRecord = JsonSchema::EntitySnapshotSchemaBase::ComponentRecord;
 using EntityRecord = JsonSchema::EntitySnapshotSchemaBase::EntityRecord;
 
+/// @brief Represents Parsed Variant Definition data.
 struct ParsedVariantDefinition {
     std::string basePrefabRef;
     bool inheritBaseChildren = true;

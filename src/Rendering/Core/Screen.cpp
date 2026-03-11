@@ -1,3 +1,8 @@
+/**
+ * @file src/Rendering/Core/Screen.cpp
+ * @brief Implementation for Screen.
+ */
+
 
 #include "Rendering/Core/Screen.h"
 #include "Rendering/Lighting/ShadowRenderer.h"

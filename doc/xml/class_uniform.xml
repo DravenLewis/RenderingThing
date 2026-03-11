@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_uniform" kind="class" language="C++" prot="public">
+    <compoundname>Uniform</compoundname>
+    <includes refid="_shader_program_8h" local="no">ShaderProgram.h</includes>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_uniform_1ac64bee48c1a3ee0495bc2ba100f6e663" prot="private" static="no" mutable="no">
+        <type>T</type>
+        <definition>T Uniform&lt; T &gt;::value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <qualifiedname>Uniform::value</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="27" column="11" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="27" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_uniform_1a9daad155d7bb1f986b82ca5a7ba22857" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>Uniform&lt; T &gt;::Uniform</definition>
+        <argsstring>()=default</argsstring>
+        <name>Uniform</name>
+        <qualifiedname>Uniform::Uniform</qualifiedname>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_uniform" kindref="compound">Uniform</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="33" column="9"/>
+      </memberdef>
+      <memberdef kind="function" id="class_uniform_1ae5fde7a7bdd68515197cf9fe27e9320b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Uniform&lt; T &gt;::Uniform</definition>
+        <argsstring>(const T &amp;v)</argsstring>
+        <name>Uniform</name>
+        <qualifiedname>Uniform::Uniform</qualifiedname>
+        <param>
+          <type>const T &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_uniform" kindref="compound">Uniform</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>v</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value for v. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="38" column="9" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="38" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="class_uniform_1a02ce7879e904bdc2abbe387b2004f7cf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void Uniform&lt; T &gt;::set</definition>
+        <argsstring>(const T &amp;v)</argsstring>
+        <name>set</name>
+        <qualifiedname>Uniform::set</qualifiedname>
+        <param>
+          <type>const T &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="40" column="14" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="40" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="class_uniform_1a7fb2b5d743df511474cbc2b2e8251956" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const T &amp;</type>
+        <definition>const T &amp; Uniform&lt; T &gt;::get</definition>
+        <argsstring>() const</argsstring>
+        <name>get</name>
+        <qualifiedname>Uniform::get</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Shaders/ShaderProgram.h" line="41" column="17" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="41" bodyend="41"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_uniform" kindref="compound">Uniform</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Shaders/ShaderProgram.h" line="25" column="1" bodyfile="src/Rendering/Shaders/ShaderProgram.h" bodystart="25" bodyend="42"/>
+    <listofallmembers>
+      <member refid="class_uniform_1a7fb2b5d743df511474cbc2b2e8251956" prot="public" virt="non-virtual"><scope>Uniform</scope><name>get</name></member>
+      <member refid="class_uniform_1a02ce7879e904bdc2abbe387b2004f7cf" prot="public" virt="non-virtual"><scope>Uniform</scope><name>set</name></member>
+      <member refid="class_uniform_1a9daad155d7bb1f986b82ca5a7ba22857" prot="public" virt="non-virtual"><scope>Uniform</scope><name>Uniform</name></member>
+      <member refid="class_uniform_1ae5fde7a7bdd68515197cf9fe27e9320b" prot="public" virt="non-virtual"><scope>Uniform</scope><name>Uniform</name></member>
+      <member refid="class_uniform_1ac64bee48c1a3ee0495bc2ba100f6e663" prot="private" virt="non-virtual"><scope>Uniform</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

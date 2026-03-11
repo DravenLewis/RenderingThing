@@ -1,0 +1,97 @@
+.TH "Light" 3 "Render Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Light \- Holds data for \fBLight\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <Light\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBLight\fP ()"
+.br
+.RI "Constructs a new \fBLight\fP instance\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBLight\fP \fBCreatePointLight\fP (Math3D::Vec3 position, Math3D::Vec4 color=Color::WHITE, float intensity=1\&.0f, float range=10\&.0f, float falloff=1\&.0f)"
+.br
+.ti -1c
+.RI "static \fBLight\fP \fBCreateDirectionalLight\fP (Math3D::Vec3 direction, Math3D::Vec4 color=Color::WHITE, float intensity=1\&.0f)"
+.br
+.ti -1c
+.RI "static \fBLight\fP \fBCreateSpotLight\fP (Math3D::Vec3 position, Math3D::Vec3 direction, Math3D::Vec4 color=Color::WHITE, float intensity=1\&.0f, float range=10\&.0f, float falloff=1\&.0f, float spotAngle=45\&.0f)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBLightType\fP \fBtype\fP"
+.br
+.ti -1c
+.RI "Math3D::Vec3 \fBposition\fP"
+.br
+.ti -1c
+.RI "Math3D::Vec3 \fBdirection\fP"
+.br
+.ti -1c
+.RI "Math3D::Vec4 \fBcolor\fP"
+.br
+.ti -1c
+.RI "float \fBintensity\fP"
+.br
+.ti -1c
+.RI "float \fBrange\fP"
+.br
+.ti -1c
+.RI "float \fBfalloff\fP"
+.br
+.ti -1c
+.RI "float \fBspotAngle\fP"
+.br
+.ti -1c
+.RI "float \fBshadowRange\fP"
+.br
+.ti -1c
+.RI "bool \fBcastsShadows\fP"
+.br
+.ti -1c
+.RI "\fBShadowType\fP \fBshadowType\fP"
+.br
+.ti -1c
+.RI "float \fBshadowBias\fP"
+.br
+.ti -1c
+.RI "float \fBshadowNormalBias\fP"
+.br
+.ti -1c
+.RI "float \fBshadowStrength\fP"
+.br
+.ti -1c
+.RI "float \fBcascadeLambda\fP"
+.br
+.ti -1c
+.RI "int \fBshadowDebugMode\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Holds data for \fBLight\fP\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Light::Light ()\fR [inline]\fP"
+
+.PP
+Constructs a new \fBLight\fP instance\&. Returns shadow debug mode text\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Render Engine from the source code\&.

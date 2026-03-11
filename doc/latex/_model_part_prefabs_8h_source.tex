@@ -1,0 +1,201 @@
+\doxysection{Model\+Part\+Prefabs.\+h}
+\hypertarget{_model_part_prefabs_8h_source}{}\label{_model_part_prefabs_8h_source}\index{src/Rendering/Geometry/ModelPartPrefabs.h@{src/Rendering/Geometry/ModelPartPrefabs.h}}
+\doxymbox{\hyperlink{_model_part_prefabs_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#ifndef\ MODELPART\_PREFABS\_H}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#define\ MODELPART\_PREFABS\_H}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <algorithm>}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ <cmath>}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_model_part_8h}{Rendering/Geometry/ModelPart.h}}"{}}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_material_8h}{Rendering/Materials/Material.h}}"{}}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_material_defaults_8h}{Rendering/Materials/MaterialDefaults.h}}"{}}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ "{}Foundation/Math/Math3D.h"{}}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00021\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_model_part_prefabs}{ModelPartPrefabs}}\{}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<ModelPart>\ \doxymbox{\hyperlink{struct_model_part_prefabs_ae5f37b441c2d40314487e103ada227a8}{MakePlane}}(\textcolor{keywordtype}{float}\ width,\ \textcolor{keywordtype}{float}\ height,\ PMaterial\ mat\ =\ \doxymbox{\hyperlink{class_material_defaults_1_1_color_material_a2564a57120b10a3b17e87a04413db769}{MaterialDefaults::ColorMaterial::Create}}(Color::RED),\ Math3D::Vec3\ normal\ =\ Math3D::Vec3(0,1,0))\{}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ std::shared\_ptr<ModelPart>\ part;}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ factory\ =\ \doxymbox{\hyperlink{struct_model_part_factory_a3ef7855857c9e4a6106485c4d6dc13d1}{ModelPartFactory::Create}}(mat);}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ v1,\ v2,\ v3,\ v4;}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ factory}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(-\/1.0f,0.0f,-\/1.0f)).UV(0,0).Norm(normal),\ \&v1)}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(\ 1.0f,0.0f,-\/1.0f)).UV(1,0).Norm(normal),\ \&v2)}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(\ 1.0f,0.0f,\ 1.0f)).UV(1,1).Norm(normal),\ \&v3)}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(-\/1.0f,0.0f,\ 1.0f)).UV(0,1).Norm(normal),\ \&v4)}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \ \ \ \ .defineFace(v1,v4,v3,v2);}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ part\ =\ factory.assemble();}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ part-\/>localTransform.setScale(Math3D::Vec3(width,1.0f,height));}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ part;}
+\DoxyCodeLine{00044\ \ \ \ \ \}}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<ModelPart>\ \doxymbox{\hyperlink{struct_model_part_prefabs_af662a7f490b997301237d4b33f4a7372}{MakeBox}}(\textcolor{keywordtype}{float}\ width,\ \textcolor{keywordtype}{float}\ height,\ \textcolor{keywordtype}{float}\ depth,PMaterial\ mat\ =\ \doxymbox{\hyperlink{class_material_defaults_1_1_color_material_a2564a57120b10a3b17e87a04413db769}{MaterialDefaults::ColorMaterial::Create}}(Color::RED))\{}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ factory\ =\ \doxymbox{\hyperlink{struct_model_part_factory_a3ef7855857c9e4a6106485c4d6dc13d1}{ModelPartFactory::Create}}(mat);}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ v0,\ v1,\ v2,\ v3,\ v4,\ v5,\ v6,\ v7,\ v8,\ v9,\ v10,\ v11,\ v12,\ v13,\ v14,\ v15,\ v16,\ v17,\ v18,\ v19,\ v20,\ v21,\ v22,\ v23;}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ factory}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Front\ face\ (Z\ =\ 1.0,\ Normal\ =\ 0,\ 0,\ 1)}}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(-\/1.0f,\ -\/1.0f,\ \ 1.0f)).UV(0,0).Norm(Math3D::Vec3(0,0,1)),\ \&v0)}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(\ 1.0f,\ -\/1.0f,\ \ 1.0f)).UV(1,0).Norm(Math3D::Vec3(0,0,1)),\ \&v1)}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(\ 1.0f,\ \ 1.0f,\ \ 1.0f)).UV(1,1).Norm(Math3D::Vec3(0,0,1)),\ \&v2)}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(-\/1.0f,\ \ 1.0f,\ \ 1.0f)).UV(0,1).Norm(Math3D::Vec3(0,0,1)),\ \&v3)}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Back\ face\ (Z\ =\ -\/1.0,\ Normal\ =\ 0,\ 0,\ -\/1)}}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(\ 1.0f,\ -\/1.0f,\ -\/1.0f)).UV(0,0).Norm(Math3D::Vec3(0,0,-\/1)),\ \&v4)}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(-\/1.0f,\ -\/1.0f,\ -\/1.0f)).UV(1,0).Norm(Math3D::Vec3(0,0,-\/1)),\ \&v5)}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(-\/1.0f,\ \ 1.0f,\ -\/1.0f)).UV(1,1).Norm(Math3D::Vec3(0,0,-\/1)),\ \&v6)}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(\ 1.0f,\ \ 1.0f,\ -\/1.0f)).UV(0,1).Norm(Math3D::Vec3(0,0,-\/1)),\ \&v7)}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Top\ face\ (Y\ =\ 1.0,\ Normal\ =\ 0,\ 1,\ 0)}}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(-\/1.0f,\ \ 1.0f,\ -\/1.0f)).UV(0,0).Norm(Math3D::Vec3(0,1,0)),\ \&v8)}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(\ 1.0f,\ \ 1.0f,\ -\/1.0f)).UV(1,0).Norm(Math3D::Vec3(0,1,0)),\ \&v9)}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(\ 1.0f,\ \ 1.0f,\ \ 1.0f)).UV(1,1).Norm(Math3D::Vec3(0,1,0)),\ \&v10)}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(-\/1.0f,\ \ 1.0f,\ \ 1.0f)).UV(0,1).Norm(Math3D::Vec3(0,1,0)),\ \&v11)}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Bottom\ face\ (Y\ =\ -\/1.0,\ Normal\ =\ 0,\ -\/1,\ 0)}}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(-\/1.0f,\ -\/1.0f,\ -\/1.0f)).UV(0,1).Norm(Math3D::Vec3(0,-\/1,0)),\ \&v12)}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(\ 1.0f,\ -\/1.0f,\ -\/1.0f)).UV(1,1).Norm(Math3D::Vec3(0,-\/1,0)),\ \&v13)}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(\ 1.0f,\ -\/1.0f,\ \ 1.0f)).UV(1,0).Norm(Math3D::Vec3(0,-\/1,0)),\ \&v14)}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(-\/1.0f,\ -\/1.0f,\ \ 1.0f)).UV(0,0).Norm(Math3D::Vec3(0,-\/1,0)),\ \&v15)}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Right\ face\ (X\ =\ 1.0,\ Normal\ =\ 1,\ 0,\ 0)}}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(\ 1.0f,\ -\/1.0f,\ -\/1.0f)).UV(0,0).Norm(Math3D::Vec3(1,0,0)),\ \&v16)}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(\ 1.0f,\ -\/1.0f,\ \ 1.0f)).UV(1,0).Norm(Math3D::Vec3(1,0,0)),\ \&v17)}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(\ 1.0f,\ \ 1.0f,\ \ 1.0f)).UV(1,1).Norm(Math3D::Vec3(1,0,0)),\ \&v18)}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(\ 1.0f,\ \ 1.0f,\ -\/1.0f)).UV(0,1).Norm(Math3D::Vec3(1,0,0)),\ \&v19)}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Left\ face\ (X\ =\ -\/1.0,\ Normal\ =\ -\/1,\ 0,\ 0)}}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(-\/1.0f,\ -\/1.0f,\ \ 1.0f)).UV(0,0).Norm(Math3D::Vec3(-\/1,0,0)),\ \&v20)}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(-\/1.0f,\ -\/1.0f,\ -\/1.0f)).UV(1,0).Norm(Math3D::Vec3(-\/1,0,0)),\ \&v21)}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(-\/1.0f,\ \ 1.0f,\ -\/1.0f)).UV(1,1).Norm(Math3D::Vec3(-\/1,0,0)),\ \&v22)}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \ \ \ \ .addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(-\/1.0f,\ \ 1.0f,\ \ 1.0f)).UV(0,1).Norm(Math3D::Vec3(-\/1,0,0)),\ \&v23)}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Define\ the\ 6\ faces}}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \ \ \ \ .defineFace(v0,\ v1,\ v2,\ v3)\ \ \ \textcolor{comment}{//\ Front}}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ .defineFace(v4,\ v5,\ v6,\ v7)\ \ \ \textcolor{comment}{//\ Back}}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ .defineFace(v8,\ v11,\ v10,\ v9)\ \textcolor{comment}{//\ Top}}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \ \ \ \ .defineFace(v12,\ v13,\ v14,\ v15)\ \textcolor{comment}{//\ Bottom}}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \ \ \ \ .defineFace(v16,\ v19,\ v18,\ v17)\ \textcolor{comment}{//\ Right}}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \ \ \ \ .defineFace(v20,\ v23,\ v22,\ v21);\ \textcolor{comment}{//\ Left}}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ part\ =\ factory.assemble();}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ part-\/>localTransform.setScale(Math3D::Vec3(width,\ height,\ depth));}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ part;}
+\DoxyCodeLine{00106\ \ \ \ \ \}}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00116\ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<ModelPart>\ \doxymbox{\hyperlink{struct_model_part_prefabs_a3416bea1f8d1a22d55739bb58d7fc76e}{MakeCirclePlane}}(}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ radius,\ }
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ segments\ =\ 32,\ }
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ PMaterial\ material\ =\ \doxymbox{\hyperlink{class_material_defaults_1_1_color_material_a2564a57120b10a3b17e87a04413db769}{MaterialDefaults::ColorMaterial::Create}}(Color::RED),\ }
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ Math3D::Vec3\ normal\ =\ Math3D::Vec3(0,1,0)}
+\DoxyCodeLine{00121\ \ \ \ \ )\{}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ factory\ =\ \doxymbox{\hyperlink{struct_model_part_factory_a3ef7855857c9e4a6106485c4d6dc13d1}{ModelPartFactory::Create}}(material);}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ centerIndex;}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ factory.addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(0,0,0)).UV(0.5f,0.5f).Norm(normal),\ \&centerIndex);}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ firstEdgeIndex\ =\ -\/1,\ lastEdgeIndex\ =\ -\/1;}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <=\ segments;\ i++)\{}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ theta\ =\ (float)i\ /\ (\textcolor{keywordtype}{float})segments\ *\ 2.0f\ *\ (float)\ Math3D::PI;}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ x\ =\ Math3D::Cos(theta);}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ z\ =\ Math3D::Sin(theta);}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ currentIndex;}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ u\ =\ x\ *\ 0.5f\ +\ 0.5f;}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ v\ =\ z\ *\ 0.5f\ +\ 0.5f;}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \ \ \ \ factory.addVertex(\doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(x,0.0f,z)).UV(u,v).Norm(normal),\ \&currentIndex);}
+\DoxyCodeLine{00139\ }
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(i\ ==\ 0)\ firstEdgeIndex\ =\ currentIndex;}
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(i\ >\ 0)\{}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ factory.defineFace(centerIndex,\ currentIndex,\ lastEdgeIndex);}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \ \ \ \ lastEdgeIndex\ =\ currentIndex;}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ part\ =\ factory.assemble();}
+\DoxyCodeLine{00149\ }
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ part-\/>localTransform.setScale(Math3D::Vec3(radius,\ 1.0f,\ radius));}
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ part;}
+\DoxyCodeLine{00153\ \ \ \ \ \}}
+\DoxyCodeLine{00154\ }
+\DoxyCodeLine{00163\ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<ModelPart>\ \doxymbox{\hyperlink{struct_model_part_prefabs_aa8e35dc9f7dab334b963ab19c722c948}{MakeSphere}}(}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ radius\ =\ 1.0f,}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ slices\ =\ 32,}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ stacks\ =\ 18,}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ PMaterial\ material\ =\ \doxymbox{\hyperlink{class_material_defaults_1_1_color_material_a2564a57120b10a3b17e87a04413db769}{MaterialDefaults::ColorMaterial::Create}}(Color::WHITE)}
+\DoxyCodeLine{00168\ \ \ \ \ )\{}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ slices\ =\ Math3D::Max(slices,\ 8);}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ stacks\ =\ Math3D::Max(stacks,\ 6);}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(radius\ <=\ Math3D::EPSILON)\{}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \ \ \ \ radius\ =\ 1.0f;}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(!material)\{}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ \ \ \ \ material\ =\ \doxymbox{\hyperlink{class_material_defaults_1_1_color_material_a2564a57120b10a3b17e87a04413db769}{MaterialDefaults::ColorMaterial::Create}}(Color::WHITE);}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00177\ }
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ factory\ =\ \doxymbox{\hyperlink{struct_model_part_factory_a3ef7855857c9e4a6106485c4d6dc13d1}{ModelPartFactory::Create}}(material);}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ std::vector<int>\ indices(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}((stacks\ +\ 1)\ *\ (slices\ +\ 1)),\ -\/1);}
+\DoxyCodeLine{00180\ }
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int}\ stack\ =\ 0;\ stack\ <=\ stacks;\ ++stack)\{}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ v\ =\ (float)stack\ /\ (\textcolor{keywordtype}{float})stacks;}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ phi\ =\ v\ *\ (float)Math3D::PI;}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ y\ =\ std::cos(phi);}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ ringRadius\ =\ std::sin(phi);}
+\DoxyCodeLine{00186\ }
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int}\ slice\ =\ 0;\ slice\ <=\ slices;\ ++slice)\{}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ u\ =\ (float)slice\ /\ (\textcolor{keywordtype}{float})slices;}
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ theta\ =\ u\ *\ (float)Math3D::PI\ *\ 2.0f;}
+\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ x\ =\ ringRadius\ *\ std::cos(theta);}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ z\ =\ ringRadius\ *\ std::sin(theta);}
+\DoxyCodeLine{00192\ }
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Math3D::Vec3\ normal(x,\ y,\ z);}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(normal.length()\ <=\ Math3D::EPSILON)\{}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ normal\ =\ Math3D::Vec3(0.0f,\ 1.0f,\ 0.0f);}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}\textcolor{keywordflow}{else}\{}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ normal\ =\ normal.normalize();}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00199\ }
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_vertex}{Vertex}}\ vertex\ =\ \doxymbox{\hyperlink{struct_vertex_a128e401f2f9b16e17cca7fb9d52658d8}{Vertex::Build}}(Math3D::Vec3(normal.x\ *\ radius,\ normal.y\ *\ radius,\ normal.z\ *\ radius))}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ .\doxymbox{\hyperlink{struct_vertex_a85ad46ae0b05f963524684314d19fedd}{Norm}}(normal)}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ .\doxymbox{\hyperlink{struct_vertex_a7ffc6ba8ee72602e3acbf54a164a031b}{UV}}(u,\ 1.0f\ -\/\ v);}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ outIndex\ =\ -\/1;}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ factory.addVertex(vertex,\ \&outIndex);}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ indices[(size\_t)stack\ *\ (\textcolor{keywordtype}{size\_t})(slices\ +\ 1)\ +\ (\textcolor{keywordtype}{size\_t})slice]\ =\ outIndex;}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00208\ }
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int}\ stack\ =\ 0;\ stack\ <\ stacks;\ ++stack)\{}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}(\textcolor{keywordtype}{int}\ slice\ =\ 0;\ slice\ <\ slices;\ ++slice)\{}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ i00\ =\ indices[(size\_t)stack\ *\ (\textcolor{keywordtype}{size\_t})(slices\ +\ 1)\ +\ (\textcolor{keywordtype}{size\_t})slice];}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ i01\ =\ indices[(size\_t)stack\ *\ (\textcolor{keywordtype}{size\_t})(slices\ +\ 1)\ +\ (\textcolor{keywordtype}{size\_t})(slice\ +\ 1)];}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ i10\ =\ indices[(size\_t)(stack\ +\ 1)\ *\ (size\_t)(slices\ +\ 1)\ +\ (size\_t)slice];}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ i11\ =\ indices[(size\_t)(stack\ +\ 1)\ *\ (size\_t)(slices\ +\ 1)\ +\ (size\_t)(slice\ +\ 1)];}
+\DoxyCodeLine{00215\ }
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(stack\ ==\ 0)\{}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ factory.defineFace(i00,\ i11,\ i10);}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}\textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}(stack\ ==\ (stacks\ -\/\ 1))\{}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ factory.defineFace(i00,\ i01,\ i10);}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}\textcolor{keywordflow}{else}\{}
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ factory.defineFace(i00,\ i11,\ i10);}
+\DoxyCodeLine{00222\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ factory.defineFace(i00,\ i01,\ i11);}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00225\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00226\ }
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ factory.assemble();}
+\DoxyCodeLine{00228\ \ \ \ \ \}}
+\DoxyCodeLine{00229\ \};}
+\DoxyCodeLine{00230\ }
+\DoxyCodeLine{00231\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODELPART\_PREFABS\_H}}
+
+\end{DoxyCode}

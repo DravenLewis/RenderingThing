@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_sky_box_loader" kind="class" language="C++" prot="public">
+    <compoundname>SkyBoxLoader</compoundname>
+    <includes refid="_sky_box_8h" local="no">SkyBox.h</includes>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_sky_box_loader_1a7a70cc83351435d79408ef2fbcdab277" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="class_sky_box" kindref="compound">SkyBox</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; SkyBox &gt; SkyBoxLoader::CreateSkyBox</definition>
+        <argsstring>(const std::string &amp;directoryAssetPath, const std::string &amp;skyboxName)</argsstring>
+        <name>CreateSkyBox</name>
+        <qualifiedname>SkyBoxLoader::CreateSkyBox</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>directoryAssetPath</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>skyboxName</declname>
+        </param>
+        <briefdescription>
+<para>Creates sky box. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>directoryAssetPath</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Filesystem path for directory asset path. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>skyboxName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name used for skybox name. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Pointer to the resulting object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Textures/SkyBox.h" line="66" column="32" bodyfile="src/Rendering/Textures/SkyBox.cpp" bodystart="67" bodyend="89"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_sky_box_loader" kindref="compound">SkyBoxLoader</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/Textures/SkyBox.h" line="58" column="1" bodyfile="src/Rendering/Textures/SkyBox.h" bodystart="58" bodyend="67"/>
+    <listofallmembers>
+      <member refid="class_sky_box_loader_1a7a70cc83351435d79408ef2fbcdab277" prot="public" virt="non-virtual"><scope>SkyBoxLoader</scope><name>CreateSkyBox</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

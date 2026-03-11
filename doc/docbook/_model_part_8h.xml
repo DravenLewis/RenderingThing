@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__model_part_8h" xml:lang="en-US">
+<title>src/Rendering/Geometry/ModelPart.h File Reference</title>
+<indexterm><primary>src/Rendering/Geometry/ModelPart.h</primary></indexterm>
+<para>
+
+<para>Declarations for <link linkend="_struct_model_part">ModelPart</link>. </para>
+ 
+</para>
+<programlisting linenumbering="unnumbered">#include &lt;memory&gt;<?linebreak?>#include &lt;vector&gt;<?linebreak?>#include &quot;Rendering/Geometry/Mesh.h&quot;<?linebreak?>#include &quot;Rendering/Materials/Material.h&quot;<?linebreak?>#include &quot;Foundation/Math/Math3D.h&quot;<?linebreak?>#include &quot;Rendering/Geometry/Drawable.h&quot;<?linebreak?></programlisting><simplesect>
+    <title>Classes    </title>
+        <itemizedlist>
+            <listitem><para>struct <link linkend="_struct_model_part">ModelPart</link></para>
+
+<para>Holds data for <link linkend="_struct_model_part">ModelPart</link>. </para>
+</listitem>
+            <listitem><para>struct <link linkend="_struct_model_part_factory">ModelPartFactory</link></para>
+
+<para>Holds data for <link linkend="_struct_model_part_factory">ModelPartFactory</link>. </para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+
+<para>Declarations for <link linkend="_struct_model_part">ModelPart</link>. </para>
+</section>
+</section>

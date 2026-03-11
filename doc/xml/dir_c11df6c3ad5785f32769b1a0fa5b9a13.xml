@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="dir_c11df6c3ad5785f32769b1a0fa5b9a13" kind="dir">
+    <compoundname>src/Rendering/PostFX</compoundname>
+    <innerfile refid="_screen_effects_8h">ScreenEffects.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/Rendering/PostFX/"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,79 @@
+\doxysection{Texture.\+h}
+\hypertarget{_texture_8h_source}{}\label{_texture_8h_source}\index{src/Rendering/Textures/Texture.h@{src/Rendering/Textures/Texture.h}}
+\doxymbox{\hyperlink{_texture_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ TEXTURE\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ TEXTURE\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <glad/glad.h>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ "{}Assets/Core/Asset.h"{}}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{keyword}{namespace\ }Graphics\ \{\ \textcolor{comment}{//\ Hollow\ Structure\ of\ the\ Graphics\ Class.}}
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keyword}{namespace\ }Image\{}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_image}{Image}};}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{struct_graphics_1_1_image_1_1_buffered_image}{BufferedImage}};}
+\DoxyCodeLine{00020\ \ \ \ \ \}}
+\DoxyCodeLine{00021\ \}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_texture_a6c275e3f186675ff6ed73ccf970e552f}{Texture}}\{}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ GLuint\ textureID;}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ std::shared\_ptr<Graphics::Image::Image>\ cpuImage;}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ width,\ height;}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ ownsTexture\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ std::string\ sourceAssetRef;}
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_texture_a6c275e3f186675ff6ed73ccf970e552f}{Texture}}()\ :\ textureID(0),\ width(0),\ height(0)\{\};}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_texture}{\string~Texture}}();}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_texture_a6c275e3f186675ff6ed73ccf970e552f}{Texture}}(std::shared\_ptr<Graphics::Image::Image>\ image,\ GLenum\ imageHint\ =\ GL\_TEXTURE\_2D);}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_texture_a6c275e3f186675ff6ed73ccf970e552f}{Texture}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{class_texture}{Texture}}\&)\ =\ \textcolor{keyword}{delete};\ \textcolor{comment}{//\ dont\ allow\ copying\ Texture\ tex\ =\ val.getTexture();\ is\ invald\ Texture*\ tex\ =\ val.getTexturePtr()\ is\ okay\ tho.}}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_texture_a6c275e3f186675ff6ed73ccf970e552f}{Texture}}(\textcolor{keywordtype}{int}\ width,\ \textcolor{keywordtype}{int}\ height)\ :\ textureID(0),\ width(width),\ height(height)\ \{\};}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ bind(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ slot\ =\ 0)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ unbind()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ dispose();}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{int}\ getWidth()\ \{\textcolor{keywordflow}{return}\ this-\/>width;\}}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{int}\ getHeight()\ \{\textcolor{keywordflow}{return}\ this-\/>height;\}}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ GLuint\&\ getID()\ \{\textcolor{keywordflow}{return}\ this-\/>textureID;\}}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ getSourceAssetRef()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ sourceAssetRef;\ \}}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setSourceAssetRef(\textcolor{keyword}{const}\ std::string\&\ assetRef)\ \{\ sourceAssetRef\ =\ assetRef;\ \}}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ std::shared\_ptr<Graphics::Image::Image>\ getImageData()\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ cpuImage;\}}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<Texture>\ Load(PAsset\ asset,\ GLenum\ imageHint\ =\ GL\_TEXTURE\_2D,\ \textcolor{keywordtype}{bool}\ flipVertically\ =\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<Graphics::Image::Image>\ LoadImage(PAsset\ asset,\ \textcolor{keywordtype}{bool}\ flipVertically\ =\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<Texture>\ CreateEmpty(\textcolor{keywordtype}{int}\ width,\ \textcolor{keywordtype}{int}\ height);}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<Texture>\ CreateRenderTarget(}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ width,}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ height,}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \ \ \ \ GLenum\ internalFormat\ =\ GL\_RGBA16F,}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \ \ \ \ GLenum\ format\ =\ GL\_RGBA,}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \ \ \ \ GLenum\ type\ =\ GL\_FLOAT}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<Texture>\ CreateFromAlphaBuffer(\textcolor{keywordtype}{int}\ width,\ \textcolor{keywordtype}{int}\ height,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}*\ alphaData);}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::shared\_ptr<Texture>\ CreateFromExisting(GLuint\ \textcolor{keywordtype}{id},\ \textcolor{keywordtype}{int}\ width,\ \textcolor{keywordtype}{int}\ height,\ \textcolor{keywordtype}{bool}\ owns\ =\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ FlushPendingDeletes();}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ Unload(std::shared\_ptr<Texture>\&\ tex)\{}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(tex)\{}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tex-\/>dispose();}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tex.reset();}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ FlipVerticallyOnLoad(\textcolor{keywordtype}{int}\ i);}
+\DoxyCodeLine{00076\ \};}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \textcolor{keyword}{typedef}\ std::shared\_ptr<Texture>\ PTexture;\ }
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ TEXTURE\_H}}
+
+\end{DoxyCode}

@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="__font_8h_source" xml:lang="en-US">
+<title>Font.h</title>
+<indexterm><primary>src/Rendering/Fonts/Font.h</primary></indexterm>
+Go to the documentation of this file.<programlisting linenumbering="unnumbered">1 
+5 
+6 <emphasis role="preprocessor">#ifndef&#32;FONT_H</emphasis>
+7 <emphasis role="preprocessor">#define&#32;FONT_H</emphasis>
+8 
+9 
+10 <emphasis role="preprocessor">#define&#32;ENGINE_STB_TRUETYPE&#32;&#32;0x0FA25</emphasis>
+11 <emphasis role="preprocessor">#define&#32;ENGINE_FREETYPE&#32;&#32;0x0E281</emphasis>
+12 
+13 <emphasis role="preprocessor">#define&#32;FONT_ENGINE&#32;ENGINE_FREETYPE</emphasis>
+14 
+15 <emphasis role="preprocessor">#include&#32;&lt;memory&gt;</emphasis>
+16 <emphasis role="preprocessor">#include&#32;&lt;map&gt;</emphasis>
+17 <emphasis role="preprocessor">#include&#32;&lt;array&gt;</emphasis>
+18 <emphasis role="preprocessor">#include&#32;&lt;vector&gt;</emphasis>
+19 
+20 <emphasis role="preprocessor">#include&#32;&quot;Assets/Core/Asset.h&quot;</emphasis>
+21 <emphasis role="preprocessor">#include&#32;&quot;Foundation/Math/Math3D.h&quot;</emphasis>
+22 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__drawable_8h">Rendering/Geometry/Drawable.h</link>&quot;</emphasis>
+23 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__model_part_8h">Rendering/Geometry/ModelPart.h</link>&quot;</emphasis>
+24 <emphasis role="preprocessor">#include&#32;&quot;<link linkend="__texture_8h">Rendering/Textures/Texture.h</link>&quot;</emphasis>
+25 <emphasis role="preprocessor">#include&#32;&quot;Foundation/Math/Color.h&quot;</emphasis>
+26 <emphasis role="preprocessor">#include&#32;&quot;Scene/Camera.h&quot;</emphasis>
+27 <emphasis role="preprocessor">#include&#32;&quot;Foundation/Logging/Logbot.h&quot;</emphasis>
+28 
+29 
+30 <emphasis role="preprocessor">#define&#32;FONT_BITMAP_W&#32;1024</emphasis>
+31 <emphasis role="preprocessor">#define&#32;FONT_BITMAP_H&#32;1024</emphasis>
+32 
+33 
+35 <emphasis role="keyword">struct&#32;</emphasis><link linkend="_struct_text_cache_key">TextCacheKey</link>{&#32;<emphasis role="comment">//&#32;Store&#32;mesh&#32;of&#32;common&#32;reused&#32;texts,&#32;so&#32;we&#32;dont&#32;recreate&#32;them&#32;each&#32;frame,&#32;if&#32;the&#32;text&#32;changes.</emphasis>
+36 &#32;&#32;&#32;&#32;std::string&#32;text;
+37 &#32;&#32;&#32;&#32;Color&#32;color;
+38 
+39 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">bool</emphasis>&#32;operator&lt;(<emphasis role="keyword">const</emphasis>&#32;<link linkend="_struct_text_cache_key">TextCacheKey</link>&amp;&#32;other)<emphasis role="keyword">&#32;const&#32;</emphasis>{
+40 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(text&#32;!=&#32;other.text)&#32;<emphasis role="keywordflow">return</emphasis>&#32;text&#32;&lt;&#32;other.text;
+41 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;color.toRGBA32()&#32;&lt;&#32;other.color.toRGBA32();
+42 &#32;&#32;&#32;&#32;}
+43 };
+44 
+46 <emphasis role="keyword">struct&#32;</emphasis><link linkend="_struct_font_character">FontCharacter</link>{
+47 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;u0,&#32;v0,&#32;u1,&#32;v1;
+48 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;sizeX,&#32;sizeY;
+49 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;bearingX,&#32;bearingY;
+50 &#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;advance;
+51 };
+52 
+54 <emphasis role="keyword">class&#32;</emphasis><link linkend="_class_font_1a4e6a119206f505522100221c1fafde45">Font</link>{
+55 &#32;&#32;&#32;&#32;<emphasis role="keyword">protected</emphasis>:
+56 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PAsset&#32;assetPtr;
+57 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PTexture&#32;textureAtlasPtr;
+58 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PMaterial&#32;materialCachePtr;
+59 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">float</emphasis>&#32;fontSize;
+60 
+61 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::array&lt;FontCharacter,&#32;128&gt;&#32;characters;
+62 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;std::map&lt;TextCacheKey,&#32;std::shared_ptr&lt;ModelPart&gt;&gt;&#32;meshCache;
+63 
+67 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">virtual</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;<link linkend="_class_font_1aa6b8da140518e4282bbe81e7033e0081">_initFont</link>()&#32;=&#32;0;
+68 &#32;&#32;&#32;&#32;<emphasis role="keyword">public</emphasis>:
+69 
+70 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">inline</emphasis>&#32;<emphasis role="keyword">static</emphasis>&#32;Logbot&#32;FontLogger&#32;=&#32;Logbot::CreateInstance(<emphasis role="stringliteral">&quot;Font&quot;</emphasis>);
+71 
+75 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<link linkend="_class_font_1a4e6a119206f505522100221c1fafde45">Font</link>()&#32;:&#32;fontSize(0)&#32;{};
+76 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">virtual</emphasis>&#32;<link linkend="_class_font">~Font</link>()&#32;=&#32;<emphasis role="keywordflow">default</emphasis>;
+77 
+78 
+79 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">virtual</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;drawText(std::string&#32;text&#32;=&#32;<emphasis role="stringliteral">&quot;&quot;</emphasis>,&#32;Math3D::Vec2&#32;position&#32;=&#32;Math3D::Vec2(0,0),&#32;PCamera&#32;camera&#32;=&#32;<emphasis role="keyword">nullptr</emphasis>,&#32;Color&#32;color&#32;=&#32;Color::WHITE,&#32;<emphasis role="keywordtype">bool</emphasis>&#32;useCache&#32;=&#32;<emphasis role="keyword">true</emphasis>)&#32;=&#32;0;
+80 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">virtual</emphasis>&#32;<emphasis role="keywordtype">bool</emphasis>&#32;supportsQueuedDrawing()<emphasis role="keyword">&#32;const&#32;</emphasis>{&#32;<emphasis role="keywordflow">return</emphasis>&#32;<emphasis role="keyword">false</emphasis>;&#32;}
+81 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">virtual</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;beginFrame(PCamera&#32;camera)&#32;{}
+82 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">virtual</emphasis>&#32;<emphasis role="keywordtype">void</emphasis>&#32;flushQueuedText(PCamera&#32;camera)&#32;{}
+83 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordtype">void</emphasis>&#32;clearCache(){
+84 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;this-&gt;meshCache.clear();
+85 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+86 
+87 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;The&#32;goal&#32;is&#32;to&#32;have&#32;multiple&#32;font&#32;engines&#32;for&#32;specific&#32;loading,</emphasis>
+88 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="comment">//&#32;so&#32;i&#32;could&#32;do&#32;auto&#32;font&#32;=&#32;Font::Create&lt;FreeTypeFont&gt;(assetPtr,&#32;24.0f)</emphasis>
+89 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">template</emphasis>&lt;<emphasis role="keyword">typename</emphasis>&#32;T&gt;
+90 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static</emphasis>&#32;<emphasis role="keyword">inline</emphasis>&#32;std::shared_ptr&lt;T&gt;&#32;Create(PAsset&#32;asset,&#32;<emphasis role="keywordtype">float</emphasis>&#32;fontSize&#32;=&#32;18.0f){
+91 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">static_assert</emphasis>(std::is_base_of&lt;Font,&#32;T&gt;::value,&#32;<emphasis role="stringliteral">&quot;Class&#32;must&#32;inherit&#32;from&#32;Font.&quot;</emphasis>);
+92 
+93 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(!asset){
+94 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;FontLogger.Log(LOG_ERRO,&#32;<emphasis role="stringliteral">&quot;Asset&#32;was&#32;null&quot;</emphasis>);
+95 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;<emphasis role="keyword">nullptr</emphasis>;
+96 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+97 
+98 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">if</emphasis>(!asset-&gt;loaded()){
+99 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;FontLogger.Log(LOG_ERRO,&#32;<emphasis role="stringliteral">&quot;Cannot&#32;create&#32;font&#32;from&#32;unloaded&#32;asset,&#32;make&#32;sure&#32;its&#32;loaded,&#32;call&#32;Asset::load()&#32;or&#32;AssetManager::getOrLoad()&quot;</emphasis>);
+100 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;<emphasis role="keyword">nullptr</emphasis>;
+101 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+102 
+103 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keyword">auto</emphasis>&#32;font&#32;=&#32;std::make_shared&lt;T&gt;();
+104 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;font-&gt;assetPtr&#32;=&#32;asset;
+105 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;font-&gt;fontSize&#32;=&#32;fontSize;
+106 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;font-&gt;_initFont();
+107 &#32;&#32;&#32;&#32;
+108 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;font;
+109 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+110 
+111 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;PAsset&#32;getAssetPointer(){
+112 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<emphasis role="keywordflow">return</emphasis>&#32;this-&gt;assetPtr;
+113 &#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;}
+114 };&#32;
+115 
+116 <emphasis role="keyword">typedef</emphasis>&#32;std::shared_ptr&lt;Font&gt;&#32;PFont;
+117 
+118 <emphasis role="preprocessor">#endif&#32;</emphasis><emphasis role="comment">//&#32;FONT_H</emphasis>
+</programlisting></section>

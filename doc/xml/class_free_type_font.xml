@@ -1,0 +1,250 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.16.1" xml:lang="en-US">
+  <compounddef id="class_free_type_font" kind="class" language="C++" prot="public">
+    <compoundname>FreeTypeFont</compoundname>
+    <basecompoundref refid="class_font" prot="public" virt="non-virtual">Font</basecompoundref>
+    <includes refid="_free_type_font_8h" local="no">FreeTypeFont.h</includes>
+    <innerclass refid="struct_free_type_font_1_1_deferred_batch" prot="private">FreeTypeFont::DeferredBatch</innerclass>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_free_type_font_1accdd3ddc608ad2e2de9f10f9e9455d8b" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="struct_model_part" kindref="compound">ModelPart</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;ModelPart&gt; FreeTypeFont::transientTextPart</definition>
+        <argsstring></argsstring>
+        <name>transientTextPart</name>
+        <qualifiedname>FreeTypeFont::transientTextPart</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/FreeTypeFont.h" line="38" column="25" bodyfile="src/Rendering/Fonts/FreeTypeFont.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_free_type_font_1a8bf23491d5a4a8944c54f25ced748243" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; DeferredBatch &gt;</type>
+        <definition>std::vector&lt;DeferredBatch&gt; FreeTypeFont::deferredBatches</definition>
+        <argsstring></argsstring>
+        <name>deferredBatches</name>
+        <qualifiedname>FreeTypeFont::deferredBatches</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/FreeTypeFont.h" line="39" column="21" bodyfile="src/Rendering/Fonts/FreeTypeFont.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_free_type_font_1afca406a2118aa4f57cd6592736e733bb" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool FreeTypeFont::frameActive</definition>
+        <argsstring></argsstring>
+        <name>frameActive</name>
+        <qualifiedname>FreeTypeFont::frameActive</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/FreeTypeFont.h" line="40" column="14" bodyfile="src/Rendering/Fonts/FreeTypeFont.h" bodystart="40" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_free_type_font_1af5cf9314662b0bb7501c2ad300314abf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>FreeTypeFont::FreeTypeFont</definition>
+        <argsstring>()</argsstring>
+        <name>FreeTypeFont</name>
+        <qualifiedname>FreeTypeFont::FreeTypeFont</qualifiedname>
+        <briefdescription>
+<para>Constructs a new <ref refid="class_free_type_font" kindref="compound">FreeTypeFont</ref> instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/FreeTypeFont.h" line="19" column="9" bodyfile="src/Rendering/Fonts/FreeTypeFont.h" bodystart="19" bodyend="19"/>
+        <references refid="class_font_1a4e6a119206f505522100221c1fafde45" compoundref="_font_8h" startline="75" endline="75">Font::Font</references>
+      </memberdef>
+      <memberdef kind="function" id="class_free_type_font_1ace8e8942ae61f4df9238bba96ec78b39" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void FreeTypeFont::_initFont</definition>
+        <argsstring>() override</argsstring>
+        <name>_initFont</name>
+        <qualifiedname>FreeTypeFont::_initFont</qualifiedname>
+        <reimplements refid="class_font_1aa6b8da140518e4282bbe81e7033e0081">_initFont</reimplements>
+        <briefdescription>
+<para>Initializes font resources. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/FreeTypeFont.h" line="22" column="14" bodyfile="src/Rendering/Fonts/FreeTypeFont.cpp" bodystart="11" bodyend="101"/>
+      </memberdef>
+      <memberdef kind="function" id="class_free_type_font_1aabd8450cc9c0f3158ce5ae414c92443f" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void FreeTypeFont::drawText</definition>
+        <argsstring>(std::string text, Math3D::Vec2 position, PCamera camera, Color color, bool useCache) override</argsstring>
+        <name>drawText</name>
+        <qualifiedname>FreeTypeFont::drawText</qualifiedname>
+        <reimplements refid="class_font_1abd1403ab126a898f00e431b3adde8f48">drawText</reimplements>
+        <param>
+          <type>std::string</type>
+          <declname>text</declname>
+        </param>
+        <param>
+          <type>Math3D::Vec2</type>
+          <declname>position</declname>
+        </param>
+        <param>
+          <type>PCamera</type>
+          <declname>camera</declname>
+        </param>
+        <param>
+          <type>Color</type>
+          <declname>color</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>useCache</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/FreeTypeFont.h" line="23" column="14" bodyfile="src/Rendering/Fonts/FreeTypeFont.cpp" bodystart="126" bodyend="179"/>
+      </memberdef>
+      <memberdef kind="function" id="class_free_type_font_1a409cd5f8a8f6e596fc654ed5f69167f2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>bool</type>
+        <definition>bool FreeTypeFont::supportsQueuedDrawing</definition>
+        <argsstring>() const override</argsstring>
+        <name>supportsQueuedDrawing</name>
+        <qualifiedname>FreeTypeFont::supportsQueuedDrawing</qualifiedname>
+        <reimplements refid="class_font_1a7993238290811753bb502c58a85a79d3">supportsQueuedDrawing</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/FreeTypeFont.h" line="24" column="14" bodyfile="src/Rendering/Fonts/FreeTypeFont.h" bodystart="24" bodyend="24"/>
+      </memberdef>
+      <memberdef kind="function" id="class_free_type_font_1a8c52bd0af48e7001a33763ae79723e32" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void FreeTypeFont::beginFrame</definition>
+        <argsstring>(PCamera camera) override</argsstring>
+        <name>beginFrame</name>
+        <qualifiedname>FreeTypeFont::beginFrame</qualifiedname>
+        <reimplements refid="class_font_1a916aaa8940335189a855c32a9736388a">beginFrame</reimplements>
+        <param>
+          <type>PCamera</type>
+          <declname>camera</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/FreeTypeFont.h" line="25" column="14" bodyfile="src/Rendering/Fonts/FreeTypeFont.cpp" bodystart="118" bodyend="124"/>
+      </memberdef>
+      <memberdef kind="function" id="class_free_type_font_1a52a54d9bf92dcfb76bbf5d914d417d76" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void FreeTypeFont::flushQueuedText</definition>
+        <argsstring>(PCamera camera) override</argsstring>
+        <name>flushQueuedText</name>
+        <qualifiedname>FreeTypeFont::flushQueuedText</qualifiedname>
+        <reimplements refid="class_font_1a535034c260677663264cd4971c89ebc2">flushQueuedText</reimplements>
+        <param>
+          <type>PCamera</type>
+          <declname>camera</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/FreeTypeFont.h" line="26" column="14" bodyfile="src/Rendering/Fonts/FreeTypeFont.cpp" bodystart="181" bodyend="238"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_free_type_font_1ac92213f4b84969326ed8e2b9a879d1b0" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>DeferredBatch &amp;</type>
+        <definition>FreeTypeFont::DeferredBatch &amp; FreeTypeFont::getOrCreateBatch</definition>
+        <argsstring>(const Color &amp;color)</argsstring>
+        <name>getOrCreateBatch</name>
+        <qualifiedname>FreeTypeFont::getOrCreateBatch</qualifiedname>
+        <param>
+          <type>const Color &amp;</type>
+          <declname>color</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/Rendering/Fonts/FreeTypeFont.h" line="37" column="23" bodyfile="src/Rendering/Fonts/FreeTypeFont.cpp" bodystart="103" bodyend="116"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Represents the <ref refid="class_free_type_font" kindref="compound">FreeTypeFont</ref> type. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>Font</label>
+        <link refid="class_font"/>
+      </node>
+      <node id="1">
+        <label>FreeTypeFont</label>
+        <link refid="class_free_type_font"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>Font</label>
+        <link refid="class_font"/>
+      </node>
+      <node id="1">
+        <label>FreeTypeFont</label>
+        <link refid="class_free_type_font"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="src/Rendering/Fonts/FreeTypeFont.h" line="14" column="1" bodyfile="src/Rendering/Fonts/FreeTypeFont.h" bodystart="14" bodyend="41"/>
+    <listofallmembers>
+      <member refid="class_free_type_font_1ace8e8942ae61f4df9238bba96ec78b39" prot="public" virt="virtual"><scope>FreeTypeFont</scope><name>_initFont</name></member>
+      <member refid="class_font_1ae722d440cb9bf8ed62b1ce36b1ae1a73" prot="protected" virt="non-virtual"><scope>FreeTypeFont</scope><name>assetPtr</name></member>
+      <member refid="class_free_type_font_1a8c52bd0af48e7001a33763ae79723e32" prot="public" virt="virtual"><scope>FreeTypeFont</scope><name>beginFrame</name></member>
+      <member refid="class_font_1afb3941e314ea743a47e9423bafa93385" prot="protected" virt="non-virtual"><scope>FreeTypeFont</scope><name>characters</name></member>
+      <member refid="class_font_1abf7846fb0e62fe8c5132bd67a2fc332a" prot="public" virt="non-virtual"><scope>FreeTypeFont</scope><name>clearCache</name></member>
+      <member refid="class_font_1a23554a9888274dac6143a7a206eb71ef" prot="public" virt="non-virtual"><scope>FreeTypeFont</scope><name>Create</name></member>
+      <member refid="class_free_type_font_1a8bf23491d5a4a8944c54f25ced748243" prot="private" virt="non-virtual"><scope>FreeTypeFont</scope><name>deferredBatches</name></member>
+      <member refid="class_free_type_font_1aabd8450cc9c0f3158ce5ae414c92443f" prot="public" virt="virtual"><scope>FreeTypeFont</scope><name>drawText</name></member>
+      <member refid="class_free_type_font_1a52a54d9bf92dcfb76bbf5d914d417d76" prot="public" virt="virtual"><scope>FreeTypeFont</scope><name>flushQueuedText</name></member>
+      <member refid="class_font_1a4e6a119206f505522100221c1fafde45" prot="public" virt="non-virtual"><scope>FreeTypeFont</scope><name>Font</name></member>
+      <member refid="class_font_1a6707f3ecdb11b9a99892369650c80568" prot="public" virt="non-virtual"><scope>FreeTypeFont</scope><name>FontLogger</name></member>
+      <member refid="class_font_1a05386ef6c0908902bfd468c8cd03bf3a" prot="protected" virt="non-virtual"><scope>FreeTypeFont</scope><name>fontSize</name></member>
+      <member refid="class_free_type_font_1afca406a2118aa4f57cd6592736e733bb" prot="private" virt="non-virtual"><scope>FreeTypeFont</scope><name>frameActive</name></member>
+      <member refid="class_free_type_font_1af5cf9314662b0bb7501c2ad300314abf" prot="public" virt="non-virtual"><scope>FreeTypeFont</scope><name>FreeTypeFont</name></member>
+      <member refid="class_font_1abe9fd046d6125b62151232808b64e855" prot="public" virt="non-virtual"><scope>FreeTypeFont</scope><name>getAssetPointer</name></member>
+      <member refid="class_free_type_font_1ac92213f4b84969326ed8e2b9a879d1b0" prot="private" virt="non-virtual"><scope>FreeTypeFont</scope><name>getOrCreateBatch</name></member>
+      <member refid="class_font_1a3464ec0edc51ad004b5223c87c198136" prot="protected" virt="non-virtual"><scope>FreeTypeFont</scope><name>materialCachePtr</name></member>
+      <member refid="class_font_1a34353d7ac57dd55d339a3f360ecd780c" prot="protected" virt="non-virtual"><scope>FreeTypeFont</scope><name>meshCache</name></member>
+      <member refid="class_free_type_font_1a409cd5f8a8f6e596fc654ed5f69167f2" prot="public" virt="virtual"><scope>FreeTypeFont</scope><name>supportsQueuedDrawing</name></member>
+      <member refid="class_font_1a6443ae8ba782461ee9fb0ebfdb89980f" prot="protected" virt="non-virtual"><scope>FreeTypeFont</scope><name>textureAtlasPtr</name></member>
+      <member refid="class_free_type_font_1accdd3ddc608ad2e2de9f10f9e9455d8b" prot="private" virt="non-virtual"><scope>FreeTypeFont</scope><name>transientTextPart</name></member>
+      <member refid="class_font_1aa6c4353c7fae81039c49b4a4f26086ff" prot="public" virt="virtual"><scope>FreeTypeFont</scope><name>~Font</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

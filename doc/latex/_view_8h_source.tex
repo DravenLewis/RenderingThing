@@ -1,0 +1,57 @@
+\doxysection{View.\+h}
+\hypertarget{_view_8h_source}{}\label{_view_8h_source}\index{src/Rendering/Core/View.h@{src/Rendering/Core/View.h}}
+\doxymbox{\hyperlink{_view_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#ifndef\ VIEW\_H}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#define\ VIEW\_H}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{_screen_8h}{Rendering/Core/Screen.h}}"{}}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ "{}Platform/Window/RenderWindow.h"{}}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00016\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_view_a44ad60a768422d3fa8fbd7576950080a}{View}}\ :\ \textcolor{keyword}{public}\ std::enable\_shared\_from\_this<View>\ \{}
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ width\ =\ 0;}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ height\ =\ 0;}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ RenderWindow*\ window\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ std::vector<PScreen>\ screens;}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_view_a44ad60a768422d3fa8fbd7576950080a}{View}}();}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_view_a44ad60a768422d3fa8fbd7576950080a}{View}}(RenderWindow*\ window);}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \doxymbox{\hyperlink{class_view_ad0f3ade04bca4e74b8868e63729bad86}{\string~View}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_view_a2f776db693e8572fb8896f74fe86ef81}{attachWindow}}(RenderWindow*\ window);}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{class_view_a3c012f511108db02bfe319f63a7c3153}{hasWindow}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ window\ !=\ \textcolor{keyword}{nullptr};\ \}}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ resize(\textcolor{keywordtype}{int}\ w,\ \textcolor{keywordtype}{int}\ h);}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ PScreen\ getScreen(\textcolor{keywordtype}{size\_t}\ index)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ PScreen\ getMainScreen()\ \textcolor{keyword}{const};\ \textcolor{comment}{//\ index\ 0}}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ PScreen\ getUIScreen()\ \textcolor{keyword}{const};\ \ \ \textcolor{comment}{//\ index\ 1}}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ RenderWindow*\ getWindow()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ window;\ \}}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ getWidth()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ width;\ \}}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ getHeight()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ height;\ \}}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ addScreen(PScreen\ screen);}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ screenCount()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ screens.size();\ \}}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ drawToWindow(\textcolor{keywordtype}{bool}\ clearWindow\ =\ \textcolor{keyword}{true},\ \textcolor{keywordtype}{float}\ x\ =\ -\/1,\ \textcolor{keywordtype}{float}\ y\ =\ -\/1,\ \textcolor{keywordtype}{float}\ w\ =\ -\/1,\ \textcolor{keywordtype}{float}\ h\ =\ -\/1);}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ Math3D::Vec3\ screenToWorld(PCamera\ cam,\ \textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{float}\ depth\ =\ 0.0f,}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ viewportX\ =\ 0.0f,\ \textcolor{keywordtype}{float}\ viewportY\ =\ 0.0f,}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ viewportW\ =\ -\/1.0f,\ \textcolor{keywordtype}{float}\ viewportH\ =\ -\/1.0f)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ Math3D::Vec3\ worldToScreen(PCamera\ cam,\ \textcolor{keyword}{const}\ Math3D::Vec3\&\ world,}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ viewportX\ =\ 0.0f,\ \textcolor{keywordtype}{float}\ viewportY\ =\ 0.0f,}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ viewportW\ =\ -\/1.0f,\ \textcolor{keywordtype}{float}\ viewportH\ =\ -\/1.0f)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00069\ \};}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \textcolor{keyword}{typedef}\ std::shared\_ptr<View>\ PView;}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ VIEW\_H}}
+
+\end{DoxyCode}
