@@ -2007,22 +2007,18 @@ void SkyboxComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     }
 }
 
-Graphics::PostProcessing::PPostProcessingEffect SSAOComponent::getEffectForCamera(const CameraSettings& settings){
-    if(!IsComponentActive(this)){
-        return nullptr;
-    }
-    if(!runtimeEffect){
-        runtimeEffect = SSAOEffect::New();
-    }
-    runtimeEffect->radiusPx = Math3D::Max(0.25f, radiusPx);
-    runtimeEffect->depthRadius = Math3D::Max(0.00001f, depthRadius);
-    runtimeEffect->bias = Math3D::Max(0.0f, bias);
-    runtimeEffect->intensity = Math3D::Clamp(intensity, 0.0f, 2.0f);
-    runtimeEffect->giBoost = Math3D::Clamp(giBoost, 0.0f, 0.6f);
-    runtimeEffect->sampleCount = Math3D::Clamp(sampleCount, 4, 16);
-    runtimeEffect->nearPlane = Math3D::Max(0.001f, settings.nearPlane);
-    runtimeEffect->farPlane = Math3D::Max(runtimeEffect->nearPlane + 0.001f, settings.farPlane);
-    return runtimeEffect;
+DeferredSSAOSettings SSAOComponent::buildDeferredSsaoSettings() const{
+    DeferredSSAOSettings settings;
+    settings.radiusPx = Math3D::Clamp(radiusPx, 0.25f, 8.0f);
+    settings.depthRadius = Math3D::Clamp(depthRadius, 0.00001f, 0.5f);
+    settings.bias = Math3D::Clamp(bias, 0.0f, 0.02f);
+    settings.intensity = Math3D::Clamp(intensity, 0.0f, 2.0f);
+    settings.giBoost = Math3D::Clamp(giBoost, 0.0f, 1.0f);
+    settings.blurRadiusPx = Math3D::Clamp(blurRadiusPx, 0.5f, 6.0f);
+    settings.blurSharpness = Math3D::Clamp(blurSharpness, 0.25f, 4.0f);
+    settings.sampleCount = Math3D::Clamp(sampleCount, 4, 64);
+    settings.debugView = Math3D::Clamp(debugView, 0, 4);
+    return settings;
 }
 
 void SSAOComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
@@ -2032,12 +2028,16 @@ void SSAOComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
         return;
     }
 
-    ImGui::SliderFloat("Radius (Px)", &radiusPx, 0.25f, 12.0f, "%.2f");
-    ImGui::SliderFloat("Depth Radius", &depthRadius, 0.00001f, 0.2f, "%.5f");
-    ImGui::SliderFloat("Bias", &bias, 0.0f, 0.05f, "%.4f");
+    ImGui::SliderFloat("Sample Radius (Px)", &radiusPx, 0.25f, 8.0f, "%.2f");
+    ImGui::SliderFloat("Sample Radius (World)", &depthRadius, 0.00001f, 0.5f, "%.5f");
+    ImGui::SliderFloat("Bias", &bias, 0.0f, 0.02f, "%.4f");
     ImGui::SliderFloat("AO Strength", &intensity, 0.0f, 2.0f, "%.2f");
-    ImGui::SliderFloat("GI Boost", &giBoost, 0.0f, 0.6f, "%.2f");
-    ImGui::SliderInt("Samples", &sampleCount, 2, 16);
+    ImGui::SliderFloat("GI Boost", &giBoost, 0.0f, 1.0f, "%.2f");
+    ImGui::SliderInt("Samples", &sampleCount, 4, 64);
+    ImGui::SliderFloat("Blur Radius (Px)", &blurRadiusPx, 0.5f, 6.0f, "%.2f");
+    ImGui::SliderFloat("Blur Sharpness", &blurSharpness, 0.25f, 4.0f, "%.2f");
+    static const char* kSsaoDebugViews[] = { "Composite", "Combined AO", "SSAO Raw", "Material AO", "GI" };
+    ImGui::Combo("Debug View", &debugView, kSsaoDebugViews, IM_ARRAYSIZE(kSsaoDebugViews));
 }
 
 Graphics::PostProcessing::PPostProcessingEffect DepthOfFieldComponent::getEffectForCamera(const CameraSettings& settings){

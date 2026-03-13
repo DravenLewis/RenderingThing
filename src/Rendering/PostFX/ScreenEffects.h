@@ -14,6 +14,7 @@
 #include <array>
 #include <chrono>
 #include <cmath>
+#include <random>
 #include <vector>
 
 /// @brief Enumerates values for AntiAliasingPreset.
@@ -138,6 +139,8 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
 
             uniform sampler2D screenTexture;
             uniform sampler2D depthTexture;
+            uniform sampler2D normalTexture;
+            uniform sampler2D positionTexture;
             uniform vec2 u_texelSize;
             uniform float u_radiusPx;
             uniform float u_depthRadius;
@@ -145,6 +148,14 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
             uniform float u_intensity;
             uniform float u_giBoost;
             uniform int u_sampleCount;
+            uniform int u_debugView;
+            uniform int u_hasSceneNormalTexture;
+            uniform int u_hasScenePositionTexture;
+            uniform mat4 u_viewMatrix;
+            uniform mat4 u_projMatrix;
+            uniform vec2 u_projScale;
+            uniform vec2 u_orthoViewSize;
+            uniform int u_isOrtho;
             uniform float u_nearPlane;
             uniform float u_farPlane;
 
@@ -170,6 +181,25 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
                 vec2( 0.14383161, -0.14100790)
             );
 
+            const vec2 kPoisson[16] = vec2[](
+                vec2(-0.94201624, -0.39906216),
+                vec2( 0.94558609, -0.76890725),
+                vec2(-0.09418410, -0.92938870),
+                vec2( 0.34495938,  0.29387760),
+                vec2(-0.91588581,  0.45771432),
+                vec2(-0.81544232, -0.87912464),
+                vec2(-0.38277543,  0.27676845),
+                vec2( 0.97484398,  0.75648379),
+                vec2( 0.44323325, -0.97511554),
+                vec2( 0.53742981, -0.47373420),
+                vec2(-0.26496911, -0.41893023),
+                vec2( 0.79197514,  0.19090188),
+                vec2(-0.24188840,  0.99706507),
+                vec2(-0.81409955,  0.91437590),
+                vec2( 0.19984126,  0.78641367),
+                vec2( 0.14383161, -0.14100790)
+            );
+
             /**
              * @brief Converts device depth to linear depth.
              * @param depth Value for depth.
@@ -191,21 +221,131 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
                 return fract((p3.x + p3.y) * p3.z);
             }
 
+            const float kSkyDepthCutoff = 0.9995;
+
+            ivec2 snapUvToDepthCoord(vec2 uv){
+                vec2 texSize = vec2(textureSize(depthTexture, 0));
+                vec2 clampedUv = clamp(uv, vec2(0.0), vec2(0.999999));
+                vec2 coord = floor(clampedUv * texSize);
+                coord = clamp(coord, vec2(0.0), texSize - vec2(1.0));
+                return ivec2(coord);
+            }
+
+            vec2 depthCoordToUv(ivec2 coord){
+                vec2 texSize = vec2(textureSize(depthTexture, 0));
+                return (vec2(coord) + 0.5) / texSize;
+            }
+
+            vec2 snapUvToDepthTexel(vec2 uv){
+                return depthCoordToUv(snapUvToDepthCoord(uv));
+            }
+
+            float sampleDepthNearest(vec2 uv){
+                return texelFetch(depthTexture, snapUvToDepthCoord(uv), 0).r;
+            }
+
+            vec3 sampleSceneNormal(vec2 uv){
+                vec3 N = texelFetch(normalTexture, snapUvToDepthCoord(uv), 0).xyz;
+                float lenN = length(N);
+                return (lenN > 1e-5) ? (N / lenN) : vec3(0.0, 0.0, 1.0);
+            }
+
+            vec3 sampleScenePosition(vec2 uv){
+                return texelFetch(positionTexture, snapUvToDepthCoord(uv), 0).xyz;
+            }
+
+            mat3 buildBasis(vec3 N, float angle){
+                vec3 tangentSeed = (abs(N.z) < 0.999) ? vec3(0.0, 0.0, 1.0) : vec3(0.0, 1.0, 0.0);
+                vec3 T = normalize(cross(tangentSeed, N));
+                vec3 B = cross(N, T);
+                float s = sin(angle);
+                float c = cos(angle);
+                vec3 rotatedT = (T * c) + (B * s);
+                vec3 rotatedB = cross(N, rotatedT);
+                return mat3(rotatedT, rotatedB, N);
+            }
+
+            vec3 reconstructViewPos(vec2 uv, float depthRaw){
+                float linearDepth = linearizeDepth(depthRaw);
+                vec2 ndc = uv * 2.0 - 1.0;
+                if(u_isOrtho != 0){
+                    vec2 halfSize = u_orthoViewSize * 0.5;
+                    return vec3(ndc.x * halfSize.x, ndc.y * halfSize.y, -linearDepth);
+                }
+                return vec3(
+                    ndc.x * linearDepth * u_projScale.x,
+                    ndc.y * linearDepth * u_projScale.y,
+                    -linearDepth
+                );
+            }
+
+            vec3 reconstructViewNormal(vec2 uv, float centerDepthRaw, vec3 centerPos){
+                float centerDepth = linearizeDepth(centerDepthRaw);
+                vec2 leftUv = snapUvToDepthTexel(uv - vec2(u_texelSize.x, 0.0));
+                vec2 rightUv = snapUvToDepthTexel(uv + vec2(u_texelSize.x, 0.0));
+                vec2 downUv = snapUvToDepthTexel(uv - vec2(0.0, u_texelSize.y));
+                vec2 upUv = snapUvToDepthTexel(uv + vec2(0.0, u_texelSize.y));
+
+                float leftDepthRaw = sampleDepthNearest(leftUv);
+                float rightDepthRaw = sampleDepthNearest(rightUv);
+                float downDepthRaw = sampleDepthNearest(downUv);
+                float upDepthRaw = sampleDepthNearest(upUv);
+
+                float leftDepth = (leftDepthRaw >= kSkyDepthCutoff) ? centerDepth : linearizeDepth(leftDepthRaw);
+                float rightDepth = (rightDepthRaw >= kSkyDepthCutoff) ? centerDepth : linearizeDepth(rightDepthRaw);
+                float downDepth = (downDepthRaw >= kSkyDepthCutoff) ? centerDepth : linearizeDepth(downDepthRaw);
+                float upDepth = (upDepthRaw >= kSkyDepthCutoff) ? centerDepth : linearizeDepth(upDepthRaw);
+
+                vec3 leftPos = reconstructViewPos(leftUv, (leftDepthRaw >= kSkyDepthCutoff) ? centerDepthRaw : leftDepthRaw);
+                vec3 rightPos = reconstructViewPos(rightUv, (rightDepthRaw >= kSkyDepthCutoff) ? centerDepthRaw : rightDepthRaw);
+                vec3 downPos = reconstructViewPos(downUv, (downDepthRaw >= kSkyDepthCutoff) ? centerDepthRaw : downDepthRaw);
+                vec3 upPos = reconstructViewPos(upUv, (upDepthRaw >= kSkyDepthCutoff) ? centerDepthRaw : upDepthRaw);
+
+                vec3 dx = (abs(leftDepth - centerDepth) < abs(rightDepth - centerDepth))
+                    ? (centerPos - leftPos)
+                    : (rightPos - centerPos);
+                vec3 dy = (abs(downDepth - centerDepth) < abs(upDepth - centerDepth))
+                    ? (centerPos - downPos)
+                    : (upPos - centerPos);
+                vec3 rawN = cross(dx, dy);
+                float rawLen = length(rawN);
+                if(rawLen < 1e-4){
+                    return vec3(0.0, 0.0, 1.0);
+                }
+                vec3 N = rawN / rawLen;
+                if(N.z < 0.0){
+                    N = -N;
+                }
+                return N;
+            }
+
             /**
              * @brief Executes the main shader pass.
              */
             void main() {
                 vec4 base = texture(screenTexture, TexCoords);
-                float centerDepthRaw = texture(depthTexture, TexCoords).r;
+                float materialAo = clamp(base.a, 0.0, 1.0);
+                vec2 centerUv = snapUvToDepthTexel(TexCoords);
+                float centerDepthRaw = sampleDepthNearest(centerUv);
                 // Treat near-far depth as background/sky and skip AO to avoid horizon halos.
-                const float kSkyDepthCutoff = 0.9995;
                 if(centerDepthRaw >= kSkyDepthCutoff){
-                    FragColor = base;
+                    if(u_debugView != 0){
+                        FragColor = vec4(vec3(0.0), 1.0);
+                    }else{
+                        FragColor = base;
+                    }
                     return;
                 }
                 float centerDepth = linearizeDepth(centerDepthRaw);
+                bool useSceneGeometry = (u_hasSceneNormalTexture != 0) && (u_hasScenePositionTexture != 0);
+                vec3 centerPos = useSceneGeometry
+                    ? sampleScenePosition(centerUv)
+                    : reconstructViewPos(centerUv, centerDepthRaw);
+                vec3 centerNormal = useSceneGeometry
+                    ? sampleSceneNormal(centerUv)
+                    : reconstructViewNormal(centerUv, centerDepthRaw, centerPos);
 
-                float radiusPx = max(u_radiusPx, 0.25);
+                float radiusPx = max(u_radiusPx, 1.0);
                 float depthRadius = max(u_depthRadius, 0.00005);
                 int count = clamp(u_sampleCount, 1, 16);
                 // Use pixel-stable noise to avoid UV-space stripe patterns on large flat surfaces.
@@ -213,65 +353,139 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
                 float sinAngle = sin(angle);
                 float cosAngle = cos(angle);
 
-                // Scale thresholds with distance and local depth slope for temporal stability.
-                // Avoid derivative-based slope (dFdx/dFdy), which can introduce primitive-edge seams.
-                float depthScaleTarget = clamp(centerDepth * 0.08, 1.0, 32.0);
-                // Smoothly ramp depth scaling to avoid a visible contour where distance scaling kicks in.
-                float depthScaleBlend = smoothstep(4.0, 28.0, centerDepth);
-                float depthScale = mix(1.0, depthScaleTarget, depthScaleBlend);
-                float adaptiveDepthRadius = depthRadius * depthScale;
-                float depthRightRaw = texture(depthTexture, clamp(TexCoords + vec2(u_texelSize.x, 0.0), vec2(0.0), vec2(1.0))).r;
-                float depthUpRaw = texture(depthTexture, clamp(TexCoords + vec2(0.0, u_texelSize.y), vec2(0.0), vec2(1.0))).r;
-                float depthRight = (depthRightRaw >= kSkyDepthCutoff) ? centerDepth : linearizeDepth(depthRightRaw);
-                float depthUp = (depthUpRaw >= kSkyDepthCutoff) ? centerDepth : linearizeDepth(depthUpRaw);
-                float depthSlope = abs(depthRight - centerDepth) + abs(depthUp - centerDepth);
-                float baseBias = max(u_bias * depthScale, adaptiveDepthRadius * 0.10);
+                float pixelWorldScale = (u_isOrtho != 0)
+                    ? max(u_orthoViewSize.y * u_texelSize.y, 0.0001)
+                    : max((2.0 * centerDepth * u_projScale.y * u_texelSize.y), 0.0001);
+                // Keep the AO footprint tied to the requested world radius and the true pixel footprint,
+                // rather than scaling it again with camera depth.
+                float adaptiveDepthRadius = max(depthRadius, pixelWorldScale * 2.0);
+                float sampleRadiusView = max(
+                    adaptiveDepthRadius * 1.75,
+                    pixelWorldScale * radiusPx * 2.0
+                );
+                float baseBias = max(u_bias, pixelWorldScale * 0.75);
+                float normalBias = clamp(max(u_bias * 2.0, pixelWorldScale * 1.25), 0.001, 0.08);
 
                 float occ = 0.0;
                 float weightSum = 0.0;
-                for(int i = 0; i < count; ++i){
-                    float ringT = (float(i) + 0.5) / float(count);
-                    vec2 poisson = kPoisson[i];
-                    vec2 rotated = vec2(
-                        (poisson.x * cosAngle) - (poisson.y * sinAngle),
-                        (poisson.x * sinAngle) + (poisson.y * cosAngle)
-                    );
-
-                    for(int mirror = 0; mirror < 2; ++mirror){
-                        vec2 direction = (mirror == 0) ? rotated : -rotated;
-                        vec2 pixelOffset = direction * radiusPx * ringT;
-                        vec2 uv = TexCoords + (pixelOffset * u_texelSize);
+                if(useSceneGeometry){
+                    vec3 centerPosVS = (u_viewMatrix * vec4(centerPos, 1.0)).xyz;
+                    vec3 centerNormalVS = normalize(mat3(u_viewMatrix) * centerNormal);
+                    mat3 sampleBasis = buildBasis(centerNormalVS, angle);
+                    float sampleRadiusWorld = max(depthRadius, pixelWorldScale * radiusPx * 1.25);
+                    float projectedRadius = max(sampleRadiusWorld, pixelWorldScale);
+                    for(int i = 0; i < count; ++i){
+                        float ringT = (float(i) + 0.5) / float(count);
+                        vec3 kernel = normalize(kHemisphere[i]);
+                        // Bias samples outward so most taps probe beyond the current surface footprint.
+                        float sampleScale = mix(0.20, 1.0, ringT * ringT);
+                        vec3 samplePosVS = centerPosVS + ((sampleBasis * kernel) * sampleRadiusWorld * sampleScale);
+                        vec4 clip = u_projMatrix * vec4(samplePosVS, 1.0);
+                        if(abs(clip.w) <= 1e-5){
+                            continue;
+                        }
+                        vec2 uv = (clip.xy / clip.w) * 0.5 + 0.5;
                         if(uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0){
                             continue;
                         }
-                        float sampleDepthRaw = texture(depthTexture, uv).r;
+
+                        float sampleDepthRaw = sampleDepthNearest(uv);
                         if(sampleDepthRaw >= kSkyDepthCutoff){
                             continue;
                         }
-                        float sampleDepth = linearizeDepth(sampleDepthRaw);
 
-                        float depthDelta = centerDepth - sampleDepth;
-                        float slopeAllowance = depthSlope * length(pixelOffset);
-                        float adjustedDelta = depthDelta - (baseBias + slopeAllowance);
-                        float sampleOcc = smoothstep(0.0, adaptiveDepthRadius, adjustedDelta);
-                        float radialBias = 1.0 - smoothstep(0.35, 1.0, ringT);
-                        sampleOcc *= mix(1.0, 1.35, radialBias);
-                        // Weight by raw geometric proximity so non-occluding neighbors still normalize.
-                        float rangeWeight = 1.0 - smoothstep(0.0, adaptiveDepthRadius * 2.5, abs(depthDelta));
+                        vec3 actualPosVS = (u_viewMatrix * vec4(sampleScenePosition(uv), 1.0)).xyz;
+                        vec3 deltaVecVS = actualPosVS - centerPosVS;
+                        float sampleDistance = length(deltaVecVS);
+                        if(sampleDistance <= 1e-4){
+                            continue;
+                        }
+                        vec3 deltaDirVS = deltaVecVS / sampleDistance;
+                        float expectedDepth = -samplePosVS.z;
+                        float actualDepth = -actualPosVS.z;
+                        float depthDelta = expectedDepth - actualDepth;
+                        float planeDelta = max(dot(centerNormalVS, deltaVecVS) - baseBias, 0.0);
+                        float depthOcc = smoothstep(baseBias, projectedRadius, depthDelta);
+                        float planeOcc = smoothstep(0.0, projectedRadius, planeDelta);
+                        float angular = max(dot(centerNormalVS, deltaDirVS) - normalBias, 0.0);
+                        float sampleOcc = max(depthOcc, planeOcc) * smoothstep(0.05, 0.85, angular);
+                        float rangeWeight = 1.0 - smoothstep(projectedRadius * 0.30, projectedRadius * 1.10, sampleDistance);
                         occ += sampleOcc * rangeWeight;
                         weightSum += rangeWeight;
+                    }
+                }else{
+                    for(int i = 0; i < count; ++i){
+                        float ringT = (float(i) + 0.5) / float(count);
+                        vec2 poisson = kPoisson[i];
+                        vec2 rotated = vec2(
+                            (poisson.x * cosAngle) - (poisson.y * sinAngle),
+                            (poisson.x * sinAngle) + (poisson.y * cosAngle)
+                        );
+
+                        for(int mirror = 0; mirror < 2; ++mirror){
+                            vec2 direction = (mirror == 0) ? rotated : -rotated;
+                            vec2 pixelOffset = direction * radiusPx * ringT;
+                            vec2 uv = snapUvToDepthTexel(centerUv + (pixelOffset * u_texelSize));
+                            if(uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0){
+                                continue;
+                            }
+                            float sampleDepthRaw = sampleDepthNearest(uv);
+                            if(sampleDepthRaw >= kSkyDepthCutoff){
+                                continue;
+                            }
+                            vec3 samplePos = reconstructViewPos(uv, sampleDepthRaw);
+                            vec3 deltaVec = samplePos - centerPos;
+                            float sampleDistance = length(deltaVec);
+                            if(sampleDistance <= 1e-4){
+                                continue;
+                            }
+                            vec3 deltaDir = deltaVec / sampleDistance;
+
+                            float planeDelta = max(dot(centerNormal, deltaVec) - baseBias, 0.0);
+                            float depthOcc = smoothstep(0.0, adaptiveDepthRadius, planeDelta);
+                            depthOcc *= 1.0 - smoothstep(sampleRadiusView * 0.25, sampleRadiusView * 1.05, sampleDistance);
+                            float geomAngular = smoothstep(0.25, 0.90, dot(centerNormal, deltaDir) - normalBias);
+                            float geomOcc = geomAngular * (1.0 - smoothstep(sampleRadiusView * 0.15, sampleRadiusView * 0.90, sampleDistance));
+                            float sampleOcc = max(depthOcc, geomOcc * 0.35);
+                            float radialBias = 1.0 - smoothstep(0.35, 1.0, ringT);
+                            sampleOcc *= mix(1.0, 1.10, radialBias);
+                            float rangeWeight = 1.0 - smoothstep(sampleRadiusView * 0.20, sampleRadiusView * 1.10, sampleDistance);
+                            occ += sampleOcc * rangeWeight;
+                            weightSum += rangeWeight;
+                        }
                     }
                 }
 
                 occ = clamp(occ / max(weightSum, 0.0001), 0.0, 1.0);
-                occ = pow(occ, 0.85);
+                occ = pow(occ, 0.68);
                 float effectiveIntensity = pow(max(u_intensity, 0.0), 0.6);
+                float debugOcclusion = clamp(occ * max(u_intensity, 1.0), 0.0, 1.0);
+                debugOcclusion = pow(debugOcclusion, 0.60);
+                float ssaoFactorRaw = clamp(1.0 - (occ * effectiveIntensity), 0.0, 1.0);
+                float combinedAoRaw = clamp(materialAo * ssaoFactorRaw, 0.0, 1.0);
                 // Keep a floor so SSAO cannot collapse the whole frame into near-black.
-                float ao = clamp(1.0 - (occ * effectiveIntensity), 0.35, 1.0);
+                float ao = clamp(ssaoFactorRaw, 0.35, 1.0);
 
                 float giFactor = (1.0 - ao);
                 giFactor = giFactor * giFactor * u_giBoost;
                 vec3 giBounce = base.rgb * giFactor;
+                if(u_debugView == 1){
+                    FragColor = vec4(vec3(combinedAoRaw), 1.0);
+                    return;
+                }
+                if(u_debugView == 2){
+                    FragColor = vec4(vec3(debugOcclusion), 1.0);
+                    return;
+                }
+                if(u_debugView == 3){
+                    FragColor = vec4(vec3(materialAo), 1.0);
+                    return;
+                }
+                if(u_debugView == 4){
+                    vec3 giDebug = clamp(giBounce * 4.0, vec3(0.0), vec3(1.0));
+                    FragColor = vec4(giDebug, 1.0);
+                    return;
+                }
                 vec3 finalColor = (base.rgb * ao) + giBounce;
                 FragColor = vec4(finalColor, base.a);
             }
@@ -306,6 +520,15 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
         float intensity = 1.0f;
         float giBoost = 0.12f;
         int sampleCount = 8;
+        int debugView = 0; // 0=composited, 1=combined AO, 2=SSAO raw, 3=material AO, 4=GI bounce
+        PTexture sceneNormalTex = nullptr;
+        PTexture scenePositionTex = nullptr;
+        Math3D::Mat4 viewMatrix;
+        Math3D::Mat4 projectionMatrix;
+        float fovYDegrees = 45.0f;
+        float aspect = 1.33f;
+        int isOrtho = 0;
+        Math3D::Vec2 orthoViewSize = Math3D::Vec2(1.0f, 1.0f);
         float nearPlane = 0.1f;
         float farPlane = 1000.0f;
 
@@ -342,12 +565,23 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
             shader->bind();
             shader->setUniformFast("screenTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(tex, 0)));
             shader->setUniformFast("depthTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(depthTex, 1)));
+            shader->setUniformFast("normalTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(sceneNormalTex, 2)));
+            shader->setUniformFast("positionTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(scenePositionTex, 3)));
             shader->setUniformFast("u_texelSize", Uniform<Math3D::Vec2>(Math3D::Vec2(1.0f / (float)outFbo->getWidth(), 1.0f / (float)outFbo->getHeight())));
             shader->setUniformFast("u_radiusPx", Uniform<float>(radiusPx));
             shader->setUniformFast("u_depthRadius", Uniform<float>(depthRadius));
             shader->setUniformFast("u_bias", Uniform<float>(bias));
             shader->setUniformFast("u_intensity", Uniform<float>(intensity));
             shader->setUniformFast("u_giBoost", Uniform<float>(giBoost));
+            shader->setUniformFast("u_debugView", Uniform<int>(debugView));
+            shader->setUniformFast("u_hasSceneNormalTexture", Uniform<int>(sceneNormalTex ? 1 : 0));
+            shader->setUniformFast("u_hasScenePositionTexture", Uniform<int>(scenePositionTex ? 1 : 0));
+            shader->setUniformFast("u_viewMatrix", Uniform<Math3D::Mat4>(viewMatrix));
+            shader->setUniformFast("u_projMatrix", Uniform<Math3D::Mat4>(projectionMatrix));
+            float tanHalfFov = std::tan((Math3D::Clamp(fovYDegrees, 1.0f, 179.0f) * 0.5f) * (Math3D::PI / 180.0f));
+            shader->setUniformFast("u_projScale", Uniform<Math3D::Vec2>(Math3D::Vec2(tanHalfFov * Math3D::Max(0.0001f, aspect), tanHalfFov)));
+            shader->setUniformFast("u_orthoViewSize", Uniform<Math3D::Vec2>(orthoViewSize));
+            shader->setUniformFast("u_isOrtho", Uniform<int>(isOrtho));
             int effectiveSamples = sampleCount;
             const int pixelCount = outFbo->getWidth() * outFbo->getHeight();
             if(pixelCount >= (2560 * 1440) && effectiveSamples > 5){
@@ -377,6 +611,532 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
          */
         static std::shared_ptr<SSAOEffect> New() {
             return std::make_shared<SSAOEffect>();
+        }
+};
+
+/// @brief Represents the RobustSSAOEffect type.
+class RobustSSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
+    private:
+        static constexpr int MAX_KERNEL_SAMPLES = 64;
+
+        std::shared_ptr<ShaderProgram> rawShader;
+        std::shared_ptr<ShaderProgram> blurShader;
+        std::shared_ptr<ShaderProgram> compositeShader;
+        bool compileAttempted = false;
+        bool kernelInitialized = false;
+        std::array<Math3D::Vec3, MAX_KERNEL_SAMPLES> kernelSamples{};
+        PTexture noiseTexture = nullptr;
+        PFrameBuffer rawAoFbo = nullptr;
+        PFrameBuffer blurAoFbo = nullptr;
+
+        const std::string SSAO_RAW_FRAG_SHADER = R"(
+            #version 330 core
+
+            out vec4 FragColor;
+            in vec2 TexCoords;
+
+            uniform sampler2D normalTexture;
+            uniform sampler2D positionTexture;
+            uniform sampler2D noiseTexture;
+            uniform mat4 u_viewMatrix;
+            uniform mat4 u_projMatrix;
+            uniform vec3 u_samples[64];
+            uniform int u_kernelSize;
+            uniform vec2 u_noiseScale;
+            uniform vec2 u_texelSize;
+            uniform float u_radiusPx;
+            uniform float u_depthRadius;
+            uniform float u_bias;
+
+            vec3 safeNormalize(vec3 v){
+                float lenV = length(v);
+                return (lenV > 1e-5) ? (v / lenV) : vec3(0.0, 0.0, 1.0);
+            }
+
+            vec3 worldToViewPosition(vec3 worldPos){
+                return (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
+            }
+
+            vec3 worldToViewNormal(vec3 worldNormal){
+                return safeNormalize(mat3(u_viewMatrix) * worldNormal);
+            }
+
+            vec3 geometricNormalFromViewPos(vec3 posView){
+                vec3 dx = dFdx(posView);
+                vec3 dy = dFdy(posView);
+                vec3 n = safeNormalize(cross(dx, dy));
+                vec3 viewDir = safeNormalize(-posView);
+                if(dot(n, viewDir) < 0.0){
+                    n = -n;
+                }
+                return n;
+            }
+
+            void main() {
+                vec3 normalWorld = texture(normalTexture, TexCoords).xyz;
+                if(length(normalWorld) < 1e-4){
+                    FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+                    return;
+                }
+
+                vec3 fragPosView = worldToViewPosition(texture(positionTexture, TexCoords).xyz);
+                vec3 geomNormalView = geometricNormalFromViewPos(fragPosView);
+                vec3 normalFromGBufferView = worldToViewNormal(normalWorld);
+                vec3 normalView = safeNormalize(mix(geomNormalView, normalFromGBufferView, 0.35));
+
+                vec3 randomVec = safeNormalize(texture(noiseTexture, TexCoords * u_noiseScale).xyz);
+                vec3 tangent = randomVec - normalView * dot(randomVec, normalView);
+                tangent = (length(tangent) > 1e-5) ? normalize(tangent) : vec3(1.0, 0.0, 0.0);
+                vec3 bitangent = safeNormalize(cross(normalView, tangent));
+                mat3 TBN = mat3(tangent, bitangent, normalView);
+
+                float projScaleY = max(abs(u_projMatrix[1][1]), 0.0001);
+                float viewDepth = max(abs(fragPosView.z), 0.001);
+                float pixelWorldRadius = (2.0 * viewDepth * u_texelSize.y / projScaleY) * max(u_radiusPx, 0.25);
+                float radius = max(u_depthRadius * 4.0, pixelWorldRadius * 2.0);
+                radius = clamp(radius, 0.01, 0.75);
+                // Keep the projected hemisphere broad enough to find occluders,
+                // but only normalize over taps that stay in the fragment's local depth neighborhood.
+                float nearbyDepthRadius = clamp(max(u_depthRadius, pixelWorldRadius), 0.005, radius);
+                float bias = max(u_bias, radius * 0.02);
+
+                int kernelSize = clamp(u_kernelSize, 1, 64);
+                float occlusion = 0.0;
+                float nearbyValidSamples = 0.0;
+                for(int i = 0; i < kernelSize; ++i){
+                    vec3 samplePosView = fragPosView + (TBN * u_samples[i]) * radius;
+                    vec4 offset = u_projMatrix * vec4(samplePosView, 1.0);
+                    if(abs(offset.w) <= 1e-5){
+                        continue;
+                    }
+
+                    offset.xyz /= offset.w;
+                    vec2 sampleUv = offset.xy * 0.5 + 0.5;
+                    if(sampleUv.x <= 0.0 || sampleUv.x >= 1.0 || sampleUv.y <= 0.0 || sampleUv.y >= 1.0){
+                        continue;
+                    }
+
+                    vec3 sampleNormalWorld = texture(normalTexture, sampleUv).xyz;
+                    if(length(sampleNormalWorld) < 1e-4){
+                        continue;
+                    }
+
+                    vec3 sampleScenePosView = worldToViewPosition(texture(positionTexture, sampleUv).xyz);
+                    float rangeDelta = abs(fragPosView.z - sampleScenePosView.z);
+                    if(rangeDelta > nearbyDepthRadius){
+                        continue;
+                    }
+                    float occluded = (sampleScenePosView.z >= (samplePosView.z + bias)) ? 1.0 : 0.0;
+                    occlusion += occluded;
+                    nearbyValidSamples += 1.0;
+                }
+
+                float ao = 1.0 - ((nearbyValidSamples > 0.0) ? (occlusion / nearbyValidSamples) : 0.0);
+                ao = pow(clamp(ao, 0.0, 1.0), 2.0);
+                FragColor = vec4(vec3(clamp(ao, 0.0, 1.0)), 1.0);
+            }
+        )";
+
+        const std::string SSAO_BLUR_FRAG_SHADER = R"(
+            #version 330 core
+
+            out vec4 FragColor;
+            in vec2 TexCoords;
+
+            uniform sampler2D rawAoTexture;
+            uniform sampler2D normalTexture;
+            uniform sampler2D positionTexture;
+            uniform mat4 u_viewMatrix;
+            uniform vec2 u_texelSize;
+            uniform float u_blurRadiusPx;
+            uniform float u_blurSharpness;
+
+            vec3 safeNormalize(vec3 v){
+                float lenV = length(v);
+                return (lenV > 1e-5) ? (v / lenV) : vec3(0.0, 0.0, 1.0);
+            }
+
+            vec3 worldToViewPosition(vec3 worldPos){
+                return (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
+            }
+
+            vec3 worldToViewNormal(vec3 worldNormal){
+                return safeNormalize(mat3(u_viewMatrix) * worldNormal);
+            }
+
+            void main() {
+                float centerAo = clamp(texture(rawAoTexture, TexCoords).r, 0.0, 1.0);
+                vec3 centerNormalWorld = texture(normalTexture, TexCoords).xyz;
+                if(length(centerNormalWorld) < 1e-4){
+                    FragColor = vec4(centerAo, centerAo, centerAo, 1.0);
+                    return;
+                }
+
+                vec3 centerNormalView = worldToViewNormal(centerNormalWorld);
+                vec3 centerPosView = worldToViewPosition(texture(positionTexture, TexCoords).xyz);
+
+                float blurRadius = max(u_blurRadiusPx, 0.5);
+                float sharpness = clamp(u_blurSharpness, 0.25, 8.0);
+                float sharpnessNorm = smoothstep(0.25, 8.0, sharpness);
+                float spatialSigma = max(blurRadius * 0.85, 0.9);
+                float depthSigma = max(abs(centerPosView.z) * mix(0.025, 0.010, sharpnessNorm), 0.006);
+
+                float aoSum = 0.0;
+                float weightSum = 0.0;
+                for(int x = -2; x <= 2; ++x){
+                    for(int y = -2; y <= 2; ++y){
+                        vec2 kernelOffset = vec2(float(x), float(y));
+                        vec2 sampleUv = TexCoords + (kernelOffset * u_texelSize * blurRadius);
+                        if(sampleUv.x < 0.0 || sampleUv.x > 1.0 || sampleUv.y < 0.0 || sampleUv.y > 1.0){
+                            continue;
+                        }
+
+                        vec3 sampleNormalWorld = texture(normalTexture, sampleUv).xyz;
+                        if(length(sampleNormalWorld) < 1e-4){
+                            continue;
+                        }
+
+                        float sampleAo = clamp(texture(rawAoTexture, sampleUv).r, 0.0, 1.0);
+                        vec3 sampleNormalView = worldToViewNormal(sampleNormalWorld);
+                        vec3 samplePosView = worldToViewPosition(texture(positionTexture, sampleUv).xyz);
+
+                        float kernelLen = length(kernelOffset);
+                        float spatialSigma = max(blurRadius * 0.90, 0.9);
+                        float spatialWeight = exp(-(kernelLen * kernelLen) / max(2.0 * spatialSigma * spatialSigma, 0.0001));
+                        float normalWeight = pow(max(dot(centerNormalView, sampleNormalView), 0.0), mix(1.0, 3.0, sharpnessNorm));
+                        normalWeight = mix(0.25, 1.0, normalWeight);
+                        float viewDepthDiff = abs(samplePosView.z - centerPosView.z);
+                        float planeDiff = abs(dot(centerNormalView, samplePosView - centerPosView));
+                        float depthMetric = max(planeDiff, viewDepthDiff * 0.5);
+                        float depthWeight = exp(-depthMetric / max(depthSigma, 0.0001));
+                        float weight = spatialWeight * normalWeight * depthWeight;
+
+                        aoSum += sampleAo * weight;
+                        weightSum += weight;
+                    }
+                }
+
+                float blurredAo = (weightSum > 0.0) ? (aoSum / weightSum) : centerAo;
+                FragColor = vec4(vec3(clamp(blurredAo, 0.0, 1.0)), 1.0);
+            }
+        )";
+
+        const std::string SSAO_COMPOSITE_FRAG_SHADER = R"(
+            #version 330 core
+
+            out vec4 FragColor;
+            in vec2 TexCoords;
+
+            uniform sampler2D screenTexture;
+            uniform sampler2D aoRawTexture;
+            uniform sampler2D aoBlurTexture;
+            uniform sampler2D normalTexture;
+            uniform sampler2D positionTexture;
+            uniform float u_intensity;
+            uniform float u_giBoost;
+            uniform int u_debugView;
+
+            void main(){
+                vec4 base = texture(screenTexture, TexCoords);
+                vec3 normalWorld = texture(normalTexture, TexCoords).xyz;
+                if(length(normalWorld) < 1e-4){
+                    if(u_debugView == 4){
+                        FragColor = vec4(vec3(0.0), 1.0);
+                    }else if(u_debugView != 0){
+                        FragColor = vec4(vec3(1.0), 1.0);
+                    }else{
+                        FragColor = base;
+                    }
+                    return;
+                }
+
+                float rawOcc = clamp(texture(aoRawTexture, TexCoords).r, 0.0, 1.0);
+                float blurredOcc = clamp(texture(aoBlurTexture, TexCoords).r, 0.0, 1.0);
+                float materialAo = clamp(texture(positionTexture, TexCoords).a, 0.0, 1.0);
+
+                float ssaoFactor = pow(max(blurredOcc, 0.0001), max(u_intensity, 0.0));
+                ssaoFactor = clamp(ssaoFactor, 0.0, 1.0);
+                float combinedAo = clamp(materialAo * ssaoFactor, 0.0, 1.0);
+                float bounce = 1.0 - ssaoFactor;
+                vec3 giBounce = base.rgb * (bounce * bounce * max(u_giBoost, 0.0));
+
+                if(u_debugView == 1){
+                    FragColor = vec4(vec3(combinedAo), 1.0);
+                    return;
+                }
+                if(u_debugView == 2){
+                    FragColor = vec4(vec3(rawOcc), 1.0);
+                    return;
+                }
+                if(u_debugView == 3){
+                    FragColor = vec4(vec3(materialAo), 1.0);
+                    return;
+                }
+                if(u_debugView == 4){
+                    FragColor = vec4(clamp(giBounce * 4.0, vec3(0.0), vec3(1.0)), 1.0);
+                    return;
+                }
+
+                vec3 finalColor = (base.rgb * combinedAo) + giBounce;
+                FragColor = vec4(finalColor, base.a);
+            }
+        )";
+
+        bool ensureCompiled(){
+            if(!rawShader || !blurShader || !compositeShader){
+                return false;
+            }
+            if(rawShader->getID() != 0 && blurShader->getID() != 0 && compositeShader->getID() != 0){
+                return true;
+            }
+            if(compileAttempted){
+                return false;
+            }
+
+            compileAttempted = true;
+            bool ok = true;
+            if(rawShader->compile() == 0){
+                LogBot.Log(LOG_ERRO, "Failed to compile robust SSAO raw shader:\n%s", rawShader->getLog().c_str());
+                ok = false;
+            }
+            if(blurShader->compile() == 0){
+                LogBot.Log(LOG_ERRO, "Failed to compile robust SSAO blur shader:\n%s", blurShader->getLog().c_str());
+                ok = false;
+            }
+            if(compositeShader->compile() == 0){
+                LogBot.Log(LOG_ERRO, "Failed to compile robust SSAO composite shader:\n%s", compositeShader->getLog().c_str());
+                ok = false;
+            }
+            return ok;
+        }
+
+        bool ensureTarget(PFrameBuffer& buffer, int width, int height){
+            if(buffer &&
+               buffer->getWidth() == width &&
+               buffer->getHeight() == height &&
+               buffer->getTexture()){
+                return true;
+            }
+
+            buffer = FrameBuffer::Create(width, height);
+            if(!buffer){
+                return false;
+            }
+            buffer->attachTexture(Texture::CreateRenderTarget(width, height, GL_R16F, GL_RED, GL_FLOAT));
+            return buffer->getTexture() && buffer->validate();
+        }
+
+        bool ensureTargets(int width, int height){
+            if(width <= 0 || height <= 0){
+                return false;
+            }
+            if(!ensureTarget(rawAoFbo, width, height)){
+                return false;
+            }
+            return ensureTarget(blurAoFbo, width, height);
+        }
+
+        void initializeKernelAndNoise(){
+            if(kernelInitialized && noiseTexture){
+                return;
+            }
+
+            std::mt19937 rng(1337u);
+            std::uniform_real_distribution<float> random01(0.0f, 1.0f);
+            std::uniform_real_distribution<float> random11(-1.0f, 1.0f);
+
+            for(int i = 0; i < MAX_KERNEL_SAMPLES; ++i){
+                Math3D::Vec3 sample(random11(rng), random11(rng), random01(rng));
+                float len = sample.length();
+                if(len > 1e-5f){
+                    sample = sample * (1.0f / len);
+                }else{
+                    sample = Math3D::Vec3(0.0f, 0.0f, 1.0f);
+                }
+
+                sample = sample * random01(rng);
+                const float t = static_cast<float>(i) / static_cast<float>(MAX_KERNEL_SAMPLES);
+                const float scale = Math3D::Lerp(0.1f, 1.0f, t * t);
+                kernelSamples[i] = sample * scale;
+            }
+
+            std::array<float, 4 * 4 * 3> noiseData{};
+            for(int i = 0; i < 16; ++i){
+                noiseData[i * 3 + 0] = random11(rng);
+                noiseData[i * 3 + 1] = random11(rng);
+                noiseData[i * 3 + 2] = 0.0f;
+            }
+
+            GLuint noiseTexId = 0;
+            glGenTextures(1, &noiseTexId);
+            glBindTexture(GL_TEXTURE_2D, noiseTexId);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, 4, 4, 0, GL_RGB, GL_FLOAT, noiseData.data());
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glBindTexture(GL_TEXTURE_2D, 0);
+
+            noiseTexture = Texture::CreateFromExisting(noiseTexId, 4, 4, true);
+            kernelInitialized = (noiseTexture != nullptr);
+        }
+
+        void uploadKernelUniforms(const std::shared_ptr<ShaderProgram>& shaderProgram){
+            if(!shaderProgram){
+                return;
+            }
+            for(int i = 0; i < MAX_KERNEL_SAMPLES; ++i){
+                shaderProgram->setUniformFast(
+                    "u_samples[" + std::to_string(i) + "]",
+                    Uniform<Math3D::Vec3>(kernelSamples[i])
+                );
+            }
+        }
+
+        void drawFullscreenPass(const std::shared_ptr<ShaderProgram>& shaderProgram, const std::shared_ptr<ModelPart>& quad){
+            static const Math3D::Mat4 IDENTITY;
+            shaderProgram->setUniformFast("u_model", Uniform<Math3D::Mat4>(IDENTITY));
+            shaderProgram->setUniformFast("u_view", Uniform<Math3D::Mat4>(IDENTITY));
+            shaderProgram->setUniformFast("u_projection", Uniform<Math3D::Mat4>(IDENTITY));
+            quad->draw(IDENTITY, IDENTITY, IDENTITY);
+        }
+
+        bool renderAoPasses(int width, int height, const std::shared_ptr<ModelPart>& quad){
+            if(width <= 0 || height <= 0 || !quad || !sceneNormalTex || !scenePositionTex){
+                return false;
+            }
+            if(!ensureCompiled() || !ensureTargets(width, height)){
+                return false;
+            }
+
+            initializeKernelAndNoise();
+            if(!noiseTexture){
+                return false;
+            }
+
+            glDisable(GL_DEPTH_TEST);
+            glDisable(GL_BLEND);
+
+            const Math3D::Vec2 texelSize(
+                1.0f / static_cast<float>(width),
+                1.0f / static_cast<float>(height)
+            );
+            const Math3D::Vec2 noiseScale(
+                static_cast<float>(width) / 4.0f,
+                static_cast<float>(height) / 4.0f
+            );
+            int effectiveSamples = Math3D::Clamp(sampleCount, 4, MAX_KERNEL_SAMPLES);
+
+            rawAoFbo->bind();
+            glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
+            rawShader->bind();
+            rawShader->setUniformFast("normalTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(sceneNormalTex, 0)));
+            rawShader->setUniformFast("positionTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(scenePositionTex, 1)));
+            rawShader->setUniformFast("noiseTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(noiseTexture, 2)));
+            rawShader->setUniformFast("u_viewMatrix", Uniform<Math3D::Mat4>(viewMatrix));
+            rawShader->setUniformFast("u_projMatrix", Uniform<Math3D::Mat4>(projectionMatrix));
+            rawShader->setUniformFast("u_kernelSize", Uniform<int>(effectiveSamples));
+            rawShader->setUniformFast("u_noiseScale", Uniform<Math3D::Vec2>(noiseScale));
+            rawShader->setUniformFast("u_texelSize", Uniform<Math3D::Vec2>(texelSize));
+            rawShader->setUniformFast("u_radiusPx", Uniform<float>(Math3D::Clamp(radiusPx, 0.25f, 8.0f)));
+            rawShader->setUniformFast("u_depthRadius", Uniform<float>(Math3D::Clamp(depthRadius, 0.0005f, 0.5f)));
+            rawShader->setUniformFast("u_bias", Uniform<float>(Math3D::Clamp(bias, 0.0f, 0.05f)));
+            uploadKernelUniforms(rawShader);
+            drawFullscreenPass(rawShader, quad);
+            rawAoFbo->unbind();
+
+            blurAoFbo->bind();
+            glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
+            blurShader->bind();
+            blurShader->setUniformFast("rawAoTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(rawAoFbo->getTexture(), 0)));
+            blurShader->setUniformFast("normalTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(sceneNormalTex, 1)));
+            blurShader->setUniformFast("positionTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(scenePositionTex, 2)));
+            blurShader->setUniformFast("u_viewMatrix", Uniform<Math3D::Mat4>(viewMatrix));
+            blurShader->setUniformFast("u_texelSize", Uniform<Math3D::Vec2>(texelSize));
+            blurShader->setUniformFast("u_blurRadiusPx", Uniform<float>(Math3D::Clamp(blurRadiusPx, 0.25f, 8.0f)));
+            blurShader->setUniformFast("u_blurSharpness", Uniform<float>(Math3D::Clamp(blurSharpness, 0.25f, 8.0f)));
+            drawFullscreenPass(blurShader, quad);
+            blurAoFbo->unbind();
+            return true;
+        }
+
+    public:
+        float radiusPx = 3.0f;
+        float depthRadius = 0.025f;
+        float bias = 0.001f;
+        float intensity = 1.0f;
+        float giBoost = 0.12f;
+        float blurRadiusPx = 2.0f;
+        float blurSharpness = 2.0f;
+        int sampleCount = 16;
+        int debugView = 0; // 0=composited, 1=combined AO, 2=SSAO raw, 3=material AO, 4=GI bounce
+        PTexture sceneNormalTex = nullptr;
+        PTexture scenePositionTex = nullptr;
+        Math3D::Mat4 viewMatrix;
+        Math3D::Mat4 projectionMatrix;
+        float fovYDegrees = 45.0f;
+        float aspect = 1.33f;
+        int isOrtho = 0;
+        Math3D::Vec2 orthoViewSize = Math3D::Vec2(1.0f, 1.0f);
+        float nearPlane = 0.1f;
+        float farPlane = 1000.0f;
+
+        RobustSSAOEffect() {
+            rawShader = std::make_shared<ShaderProgram>();
+            rawShader->setVertexShader(Graphics::ShaderDefaults::SCREEN_VERT_SRC);
+            rawShader->setFragmentShader(SSAO_RAW_FRAG_SHADER);
+
+            blurShader = std::make_shared<ShaderProgram>();
+            blurShader->setVertexShader(Graphics::ShaderDefaults::SCREEN_VERT_SRC);
+            blurShader->setFragmentShader(SSAO_BLUR_FRAG_SHADER);
+
+            compositeShader = std::make_shared<ShaderProgram>();
+            compositeShader->setVertexShader(Graphics::ShaderDefaults::SCREEN_VERT_SRC);
+            compositeShader->setFragmentShader(SSAO_COMPOSITE_FRAG_SHADER);
+        }
+
+        bool renderAoMap(int width, int height, const std::shared_ptr<ModelPart>& quad){
+            return renderAoPasses(width, height, quad);
+        }
+
+        PTexture getRawAoTexture() const {
+            return rawAoFbo ? rawAoFbo->getTexture() : nullptr;
+        }
+
+        PTexture getBlurAoTexture() const {
+            return blurAoFbo ? blurAoFbo->getTexture() : nullptr;
+        }
+
+        bool apply(PTexture tex, PTexture depthTex, PFrameBuffer outFbo, std::shared_ptr<ModelPart> quad) override {
+            (void)depthTex;
+            if(!outFbo || !quad || !tex || !sceneNormalTex || !scenePositionTex){
+                return false;
+            }
+            if(!renderAoPasses(outFbo->getWidth(), outFbo->getHeight(), quad)){
+                return false;
+            }
+
+            outFbo->bind();
+            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
+            compositeShader->bind();
+            compositeShader->setUniformFast("screenTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(tex, 0)));
+            compositeShader->setUniformFast("aoRawTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(rawAoFbo->getTexture(), 1)));
+            compositeShader->setUniformFast("aoBlurTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(blurAoFbo->getTexture(), 2)));
+            compositeShader->setUniformFast("normalTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(sceneNormalTex, 3)));
+            compositeShader->setUniformFast("positionTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(scenePositionTex, 4)));
+            compositeShader->setUniformFast("u_intensity", Uniform<float>(Math3D::Clamp(intensity, 0.0f, 2.0f)));
+            compositeShader->setUniformFast("u_giBoost", Uniform<float>(Math3D::Clamp(giBoost, 0.0f, 1.0f)));
+            compositeShader->setUniformFast("u_debugView", Uniform<int>(Math3D::Clamp(debugView, 0, 4)));
+            drawFullscreenPass(compositeShader, quad);
+            outFbo->unbind();
+            return true;
+        }
+
+        static std::shared_ptr<RobustSSAOEffect> New() {
+            return std::make_shared<RobustSSAOEffect>();
         }
 };
 
@@ -1752,3 +2512,4 @@ class FXAAEffect : public Graphics::PostProcessing::PostProcessingEffect {
 };
 
 #endif //SCREENEFFECTS_H
+

@@ -44,7 +44,7 @@ class Screen{
         std::atomic<float> lastPostProcessMs{0.0f};
         std::atomic<int> lastPostProcessEffectCount{0};
         std::uint32_t presentFrameIndex = 0;
-        float presentDebandStrength = 1.25f;
+        float presentDebandStrength = 0.0f;
 
         /**
          * @brief Initializes screen geom.

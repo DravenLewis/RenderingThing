@@ -21,12 +21,14 @@
 #include "Editor/Core/EditorAssetUI.h"
 #include "Editor/Core/ImGuiLayer.h"
 #include "Editor/Widgets/BoundsEditState.h"
+#include "Engine/Core/GameEngine.h"
 #include "Foundation/Logging/Logbot.h"
 #include "Foundation/Util/StringUtils.h"
 #include "Platform/Window/RenderWindow.h"
 #include "Assets/Core/Asset.h"
 #include "Assets/Descriptors/SkyboxAsset.h"
 #include "Scene/LoadedScene.h"
+#include "Serialization/IO/EntitySnapshotIO.h"
 #include "Serialization/IO/PrefabIO.h"
 #include "Serialization/IO/SceneIO.h"
 #include "Serialization/Schema/ComponentSerializationRegistry.h"
@@ -49,6 +51,9 @@ namespace {
     constexpr float kMinTopPanelHeight = 180.0f;
     constexpr float kIoStatusDurationSeconds = 6.0f;
     constexpr float kHelperCenterPickRadiusPx = 18.0f;
+    constexpr size_t kMaxEditHistoryEntries = 64;
+    constexpr const char* kEditorSessionDocumentType = "editor_session";
+    constexpr int kEditorSessionDocumentVersion = 1;
 
     constexpr ImGuiWindowFlags kPanelFlags =
         ImGuiWindowFlags_NoMove |
@@ -116,6 +121,133 @@ namespace {
         dst[dstSize - 1] = '\0';
     }
 
+    bool tryParseStableEntityId(const std::string& value, std::uint64_t& outId){
+        if(value.empty()){
+            return false;
+        }
+        for(char c : value){
+            if(!std::isdigit(static_cast<unsigned char>(c))){
+                return false;
+            }
+        }
+        try{
+            outId = static_cast<std::uint64_t>(std::stoull(value));
+            return outId != 0;
+        }catch(...){
+            return false;
+        }
+    }
+
+    std::uint64_t hashStableEntityId(const std::string& value){
+        constexpr std::uint64_t kFnvOffset = 1469598103934665603ull;
+        constexpr std::uint64_t kFnvPrime = 1099511628211ull;
+        std::uint64_t hash = kFnvOffset;
+        for(unsigned char c : value){
+            hash ^= static_cast<std::uint64_t>(c);
+            hash *= kFnvPrime;
+        }
+        return (hash == 0) ? 1 : hash;
+    }
+
+    bool componentRecordListsEqual(const std::vector<JsonSchema::EntitySnapshotSchemaBase::ComponentRecord>& a,
+                                   const std::vector<JsonSchema::EntitySnapshotSchemaBase::ComponentRecord>& b){
+        if(a.size() != b.size()){
+            return false;
+        }
+        for(size_t i = 0; i < a.size(); ++i){
+            if(a[i].type != b[i].type ||
+               a[i].version != b[i].version ||
+               a[i].payloadJson != b[i].payloadJson){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    const char* serializedComponentTypeName(const NeoECS::ECSComponent* component){
+        if(dynamic_cast<const TransformComponent*>(component)){ return "TransformComponent"; }
+        if(dynamic_cast<const EntityPropertiesComponent*>(component)){ return "EntityPropertiesComponent"; }
+        if(dynamic_cast<const MeshRendererComponent*>(component)){ return "MeshRendererComponent"; }
+        if(dynamic_cast<const LightComponent*>(component)){ return "LightComponent"; }
+        if(dynamic_cast<const BoundsComponent*>(component)){ return "BoundsComponent"; }
+        if(dynamic_cast<const ColliderComponent*>(component)){ return "ColliderComponent"; }
+        if(dynamic_cast<const RigidBodyComponent*>(component)){ return "RigidBodyComponent"; }
+        if(dynamic_cast<const CameraComponent*>(component)){ return "CameraComponent"; }
+        if(dynamic_cast<const SkyboxComponent*>(component)){ return "SkyboxComponent"; }
+        if(dynamic_cast<const SSAOComponent*>(component)){ return "SSAOComponent"; }
+        if(dynamic_cast<const DepthOfFieldComponent*>(component)){ return "DepthOfFieldComponent"; }
+        if(dynamic_cast<const BloomComponent*>(component)){ return "BloomComponent"; }
+        if(dynamic_cast<const AutoExposureComponent*>(component)){ return "AutoExposureComponent"; }
+        if(dynamic_cast<const AntiAliasingComponent*>(component)){ return "AntiAliasingComponent"; }
+        if(dynamic_cast<const ScriptComponent*>(component)){ return "ScriptComponent"; }
+        return nullptr;
+    }
+
+    bool removeSerializedComponentByType(NeoECS::ECSComponentManager* manager,
+                                         NeoECS::ECSEntity* entity,
+                                         const std::string& typeName){
+        if(!manager || !entity){
+            return false;
+        }
+        if(typeName == "TransformComponent" || typeName == "EntityPropertiesComponent"){
+            return false;
+        }
+        if(typeName == "MeshRendererComponent"){ manager->removeECSComponent<MeshRendererComponent>(entity); return true; }
+        if(typeName == "LightComponent"){ manager->removeECSComponent<LightComponent>(entity); return true; }
+        if(typeName == "BoundsComponent"){ manager->removeECSComponent<BoundsComponent>(entity); return true; }
+        if(typeName == "ColliderComponent"){ manager->removeECSComponent<ColliderComponent>(entity); return true; }
+        if(typeName == "RigidBodyComponent"){ manager->removeECSComponent<RigidBodyComponent>(entity); return true; }
+        if(typeName == "CameraComponent"){ manager->removeECSComponent<CameraComponent>(entity); return true; }
+        if(typeName == "SkyboxComponent"){ manager->removeECSComponent<SkyboxComponent>(entity); return true; }
+        if(typeName == "SSAOComponent"){ manager->removeECSComponent<SSAOComponent>(entity); return true; }
+        if(typeName == "DepthOfFieldComponent"){ manager->removeECSComponent<DepthOfFieldComponent>(entity); return true; }
+        if(typeName == "BloomComponent"){ manager->removeECSComponent<BloomComponent>(entity); return true; }
+        if(typeName == "AutoExposureComponent"){ manager->removeECSComponent<AutoExposureComponent>(entity); return true; }
+        if(typeName == "AntiAliasingComponent"){ manager->removeECSComponent<AntiAliasingComponent>(entity); return true; }
+        if(typeName == "ScriptComponent"){ manager->removeECSComponent<ScriptComponent>(entity); return true; }
+        return false;
+    }
+
+    std::vector<JsonSchema::EntitySnapshotSchemaBase::EntityRecord> collectSnapshotSubtreeRecords(
+        const std::vector<JsonSchema::EntitySnapshotSchemaBase::EntityRecord>& entities,
+        std::uint64_t rootId
+    ){
+        std::unordered_map<std::uint64_t, std::vector<std::uint64_t>> childrenByParent;
+        childrenByParent.reserve(entities.size());
+        for(const auto& entity : entities){
+            if(entity.hasParentId){
+                childrenByParent[entity.parentId].push_back(entity.id);
+            }
+        }
+
+        std::unordered_set<std::uint64_t> subtreeIds;
+        std::vector<std::uint64_t> stack;
+        stack.push_back(rootId);
+        while(!stack.empty()){
+            const std::uint64_t currentId = stack.back();
+            stack.pop_back();
+            if(!subtreeIds.insert(currentId).second){
+                continue;
+            }
+            auto childIt = childrenByParent.find(currentId);
+            if(childIt == childrenByParent.end()){
+                continue;
+            }
+            for(std::uint64_t childId : childIt->second){
+                stack.push_back(childId);
+            }
+        }
+
+        std::vector<JsonSchema::EntitySnapshotSchemaBase::EntityRecord> out;
+        out.reserve(subtreeIds.size());
+        for(const auto& entity : entities){
+            if(subtreeIds.find(entity.id) != subtreeIds.end()){
+                out.push_back(entity);
+            }
+        }
+        return out;
+    }
+
     bool pathWithinRoot(const std::filesystem::path& path, const std::filesystem::path& root){
         if(path.empty() || root.empty()){
             return false;
@@ -138,6 +270,18 @@ namespace {
             return normalizedPath == normalizedRoot;
         }
         return !StringUtils::BeginsWith(rel.generic_string(), "..");
+    }
+
+    bool areTransformsEquivalent(const Math3D::Transform& a, const Math3D::Transform& b, float epsilon = 0.0001f){
+        if(Math3D::Vec3::distance(a.position, b.position) > epsilon){
+            return false;
+        }
+        if(Math3D::Vec3::distance(a.scale, b.scale) > epsilon){
+            return false;
+        }
+        const Math3D::Vec3 aEuler = a.rotation.ToEuler();
+        const Math3D::Vec3 bEuler = b.rotation.ToEuler();
+        return Math3D::Vec3::distance(aEuler, bEuler) <= epsilon;
     }
 
     bool tryResolveValidSceneAssetPath(const PAsset& asset, const std::filesystem::path& assetRoot, std::filesystem::path& outPath){
@@ -219,6 +363,89 @@ namespace {
         return true;
     }
 
+    struct ScenePerformanceOverlayCounts {
+        int entityCount = 0;
+        int meshCount = 0;
+        int lightCount = 0;
+        int cameraCount = 0;
+    };
+
+    ScenePerformanceOverlayCounts collectScenePerformanceOverlayCounts(const Scene* scene){
+        ScenePerformanceOverlayCounts counts{};
+        if(!scene || !scene->getECS()){
+            return counts;
+        }
+
+        auto* entityManager = scene->getECS()->getEntityManager();
+        auto* componentManager = scene->getECS()->getComponentManager();
+        if(!entityManager || !componentManager){
+            return counts;
+        }
+
+        const auto& entities = entityManager->getEntities();
+        for(const auto& entityPtr : entities){
+            auto* entity = entityPtr.get();
+            if(!entity || scene->isSceneRootEntity(entity)){
+                continue;
+            }
+
+            counts.entityCount++;
+            if(auto* mesh = componentManager->getECSComponent<MeshRendererComponent>(entity); mesh && IsComponentActive(mesh)){
+                counts.meshCount++;
+            }
+            if(auto* light = componentManager->getECSComponent<LightComponent>(entity); light && IsComponentActive(light)){
+                counts.lightCount++;
+            }
+            if(auto* camera = componentManager->getECSComponent<CameraComponent>(entity); camera && IsComponentActive(camera)){
+                counts.cameraCount++;
+            }
+        }
+
+        return counts;
+    }
+
+    const char* engineRenderStrategyLabel(EngineRenderStrategy strategy){
+        switch(strategy){
+            case EngineRenderStrategy::Deferred:
+                return "Deferred";
+            case EngineRenderStrategy::Forward:
+            default:
+                return "Forward";
+        }
+    }
+
+    float drawViewportInfoPanel(ImDrawList* drawList,
+                                const TransformWidget::Viewport& viewport,
+                                float topY,
+                                const std::string& text,
+                                ImU32 fillColor,
+                                ImU32 borderColor){
+        if(!drawList || !viewport.valid || text.empty()){
+            return topY;
+        }
+
+        constexpr float kPanelMarginX = 12.0f;
+        constexpr float kPanelPadX = 8.0f;
+        constexpr float kPanelPadY = 6.0f;
+        constexpr float kPanelCornerRadius = 6.0f;
+        constexpr float kPanelGapY = 8.0f;
+        const ImVec2 panelMin(viewport.x + kPanelMarginX, topY);
+        const ImVec2 textSize = ImGui::CalcTextSize(text.c_str());
+        const ImVec2 panelMax(
+            panelMin.x + textSize.x + (kPanelPadX * 2.0f),
+            panelMin.y + textSize.y + (kPanelPadY * 2.0f)
+        );
+
+        drawList->AddRectFilled(panelMin, panelMax, fillColor, kPanelCornerRadius);
+        drawList->AddRect(panelMin, panelMax, borderColor, kPanelCornerRadius, 0, 1.0f);
+        drawList->AddText(
+            ImVec2(panelMin.x + kPanelPadX, panelMin.y + kPanelPadY - 1.0f),
+            IM_COL32(245, 247, 250, 235),
+            text.c_str()
+        );
+        return panelMax.y + kPanelGapY;
+    }
+
 }
 
 EditorScene::EditorScene(RenderWindow* window, PScene targetScene)
@@ -238,6 +465,1288 @@ std::filesystem::path EditorScene::resolveEditorCameraPrefabPath() const{
         return {};
     }
     return std::filesystem::path(appDataRaw) / "RenderThingy" / "Editor" / "Camera.prefab";
+}
+
+std::filesystem::path EditorScene::resolveEditorSessionPath() const{
+    const char* appDataRaw = std::getenv("APPDATA");
+    if(!appDataRaw || !appDataRaw[0]){
+        return {};
+    }
+    return std::filesystem::path(appDataRaw) / "RenderThingy" / "Editor" / "Session.json";
+}
+
+bool EditorScene::buildSceneHistoryEditorStateRawJson(JsonSchema::RawJsonValue& outEditorState,
+                                                      std::string* outError) const{
+    outEditorState.hasValue = true;
+    outEditorState.json = "{}";
+
+    JsonUtils::MutableDocument doc;
+    yyjson_mut_val* root = doc.setRootObject();
+    if(!root){
+        if(outError){
+            *outError = "Failed to allocate editor state JSON root.";
+        }
+        return false;
+    }
+
+    yyjson_mut_val* shadowDebug = yyjson_mut_obj_add_obj(doc.get(), root, "shadowDebug");
+    if(!shadowDebug){
+        if(outError){
+            *outError = "Failed to allocate editorState.shadowDebug.";
+        }
+        return false;
+    }
+
+    const bool globalOverrideEnabled = ShadowRenderer::GetGlobalDebugOverrideEnabled();
+    const int globalOverrideMode = Math3D::Clamp(ShadowRenderer::GetGlobalDebugOverrideMode(), 1, 3);
+    const float cascadeKernelMarginTexels = ShadowRenderer::GetDirectionalCascadeKernelMarginTexels();
+    const float receiverNormalBlend = ShadowRenderer::GetShadowReceiverNormalBlend();
+    if(!JsonUtils::MutObjAddBool(doc.get(), shadowDebug, "globalOverrideEnabled", globalOverrideEnabled) ||
+       !JsonUtils::MutObjAddInt(doc.get(), shadowDebug, "globalOverrideMode", globalOverrideMode) ||
+       !JsonUtils::MutObjAddFloat(doc.get(), shadowDebug, "cascadeKernelMarginTexels", cascadeKernelMarginTexels) ||
+       !JsonUtils::MutObjAddFloat(doc.get(), shadowDebug, "receiverNormalBlend", receiverNormalBlend)){
+        if(outError){
+            *outError = "Failed to serialize editor shadow debug state.";
+        }
+        return false;
+    }
+
+    if(!JsonUtils::WriteDocumentToString(doc, outEditorState.json, outError, false)){
+        if(outError && !outError->empty()){
+            *outError = "Failed to encode editor state JSON: " + *outError;
+        }
+        return false;
+    }
+
+    outEditorState.hasValue = true;
+    return true;
+}
+
+void EditorScene::applySceneHistoryEditorStateRawJson(const JsonSchema::RawJsonValue& editorState){
+    if(!editorState.hasValue || editorState.json.empty()){
+        return;
+    }
+
+    JsonUtils::Document doc;
+    std::string error;
+    if(!JsonUtils::LoadDocumentFromText(editorState.json, doc, &error)){
+        LogBot.Log(LOG_WARN, "Failed to parse editor state JSON: %s", error.c_str());
+        return;
+    }
+
+    yyjson_val* root = doc.root();
+    if(!root || !yyjson_is_obj(root)){
+        LogBot.Log(LOG_WARN, "Editor state JSON root must be an object.");
+        return;
+    }
+
+    if(yyjson_val* shadowDebug = JsonUtils::ObjGetObject(root, "shadowDebug")){
+        bool globalOverrideEnabled = ShadowRenderer::GetGlobalDebugOverrideEnabled();
+        int globalOverrideMode = Math3D::Clamp(ShadowRenderer::GetGlobalDebugOverrideMode(), 1, 3);
+        float cascadeKernelMarginTexels = ShadowRenderer::GetDirectionalCascadeKernelMarginTexels();
+        float receiverNormalBlend = ShadowRenderer::GetShadowReceiverNormalBlend();
+
+        JsonUtils::TryGetBool(shadowDebug, "globalOverrideEnabled", globalOverrideEnabled);
+        JsonUtils::TryGetInt(shadowDebug, "globalOverrideMode", globalOverrideMode);
+        JsonUtils::TryGetFloat(shadowDebug, "cascadeKernelMarginTexels", cascadeKernelMarginTexels);
+        JsonUtils::TryGetFloat(shadowDebug, "receiverNormalBlend", receiverNormalBlend);
+
+        ShadowRenderer::SetGlobalDebugOverrideEnabled(globalOverrideEnabled);
+        ShadowRenderer::SetGlobalDebugOverrideMode(Math3D::Clamp(globalOverrideMode, 1, 3));
+        ShadowRenderer::SetDirectionalCascadeKernelMarginTexels(Math3D::Clamp(cascadeKernelMarginTexels, 0.0f, 32.0f));
+        ShadowRenderer::SetShadowReceiverNormalBlend(Math3D::Clamp(receiverNormalBlend, 0.0f, 1.0f));
+    }
+}
+
+bool EditorScene::buildCurrentEditSnapshot(JsonSchema::SceneSchema& outSchema,
+                                           std::string* outJson,
+                                           std::string* outError) const{
+    if(!targetScene || !targetScene->getECS()){
+        if(outError){
+            *outError = "Target scene is unavailable.";
+        }
+        return false;
+    }
+
+    SceneIO::SceneSaveOptions options;
+    options.registry = &Serialization::DefaultComponentSerializationRegistry();
+    options.includeEditorState = true;
+    if(!buildSceneHistoryEditorStateRawJson(options.editorState, outError)){
+        return false;
+    }
+
+    const std::filesystem::path sourcePath = resolveCurrentSceneSourcePath();
+    options.metadata.name = sourcePath.stem().string();
+    if(options.metadata.name.empty()){
+        options.metadata.name = "EditorSessionScene";
+    }
+
+    if(!SceneIO::BuildSchemaFromScene(targetScene, outSchema, options, outError)){
+        return false;
+    }
+
+    if(outSchema.sceneSettings.hasValue && !outSchema.sceneSettings.json.empty()){
+        JsonUtils::Document sceneSettingsDoc;
+        if(!JsonUtils::LoadDocumentFromText(outSchema.sceneSettings.json, sceneSettingsDoc, outError)){
+            return false;
+        }
+
+        JsonUtils::MutableDocument mutableSceneSettings;
+        if(!mutableSceneSettings.copyFrom(sceneSettingsDoc)){
+            if(outError){
+                *outError = "Failed to copy scene settings JSON for edit-history normalization.";
+            }
+            return false;
+        }
+
+        yyjson_mut_val* root = mutableSceneSettings.root();
+        if(root && yyjson_mut_is_obj(root)){
+            (void)yyjson_mut_obj_remove_key(root, "selectedEntitySnapshotId");
+            (void)yyjson_mut_obj_remove_key(root, "selectedEntityId");
+            if(!JsonUtils::WriteDocumentToString(mutableSceneSettings, outSchema.sceneSettings.json, outError, false)){
+                return false;
+            }
+        }
+    }
+
+    if(outJson && !outSchema.WriteToString(*outJson, outError, false)){
+        return false;
+    }
+    return true;
+}
+
+bool EditorScene::applyEditSnapshot(const JsonSchema::SceneSchema& schema, std::string* outError){
+    if(!targetScene || !targetScene->getECS()){
+        if(outError){
+            *outError = "Target scene is unavailable.";
+        }
+        return false;
+    }
+
+    const std::string preservedSelectionId = selectedEntityId;
+    cancelViewportPrefabDragPreview();
+    setEditorCameraSettingsOpen(false);
+    selectedAssetPath.clear();
+    transformWidget.reset();
+    lightWidget.reset();
+    cameraWidget.reset();
+    boundsWidget.reset();
+    BoundsEditState::Deactivate();
+    previewTexture.reset();
+    previewCamera.reset();
+    focusActive = false;
+
+    SceneIO::SceneLoadOptions options;
+    options.registry = &Serialization::DefaultComponentSerializationRegistry();
+    options.clearExistingScene = true;
+    options.applySceneSettings = true;
+
+    SceneIO::SceneLoadResult result;
+    if(!SceneIO::ApplySchemaToScene(targetScene, schema, options, &result, outError)){
+        return false;
+    }
+
+    applySceneHistoryEditorStateRawJson(result.editorState);
+    if(!preservedSelectionId.empty() && findEntityById(preservedSelectionId)){
+        targetScene->setSelectedEntityId(preservedSelectionId);
+    }else{
+        targetScene->setSelectedEntityId("");
+    }
+    selectedEntityId = targetScene->getSelectedEntityId();
+    targetCamera = targetScene->getPreferredCamera();
+    if(!targetCamera){
+        if(auto mainScreen = targetScene->getMainScreen()){
+            targetCamera = mainScreen->getCamera();
+        }
+    }
+    viewportCamera = editorCamera ? editorCamera : targetCamera;
+    targetScene->refreshRenderState();
+    return true;
+}
+
+void EditorScene::resetEditHistoryToCurrentScene(){
+    editHistoryChanges.clear();
+    editHistoryIndex = 0;
+    pendingDeletedSubtreeSnapshots.clear();
+    editHistoryApplying = false;
+    resetTrackedEntityObservation();
+    refreshStableEntityMappings();
+    markEditorSessionDirty(0.0f);
+}
+
+void EditorScene::resetTrackedEntityObservation(){
+    trackedEntityObservationValid = false;
+    trackedEntityChangePending = false;
+    lastObservedTrackedEntityState = EditorEntityState{};
+    pendingTrackedEntityStateBefore = EditorEntityState{};
+}
+
+std::uint64_t EditorScene::computeStableEntityId(const std::string& runtimeId) const{
+    std::uint64_t stableId = 0;
+    if(tryParseStableEntityId(runtimeId, stableId)){
+        return stableId;
+    }
+    return hashStableEntityId(runtimeId);
+}
+
+std::uint64_t EditorScene::computeStableEntityId(NeoECS::ECSEntity* entity) const{
+    return entity ? computeStableEntityId(entity->getNodeUniqueID()) : 0;
+}
+
+void EditorScene::refreshStableEntityMappings(){
+    stableEntityRuntimeIds.clear();
+    if(!targetScene || !targetScene->getECS()){
+        return;
+    }
+
+    const auto& entities = targetScene->getECS()->getEntityManager()->getEntities();
+    for(const auto& entityPtr : entities){
+        auto* entity = entityPtr.get();
+        if(!entity){
+            continue;
+        }
+        stableEntityRuntimeIds[computeStableEntityId(entity)] = entity->getNodeUniqueID();
+    }
+}
+
+NeoECS::ECSEntity* EditorScene::findEntityByStableId(std::uint64_t stableId) const{
+    if(stableId == 0 || !targetScene || !targetScene->getECS()){
+        return nullptr;
+    }
+
+    auto it = stableEntityRuntimeIds.find(stableId);
+    if(it != stableEntityRuntimeIds.end()){
+        if(NeoECS::ECSEntity* mappedEntity = findEntityById(it->second)){
+            if(computeStableEntityId(mappedEntity) == stableId){
+                return mappedEntity;
+            }
+        }
+        auto* self = const_cast<EditorScene*>(this);
+        self->stableEntityRuntimeIds.erase(stableId);
+    }
+
+    const auto& entities = targetScene->getECS()->getEntityManager()->getEntities();
+    for(const auto& entityPtr : entities){
+        auto* entity = entityPtr.get();
+        if(!entity){
+            continue;
+        }
+        if(computeStableEntityId(entity) == stableId){
+            auto* self = const_cast<EditorScene*>(this);
+            self->stableEntityRuntimeIds[stableId] = entity->getNodeUniqueID();
+            return entity;
+        }
+    }
+    return nullptr;
+}
+
+bool EditorScene::captureEntityState(NeoECS::ECSEntity* entity,
+                                     EditorEntityState& outState,
+                                     std::string* outError) const{
+    outState = EditorEntityState{};
+    if(!targetScene || !targetScene->getECS() || !entity){
+        if(outError){
+            *outError = "Cannot capture entity state: scene/entity is unavailable.";
+        }
+        return false;
+    }
+
+    outState.stableId = computeStableEntityId(entity);
+    outState.name = entity->getName();
+    auto* manager = targetScene->getECS()->getComponentManager();
+    if(!Serialization::DefaultComponentSerializationRegistry().serializeEntityComponents(
+            manager,
+            entity,
+            outState.components,
+            outError)){
+        return false;
+    }
+
+    auto* self = const_cast<EditorScene*>(this);
+    self->stableEntityRuntimeIds[outState.stableId] = entity->getNodeUniqueID();
+    return true;
+}
+
+bool EditorScene::captureEntityStateByStableId(std::uint64_t stableId,
+                                               EditorEntityState& outState,
+                                               std::string* outError) const{
+    NeoECS::ECSEntity* entity = findEntityByStableId(stableId);
+    if(!entity){
+        if(outError){
+            *outError = "Target entity was not found.";
+        }
+        return false;
+    }
+    return captureEntityState(entity, outState, outError);
+}
+
+bool EditorScene::applyEntityState(const EditorEntityState& state, std::string* outError){
+    if(!targetScene || !targetScene->getECS()){
+        if(outError){
+            *outError = "Target scene is unavailable.";
+        }
+        return false;
+    }
+
+    NeoECS::ECSEntity* entity = findEntityByStableId(state.stableId);
+    if(!entity){
+        if(outError){
+            *outError = "Target entity for undo/redo was not found.";
+        }
+        return false;
+    }
+
+    auto* ecs = targetScene->getECS();
+    auto* manager = ecs->getComponentManager();
+    const auto existingComponents = manager->getECSComponents(entity);
+
+    std::unordered_set<std::string> desiredTypes;
+    desiredTypes.reserve(state.components.size());
+    for(const auto& component : state.components){
+        desiredTypes.insert(component.type);
+    }
+
+    for(NeoECS::ECSComponent* existing : existingComponents){
+        const char* typeName = serializedComponentTypeName(existing);
+        if(!typeName){
+            continue;
+        }
+        if(desiredTypes.find(typeName) == desiredTypes.end()){
+            (void)removeSerializedComponentByType(manager, entity, typeName);
+        }
+    }
+
+    entity->setName(state.name);
+    if(!Serialization::DefaultComponentSerializationRegistry().deserializeEntityComponents(
+            ecs->getContext(),
+            manager,
+            entity,
+            state.components,
+            outError)){
+        return false;
+    }
+
+    stableEntityRuntimeIds[state.stableId] = entity->getNodeUniqueID();
+    return true;
+}
+
+bool EditorScene::captureSubtreeSnapshot(const std::vector<NeoECS::ECSEntity*>& roots,
+                                         EditorSubtreeSnapshot& outSnapshot,
+                                         std::string* outError) const{
+    outSnapshot = EditorSubtreeSnapshot{};
+    if(!targetScene || !targetScene->getECS()){
+        if(outError){
+            *outError = "Target scene is unavailable.";
+        }
+        return false;
+    }
+    if(roots.empty()){
+        if(outError){
+            *outError = "Cannot capture an empty subtree snapshot.";
+        }
+        return false;
+    }
+
+    Serialization::SnapshotIO::SnapshotBuildResult snapshotBuild;
+    Serialization::SnapshotIO::SnapshotBuildOptions options;
+    options.registry = &Serialization::DefaultComponentSerializationRegistry();
+    if(!Serialization::SnapshotIO::BuildSnapshotFromEntityRoots(targetScene, roots, snapshotBuild, options, outError)){
+        return false;
+    }
+
+    outSnapshot.entities = std::move(snapshotBuild.entities);
+    outSnapshot.rootIds = std::move(snapshotBuild.rootEntityIds);
+    std::unordered_map<std::uint64_t, std::uint64_t> rootParentIdsByRootId;
+    rootParentIdsByRootId.reserve(roots.size());
+
+    auto* self = const_cast<EditorScene*>(this);
+    for(const auto& entityToId : snapshotBuild.entityToSnapshotId){
+        if(entityToId.first){
+            self->stableEntityRuntimeIds[entityToId.second] = entityToId.first->getNodeUniqueID();
+        }
+    }
+
+    for(NeoECS::ECSEntity* root : roots){
+        if(!root){
+            continue;
+        }
+        const auto snapshotIdIt = snapshotBuild.entityToSnapshotId.find(root);
+        if(snapshotIdIt == snapshotBuild.entityToSnapshotId.end()){
+            continue;
+        }
+        NeoECS::ECSEntity* parent = root->getParent();
+        if(parent && !targetScene->isSceneRootEntity(parent)){
+            rootParentIdsByRootId[snapshotIdIt->second] = computeStableEntityId(parent);
+        }else{
+            rootParentIdsByRootId[snapshotIdIt->second] = 0;
+        }
+    }
+
+    outSnapshot.rootParentIds.reserve(outSnapshot.rootIds.size());
+    for(std::uint64_t rootId : outSnapshot.rootIds){
+        auto parentIt = rootParentIdsByRootId.find(rootId);
+        outSnapshot.rootParentIds.push_back(parentIt != rootParentIdsByRootId.end() ? parentIt->second : 0);
+    }
+
+    return true;
+}
+
+bool EditorScene::applySubtreePresence(const EditorSubtreeSnapshot& snapshot,
+                                       bool present,
+                                       std::string* outError){
+    if(!targetScene || !targetScene->getECS()){
+        if(outError){
+            *outError = "Target scene is unavailable.";
+        }
+        return false;
+    }
+
+    auto* ecs = targetScene->getECS();
+    auto* ctx = ecs->getContext();
+
+    for(std::uint64_t rootId : snapshot.rootIds){
+        if(NeoECS::ECSEntity* existingRoot = findEntityByStableId(rootId)){
+            if(!targetScene->isSceneRootEntity(existingRoot)){
+                std::unique_ptr<NeoECS::GameObject> wrapper(NeoECS::GameObject::CreateFromECSEntity(ctx, existingRoot));
+                if(wrapper){
+                    targetScene->destroyECSGameObject(wrapper.get());
+                }
+            }
+        }
+    }
+
+    if(!present){
+        for(const auto& entityRecord : snapshot.entities){
+            stableEntityRuntimeIds.erase(entityRecord.id);
+            pendingDeletedSubtreeSnapshots.erase(entityRecord.id);
+        }
+        return true;
+    }
+
+    for(size_t i = 0; i < snapshot.rootIds.size(); ++i){
+        const std::uint64_t rootId = snapshot.rootIds[i];
+        const std::uint64_t parentStableId =
+            (i < snapshot.rootParentIds.size()) ? snapshot.rootParentIds[i] : 0;
+
+        std::unique_ptr<NeoECS::GameObject> parentWrapper;
+        if(parentStableId != 0){
+            NeoECS::ECSEntity* parentEntity = findEntityByStableId(parentStableId);
+            if(!parentEntity){
+                if(outError){
+                    *outError = "Undo/redo parent entity was not found.";
+                }
+                return false;
+            }
+            parentWrapper.reset(NeoECS::GameObject::CreateFromECSEntity(ctx, parentEntity));
+            if(!parentWrapper){
+                if(outError){
+                    *outError = "Failed to resolve undo/redo parent wrapper.";
+                }
+                return false;
+            }
+        }
+
+        Serialization::SnapshotIO::SnapshotInstantiateResult instantiateResult;
+        Serialization::SnapshotIO::SnapshotInstantiateOptions options;
+        options.destinationParent = parentWrapper.get();
+        options.registry = &Serialization::DefaultComponentSerializationRegistry();
+        const auto subtreeRecords = collectSnapshotSubtreeRecords(snapshot.entities, rootId);
+        if(!Serialization::SnapshotIO::InstantiateSnapshotIntoScene(
+                targetScene,
+                subtreeRecords,
+                std::vector<std::uint64_t>{rootId},
+                instantiateResult,
+                options,
+                outError)){
+            return false;
+        }
+
+        for(const auto& snapshotIdToEntity : instantiateResult.snapshotIdToEntity){
+            if(snapshotIdToEntity.second){
+                stableEntityRuntimeIds[snapshotIdToEntity.first] =
+                    snapshotIdToEntity.second->getNodeUniqueID();
+            }
+        }
+    }
+
+    return true;
+}
+
+bool EditorScene::applyEntityReparent(std::uint64_t entityStableId,
+                                      std::uint64_t parentStableId,
+                                      std::string* outError){
+    if(!targetScene || !targetScene->getECS()){
+        if(outError){
+            *outError = "Target scene is unavailable.";
+        }
+        return false;
+    }
+
+    NeoECS::ECSEntity* entity = findEntityByStableId(entityStableId);
+    if(!entity){
+        if(outError){
+            *outError = "Target entity for reparent was not found.";
+        }
+        return false;
+    }
+
+    NeoECS::ECSEntity* parentEntity = targetScene->getSceneRootEntity();
+    if(parentStableId != 0){
+        parentEntity = findEntityByStableId(parentStableId);
+        if(!parentEntity){
+            if(outError){
+                *outError = "Target parent entity for reparent was not found.";
+            }
+            return false;
+        }
+    }
+
+    auto* ctx = targetScene->getECS()->getContext();
+    std::unique_ptr<NeoECS::GameObject> entityWrapper(NeoECS::GameObject::CreateFromECSEntity(ctx, entity));
+    std::unique_ptr<NeoECS::GameObject> parentWrapper(NeoECS::GameObject::CreateFromECSEntity(ctx, parentEntity));
+    if(!entityWrapper || !parentWrapper){
+        if(outError){
+            *outError = "Failed to create game-object wrappers for reparent.";
+        }
+        return false;
+    }
+    if(!entityWrapper->setParent(parentWrapper.get())){
+        if(outError){
+            *outError = "Reparent operation failed.";
+        }
+        return false;
+    }
+
+    stableEntityRuntimeIds[entityStableId] = entity->getNodeUniqueID();
+    return true;
+}
+
+bool EditorScene::applyEditHistoryChange(const EditorSceneChange& change,
+                                         bool applyAfterState,
+                                         std::string* outError){
+    switch(change.kind){
+        case EditorSceneChange::Kind::EntityState:
+            return applyEntityState(applyAfterState ? change.afterEntityState : change.beforeEntityState, outError);
+        case EditorSceneChange::Kind::EntityReparent:
+            return applyEntityReparent(
+                change.targetStableId,
+                applyAfterState ? change.afterParentStableId : change.beforeParentStableId,
+                outError
+            );
+        case EditorSceneChange::Kind::SubtreePresence:
+            return applySubtreePresence(
+                change.subtreeSnapshot,
+                applyAfterState ? change.subtreePresentAfter : change.subtreePresentBefore,
+                outError
+            );
+    }
+
+    if(outError){
+        *outError = "Unsupported edit-history change kind.";
+    }
+    return false;
+}
+
+void EditorScene::pushEditHistoryChange(EditorSceneChange change){
+    if(change.kind == EditorSceneChange::Kind::EntityState){
+        const bool identicalState =
+            change.beforeEntityState.stableId == change.afterEntityState.stableId &&
+            change.beforeEntityState.name == change.afterEntityState.name &&
+            componentRecordListsEqual(change.beforeEntityState.components, change.afterEntityState.components);
+        if(identicalState){
+            return;
+        }
+    }else if(change.kind == EditorSceneChange::Kind::EntityReparent){
+        if(change.beforeParentStableId == change.afterParentStableId){
+            return;
+        }
+    }else if(change.kind == EditorSceneChange::Kind::SubtreePresence){
+        if(change.subtreePresentBefore == change.subtreePresentAfter || change.subtreeSnapshot.rootIds.empty()){
+            return;
+        }
+    }
+
+    if(editHistoryIndex < editHistoryChanges.size()){
+        using HistoryDiff = std::vector<EditorSceneChange>::difference_type;
+        editHistoryChanges.erase(
+            editHistoryChanges.begin() + static_cast<HistoryDiff>(editHistoryIndex),
+            editHistoryChanges.end()
+        );
+    }
+
+    editHistoryChanges.push_back(std::move(change));
+    if(editHistoryChanges.size() > kMaxEditHistoryEntries){
+        editHistoryChanges.erase(editHistoryChanges.begin());
+        if(editHistoryIndex > 0){
+            --editHistoryIndex;
+        }
+    }
+    editHistoryIndex = editHistoryChanges.size();
+    markEditorSessionDirty(0.25f);
+}
+
+void EditorScene::observeCurrentEditState(bool interactionActive){
+    if(playState != PlayState::Edit || editHistoryApplying || !targetScene || !targetScene->getECS()){
+        resetTrackedEntityObservation();
+        return;
+    }
+
+    NeoECS::ECSEntity* trackedEntity = findEntityById(selectedEntityId);
+    if(!trackedEntity){
+        if(!interactionActive){
+            resetTrackedEntityObservation();
+        }
+        return;
+    }
+
+    EditorEntityState currentState;
+    std::string error;
+    if(!captureEntityState(trackedEntity, currentState, &error)){
+        LogBot.Log(LOG_WARN, "Failed to observe edit state: %s", error.c_str());
+        return;
+    }
+
+    if(!trackedEntityObservationValid || currentState.stableId != lastObservedTrackedEntityState.stableId){
+        lastObservedTrackedEntityState = currentState;
+        trackedEntityObservationValid = true;
+        trackedEntityChangePending = false;
+        pendingTrackedEntityStateBefore = EditorEntityState{};
+        return;
+    }
+
+    const bool stateUnchanged =
+        currentState.name == lastObservedTrackedEntityState.name &&
+        componentRecordListsEqual(currentState.components, lastObservedTrackedEntityState.components);
+    if(stateUnchanged){
+        if(!interactionActive){
+            trackedEntityChangePending = false;
+            pendingTrackedEntityStateBefore = EditorEntityState{};
+        }
+        return;
+    }
+
+    if(interactionActive){
+        if(!trackedEntityChangePending){
+            pendingTrackedEntityStateBefore = lastObservedTrackedEntityState;
+            trackedEntityChangePending = true;
+        }
+        return;
+    }
+
+    EditorSceneChange change;
+    change.kind = EditorSceneChange::Kind::EntityState;
+    change.label = "Entity edited";
+    change.valuePath = "entity.state";
+    change.targetStableId = currentState.stableId;
+    change.beforeEntityState = trackedEntityChangePending ? pendingTrackedEntityStateBefore : lastObservedTrackedEntityState;
+    change.afterEntityState = currentState;
+    pushEditHistoryChange(std::move(change));
+
+    lastObservedTrackedEntityState = currentState;
+    trackedEntityObservationValid = true;
+    trackedEntityChangePending = false;
+    pendingTrackedEntityStateBefore = EditorEntityState{};
+}
+
+void EditorScene::flushEditHistoryObservation(bool forceCommit){
+    if(playState != PlayState::Edit || editHistoryApplying || !targetScene || !targetScene->getECS()){
+        resetTrackedEntityObservation();
+        return;
+    }
+
+    if(!forceCommit && !trackedEntityChangePending){
+        return;
+    }
+
+    NeoECS::ECSEntity* trackedEntity = findEntityById(selectedEntityId);
+    if(!trackedEntity){
+        resetTrackedEntityObservation();
+        return;
+    }
+
+    EditorEntityState currentState;
+    std::string error;
+    if(!captureEntityState(trackedEntity, currentState, &error)){
+        LogBot.Log(LOG_WARN, "Failed to flush edit state: %s", error.c_str());
+        resetTrackedEntityObservation();
+        return;
+    }
+
+    if(!trackedEntityObservationValid || currentState.stableId != lastObservedTrackedEntityState.stableId){
+        lastObservedTrackedEntityState = currentState;
+        trackedEntityObservationValid = true;
+        trackedEntityChangePending = false;
+        pendingTrackedEntityStateBefore = EditorEntityState{};
+        return;
+    }
+
+    const bool stateUnchanged =
+        currentState.name == lastObservedTrackedEntityState.name &&
+        componentRecordListsEqual(currentState.components, lastObservedTrackedEntityState.components);
+    if(stateUnchanged){
+        trackedEntityChangePending = false;
+        pendingTrackedEntityStateBefore = EditorEntityState{};
+        return;
+    }
+
+    EditorSceneChange change;
+    change.kind = EditorSceneChange::Kind::EntityState;
+    change.label = "Entity edited";
+    change.valuePath = "entity.state";
+    change.targetStableId = currentState.stableId;
+    change.beforeEntityState = trackedEntityChangePending ? pendingTrackedEntityStateBefore : lastObservedTrackedEntityState;
+    change.afterEntityState = currentState;
+    pushEditHistoryChange(std::move(change));
+
+    lastObservedTrackedEntityState = currentState;
+    trackedEntityObservationValid = true;
+    trackedEntityChangePending = false;
+    pendingTrackedEntityStateBefore = EditorEntityState{};
+}
+
+bool EditorScene::canUndoEditHistory() const{
+    return playState == PlayState::Edit && editHistoryIndex > 0;
+}
+
+bool EditorScene::canRedoEditHistory() const{
+    return playState == PlayState::Edit && editHistoryIndex < editHistoryChanges.size();
+}
+
+bool EditorScene::performUndo(){
+    if(playState != PlayState::Edit){
+        setIoStatus("Undo is only available in Edit mode.", true);
+        return false;
+    }
+
+    flushEditHistoryObservation(true);
+    if(!canUndoEditHistory()){
+        return false;
+    }
+
+    const size_t targetIndex = editHistoryIndex - 1;
+    const std::uint64_t preferredSelectedStableId =
+        selectedEntityId.empty() ? 0 : computeStableEntityId(selectedEntityId);
+    prepareForSceneMutationTracking();
+    editHistoryApplying = true;
+    std::string error;
+    const bool ok = applyEditHistoryChange(editHistoryChanges[targetIndex], false, &error);
+    editHistoryApplying = false;
+    if(!ok){
+        setIoStatus("Undo failed: " + error, true);
+        return false;
+    }
+
+    editHistoryIndex = targetIndex;
+    syncTargetSceneAfterEditHistoryApply(preferredSelectedStableId);
+    markEditorSessionDirty(0.0f);
+    setIoStatus("Undo applied.", false);
+    return true;
+}
+
+bool EditorScene::performRedo(){
+    if(playState != PlayState::Edit){
+        setIoStatus("Redo is only available in Edit mode.", true);
+        return false;
+    }
+
+    flushEditHistoryObservation(true);
+    if(!canRedoEditHistory()){
+        return false;
+    }
+
+    const size_t targetIndex = editHistoryIndex;
+    const std::uint64_t preferredSelectedStableId =
+        selectedEntityId.empty() ? 0 : computeStableEntityId(selectedEntityId);
+    prepareForSceneMutationTracking();
+    editHistoryApplying = true;
+    std::string error;
+    const bool ok = applyEditHistoryChange(editHistoryChanges[targetIndex], true, &error);
+    editHistoryApplying = false;
+    if(!ok){
+        setIoStatus("Redo failed: " + error, true);
+        return false;
+    }
+
+    editHistoryIndex = targetIndex + 1;
+    syncTargetSceneAfterEditHistoryApply(preferredSelectedStableId);
+    markEditorSessionDirty(0.0f);
+    setIoStatus("Redo applied.", false);
+    return true;
+}
+
+void EditorScene::beginPendingDeletedSubtreeCapture(const std::string& entityId){
+    if(playState != PlayState::Edit || editHistoryApplying || entityId.empty()){
+        return;
+    }
+
+    flushEditHistoryObservation(true);
+
+    NeoECS::ECSEntity* entity = findEntityById(entityId);
+    if(!entity || (targetScene && targetScene->isSceneRootEntity(entity))){
+        return;
+    }
+
+    EditorSubtreeSnapshot snapshot;
+    std::string error;
+    if(!captureSubtreeSnapshot(std::vector<NeoECS::ECSEntity*>{entity}, snapshot, &error)){
+        LogBot.Log(LOG_WARN, "Failed to capture pending delete snapshot: %s", error.c_str());
+        return;
+    }
+
+    pendingDeletedSubtreeSnapshots[computeStableEntityId(entity)] = std::move(snapshot);
+}
+
+void EditorScene::commitPendingDeletedSubtreeCapture(const std::string& entityId){
+    if(playState != PlayState::Edit || editHistoryApplying || entityId.empty()){
+        return;
+    }
+
+    const std::uint64_t stableId = computeStableEntityId(entityId);
+    auto it = pendingDeletedSubtreeSnapshots.find(stableId);
+    if(it == pendingDeletedSubtreeSnapshots.end()){
+        return;
+    }
+
+    EditorSceneChange change;
+    change.kind = EditorSceneChange::Kind::SubtreePresence;
+    change.label = "Entity deleted";
+    change.valuePath = "entity.delete";
+    change.targetStableId = stableId;
+    change.subtreeSnapshot = std::move(it->second);
+    change.subtreePresentBefore = true;
+    change.subtreePresentAfter = false;
+    pendingDeletedSubtreeSnapshots.erase(it);
+    pushEditHistoryChange(std::move(change));
+    resetTrackedEntityObservation();
+}
+
+void EditorScene::recordCreatedSubtreeChange(const std::vector<NeoECS::ECSEntity*>& roots,
+                                             const std::string& label,
+                                             const std::string& valuePath){
+    if(playState != PlayState::Edit || editHistoryApplying || roots.empty()){
+        return;
+    }
+
+    flushEditHistoryObservation(true);
+
+    EditorSubtreeSnapshot snapshot;
+    std::string error;
+    if(!captureSubtreeSnapshot(roots, snapshot, &error)){
+        LogBot.Log(LOG_WARN, "Failed to capture created subtree snapshot: %s", error.c_str());
+        return;
+    }
+
+    EditorSceneChange change;
+    change.kind = EditorSceneChange::Kind::SubtreePresence;
+    change.label = label;
+    change.valuePath = valuePath;
+    change.targetStableId = snapshot.rootIds.empty() ? 0 : snapshot.rootIds.front();
+    change.subtreeSnapshot = std::move(snapshot);
+    change.subtreePresentBefore = false;
+    change.subtreePresentAfter = true;
+    pushEditHistoryChange(std::move(change));
+    resetTrackedEntityObservation();
+}
+
+void EditorScene::recordCreatedEntityChange(const std::string& entityId,
+                                            const std::string& label,
+                                            const std::string& valuePath){
+    if(entityId.empty()){
+        return;
+    }
+
+    NeoECS::ECSEntity* entity = findEntityById(entityId);
+    if(!entity){
+        return;
+    }
+
+    recordCreatedSubtreeChange(std::vector<NeoECS::ECSEntity*>{entity}, label, valuePath);
+}
+
+void EditorScene::recordRenamedEntityChange(const std::string& entityId,
+                                            const std::string& oldName,
+                                            const std::string& newName){
+    if(playState != PlayState::Edit || editHistoryApplying || entityId.empty() || oldName == newName){
+        return;
+    }
+
+    NeoECS::ECSEntity* entity = findEntityById(entityId);
+    if(!entity){
+        return;
+    }
+
+    EditorEntityState afterState;
+    std::string error;
+    if(!captureEntityState(entity, afterState, &error)){
+        LogBot.Log(LOG_WARN, "Failed to capture renamed entity state: %s", error.c_str());
+        return;
+    }
+
+    EditorSceneChange change;
+    change.kind = EditorSceneChange::Kind::EntityState;
+    change.label = "Entity renamed";
+    change.valuePath = "entity.name";
+    change.targetStableId = afterState.stableId;
+    change.afterEntityState = afterState;
+    change.beforeEntityState = afterState;
+    change.beforeEntityState.name = oldName;
+    change.afterEntityState.name = newName;
+    pushEditHistoryChange(std::move(change));
+    resetTrackedEntityObservation();
+}
+
+void EditorScene::recordReparentedEntityChange(const std::string& entityId,
+                                               const std::string& oldParentId,
+                                               const std::string& newParentId){
+    if(playState != PlayState::Edit || editHistoryApplying || entityId.empty() || oldParentId == newParentId){
+        return;
+    }
+
+    flushEditHistoryObservation(true);
+
+    NeoECS::ECSEntity* entity = findEntityById(entityId);
+    if(!entity){
+        return;
+    }
+
+    EditorSceneChange change;
+    change.kind = EditorSceneChange::Kind::EntityReparent;
+    change.label = "Entity reparented";
+    change.valuePath = "entity.parent";
+    change.targetStableId = computeStableEntityId(entity);
+    change.beforeParentStableId = oldParentId.empty() ? 0 : computeStableEntityId(oldParentId);
+    change.afterParentStableId = newParentId.empty() ? 0 : computeStableEntityId(newParentId);
+    pushEditHistoryChange(std::move(change));
+    resetTrackedEntityObservation();
+}
+
+void EditorScene::prepareForSceneMutationTracking(){
+    cancelViewportPrefabDragPreview();
+    transformWidget.reset();
+    lightWidget.reset();
+    cameraWidget.reset();
+    boundsWidget.reset();
+    BoundsEditState::Deactivate();
+    focusActive = false;
+}
+
+void EditorScene::syncTargetSceneAfterEditHistoryApply(std::uint64_t preferredSelectedStableId){
+    if(!targetScene){
+        return;
+    }
+
+    refreshStableEntityMappings();
+
+    std::string resolvedSelectedId;
+    if(preferredSelectedStableId != 0){
+        if(NeoECS::ECSEntity* entity = findEntityByStableId(preferredSelectedStableId)){
+            resolvedSelectedId = entity->getNodeUniqueID();
+        }
+    }
+
+    selectedEntityId = resolvedSelectedId;
+    targetScene->setSelectedEntityId(selectedEntityId);
+
+    targetCamera = targetScene->getPreferredCamera();
+    if(!targetCamera){
+        if(auto mainScreen = targetScene->getMainScreen()){
+            targetCamera = mainScreen->getCamera();
+        }
+    }
+    viewportCamera = editorCamera ? editorCamera : targetCamera;
+    targetScene->refreshRenderState();
+    resetTrackedEntityObservation();
+}
+
+void EditorScene::observeTransientEditorSessionState(){
+    const PropertiesPanel::State propertiesState = propertiesPanel.captureState();
+    if(!observedPropertiesPanelStateValid ||
+       propertiesState.showHiddenComponents != lastObservedPropertiesPanelState.showHiddenComponents){
+        lastObservedPropertiesPanelState = propertiesState;
+        observedPropertiesPanelStateValid = true;
+        markEditorSessionDirty();
+    }
+
+    Math3D::Transform currentCameraTransform;
+    bool hasCameraTransform = false;
+    if(editorCamera){
+        currentCameraTransform = editorCamera->transform();
+        hasCameraTransform = true;
+    }else if(editorCameraTransform){
+        currentCameraTransform = editorCameraTransform->local;
+        hasCameraTransform = true;
+    }
+
+    if(hasCameraTransform){
+        if(!observedEditorCameraStateValid ||
+           !areTransformsEquivalent(currentCameraTransform, lastObservedEditorCameraTransform) ||
+           !Math3D::AreClose(editorYaw, lastObservedEditorYaw, 0.0001f) ||
+           !Math3D::AreClose(editorPitch, lastObservedEditorPitch, 0.0001f)){
+            lastObservedEditorCameraTransform = currentCameraTransform;
+            lastObservedEditorYaw = editorYaw;
+            lastObservedEditorPitch = editorPitch;
+            observedEditorCameraStateValid = true;
+            markEditorSessionDirty();
+        }
+    }
+}
+
+void EditorScene::markEditorSessionDirty(float saveDelaySeconds){
+    editorSessionDirty = true;
+    editorSessionSaveRequested = false;
+    if(editorSessionSaveDelaySeconds <= 0.0f){
+        editorSessionSaveDelaySeconds = Math3D::Max(0.0f, saveDelaySeconds);
+    }else{
+        editorSessionSaveDelaySeconds = Math3D::Min(editorSessionSaveDelaySeconds, Math3D::Max(0.0f, saveDelaySeconds));
+    }
+}
+
+void EditorScene::advanceEditorSessionAutosave(float deltaTime){
+    if(!editorSessionDirty){
+        return;
+    }
+    if(editorSessionSaveRequested){
+        return;
+    }
+
+    editorSessionSaveDelaySeconds = std::max(0.0f, editorSessionSaveDelaySeconds - deltaTime);
+    if(editorSessionSaveDelaySeconds <= 0.0f){
+        editorSessionSaveRequested = true;
+    }
+}
+
+void EditorScene::flushEditorSessionAutosave(bool force, bool interactionActive){
+    if(!editorSessionDirty){
+        return;
+    }
+    if(!force){
+        if(!editorSessionSaveRequested || interactionActive){
+            return;
+        }
+    }
+
+    flushEditHistoryObservation(force);
+
+    std::string error;
+    if(!saveEditorSessionToDisk(&error)){
+        LogBot.Log(LOG_WARN, "Failed to save editor session: %s", error.c_str());
+        if(force){
+            setIoStatus("Save editor session failed: " + error, true);
+        }
+        return;
+    }
+
+    editorSessionDirty = false;
+    editorSessionSaveRequested = false;
+    editorSessionSaveDelaySeconds = 0.0f;
+}
+
+bool EditorScene::saveEditorSessionToDisk(std::string* outError){
+    const std::filesystem::path sessionPath = resolveEditorSessionPath();
+    if(sessionPath.empty()){
+        if(outError){
+            *outError = "APPDATA is unavailable; editor session path cannot be resolved.";
+        }
+        return false;
+    }
+
+    std::string sceneEditsJson;
+    if(targetScene && targetScene->getECS()){
+        JsonSchema::SceneSchema sceneSchema;
+        if(!buildCurrentEditSnapshot(sceneSchema, &sceneEditsJson, outError)){
+            return false;
+        }
+    }
+
+    JsonUtils::MutableDocument doc;
+    JsonUtils::StandardDocumentRefs refs;
+    if(!JsonUtils::CreateStandardDocument(doc, kEditorSessionDocumentType, kEditorSessionDocumentVersion, refs, outError)){
+        return false;
+    }
+    if(!refs.payload){
+        if(outError){
+            *outError = "Failed to allocate editor session payload.";
+        }
+        return false;
+    }
+
+    const std::filesystem::path sourcePath = resolveCurrentSceneSourcePath();
+    if(!JsonUtils::MutObjAddString(doc.get(), refs.payload, "lastLoadedScenePath", sourcePath.generic_string()) ||
+       !JsonUtils::MutObjAddString(doc.get(), refs.payload, "sceneEditsJson", sceneEditsJson)){
+        if(outError){
+            *outError = "Failed to write editor session scene state.";
+        }
+        return false;
+    }
+
+    yyjson_mut_val* propertiesObj = yyjson_mut_obj_add_obj(doc.get(), refs.payload, "propertiesPanel");
+    if(!propertiesObj){
+        if(outError){
+            *outError = "Failed to allocate propertiesPanel session object.";
+        }
+        return false;
+    }
+    const PropertiesPanel::State propertiesState = propertiesPanel.captureState();
+    if(!JsonUtils::MutObjAddBool(doc.get(), propertiesObj, "showHiddenComponents", propertiesState.showHiddenComponents)){
+        if(outError){
+            *outError = "Failed to serialize properties-panel session state.";
+        }
+        return false;
+    }
+
+    Math3D::Transform cameraTransform;
+    if(editorCamera){
+        cameraTransform = editorCamera->transform();
+    }else if(editorCameraTransform){
+        cameraTransform = editorCameraTransform->local;
+    }
+
+    yyjson_mut_val* cameraTransformObj = yyjson_mut_obj_add_obj(doc.get(), refs.payload, "editorCameraTransform");
+    if(!cameraTransformObj){
+        if(outError){
+            *outError = "Failed to allocate editorCameraTransform session object.";
+        }
+        return false;
+    }
+    if(!JsonUtils::MutObjAddVec3(doc.get(), cameraTransformObj, "position", cameraTransform.position) ||
+       !JsonUtils::MutObjAddVec3(doc.get(), cameraTransformObj, "rotationEuler", cameraTransform.rotation.ToEuler()) ||
+       !JsonUtils::MutObjAddVec3(doc.get(), cameraTransformObj, "scale", cameraTransform.scale) ||
+       !JsonUtils::MutObjAddFloat(doc.get(), refs.payload, "editorYaw", editorYaw) ||
+       !JsonUtils::MutObjAddFloat(doc.get(), refs.payload, "editorPitch", editorPitch)){
+        if(outError){
+            *outError = "Failed to serialize editor camera session state.";
+        }
+        return false;
+    }
+
+    return JsonUtils::SaveDocumentToAbsolutePath(sessionPath, doc, outError, true);
+}
+
+bool EditorScene::loadEditorSessionFromDisk(std::string* outError){
+    const std::filesystem::path sessionPath = resolveEditorSessionPath();
+    if(sessionPath.empty()){
+        if(outError){
+            *outError = "APPDATA is unavailable; editor session path cannot be resolved.";
+        }
+        return false;
+    }
+
+    std::error_code ec;
+    if(!std::filesystem::exists(sessionPath, ec) || std::filesystem::is_directory(sessionPath, ec)){
+        return false;
+    }
+
+    JsonUtils::Document doc;
+    if(!JsonUtils::LoadDocumentFromAbsolutePath(sessionPath, doc, outError)){
+        return false;
+    }
+
+    std::string type;
+    int version = 0;
+    yyjson_val* payload = nullptr;
+    if(!JsonUtils::ReadStandardDocumentHeader(doc, type, version, &payload, outError)){
+        return false;
+    }
+    if(type != kEditorSessionDocumentType){
+        if(outError){
+            *outError = "Editor session type mismatch.";
+        }
+        return false;
+    }
+    if(version != kEditorSessionDocumentVersion){
+        if(outError){
+            *outError = "Unsupported editor session version: " + std::to_string(version);
+        }
+        return false;
+    }
+    if(!payload || !yyjson_is_obj(payload)){
+        if(outError){
+            *outError = "Editor session payload must be an object.";
+        }
+        return false;
+    }
+
+    std::string lastLoadedScenePath;
+    std::string sceneEditsJson;
+    JsonUtils::TryGetString(payload, "lastLoadedScenePath", lastLoadedScenePath);
+    JsonUtils::TryGetString(payload, "sceneEditsJson", sceneEditsJson);
+
+    PropertiesPanel::State propertiesState = propertiesPanel.captureState();
+    if(yyjson_val* propertiesObj = JsonUtils::ObjGetObject(payload, "propertiesPanel")){
+        JsonUtils::TryGetBool(propertiesObj, "showHiddenComponents", propertiesState.showHiddenComponents);
+    }
+
+    Math3D::Transform savedCameraTransform;
+    bool hasSavedCameraTransform = false;
+    if(yyjson_val* cameraTransformObj = JsonUtils::ObjGetObject(payload, "editorCameraTransform")){
+        hasSavedCameraTransform = true;
+        JsonUtils::TryGetVec3(cameraTransformObj, "position", savedCameraTransform.position);
+        Math3D::Vec3 savedRotationEuler = savedCameraTransform.rotation.ToEuler();
+        JsonUtils::TryGetVec3(cameraTransformObj, "rotationEuler", savedRotationEuler);
+        savedCameraTransform.setRotation(savedRotationEuler);
+        JsonUtils::TryGetVec3(cameraTransformObj, "scale", savedCameraTransform.scale);
+    }
+
+    float savedEditorYaw = editorYaw;
+    float savedEditorPitch = editorPitch;
+    JsonUtils::TryGetFloat(payload, "editorYaw", savedEditorYaw);
+    JsonUtils::TryGetFloat(payload, "editorPitch", savedEditorPitch);
+
+    if(!lastLoadedScenePath.empty()){
+        std::filesystem::path sourcePath(lastLoadedScenePath);
+        std::error_code sourceEc;
+        if(std::filesystem::exists(sourcePath, sourceEc) && !std::filesystem::is_directory(sourcePath, sourceEc)){
+            loadSceneFromAbsolutePath(sourcePath);
+        }
+    }
+
+    bool loadedSnapshot = false;
+    if(!sceneEditsJson.empty()){
+        JsonSchema::SceneSchema sceneSchema;
+        std::string sceneError;
+        if(sceneSchema.LoadFromText(sceneEditsJson, &sceneError) && applyEditSnapshot(sceneSchema, &sceneError)){
+            resetEditHistoryToCurrentScene();
+            loadedSnapshot = true;
+        }else{
+            LogBot.Log(LOG_WARN, "Failed to restore editor session scene edits: %s", sceneError.c_str());
+        }
+    }
+
+    if(!loadedSnapshot){
+        resetEditHistoryToCurrentScene();
+    }
+
+    propertiesPanel.applyState(propertiesState);
+
+    if(hasSavedCameraTransform){
+        if(editorCamera){
+            editorCamera->setTransform(savedCameraTransform);
+        }
+        if(editorCameraTransform){
+            editorCameraTransform->local = savedCameraTransform;
+        }
+        editorYaw = savedEditorYaw;
+        editorPitch = savedEditorPitch;
+        editorMoveVelocity = Math3D::Vec3::zero();
+        editorZoomVelocity = 0.0f;
+        viewportCamera = editorCamera ? editorCamera : viewportCamera;
+    }
+
+    lastObservedPropertiesPanelState = propertiesPanel.captureState();
+    observedPropertiesPanelStateValid = true;
+    if(hasSavedCameraTransform){
+        lastObservedEditorCameraTransform = savedCameraTransform;
+        lastObservedEditorYaw = editorYaw;
+        lastObservedEditorPitch = editorPitch;
+        observedEditorCameraStateValid = true;
+    }else{
+        observedEditorCameraStateValid = false;
+    }
+
+    editorSessionDirty = false;
+    editorSessionSaveRequested = false;
+    editorSessionSaveDelaySeconds = 0.0f;
+    return true;
 }
 
 bool EditorScene::saveEditorCameraToPrefab(std::string* outError) const{
@@ -357,6 +1866,14 @@ void EditorScene::init(){
     assetRoot = std::filesystem::path(File::GetCWD()) / "res";
     workspacePanel.setAssetRoot(assetRoot);
     ensureTargetInitialized();
+
+    std::string sessionError;
+    if(!loadEditorSessionFromDisk(&sessionError)){
+        if(!sessionError.empty()){
+            LogBot.Log(LOG_WARN, "Failed to restore editor session: %s", sessionError.c_str());
+        }
+        resetEditHistoryToCurrentScene();
+    }
 }
 
 void EditorScene::ensureTargetInitialized(){
@@ -506,6 +2023,8 @@ void EditorScene::setInputManager(std::shared_ptr<InputManager> manager){
 void EditorScene::update(float deltaTime){
     ensureTargetInitialized();
     if(!targetScene) return;
+
+    advanceEditorSessionAutosave(deltaTime);
 
     if(ioStatusTimeRemaining > 0.0f){
         ioStatusTimeRemaining = std::max(0.0f, ioStatusTimeRemaining - deltaTime);
@@ -1097,6 +2616,17 @@ void EditorScene::render(){
     drawSplitter("##BottomSplitter", ImVec2(0.0f, panelsTop + topPanelsHeight), ImVec2(width, kSplitterThickness), ImGuiMouseCursor_ResizeNS, false, bottomPanelHeight, -1.0f, kMinBottomPanelHeight, std::max(kMinBottomPanelHeight, availableHeight - kMinTopPanelHeight - kSplitterThickness));
     processDeferredToolbarCommands();
     drawSceneFileDialog();
+
+    const bool interactionActive =
+        propertiesPanel.isInteractionActive() ||
+        transformWidget.isDragging() ||
+        boundsWidget.isDragging() ||
+        cameraWidget.isDragging() ||
+        lightWidget.isDragging() ||
+        viewportPrefabDragState.active;
+    observeCurrentEditState(interactionActive);
+    observeTransientEditorSessionState();
+    flushEditorSessionAutosave(false, interactionActive);
 }
 
 void EditorScene::drawToWindow(bool clearWindow, float, float, float, float){
@@ -1251,6 +2781,7 @@ void EditorScene::updateSceneSourceAfterSave(const std::filesystem::path& savePa
     targetFactory = [normalizedPath, sceneDirectory](RenderWindow* window) -> PScene {
         return std::make_shared<LoadedScene>(window, normalizedPath.generic_string(), sceneDirectory);
     };
+    markEditorSessionDirty(0.0f);
 }
 
 bool EditorScene::beginPlayModeFromEditor(){
@@ -1299,6 +2830,16 @@ bool EditorScene::enterPlayModeFromScenePath(const std::filesystem::path& sceneP
 void EditorScene::processDeferredToolbarCommands(){
     if(ImGui::IsAnyItemActive()){
         return;
+    }
+
+    if(pendingToolbarUndoCommand){
+        pendingToolbarUndoCommand = false;
+        performUndo();
+    }
+
+    if(pendingToolbarRedoCommand){
+        pendingToolbarRedoCommand = false;
+        performRedo();
     }
 
     if(pendingToolbarSaveSceneCommand){
@@ -1377,6 +2918,7 @@ bool EditorScene::saveSceneToAbsolutePath(const std::filesystem::path& savePath)
 
     updateSceneSourceAfterSave(normalizedPath);
     selectedAssetPath = normalizedPath;
+    markEditorSessionDirty(0.0f);
     setIoStatus("Scene saved: " + normalizedPath.generic_string(), false);
     return true;
 }
@@ -1447,6 +2989,7 @@ bool EditorScene::loadSceneFromAbsolutePath(const std::filesystem::path& loadPat
     applyActiveSceneState();
     activeScenePath = normalizedPath;
     selectedAssetPath = normalizedPath;
+    resetEditHistoryToCurrentScene();
     setIoStatus("Scene loaded: " + normalizedPath.generic_string(), false);
     return true;
 }
@@ -1783,12 +3326,25 @@ bool EditorScene::instantiatePrefabUnderParentEntity(const std::filesystem::path
         parentObject = parentWrapper.get();
     }
 
+    flushEditHistoryObservation(true);
+
     PrefabIO::PrefabInstantiateResult result;
     std::string error;
     const std::filesystem::path normalizedPath = prefabPath.lexically_normal();
     if(!instantiatePrefabFromAbsolutePath(normalizedPath, parentObject, &result, &error)){
         setIoStatus("Instantiate Prefab failed: " + error, true);
         return false;
+    }
+
+    std::vector<NeoECS::ECSEntity*> createdRoots;
+    createdRoots.reserve(result.rootObjects.size());
+    for(auto* rootObject : result.rootObjects){
+        if(rootObject && rootObject->gameobject()){
+            createdRoots.push_back(rootObject->gameobject());
+        }
+    }
+    if(!createdRoots.empty()){
+        recordCreatedSubtreeChange(createdRoots, "Prefab instantiated", "entity.prefab.create");
     }
 
     if(!result.rootObjects.empty() && result.rootObjects.front() && result.rootObjects.front()->gameobject()){
@@ -1907,7 +3463,17 @@ void EditorScene::finalizeViewportPrefabDragPreview(){
         return;
     }
     std::filesystem::path placedPath = viewportPrefabDragState.prefabPath;
+    std::vector<NeoECS::ECSEntity*> createdRoots;
+    createdRoots.reserve(viewportPrefabDragState.rootEntityIds.size());
+    for(const std::string& rootId : viewportPrefabDragState.rootEntityIds){
+        if(NeoECS::ECSEntity* entity = findEntityById(rootId)){
+            createdRoots.push_back(entity);
+        }
+    }
     viewportPrefabDragState = ViewportPrefabDragState{};
+    if(!createdRoots.empty()){
+        recordCreatedSubtreeChange(createdRoots, "Prefab instantiated", "entity.prefab.create");
+    }
     setIoStatus("Prefab instantiated: " + placedPath.generic_string(), false);
 }
 
@@ -1941,6 +3507,8 @@ void EditorScene::drawToolbar(float width, float height){
     bool saveSceneClicked = false;
     bool saveSceneAsClicked = false;
     bool loadSceneClicked = false;
+    bool undoClicked = false;
+    bool redoClicked = false;
     if(ImGui::BeginMenuBar()){
         if(ImGui::BeginMenu("File")){
             saveSceneClicked = ImGui::MenuItem("Save Scene", "Ctrl+S", false, playState == PlayState::Edit);
@@ -1949,8 +3517,8 @@ void EditorScene::drawToolbar(float width, float height){
             ImGui::EndMenu();
         }
         if(ImGui::BeginMenu("Edit")){
-            ImGui::MenuItem("Undo", "Ctrl+Z", false, false);
-            ImGui::MenuItem("Redo", "Ctrl+Y", false, false);
+            undoClicked = ImGui::MenuItem("Undo", "Ctrl+Z", false, canUndoEditHistory());
+            redoClicked = ImGui::MenuItem("Redo", "Ctrl+Y", false, canRedoEditHistory());
             ImGui::Separator();
             if(ImGui::MenuItem("Editor Camera Settings")){
                 setEditorCameraSettingsOpen(true);
@@ -1962,6 +3530,7 @@ void EditorScene::drawToolbar(float width, float height){
             ImGui::MenuItem("Maximize On Play", nullptr, &maximizeOnPlay);
             if(ImGui::BeginMenu("Scene")){
                 ImGui::MenuItem("Gizmos", nullptr, &showSceneGizmos);
+                ImGui::MenuItem("Scene Performance Information", nullptr, &showScenePerformanceInfo);
                 ImGui::EndMenu();
             }
             if(ImGui::BeginMenu("Debug")){
@@ -1995,6 +3564,13 @@ void EditorScene::drawToolbar(float width, float height){
 
     ImGuiIO& io = ImGui::GetIO();
     if(playState == PlayState::Edit && !io.WantTextInput){
+        if(canUndoEditHistory() && io.KeyCtrl && !io.KeyShift && ImGui::IsKeyPressed(ImGuiKey_Z, false)){
+            undoClicked = true;
+        }
+        if(canRedoEditHistory() && io.KeyCtrl && (ImGui::IsKeyPressed(ImGuiKey_Y, false) ||
+                                                  (io.KeyShift && ImGui::IsKeyPressed(ImGuiKey_Z, false)))){
+            redoClicked = true;
+        }
         if(io.KeyCtrl && io.KeyShift && ImGui::IsKeyPressed(ImGuiKey_S, false)){
             saveSceneAsClicked = true;
         }else if(io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_S, false)){
@@ -2052,6 +3628,13 @@ void EditorScene::drawToolbar(float width, float height){
 
     if(playClicked){
         pendingToolbarPlayCommand = true;
+    }
+
+    if(undoClicked){
+        pendingToolbarUndoCommand = true;
+    }
+    if(redoClicked){
+        pendingToolbarRedoCommand = true;
     }
 
     if(pauseClicked){
@@ -2330,6 +3913,23 @@ void EditorScene::drawEcsPanel(float x, float y, float w, float h, bool lightwei
                 *outError = ioStatusMessage.empty() ? "Instantiate Prefab failed." : ioStatusMessage;
             }
             return ok;
+        },
+        ECSViewPanel::ChangeCallbacks{
+            [this](const std::string& entityId){
+                beginPendingDeletedSubtreeCapture(entityId);
+            },
+            [this](const std::string& entityId){
+                commitPendingDeletedSubtreeCapture(entityId);
+            },
+            [this](const std::string& entityId){
+                recordCreatedEntityChange(entityId, "Entity created", "entity.create");
+            },
+            [this](const std::string& entityId, const std::string& oldName, const std::string& newName){
+                recordRenamedEntityChange(entityId, oldName, newName);
+            },
+            [this](const std::string& entityId, const std::string& oldParentId, const std::string& newParentId){
+                recordReparentedEntityChange(entityId, oldParentId, newParentId);
+            }
         }
     );
 }
@@ -2359,6 +3959,9 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
 
     ImGui::SetCursorScreenPos(pos);
     ImGui::InvisibleButton("##ViewportDragDropTarget", size);
+    ImDrawList* drawList = ImGui::GetWindowDrawList();
+    TransformWidget::Viewport viewport{viewportRect.x, viewportRect.y, viewportRect.w, viewportRect.h, viewportRect.valid};
+    float topLeftOverlayY = viewportRect.y + 12.0f;
 
     bool sawViewportPrefabPayload = false;
     bool deliveredViewportPrefabPayload = false;
@@ -2394,8 +3997,6 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
     if(playState == PlayState::Edit && targetScene && viewportCamera && viewportRect.valid && targetScene->getECS()){
         auto* ecs = targetScene->getECS();
         auto* components = ecs->getComponentManager();
-        TransformWidget::Viewport viewport{viewportRect.x, viewportRect.y, viewportRect.w, viewportRect.h, viewportRect.valid};
-        ImDrawList* drawList = ImGui::GetWindowDrawList();
         ensureEditorIconsLoaded();
         auto lightColorTint = [](const Math3D::Vec4& c) -> ImU32 {
             int r = (int)Math3D::Clamp(c.x * 255.0f, 0.0f, 255.0f);
@@ -2489,9 +4090,9 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
             }
         }
 
-        auto drawAdaptiveFocusDebugOverlay = [&](){
+        auto drawAdaptiveFocusDebugOverlay = [&](float topY) -> float {
             if(!viewportCamera){
-                return;
+                return topY;
             }
 
             PScene componentScene;
@@ -2517,18 +4118,18 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
             }
 
             if(!componentScene || !cameraEntity || !componentScene->getECS()){
-                return;
+                return topY;
             }
 
             auto* componentManager = componentScene->getECS()->getComponentManager();
             auto* dof = componentManager->getECSComponent<DepthOfFieldComponent>(cameraEntity);
             if(!dof || !IsComponentActive(dof) || !dof->adaptiveFocus || !dof->adaptiveFocusDebugDraw){
-                return;
+                return topY;
             }
 
             const Scene* adaptiveFocusSourceScene = targetScene ? targetScene.get() : componentScene.get();
             if(!adaptiveFocusSourceScene){
-                return;
+                return topY;
             }
 
             float hitDistance = 0.0f;
@@ -2569,7 +4170,7 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
             Math3D::Vec3 rayDirection = cameraTransform.forward() * -1.0f;
             if(!std::isfinite(rayDirection.x) || !std::isfinite(rayDirection.y) || !std::isfinite(rayDirection.z) ||
                rayDirection.length() < 0.0001f){
-                return;
+                return topY;
             }
             rayDirection = rayDirection.normalize();
 
@@ -2595,7 +4196,7 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
             ImVec2 lineStartScreen;
             ImVec2 lineEndScreen;
             if(!projectToViewport(lineStart, lineStartScreen) || !projectToViewport(lineEnd, lineEndScreen)){
-                return;
+                return topY;
             }
 
             const ImU32 missColor = IM_COL32(52, 152, 219, 255); // #3498db
@@ -2633,17 +4234,16 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
                 usedFallback ? "yes" : "no",
                 fallbackFocusDistance
             );
-            ImVec2 textPos(viewport.x + 12.0f, viewport.y + 12.0f);
-            ImVec2 textSize = ImGui::CalcTextSize(afDebugText.c_str());
-            drawList->AddRectFilled(
-                textPos,
-                ImVec2(textPos.x + textSize.x + 12.0f, textPos.y + textSize.y + 10.0f),
+            return drawViewportInfoPanel(
+                drawList,
+                viewport,
+                topY,
+                afDebugText,
                 IM_COL32(0, 0, 0, 145),
-                4.0f
+                IM_COL32(201, 169, 37, 215)
             );
-            drawList->AddText(ImVec2(textPos.x + 6.0f, textPos.y + 5.0f), IM_COL32(255, 255, 255, 235), afDebugText.c_str());
         };
-        drawAdaptiveFocusDebugOverlay();
+        topLeftOverlayY = drawAdaptiveFocusDebugOverlay(topLeftOverlayY);
 
         if(previewTexture && previewTexture->getID() != 0){
             const float minPreviewW = 220.0f;
@@ -2758,6 +4358,66 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
             previewWindowLocalPos = Math3D::Vec2(appliedPos.x - viewportRect.x, appliedPos.y - viewportRect.y);
             previewWindowSize = Math3D::Vec2(appliedSize.x, appliedSize.y);
         }
+    }
+
+    if(showScenePerformanceInfo && viewport.valid && targetScene){
+        const ScenePerformanceOverlayCounts counts = collectScenePerformanceOverlayCounts(targetScene.get());
+        const Scene::DebugStats& debugStats = targetScene->getDebugStats();
+        const float snapshotMs = debugStats.snapshotMs.load(std::memory_order_relaxed);
+        const float shadowMs = debugStats.shadowMs.load(std::memory_order_relaxed);
+        const float drawMs = debugStats.drawMs.load(std::memory_order_relaxed);
+        const float postFxMs = debugStats.postFxMs.load(std::memory_order_relaxed);
+        const int drawCount = debugStats.drawCount.load(std::memory_order_relaxed);
+        const int postFxEffectCount = debugStats.postFxEffectCount.load(std::memory_order_relaxed);
+
+        float updateMs = 0.0f;
+        float renderMs = 0.0f;
+        float swapMs = 0.0f;
+        float frameMs = 0.0f;
+        float fps = 0.0f;
+        const char* renderStrategy = "Unknown";
+        if(GameEngine::Engine){
+            updateMs = GameEngine::Engine->getLastUpdateMs();
+            renderMs = GameEngine::Engine->getLastRenderMs();
+            swapMs = GameEngine::Engine->getLastSwapMs();
+            frameMs = renderMs + swapMs;
+            fps = (frameMs > 0.0001f) ? (1000.0f / frameMs) : 0.0f;
+            renderStrategy = engineRenderStrategyLabel(GameEngine::Engine->getRenderStrategy());
+        }
+
+        const std::string scenePerformanceText = StringUtils::Format(
+            "Scene Performance\n"
+            "FPS %.1f | Frame %.1f ms | Renderer %s\n"
+            "Entities %d | Meshes %d | Lights %d | Cameras %d\n"
+            "Draws %d | PostFX %d | Snapshot %.2f ms\n"
+            "Shadow %.2f ms | Draw %.2f ms | PostFX %.2f ms\n"
+            "Update %.2f ms | Render %.2f ms | Swap %.2f ms",
+            fps,
+            frameMs,
+            renderStrategy,
+            counts.entityCount,
+            counts.meshCount,
+            counts.lightCount,
+            counts.cameraCount,
+            drawCount,
+            postFxEffectCount,
+            snapshotMs,
+            shadowMs,
+            drawMs,
+            postFxMs,
+            updateMs,
+            renderMs,
+            swapMs
+        );
+
+        topLeftOverlayY = drawViewportInfoPanel(
+            drawList,
+            viewport,
+            topLeftOverlayY,
+            scenePerformanceText,
+            IM_COL32(8, 12, 18, 182),
+            IM_COL32(76, 122, 178, 215)
+        );
     }
 
     ImGui::End();
@@ -2928,6 +4588,13 @@ PCamera EditorScene::resolveSelectedTargetCamera() const{
 
 void EditorScene::dispose(){
     cancelViewportPrefabDragPreview();
+    flushEditHistoryObservation(true);
+    observeTransientEditorSessionState();
+    std::string saveCameraError;
+    if(!saveEditorCameraToPrefab(&saveCameraError)){
+        LogBot.Log(LOG_WARN, "Failed to save editor camera prefab during dispose: %s", saveCameraError.c_str());
+    }
+    flushEditorSessionAutosave(true, false);
     setEditorCameraSettingsOpen(false);
     if(playViewportMouseRectConstrained){
         if(auto* window = getWindow()){

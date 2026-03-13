@@ -1308,7 +1308,7 @@ bool registerDefaultScriptSerializer(Serialization::ComponentSerializationRegist
 bool registerDefaultSsaoSerializer(Serialization::ComponentSerializationRegistry& registry, std::string* outError){
     return registry.registerTypedSerializer<SSAOComponent>(
         "SSAOComponent",
-        1,
+        3,
         [](const SSAOComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
             return JsonUtils::MutObjAddBool(doc, payload, "enabled", component.enabled) &&
                    JsonUtils::MutObjAddFloat(doc, payload, "radiusPx", component.radiusPx) &&
@@ -1316,11 +1316,13 @@ bool registerDefaultSsaoSerializer(Serialization::ComponentSerializationRegistry
                    JsonUtils::MutObjAddFloat(doc, payload, "bias", component.bias) &&
                    JsonUtils::MutObjAddFloat(doc, payload, "intensity", component.intensity) &&
                    JsonUtils::MutObjAddFloat(doc, payload, "giBoost", component.giBoost) &&
+                   JsonUtils::MutObjAddFloat(doc, payload, "blurRadiusPx", component.blurRadiusPx) &&
+                   JsonUtils::MutObjAddFloat(doc, payload, "blurSharpness", component.blurSharpness) &&
                    JsonUtils::MutObjAddInt(doc, payload, "sampleCount", component.sampleCount) &&
+                   JsonUtils::MutObjAddInt(doc, payload, "debugView", component.debugView) &&
                    writeEditorComponentStateFields(component, doc, payload, error);
         },
         [](SSAOComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
-            (void)version;
             (void)error;
             JsonUtils::TryGetBool(payload, "enabled", component.enabled);
             JsonUtils::TryGetFloat(payload, "radiusPx", component.radiusPx);
@@ -1328,8 +1330,12 @@ bool registerDefaultSsaoSerializer(Serialization::ComponentSerializationRegistry
             JsonUtils::TryGetFloat(payload, "bias", component.bias);
             JsonUtils::TryGetFloat(payload, "intensity", component.intensity);
             JsonUtils::TryGetFloat(payload, "giBoost", component.giBoost);
+            if(version >= 3){
+                JsonUtils::TryGetFloat(payload, "blurRadiusPx", component.blurRadiusPx);
+                JsonUtils::TryGetFloat(payload, "blurSharpness", component.blurSharpness);
+            }
             JsonUtils::TryGetInt(payload, "sampleCount", component.sampleCount);
-            component.runtimeEffect.reset();
+            JsonUtils::TryGetInt(payload, "debugView", component.debugView);
             readEditorComponentStateFields(component, payload);
             return true;
         },

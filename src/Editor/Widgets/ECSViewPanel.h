@@ -21,6 +21,14 @@ class ECSViewPanel {
         using InstantiatePrefabAtEntityFn = std::function<bool(const std::filesystem::path& prefabPath,
                                                                const std::string& parentEntityId,
                                                                std::string* outError)>;
+        /// @brief Holds editor change callbacks for scene mutations.
+        struct ChangeCallbacks {
+            std::function<void(const std::string&)> onBeforeDeleteEntity;
+            std::function<void(const std::string&)> onAfterDeleteEntity;
+            std::function<void(const std::string&)> onEntityCreated;
+            std::function<void(const std::string&, const std::string&, const std::string&)> onEntityRenamed;
+            std::function<void(const std::string&, const std::string&, const std::string&)> onEntityReparented;
+        };
 
         /**
          * @brief Draws this object.
@@ -33,6 +41,7 @@ class ECSViewPanel {
          * @param onSelectEntity Callback for on select entity.
          * @param onCreatePrefabForEntity Callback for on create prefab for entity.
          * @param onInstantiatePrefabAtEntity Callback for on instantiate prefab at entity.
+         * @param changeCallbacks Callbacks for editor-scene undo/redo tracking.
          */
         void draw(
             float x,
@@ -43,7 +52,8 @@ class ECSViewPanel {
             const std::string& selectedEntityId,
             const std::function<void(const std::string&)>& onSelectEntity,
             const std::function<void(const std::string&)>& onCreatePrefabForEntity = std::function<void(const std::string&)>(),
-            const InstantiatePrefabAtEntityFn& onInstantiatePrefabAtEntity = InstantiatePrefabAtEntityFn()
+            const InstantiatePrefabAtEntityFn& onInstantiatePrefabAtEntity = InstantiatePrefabAtEntityFn(),
+            const ChangeCallbacks& changeCallbacks = ChangeCallbacks()
         );
 
     private:
@@ -83,8 +93,9 @@ class ECSViewPanel {
         /**
          * @brief Commits entity rename.
          * @param targetScene Value for target scene.
+         * @param changeCallbacks Callbacks used to report successful renames.
          */
-        void commitEntityRename(PScene targetScene);
+        void commitEntityRename(PScene targetScene, const ChangeCallbacks& changeCallbacks);
         /**
          * @brief Checks whether cel entity rename.
          */
@@ -92,8 +103,9 @@ class ECSViewPanel {
         /**
          * @brief Draws rename popup.
          * @param targetScene Value for target scene.
+         * @param changeCallbacks Callbacks used to report successful renames.
          */
-        void drawRenamePopup(PScene targetScene);
+        void drawRenamePopup(PScene targetScene, const ChangeCallbacks& changeCallbacks);
         /**
          * @brief Draws entity tree.
          * @param entity Value for entity.
@@ -102,6 +114,7 @@ class ECSViewPanel {
          * @param onSelectEntity Callback for on select entity.
          * @param onCreatePrefabForEntity Callback for on create prefab for entity.
          * @param onInstantiatePrefabAtEntity Callback for on instantiate prefab at entity.
+         * @param changeCallbacks Callbacks for editor-scene undo/redo tracking.
          */
         void drawEntityTree(
             NeoECS::ECSEntity* entity,
@@ -109,18 +122,21 @@ class ECSViewPanel {
             const std::string& selectedEntityId,
             const std::function<void(const std::string&)>& onSelectEntity,
             const std::function<void(const std::string&)>& onCreatePrefabForEntity,
-            const InstantiatePrefabAtEntityFn& onInstantiatePrefabAtEntity
+            const InstantiatePrefabAtEntityFn& onInstantiatePrefabAtEntity,
+            const ChangeCallbacks& changeCallbacks
         );
         /**
          * @brief Applies pending actions.
          * @param targetScene Value for target scene.
          * @param selectedEntityId Identifier or index value.
          * @param onSelectEntity Callback for on select entity.
+         * @param changeCallbacks Callbacks for editor-scene undo/redo tracking.
          */
         void applyPendingActions(
             PScene targetScene,
             const std::string& selectedEntityId,
-            const std::function<void(const std::string&)>& onSelectEntity
+            const std::function<void(const std::string&)>& onSelectEntity,
+            const ChangeCallbacks& changeCallbacks
         );
 };
 

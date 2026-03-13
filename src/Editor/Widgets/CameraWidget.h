@@ -35,6 +35,7 @@ class CameraWidget {
          */
         void setIcon(PTexture tex){ icon = tex; }
         void reset();
+        bool isDragging() const { return dragging; }
 
         bool update(View* view,
                     InputManager* input,

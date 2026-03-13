@@ -44,6 +44,7 @@ class LightWidget {
          */
         void setIcons(const Icons& newIcons){ icons = newIcons; }
         void reset();
+        bool isDragging() const { return dragging; }
 
         bool update(View* view,
                     InputManager* input,

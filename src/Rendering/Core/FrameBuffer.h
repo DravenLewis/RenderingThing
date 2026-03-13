@@ -228,7 +228,7 @@ struct FrameBuffer{
             auto fbuffer = std::make_shared<FrameBuffer>(width, height);
 
             fbuffer->gbufferAttachments.clear();
-            fbuffer->gbufferAttachments.reserve(3);
+            fbuffer->gbufferAttachments.reserve(4);
 
             auto createAttachment = [&](GLenum internalFormat, GLenum format, GLenum type) -> PTexture {
                 GLuint texId = 0;
@@ -276,8 +276,18 @@ struct FrameBuffer{
                 fbuffer->gbufferAttachments.push_back(position);
             }
 
-            GLenum drawBuffers[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-            glDrawBuffers(3, drawBuffers);
+            {
+                GBufferAttachment material;
+                material.internalFormat = GL_RGBA16F;
+                material.format = GL_RGBA;
+                material.type = GL_FLOAT;
+                material.texture = createAttachment(material.internalFormat, material.format, material.type);
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, material.texture->getID(), 0);
+                fbuffer->gbufferAttachments.push_back(material);
+            }
+
+            GLenum drawBuffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+            glDrawBuffers(4, drawBuffers);
             glReadBuffer(GL_COLOR_ATTACHMENT0);
 
             GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);

@@ -358,6 +358,16 @@ namespace {
     }
 }
 
+PropertiesPanel::State PropertiesPanel::captureState() const{
+    State state;
+    state.showHiddenComponents = showHiddenComponents;
+    return state;
+}
+
+void PropertiesPanel::applyState(const State& state){
+    showHiddenComponents = state.showHiddenComponents;
+}
+
 void PropertiesPanel::draw(float x,
                            float y,
                            float w,
@@ -367,6 +377,7 @@ void PropertiesPanel::draw(float x,
                            std::filesystem::path& selectedAssetPath,
                            const std::string& selectedEntityId,
                            const std::function<NeoECS::ECSEntity*(const std::string&)>& findEntityById){
+    interactionActive = false;
     ImGui::SetNextWindowPos(ImVec2(x, y));
     ImGui::SetNextWindowSize(ImVec2(w, h));
     ImGui::Begin("Properties", nullptr, kPanelFlags);
@@ -382,12 +393,16 @@ void PropertiesPanel::draw(float x,
                 ImGui::Separator();
                 filePreviewWidget.setFilePath(selectedAssetPath);
                 filePreviewWidget.draw();
+                interactionActive = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
+                                    ImGui::IsAnyItemActive();
                 ImGui::End();
                 return;
             }
             if(isDirectory){
                 ImGui::Text("Directory: %s", selectedAssetPath.filename().string().c_str());
                 ImGui::TextDisabled("%s", AssetDescriptorUtils::AbsolutePathToAssetRef(selectedAssetPath).c_str());
+                interactionActive = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
+                                    ImGui::IsAnyItemActive();
                 ImGui::End();
                 return;
             }
@@ -402,6 +417,8 @@ void PropertiesPanel::draw(float x,
         ImGui::TextUnformatted("No entity selected.");
         ImGui::Separator();
         drawShadowDebugWidget();
+        interactionActive = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
+                            ImGui::IsAnyItemActive();
         ImGui::End();
         return;
     }
@@ -446,7 +463,9 @@ void PropertiesPanel::draw(float x,
             ImGui::OpenPopup("Add Component Popup");
         }
 
+        bool addComponentPopupOpen = false;
         if(ImGui::BeginPopup("Add Component Popup")){
+            addComponentPopupOpen = true;
             const bool hasTransform = (componentMgr->getECSComponent<TransformComponent>(entity) != nullptr);
             const bool hasMesh = (componentMgr->getECSComponent<MeshRendererComponent>(entity) != nullptr);
             const bool hasLight = (componentMgr->getECSComponent<LightComponent>(entity) != nullptr);
@@ -559,6 +578,9 @@ void PropertiesPanel::draw(float x,
         }
 
         ImGui::Dummy(ImVec2(0.0f, 10.0f));
+        interactionActive =
+            (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && ImGui::IsAnyItemActive()) ||
+            addComponentPopupOpen;
     }
 
     ImGui::End();

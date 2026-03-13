@@ -405,6 +405,12 @@ vec3 getNormal(vec2 uv, vec2 duvDx, vec2 duvDy, vec3 N, mat3 TBN){
     return safeNormalize(TBN * mapN);
 }
 
+float applyOcclusionStrength(float occlusionSample, float strength){
+    float occlusion = clamp(occlusionSample, 0.0, 1.0);
+    float effectStrength = max(strength, 0.0);
+    return clamp(1.0 - ((1.0 - occlusion) * effectStrength), 0.0, 1.0);
+}
+
 float DistributionGGX(vec3 N, vec3 H, float roughness){
     float a = roughness * roughness;
     float a2 = a * a;
@@ -488,7 +494,7 @@ void main() {
     float ao = 1.0;
     if(u_useOcclusionTex != 0){
         float occl = textureGrad(u_occlusionTex, uv, duvDx, duvDy).r;
-        ao = mix(1.0, occl, clamp(u_aoStrength, 0.0, 1.0));
+        ao = applyOcclusionStrength(occl, u_aoStrength);
     }
 
     vec3 N = getNormal(uv, duvDx, duvDy, baseN, TBN);
@@ -682,7 +688,7 @@ void main() {
         float NdotV = max(dot(N, V), 0.0);
         vec3 Fenv = FresnelSchlick(NdotV, F0);
         vec3 envSample = texture(u_envMap, R).rgb;
-        envSpec = envSample * Fenv * u_envStrength * (1.0 - roughness);
+        envSpec = envSample * Fenv * u_envStrength * (1.0 - roughness) * ao;
     }
     vec3 emissive = u_emissiveColor * u_emissiveStrength;
     if(u_useEmissiveTex != 0){
@@ -693,7 +699,7 @@ void main() {
     if(debugWeight > 0.0){
         FragColor = vec4(clamp(debugColorAccum / debugWeight, 0.0, 1.0), 1.0);
     }else{
-        FragColor = vec4(color, baseColor.a);
+        FragColor = vec4(color, ao);
     }
 }
 

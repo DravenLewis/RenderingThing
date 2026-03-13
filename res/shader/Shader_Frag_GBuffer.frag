@@ -3,6 +3,7 @@
 layout (location = 0) out vec4 gAlbedo;
 layout (location = 1) out vec4 gNormal;
 layout (location = 2) out vec4 gPosition;
+layout (location = 3) out vec4 gMaterial;
 
 in vec3 v_fragPos;
 in vec3 v_normal;
@@ -30,6 +31,12 @@ uniform float u_heightScale;
 uniform sampler2D u_occlusionTex;
 uniform int u_useOcclusionTex;
 uniform float u_aoStrength;
+
+uniform sampler2D u_emissiveTex;
+uniform int u_useEmissiveTex;
+uniform vec3 u_emissiveColor;
+uniform float u_emissiveStrength;
+uniform float u_envStrength;
 
 uniform vec2 u_uvScale;
 uniform vec2 u_uvOffset;
@@ -111,6 +118,12 @@ vec3 getNormal(vec2 uv, vec2 duvDx, vec2 duvDy, vec3 N, mat3 TBN){
     return safeNormalize(TBN * mapN);
 }
 
+float applyOcclusionStrength(float occlusionSample, float strength){
+    float occlusion = clamp(occlusionSample, 0.0, 1.0);
+    float effectStrength = max(strength, 0.0);
+    return clamp(1.0 - ((1.0 - occlusion) * effectStrength), 0.0, 1.0);
+}
+
 void main(){
     vec2 uvBase = v_uv * u_uvScale + u_uvOffset;
     vec2 duvDx = dFdx(uvBase);
@@ -141,7 +154,12 @@ void main(){
     float ao = 1.0;
     if(u_useOcclusionTex != 0){
         float occl = textureGrad(u_occlusionTex, uv, duvDx, duvDy).r;
-        ao = mix(1.0, occl, clamp(u_aoStrength, 0.0, 1.0));
+        ao = applyOcclusionStrength(occl, u_aoStrength);
+    }
+
+    vec3 emissive = u_emissiveColor * max(u_emissiveStrength, 0.0);
+    if(u_useEmissiveTex != 0){
+        emissive *= textureGrad(u_emissiveTex, uv, duvDx, duvDy).rgb;
     }
 
     vec3 N = getNormal(uv, duvDx, duvDy, baseN, TBN);
@@ -156,4 +174,5 @@ void main(){
     gAlbedo = vec4(baseColor.rgb, roughness);
     gNormal = vec4(safeNormalize(N), packedMode);
     gPosition = vec4(v_fragPos, ao);
+    gMaterial = vec4(max(emissive, vec3(0.0)), max(u_envStrength, 0.0));
 }

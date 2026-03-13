@@ -125,7 +125,7 @@ void ECSViewPanel::beginEntityRename(PScene targetScene, const std::string& enti
     entityRenameBuffer[sizeof(entityRenameBuffer) - 1] = '\0';
 }
 
-void ECSViewPanel::commitEntityRename(PScene targetScene){
+void ECSViewPanel::commitEntityRename(PScene targetScene, const ChangeCallbacks& changeCallbacks){
     if(!entityRenameActive || entityRenameId.empty()){
         cancelEntityRename();
         return;
@@ -143,7 +143,11 @@ void ECSViewPanel::commitEntityRename(PScene targetScene){
         return;
     }
 
+    const std::string previousName = entity->getName();
     entity->setName(std::move(requestedName));
+    if(changeCallbacks.onEntityRenamed && previousName != entity->getName()){
+        changeCallbacks.onEntityRenamed(entityRenameId, previousName, entity->getName());
+    }
     cancelEntityRename();
 }
 
@@ -155,7 +159,7 @@ void ECSViewPanel::cancelEntityRename(){
     std::memset(entityRenameBuffer, 0, sizeof(entityRenameBuffer));
 }
 
-void ECSViewPanel::drawRenamePopup(PScene targetScene){
+void ECSViewPanel::drawRenamePopup(PScene targetScene, const ChangeCallbacks& changeCallbacks){
     if(!entityRenameActive){
         return;
     }
@@ -179,12 +183,12 @@ void ECSViewPanel::drawRenamePopup(PScene targetScene){
             ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll
         );
         if(submitted){
-            commitEntityRename(targetScene);
+            commitEntityRename(targetScene, changeCallbacks);
             ImGui::CloseCurrentPopup();
         }
 
         if(ImGui::Button("Save")){
-            commitEntityRename(targetScene);
+            commitEntityRename(targetScene, changeCallbacks);
             ImGui::CloseCurrentPopup();
         }
         ImGui::SameLine();
@@ -210,7 +214,8 @@ void ECSViewPanel::draw(float x,
                         const std::string& selectedEntityId,
                         const std::function<void(const std::string&)>& onSelectEntity,
                         const std::function<void(const std::string&)>& onCreatePrefabForEntity,
-                        const InstantiatePrefabAtEntityFn& onInstantiatePrefabAtEntity){
+                        const InstantiatePrefabAtEntityFn& onInstantiatePrefabAtEntity,
+                        const ChangeCallbacks& changeCallbacks){
     ImGui::SetNextWindowPos(ImVec2(x, y));
     ImGui::SetNextWindowSize(ImVec2(w, h));
     ImGui::Begin("ECS Graph", nullptr, kPanelFlags);
@@ -252,7 +257,7 @@ void ECSViewPanel::draw(float x,
         if(!entity || entity->getParent() != nullptr){
             continue;
         }
-        drawEntityTree(entity, targetScene, selectedEntityId, onSelectEntity, onCreatePrefabForEntity, onInstantiatePrefabAtEntity);
+        drawEntityTree(entity, targetScene, selectedEntityId, onSelectEntity, onCreatePrefabForEntity, onInstantiatePrefabAtEntity, changeCallbacks);
     }
 
     if(ImGui::BeginPopupContextWindow("ECSGraphContextMenu", ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems)){
@@ -302,8 +307,8 @@ void ECSViewPanel::draw(float x,
         ImGui::EndPopup();
     }
 
-    drawRenamePopup(targetScene);
-    applyPendingActions(targetScene, selectedEntityId, onSelectEntity);
+    drawRenamePopup(targetScene, changeCallbacks);
+    applyPendingActions(targetScene, selectedEntityId, onSelectEntity, changeCallbacks);
 
     ImGui::End();
 }
@@ -313,7 +318,8 @@ void ECSViewPanel::drawEntityTree(NeoECS::ECSEntity* entity,
                                   const std::string& selectedEntityId,
                                   const std::function<void(const std::string&)>& onSelectEntity,
                                   const std::function<void(const std::string&)>& onCreatePrefabForEntity,
-                                  const InstantiatePrefabAtEntityFn& onInstantiatePrefabAtEntity){
+                                  const InstantiatePrefabAtEntityFn& onInstantiatePrefabAtEntity,
+                                  const ChangeCallbacks& changeCallbacks){
     if(!entity || !targetScene || !targetScene->getECS()){
         return;
     }
@@ -466,7 +472,7 @@ void ECSViewPanel::drawEntityTree(NeoECS::ECSEntity* entity,
 
         if(hasEntityChildren){
             for(const auto& kv : entity->children()){
-                drawEntityTree(kv.second, targetScene, selectedEntityId, onSelectEntity, onCreatePrefabForEntity, onInstantiatePrefabAtEntity);
+                drawEntityTree(kv.second, targetScene, selectedEntityId, onSelectEntity, onCreatePrefabForEntity, onInstantiatePrefabAtEntity, changeCallbacks);
             }
         }
         ImGui::TreePop();
@@ -475,7 +481,8 @@ void ECSViewPanel::drawEntityTree(NeoECS::ECSEntity* entity,
 
 void ECSViewPanel::applyPendingActions(PScene targetScene,
                                        const std::string& selectedEntityId,
-                                       const std::function<void(const std::string&)>& onSelectEntity){
+                                       const std::function<void(const std::string&)>& onSelectEntity,
+                                       const ChangeCallbacks& changeCallbacks){
     if(!targetScene || !targetScene->getECS() || pendingActions.empty()){
         pendingActions.clear();
         return;
@@ -513,7 +520,11 @@ void ECSViewPanel::applyPendingActions(PScene targetScene,
                     if(created){
                         created->addComponent<TransformComponent>();
                         if(created->gameobject()){
-                            selectEntity(created->gameobject()->getNodeUniqueID());
+                            const std::string createdId = created->gameobject()->getNodeUniqueID();
+                            if(changeCallbacks.onEntityCreated){
+                                changeCallbacks.onEntityCreated(createdId);
+                            }
+                            selectEntity(createdId);
                         }
                     }
                 }else if(action.kind == PendingActionKind::CreateLight){
@@ -527,13 +538,21 @@ void ECSViewPanel::applyPendingActions(PScene targetScene,
                     );
                     auto* created = targetScene->createLightGameObject(uniqueName, defaultLight, parentWrapper.get(), true, false);
                     if(created && created->gameobject()){
-                        selectEntity(created->gameobject()->getNodeUniqueID());
+                        const std::string createdId = created->gameobject()->getNodeUniqueID();
+                        if(changeCallbacks.onEntityCreated){
+                            changeCallbacks.onEntityCreated(createdId);
+                        }
+                        selectEntity(createdId);
                     }
                 }else{
                     const std::string uniqueName = makeUniqueChildName(parentEntity, "Camera");
                     auto* created = targetScene->createCameraGameObject(uniqueName, parentWrapper.get());
                     if(created && created->gameobject()){
-                        selectEntity(created->gameobject()->getNodeUniqueID());
+                        const std::string createdId = created->gameobject()->getNodeUniqueID();
+                        if(changeCallbacks.onEntityCreated){
+                            changeCallbacks.onEntityCreated(createdId);
+                        }
+                        selectEntity(createdId);
                     }
                 }
                 break;
@@ -551,8 +570,18 @@ void ECSViewPanel::applyPendingActions(PScene targetScene,
                 }
 
                 std::unique_ptr<NeoECS::GameObject> wrapper = createEntityWrapper(targetScene, entity);
-                if(wrapper && targetScene->destroyECSGameObject(wrapper.get()) && deletingSelectionTree){
-                    selectEntity("");
+                if(wrapper){
+                    if(changeCallbacks.onBeforeDeleteEntity){
+                        changeCallbacks.onBeforeDeleteEntity(action.entityId);
+                    }
+                    if(targetScene->destroyECSGameObject(wrapper.get())){
+                        if(changeCallbacks.onAfterDeleteEntity){
+                            changeCallbacks.onAfterDeleteEntity(action.entityId);
+                        }
+                        if(deletingSelectionTree){
+                            selectEntity("");
+                        }
+                    }
                 }
                 break;
             }
@@ -569,10 +598,16 @@ void ECSViewPanel::applyPendingActions(PScene targetScene,
                     break;
                 }
 
+                const std::string oldParentId =
+                    (entity->getParent() && !targetScene->isSceneRootEntity(entity->getParent()))
+                        ? entity->getParent()->getNodeUniqueID()
+                        : std::string();
                 std::unique_ptr<NeoECS::GameObject> wrapper = createEntityWrapper(targetScene, entity);
                 std::unique_ptr<NeoECS::GameObject> parentWrapper = createEntityWrapper(targetScene, parentEntity);
                 if(wrapper){
-                    wrapper->setParent(parentWrapper.get());
+                    if(wrapper->setParent(parentWrapper.get()) && changeCallbacks.onEntityReparented){
+                        changeCallbacks.onEntityReparented(action.entityId, oldParentId, action.targetEntityId);
+                    }
                 }
                 break;
             }
@@ -582,10 +617,16 @@ void ECSViewPanel::applyPendingActions(PScene targetScene,
                     break;
                 }
 
+                const std::string oldParentId =
+                    (entity->getParent() && !targetScene->isSceneRootEntity(entity->getParent()))
+                        ? entity->getParent()->getNodeUniqueID()
+                        : std::string();
                 std::unique_ptr<NeoECS::GameObject> wrapper = createEntityWrapper(targetScene, entity);
                 std::unique_ptr<NeoECS::GameObject> rootWrapper = createEntityWrapper(targetScene, sceneRoot);
                 if(wrapper){
-                    wrapper->setParent(rootWrapper.get());
+                    if(wrapper->setParent(rootWrapper.get()) && changeCallbacks.onEntityReparented){
+                        changeCallbacks.onEntityReparented(action.entityId, oldParentId, "");
+                    }
                 }
                 break;
             }

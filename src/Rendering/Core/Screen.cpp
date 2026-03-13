@@ -182,7 +182,7 @@ void Screen::drawToWindow(RenderWindow* window, bool clearWindow){
 
         glDisable(GL_DEPTH_TEST); 
         glDisable(GL_CULL_FACE);
-        glEnable(GL_DITHER);
+        glDisable(GL_DITHER);
 
         if(clearWindow){
             glDisable(GL_BLEND);
@@ -197,7 +197,7 @@ void Screen::drawToWindow(RenderWindow* window, bool clearWindow){
 
             Uniform<PTexture> texUniform(buffer->getDisplayBuffer()->getTexture());
             screenShader->setUniform("screenTexture", texUniform);
-            screenShader->setUniform("u_applyDeband", Uniform<int>(1));
+            screenShader->setUniform("u_applyDeband", Uniform<int>((presentDebandStrength > 0.001f) ? 1 : 0));
             screenShader->setUniform("u_frameIndex", Uniform<int>(static_cast<int>(presentFrameIndex)));
             screenShader->setUniform("u_debandStrength", Uniform<float>(presentDebandStrength));
 
@@ -234,7 +234,7 @@ void Screen::drawToView(PView view, bool clearWindow, float x, float y, float wi
 
     glDisable(GL_DEPTH_TEST); 
     glDisable(GL_CULL_FACE);
-    glEnable(GL_DITHER);
+    glDisable(GL_DITHER);
 
     if(clearWindow){
         glDisable(GL_BLEND);
@@ -249,7 +249,7 @@ void Screen::drawToView(PView view, bool clearWindow, float x, float y, float wi
 
             Uniform<PTexture> texUniform(buffer->getDisplayBuffer()->getTexture());
             screenShader->setUniform("screenTexture", texUniform);
-            screenShader->setUniform("u_applyDeband", Uniform<int>(1));
+            screenShader->setUniform("u_applyDeband", Uniform<int>((presentDebandStrength > 0.001f) ? 1 : 0));
             screenShader->setUniform("u_frameIndex", Uniform<int>(static_cast<int>(presentFrameIndex)));
             screenShader->setUniform("u_debandStrength", Uniform<float>(presentDebandStrength));
 

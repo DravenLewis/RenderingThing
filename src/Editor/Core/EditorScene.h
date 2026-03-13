@@ -6,10 +6,12 @@
 #ifndef EDITOR_SCENE_H
 #define EDITOR_SCENE_H
 
+#include <cstdint>
 #include <filesystem>
 #include <functional>
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 #include <atomic>
@@ -194,6 +196,7 @@ class EditorScene : public Scene {
         std::unordered_set<std::string> migratedLightDefaults;
         bool editorIconsLoaded = false;
         bool showSceneGizmos = true;
+        bool showScenePerformanceInfo = false;
         PTexture iconCamera;
         PTexture iconLightPoint;
         PTexture iconLightSpot;
@@ -229,12 +232,65 @@ class EditorScene : public Scene {
         std::filesystem::path activeScenePath;
         bool pendingPlayAfterSceneSave = false;
         bool pendingToolbarPlayCommand = false;
+        bool pendingToolbarUndoCommand = false;
+        bool pendingToolbarRedoCommand = false;
         bool pendingToolbarSaveSceneCommand = false;
         bool pendingToolbarSaveSceneAsCommand = false;
         bool pendingToolbarLoadSceneCommand = false;
         std::string ioStatusMessage;
         bool ioStatusIsError = false;
         float ioStatusTimeRemaining = 0.0f;
+        /// @brief Holds data for EditorEntityState.
+        struct EditorEntityState {
+            std::uint64_t stableId = 0;
+            std::string name;
+            std::vector<JsonSchema::EntitySnapshotSchemaBase::ComponentRecord> components;
+        };
+        /// @brief Holds data for EditorSubtreeSnapshot.
+        struct EditorSubtreeSnapshot {
+            std::vector<JsonSchema::EntitySnapshotSchemaBase::EntityRecord> entities;
+            std::vector<std::uint64_t> rootIds;
+            std::vector<std::uint64_t> rootParentIds;
+        };
+        /// @brief Holds data for EditorSceneChange.
+        struct EditorSceneChange {
+            /// @brief Enumerates values for Kind.
+            enum class Kind {
+                EntityState = 0,
+                EntityReparent,
+                SubtreePresence
+            };
+
+            Kind kind = Kind::EntityState;
+            std::string label;
+            std::string valuePath;
+            std::uint64_t targetStableId = 0;
+            EditorEntityState beforeEntityState;
+            EditorEntityState afterEntityState;
+            EditorSubtreeSnapshot subtreeSnapshot;
+            std::uint64_t beforeParentStableId = 0;
+            std::uint64_t afterParentStableId = 0;
+            bool subtreePresentBefore = false;
+            bool subtreePresentAfter = false;
+        };
+        std::vector<EditorSceneChange> editHistoryChanges;
+        size_t editHistoryIndex = 0;
+        bool editHistoryApplying = false;
+        bool trackedEntityObservationValid = false;
+        EditorEntityState lastObservedTrackedEntityState;
+        bool trackedEntityChangePending = false;
+        EditorEntityState pendingTrackedEntityStateBefore;
+        std::unordered_map<std::uint64_t, std::string> stableEntityRuntimeIds;
+        std::unordered_map<std::uint64_t, EditorSubtreeSnapshot> pendingDeletedSubtreeSnapshots;
+        bool editorSessionDirty = false;
+        bool editorSessionSaveRequested = false;
+        float editorSessionSaveDelaySeconds = 0.0f;
+        bool observedEditorCameraStateValid = false;
+        Math3D::Transform lastObservedEditorCameraTransform;
+        float lastObservedEditorYaw = -90.0f;
+        float lastObservedEditorPitch = 0.0f;
+        bool observedPropertiesPanelStateValid = false;
+        PropertiesPanel::State lastObservedPropertiesPanelState;
 
         void ensureTargetInitialized();
         void applyActiveSceneState();
@@ -287,10 +343,66 @@ class EditorScene : public Scene {
         void cancelViewportPrefabDragPreview();
         bool computeViewportMousePlacement(float planeY, Math3D::Vec3& outWorldPosition) const;
         std::filesystem::path resolveEditorCameraPrefabPath() const;
+        std::filesystem::path resolveEditorSessionPath() const;
         bool loadEditorCameraFromPrefab(std::string* outError = nullptr);
         bool saveEditorCameraToPrefab(std::string* outError = nullptr) const;
         bool createDefaultEditorCameraObject();
         void setEditorCameraSettingsOpen(bool open);
+        bool buildSceneHistoryEditorStateRawJson(JsonSchema::RawJsonValue& outEditorState,
+                                                 std::string* outError = nullptr) const;
+        void applySceneHistoryEditorStateRawJson(const JsonSchema::RawJsonValue& editorState);
+        bool buildCurrentEditSnapshot(JsonSchema::SceneSchema& outSchema,
+                                      std::string* outJson,
+                                      std::string* outError = nullptr) const;
+        bool applyEditSnapshot(const JsonSchema::SceneSchema& schema, std::string* outError = nullptr);
+        void resetEditHistoryToCurrentScene();
+        void resetTrackedEntityObservation();
+        std::uint64_t computeStableEntityId(const std::string& runtimeId) const;
+        std::uint64_t computeStableEntityId(NeoECS::ECSEntity* entity) const;
+        void refreshStableEntityMappings();
+        NeoECS::ECSEntity* findEntityByStableId(std::uint64_t stableId) const;
+        bool captureEntityState(NeoECS::ECSEntity* entity, EditorEntityState& outState, std::string* outError = nullptr) const;
+        bool captureEntityStateByStableId(std::uint64_t stableId, EditorEntityState& outState, std::string* outError = nullptr) const;
+        bool applyEntityState(const EditorEntityState& state, std::string* outError = nullptr);
+        bool captureSubtreeSnapshot(const std::vector<NeoECS::ECSEntity*>& roots,
+                                    EditorSubtreeSnapshot& outSnapshot,
+                                    std::string* outError = nullptr) const;
+        bool applySubtreePresence(const EditorSubtreeSnapshot& snapshot, bool present, std::string* outError = nullptr);
+        bool applyEntityReparent(std::uint64_t entityStableId,
+                                 std::uint64_t parentStableId,
+                                 std::string* outError = nullptr);
+        bool applyEditHistoryChange(const EditorSceneChange& change,
+                                    bool applyAfterState,
+                                    std::string* outError = nullptr);
+        void pushEditHistoryChange(EditorSceneChange change);
+        void observeCurrentEditState(bool interactionActive);
+        void flushEditHistoryObservation(bool forceCommit);
+        bool canUndoEditHistory() const;
+        bool canRedoEditHistory() const;
+        bool performUndo();
+        bool performRedo();
+        void beginPendingDeletedSubtreeCapture(const std::string& entityId);
+        void commitPendingDeletedSubtreeCapture(const std::string& entityId);
+        void recordCreatedSubtreeChange(const std::vector<NeoECS::ECSEntity*>& roots,
+                                        const std::string& label,
+                                        const std::string& valuePath);
+        void recordCreatedEntityChange(const std::string& entityId,
+                                       const std::string& label,
+                                       const std::string& valuePath);
+        void recordRenamedEntityChange(const std::string& entityId,
+                                       const std::string& oldName,
+                                       const std::string& newName);
+        void recordReparentedEntityChange(const std::string& entityId,
+                                          const std::string& oldParentId,
+                                          const std::string& newParentId);
+        void prepareForSceneMutationTracking();
+        void syncTargetSceneAfterEditHistoryApply(std::uint64_t preferredSelectedStableId);
+        void observeTransientEditorSessionState();
+        void markEditorSessionDirty(float saveDelaySeconds = 0.75f);
+        void advanceEditorSessionAutosave(float deltaTime);
+        void flushEditorSessionAutosave(bool force, bool interactionActive);
+        bool saveEditorSessionToDisk(std::string* outError = nullptr);
+        bool loadEditorSessionFromDisk(std::string* outError = nullptr);
 };
 
 #endif // EDITOR_SCENE_H

@@ -16,28 +16,27 @@
     ],
     "sceneSettings": {
       "outlineEnabled": true,
-      "selectedEntitySnapshotId": 53,
-      "preferredCameraSnapshotId": 41
+      "preferredCameraSnapshotId": 61
     },
     "snapshot": {
       "rootEntityIds": [
-        41,
-        42,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        54,
-        59,
-        60
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        73,
+        78,
+        79
       ],
       "entities": [
         {
-          "id": 41,
+          "id": 61,
           "name": "DemoCamera",
           "components": [
             {
@@ -50,9 +49,9 @@
                   25.984539031982422
                 ],
                 "rotationEuler": [
-                  180.0,
+                  -180.0,
                   -87.27782440185547,
-                  180.0
+                  -180.0
                 ],
                 "scale": [
                   1.0,
@@ -193,7 +192,7 @@
           ]
         },
         {
-          "id": 42,
+          "id": 62,
           "name": "Ground",
           "components": [
             {
@@ -366,7 +365,7 @@
           ]
         },
         {
-          "id": 44,
+          "id": 63,
           "name": "CubeModel",
           "components": [
             {
@@ -572,7 +571,7 @@
                         0.0
                       ],
                       "rotationEuler": [
-                        -180.0,
+                        180.0,
                         -0.0,
                         0.0
                       ],
@@ -946,7 +945,7 @@
                       "rotationEuler": [
                         90.0,
                         -0.000005122641596244648,
-                        180.0
+                        -180.0
                       ],
                       "scale": [
                         1.0,
@@ -1192,7 +1191,7 @@
           ]
         },
         {
-          "id": 45,
+          "id": 64,
           "name": "Lucille",
           "components": [
             {
@@ -1205,9 +1204,9 @@
                   -5.0
                 ],
                 "rotationEuler": [
-                  180.0,
+                  -180.0,
                   59.74643325805664,
-                  180.0
+                  -180.0
                 ],
                 "scale": [
                   1.0,
@@ -1257,6 +1256,57 @@
                 "modelPartMaterialAssetRefs": [
                   "@assets/sample_materials/Gold01.mat.asset"
                 ],
+                "modelPartEmbeddedMaterials": [
+                  {
+                    "embeddedMaterial": {
+                      "type": "PBR",
+                      "shaderAssetRef": "",
+                      "color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                      ],
+                      "uv": [
+                        0.0,
+                        0.0
+                      ],
+                      "textureRef": "",
+                      "metallic": 0.8389999866485596,
+                      "roughness": 1.0,
+                      "normalScale": 1.0,
+                      "heightScale": 0.019999999552965164,
+                      "emissiveColor": [
+                        0.0,
+                        0.0,
+                        0.0
+                      ],
+                      "emissiveStrength": 1.0,
+                      "occlusionStrength": 1.6460000276565552,
+                      "envStrength": 1.0,
+                      "useEnvMap": 1,
+                      "uvScale": [
+                        10.0,
+                        10.0
+                      ],
+                      "uvOffset": [
+                        0.0,
+                        0.0
+                      ],
+                      "alphaCutoff": 0.5,
+                      "useAlphaClip": 0,
+                      "baseColorTexRef": "@assets/images/golden_material/DirtyGold01_Albedo.png",
+                      "roughnessTexRef": "@assets/images/golden_material/DirtyGold01_Roughness.png",
+                      "metallicRoughnessTexRef": "@assets/images/golden_material/DirtyGold01_Metallic.png",
+                      "normalTexRef": "@assets/images/golden_material/DirtyGold01_Normal.png",
+                      "heightTexRef": "@assets/images/golden_material/DirtyGold01_Height.png",
+                      "emissiveTexRef": "",
+                      "occlusionTexRef": "@assets/images/golden_material/DirtyGold01_AO.png",
+                      "castsShadows": true,
+                      "receivesShadows": true
+                    }
+                  }
+                ],
                 "componentEnabled": true,
                 "componentHidden": false
               }
@@ -1264,7 +1314,7 @@
           ]
         },
         {
-          "id": 46,
+          "id": 65,
           "name": "Orb",
           "components": [
             {
@@ -1335,9 +1385,9 @@
                       "type": "PBR",
                       "shaderAssetRef": "",
                       "color": [
-                        0.0,
-                        0.9019607901573181,
-                        0.0,
+                        0.9607843160629272,
+                        0.5535314083099365,
+                        0.037677813321352005,
                         1.0
                       ],
                       "uv": [
@@ -1359,8 +1409,8 @@
                       "envStrength": 1.0,
                       "useEnvMap": 1,
                       "uvScale": [
-                        1.0,
-                        1.0
+                        10.0,
+                        10.0
                       ],
                       "uvOffset": [
                         0.0,
@@ -1387,7 +1437,7 @@
           ]
         },
         {
-          "id": 47,
+          "id": 66,
           "name": "Render Cube",
           "components": [
             {
@@ -1817,8 +1867,8 @@
                         "textureRef": "",
                         "metallic": 0.0,
                         "roughness": 1.0,
-                        "normalScale": 1.4700000286102295,
-                        "heightScale": 0.08100000023841858,
+                        "normalScale": 1.4199999570846558,
+                        "heightScale": 1.0,
                         "emissiveColor": [
                           0.0,
                           0.0,
@@ -1829,8 +1879,8 @@
                         "envStrength": 1.0,
                         "useEnvMap": 0,
                         "uvScale": [
-                          1.0,
-                          1.0
+                          2.0,
+                          2.0
                         ],
                         "uvOffset": [
                           0.0,
@@ -1858,7 +1908,7 @@
           ]
         },
         {
-          "id": 48,
+          "id": 67,
           "name": "KeyLight",
           "components": [
             {
@@ -1958,7 +2008,7 @@
           ]
         },
         {
-          "id": 49,
+          "id": 68,
           "name": "FillLight",
           "components": [
             {
@@ -2058,7 +2108,7 @@
           ]
         },
         {
-          "id": 50,
+          "id": 69,
           "name": "RimLight",
           "components": [
             {
@@ -2158,7 +2208,7 @@
           ]
         },
         {
-          "id": 51,
+          "id": 70,
           "name": "ENV Lights",
           "components": [
             {
@@ -2196,9 +2246,9 @@
           ]
         },
         {
-          "id": 52,
+          "id": 71,
           "name": "SunLight",
-          "parentId": 51,
+          "parentId": 70,
           "components": [
             {
               "type": "TransformComponent",
@@ -2210,8 +2260,8 @@
                   0.0
                 ],
                 "rotationEuler": [
-                  27.383424758911133,
-                  2.6680426756797715e-8,
+                  27.383426666259766,
+                  -0.0,
                   1.4322142601013184
                 ],
                 "scale": [
@@ -2244,9 +2294,9 @@
                     0.0
                   ],
                   "direction": [
-                    0.011495927348732948,
-                    -0.459799200296402,
-                    0.8879485130310059
+                    0.011495930142700672,
+                    -0.45979925990104675,
+                    0.8879484534263611
                   ],
                   "color": [
                     1.0,
@@ -2276,9 +2326,9 @@
           ]
         },
         {
-          "id": 53,
+          "id": 72,
           "name": "Ambient Light",
-          "parentId": 51,
+          "parentId": 70,
           "components": [
             {
               "type": "TransformComponent",
@@ -2377,7 +2427,7 @@
           ]
         },
         {
-          "id": 54,
+          "id": 73,
           "name": "Light Cluster",
           "components": [
             {
@@ -2415,9 +2465,9 @@
           ]
         },
         {
-          "id": 55,
+          "id": 74,
           "name": "TestRedLight",
-          "parentId": 54,
+          "parentId": 73,
           "components": [
             {
               "type": "TransformComponent",
@@ -2516,9 +2566,9 @@
           ]
         },
         {
-          "id": 56,
+          "id": 75,
           "name": "TestGreenLight",
-          "parentId": 54,
+          "parentId": 73,
           "components": [
             {
               "type": "TransformComponent",
@@ -2617,9 +2667,9 @@
           ]
         },
         {
-          "id": 57,
+          "id": 76,
           "name": "TestBlueLight",
-          "parentId": 54,
+          "parentId": 73,
           "components": [
             {
               "type": "TransformComponent",
@@ -2718,9 +2768,9 @@
           ]
         },
         {
-          "id": 58,
+          "id": 77,
           "name": "TestYellowLight",
-          "parentId": 54,
+          "parentId": 73,
           "components": [
             {
               "type": "TransformComponent",
@@ -2819,7 +2869,7 @@
           ]
         },
         {
-          "id": 59,
+          "id": 78,
           "name": "Lucille",
           "components": [
             {
@@ -2832,9 +2882,9 @@
                   25.564611434936523
                 ],
                 "rotationEuler": [
-                  -41.72526550292969,
-                  -44.932003021240234,
-                  10.592238426208496
+                  -41.72526931762695,
+                  -44.93199920654297,
+                  10.592239379882812
                 ],
                 "scale": [
                   3.575000047683716,
@@ -2942,7 +2992,7 @@
           ]
         },
         {
-          "id": 60,
+          "id": 79,
           "name": "Fence",
           "components": [
             {
@@ -2955,9 +3005,9 @@
                   5.1847991943359375
                 ],
                 "rotationEuler": [
-                  180.0,
+                  -180.0,
                   83.034912109375,
-                  180.0
+                  -180.0
                 ],
                 "scale": [
                   0.6449999809265137,

@@ -22,11 +22,19 @@ out vec4 FragColor;
 uniform sampler2D gAlbedo;
 uniform sampler2D gNormal;
 uniform sampler2D gPosition;
+uniform sampler2D gMaterial;
+uniform sampler2D gSsaoRaw;
+uniform sampler2D gSsao;
+uniform sampler2D gGi;
 uniform vec3 u_viewPos;
 uniform mat4 u_cameraView;
 uniform samplerCube u_envMap;
 uniform int u_useEnvMap;
-uniform float u_envStrength;
+uniform int u_useSsao;
+uniform int u_useGi;
+uniform float u_ssaoIntensity;
+uniform int u_ssaoDebugView;
+uniform int u_lightPassMode; // 0=final composite, 1=direct diffuse prepass
 uniform int u_debugShadows; // 0=off,1=visibility,2=cascade index,3=proj bounds
 uniform int u_debugSelectedLightIndex;
 uniform float u_shadowReceiverNormalBlend;
@@ -488,11 +496,56 @@ void main(){
     vec4 albedoRough = texture(gAlbedo, v_uv);
     vec4 normalMetal = texture(gNormal, v_uv);
     vec4 positionAo = texture(gPosition, v_uv);
+    vec4 materialData = texture(gMaterial, v_uv);
 
     vec3 albedo = albedoRough.rgb;
     float roughness = clamp(albedoRough.a, 0.04, 1.0);
     float packedMode = normalMetal.a;
     float ao = clamp(positionAo.a, 0.0, 1.0);
+    vec3 emissive = max(materialData.rgb, vec3(0.0));
+    float envStrength = max(materialData.a, 0.0);
+    bool hasGeometry = (length(normalMetal.rgb) > 1e-4);
+
+    float ssaoRaw = (u_useSsao != 0) ? clamp(texture(gSsaoRaw, v_uv).r, 0.0, 1.0) : 1.0;
+    float ssaoBlur = (u_useSsao != 0) ? clamp(texture(gSsao, v_uv).r, 0.0, 1.0) : 1.0;
+    float ssaoFactor = 1.0;
+    if(u_useSsao != 0){
+        float ssaoOcclusion = clamp(1.0 - ssaoBlur, 0.0, 1.0);
+        ssaoFactor = 1.0 - (ssaoOcclusion * max(u_ssaoIntensity, 0.0));
+    }
+    ssaoFactor = clamp(ssaoFactor, 0.0, 1.0);
+    float combinedAo = clamp(ao * ssaoFactor, 0.0, 1.0);
+    vec3 giIrradiance = (u_useGi != 0) ? max(texture(gGi, v_uv).rgb, vec3(0.0)) : vec3(0.0);
+
+    if(u_lightPassMode == 1 && !hasGeometry){
+        FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+        return;
+    }
+
+    if(u_ssaoDebugView != 0 && !hasGeometry){
+        if(u_ssaoDebugView == 4){
+            FragColor = vec4(vec3(0.0), 1.0);
+        }else{
+            FragColor = vec4(vec3(1.0), 1.0);
+        }
+        return;
+    }
+    if(u_ssaoDebugView == 1){
+        FragColor = vec4(vec3(combinedAo), 1.0);
+        return;
+    }
+    if(u_ssaoDebugView == 2){
+        FragColor = vec4(vec3(ssaoRaw), 1.0);
+        return;
+    }
+    if(u_ssaoDebugView == 3){
+        FragColor = vec4(vec3(ao), 1.0);
+        return;
+    }
+    if(u_ssaoDebugView == 4){
+        FragColor = vec4(clamp(giIrradiance * 4.0, vec3(0.0), vec3(1.0)), 1.0);
+        return;
+    }
 
     vec3 fragPos = positionAo.rgb;
     vec3 N = safeNormalize(normalMetal.rgb);
@@ -503,12 +556,13 @@ void main(){
     bool legacyLit = (packedMode < 0.0 && !legacyUnlit);
 
     if(legacyUnlit){
-        FragColor = vec4(albedo, 1.0);
+        FragColor = (u_lightPassMode == 1) ? vec4(0.0, 0.0, 0.0, 1.0) : vec4(albedo, 1.0);
         return;
     }
 
     if(legacyLit){
-        vec3 LoLegacy = vec3(0.0);
+        vec3 LoLegacyDiffuse = vec3(0.0);
+        vec3 LoLegacySpec = vec3(0.0);
         int lightCount = int(u_lightHeader.x + 0.5);
         for(int i = 0; i < lightCount && i < MAX_LIGHTS; ++i){
             Light light = u_lights[i];
@@ -555,18 +609,26 @@ void main(){
             float spec = pow(max(dot(V, reflectDir), 0.0), 32.0);
             vec3 specular = 0.2 * spec * light.color.rgb * attenuation * visibility;
 
-            LoLegacy += (diffuse + specular) * light.params.x;
+            LoLegacyDiffuse += diffuse * light.params.x;
+            LoLegacySpec += specular * light.params.x;
         }
 
-        vec3 colorLegacy = vec3(0.3) * albedo + LoLegacy;
-        FragColor = vec4(colorLegacy, 1.0);
+        if(u_lightPassMode == 1){
+            FragColor = vec4(max(LoLegacyDiffuse + emissive, vec3(0.0)), 1.0);
+            return;
+        }
+
+        vec3 indirectLegacy = giIrradiance * albedo;
+        vec3 colorLegacy = vec3(0.3) * albedo * combinedAo + LoLegacyDiffuse + LoLegacySpec + emissive + indirectLegacy;
+        FragColor = vec4(max(colorLegacy, vec3(0.0)), 1.0);
         return;
     }
 
     float metallic = clamp(packedMode, 0.0, 1.0);
     vec3 F0 = mix(vec3(0.04), albedo, metallic);
 
-    vec3 Lo = vec3(0.0);
+    vec3 LoDiffuse = vec3(0.0);
+    vec3 LoSpecular = vec3(0.0);
     vec3 debugColorAccum = vec3(0.0);
     float debugWeight = 0.0;
     int lightCount = int(u_lightHeader.x + 0.5);
@@ -669,28 +731,32 @@ void main(){
         vec3 kD = (vec3(1.0) - kS) * (1.0 - metallic);
 
         vec3 radiance = light.color.rgb * light.params.x * attenuation * visibility;
-        vec3 lightContribution = (kD * albedo / PI + specular) * radiance * NdotL;
-        Lo += lightContribution;
+        LoDiffuse += (kD * albedo / PI) * radiance * NdotL;
+        LoSpecular += specular * radiance * NdotL;
     }
 
-    vec3 ambient = vec3(0.10) * albedo * ao;
+    if(u_lightPassMode == 1){
+        FragColor = vec4(max(LoDiffuse + emissive, vec3(0.0)), 1.0);
+        return;
+    }
+
+    vec3 ambient = vec3(0.03) * albedo * combinedAo;
     vec3 envSpec = vec3(0.0);
     if(u_useEnvMap != 0){
         vec3 R = reflect(-V, N);
         float NdotV = max(dot(N, V), 0.0);
         vec3 Fenv = FresnelSchlick(NdotV, F0);
         vec3 envSample = texture(u_envMap, R).rgb;
-        envSpec = envSample * Fenv * u_envStrength * (1.0 - roughness);
+        envSpec = envSample * Fenv * envStrength * (1.0 - roughness) * combinedAo;
     }
 
-    vec3 color = ambient + Lo + envSpec;
+    vec3 indirectDiffuse = giIrradiance * albedo * (1.0 - metallic);
+    vec3 color = ambient + LoDiffuse + LoSpecular + envSpec + emissive + indirectDiffuse;
     if(debugWeight > 0.0){
         FragColor = vec4(clamp(debugColorAccum / debugWeight, 0.0, 1.0), 1.0);
         return;
     }
-    float dither = (hash13(vec3(gl_FragCoord.xy, fragPos.z * 0.03125)) - 0.5) / 255.0;
-    color += vec3(dither);
-    FragColor = vec4(max(color, vec3(0.0)), 1.0);
+    FragColor = vec4(max(color, vec3(0.0)), ao);
 }
 
 

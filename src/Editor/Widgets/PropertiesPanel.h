@@ -17,6 +17,11 @@
 /// @brief Represents the PropertiesPanel type.
 class PropertiesPanel {
     public:
+        /// @brief Holds transient properties-panel state.
+        struct State {
+            bool showHiddenComponents = false;
+        };
+
         /**
          * @brief Draws this object.
          * @param x Spatial value used by this operation.
@@ -41,9 +46,26 @@ class PropertiesPanel {
             const std::function<NeoECS::ECSEntity*(const std::string&)>& findEntityById
         );
 
+        /**
+         * @brief Captures the current transient panel state.
+         * @return Result of this operation.
+         */
+        State captureState() const;
+        /**
+         * @brief Applies transient panel state.
+         * @param state Value for state.
+         */
+        void applyState(const State& state);
+        /**
+         * @brief Checks whether an edit interaction is active inside the panel.
+         * @return True when the condition is satisfied; otherwise false.
+         */
+        bool isInteractionActive() const { return interactionActive; }
+
     private:
         FilePreviewWidget filePreviewWidget;
         bool showHiddenComponents = false;
+        bool interactionActive = false;
 };
 
 #endif // PROPERTIES_PANEL_H

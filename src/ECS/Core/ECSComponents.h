@@ -12,6 +12,7 @@
 #include "Rendering/Materials/Material.h"
 #include "Rendering/Geometry/Model.h"
 #include "Rendering/Lighting/Light.h"
+#include "Rendering/Lighting/DeferredSSAO.h"
 #include "Rendering/PostFX/ScreenEffects.h"
 
 #include "Scene/Scene.h"
@@ -355,8 +356,10 @@ struct SSAOComponent : public IEditorCompatibleComponent {
     float bias = 0.001f;
     float intensity = 1.0f;
     float giBoost = 0.12f;
-    int sampleCount = 8;
-    std::shared_ptr<SSAOEffect> runtimeEffect;
+    float blurRadiusPx = 2.0f;
+    float blurSharpness = 2.0f;
+    int sampleCount = 16;
+    int debugView = 0; // 0=composited, 1=combined AO, 2=SSAO raw, 3=material AO, 4=GI
 
     /**
      * @brief Gets a mutable pointer to the editor-enabled flag.
@@ -365,11 +368,10 @@ struct SSAOComponent : public IEditorCompatibleComponent {
     bool* getEditorEnabledState() override { return &enabled; }
     const bool* getEditorEnabledState() const override { return &enabled; }
     /**
-     * @brief Builds the SSAO post-process effect for camera rendering.
-     * @param settings Active camera settings.
-     * @return Shared effect instance configured from this component.
+     * @brief Builds deferred SSAO settings for the active camera.
+     * @return Clamped settings used by the core deferred SSAO pass.
      */
-    Graphics::PostProcessing::PPostProcessingEffect getEffectForCamera(const CameraSettings& settings);
+    DeferredSSAOSettings buildDeferredSsaoSettings() const;
     /**
      * @brief Draws editor controls for this component.
      * @param ecsPtr ECS instance that owns the component.

@@ -12,9 +12,12 @@
 #include <string>
 #include <vector>
 
+#include "Foundation/Math/Color.h"
 #include "Rendering/Core/View.h"
 #include "Platform/Input/InputManager.h"
 #include "Rendering/Geometry/Model.h"
+#include "Rendering/Lighting/DeferredScreenGI.h"
+#include "Rendering/Lighting/DeferredSSAO.h"
 #include "Rendering/Lighting/Light.h"
 #include "neoecs.hpp"
 #include "Rendering/Materials/MaterialDefaults.h"
@@ -85,7 +88,7 @@ class Scene : public View {
          */
         void refreshRenderState();
         /**
-         * @brief Applies post-processing effects defined by a camera entity.
+         * @brief Applies camera-defined screen effects and deferred-lighting overrides.
          * @param screen Destination screen/post-process chain.
          * @param manager ECS component manager.
          * @param cameraEntity Camera entity owning effect components.
@@ -251,10 +254,16 @@ class Scene : public View {
         std::atomic<bool> closeRequested{false};
         std::string selectedEntityId;
         int selectedLightUploadIndex = -1;
-        std::shared_ptr<MaterialDefaults::ColorMaterial> outlineMaterial;
         std::shared_ptr<MaterialDefaults::ColorMaterial> deferredIncompatibleMaterial;
         bool outlineEnabled = false;
+        PFrameBuffer outlineMaskBuffer;
+        std::shared_ptr<ShaderProgram> outlineMaskShader;
+        std::shared_ptr<ShaderProgram> outlineCompositeShader;
+        std::shared_ptr<ModelPart> outlineCompositeQuad;
+        int outlineMaskWidth = 0;
+        int outlineMaskHeight = 0;
         PFrameBuffer gBuffer;
+        PFrameBuffer deferredDirectLightBuffer;
         std::shared_ptr<ShaderProgram> gBufferShader;
         std::shared_ptr<ShaderProgram> deferredLightShader;
         std::shared_ptr<ModelPart> deferredQuad;
@@ -264,6 +273,11 @@ class Scene : public View {
         bool gBufferValidated = false;
         bool deferredDisabled = false;
         PCamera preferredCamera;
+        NeoECS::ECSEntity* activeCameraEntity = nullptr;
+        std::shared_ptr<DeferredSSAO> deferredSsaoPass;
+        std::shared_ptr<DeferredScreenGI> deferredScreenGiPass;
+        bool hasDeferredSsaoOverride = false;
+        DeferredSSAOSettings deferredSsaoOverrideSettings{};
 
         /// @brief Enumerates values for RenderFilter.
         enum class RenderFilter{
@@ -290,6 +304,11 @@ class Scene : public View {
          */
         void ensureDeferredResources(PScreen screen);
         /**
+         * @brief Allocates or resizes the selection-outline mask/composite resources.
+         * @param screen Active screen target.
+         */
+        void ensureOutlineResources(PScreen screen);
+        /**
          * @brief Computes adaptive focus distance using ECS snapshot data.
          * @param cameraEntity Active camera entity.
          * @param camera Active camera object.
@@ -297,6 +316,16 @@ class Scene : public View {
          * @return True when a valid distance is found.
          */
         bool computeAdaptiveFocusDistanceFromSnapshot(NeoECS::ECSEntity* cameraEntity, const PCamera& camera, float& outDistance) const;
+        /**
+         * @brief Resolves deferred SSAO settings for the active camera or override source.
+         * @param manager ECS component manager.
+         * @param cameraEntity Camera entity to inspect when no override exists.
+         * @param outSettings Output settings when SSAO is enabled.
+         * @return True when deferred SSAO should run.
+         */
+        bool resolveDeferredSsaoSettings(NeoECS::ECSComponentManager* manager,
+                                         NeoECS::ECSEntity* cameraEntity,
+                                         DeferredSSAOSettings& outSettings) const;
         /**
          * @brief Rebuilds post-process effects for the active camera.
          * @param activeCameraEntity Active camera entity.
@@ -313,7 +342,13 @@ class Scene : public View {
          * @param screen Destination screen.
          * @param cam Active camera.
          */
-        void drawDeferredLighting(PScreen screen, PCamera cam);
+        void drawDeferredLighting(PFrameBuffer targetBuffer,
+                                  Color clearColor,
+                                  PCamera cam,
+                                  const std::shared_ptr<DeferredSSAO>& ssaoPass = nullptr,
+                                  const DeferredSSAOSettings* ssaoSettings = nullptr,
+                                  PTexture giTexture = nullptr,
+                                  int lightPassMode = 0);
         /**
          * @brief Runs the full deferred rendering pipeline.
          * @param screen Destination screen.
@@ -321,10 +356,11 @@ class Scene : public View {
          */
         void renderDeferred(PScreen screen, PCamera cam);
         /**
-         * @brief Draws editor/selection outlines.
+         * @brief Draws a screen-space outline around the selected entity.
+         * @param screen Destination screen/draw buffer owner.
          * @param cam Active camera.
          */
-        void drawOutlines(PCamera cam);
+        void drawOutlines(PScreen screen, PCamera cam);
 
         /**
          * @brief Uploads current scene lights to rendering systems.
@@ -338,10 +374,9 @@ class Scene : public View {
          * @brief Draws model render items for a selected filter.
          * @param cam Active camera.
          * @param filter Opaque/transparent filter selection.
-         * @param drawOutlines True to include outline pass.
          * @param skipDeferredCompatible True to skip deferred-compatible items.
          */
-        void drawModels3D(PCamera cam, RenderFilter filter = RenderFilter::All, bool drawOutlines = true, bool skipDeferredCompatible = false);
+        void drawModels3D(PCamera cam, RenderFilter filter = RenderFilter::All, bool skipDeferredCompatible = false);
         /**
          * @brief Renders shadow maps for shadow-casting lights.
          */

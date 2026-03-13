@@ -147,7 +147,9 @@ void DemoScene::init(){
             ssao->bias = 0.0008f;
             ssao->intensity = 0.6f;
             ssao->giBoost = 0.03f;
-            ssao->sampleCount = 4;
+            ssao->blurRadiusPx = 2.0f;
+            ssao->blurSharpness = 2.0f;
+            ssao->sampleCount = 16;
         }
         if(bloom){
             SetComponentActive(bloom, true);
