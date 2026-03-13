@@ -27,6 +27,93 @@
 namespace {
     const Math3D::Vec4 kSelectionOutlineColor(0.20392157f, 0.59607846f, 0.85882354f, 0.95f);
 
+    struct DeferredLightUploadCandidate {
+        Light light;
+        int sourceIndex = -1;
+        float priority = 0.0f;
+        bool selected = false;
+    };
+
+    void fillAabbCorners(const Math3D::Vec3& minV, const Math3D::Vec3& maxV, std::array<glm::vec3, 8>& outCorners){
+        outCorners[0] = glm::vec3(minV.x, minV.y, minV.z);
+        outCorners[1] = glm::vec3(maxV.x, minV.y, minV.z);
+        outCorners[2] = glm::vec3(minV.x, maxV.y, minV.z);
+        outCorners[3] = glm::vec3(maxV.x, maxV.y, minV.z);
+        outCorners[4] = glm::vec3(minV.x, minV.y, maxV.z);
+        outCorners[5] = glm::vec3(maxV.x, minV.y, maxV.z);
+        outCorners[6] = glm::vec3(minV.x, maxV.y, maxV.z);
+        outCorners[7] = glm::vec3(maxV.x, maxV.y, maxV.z);
+    }
+
+    bool aabbIntersectsClipFrustum(const Math3D::Vec3& minV, const Math3D::Vec3& maxV, const Math3D::Mat4& clipMatrix){
+        std::array<glm::vec3, 8> corners;
+        fillAabbCorners(minV, maxV, corners);
+
+        const glm::mat4 m = static_cast<glm::mat4>(clipMatrix);
+
+        bool allLeft = true;
+        bool allRight = true;
+        bool allBottom = true;
+        bool allTop = true;
+        bool allNear = true;
+        bool allFar = true;
+
+        for(const glm::vec3& corner : corners){
+            const glm::vec4 clip = m * glm::vec4(corner, 1.0f);
+            if(!std::isfinite(clip.x) || !std::isfinite(clip.y) || !std::isfinite(clip.z) || !std::isfinite(clip.w)){
+                return true;
+            }
+
+            allLeft = allLeft && (clip.x < -clip.w);
+            allRight = allRight && (clip.x > clip.w);
+            allBottom = allBottom && (clip.y < -clip.w);
+            allTop = allTop && (clip.y > clip.w);
+            allNear = allNear && (clip.z < -clip.w);
+            allFar = allFar && (clip.z > clip.w);
+        }
+
+        return !(allLeft || allRight || allBottom || allTop || allNear || allFar);
+    }
+
+    bool lightLikelyAffectsCamera(const Light& light, const PCamera& camera){
+        if(!camera){
+            return true;
+        }
+        if(light.type == LightType::DIRECTIONAL){
+            return true;
+        }
+        if(light.intensity <= 0.0001f){
+            return false;
+        }
+
+        float influenceRange = (light.shadowRange > 0.0f) ? light.shadowRange : light.range;
+        influenceRange = Math3D::Max(influenceRange, 0.1f);
+
+        Math3D::Vec3 extent(influenceRange, influenceRange, influenceRange);
+        Math3D::Vec3 minV = light.position - extent;
+        Math3D::Vec3 maxV = light.position + extent;
+        Math3D::Mat4 clipMatrix = camera->getProjectionMatrix() * camera->getViewMatrix();
+        return aabbIntersectsClipFrustum(minV, maxV, clipMatrix);
+    }
+
+    float computeLightUploadPriority(const Light& light, const PCamera& camera){
+        if(light.type == LightType::DIRECTIONAL){
+            return 1000000.0f + Math3D::Max(light.intensity, 0.0f);
+        }
+
+        const float intensityScore = Math3D::Max(light.intensity, 0.0f) * 8.0f;
+        const float range = Math3D::Max((light.shadowRange > 0.0f) ? light.shadowRange : light.range, 0.1f);
+        const float rangeScore = range * 0.05f;
+        if(!camera){
+            return intensityScore + rangeScore;
+        }
+
+        const float distanceToCamera = Math3D::Vec3::distance(light.position, camera->transform().position);
+        const float normalizedDistance = distanceToCamera / range;
+        const float distanceScore = 4.0f * (1.0f - Math3D::Clamp(normalizedDistance, 0.0f, 4.0f) * 0.25f);
+        return intensityScore + rangeScore + distanceScore;
+    }
+
     const std::string kSelectionOutlineMaskVertShader = R"(
         #version 330 core
 
@@ -1012,14 +1099,41 @@ void Scene::updateSceneLights(){
     lightManager.clearLights();
     const int frontIndex = renderSnapshotIndex.load(std::memory_order_acquire);
     const auto& snapshot = renderSnapshots[frontIndex];
-    for(const auto& light : snapshot.lights){
-        lightManager.addLight(light);
+    PCamera camera = screen->getCamera();
+    std::vector<DeferredLightUploadCandidate> uploadCandidates;
+    uploadCandidates.reserve(snapshot.lights.size());
+    for(size_t i = 0; i < snapshot.lights.size(); ++i){
+        const Light& light = snapshot.lights[i];
+        const bool isSelected = (static_cast<int>(i) == selectedLightUploadIndex);
+        if(!isSelected && !lightLikelyAffectsCamera(light, camera)){
+            continue;
+        }
+
+        DeferredLightUploadCandidate candidate;
+        candidate.light = light;
+        candidate.sourceIndex = static_cast<int>(i);
+        candidate.priority = computeLightUploadPriority(light, camera) + (isSelected ? 10000000.0f : 0.0f);
+        candidate.selected = isSelected;
+        uploadCandidates.push_back(candidate);
+    }
+
+    std::stable_sort(uploadCandidates.begin(), uploadCandidates.end(), [](const DeferredLightUploadCandidate& a, const DeferredLightUploadCandidate& b){
+        return a.priority > b.priority;
+    });
+
+    int remappedSelectedLightIndex = -1;
+    for(const auto& candidate : uploadCandidates){
+        const int uploadIndex = static_cast<int>(lightManager.getLightCount());
+        lightManager.addLight(candidate.light);
+        if(candidate.selected && uploadIndex < MAX_LIGHTS){
+            remappedSelectedLightIndex = uploadIndex;
+        }
     }
 
     const int uploadedCount = static_cast<int>(lightManager.getLightCount());
     const int selectedIndex =
-        (selectedLightUploadIndex >= 0 && selectedLightUploadIndex < uploadedCount)
-            ? selectedLightUploadIndex
+        (remappedSelectedLightIndex >= 0 && remappedSelectedLightIndex < uploadedCount)
+            ? remappedSelectedLightIndex
             : -1;
     ShadowRenderer::SetSelectedLightIndex(selectedIndex);
 }
@@ -1425,7 +1539,7 @@ void Scene::drawDeferredLighting(PFrameBuffer targetBuffer,
     deferredLightShader->setUniformFast("gSsao", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(ssaoBlurTex, 5)));
     deferredLightShader->setUniformFast("gGi", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(giTexture, 6)));
     deferredLightShader->setUniformFast("u_useSsao", Uniform<int>(useSsao));
-    deferredLightShader->setUniformFast("u_ssaoIntensity", Uniform<float>(ssaoSettings ? Math3D::Clamp(ssaoSettings->intensity, 0.0f, 2.0f) : 0.0f));
+    deferredLightShader->setUniformFast("u_ssaoIntensity", Uniform<float>(ssaoSettings ? Math3D::Clamp(ssaoSettings->intensity, 0.0f, 10.0f) : 0.0f));
     deferredLightShader->setUniformFast("u_useGi", Uniform<int>(giTexture ? 1 : 0));
     deferredLightShader->setUniformFast("u_ssaoDebugView", Uniform<int>((lightPassMode == 0 && ssaoSettings) ? Math3D::Clamp(ssaoSettings->debugView, 0, 4) : 0));
     deferredLightShader->setUniformFast("u_lightPassMode", Uniform<int>(lightPassMode));

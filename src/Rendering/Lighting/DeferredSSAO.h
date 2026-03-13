@@ -127,6 +127,8 @@ class DeferredSSAO {
                 float radius = max(u_depthRadius * 24.0, pixelWorldRadius * 6.0);
                 radius = clamp(radius, 0.02, 2.5);
                 float bias = max(u_bias, radius * 0.02);
+                float thickness = max(u_depthRadius * 4.0, worldUnitsPerPixel * 4.0);
+                thickness = clamp(thickness, 0.01, max(radius * 0.35, 0.01));
 
                 int kernelSize = clamp(u_kernelSize, 1, 64);
                 float occlusion = 0.0;
@@ -156,11 +158,18 @@ class DeferredSSAO {
                         continue;
                     }
 
+                    float depthDelta = abs(sampleScenePosView.z - samplePosView.z);
+                    float rangeWeight = 1.0 - smoothstep(thickness, thickness * 2.5, depthDelta);
+                    if(rangeWeight <= 0.001){
+                        continue;
+                    }
+
                     float distanceWeight = 1.0 - smoothstep(0.0, radius, sampleDistance);
                     float normalDistance = dot(normalView, sampleDeltaView);
                     float occluded = clamp((normalDistance - bias) / sampleDistance, 0.0, 1.0);
-                    occlusion += occluded * distanceWeight;
-                    weightSum += distanceWeight;
+                    float weight = distanceWeight * rangeWeight;
+                    occlusion += occluded * weight;
+                    weightSum += weight;
                 }
 
                 float ao = 1.0 - ((weightSum > 0.0) ? (occlusion / weightSum) : 0.0);
@@ -240,7 +249,11 @@ class DeferredSSAO {
                         float planeDiff = abs(dot(centerNormalView, samplePosView - centerPosView));
                         float depthMetric = max(planeDiff, viewDepthDiff * 0.5);
                         float depthWeight = exp(-depthMetric / max(depthSigma, 0.0001));
-                        float weight = spatialWeight * normalWeight * depthWeight;
+                        float edgeReject = 1.0 - smoothstep(depthSigma * 1.5, depthSigma * 4.0, depthMetric);
+                        if(edgeReject <= 0.001){
+                            continue;
+                        }
+                        float weight = spatialWeight * normalWeight * depthWeight * edgeReject;
 
                         aoSum += sampleAo * weight;
                         weightSum += weight;

@@ -46,6 +46,8 @@ layout(std140) uniform LightBlock {
     Light u_lights[MAX_LIGHTS];
 };
 
+int resolveEffectiveShadowType(int lightIndex, Light light);
+
 vec3 safeNormalize(vec3 v){
     float lenV = length(v);
     return (lenV > 1e-5) ? (v / lenV) : vec3(0.0, -1.0, 0.0);
@@ -347,7 +349,7 @@ vec3 computeShadowNormal(vec3 shadingNormal, vec3 fragPos){
     return safeNormalize(mix(baseN, geomN, normalBlend));
 }
 
-float sampleShadowForLight(Light light, vec3 normal, vec3 fragPos){
+float sampleShadowForLight(int lightIndex, Light light, vec3 normal, vec3 fragPos){
     if(light.meta.z < 0.0){
         return 1.0;
     }
@@ -357,7 +359,7 @@ float sampleShadowForLight(Light light, vec3 normal, vec3 fragPos){
     if(lightType == 1){
         receiverGradScale = (light.shadow.z <= 1.5) ? 0.42 : 0.24;
     }
-    int shadowType = int(light.meta.y + 0.5);
+    int shadowType = resolveEffectiveShadowType(lightIndex, light);
     int baseIndex = int(light.meta.z + 0.5);
     float bias = computeShadowBias(light, normal, fragPos);
     vec3 receiverPos = offsetShadowReceiver(light, normal, fragPos);
@@ -492,6 +494,26 @@ vec3 debugCascadeColor(int cascadeIndex){
     return vec3(1.0, 0.35, 0.22);
 }
 
+int resolveEffectiveShadowType(int lightIndex, Light light){
+    int shadowType = int(light.meta.y + 0.5);
+    if(shadowType <= 1){
+        return shadowType;
+    }
+
+    int lightType = int(light.meta.x + 0.5);
+    if(lightType == 1){
+        return shadowType;
+    }
+
+    if(u_debugSelectedLightIndex >= 0 && lightIndex == u_debugSelectedLightIndex){
+        return shadowType;
+    }
+
+    // Local smooth shadows are the most expensive case; keep full quality only
+    // for the selected light and fall back to standard filtering for the rest.
+    return 1;
+}
+
 void main(){
     vec4 albedoRough = texture(gAlbedo, v_uv);
     vec4 normalMetal = texture(gNormal, v_uv);
@@ -593,15 +615,19 @@ void main(){
                 }
             }
 
-            float visibility = 1.0;
-            if(light.meta.z >= 0.0){
-                visibility = sampleShadowForLight(light, shadowNormal, fragPos);
-                visibility = mix(1.0, visibility, clamp(light.meta.w, 0.0, 1.0));
+            if(attenuation <= 0.0001 || light.params.x <= 0.0001){
+                continue;
             }
 
             float NdotL = max(dot(N, L), 0.0);
             if(NdotL <= 0.0){
                 continue;
+            }
+
+            float visibility = 1.0;
+            if(light.meta.z >= 0.0){
+                visibility = sampleShadowForLight(i, light, shadowNormal, fragPos);
+                visibility = mix(1.0, visibility, clamp(light.meta.w, 0.0, 1.0));
             }
 
             vec3 diffuse = NdotL * light.color.rgb * albedo * attenuation * visibility;
@@ -662,16 +688,14 @@ void main(){
             }
         }
 
-        float visibility = 1.0;
-        if(light.meta.z >= 0.0){
-            visibility = sampleShadowForLight(light, shadowNormal, fragPos);
-            visibility = mix(1.0, visibility, clamp(light.meta.w, 0.0, 1.0));
-        }
-
+        bool handledShadowDebug = false;
         if(debugModeForLight == 1 && light.meta.z >= 0.0){
+            float visibility = sampleShadowForLight(i, light, shadowNormal, fragPos);
+            visibility = mix(1.0, visibility, clamp(light.meta.w, 0.0, 1.0));
             vec3 debugColor = debugLightColor(i);
             debugColorAccum += mix(debugColor * 0.15, debugColor, visibility);
             debugWeight += 1.0;
+            handledShadowDebug = true;
         }else if((debugModeForLight == 2 || debugModeForLight == 3) &&
                  light.meta.z >= 0.0 && lightType != 0){
             vec3 shadowPosDebug = offsetShadowReceiver(light, shadowNormal, fragPos);
@@ -711,13 +735,29 @@ void main(){
                 debugColorAccum += debugColor;
                 debugWeight += 1.0;
             }
+            handledShadowDebug = true;
         }
 
-        vec3 H = safeNormalize(V + L);
+        if(handledShadowDebug){
+            continue;
+        }
+
+        if(attenuation <= 0.0001 || light.params.x <= 0.0001){
+            continue;
+        }
+
         float NdotL = max(dot(N, L), 0.0);
         if(NdotL <= 0.0){
             continue;
         }
+
+        float visibility = 1.0;
+        if(light.meta.z >= 0.0){
+            visibility = sampleShadowForLight(i, light, shadowNormal, fragPos);
+            visibility = mix(1.0, visibility, clamp(light.meta.w, 0.0, 1.0));
+        }
+
+        vec3 H = safeNormalize(V + L);
 
         float NDF = DistributionGGX(N, H, roughness);
         float G = GeometrySmith(N, V, L, roughness);

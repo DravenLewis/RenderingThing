@@ -3520,7 +3520,7 @@ void EditorScene::drawToolbar(float width, float height){
             undoClicked = ImGui::MenuItem("Undo", "Ctrl+Z", false, canUndoEditHistory());
             redoClicked = ImGui::MenuItem("Redo", "Ctrl+Y", false, canRedoEditHistory());
             ImGui::Separator();
-            if(ImGui::MenuItem("Editor Camera Settings")){
+            if(ImGui::MenuItem("Editor Camera Settings", "Ctrl+F12")){
                 setEditorCameraSettingsOpen(true);
                 selectedAssetPath.clear();
             }
@@ -3578,6 +3578,10 @@ void EditorScene::drawToolbar(float width, float height){
         }
         if(io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_O, false)){
             loadSceneClicked = true;
+        }
+        if(io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_F12, false)){
+            setEditorCameraSettingsOpen(true);
+            selectedAssetPath.clear();
         }
     }
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);

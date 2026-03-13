@@ -2012,7 +2012,7 @@ DeferredSSAOSettings SSAOComponent::buildDeferredSsaoSettings() const{
     settings.radiusPx = Math3D::Clamp(radiusPx, 0.25f, 8.0f);
     settings.depthRadius = Math3D::Clamp(depthRadius, 0.00001f, 0.5f);
     settings.bias = Math3D::Clamp(bias, 0.0f, 0.02f);
-    settings.intensity = Math3D::Clamp(intensity, 0.0f, 2.0f);
+    settings.intensity = Math3D::Clamp(intensity, 0.0f, 10.0f);
     settings.giBoost = Math3D::Clamp(giBoost, 0.0f, 1.0f);
     settings.blurRadiusPx = Math3D::Clamp(blurRadiusPx, 0.5f, 6.0f);
     settings.blurSharpness = Math3D::Clamp(blurSharpness, 0.25f, 4.0f);
@@ -2031,7 +2031,7 @@ void SSAOComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     ImGui::SliderFloat("Sample Radius (Px)", &radiusPx, 0.25f, 8.0f, "%.2f");
     ImGui::SliderFloat("Sample Radius (World)", &depthRadius, 0.00001f, 0.5f, "%.5f");
     ImGui::SliderFloat("Bias", &bias, 0.0f, 0.02f, "%.4f");
-    ImGui::SliderFloat("AO Strength", &intensity, 0.0f, 2.0f, "%.2f");
+    ImGui::SliderFloat("AO Strength", &intensity, 0.0f, 10.0f, "%.2f");
     ImGui::SliderFloat("GI Boost", &giBoost, 0.0f, 1.0f, "%.2f");
     ImGui::SliderInt("Samples", &sampleCount, 4, 64);
     ImGui::SliderFloat("Blur Radius (Px)", &blurRadiusPx, 0.5f, 6.0f, "%.2f");

@@ -1127,7 +1127,7 @@ class RobustSSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
             compositeShader->setUniformFast("aoBlurTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(blurAoFbo->getTexture(), 2)));
             compositeShader->setUniformFast("normalTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(sceneNormalTex, 3)));
             compositeShader->setUniformFast("positionTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(scenePositionTex, 4)));
-            compositeShader->setUniformFast("u_intensity", Uniform<float>(Math3D::Clamp(intensity, 0.0f, 2.0f)));
+            compositeShader->setUniformFast("u_intensity", Uniform<float>(Math3D::Clamp(intensity, 0.0f, 10.0f)));
             compositeShader->setUniformFast("u_giBoost", Uniform<float>(Math3D::Clamp(giBoost, 0.0f, 1.0f)));
             compositeShader->setUniformFast("u_debugView", Uniform<int>(Math3D::Clamp(debugView, 0, 4)));
             drawFullscreenPass(compositeShader, quad);
