@@ -1197,20 +1197,35 @@ void Scene::ensureDeferredResources(PScreen screen){
         gBufferValidationDirty = true;
     }
 
-    auto recreateLightingBuffer = [&](PFrameBuffer& buffer){
+    auto recreateLightingBuffer = [&](PFrameBuffer& buffer, int targetWidth, int targetHeight, GLint filter){
         if(buffer &&
-           buffer->getWidth() == w &&
-           buffer->getHeight() == h &&
+           buffer->getWidth() == targetWidth &&
+           buffer->getHeight() == targetHeight &&
            buffer->getTexture()){
+            glBindTexture(GL_TEXTURE_2D, buffer->getTexture()->getID());
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+            glBindTexture(GL_TEXTURE_2D, 0);
             return;
         }
 
-        buffer = FrameBuffer::Create(w, h);
+        buffer = FrameBuffer::Create(targetWidth, targetHeight);
         if(buffer){
-            buffer->attachTexture(Texture::CreateRenderTarget(w, h, GL_RGBA16F, GL_RGBA, GL_FLOAT));
+            buffer->attachTexture(Texture::CreateRenderTarget(targetWidth, targetHeight, GL_RGBA16F, GL_RGBA, GL_FLOAT));
+            if(buffer->getTexture()){
+                glBindTexture(GL_TEXTURE_2D, buffer->getTexture()->getID());
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+                glBindTexture(GL_TEXTURE_2D, 0);
+            }
         }
     };
-    recreateLightingBuffer(deferredDirectLightBuffer);
+    recreateLightingBuffer(
+        deferredDirectLightBuffer,
+        DeferredScreenGI::ComputeTargetWidth(w),
+        DeferredScreenGI::ComputeTargetHeight(h),
+        GL_LINEAR
+    );
 
     if(!gBufferShader){
         auto vertexShader = AssetManager::Instance.getOrLoad("@assets/shader/Shader_Vert_Lit.vert");

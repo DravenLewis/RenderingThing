@@ -19,6 +19,8 @@
 class DeferredScreenGI {
     private:
         static constexpr int MAX_KERNEL_SAMPLES = 64;
+        static constexpr float GI_RESOLUTION_SCALE = 0.5f;
+        static constexpr int GI_MAX_EFFECTIVE_SAMPLES = 8;
 
         std::shared_ptr<ShaderProgram> rawShader;
         std::shared_ptr<ShaderProgram> blurShader;
@@ -27,6 +29,7 @@ class DeferredScreenGI {
         std::array<Math3D::Vec3, MAX_KERNEL_SAMPLES> kernelSamples{};
         PFrameBuffer rawGiFbo = nullptr;
         PFrameBuffer blurGiFbo = nullptr;
+        GLuint rawKernelProgramId = 0;
 
         const std::string GI_RAW_FRAG_SHADER = R"(
             #version 330 core
@@ -162,6 +165,12 @@ class DeferredScreenGI {
                         continue;
                     }
 
+                    vec3 sampleDirect = texture(directLightTexture, sampleUv).rgb;
+                    float sourceEnergy = dot(sampleDirect, vec3(0.2126, 0.7152, 0.0722));
+                    if(sourceEnergy <= 1e-4){
+                        continue;
+                    }
+
                     vec3 sampleNormalWorld = texture(normalTexture, sampleUv).xyz;
                     if(length(sampleNormalWorld) < 1e-4){
                         continue;
@@ -189,12 +198,6 @@ class DeferredScreenGI {
                     float planeDistance = abs(dot(normalView, sampleDeltaView));
                     float similarNormal = dot(normalView, sampleNormalView);
                     if(similarNormal > 0.96 && planeDistance < (radius * 0.10)){
-                        continue;
-                    }
-
-                    vec3 sampleDirect = texture(directLightTexture, sampleUv).rgb;
-                    float sourceEnergy = dot(sampleDirect, vec3(0.2126, 0.7152, 0.0722));
-                    if(sourceEnergy <= 1e-4){
                         continue;
                     }
 
@@ -331,11 +334,39 @@ class DeferredScreenGI {
             return ok;
         }
 
-        bool ensureTarget(PFrameBuffer& buffer, int width, int height){
+        static int scaleDimension(int fullSize, float scale){
+            if(fullSize <= 0){
+                return 0;
+            }
+            const float clampedScale = Math3D::Clamp(scale, 0.25f, 1.0f);
+            return Math3D::Max(1, static_cast<int>((static_cast<float>(fullSize) * clampedScale) + 0.5f));
+        }
+
+        static float computeResolutionScale(int fullWidth, int fullHeight, int passWidth, int passHeight){
+            if(fullWidth <= 0 || fullHeight <= 0 || passWidth <= 0 || passHeight <= 0){
+                return 1.0f;
+            }
+            const float scaleX = static_cast<float>(passWidth) / static_cast<float>(fullWidth);
+            const float scaleY = static_cast<float>(passHeight) / static_cast<float>(fullHeight);
+            return Math3D::Clamp(Math3D::Min(scaleX, scaleY), 0.25f, 1.0f);
+        }
+
+        static void configureTextureFilter(PTexture texture, GLint filter){
+            if(!texture || texture->getID() == 0){
+                return;
+            }
+            glBindTexture(GL_TEXTURE_2D, texture->getID());
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
+
+        bool ensureTarget(PFrameBuffer& buffer, int width, int height, GLint filter){
             if(buffer &&
                buffer->getWidth() == width &&
                buffer->getHeight() == height &&
                buffer->getTexture()){
+                configureTextureFilter(buffer->getTexture(), filter);
                 return true;
             }
 
@@ -344,6 +375,7 @@ class DeferredScreenGI {
                 return false;
             }
             buffer->attachTexture(Texture::CreateRenderTarget(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT));
+            configureTextureFilter(buffer->getTexture(), filter);
             return buffer->getTexture() && buffer->validate();
         }
 
@@ -351,10 +383,10 @@ class DeferredScreenGI {
             if(width <= 0 || height <= 0){
                 return false;
             }
-            if(!ensureTarget(rawGiFbo, width, height)){
+            if(!ensureTarget(rawGiFbo, width, height, GL_NEAREST)){
                 return false;
             }
-            return ensureTarget(blurGiFbo, width, height);
+            return ensureTarget(blurGiFbo, width, height, GL_LINEAR);
         }
 
         void initializeKernel(){
@@ -404,6 +436,14 @@ class DeferredScreenGI {
         }
 
     public:
+        static int ComputeTargetWidth(int fullWidth){
+            return scaleDimension(fullWidth, GI_RESOLUTION_SCALE);
+        }
+
+        static int ComputeTargetHeight(int fullHeight){
+            return scaleDimension(fullHeight, GI_RESOLUTION_SCALE);
+        }
+
         DeferredScreenGI(){
             rawShader = std::make_shared<ShaderProgram>();
             rawShader->setVertexShader(Graphics::ShaderDefaults::SCREEN_VERT_SRC);
@@ -428,7 +468,9 @@ class DeferredScreenGI {
             if(width <= 0 || height <= 0 || !quad || !normalTexture || !positionTexture || !directLightTexture){
                 return false;
             }
-            if(!ensureCompiled() || !ensureTargets(width, height)){
+            const int giWidth = ComputeTargetWidth(width);
+            const int giHeight = ComputeTargetHeight(height);
+            if(!ensureCompiled() || !ensureTargets(giWidth, giHeight)){
                 return false;
             }
 
@@ -438,10 +480,17 @@ class DeferredScreenGI {
             glDisable(GL_BLEND);
 
             const Math3D::Vec2 texelSize(
-                1.0f / static_cast<float>(width),
-                1.0f / static_cast<float>(height)
+                1.0f / static_cast<float>(giWidth),
+                1.0f / static_cast<float>(giHeight)
             );
-            const int effectiveSamples = Math3D::Clamp(settings.sampleCount, 4, MAX_KERNEL_SAMPLES);
+            const float resolutionScale = computeResolutionScale(width, height, giWidth, giHeight);
+            const int effectiveSamples = Math3D::Clamp(
+                Math3D::Min(settings.sampleCount, GI_MAX_EFFECTIVE_SAMPLES),
+                4,
+                MAX_KERNEL_SAMPLES
+            );
+            const float scaledRadiusPx = Math3D::Clamp(settings.radiusPx, 0.25f, 8.0f) * resolutionScale;
+            const float scaledBlurRadiusPx = Math3D::Clamp(settings.blurRadiusPx, 0.25f, 8.0f) * resolutionScale;
 
             rawGiFbo->bind();
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -457,11 +506,14 @@ class DeferredScreenGI {
             rawShader->setUniformFast("u_kernelSize", Uniform<int>(effectiveSamples));
             rawShader->setUniformFast("u_useEnvMap", Uniform<int>(envMap ? 1 : 0));
             rawShader->setUniformFast("u_texelSize", Uniform<Math3D::Vec2>(texelSize));
-            rawShader->setUniformFast("u_radiusPx", Uniform<float>(Math3D::Clamp(settings.radiusPx, 0.25f, 8.0f)));
+            rawShader->setUniformFast("u_radiusPx", Uniform<float>(scaledRadiusPx));
             rawShader->setUniformFast("u_depthRadius", Uniform<float>(Math3D::Clamp(settings.depthRadius, 0.0005f, 0.5f)));
             rawShader->setUniformFast("u_bias", Uniform<float>(Math3D::Clamp(settings.bias, 0.0f, 0.05f)));
             rawShader->setUniformFast("u_giBoost", Uniform<float>(Math3D::Clamp(settings.giBoost, 0.0f, 1.0f)));
-            uploadKernelUniforms(rawShader);
+            if(rawKernelProgramId != rawShader->getID()){
+                uploadKernelUniforms(rawShader);
+                rawKernelProgramId = rawShader->getID();
+            }
             drawFullscreenPass(rawShader, quad);
             rawGiFbo->unbind();
 
@@ -474,7 +526,7 @@ class DeferredScreenGI {
             blurShader->setUniformFast("positionTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(positionTexture, 2)));
             blurShader->setUniformFast("u_viewMatrix", Uniform<Math3D::Mat4>(viewMatrix));
             blurShader->setUniformFast("u_texelSize", Uniform<Math3D::Vec2>(texelSize));
-            blurShader->setUniformFast("u_blurRadiusPx", Uniform<float>(Math3D::Clamp(settings.blurRadiusPx, 0.25f, 8.0f)));
+            blurShader->setUniformFast("u_blurRadiusPx", Uniform<float>(scaledBlurRadiusPx));
             blurShader->setUniformFast("u_blurSharpness", Uniform<float>(Math3D::Clamp(settings.blurSharpness, 0.25f, 8.0f)));
             drawFullscreenPass(blurShader, quad);
             blurGiFbo->unbind();

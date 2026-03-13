@@ -126,7 +126,8 @@ class GrayscaleEffect : public Graphics::PostProcessing::PostProcessingEffect{
         }
 };
 
-/// @brief Represents the SSAOEffect type.
+/// @brief Deprecated legacy screen-space SSAO post effect.
+/// @deprecated Use DeferredSSAO or RobustSSAOEffect instead.
 class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
     private:
         std::shared_ptr<ShaderProgram> shader;

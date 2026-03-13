@@ -528,20 +528,31 @@ void main(){
     float envStrength = max(materialData.a, 0.0);
     bool hasGeometry = (length(normalMetal.rgb) > 1e-4);
 
-    float ssaoRaw = (u_useSsao != 0) ? clamp(texture(gSsaoRaw, v_uv).r, 0.0, 1.0) : 1.0;
-    float ssaoBlur = (u_useSsao != 0) ? clamp(texture(gSsao, v_uv).r, 0.0, 1.0) : 1.0;
+    float ssaoRaw = 1.0;
+    float ssaoBlur = 1.0;
     float ssaoFactor = 1.0;
-    if(u_useSsao != 0){
-        float ssaoOcclusion = clamp(1.0 - ssaoBlur, 0.0, 1.0);
-        ssaoFactor = 1.0 - (ssaoOcclusion * max(u_ssaoIntensity, 0.0));
-    }
-    ssaoFactor = clamp(ssaoFactor, 0.0, 1.0);
-    float combinedAo = clamp(ao * ssaoFactor, 0.0, 1.0);
-    vec3 giIrradiance = (u_useGi != 0) ? max(texture(gGi, v_uv).rgb, vec3(0.0)) : vec3(0.0);
+    float combinedAo = ao;
+    vec3 giIrradiance = vec3(0.0);
 
     if(u_lightPassMode == 1 && !hasGeometry){
         FragColor = vec4(0.0, 0.0, 0.0, 1.0);
         return;
+    }
+
+    if(u_lightPassMode != 1){
+        if(u_useSsao != 0){
+            ssaoBlur = clamp(texture(gSsao, v_uv).r, 0.0, 1.0);
+            float ssaoOcclusion = clamp(1.0 - ssaoBlur, 0.0, 1.0);
+            ssaoFactor = 1.0 - (ssaoOcclusion * max(u_ssaoIntensity, 0.0));
+            if(u_ssaoDebugView == 2){
+                ssaoRaw = clamp(texture(gSsaoRaw, v_uv).r, 0.0, 1.0);
+            }
+        }
+        ssaoFactor = clamp(ssaoFactor, 0.0, 1.0);
+        combinedAo = clamp(ao * ssaoFactor, 0.0, 1.0);
+        if(u_useGi != 0){
+            giIrradiance = max(texture(gGi, v_uv).rgb, vec3(0.0));
+        }
     }
 
     if(u_ssaoDebugView != 0 && !hasGeometry){
