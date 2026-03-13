@@ -35,6 +35,7 @@ namespace {
         Skybox,
         SSAO,
         Bloom,
+        LensFlare,
         AutoExposure,
         DepthOfField,
         AntiAliasing,
@@ -228,6 +229,14 @@ namespace {
                     return fail("Bloom requires Camera Component.");
                 }
                 return wrapper->addComponent<BloomComponent>();
+            case AddComponentKind::LensFlare:
+                if(hasComponent<LensFlareComponent>(manager, entity)){
+                    return fail("Lens Flare Component already exists.");
+                }
+                if(!hasComponent<CameraComponent>(manager, entity)){
+                    return fail("Lens Flare requires Camera Component.");
+                }
+                return wrapper->addComponent<LensFlareComponent>();
             case AddComponentKind::AutoExposure:
                 if(hasComponent<AutoExposureComponent>(manager, entity)){
                     return fail("Auto Exposure Component already exists.");
@@ -476,6 +485,7 @@ void PropertiesPanel::draw(float x,
             const bool hasSkybox = (componentMgr->getECSComponent<SkyboxComponent>(entity) != nullptr);
             const bool hasSsao = (componentMgr->getECSComponent<SSAOComponent>(entity) != nullptr);
             const bool hasBloom = (componentMgr->getECSComponent<BloomComponent>(entity) != nullptr);
+            const bool hasLensFlare = (componentMgr->getECSComponent<LensFlareComponent>(entity) != nullptr);
             const bool hasAutoExposure = (componentMgr->getECSComponent<AutoExposureComponent>(entity) != nullptr);
             const bool hasDof = (componentMgr->getECSComponent<DepthOfFieldComponent>(entity) != nullptr);
             const bool hasAa = (componentMgr->getECSComponent<AntiAliasingComponent>(entity) != nullptr);
@@ -531,6 +541,7 @@ void PropertiesPanel::draw(float x,
                 drawAddMenuItem("Skybox Component", AddComponentKind::Skybox, !hasSkybox && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
                 drawAddMenuItem("SSAO / GI Component", AddComponentKind::SSAO, !hasSsao && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
                 drawAddMenuItem("Bloom Component", AddComponentKind::Bloom, !hasBloom && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
+                drawAddMenuItem("Lens Flare Effect", AddComponentKind::LensFlare, !hasLensFlare && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
                 drawAddMenuItem("Auto Exposure Component", AddComponentKind::AutoExposure, !hasAutoExposure && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
                 drawAddMenuItem("Depth Of Field Component", AddComponentKind::DepthOfField, !hasDof && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
                 drawAddMenuItem("Anti-Aliasing Component", AddComponentKind::AntiAliasing, !hasAa && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");

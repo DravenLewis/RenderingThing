@@ -8,6 +8,7 @@
 
 #include "Rendering/Materials/Material.h"
 
+#include <cstdint>
 #include <string>
 #include <vector>
 
@@ -46,6 +47,7 @@ class ConstructedMaterial : public Material {
             std::string textureAssetRef;
             std::shared_ptr<Texture> texturePtr;
             std::string loadedTextureRef;
+            std::uint64_t loadedTextureRevision = 0;
             int textureSlot = 0;
         };
 

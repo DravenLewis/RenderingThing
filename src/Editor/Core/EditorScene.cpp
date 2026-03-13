@@ -177,6 +177,7 @@ namespace {
         if(dynamic_cast<const SSAOComponent*>(component)){ return "SSAOComponent"; }
         if(dynamic_cast<const DepthOfFieldComponent*>(component)){ return "DepthOfFieldComponent"; }
         if(dynamic_cast<const BloomComponent*>(component)){ return "BloomComponent"; }
+        if(dynamic_cast<const LensFlareComponent*>(component)){ return "LensFlareComponent"; }
         if(dynamic_cast<const AutoExposureComponent*>(component)){ return "AutoExposureComponent"; }
         if(dynamic_cast<const AntiAliasingComponent*>(component)){ return "AntiAliasingComponent"; }
         if(dynamic_cast<const ScriptComponent*>(component)){ return "ScriptComponent"; }
@@ -202,6 +203,7 @@ namespace {
         if(typeName == "SSAOComponent"){ manager->removeECSComponent<SSAOComponent>(entity); return true; }
         if(typeName == "DepthOfFieldComponent"){ manager->removeECSComponent<DepthOfFieldComponent>(entity); return true; }
         if(typeName == "BloomComponent"){ manager->removeECSComponent<BloomComponent>(entity); return true; }
+        if(typeName == "LensFlareComponent"){ manager->removeECSComponent<LensFlareComponent>(entity); return true; }
         if(typeName == "AutoExposureComponent"){ manager->removeECSComponent<AutoExposureComponent>(entity); return true; }
         if(typeName == "AntiAliasingComponent"){ manager->removeECSComponent<AntiAliasingComponent>(entity); return true; }
         if(typeName == "ScriptComponent"){ manager->removeECSComponent<ScriptComponent>(entity); return true; }
@@ -1948,6 +1950,14 @@ void EditorScene::applyActiveSceneState(){
                 if(auto* bloom = manager->getECSComponent<BloomComponent>(editorEntity)){
                     SetComponentActive(bloom, false);
                 }
+            }
+            if(!manager->getECSComponent<LensFlareComponent>(editorEntity) && editorCameraObject->addComponent<LensFlareComponent>()){
+                if(auto* lensFlare = manager->getECSComponent<LensFlareComponent>(editorEntity)){
+                    SetComponentActive(lensFlare, true);
+                }
+            }else if(auto* lensFlare = manager->getECSComponent<LensFlareComponent>(editorEntity)){
+                // Edit mode renders through the editor camera, so keep flare preview enabled there.
+                SetComponentActive(lensFlare, true);
             }
             if(!manager->getECSComponent<AutoExposureComponent>(editorEntity) && editorCameraObject->addComponent<AutoExposureComponent>()){
                 if(auto* autoExposure = manager->getECSComponent<AutoExposureComponent>(editorEntity)){

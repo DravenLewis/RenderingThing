@@ -16,6 +16,8 @@
 #include <map>
 #include <filesystem>
 #include <functional>
+#include <cstdint>
+#include <unordered_map>
 
 
 #define ASSET_DELIMITER "@assets"
@@ -111,11 +113,22 @@ class AssetManager{
             std::function<std::shared_ptr<Asset>()> loader;
         };
 
+        /// @brief Holds data for AssetChangeEvent.
+        struct AssetChangeEvent {
+            std::string request;
+            std::string cacheKey;
+            std::uint64_t revision = 0;
+        };
+
         using AliasResolver = std::function<bool(const std::string& request, ResolvedRequest& outResolved, std::string* outError)>;
+        using AssetChangeListener = std::function<void(const AssetChangeEvent&)>;
 
     private:
         std::map<std::string, std::shared_ptr<Asset>> assetMap;
         std::map<std::string, AliasResolver> aliasResolvers;
+        std::unordered_map<std::string, std::uint64_t> assetRevisions;
+        std::unordered_map<int, AssetChangeListener> changeListeners;
+        int nextChangeListenerHandle = 1;
 
         /**
          * @brief Normalizes an alias token (`@assets`, `@bundle`, etc.) for map lookup.
@@ -200,6 +213,42 @@ class AssetManager{
          * @return True when the condition is satisfied; otherwise false.
          */
         bool hasAliasProvider(const std::string& alias) const;
+        /**
+         * @brief Resolves a request into the normalized cache key used by the asset cache.
+         * @param name Asset request, asset ref, or absolute path.
+         * @param outCacheKey Output cache key when resolution succeeds.
+         * @return True when the operation succeeds; otherwise false.
+         */
+        bool tryResolveCacheKey(const std::string& name, std::string& outCacheKey) const;
+        /**
+         * @brief Checks whether two asset requests resolve to the same cached asset.
+         * @param a First asset request.
+         * @param b Second asset request.
+         * @return True when both requests resolve to the same cache key.
+         */
+        bool isSameAsset(const std::string& a, const std::string& b) const;
+        /**
+         * @brief Returns the current revision for an asset request.
+         * @param name Asset request, asset ref, or absolute path.
+         * @return Monotonic revision counter for the asset.
+         */
+        std::uint64_t getRevision(const std::string& name) const;
+        /**
+         * @brief Registers an asset-change listener.
+         * @param listener Listener callback.
+         * @return Opaque listener handle, or `-1` when registration fails.
+         */
+        int addChangeListener(const AssetChangeListener& listener);
+        /**
+         * @brief Unregisters an asset-change listener.
+         * @param handle Listener handle returned by `addChangeListener`.
+         */
+        void removeChangeListener(int handle);
+        /**
+         * @brief Invalidates a cached asset and broadcasts a change event.
+         * @param name Asset request, asset ref, or absolute path.
+         */
+        void notifyAssetChanged(const std::string& name);
 
         static AssetManager Instance;
         

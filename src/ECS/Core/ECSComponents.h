@@ -21,6 +21,7 @@
 #include <vector>
 
 class SkyBox;
+class LensFlareEffect;
 
 // Converts a script path/asset-ref into an inspector-friendly name.
 // Example: "@assets/scripts/FPSController.lua" -> "FPS Controller"
@@ -177,6 +178,7 @@ struct LightComponent : public IEditorCompatibleComponent {
     Light light;
     bool syncTransform = true;
     bool syncDirection = true;
+    std::string flareAssetRef;
 
     /**
      * @brief Draws editor controls for this component.
@@ -442,6 +444,32 @@ struct BloomComponent : public IEditorCompatibleComponent {
     const bool* getEditorEnabledState() const override { return &enabled; }
     /**
      * @brief Builds the bloom effect for camera rendering.
+     * @param settings Active camera settings.
+     * @return Shared effect instance configured from this component.
+     */
+    Graphics::PostProcessing::PPostProcessingEffect getEffectForCamera(const CameraSettings& settings);
+    /**
+     * @brief Draws editor controls for this component.
+     * @param ecsPtr ECS instance that owns the component.
+     * @param scenePtr Scene context used by editor widgets.
+     */
+    void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
+};
+
+/// @brief Holds data for LensFlareComponent.
+struct LensFlareComponent : public IEditorCompatibleComponent {
+    using IEditorCompatibleComponent::IEditorCompatibleComponent;
+    bool enabled = true;
+    std::shared_ptr<LensFlareEffect> runtimeEffect;
+
+    /**
+     * @brief Gets a mutable pointer to the editor-enabled flag.
+     * @return Pointer to the enabled flag.
+     */
+    bool* getEditorEnabledState() override { return &enabled; }
+    const bool* getEditorEnabledState() const override { return &enabled; }
+    /**
+     * @brief Builds the lens flare effect for camera rendering.
      * @param settings Active camera settings.
      * @return Shared effect instance configured from this component.
      */

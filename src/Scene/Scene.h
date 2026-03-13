@@ -37,7 +37,7 @@ class Scene : public View {
         /**
          * @brief Destroys this Scene instance.
          */
-        virtual ~Scene() = default;
+        virtual ~Scene();
 
         /**
          * @brief Initializes scene resources and entities.
@@ -100,7 +100,8 @@ class Scene : public View {
             NeoECS::ECSComponentManager* manager,
             NeoECS::ECSEntity* cameraEntity,
             bool clearExisting = true,
-            NeoECS::ECSEntityManager* entityManager = nullptr
+            NeoECS::ECSEntityManager* entityManager = nullptr,
+            NeoECS::ECSComponentManager* effectSourceManager = nullptr
         );
         /**
          * @brief Applies camera effects using this scene's ECS context.
@@ -254,6 +255,7 @@ class Scene : public View {
         std::atomic<bool> closeRequested{false};
         std::string selectedEntityId;
         int selectedLightUploadIndex = -1;
+        int assetChangeListenerHandle = -1;
         std::shared_ptr<MaterialDefaults::ColorMaterial> deferredIncompatibleMaterial;
         bool outlineEnabled = false;
         PFrameBuffer outlineMaskBuffer;
@@ -387,6 +389,16 @@ class Scene : public View {
          * @param depthTested True to keep depth testing enabled while drawing.
          */
         void drawSkybox(PCamera cam, bool depthTested = false);
+        /**
+         * @brief Ensures the scene is subscribed to asset-change events.
+         */
+        void ensureAssetChangeListenerRegistered();
+        /**
+         * @brief Handles a changed asset by reloading dependent runtime state.
+         * @param assetRequest Original asset request or path passed to the notifier.
+         * @param cacheKey Normalized cache key for the changed asset.
+         */
+        virtual void handleAssetChanged(const std::string& assetRequest, const std::string& cacheKey);
 
     public:
         /**

@@ -12,6 +12,7 @@
 #include "Foundation/IO/File.h"
 #include "Foundation/Logging/Logbot.h"
 #include "Assets/Descriptors/MaterialAsset.h"
+#include "Assets/Descriptors/LensFlareAsset.h"
 #include "Assets/Descriptors/ModelAsset.h"
 #include "Assets/Descriptors/SkyboxAsset.h"
 #include "Assets/Descriptors/ShaderAsset.h"
@@ -96,6 +97,7 @@ void WorkspacePanel::commitAssetRename(std::filesystem::path& selectedAssetPath)
     const bool oldPathIsMaterialObject = MaterialAssetIO::IsMaterialObjectPath(oldPath);
     const bool oldPathIsMaterialAsset = MaterialAssetIO::IsMaterialAssetPath(oldPath);
     const bool oldPathIsSkyboxAsset = SkyboxAssetIO::IsSkyboxAssetPath(oldPath);
+    const bool oldPathIsLensFlareAsset = LensFlareAssetIO::IsLensFlareAssetPath(oldPath);
     const bool oldPathIsBundleAsset = AssetBundle::IsBundlePath(oldPath);
 
     std::string normalizedNewName = requestedName;
@@ -125,6 +127,8 @@ void WorkspacePanel::commitAssetRename(std::filesystem::path& selectedAssetPath)
         }
     }else if(oldPathIsSkyboxAsset){
         ensureSuffix(".skybox.asset");
+    }else if(oldPathIsLensFlareAsset){
+        ensureSuffix(".flare.asset");
     }else if(oldPathIsBundleAsset){
         ensureSuffix(".bundle.asset");
     }
@@ -1134,6 +1138,50 @@ void WorkspacePanel::draw(float x,
         }
     };
 
+    auto createDefaultLensFlareAsset = [&](){
+        std::filesystem::path path = makeUniquePathWithSuffix(assetDir / "NewLensFlare.flare.asset", ".flare.asset");
+        LensFlareAssetData data;
+        data.name = path.filename().string();
+        data.intensity = 1.0f;
+        data.spriteScale = 132.0f;
+        data.glareThreshold = 1.0f;
+        data.glareIntensity = 0.14f;
+        data.glareLengthPx = 96.0f;
+        LensFlareElementData ring;
+        ring.type = LensFlareElementType::Circle;
+        ring.tint = Math3D::Vec3(0.85f, 0.95f, 1.0f);
+        ring.intensity = 0.30f;
+        ring.axisPosition = 0.42f;
+        ring.sizeScale = 1.65f;
+        ring.polygonSides = 64;
+        data.elements.push_back(ring);
+
+        LensFlareElementData core;
+        core.type = LensFlareElementType::Polygon;
+        core.tint = Math3D::Vec3(1.0f, 0.96f, 0.76f);
+        core.intensity = 0.85f;
+        core.axisPosition = 1.0f;
+        core.sizeScale = 0.95f;
+        core.polygonSides = 8;
+        data.elements.push_back(core);
+
+        LensFlareElementData ghost;
+        ghost.type = LensFlareElementType::Polygon;
+        ghost.tint = Math3D::Vec3(1.0f, 0.88f, 0.42f);
+        ghost.intensity = 0.48f;
+        ghost.axisPosition = -0.55f;
+        ghost.sizeScale = 0.72f;
+        ghost.polygonSides = 6;
+        data.elements.push_back(ghost);
+        std::string error;
+        if(LensFlareAssetIO::SaveToAbsolutePath(path, data, &error)){
+            selectedAssetPath = path;
+            browserCacheDirty = true;
+        }else{
+            LogBot.Log(LOG_ERRO, "Failed to create lens flare asset: %s", error.c_str());
+        }
+    };
+
     auto createDefaultBundleAsset = [&](){
         if(AssetBundleRegistry::IsVirtualEntryPath(assetDir)){
             LogBot.Log(LOG_WARN, "Nested asset bundles are not supported.");
@@ -1400,6 +1448,9 @@ void WorkspacePanel::draw(float x,
                     }
                     if(ImGui::MenuItem("Skybox Asset")){
                         createDefaultSkyboxAsset();
+                    }
+                    if(ImGui::MenuItem("Lens Flare Asset")){
+                        createDefaultLensFlareAsset();
                     }
                     if(ImGui::MenuItem("Material (.material)")){
                         createDefaultMaterialObject();

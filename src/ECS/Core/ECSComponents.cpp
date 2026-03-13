@@ -16,6 +16,7 @@
 #include "Assets/Descriptors/MaterialAsset.h"
 #include "Assets/Descriptors/ModelAsset.h"
 #include "Assets/Descriptors/SkyboxAsset.h"
+#include "Rendering/PostFX/LensFlareEffect.h"
 #include "Rendering/Materials/MaterialRegistry.h"
 #include "Rendering/Lighting/ShadowRenderer.h"
 #include "Foundation/Logging/Logbot.h"
@@ -1100,6 +1101,7 @@ namespace {
         if(dynamic_cast<SSAOComponent*>(component)){ manager->removeECSComponent<SSAOComponent>(entity); return true; }
         if(dynamic_cast<DepthOfFieldComponent*>(component)){ manager->removeECSComponent<DepthOfFieldComponent>(entity); return true; }
         if(dynamic_cast<BloomComponent*>(component)){ manager->removeECSComponent<BloomComponent>(entity); return true; }
+        if(dynamic_cast<LensFlareComponent*>(component)){ manager->removeECSComponent<LensFlareComponent>(entity); return true; }
         if(dynamic_cast<AutoExposureComponent*>(component)){ manager->removeECSComponent<AutoExposureComponent>(entity); return true; }
         if(dynamic_cast<AntiAliasingComponent*>(component)){ manager->removeECSComponent<AntiAliasingComponent>(entity); return true; }
         if(dynamic_cast<ScriptComponent*>(component)){ manager->removeECSComponent<ScriptComponent>(entity); return true; }
@@ -1595,6 +1597,14 @@ void LightComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
         }
         ImGui::ColorEdit4("Color", &self->light.color.x);
         ImGui::DragFloat("Intensity", &self->light.intensity, 0.05f, 0.0f, 10.0f);
+        if(EditorAssetUI::DrawAssetDropInput("Flare Asset", self->flareAssetRef, {EditorAssetUI::AssetKind::LensFlareAsset})){
+            self->flareAssetRef = StringUtils::Trim(self->flareAssetRef);
+        }
+        if(self->flareAssetRef.empty()){
+            ImGui::TextDisabled("Assign a flare asset to render lens flares and glare streaks for this light.");
+        }else{
+            ImGui::TextDisabled("Requires an active Lens Flare Effect on the camera to render.");
+        }
         bool prevSyncTransform = self->syncTransform;
         if(ImGui::Checkbox("Sync Transform", &self->syncTransform)){
             if(prevSyncTransform && !self->syncTransform){
@@ -2145,6 +2155,28 @@ void BloomComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
         ImGui::TextDisabled("Live Threshold (AE): %.3f", liveThreshold);
         ImGui::TextDisabled("Live Intensity (AE): %.3f", liveIntensity);
     }
+}
+
+Graphics::PostProcessing::PPostProcessingEffect LensFlareComponent::getEffectForCamera(const CameraSettings& settings){
+    (void)settings;
+    if(!IsComponentActive(this)){
+        return nullptr;
+    }
+    if(!runtimeEffect){
+        runtimeEffect = std::make_shared<LensFlareEffect>();
+    }
+    return runtimeEffect;
+}
+
+void LensFlareComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
+    (void)ecsPtr;
+    (void)scene;
+    if(!beginEditorComponentSection(this, "Lens Flare Effect", 0, ecsPtr)){
+        return;
+    }
+
+    ImGui::TextDisabled("Uses Flare Asset assignments from active Light Components.");
+    ImGui::TextDisabled("Bright highlights inherit glare settings from those flare assets.");
 }
 
 Graphics::PostProcessing::PPostProcessingEffect AutoExposureComponent::getEffectForCamera(const CameraSettings& settings){

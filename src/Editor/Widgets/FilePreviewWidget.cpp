@@ -6,6 +6,7 @@
 #include "Editor/Widgets/FilePreviewWidget.h"
 
 #include "Editor/Core/EditorAssetUI.h"
+#include "Editor/Core/EditorArrayUI.h"
 #include "Assets/Core/Asset.h"
 #include "Assets/Core/AssetDescriptorUtils.h"
 #include "Assets/Bundles/AssetBundleRegistry.h"
@@ -25,6 +26,7 @@
 #include "Rendering/Textures/Texture.h"
 #include "imgui.h"
 
+#include <algorithm>
 #include <array>
 #include <cmath>
 #include <cstdint>
@@ -168,6 +170,26 @@ namespace {
             return bundlePath;
         }
         return path;
+    }
+
+    void invalidatePreviewCaches(){
+        g_texturePreviewCache.clear();
+        g_texturePreviewCacheLastPruneFrame = -100000;
+        EditorAssetUI::InvalidateAllThumbnails();
+    }
+
+    void notifyEditedAsset(const std::filesystem::path& path, const std::filesystem::path& assetRoot){
+        if(path.empty()){
+            return;
+        }
+
+        invalidatePreviewCaches();
+        const std::string assetRef = toAssetRef(path, assetRoot);
+        if(!assetRef.empty()){
+            AssetManager::Instance.notifyAssetChanged(assetRef);
+        }else{
+            AssetManager::Instance.notifyAssetChanged(path.generic_string());
+        }
     }
 
     std::string buildRawByteDump(const BinaryBuffer& bytes){
@@ -476,6 +498,7 @@ void FilePreviewWidget::reloadFromDisk(bool force){
     isBundleAssetFile = AssetBundle::IsBundlePath(filePath);
     isShaderAssetFile = ShaderAssetIO::IsShaderAssetPath(filePath);
     isSkyboxAssetFile = SkyboxAssetIO::IsSkyboxAssetPath(filePath);
+    isLensFlareAssetFile = LensFlareAssetIO::IsLensFlareAssetPath(filePath);
     isMaterialAssetFile = MaterialAssetIO::IsMaterialAssetPath(filePath);
     isMaterialObjectFile = MaterialAssetIO::IsMaterialObjectPath(filePath);
     isModelAssetFile = ModelAssetIO::IsModelAssetPath(filePath);
@@ -534,6 +557,19 @@ void FilePreviewWidget::reloadFromDisk(bool force){
         copyBuffer(skyboxFrontFace, sizeof(skyboxFrontFace), skyboxData.frontFaceRef);
         copyBuffer(skyboxBackFace, sizeof(skyboxBackFace), skyboxData.backFaceRef);
         skyboxAssetSavePending = false;
+        return;
+    }
+
+    if(isLensFlareAssetFile){
+        std::string error;
+        if(!LensFlareAssetIO::LoadFromAbsolutePath(filePath, lensFlareData, &error)){
+            statusIsError = true;
+            statusMessage = error;
+            return;
+        }
+        copyBuffer(lensFlareName, sizeof(lensFlareName), lensFlareData.name);
+        copyBuffer(lensFlareTexture, sizeof(lensFlareTexture), lensFlareData.textureRef);
+        lensFlareAssetSavePending = false;
         return;
     }
 
@@ -631,6 +667,7 @@ void FilePreviewWidget::draw(){
         if(std::filesystem::exists(writePath, ec)){
             const auto onDiskWriteTime = std::filesystem::last_write_time(writePath, ec);
             if(!ec && onDiskWriteTime != lastWriteTime){
+                notifyEditedAsset(filePath, assetRoot);
                 hasLoadedData = false;
             }
         }
@@ -653,6 +690,11 @@ void FilePreviewWidget::draw(){
     }
     if(isSkyboxAssetFile){
         drawSkyboxAssetEditor();
+        drawErrorByteDumpIfNeeded();
+        return;
+    }
+    if(isLensFlareAssetFile){
+        drawLensFlareAssetEditor();
         drawErrorByteDumpIfNeeded();
         return;
     }
@@ -816,6 +858,7 @@ void FilePreviewWidget::drawShaderAssetEditor(){
             statusMessage = "Saved.";
             std::error_code ec;
             lastWriteTime = std::filesystem::last_write_time(backingWritePath(filePath), ec);
+            notifyEditedAsset(filePath, assetRoot);
         }else{
             statusIsError = true;
             statusMessage = error;
@@ -875,6 +918,7 @@ void FilePreviewWidget::drawSkyboxAssetEditor(){
             std::error_code ec;
             lastWriteTime = std::filesystem::last_write_time(backingWritePath(filePath), ec);
             skyboxAssetSavePending = false;
+            notifyEditedAsset(filePath, assetRoot);
         }else{
             statusIsError = true;
             statusMessage = error;
@@ -893,6 +937,115 @@ void FilePreviewWidget::drawSkyboxAssetEditor(){
 
     if(!SkyboxAssetIO::HasRequiredFaces(skyboxData)){
         ImGui::TextDisabled("Assign all six faces before this skybox can render.");
+    }
+}
+
+void FilePreviewWidget::drawLensFlareAssetEditor(){
+    static const char* kElementTypeNames[] = {
+        "Image",
+        "Polygon",
+        "Circle"
+    };
+    static constexpr int kMaxLensFlareElements = 64;
+
+    bool changed = false;
+    changed |= ImGui::InputText("Flare Name", lensFlareName, sizeof(lensFlareName));
+
+    changed |= ImGui::ColorEdit3("Tint", &lensFlareData.tint.x);
+    changed |= ImGui::DragFloat("Intensity", &lensFlareData.intensity, 0.01f, 0.0f, 8.0f);
+    changed |= ImGui::DragFloat("Sprite Scale", &lensFlareData.spriteScale, 0.25f, 8.0f, 512.0f);
+    changed |= ImGui::DragFloat("Ghost Intensity", &lensFlareData.ghostIntensity, 0.01f, 0.0f, 4.0f);
+    changed |= ImGui::DragFloat("Ghost Spacing", &lensFlareData.ghostSpacing, 0.01f, 0.0f, 1.2f);
+    changed |= ImGui::DragFloat("Halo Intensity", &lensFlareData.haloIntensity, 0.01f, 0.0f, 4.0f);
+    changed |= ImGui::DragFloat("Halo Scale", &lensFlareData.haloScale, 0.01f, 0.1f, 6.0f);
+    changed |= ImGui::DragFloat("Glare Threshold", &lensFlareData.glareThreshold, 0.01f, 0.0f, 16.0f);
+    changed |= ImGui::DragFloat("Glare Intensity", &lensFlareData.glareIntensity, 0.005f, 0.0f, 4.0f);
+    changed |= ImGui::DragFloat("Glare Length Px", &lensFlareData.glareLengthPx, 0.5f, 0.0f, 512.0f);
+    changed |= ImGui::DragFloat("Glare Falloff", &lensFlareData.glareFalloff, 0.01f, 0.05f, 8.0f);
+    ImGui::Spacing();
+
+    if(ImGui::TreeNodeEx("Elements", ImGuiTreeNodeFlags_DefaultOpen)){
+        ImGui::TextDisabled("Size sets the active element count.");
+        ImGui::TextDisabled("Axis Position: 1 = source, 0 = screen center, negative = opposite side.");
+        changed |= EditorArrayUI::DrawArray("LensFlareElements", lensFlareData.elements, kMaxLensFlareElements, "Lens Flare Element",
+            [&](LensFlareElementData& element, size_t index) -> bool {
+                (void)index;
+                bool elementChanged = false;
+
+                int typeIndex = static_cast<int>(element.type);
+                typeIndex = std::clamp(typeIndex, 0, static_cast<int>(IM_ARRAYSIZE(kElementTypeNames)) - 1);
+                if(ImGui::Combo("Type", &typeIndex, kElementTypeNames, IM_ARRAYSIZE(kElementTypeNames))){
+                    element.type = static_cast<LensFlareElementType>(typeIndex);
+                    if(element.type == LensFlareElementType::Circle){
+                        element.polygonSides = 64;
+                    }
+                    elementChanged = true;
+                }
+
+                if(element.type == LensFlareElementType::Image){
+                    char elementTexture[256] = {};
+                    copyBuffer(elementTexture, sizeof(elementTexture), element.textureRef);
+                    if(EditorAssetUI::DrawAssetDropInput("Image", elementTexture, sizeof(elementTexture), EditorAssetUI::AssetKind::Image)){
+                        element.textureRef = elementTexture;
+                        elementChanged = true;
+                    }
+                    drawTexturePreviewSmall(elementTexture);
+                }else if(element.type == LensFlareElementType::Polygon){
+                    int polygonSides = std::clamp(element.polygonSides, 3, 64);
+                    if(ImGui::InputInt("Count", &polygonSides)){
+                        element.polygonSides = std::clamp(polygonSides, 3, 64);
+                        elementChanged = true;
+                    }
+                }else{
+                    element.polygonSides = 64;
+                    ImGui::TextDisabled("Circle uses 64 polygon sides.");
+                }
+
+                elementChanged |= ImGui::ColorEdit3("Tint", &element.tint.x);
+                elementChanged |= ImGui::DragFloat("Intensity", &element.intensity, 0.01f, 0.0f, 8.0f);
+                elementChanged |= ImGui::DragFloat("Size Scale", &element.sizeScale, 0.01f, 0.05f, 8.0f);
+                elementChanged |= ImGui::DragFloat("Axis Position", &element.axisPosition, 0.01f, -3.0f, 3.0f);
+                return elementChanged;
+            }
+        );
+        ImGui::TreePop();
+    }
+
+    if(changed){
+        lensFlareData.name = lensFlareName;
+        lensFlareAssetSavePending = true;
+    }
+
+    const bool commitEditsNow = lensFlareAssetSavePending && !ImGui::IsAnyItemActive();
+    if(commitEditsNow){
+        std::string error;
+        if(LensFlareAssetIO::SaveToAbsolutePath(filePath, lensFlareData, &error)){
+            statusIsError = false;
+            statusMessage = "Saved.";
+            std::error_code ec;
+            lastWriteTime = std::filesystem::last_write_time(backingWritePath(filePath), ec);
+            lensFlareAssetSavePending = false;
+            notifyEditedAsset(filePath, assetRoot);
+        }else{
+            statusIsError = true;
+            statusMessage = error;
+        }
+    }
+
+    if(lensFlareAssetSavePending){
+        ImGui::TextDisabled("Release control to apply changes.");
+    }else if(statusMessage.empty()){
+        ImGui::TextDisabled("Edits save automatically.");
+    }else if(statusIsError){
+        ImGui::TextColored(ImVec4(1.0f, 0.35f, 0.35f, 1.0f), "%s", statusMessage.c_str());
+    }else{
+        ImGui::TextColored(ImVec4(0.45f, 0.85f, 0.45f, 1.0f), "%s", statusMessage.c_str());
+    }
+
+    if(lensFlareData.elements.empty()){
+        ImGui::TextDisabled("Add one or more flare elements to render anything.");
+    }else{
+        ImGui::TextDisabled("Image elements render only when their Image field is set.");
     }
 }
 
@@ -1029,6 +1182,7 @@ void FilePreviewWidget::drawMaterialAssetEditor(){
             materialAssetSavePending = false;
             previewMaterialDirty = true;
             EditorAssetUI::InvalidateMaterialThumbnail();
+            notifyEditedAsset(filePath, assetRoot);
         }else{
             statusIsError = true;
             statusMessage = error;
@@ -1115,6 +1269,7 @@ void FilePreviewWidget::drawMaterialObjectEditor(){
             lastWriteTime = std::filesystem::last_write_time(backingWritePath(filePath), ec);
             previewMaterialDirty = true;
             EditorAssetUI::InvalidateMaterialThumbnail();
+            notifyEditedAsset(filePath, assetRoot);
         }else{
             statusIsError = true;
             statusMessage = error;
@@ -1229,6 +1384,7 @@ void FilePreviewWidget::drawModelAssetEditor(){
             lastWriteTime = std::filesystem::last_write_time(backingWritePath(filePath), ec);
             previewModelDirty = true;
             EditorAssetUI::InvalidateAllThumbnails();
+            notifyEditedAsset(filePath, assetRoot);
         }else{
             statusIsError = true;
             statusMessage = error;
@@ -1347,6 +1503,8 @@ bool FilePreviewWidget::importSelectedMtlMaterial(){
         return false;
     }
 
+    notifyEditedAsset(materialAssetPath, assetRoot);
+    notifyEditedAsset(materialPath, assetRoot);
     EditorAssetUI::InvalidateAllThumbnails();
     statusIsError = false;
     statusMessage = "Imported material: " + materialPath.filename().string();
@@ -1399,6 +1557,7 @@ bool FilePreviewWidget::importCurrentModelAsAsset(){
         return false;
     }
 
+    notifyEditedAsset(modelAssetPath, assetRoot);
     EditorAssetUI::InvalidateAllThumbnails();
     statusIsError = false;
     statusMessage = "Imported model asset: " + modelAssetPath.filename().string();

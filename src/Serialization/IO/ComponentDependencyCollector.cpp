@@ -7,6 +7,7 @@
 
 #include "ECS/Core/ECSComponents.h"
 #include "Assets/Core/Asset.h"
+#include "Assets/Descriptors/LensFlareAsset.h"
 #include "Assets/Descriptors/SkyboxAsset.h"
 
 #include <algorithm>
@@ -75,6 +76,23 @@ void CollectAssetDependenciesFromEntities(
                     addDependencyIfValid(skyboxData.bottomFaceRef, deps);
                     addDependencyIfValid(skyboxData.frontFaceRef, deps);
                     addDependencyIfValid(skyboxData.backFaceRef, deps);
+                }
+            }
+        }
+
+        if(auto* light = manager->getECSComponent<LightComponent>(entity)){
+            addDependencyIfValid(light->flareAssetRef, deps);
+
+            if(!light->flareAssetRef.empty()){
+                LensFlareAssetData flareData;
+                if(LensFlareAssetIO::LoadFromAssetRef(light->flareAssetRef, flareData, nullptr)){
+                    for(const LensFlareElementData& element : flareData.elements){
+                        if(element.type != LensFlareElementType::Image){
+                            continue;
+                        }
+
+                        addDependencyIfValid(element.textureRef, deps);
+                    }
                 }
             }
         }

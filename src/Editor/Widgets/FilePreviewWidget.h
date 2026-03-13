@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "Assets/Descriptors/MaterialAsset.h"
+#include "Assets/Descriptors/LensFlareAsset.h"
 #include "Assets/Descriptors/ModelAsset.h"
 #include "Assets/Descriptors/SkyboxAsset.h"
 #include "Assets/Importers/MtlMaterialImporter.h"
@@ -63,6 +64,10 @@ class FilePreviewWidget {
          * @brief Draws skybox asset editor.
          */
         void drawSkyboxAssetEditor();
+        /**
+         * @brief Draws lens flare asset editor.
+         */
+        void drawLensFlareAssetEditor();
         /**
          * @brief Draws material asset editor.
          */
@@ -138,6 +143,7 @@ class FilePreviewWidget {
         bool isBundleAssetFile = false;
         bool isShaderAssetFile = false;
         bool isSkyboxAssetFile = false;
+        bool isLensFlareAssetFile = false;
         bool isMaterialAssetFile = false;
         bool isMaterialObjectFile = false;
         bool isModelAssetFile = false;
@@ -165,6 +171,9 @@ class FilePreviewWidget {
         char skyboxBottomFace[256] = {};
         char skyboxFrontFace[256] = {};
         char skyboxBackFace[256] = {};
+        LensFlareAssetData lensFlareData;
+        char lensFlareName[128] = {};
+        char lensFlareTexture[256] = {};
 
         MaterialAssetData materialData;
         char materialName[128] = {};
@@ -196,6 +205,7 @@ class FilePreviewWidget {
         std::shared_ptr<Material> previewMaterial;
         std::shared_ptr<Model> previewModel;
         bool skyboxAssetSavePending = false;
+        bool lensFlareAssetSavePending = false;
         bool materialAssetSavePending = false;
         bool previewMaterialDirty = true;
         bool previewModelDirty = true;

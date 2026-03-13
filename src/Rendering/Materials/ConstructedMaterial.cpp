@@ -223,7 +223,11 @@ void ConstructedMaterial::applyFieldInternal(Field& field){
             break;
         }
         case FieldType::Texture2D:{
-            if(field.loadedTextureRef != field.textureAssetRef){
+            const std::uint64_t currentRevision = field.textureAssetRef.empty()
+                ? 0
+                : AssetManager::Instance.getRevision(field.textureAssetRef);
+            if(field.loadedTextureRef != field.textureAssetRef ||
+               field.loadedTextureRevision != currentRevision){
                 field.texturePtr.reset();
                 if(!field.textureAssetRef.empty()){
                     auto texAsset = AssetManager::Instance.getOrLoad(field.textureAssetRef);
@@ -232,6 +236,7 @@ void ConstructedMaterial::applyFieldInternal(Field& field){
                     }
                 }
                 field.loadedTextureRef = field.textureAssetRef;
+                field.loadedTextureRevision = currentRevision;
             }
 
             if(!field.uniformName.empty()){

@@ -934,7 +934,7 @@ bool registerDefaultMeshRendererSerializer(Serialization::ComponentSerialization
 bool registerDefaultLightSerializer(Serialization::ComponentSerializationRegistry& registry, std::string* outError){
     return registry.registerTypedSerializer<LightComponent>(
         "LightComponent",
-        1,
+        2,
         [](const LightComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
             yyjson_mut_val* lightObj = yyjson_mut_obj_add_obj(doc, payload, "light");
             if(!lightObj){
@@ -958,6 +958,7 @@ bool registerDefaultLightSerializer(Serialization::ComponentSerializationRegistr
                    JsonUtils::MutObjAddFloat(doc, lightObj, "cascadeLambda", component.light.cascadeLambda) &&
                    JsonUtils::MutObjAddFloat(doc, lightObj, "shadowStrength", component.light.shadowStrength) &&
                    JsonUtils::MutObjAddInt(doc, lightObj, "shadowDebugMode", component.light.shadowDebugMode) &&
+                   JsonUtils::MutObjAddString(doc, payload, "flareAssetRef", component.flareAssetRef) &&
                    JsonUtils::MutObjAddBool(doc, payload, "syncTransform", component.syncTransform) &&
                    JsonUtils::MutObjAddBool(doc, payload, "syncDirection", component.syncDirection) &&
                    writeEditorComponentStateFields(component, doc, payload, error);
@@ -1002,6 +1003,7 @@ bool registerDefaultLightSerializer(Serialization::ComponentSerializationRegistr
                 }
             }
 
+            JsonUtils::TryGetString(payload, "flareAssetRef", component.flareAssetRef);
             JsonUtils::TryGetBool(payload, "syncTransform", component.syncTransform);
             JsonUtils::TryGetBool(payload, "syncDirection", component.syncDirection);
             readEditorComponentStateFields(component, payload);
@@ -1437,6 +1439,27 @@ bool registerDefaultBloomSerializer(Serialization::ComponentSerializationRegistr
     );
 }
 
+bool registerDefaultLensFlareSerializer(Serialization::ComponentSerializationRegistry& registry, std::string* outError){
+    return registry.registerTypedSerializer<LensFlareComponent>(
+        "LensFlareComponent",
+        1,
+        [](const LensFlareComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
+            return JsonUtils::MutObjAddBool(doc, payload, "enabled", component.enabled) &&
+                   writeEditorComponentStateFields(component, doc, payload, error);
+        },
+        [](LensFlareComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
+            (void)version;
+            (void)error;
+            JsonUtils::TryGetBool(payload, "enabled", component.enabled);
+            component.runtimeEffect.reset();
+            readEditorComponentStateFields(component, payload);
+            return true;
+        },
+        {},
+        outError
+    );
+}
+
 bool registerDefaultAutoExposureSerializer(Serialization::ComponentSerializationRegistry& registry, std::string* outError){
     return registry.registerTypedSerializer<AutoExposureComponent>(
         "AutoExposureComponent",
@@ -1734,6 +1757,7 @@ void RegisterDefaultComponentSerializers(ComponentSerializationRegistry& registr
     if(!registry.hasSerializer("SSAOComponent") && !registerDefaultSsaoSerializer(registry, outError)) return;
     if(!registry.hasSerializer("DepthOfFieldComponent") && !registerDefaultDepthOfFieldSerializer(registry, outError)) return;
     if(!registry.hasSerializer("BloomComponent") && !registerDefaultBloomSerializer(registry, outError)) return;
+    if(!registry.hasSerializer("LensFlareComponent") && !registerDefaultLensFlareSerializer(registry, outError)) return;
     if(!registry.hasSerializer("AutoExposureComponent") && !registerDefaultAutoExposureSerializer(registry, outError)) return;
     if(!registry.hasSerializer("AntiAliasingComponent") && !registerDefaultAntiAliasingSerializer(registry, outError)) return;
 }

@@ -8,6 +8,8 @@
     "dependencies": [
       "@assets/models/fence/fence.model.asset",
       "@assets/models/fence/fence.obj",
+      "@assets/images/grass_side.png",
+      "@assets/lensflares/Default.flare.asset",
       "@assets/models/lucille/lucille.obj",
       "@assets/models/theorb/orb.obj",
       "@assets/sample_materials/Gold01.mat.asset"
@@ -150,6 +152,13 @@
                   0.9800000190734863,
                   0.949999988079071
                 ]
+              }
+            },
+            {
+              "type": "LensFlareComponent",
+              "version": 1,
+              "payload": {
+                "enabled": true
               }
             },
             {
@@ -9800,6 +9809,7 @@
                   "cascadeLambda": 0.8199999928474426,
                   "shadowStrength": 1.0
                 },
+                "flareAssetRef": "@assets/lensflares/Default.flare.asset",
                 "syncTransform": true,
                 "syncDirection": false
               }
@@ -10061,6 +10071,7 @@
                   "cascadeLambda": 0.10899999737739563,
                   "shadowStrength": 1.0
                 },
+                "flareAssetRef": "@assets/lensflares/Default.flare.asset",
                 "syncTransform": true,
                 "syncDirection": true
               }

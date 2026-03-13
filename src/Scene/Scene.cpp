@@ -9,12 +9,18 @@
 #include "Rendering/Lighting/ShadowRenderer.h"
 #include "Foundation/Logging/Logbot.h"
 #include "Rendering/Textures/SkyBox.h"
+#include "Assets/Descriptors/MaterialAsset.h"
+#include "Assets/Descriptors/ModelAsset.h"
 #include "Assets/Descriptors/SkyboxAsset.h"
+#include "Assets/Importers/OBJLoader.h"
 #include "ECS/Core/ECSComponents.h"
 #include "Foundation/Math/Color.h"
 #include "Engine/Core/GameEngine.h"
+#include "Rendering/Materials/ConstructedMaterial.h"
+#include "Rendering/Materials/MaterialRegistry.h"
 #include "Rendering/Materials/PBRMaterial.h"
 #include "Rendering/Lighting/LightUtils.h"
+#include "Rendering/PostFX/LensFlareEffect.h"
 #include "Rendering/Shaders/ShaderProgram.h"
 #include "Assets/Core/Asset.h"
 #include <algorithm>
@@ -33,6 +39,366 @@ namespace {
         float priority = 0.0f;
         bool selected = false;
     };
+
+    bool assetMatchesChanged(const std::string& candidate, const std::string& changedAsset){
+        return !candidate.empty() && AssetManager::Instance.isSameAsset(candidate, changedAsset);
+    }
+
+    bool materialDataDependsOnAsset(const MaterialAssetData& data, const std::string& changedAsset){
+        return assetMatchesChanged(data.shaderAssetRef, changedAsset) ||
+               assetMatchesChanged(data.textureRef, changedAsset) ||
+               assetMatchesChanged(data.baseColorTexRef, changedAsset) ||
+               assetMatchesChanged(data.roughnessTexRef, changedAsset) ||
+               assetMatchesChanged(data.metallicRoughnessTexRef, changedAsset) ||
+               assetMatchesChanged(data.normalTexRef, changedAsset) ||
+               assetMatchesChanged(data.heightTexRef, changedAsset) ||
+               assetMatchesChanged(data.emissiveTexRef, changedAsset) ||
+               assetMatchesChanged(data.occlusionTexRef, changedAsset);
+    }
+
+    bool materialRefDependsOnAsset(const std::string& materialRef, const std::string& changedAsset){
+        if(materialRef.empty()){
+            return false;
+        }
+        if(assetMatchesChanged(materialRef, changedAsset)){
+            return true;
+        }
+
+        std::string resolvedAssetRef;
+        if(!MaterialAssetIO::ResolveMaterialAssetRef(materialRef, resolvedAssetRef, nullptr)){
+            return false;
+        }
+        if(assetMatchesChanged(resolvedAssetRef, changedAsset)){
+            return true;
+        }
+
+        MaterialAssetData data;
+        return MaterialAssetIO::LoadFromAssetRef(resolvedAssetRef, data, nullptr) &&
+               materialDataDependsOnAsset(data, changedAsset);
+    }
+
+    bool skyboxAssetDependsOnAsset(const std::string& skyboxAssetRef, const std::string& changedAsset){
+        if(skyboxAssetRef.empty()){
+            return false;
+        }
+        if(assetMatchesChanged(skyboxAssetRef, changedAsset)){
+            return true;
+        }
+
+        SkyboxAssetData data;
+        if(!SkyboxAssetIO::LoadFromAssetRef(skyboxAssetRef, data, nullptr)){
+            return false;
+        }
+
+        return assetMatchesChanged(data.rightFaceRef, changedAsset) ||
+               assetMatchesChanged(data.leftFaceRef, changedAsset) ||
+               assetMatchesChanged(data.topFaceRef, changedAsset) ||
+               assetMatchesChanged(data.bottomFaceRef, changedAsset) ||
+               assetMatchesChanged(data.frontFaceRef, changedAsset) ||
+               assetMatchesChanged(data.backFaceRef, changedAsset);
+    }
+
+    bool flareAssetDependsOnAsset(const std::string& flareAssetRef, const std::string& changedAsset){
+        if(flareAssetRef.empty()){
+            return false;
+        }
+        if(assetMatchesChanged(flareAssetRef, changedAsset)){
+            return true;
+        }
+
+        LensFlareAssetData data;
+        if(!LensFlareAssetIO::LoadFromAssetRef(flareAssetRef, data, nullptr)){
+            return false;
+        }
+
+        for(const LensFlareElementData& element : data.elements){
+            if(element.type == LensFlareElementType::Image &&
+               assetMatchesChanged(element.textureRef, changedAsset)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool modelAssetDependsOnAsset(const std::string& modelAssetRef, const std::string& changedAsset){
+        if(modelAssetRef.empty()){
+            return false;
+        }
+        if(assetMatchesChanged(modelAssetRef, changedAsset)){
+            return true;
+        }
+
+        ModelAssetData data;
+        if(!ModelAssetIO::LoadFromAssetRef(modelAssetRef, data, nullptr)){
+            return false;
+        }
+
+        return assetMatchesChanged(data.sourceModelRef, changedAsset) ||
+               materialRefDependsOnAsset(data.defaultMaterialRef, changedAsset);
+    }
+
+    void ensureModelPartMaterialState(MeshRendererComponent& renderer){
+        if(!renderer.model){
+            return;
+        }
+
+        const size_t partCount = renderer.model->getParts().size();
+        renderer.modelPartMaterialAssetRefs.resize(partCount);
+        renderer.modelPartMaterialOverrides.resize(partCount, 0);
+    }
+
+    void initializeModelPartMaterialRefsFromModelAsset(MeshRendererComponent& renderer){
+        if(!renderer.model || renderer.modelAssetRef.empty()){
+            return;
+        }
+
+        ModelAssetData modelAssetData;
+        if(!ModelAssetIO::LoadFromAssetRef(renderer.modelAssetRef, modelAssetData, nullptr)){
+            return;
+        }
+        if(modelAssetData.defaultMaterialRef.empty()){
+            return;
+        }
+
+        ensureModelPartMaterialState(renderer);
+        for(std::string& partMaterialRef : renderer.modelPartMaterialAssetRefs){
+            if(partMaterialRef.empty()){
+                partMaterialRef = modelAssetData.defaultMaterialRef;
+            }
+        }
+    }
+
+    std::vector<std::shared_ptr<Material>> captureOverriddenPartMaterials(const MeshRendererComponent& renderer){
+        std::vector<std::shared_ptr<Material>> preserved;
+        if(!renderer.model){
+            return preserved;
+        }
+
+        const auto& parts = renderer.model->getParts();
+        preserved.resize(parts.size());
+        const size_t maxCount = std::min(parts.size(), renderer.modelPartMaterialOverrides.size());
+        for(size_t i = 0; i < maxCount; ++i){
+            if(renderer.modelPartMaterialOverrides[i] == 0){
+                continue;
+            }
+            if(parts[i]){
+                preserved[i] = parts[i]->material;
+            }
+        }
+        return preserved;
+    }
+
+    void applyModelPartMaterials(MeshRendererComponent& renderer,
+                                 const std::vector<std::shared_ptr<Material>>& preservedOverrides){
+        if(!renderer.model){
+            return;
+        }
+
+        ensureModelPartMaterialState(renderer);
+        initializeModelPartMaterialRefsFromModelAsset(renderer);
+
+        const auto& parts = renderer.model->getParts();
+        for(size_t i = 0; i < parts.size(); ++i){
+            const auto& part = parts[i];
+            if(!part){
+                continue;
+            }
+
+            const bool useOverride =
+                (i < renderer.modelPartMaterialOverrides.size()) &&
+                (renderer.modelPartMaterialOverrides[i] != 0);
+            if(useOverride){
+                if(i < preservedOverrides.size() && preservedOverrides[i]){
+                    part->material = preservedOverrides[i];
+                }
+                continue;
+            }
+
+            if(i < renderer.modelPartMaterialAssetRefs.size() &&
+               !renderer.modelPartMaterialAssetRefs[i].empty()){
+                auto material = MaterialAssetIO::InstantiateMaterialFromRef(
+                    renderer.modelPartMaterialAssetRefs[i],
+                    nullptr,
+                    nullptr
+                );
+                if(material){
+                    part->material = material;
+                }
+            }
+        }
+    }
+
+    std::shared_ptr<Model> instantiateModelFromSourceRef(const std::string& sourceRef,
+                                                         bool forceSmoothNormals,
+                                                         std::string* outError){
+        if(sourceRef.empty()){
+            if(outError){
+                *outError = "Model source reference is empty.";
+            }
+            return nullptr;
+        }
+
+        const std::string lowerExt = StringUtils::ToLowerCase(std::filesystem::path(sourceRef).extension().string());
+        auto sourceAsset = AssetManager::Instance.getOrLoad(sourceRef);
+        if(!sourceAsset){
+            if(outError){
+                *outError = "Failed to load model source asset: " + sourceRef;
+            }
+            return nullptr;
+        }
+
+        if(lowerExt == ".obj"){
+            auto model = OBJLoader::LoadFromAsset(sourceAsset, nullptr, forceSmoothNormals);
+            if(model){
+                model->setSourceAssetRef(sourceRef);
+                model->setSourceForceSmoothNormals(forceSmoothNormals);
+            }else if(outError){
+                *outError = "OBJ model load failed for source: " + sourceRef;
+            }
+            return model;
+        }
+
+        if(outError){
+            *outError = "Unsupported model source format: " + lowerExt;
+        }
+        return nullptr;
+    }
+
+    bool reloadTextureValueIfNeeded(ValueContainer<PTexture>& textureField, const std::string& changedAsset){
+        PTexture currentTexture = textureField.get();
+        if(!currentTexture){
+            return false;
+        }
+
+        const std::string textureRef = currentTexture->getSourceAssetRef();
+        if(!assetMatchesChanged(textureRef, changedAsset)){
+            return false;
+        }
+
+        auto textureAsset = AssetManager::Instance.getOrLoad(textureRef);
+        textureField = textureAsset ? Texture::Load(textureAsset) : nullptr;
+        return true;
+    }
+
+    bool refreshInlineMaterialTextures(const std::shared_ptr<Material>& material, const std::string& changedAsset){
+        if(!material){
+            return false;
+        }
+
+        bool changed = false;
+        if(auto pbr = Material::GetAs<PBRMaterial>(material)){
+            changed |= reloadTextureValueIfNeeded(pbr->BaseColorTex, changedAsset);
+            changed |= reloadTextureValueIfNeeded(pbr->RoughnessTex, changedAsset);
+            changed |= reloadTextureValueIfNeeded(pbr->MetallicRoughnessTex, changedAsset);
+            changed |= reloadTextureValueIfNeeded(pbr->NormalTex, changedAsset);
+            changed |= reloadTextureValueIfNeeded(pbr->HeightTex, changedAsset);
+            changed |= reloadTextureValueIfNeeded(pbr->EmissiveTex, changedAsset);
+            changed |= reloadTextureValueIfNeeded(pbr->OcclusionTex, changedAsset);
+            return changed;
+        }
+        if(auto image = Material::GetAs<MaterialDefaults::ImageMaterial>(material)){
+            return reloadTextureValueIfNeeded(image->Tex, changedAsset);
+        }
+        if(auto litImage = Material::GetAs<MaterialDefaults::LitImageMaterial>(material)){
+            return reloadTextureValueIfNeeded(litImage->Tex, changedAsset);
+        }
+        if(auto flatImage = Material::GetAs<MaterialDefaults::FlatImageMaterial>(material)){
+            return reloadTextureValueIfNeeded(flatImage->Tex, changedAsset);
+        }
+        if(auto constructed = Material::GetAs<ConstructedMaterial>(material)){
+            bool fieldChanged = false;
+            for(auto& field : constructed->fields()){
+                if(field.type != ConstructedMaterial::FieldType::Texture2D){
+                    continue;
+                }
+
+                if(assetMatchesChanged(field.textureAssetRef, changedAsset) ||
+                   (field.texturePtr && assetMatchesChanged(field.texturePtr->getSourceAssetRef(), changedAsset))){
+                    field.loadedTextureRef.clear();
+                    field.loadedTextureRevision = 0;
+                    fieldChanged = true;
+                }
+            }
+            if(fieldChanged){
+                constructed->markFieldsDirty();
+            }
+            return fieldChanged;
+        }
+
+        return false;
+    }
+
+    bool reloadRendererModelFromAsset(MeshRendererComponent& renderer){
+        if(renderer.modelAssetRef.empty()){
+            return false;
+        }
+
+        const auto preservedOverrides = captureOverriddenPartMaterials(renderer);
+        std::string resolvedAssetRef;
+        std::string error;
+        auto reloadedModel = ModelAssetIO::InstantiateModelFromRef(renderer.modelAssetRef, &resolvedAssetRef, &error);
+        if(!reloadedModel){
+            if(!error.empty()){
+                LogBot.Log(LOG_WARN, "Failed to reload model asset '%s': %s", renderer.modelAssetRef.c_str(), error.c_str());
+            }
+            return false;
+        }
+
+        renderer.model = reloadedModel;
+        if(!resolvedAssetRef.empty()){
+            renderer.modelAssetRef = resolvedAssetRef;
+        }
+        renderer.modelSourceRef = reloadedModel->getSourceAssetRef();
+        renderer.modelForceSmoothNormals = reloadedModel->getSourceForceSmoothNormals() ? 1 : 0;
+        renderer.mesh.reset();
+        renderer.material.reset();
+        applyModelPartMaterials(renderer, preservedOverrides);
+        return true;
+    }
+
+    bool reloadRendererModelFromSource(MeshRendererComponent& renderer){
+        if(renderer.modelSourceRef.empty()){
+            return false;
+        }
+
+        const auto preservedOverrides = captureOverriddenPartMaterials(renderer);
+        std::string error;
+        auto reloadedModel = instantiateModelFromSourceRef(
+            renderer.modelSourceRef,
+            renderer.modelForceSmoothNormals != 0,
+            &error
+        );
+        if(!reloadedModel){
+            if(!error.empty()){
+                LogBot.Log(LOG_WARN, "Failed to reload model source '%s': %s", renderer.modelSourceRef.c_str(), error.c_str());
+            }
+            return false;
+        }
+
+        renderer.model = reloadedModel;
+        renderer.mesh.reset();
+        renderer.material.reset();
+        applyModelPartMaterials(renderer, preservedOverrides);
+        return true;
+    }
+
+    bool reinstantiateMaterialFromRef(const std::string& materialRef, std::shared_ptr<Material>& outMaterial){
+        if(materialRef.empty()){
+            return false;
+        }
+
+        std::string error;
+        auto reloadedMaterial = MaterialAssetIO::InstantiateMaterialFromRef(materialRef, nullptr, &error);
+        if(!reloadedMaterial){
+            if(!error.empty()){
+                LogBot.Log(LOG_WARN, "Failed to reload material '%s': %s", materialRef.c_str(), error.c_str());
+            }
+            return false;
+        }
+
+        outMaterial = reloadedMaterial;
+        return true;
+    }
 
     void fillAabbCorners(const Math3D::Vec3& minV, const Math3D::Vec3& maxV, std::array<glm::vec3, 8>& outCorners){
         outCorners[0] = glm::vec3(minV.x, minV.y, minV.z);
@@ -311,6 +677,7 @@ namespace {
 }
 
 Scene::Scene(RenderWindow* window) : View(window) {
+    ensureAssetChangeListenerRegistered();
     ecsInstance = NeoECS::NeoECS::newInstance();
     if(ecsInstance){
         ecsInstance->init();
@@ -465,6 +832,105 @@ bool Scene::isSceneRootEntity(NeoECS::ECSEntity* entity) const{
     return entity && sceneRootObject && (entity == sceneRootObject->gameobject());
 }
 
+void Scene::ensureAssetChangeListenerRegistered(){
+    if(assetChangeListenerHandle >= 0){
+        return;
+    }
+
+    assetChangeListenerHandle = AssetManager::Instance.addChangeListener(
+        [this](const AssetManager::AssetChangeEvent& event){
+            handleAssetChanged(event.request, event.cacheKey);
+        }
+    );
+}
+
+void Scene::handleAssetChanged(const std::string& assetRequest, const std::string& cacheKey){
+    (void)assetRequest;
+    if(!ecsInstance || cacheKey.empty()){
+        return;
+    }
+
+    auto* componentManager = ecsInstance->getComponentManager();
+    auto* entityManager = ecsInstance->getEntityManager();
+    if(!componentManager || !entityManager){
+        return;
+    }
+
+    const std::filesystem::path changedPath(cacheKey);
+    if(MaterialAssetIO::IsMaterialPath(changedPath)){
+        MaterialRegistry::Instance().Refresh(true);
+    }
+
+    bool renderStateDirty = false;
+    const auto& entities = entityManager->getEntities();
+    for(const auto& entityPtr : entities){
+        auto* entity = entityPtr.get();
+        if(!entity){
+            continue;
+        }
+
+        if(auto* skybox = componentManager->getECSComponent<SkyboxComponent>(entity)){
+            if(skyboxAssetDependsOnAsset(skybox->skyboxAssetRef, cacheKey)){
+                skybox->loadedSkyboxAssetRef.clear();
+                skybox->runtimeSkyBox.reset();
+                renderStateDirty = true;
+            }
+        }
+
+        if(auto* renderer = componentManager->getECSComponent<MeshRendererComponent>(entity)){
+            bool rendererDirty = false;
+
+            if(!renderer->modelAssetRef.empty() &&
+               modelAssetDependsOnAsset(renderer->modelAssetRef, cacheKey)){
+                rendererDirty |= reloadRendererModelFromAsset(*renderer);
+            }else if(renderer->modelAssetRef.empty() &&
+                     assetMatchesChanged(renderer->modelSourceRef, cacheKey)){
+                rendererDirty |= reloadRendererModelFromSource(*renderer);
+            }
+
+            if(renderer->model){
+                ensureModelPartMaterialState(*renderer);
+                const auto& parts = renderer->model->getParts();
+                for(size_t i = 0; i < parts.size(); ++i){
+                    const auto& part = parts[i];
+                    if(!part){
+                        continue;
+                    }
+
+                    const bool usesSourceMaterial =
+                        (i >= renderer->modelPartMaterialOverrides.size()) ||
+                        (renderer->modelPartMaterialOverrides[i] == 0);
+                    if(usesSourceMaterial &&
+                       i < renderer->modelPartMaterialAssetRefs.size() &&
+                       materialRefDependsOnAsset(renderer->modelPartMaterialAssetRefs[i], cacheKey)){
+                        rendererDirty |= reinstantiateMaterialFromRef(
+                            renderer->modelPartMaterialAssetRefs[i],
+                            part->material
+                        );
+                        continue;
+                    }
+
+                    rendererDirty |= refreshInlineMaterialTextures(part->material, cacheKey);
+                }
+            }else{
+                if(!renderer->materialAssetRef.empty() &&
+                   !renderer->materialOverridesSource &&
+                   materialRefDependsOnAsset(renderer->materialAssetRef, cacheKey)){
+                    rendererDirty |= reinstantiateMaterialFromRef(renderer->materialAssetRef, renderer->material);
+                }else{
+                    rendererDirty |= refreshInlineMaterialTextures(renderer->material, cacheKey);
+                }
+            }
+
+            renderStateDirty = renderStateDirty || rendererDirty;
+        }
+    }
+
+    if(renderStateDirty){
+        refreshRenderState();
+    }
+}
+
 void Scene::dispose(){
     preferredCamera.reset();
     sceneRootObject = nullptr;
@@ -491,12 +957,14 @@ Math3D::Mat4 Scene::buildWorldMatrix(NeoECS::ECSEntity* entity, NeoECS::ECSCompo
 }
 
 void Scene::updateECS(float deltaTime){
+    ensureAssetChangeListenerRegistered();
     if(!ecsInstance) return;
     ecsInstance->update(deltaTime);
     refreshRenderState();
 }
 
 void Scene::refreshRenderState(){
+    ensureAssetChangeListenerRegistered();
     if(!ecsInstance) return;
     auto snapshotStart = std::chrono::steady_clock::now();
 
@@ -706,9 +1174,9 @@ void Scene::ApplyCameraEffectsToScreen(
     NeoECS::ECSComponentManager* manager,
     NeoECS::ECSEntity* cameraEntity,
     bool clearExisting,
-    NeoECS::ECSEntityManager* entityManager
+    NeoECS::ECSEntityManager* entityManager,
+    NeoECS::ECSComponentManager* effectSourceManager
 ){
-    (void)entityManager;
     if(!screen){
         return;
     }
@@ -718,6 +1186,8 @@ void Scene::ApplyCameraEffectsToScreen(
     if(!cameraEntity || !manager){
         return;
     }
+
+    NeoECS::ECSComponentManager* flareManager = effectSourceManager ? effectSourceManager : manager;
 
     auto env = screen->getEnvironment();
     auto* camComponent = manager->getECSComponent<CameraComponent>(cameraEntity);
@@ -797,6 +1267,44 @@ void Scene::ApplyCameraEffectsToScreen(
             auto effect = dof->getEffectForCamera(settings);
             if(effect){
                 screen->addEffect(effect);
+            }
+        }
+    }
+
+    if(auto* lensFlare = manager->getECSComponent<LensFlareComponent>(cameraEntity)){
+        if(IsComponentActive(lensFlare)){
+            std::vector<LensFlareEffect::FlareEmitter> flareEmitters;
+            if(entityManager){
+                const auto& entities = entityManager->getEntities();
+                flareEmitters.reserve(entities.size());
+                for(const auto& entityPtr : entities){
+                    auto* entity = entityPtr.get();
+                    if(!entity){
+                        continue;
+                    }
+
+                    auto* lightComponent = flareManager ? flareManager->getECSComponent<LightComponent>(entity) : nullptr;
+                    if(!lightComponent || !IsComponentActive(lightComponent) || lightComponent->flareAssetRef.empty()){
+                        continue;
+                    }
+
+                    LensFlareEffect::FlareEmitter emitter;
+                    emitter.type = lightComponent->light.type;
+                    emitter.position = lightComponent->light.position;
+                    emitter.direction = lightComponent->light.direction;
+                    emitter.color = lightComponent->light.color;
+                    emitter.intensity = lightComponent->light.intensity;
+                    emitter.assetRef = lightComponent->flareAssetRef;
+                    flareEmitters.push_back(std::move(emitter));
+                }
+            }
+
+            auto effect = lensFlare->getEffectForCamera(settings);
+            if(effect && lensFlare->runtimeEffect){
+                lensFlare->runtimeEffect->setEmitters(flareEmitters);
+                if(!flareEmitters.empty()){
+                    screen->addEffect(effect);
+                }
             }
         }
     }
@@ -1028,6 +1536,12 @@ void Scene::applyCameraEffectsToScreen(PScreen screen,
     NeoECS::ECSEntityManager* entityManager = ecsInstance ? ecsInstance->getEntityManager() : nullptr;
     const Scene* focusSource = adaptiveFocusSourceScene ? adaptiveFocusSourceScene : this;
     Scene* ssaoRenderTargetScene = const_cast<Scene*>(adaptiveFocusSourceScene ? adaptiveFocusSourceScene : this);
+    NeoECS::ECSEntityManager* effectSourceEntityManager = entityManager;
+    NeoECS::ECSComponentManager* effectSourceManager = manager;
+    if(adaptiveFocusSourceScene && adaptiveFocusSourceScene->ecsInstance){
+        effectSourceEntityManager = adaptiveFocusSourceScene->ecsInstance->getEntityManager();
+        effectSourceManager = adaptiveFocusSourceScene->ecsInstance->getComponentManager();
+    }
 
     if(ssaoRenderTargetScene && clearExisting){
         ssaoRenderTargetScene->hasDeferredSsaoOverride = false;
@@ -1073,7 +1587,8 @@ void Scene::applyCameraEffectsToScreen(PScreen screen,
         manager,
         cameraEntity,
         clearExisting,
-        entityManager
+        effectSourceEntityManager,
+        effectSourceManager
     );
 }
 
@@ -1261,6 +1776,13 @@ void Scene::ensureDeferredResources(PScreen screen){
         }catch(...){
             LogBot.Log(LOG_ERRO, "Deferred quad creation failed: unknown exception");
         }
+    }
+}
+
+Scene::~Scene(){
+    if(assetChangeListenerHandle >= 0){
+        AssetManager::Instance.removeChangeListener(assetChangeListenerHandle);
+        assetChangeListenerHandle = -1;
     }
 }
 

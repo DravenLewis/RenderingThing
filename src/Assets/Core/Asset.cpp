@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <cstdint>
 #include <stdexcept>
+#include <vector>
 
 #include "Assets/Core/Asset.h"
 #include "Foundation/Logging/Logbot.h"
@@ -330,5 +331,85 @@ bool AssetManager::hasAliasProvider(const std::string& alias) const{
     }
 
     return aliasResolvers.find(normalizedAlias) != aliasResolvers.end();
+}
+
+bool AssetManager::tryResolveCacheKey(const std::string& name, std::string& outCacheKey) const{
+    outCacheKey.clear();
+
+    ResolvedRequest resolved;
+    if(resolveRequest(name, resolved, nullptr) && !resolved.cacheKey.empty()){
+        outCacheKey = resolved.cacheKey;
+        return true;
+    }
+
+    outCacheKey = NormalizeFileSystemKey(name);
+    return !outCacheKey.empty();
+}
+
+bool AssetManager::isSameAsset(const std::string& a, const std::string& b) const{
+    std::string aKey;
+    std::string bKey;
+    if(!tryResolveCacheKey(a, aKey) || !tryResolveCacheKey(b, bKey)){
+        return false;
+    }
+    return aKey == bKey;
+}
+
+std::uint64_t AssetManager::getRevision(const std::string& name) const{
+    std::string cacheKey;
+    if(!tryResolveCacheKey(name, cacheKey)){
+        return 0;
+    }
+
+    auto it = assetRevisions.find(cacheKey);
+    if(it == assetRevisions.end()){
+        return 0;
+    }
+    return it->second;
+}
+
+int AssetManager::addChangeListener(const AssetChangeListener& listener){
+    if(!listener){
+        return -1;
+    }
+
+    const int handle = nextChangeListenerHandle++;
+    changeListeners[handle] = listener;
+    return handle;
+}
+
+void AssetManager::removeChangeListener(int handle){
+    if(handle < 0){
+        return;
+    }
+
+    changeListeners.erase(handle);
+}
+
+void AssetManager::notifyAssetChanged(const std::string& name){
+    std::string cacheKey;
+    if(!tryResolveCacheKey(name, cacheKey)){
+        return;
+    }
+
+    assetMap.erase(cacheKey);
+    const std::uint64_t revision = ++assetRevisions[cacheKey];
+
+    AssetChangeEvent event;
+    event.request = name;
+    event.cacheKey = cacheKey;
+    event.revision = revision;
+
+    std::vector<AssetChangeListener> listeners;
+    listeners.reserve(changeListeners.size());
+    for(const auto& kv : changeListeners){
+        if(kv.second){
+            listeners.push_back(kv.second);
+        }
+    }
+
+    for(const auto& listener : listeners){
+        listener(event);
+    }
 }
 
