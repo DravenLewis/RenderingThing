@@ -8,6 +8,7 @@
 #include "Editor/Core/EditorAssetUI.h"
 #include "Editor/Widgets/ECSViewPanel.h"
 #include "Assets/Bundles/AssetBundleRegistry.h"
+#include "Assets/Core/Asset.h"
 #include "Assets/Core/AssetDescriptorUtils.h"
 #include "Foundation/IO/File.h"
 #include "Foundation/Logging/Logbot.h"
@@ -29,6 +30,9 @@ namespace {
         ImGuiWindowFlags_NoMove |
         ImGuiWindowFlags_NoResize |
         ImGuiWindowFlags_NoCollapse;
+    constexpr int kWorkspaceDirectoryValidationIntervalFrames = 15;
+    constexpr std::uint64_t kFnvOffsetBasis = 14695981039346656037ull;
+    constexpr std::uint64_t kFnvPrime = 1099511628211ull;
 
     std::string normalizedPathKey(const std::filesystem::path& path){
         // UI cache/map keys are used for stable identity within the current session and do
@@ -50,6 +54,96 @@ namespace {
     bool pathExists(const std::filesystem::path& path, bool* outIsDirectory = nullptr){
         return AssetDescriptorUtils::PathExists(path, outIsDirectory);
     }
+
+    void hashBytes(std::uint64_t& hash, const void* data, size_t size){
+        const unsigned char* bytes = static_cast<const unsigned char*>(data);
+        for(size_t i = 0; i < size; ++i){
+            hash ^= static_cast<std::uint64_t>(bytes[i]);
+            hash *= kFnvPrime;
+        }
+    }
+
+    void hashString(std::uint64_t& hash, const std::string& value){
+        hashBytes(hash, value.data(), value.size());
+    }
+
+    void hashBool(std::uint64_t& hash, bool value){
+        const unsigned char encoded = value ? 1U : 0U;
+        hashBytes(hash, &encoded, sizeof(encoded));
+    }
+
+    void hashUnsigned64(std::uint64_t& hash, std::uint64_t value){
+        hashBytes(hash, &value, sizeof(value));
+    }
+
+    std::uint64_t fileWriteStamp(const std::filesystem::path& path){
+        std::error_code ec;
+        const auto writeTime = std::filesystem::last_write_time(path, ec);
+        if(ec){
+            return 0;
+        }
+        return static_cast<std::uint64_t>(writeTime.time_since_epoch().count());
+    }
+
+    std::uint64_t computeDirectorySnapshotHash(const std::filesystem::path& directory){
+        std::error_code ec;
+        if(!std::filesystem::exists(directory, ec) || ec){
+            return 0xA5A5A5A5A5A5A5A5ull;
+        }
+        if(!std::filesystem::is_directory(directory, ec) || ec){
+            return 0x5A5A5A5A5A5A5A5Aull;
+        }
+
+        struct DirectoryEntryFingerprint {
+            std::string nameKey;
+            bool isDirectory = false;
+            std::uint64_t writeStamp = 0;
+        };
+
+        std::vector<DirectoryEntryFingerprint> entries;
+        for(const auto& entry : std::filesystem::directory_iterator(directory, std::filesystem::directory_options::skip_permission_denied, ec)){
+            if(ec){
+                break;
+            }
+
+            std::error_code entryEc;
+            const std::filesystem::path entryPath = entry.path().lexically_normal();
+            const bool isDirectory = entry.is_directory(entryEc);
+            if(entryEc){
+                continue;
+            }
+
+            DirectoryEntryFingerprint fingerprint;
+            fingerprint.nameKey = StringUtils::ToLowerCase(entryPath.filename().generic_string());
+            fingerprint.isDirectory = isDirectory;
+            fingerprint.writeStamp = fileWriteStamp(entryPath);
+            entries.push_back(fingerprint);
+        }
+
+        std::sort(entries.begin(), entries.end(), [](const DirectoryEntryFingerprint& a, const DirectoryEntryFingerprint& b){
+            if(a.isDirectory != b.isDirectory){
+                return a.isDirectory > b.isDirectory;
+            }
+            return a.nameKey < b.nameKey;
+        });
+
+        std::uint64_t hash = kFnvOffsetBasis;
+        hashString(hash, normalizedPathKey(directory));
+        hashUnsigned64(hash, static_cast<std::uint64_t>(entries.size()));
+        for(const auto& entry : entries){
+            hashString(hash, entry.nameKey);
+            hashBool(hash, entry.isDirectory);
+            hashUnsigned64(hash, entry.writeStamp);
+        }
+        return hash;
+    }
+}
+
+WorkspacePanel::~WorkspacePanel(){
+    if(assetChangeListenerHandle >= 0){
+        AssetManager::Instance.removeChangeListener(assetChangeListenerHandle);
+        assetChangeListenerHandle = -1;
+    }
 }
 
 void WorkspacePanel::setAssetRoot(const std::filesystem::path& rootPath){
@@ -57,6 +151,7 @@ void WorkspacePanel::setAssetRoot(const std::filesystem::path& rootPath){
         if(assetDir.empty()){
             assetDir = assetRoot;
             browserCacheDirty = true;
+            resetExternalDirectoryTracking();
         }
         return;
     }
@@ -65,6 +160,118 @@ void WorkspacePanel::setAssetRoot(const std::filesystem::path& rootPath){
         assetDir = assetRoot;
     }
     browserCacheDirty = true;
+    resetExternalDirectoryTracking();
+}
+
+void WorkspacePanel::ensureAssetChangeListenerRegistered(){
+    if(assetChangeListenerHandle >= 0){
+        return;
+    }
+
+    assetChangeListenerHandle = AssetManager::Instance.addChangeListener(
+        [this](const AssetManager::AssetChangeEvent& event){
+            handleAssetChanged(event.cacheKey);
+        }
+    );
+}
+
+void WorkspacePanel::handleAssetChanged(const std::string& cacheKey){
+    if(cacheKey.empty() || assetDir.empty()){
+        return;
+    }
+
+    const std::filesystem::path changedPath(cacheKey);
+    const std::string currentDirKey = normalizedPathKey(assetDir);
+    if(currentDirKey.empty()){
+        return;
+    }
+
+    if(AssetBundleRegistry::IsVirtualEntryPath(assetDir)){
+        std::filesystem::path bundlePath;
+        std::string entryPath;
+        if(AssetBundleRegistry::DecodeVirtualEntryPath(assetDir, bundlePath, entryPath) &&
+           normalizedPathKey(bundlePath) == normalizedPathKey(changedPath)){
+            browserCacheDirty = true;
+        }
+        return;
+    }
+
+    const std::string changedPathKey = normalizedPathKey(changedPath);
+    const std::string changedParentKey = normalizedPathKey(changedPath.parent_path());
+    if(changedPathKey == currentDirKey || changedParentKey == currentDirKey){
+        browserCacheDirty = true;
+        observedDirectorySnapshotValid = false;
+    }
+}
+
+void WorkspacePanel::pollExternalDirectoryChanges(std::filesystem::path& selectedAssetPath){
+    if(assetDir.empty() || AssetBundleRegistry::IsVirtualEntryPath(assetDir)){
+        resetExternalDirectoryTracking();
+        return;
+    }
+
+    const std::filesystem::path normalizedDir = assetDir.lexically_normal();
+    const int frameNow = ImGui::GetFrameCount();
+    if(!observedDirectorySnapshotValid || observedDirectoryPath != normalizedDir){
+        observedDirectoryPath = normalizedDir;
+        observedDirectorySnapshotHash = computeDirectorySnapshotHash(normalizedDir);
+        observedDirectorySnapshotValid = true;
+        lastExternalDirectoryValidationFrame = frameNow;
+        return;
+    }
+
+    if((frameNow - lastExternalDirectoryValidationFrame) < kWorkspaceDirectoryValidationIntervalFrames){
+        return;
+    }
+    lastExternalDirectoryValidationFrame = frameNow;
+
+    const std::uint64_t snapshotHash = computeDirectorySnapshotHash(normalizedDir);
+    if(snapshotHash == observedDirectorySnapshotHash){
+        return;
+    }
+
+    observedDirectorySnapshotHash = snapshotHash;
+    browserCacheDirty = true;
+
+    bool currentDirIsDirectory = false;
+    if(!pathExists(assetDir, &currentDirIsDirectory) || !currentDirIsDirectory){
+        std::filesystem::path fallback = assetDir;
+        while(!fallback.empty()){
+            const std::filesystem::path parent = fallback.parent_path();
+            if(parent.empty() || parent == fallback){
+                break;
+            }
+            fallback = parent;
+
+            bool fallbackIsDirectory = false;
+            if(pathExists(fallback, &fallbackIsDirectory) && fallbackIsDirectory){
+                assetDir = fallback;
+                break;
+            }
+        }
+
+        bool assetRootIsDirectory = false;
+        if((assetDir.empty() || !pathExists(assetDir, &currentDirIsDirectory) || !currentDirIsDirectory) &&
+           pathExists(assetRoot, &assetRootIsDirectory) && assetRootIsDirectory){
+            assetDir = assetRoot;
+        }
+
+        observedDirectoryPath = assetDir.lexically_normal();
+        observedDirectorySnapshotHash = computeDirectorySnapshotHash(observedDirectoryPath);
+    }
+
+    if(!selectedAssetPath.empty() &&
+       !AssetBundleRegistry::IsVirtualEntryPath(selectedAssetPath) &&
+       !pathExists(selectedAssetPath)){
+        selectedAssetPath.clear();
+    }
+}
+
+void WorkspacePanel::resetExternalDirectoryTracking(){
+    lastExternalDirectoryValidationFrame = -100000;
+    observedDirectoryPath.clear();
+    observedDirectorySnapshotHash = 0;
+    observedDirectorySnapshotValid = false;
 }
 
 void WorkspacePanel::beginAssetRename(const std::filesystem::path& path, std::filesystem::path& selectedAssetPath){
@@ -491,6 +698,9 @@ void WorkspacePanel::draw(float x,
         assetDir = assetRoot;
     }
 
+    ensureAssetChangeListenerRegistered();
+    pollExternalDirectoryChanges(selectedAssetPath);
+
     /// @brief Represents Browser Entry data.
     struct BrowserEntry{
         std::filesystem::path path;
@@ -842,6 +1052,14 @@ void WorkspacePanel::draw(float x,
             s_browserCacheAssetRootPath = assetRoot;
             s_browserCacheAssetDirPath = assetDir;
             browserCacheDirty = false;
+            if(AssetBundleRegistry::IsVirtualEntryPath(assetDir)){
+                resetExternalDirectoryTracking();
+            }else{
+                observedDirectoryPath = assetDir.lexically_normal();
+                observedDirectorySnapshotHash = computeDirectorySnapshotHash(observedDirectoryPath);
+                observedDirectorySnapshotValid = true;
+                lastExternalDirectoryValidationFrame = ImGui::GetFrameCount();
+            }
         }
         outEntries = &s_browserEntriesCache;
         outLinkedByParent = &s_browserLinkedCache;

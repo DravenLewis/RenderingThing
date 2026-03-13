@@ -21,6 +21,7 @@ class WorkspacePanel {
         using EntityDropToPrefabFn = std::function<bool(const std::string& entityId,
                                                         const std::filesystem::path& exportDirectory,
                                                         std::string* outError)>;
+        ~WorkspacePanel();
 
         /**
          * @brief Sets the asset root.
@@ -76,10 +77,19 @@ class WorkspacePanel {
         bool showAssetPickerWindow = false;
         std::unordered_set<std::string> expandedRelatedAssets;
         bool browserCacheDirty = true;
+        int assetChangeListenerHandle = -1;
+        int lastExternalDirectoryValidationFrame = -100000;
+        std::filesystem::path observedDirectoryPath;
+        uint64_t observedDirectorySnapshotHash = 0;
+        bool observedDirectorySnapshotValid = false;
 
         void beginAssetRename(const std::filesystem::path& path, std::filesystem::path& selectedAssetPath);
         void commitAssetRename(std::filesystem::path& selectedAssetPath);
         void cancelAssetRename();
+        void ensureAssetChangeListenerRegistered();
+        void handleAssetChanged(const std::string& cacheKey);
+        void pollExternalDirectoryChanges(std::filesystem::path& selectedAssetPath);
+        void resetExternalDirectoryTracking();
         std::filesystem::path makeUniquePathWithSuffix(const std::filesystem::path& desiredPath, const std::string& suffix) const;
         bool createMaterialWithLinkedAsset(const std::filesystem::path& materialPath, std::filesystem::path& outMaterialAssetPath, std::string* outError = nullptr) const;
 };
