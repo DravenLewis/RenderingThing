@@ -91,6 +91,285 @@ bool readStringArrayField(yyjson_val* obj, const char* key, std::vector<std::str
     return true;
 }
 
+bool writeEffectPropertyField(const EffectPropertyData& property,
+                              yyjson_mut_doc* doc,
+                              yyjson_mut_val* obj,
+                              std::string* outError){
+    if(!JsonUtils::MutObjAddString(doc, obj, "key", property.key) ||
+       !JsonUtils::MutObjAddString(doc, obj, "displayName", property.displayName) ||
+       !JsonUtils::MutObjAddString(doc, obj, "uniformName", property.uniformName) ||
+       !JsonUtils::MutObjAddString(doc, obj, "mirrorUniformName", property.mirrorUniformName) ||
+       !JsonUtils::MutObjAddString(doc, obj, "presenceUniformName", property.presenceUniformName) ||
+       !JsonUtils::MutObjAddInt(doc, obj, "type", static_cast<int>(property.type)) ||
+       !JsonUtils::MutObjAddFloat(doc, obj, "floatValue", property.floatValue) ||
+       !JsonUtils::MutObjAddInt(doc, obj, "intValue", property.intValue) ||
+       !JsonUtils::MutObjAddBool(doc, obj, "boolValue", property.boolValue) ||
+       !JsonUtils::MutObjAddVec2(doc, obj, "vec2Value", property.vec2Value) ||
+       !JsonUtils::MutObjAddVec3(doc, obj, "vec3Value", property.vec3Value) ||
+       !JsonUtils::MutObjAddVec4(doc, obj, "vec4Value", property.vec4Value) ||
+       !JsonUtils::MutObjAddString(doc, obj, "textureAssetRef", property.textureAssetRef) ||
+       !JsonUtils::MutObjAddInt(doc, obj, "textureSlot", property.textureSlot)){
+        setComponentSerializationError(outError, "Failed to serialize effect property field.");
+        return false;
+    }
+    return true;
+}
+
+bool readEffectPropertyField(yyjson_val* obj,
+                             EffectPropertyData& outProperty,
+                             std::string* outError){
+    if(!obj || !yyjson_is_obj(obj)){
+        setComponentSerializationError(outError, "Effect property entry must be an object.");
+        return false;
+    }
+
+    outProperty = EffectPropertyData{};
+    JsonUtils::TryGetString(obj, "key", outProperty.key);
+    JsonUtils::TryGetString(obj, "displayName", outProperty.displayName);
+    JsonUtils::TryGetString(obj, "uniformName", outProperty.uniformName);
+    JsonUtils::TryGetString(obj, "mirrorUniformName", outProperty.mirrorUniformName);
+    JsonUtils::TryGetString(obj, "presenceUniformName", outProperty.presenceUniformName);
+
+    int typeValue = static_cast<int>(outProperty.type);
+    JsonUtils::TryGetInt(obj, "type", typeValue);
+    outProperty.type = enumFromIntClamped(typeValue, 0, 6, EffectPropertyType::Float);
+
+    JsonUtils::TryGetFloat(obj, "floatValue", outProperty.floatValue);
+    JsonUtils::TryGetInt(obj, "intValue", outProperty.intValue);
+    JsonUtils::TryGetBool(obj, "boolValue", outProperty.boolValue);
+    JsonUtils::TryGetVec2(obj, "vec2Value", outProperty.vec2Value);
+    JsonUtils::TryGetVec3(obj, "vec3Value", outProperty.vec3Value);
+    JsonUtils::TryGetVec4(obj, "vec4Value", outProperty.vec4Value);
+    JsonUtils::TryGetString(obj, "textureAssetRef", outProperty.textureAssetRef);
+    JsonUtils::TryGetInt(obj, "textureSlot", outProperty.textureSlot);
+    outProperty.textureSlot = std::max(outProperty.textureSlot, 0);
+
+    if(outProperty.key.empty()){
+        if(!outProperty.uniformName.empty()){
+            outProperty.key = outProperty.uniformName;
+        }else{
+            outProperty.key = "property";
+        }
+    }
+    if(outProperty.displayName.empty()){
+        outProperty.displayName = SanitizeEffectDisplayName(
+            !outProperty.key.empty() ? outProperty.key : outProperty.uniformName
+        );
+    }
+    outProperty.texturePtr.reset();
+    outProperty.loadedTextureRef.clear();
+    outProperty.loadedTextureRevision = 0;
+    return true;
+}
+
+bool writePostProcessingStackEffectsField(const PostProcessingStackComponent& component,
+                                          yyjson_mut_doc* doc,
+                                          yyjson_mut_val* payload,
+                                          std::string* outError){
+    yyjson_mut_val* effectsArr = yyjson_mut_obj_add_arr(doc, payload, "effects");
+    if(!effectsArr){
+        setComponentSerializationError(outError, "Failed to create post-processing effect array.");
+        return false;
+    }
+
+    for(const PostProcessingEffectEntry& effect : component.effects){
+        yyjson_mut_val* effectObj = yyjson_mut_arr_add_obj(doc, effectsArr);
+        if(!effectObj){
+            setComponentSerializationError(outError, "Failed to append post-processing effect entry.");
+            return false;
+        }
+
+        if(!JsonUtils::MutObjAddInt(doc, effectObj, "kind", static_cast<int>(effect.kind)) ||
+           !JsonUtils::MutObjAddBool(doc, effectObj, "enabled", effect.enabled) ||
+           !JsonUtils::MutObjAddBool(doc, effectObj, "editorExpanded", effect.editorExpanded) ||
+           !JsonUtils::MutObjAddString(doc, effectObj, "effectAssetRef", effect.effectAssetRef)){
+            setComponentSerializationError(outError, "Failed to serialize post-processing effect metadata.");
+            return false;
+        }
+
+        switch(effect.kind){
+            case PostProcessingEffectKind::DepthOfField:
+                if(!JsonUtils::MutObjAddBool(doc, effectObj, "adaptiveFocus", effect.depthOfField.adaptiveFocus) ||
+                   !JsonUtils::MutObjAddBool(doc, effectObj, "adaptiveFocusDebugDraw", effect.depthOfField.adaptiveFocusDebugDraw) ||
+                   !JsonUtils::MutObjAddFloat(doc, effectObj, "focusDistance", effect.depthOfField.focusDistance) ||
+                   !JsonUtils::MutObjAddFloat(doc, effectObj, "focusRange", effect.depthOfField.focusRange) ||
+                   !JsonUtils::MutObjAddFloat(doc, effectObj, "focusBandWidth", effect.depthOfField.focusBandWidth) ||
+                   !JsonUtils::MutObjAddFloat(doc, effectObj, "blurRamp", effect.depthOfField.blurRamp) ||
+                   !JsonUtils::MutObjAddFloat(doc, effectObj, "blurDistanceLerp", effect.depthOfField.blurDistanceLerp) ||
+                   !JsonUtils::MutObjAddFloat(doc, effectObj, "fallbackFocusRange", effect.depthOfField.fallbackFocusRange) ||
+                   !JsonUtils::MutObjAddFloat(doc, effectObj, "blurStrength", effect.depthOfField.blurStrength) ||
+                   !JsonUtils::MutObjAddFloat(doc, effectObj, "maxBlurPx", effect.depthOfField.maxBlurPx) ||
+                   !JsonUtils::MutObjAddInt(doc, effectObj, "sampleCount", effect.depthOfField.sampleCount) ||
+                   !JsonUtils::MutObjAddBool(doc, effectObj, "debugCocView", effect.depthOfField.debugCocView)){
+                    setComponentSerializationError(outError, "Failed to serialize depth-of-field stack settings.");
+                    return false;
+                }
+                break;
+            case PostProcessingEffectKind::Bloom:
+                if(!JsonUtils::MutObjAddBool(doc, effectObj, "adaptiveBloom", effect.bloom.adaptiveBloom) ||
+                   !JsonUtils::MutObjAddFloat(doc, effectObj, "threshold", effect.bloom.threshold) ||
+                   !JsonUtils::MutObjAddFloat(doc, effectObj, "softKnee", effect.bloom.softKnee) ||
+                   !JsonUtils::MutObjAddFloat(doc, effectObj, "intensity", effect.bloom.intensity) ||
+                   !JsonUtils::MutObjAddFloat(doc, effectObj, "radiusPx", effect.bloom.radiusPx) ||
+                   !JsonUtils::MutObjAddInt(doc, effectObj, "sampleCount", effect.bloom.sampleCount) ||
+                   !JsonUtils::MutObjAddVec3(doc, effectObj, "tint", effect.bloom.tint)){
+                    setComponentSerializationError(outError, "Failed to serialize bloom stack settings.");
+                    return false;
+                }
+                break;
+            case PostProcessingEffectKind::AutoExposure:
+                if(!JsonUtils::MutObjAddFloat(doc, effectObj, "minExposure", effect.autoExposure.minExposure) ||
+                   !JsonUtils::MutObjAddFloat(doc, effectObj, "maxExposure", effect.autoExposure.maxExposure) ||
+                   !JsonUtils::MutObjAddFloat(doc, effectObj, "exposureCompensation", effect.autoExposure.exposureCompensation) ||
+                   !JsonUtils::MutObjAddFloat(doc, effectObj, "adaptationSpeedUp", effect.autoExposure.adaptationSpeedUp) ||
+                   !JsonUtils::MutObjAddFloat(doc, effectObj, "adaptationSpeedDown", effect.autoExposure.adaptationSpeedDown)){
+                    setComponentSerializationError(outError, "Failed to serialize auto-exposure stack settings.");
+                    return false;
+                }
+                break;
+            case PostProcessingEffectKind::AntiAliasing:
+                if(!JsonUtils::MutObjAddInt(doc, effectObj, "preset", static_cast<int>(effect.antiAliasing.preset))){
+                    setComponentSerializationError(outError, "Failed to serialize anti-aliasing stack settings.");
+                    return false;
+                }
+                break;
+            case PostProcessingEffectKind::Loaded:{
+                if(!addStringArrayField(doc, effectObj, "requiredEffects", effect.loadedRequiredEffects, outError)){
+                    return false;
+                }
+
+                yyjson_mut_val* propertiesArr = yyjson_mut_obj_add_arr(doc, effectObj, "properties");
+                if(!propertiesArr){
+                    setComponentSerializationError(outError, "Failed to create loaded-effect properties array.");
+                    return false;
+                }
+                for(const EffectPropertyData& property : effect.loadedProperties){
+                    yyjson_mut_val* propertyObj = yyjson_mut_arr_add_obj(doc, propertiesArr);
+                    if(!propertyObj){
+                        setComponentSerializationError(outError, "Failed to append loaded-effect property.");
+                        return false;
+                    }
+                    if(!writeEffectPropertyField(property, doc, propertyObj, outError)){
+                        return false;
+                    }
+                }
+                break;
+            }
+            case PostProcessingEffectKind::LensFlare:
+            default:
+                break;
+        }
+    }
+
+    return true;
+}
+
+bool readPostProcessingStackEffectsField(yyjson_val* payload,
+                                         PostProcessingStackComponent& component,
+                                         std::string* outError){
+    component.effects.clear();
+    yyjson_val* effectsArr = JsonUtils::ObjGetArray(payload, "effects");
+    if(!effectsArr){
+        return true;
+    }
+
+    const size_t effectCount = yyjson_arr_size(effectsArr);
+    component.effects.reserve(effectCount);
+    for(size_t i = 0; i < effectCount; ++i){
+        yyjson_val* effectObj = yyjson_arr_get(effectsArr, i);
+        if(!effectObj || !yyjson_is_obj(effectObj)){
+            setComponentSerializationError(outError, "Post-processing effect entry must be an object.");
+            return false;
+        }
+
+        PostProcessingEffectEntry effect;
+        int kindValue = static_cast<int>(effect.kind);
+        JsonUtils::TryGetInt(effectObj, "kind", kindValue);
+        effect.kind = enumFromIntClamped(kindValue, 0, 5, PostProcessingEffectKind::Bloom);
+        JsonUtils::TryGetBool(effectObj, "enabled", effect.enabled);
+        effect.hidden = false;
+        JsonUtils::TryGetBool(effectObj, "editorExpanded", effect.editorExpanded);
+        JsonUtils::TryGetString(effectObj, "effectAssetRef", effect.effectAssetRef);
+
+        switch(effect.kind){
+            case PostProcessingEffectKind::DepthOfField:
+                JsonUtils::TryGetBool(effectObj, "adaptiveFocus", effect.depthOfField.adaptiveFocus);
+                JsonUtils::TryGetBool(effectObj, "adaptiveFocusDebugDraw", effect.depthOfField.adaptiveFocusDebugDraw);
+                JsonUtils::TryGetFloat(effectObj, "focusDistance", effect.depthOfField.focusDistance);
+                JsonUtils::TryGetFloat(effectObj, "focusRange", effect.depthOfField.focusRange);
+                JsonUtils::TryGetFloat(effectObj, "focusBandWidth", effect.depthOfField.focusBandWidth);
+                JsonUtils::TryGetFloat(effectObj, "blurRamp", effect.depthOfField.blurRamp);
+                JsonUtils::TryGetFloat(effectObj, "blurDistanceLerp", effect.depthOfField.blurDistanceLerp);
+                JsonUtils::TryGetFloat(effectObj, "fallbackFocusRange", effect.depthOfField.fallbackFocusRange);
+                JsonUtils::TryGetFloat(effectObj, "blurStrength", effect.depthOfField.blurStrength);
+                JsonUtils::TryGetFloat(effectObj, "maxBlurPx", effect.depthOfField.maxBlurPx);
+                JsonUtils::TryGetInt(effectObj, "sampleCount", effect.depthOfField.sampleCount);
+                JsonUtils::TryGetBool(effectObj, "debugCocView", effect.depthOfField.debugCocView);
+                effect.depthOfField.runtimeEffect.reset();
+                break;
+            case PostProcessingEffectKind::Bloom:
+                JsonUtils::TryGetBool(effectObj, "adaptiveBloom", effect.bloom.adaptiveBloom);
+                JsonUtils::TryGetFloat(effectObj, "threshold", effect.bloom.threshold);
+                JsonUtils::TryGetFloat(effectObj, "softKnee", effect.bloom.softKnee);
+                JsonUtils::TryGetFloat(effectObj, "intensity", effect.bloom.intensity);
+                JsonUtils::TryGetFloat(effectObj, "radiusPx", effect.bloom.radiusPx);
+                JsonUtils::TryGetInt(effectObj, "sampleCount", effect.bloom.sampleCount);
+                JsonUtils::TryGetVec3(effectObj, "tint", effect.bloom.tint);
+                effect.bloom.runtimeEffect.reset();
+                effect.bloom.liveThreshold = effect.bloom.threshold;
+                effect.bloom.liveIntensity = effect.bloom.intensity;
+                effect.bloom.liveAutoExposureDriven = false;
+                break;
+            case PostProcessingEffectKind::AutoExposure:
+                JsonUtils::TryGetFloat(effectObj, "minExposure", effect.autoExposure.minExposure);
+                JsonUtils::TryGetFloat(effectObj, "maxExposure", effect.autoExposure.maxExposure);
+                JsonUtils::TryGetFloat(effectObj, "exposureCompensation", effect.autoExposure.exposureCompensation);
+                JsonUtils::TryGetFloat(effectObj, "adaptationSpeedUp", effect.autoExposure.adaptationSpeedUp);
+                JsonUtils::TryGetFloat(effectObj, "adaptationSpeedDown", effect.autoExposure.adaptationSpeedDown);
+                effect.autoExposure.runtimeEffect.reset();
+                break;
+            case PostProcessingEffectKind::AntiAliasing:{
+                int presetValue = static_cast<int>(effect.antiAliasing.preset);
+                JsonUtils::TryGetInt(effectObj, "preset", presetValue);
+                effect.antiAliasing.preset = enumFromIntClamped(presetValue, 0, 3, AntiAliasingPreset::FXAA_Medium);
+                effect.antiAliasing.runtimeEffect.reset();
+                break;
+            }
+            case PostProcessingEffectKind::Loaded:{
+                if(!readStringArrayField(effectObj, "requiredEffects", effect.loadedRequiredEffects, outError)){
+                    return false;
+                }
+
+                yyjson_val* propertiesArr = JsonUtils::ObjGetArray(effectObj, "properties");
+                if(propertiesArr){
+                    const size_t propertyCount = yyjson_arr_size(propertiesArr);
+                    effect.loadedProperties.reserve(propertyCount);
+                    for(size_t propertyIndex = 0; propertyIndex < propertyCount; ++propertyIndex){
+                        yyjson_val* propertyObj = yyjson_arr_get(propertiesArr, propertyIndex);
+                        EffectPropertyData property;
+                        if(!readEffectPropertyField(propertyObj, property, outError)){
+                            return false;
+                        }
+                        effect.loadedProperties.push_back(std::move(property));
+                    }
+                }
+                effect.loadedInputs.clear();
+                effect.loadedAssetRevision = 0;
+                effect.runtimeLoadedEffect.reset();
+                break;
+            }
+            case PostProcessingEffectKind::LensFlare:
+            default:
+                effect.lensFlare.runtimeEffect.reset();
+                break;
+        }
+
+        component.effects.push_back(std::move(effect));
+    }
+
+    return true;
+}
+
 bool writeEditorComponentStateFields(const IEditorCompatibleComponent& component,
                                      yyjson_mut_doc* doc,
                                      yyjson_mut_val* payload,
@@ -1346,6 +1625,27 @@ bool registerDefaultSsaoSerializer(Serialization::ComponentSerializationRegistry
     );
 }
 
+bool registerDefaultPostProcessingStackSerializer(Serialization::ComponentSerializationRegistry& registry, std::string* outError){
+    return registry.registerTypedSerializer<PostProcessingStackComponent>(
+        "PostProcessingStackComponent",
+        1,
+        [](const PostProcessingStackComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
+            return writePostProcessingStackEffectsField(component, doc, payload, error) &&
+                   writeEditorComponentStateFields(component, doc, payload, error);
+        },
+        [](PostProcessingStackComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
+            (void)version;
+            if(!readPostProcessingStackEffectsField(payload, component, error)){
+                return false;
+            }
+            readEditorComponentStateFields(component, payload);
+            return true;
+        },
+        {},
+        outError
+    );
+}
+
 bool registerDefaultDepthOfFieldSerializer(Serialization::ComponentSerializationRegistry& registry, std::string* outError){
     return registry.registerTypedSerializer<DepthOfFieldComponent>(
         "DepthOfFieldComponent",
@@ -1755,6 +2055,7 @@ void RegisterDefaultComponentSerializers(ComponentSerializationRegistry& registr
     if(!registry.hasSerializer("RigidBodyComponent") && !registerDefaultRigidBodySerializer(registry, outError)) return;
     if(!registry.hasSerializer("ScriptComponent") && !registerDefaultScriptSerializer(registry, outError)) return;
     if(!registry.hasSerializer("SSAOComponent") && !registerDefaultSsaoSerializer(registry, outError)) return;
+    if(!registry.hasSerializer("PostProcessingStackComponent") && !registerDefaultPostProcessingStackSerializer(registry, outError)) return;
     if(!registry.hasSerializer("DepthOfFieldComponent") && !registerDefaultDepthOfFieldSerializer(registry, outError)) return;
     if(!registry.hasSerializer("BloomComponent") && !registerDefaultBloomSerializer(registry, outError)) return;
     if(!registry.hasSerializer("LensFlareComponent") && !registerDefaultLensFlareSerializer(registry, outError)) return;

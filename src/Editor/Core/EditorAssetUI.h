@@ -35,6 +35,7 @@ enum class AssetKind : int {
     ShaderAsset,
     SkyboxAsset,
     LensFlareAsset,
+    EffectAsset,
     MaterialAsset,
     Material,
     Font,
@@ -276,7 +277,13 @@ bool AcceptAssetDropInCurrentTarget(const AssetKind* requestedKinds, size_t requ
  * @param outDropped Output value for dropped.
  * @return True when the operation succeeds; otherwise false.
  */
-bool DrawAssetDropInput(const char* label, char* buffer, size_t bufferSize, AssetKind requestedKind, bool readOnly = false, bool* outDropped = nullptr);
+bool DrawAssetDropInput(const char* label,
+                        char* buffer,
+                        size_t bufferSize,
+                        AssetKind requestedKind,
+                        bool readOnly = false,
+                        bool* outDropped = nullptr,
+                        bool* outCommitted = nullptr);
 /**
  * @brief Checks whether draw asset drop input.
  * @param label Value for label.
@@ -287,7 +294,13 @@ bool DrawAssetDropInput(const char* label, char* buffer, size_t bufferSize, Asse
  * @param outDropped Output value for dropped.
  * @return True when the operation succeeds; otherwise false.
  */
-bool DrawAssetDropInput(const char* label, std::string& value, const AssetKind* requestedKinds, size_t requestedKindCount, bool readOnly = false, bool* outDropped = nullptr);
+bool DrawAssetDropInput(const char* label,
+                        std::string& value,
+                        const AssetKind* requestedKinds,
+                        size_t requestedKindCount,
+                        bool readOnly = false,
+                        bool* outDropped = nullptr,
+                        bool* outCommitted = nullptr);
 /**
  * @brief Checks whether draw asset drop input.
  * @param label Value for label.
@@ -297,7 +310,12 @@ bool DrawAssetDropInput(const char* label, std::string& value, const AssetKind* 
  * @param outDropped Output value for dropped.
  * @return True when the operation succeeds; otherwise false.
  */
-bool DrawAssetDropInput(const char* label, std::string& value, std::initializer_list<AssetKind> requestedKinds, bool readOnly = false, bool* outDropped = nullptr);
+bool DrawAssetDropInput(const char* label,
+                        std::string& value,
+                        std::initializer_list<AssetKind> requestedKinds,
+                        bool readOnly = false,
+                        bool* outDropped = nullptr,
+                        bool* outCommitted = nullptr);
 
 /**
  * @brief Checks whether try replace pointer.

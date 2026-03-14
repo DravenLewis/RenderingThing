@@ -480,6 +480,84 @@ namespace {
         return intensityScore + rangeScore + distanceScore;
     }
 
+    PostProcessingEffectEntry* findPostEffectEntry(PostProcessingStackComponent* stack, PostProcessingEffectKind kind){
+        if(!stack){
+            return nullptr;
+        }
+        for(auto& effect : stack->effects){
+            if(effect.kind == kind){
+                return &effect;
+            }
+        }
+        return nullptr;
+    }
+
+    void applyStackAutoExposureBloomCoupling(PostProcessingEffectEntry* autoExposureEntry,
+                                             PostProcessingEffectEntry* bloomEntry){
+        if(!autoExposureEntry || !bloomEntry){
+            return;
+        }
+        if(!autoExposureEntry->enabled || !bloomEntry->enabled){
+            return;
+        }
+
+        auto& autoExposure = autoExposureEntry->autoExposure;
+        auto& bloom = bloomEntry->bloom;
+        if(!bloom.adaptiveBloom){
+            bloom.adaptiveBloom = true;
+        }
+        if(!bloom.runtimeEffect){
+            return;
+        }
+
+        float exposure = 1.0f;
+        if(autoExposure.runtimeEffect){
+            exposure = Math3D::Clamp(autoExposure.runtimeEffect->getCurrentExposure(), 0.01f, 64.0f);
+        }
+
+        const float intensityBias = Math3D::Clamp(std::pow(1.0f / exposure, 0.35f), 0.78f, 1.28f);
+        const float thresholdBias = Math3D::Clamp(std::pow(exposure, 0.22f), 0.84f, 1.22f);
+
+        bloom.runtimeEffect->adaptiveBloom = true;
+        bloom.runtimeEffect->autoExposureIntensityScale = intensityBias;
+        bloom.runtimeEffect->autoExposureThresholdScale = thresholdBias;
+        bloom.liveIntensity = Math3D::Clamp(bloom.runtimeEffect->intensity * intensityBias, 0.0f, 6.0f);
+        bloom.liveThreshold = Math3D::Clamp(bloom.runtimeEffect->threshold * thresholdBias, 0.0f, 4.0f);
+        bloom.liveAutoExposureDriven = true;
+    }
+
+    std::vector<LensFlareEffect::FlareEmitter> collectLensFlareEmitters(NeoECS::ECSEntityManager* entityManager,
+                                                                        NeoECS::ECSComponentManager* flareManager){
+        std::vector<LensFlareEffect::FlareEmitter> emitters;
+        if(!entityManager){
+            return emitters;
+        }
+
+        const auto& entities = entityManager->getEntities();
+        emitters.reserve(entities.size());
+        for(const auto& entityPtr : entities){
+            auto* entity = entityPtr.get();
+            if(!entity){
+                continue;
+            }
+
+            auto* lightComponent = flareManager ? flareManager->getECSComponent<LightComponent>(entity) : nullptr;
+            if(!lightComponent || !IsComponentActive(lightComponent) || lightComponent->flareAssetRef.empty()){
+                continue;
+            }
+
+            LensFlareEffect::FlareEmitter emitter;
+            emitter.type = lightComponent->light.type;
+            emitter.position = lightComponent->light.position;
+            emitter.direction = lightComponent->light.direction;
+            emitter.color = lightComponent->light.color;
+            emitter.intensity = lightComponent->light.intensity;
+            emitter.assetRef = lightComponent->flareAssetRef;
+            emitters.push_back(std::move(emitter));
+        }
+        return emitters;
+    }
+
     const std::string kSelectionOutlineMaskVertShader = R"(
         #version 330 core
 
@@ -1200,12 +1278,6 @@ void Scene::ApplyCameraEffectsToScreen(
 
     const CameraSettings& settings = camComponent->camera->getSettings();
 
-    auto* autoExposure = manager->getECSComponent<AutoExposureComponent>(cameraEntity);
-    Graphics::PostProcessing::PPostProcessingEffect autoExposureEffect = nullptr;
-    if(IsComponentActive(autoExposure)){
-        autoExposureEffect = autoExposure->getEffectForCamera(settings);
-    }
-
     if(auto* skybox = manager->getECSComponent<SkyboxComponent>(cameraEntity)){
         if(IsComponentActive(skybox)){
             if(skybox->skyboxAssetRef.empty()){
@@ -1250,76 +1322,59 @@ void Scene::ApplyCameraEffectsToScreen(
         return;
     }
 
-    if(auto* bloom = manager->getECSComponent<BloomComponent>(cameraEntity)){
-        if(IsComponentActive(bloom)){
-            auto effect = bloom->getEffectForCamera(settings);
-            if(effect){
-                if(autoExposureEffect){
-                    autoExposure->applyBloomCoupling(bloom);
-                }
-                screen->addEffect(effect);
-            }
-        }
+    auto* stack = manager->getECSComponent<PostProcessingStackComponent>(cameraEntity);
+    if(!stack || !IsComponentActive(stack)){
+        return;
     }
 
-    if(auto* dof = manager->getECSComponent<DepthOfFieldComponent>(cameraEntity)){
-        if(IsComponentActive(dof)){
-            auto effect = dof->getEffectForCamera(settings);
-            if(effect){
-                screen->addEffect(effect);
-            }
-        }
+    for(size_t i = 0; i < stack->effects.size(); ++i){
+        const PostProcessingEffectEntry effectCopy = stack->effects[i];
+        stack->ensureDependenciesForEffect(effectCopy);
     }
 
-    if(auto* lensFlare = manager->getECSComponent<LensFlareComponent>(cameraEntity)){
-        if(IsComponentActive(lensFlare)){
-            std::vector<LensFlareEffect::FlareEmitter> flareEmitters;
-            if(entityManager){
-                const auto& entities = entityManager->getEntities();
-                flareEmitters.reserve(entities.size());
-                for(const auto& entityPtr : entities){
-                    auto* entity = entityPtr.get();
-                    if(!entity){
-                        continue;
-                    }
-
-                    auto* lightComponent = flareManager ? flareManager->getECSComponent<LightComponent>(entity) : nullptr;
-                    if(!lightComponent || !IsComponentActive(lightComponent) || lightComponent->flareAssetRef.empty()){
-                        continue;
-                    }
-
-                    LensFlareEffect::FlareEmitter emitter;
-                    emitter.type = lightComponent->light.type;
-                    emitter.position = lightComponent->light.position;
-                    emitter.direction = lightComponent->light.direction;
-                    emitter.color = lightComponent->light.color;
-                    emitter.intensity = lightComponent->light.intensity;
-                    emitter.assetRef = lightComponent->flareAssetRef;
-                    flareEmitters.push_back(std::move(emitter));
-                }
-            }
-
-            auto effect = lensFlare->getEffectForCamera(settings);
-            if(effect && lensFlare->runtimeEffect){
-                lensFlare->runtimeEffect->setEmitters(flareEmitters);
-                if(!flareEmitters.empty()){
-                    screen->addEffect(effect);
-                }
-            }
-        }
+    PostProcessingEffectEntry* autoExposureEntry = findPostEffectEntry(stack, PostProcessingEffectKind::AutoExposure);
+    Graphics::PostProcessing::PPostProcessingEffect autoExposureEffect = nullptr;
+    if(autoExposureEntry && autoExposureEntry->enabled){
+        autoExposureEffect = stack->buildRuntimeEffect(*autoExposureEntry, settings, nullptr);
     }
 
-    if(autoExposureEffect){
-        screen->addEffect(autoExposureEffect);
-    }
+    const std::vector<LensFlareEffect::FlareEmitter> flareEmitters =
+        collectLensFlareEmitters(entityManager, flareManager);
 
-    if(auto* aa = manager->getECSComponent<AntiAliasingComponent>(cameraEntity)){
-        if(IsComponentActive(aa)){
-            auto effect = aa->getEffectForCamera(settings);
-            if(effect){
-                screen->addEffect(effect);
+    for(auto& effect : stack->effects){
+        std::string error;
+        Graphics::PostProcessing::PPostProcessingEffect runtimeEffect = nullptr;
+        if(effect.kind == PostProcessingEffectKind::AutoExposure){
+            runtimeEffect = autoExposureEffect;
+        }else{
+            runtimeEffect = stack->buildRuntimeEffect(effect, settings, &error);
+        }
+
+        if(!error.empty()){
+            LogBot.Log(LOG_WARN,
+                       "Failed to build post effect '%s' on camera '%s': %s",
+                       stack->getEffectDisplayName(effect).c_str(),
+                       cameraEntity->getName().c_str(),
+                       error.c_str());
+        }
+        if(!runtimeEffect){
+            continue;
+        }
+
+        if(effect.kind == PostProcessingEffectKind::Bloom && autoExposureEffect){
+            applyStackAutoExposureBloomCoupling(autoExposureEntry, &effect);
+        }
+
+        if(effect.kind == PostProcessingEffectKind::LensFlare){
+            if(effect.lensFlare.runtimeEffect){
+                effect.lensFlare.runtimeEffect->setEmitters(flareEmitters);
+            }
+            if(flareEmitters.empty()){
+                continue;
             }
         }
+
+        screen->addEffect(runtimeEffect);
     }
 }
 
@@ -1534,6 +1589,11 @@ void Scene::applyCameraEffectsToScreen(PScreen screen,
                                        const Scene* adaptiveFocusSourceScene){
     NeoECS::ECSComponentManager* manager = ecsInstance ? ecsInstance->getComponentManager() : nullptr;
     NeoECS::ECSEntityManager* entityManager = ecsInstance ? ecsInstance->getEntityManager() : nullptr;
+    if(ecsInstance && cameraEntity){
+        EnsurePostProcessingStackMigration(ecsInstance, cameraEntity, nullptr);
+        manager = ecsInstance->getComponentManager();
+        entityManager = ecsInstance->getEntityManager();
+    }
     const Scene* focusSource = adaptiveFocusSourceScene ? adaptiveFocusSourceScene : this;
     Scene* ssaoRenderTargetScene = const_cast<Scene*>(adaptiveFocusSourceScene ? adaptiveFocusSourceScene : this);
     NeoECS::ECSEntityManager* effectSourceEntityManager = entityManager;
@@ -1549,12 +1609,10 @@ void Scene::applyCameraEffectsToScreen(PScreen screen,
 
     if(manager && cameraEntity){
         auto* camComponent = manager->getECSComponent<CameraComponent>(cameraEntity);
-        auto* dof = manager->getECSComponent<DepthOfFieldComponent>(cameraEntity);
+        auto* stack = manager->getECSComponent<PostProcessingStackComponent>(cameraEntity);
         if(camComponent && IsComponentActive(camComponent) &&
            camComponent->camera &&
-           dof && IsComponentActive(dof) &&
-           dof->adaptiveFocus &&
-           dof->runtimeEffect){
+           stack && IsComponentActive(stack)){
             float adaptiveFocusDistance = 0.0f;
             bool hasAdaptiveFocus = false;
             if(focusSource == this){
@@ -1562,14 +1620,38 @@ void Scene::applyCameraEffectsToScreen(PScreen screen,
             }else{
                 hasAdaptiveFocus = focusSource->computeAdaptiveFocusDistanceFromSnapshotForCamera(camComponent->camera, adaptiveFocusDistance);
             }
-            if(hasAdaptiveFocus){
-                dof->runtimeEffect->externalAdaptiveFocusDistance = adaptiveFocusDistance;
-                dof->runtimeEffect->externalAdaptiveFocusValid = true;
-            }else{
-                dof->runtimeEffect->externalAdaptiveFocusValid = false;
+
+            const CameraSettings& cameraSettings = camComponent->camera->getSettings();
+            for(auto& effect : stack->effects){
+                if(effect.kind != PostProcessingEffectKind::DepthOfField){
+                    continue;
+                }
+                if(!effect.enabled || !effect.depthOfField.adaptiveFocus){
+                    if(effect.depthOfField.runtimeEffect){
+                        effect.depthOfField.runtimeEffect->externalAdaptiveFocusValid = false;
+                    }
+                    continue;
+                }
+
+                stack->buildRuntimeEffect(effect, cameraSettings, nullptr);
+                if(!effect.depthOfField.runtimeEffect){
+                    continue;
+                }
+
+                if(hasAdaptiveFocus){
+                    effect.depthOfField.runtimeEffect->externalAdaptiveFocusDistance = adaptiveFocusDistance;
+                    effect.depthOfField.runtimeEffect->externalAdaptiveFocusValid = true;
+                }else{
+                    effect.depthOfField.runtimeEffect->externalAdaptiveFocusValid = false;
+                }
             }
-        }else if(dof && dof->runtimeEffect){
-            dof->runtimeEffect->externalAdaptiveFocusValid = false;
+        }else if(stack){
+            for(auto& effect : stack->effects){
+                if(effect.kind == PostProcessingEffectKind::DepthOfField &&
+                   effect.depthOfField.runtimeEffect){
+                    effect.depthOfField.runtimeEffect->externalAdaptiveFocusValid = false;
+                }
+            }
         }
     }
 

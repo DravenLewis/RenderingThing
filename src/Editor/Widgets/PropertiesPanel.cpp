@@ -6,6 +6,7 @@
 #include "Editor/Widgets/PropertiesPanel.h"
 
 #include "Assets/Core/AssetDescriptorUtils.h"
+#include "Editor/Core/EditorPropertyUI.h"
 #include "ECS/Core/ECSComponents.h"
 #include "Foundation/Logging/Logbot.h"
 #include "Foundation/Util/StringUtils.h"
@@ -34,11 +35,7 @@ namespace {
         Camera,
         Skybox,
         SSAO,
-        Bloom,
-        LensFlare,
-        AutoExposure,
-        DepthOfField,
-        AntiAliasing,
+        PostProcessingStack,
         Script
     };
 
@@ -54,12 +51,12 @@ namespace {
     }
 
     void drawShadowDebugWidget(){
-        if(!ImGui::CollapsingHeader("Shadow Debug", ImGuiTreeNodeFlags_DefaultOpen)){
+        if(!ImGui::CollapsingHeader("Shadow Debug")){
             return;
         }
 
         bool globalOverride = ShadowRenderer::GetGlobalDebugOverrideEnabled();
-        if(ImGui::Checkbox("Debug Mode", &globalOverride)){
+        if(EditorPropertyUI::Checkbox("Debug Mode", &globalOverride)){
             ShadowRenderer::SetGlobalDebugOverrideEnabled(globalOverride);
         }
 
@@ -69,7 +66,7 @@ namespace {
         if(!globalOverride){
             ImGui::BeginDisabled();
         }
-        if(ImGui::Combo("Global View", &globalModeIndex, globalModes, IM_ARRAYSIZE(globalModes))){
+        if(EditorPropertyUI::Combo("Global View", &globalModeIndex, globalModes, IM_ARRAYSIZE(globalModes))){
             ShadowRenderer::SetGlobalDebugOverrideMode(globalModeIndex + 1);
         }
         if(!globalOverride){
@@ -79,12 +76,12 @@ namespace {
         ImGui::TextDisabled("Global override replaces per-light Shadow Debug View.");
 
         float cascadeMarginTexels = ShadowRenderer::GetDirectionalCascadeKernelMarginTexels();
-        if(ImGui::SliderFloat("Cascade Kernel Margin (Texels)", &cascadeMarginTexels, 0.0f, 32.0f, "%.2f")){
+        if(EditorPropertyUI::SliderFloat("Cascade Kernel Margin (Texels)", &cascadeMarginTexels, 0.0f, 32.0f, "%.2f")){
             ShadowRenderer::SetDirectionalCascadeKernelMarginTexels(cascadeMarginTexels);
         }
 
         float receiverNormalBlend = ShadowRenderer::GetShadowReceiverNormalBlend();
-        if(ImGui::SliderFloat("Receiver Normal Blend", &receiverNormalBlend, 0.0f, 1.0f, "%.3f")){
+        if(EditorPropertyUI::SliderFloat("Receiver Normal Blend", &receiverNormalBlend, 0.0f, 1.0f, "%.3f")){
             ShadowRenderer::SetShadowReceiverNormalBlend(receiverNormalBlend);
         }
         ImGui::TextDisabled("0 = shading normal, 1 = geometric normal.");
@@ -196,6 +193,12 @@ namespace {
                         cameraComp->camera = Camera::CreatePerspective(45.0f, Math3D::Vec2(width, height), 0.1f, 1000.0f);
                     }
                 }
+                if(!hasComponent<SSAOComponent>(manager, entity)){
+                    wrapper->addComponent<SSAOComponent>();
+                    if(auto* ssaoComp = manager->getECSComponent<SSAOComponent>(entity)){
+                        ssaoComp->enabled = false;
+                    }
+                }
                 return true;
             case AddComponentKind::SSAO:
                 if(hasComponent<SSAOComponent>(manager, entity)){
@@ -213,46 +216,14 @@ namespace {
                     return fail("Skybox requires Camera Component.");
                 }
                 return wrapper->addComponent<SkyboxComponent>();
-            case AddComponentKind::DepthOfField:
-                if(hasComponent<DepthOfFieldComponent>(manager, entity)){
-                    return fail("Depth Of Field Component already exists.");
+            case AddComponentKind::PostProcessingStack:
+                if(hasComponent<PostProcessingStackComponent>(manager, entity)){
+                    return fail("Post Processing Stack already exists.");
                 }
                 if(!hasComponent<CameraComponent>(manager, entity)){
-                    return fail("Depth Of Field requires Camera Component.");
+                    return fail("Post Processing Stack requires Camera Component.");
                 }
-                return wrapper->addComponent<DepthOfFieldComponent>();
-            case AddComponentKind::Bloom:
-                if(hasComponent<BloomComponent>(manager, entity)){
-                    return fail("Bloom Component already exists.");
-                }
-                if(!hasComponent<CameraComponent>(manager, entity)){
-                    return fail("Bloom requires Camera Component.");
-                }
-                return wrapper->addComponent<BloomComponent>();
-            case AddComponentKind::LensFlare:
-                if(hasComponent<LensFlareComponent>(manager, entity)){
-                    return fail("Lens Flare Component already exists.");
-                }
-                if(!hasComponent<CameraComponent>(manager, entity)){
-                    return fail("Lens Flare requires Camera Component.");
-                }
-                return wrapper->addComponent<LensFlareComponent>();
-            case AddComponentKind::AutoExposure:
-                if(hasComponent<AutoExposureComponent>(manager, entity)){
-                    return fail("Auto Exposure Component already exists.");
-                }
-                if(!hasComponent<CameraComponent>(manager, entity)){
-                    return fail("Auto Exposure requires Camera Component.");
-                }
-                return wrapper->addComponent<AutoExposureComponent>();
-            case AddComponentKind::AntiAliasing:
-                if(hasComponent<AntiAliasingComponent>(manager, entity)){
-                    return fail("Anti-Aliasing Component already exists.");
-                }
-                if(!hasComponent<CameraComponent>(manager, entity)){
-                    return fail("Anti-Aliasing requires Camera Component.");
-                }
-                return wrapper->addComponent<AntiAliasingComponent>();
+                return wrapper->addComponent<PostProcessingStackComponent>();
             case AddComponentKind::Script:
                 if(hasComponent<ScriptComponent>(manager, entity)){
                     return fail("Script Component already exists.");
@@ -425,7 +396,6 @@ void PropertiesPanel::draw(float x,
     if(!entity){
         ImGui::TextUnformatted("No entity selected.");
         ImGui::Separator();
-        drawShadowDebugWidget();
         interactionActive = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
                             ImGui::IsAnyItemActive();
         ImGui::End();
@@ -439,6 +409,8 @@ void PropertiesPanel::draw(float x,
 
     if(targetScene && targetScene->getECS()){
         auto* componentMgr = targetScene->getECS()->getComponentManager();
+        EnsurePostProcessingStackMigration(targetScene->getECS(), entity, nullptr);
+        const bool hasCameraComponent = (componentMgr->getECSComponent<CameraComponent>(entity) != nullptr);
         auto componentsForEntity = componentMgr->getECSComponents(entity);
 
         std::sort(componentsForEntity.begin(), componentsForEntity.end(),
@@ -451,6 +423,9 @@ void PropertiesPanel::draw(float x,
         for(auto component : componentsForEntity){
             IEditorCompatibleComponent* editorComponentPtr = dynamic_cast<IEditorCompatibleComponent*>(component);
             if(!editorComponentPtr) continue;
+            if(hasCameraComponent && dynamic_cast<SSAOComponent*>(component)){
+                continue;
+            }
             if(editorComponentPtr->isEditorHidden() && !showHiddenComponents){
                 continue;
             }
@@ -461,7 +436,9 @@ void PropertiesPanel::draw(float x,
         }
 
         ImGui::Separator();
-        drawShadowDebugWidget();
+        if(showHiddenComponents && hasCameraComponent){
+            drawShadowDebugWidget();
+        }
         ImGui::Dummy(ImVec2(0.0f, 20.0f));
         ImGui::Separator();
         ImGui::Dummy(ImVec2(0.0f, 10.0f));
@@ -483,12 +460,7 @@ void PropertiesPanel::draw(float x,
             const bool hasRigidBody = (componentMgr->getECSComponent<RigidBodyComponent>(entity) != nullptr);
             const bool hasCamera = (componentMgr->getECSComponent<CameraComponent>(entity) != nullptr);
             const bool hasSkybox = (componentMgr->getECSComponent<SkyboxComponent>(entity) != nullptr);
-            const bool hasSsao = (componentMgr->getECSComponent<SSAOComponent>(entity) != nullptr);
-            const bool hasBloom = (componentMgr->getECSComponent<BloomComponent>(entity) != nullptr);
-            const bool hasLensFlare = (componentMgr->getECSComponent<LensFlareComponent>(entity) != nullptr);
-            const bool hasAutoExposure = (componentMgr->getECSComponent<AutoExposureComponent>(entity) != nullptr);
-            const bool hasDof = (componentMgr->getECSComponent<DepthOfFieldComponent>(entity) != nullptr);
-            const bool hasAa = (componentMgr->getECSComponent<AntiAliasingComponent>(entity) != nullptr);
+            const bool hasPostFxStack = (componentMgr->getECSComponent<PostProcessingStackComponent>(entity) != nullptr);
             auto* scriptComp = componentMgr->getECSComponent<ScriptComponent>(entity);
             const bool hasScriptComponent = (scriptComp != nullptr);
 
@@ -539,12 +511,7 @@ void PropertiesPanel::draw(float x,
                 drawAddMenuItem("Camera Component", AddComponentKind::Camera, !hasCamera, "Already added");
                 ImGui::Separator();
                 drawAddMenuItem("Skybox Component", AddComponentKind::Skybox, !hasSkybox && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
-                drawAddMenuItem("SSAO / GI Component", AddComponentKind::SSAO, !hasSsao && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
-                drawAddMenuItem("Bloom Component", AddComponentKind::Bloom, !hasBloom && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
-                drawAddMenuItem("Lens Flare Effect", AddComponentKind::LensFlare, !hasLensFlare && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
-                drawAddMenuItem("Auto Exposure Component", AddComponentKind::AutoExposure, !hasAutoExposure && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
-                drawAddMenuItem("Depth Of Field Component", AddComponentKind::DepthOfField, !hasDof && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
-                drawAddMenuItem("Anti-Aliasing Component", AddComponentKind::AntiAliasing, !hasAa && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
+                drawAddMenuItem("Post Processing Stack", AddComponentKind::PostProcessingStack, !hasPostFxStack && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
                 ImGui::EndMenu();
             }
 

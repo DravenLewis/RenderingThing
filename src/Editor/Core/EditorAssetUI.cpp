@@ -4,6 +4,7 @@
  */
 
 #include "Editor/Core/EditorAssetUI.h"
+#include "Editor/Core/EditorPropertyUI.h"
 #include "Assets/Bundles/AssetBundle.h"
 #include "Assets/Core/Asset.h"
 #include "Assets/Bundles/AssetBundleRegistry.h"
@@ -211,6 +212,7 @@ namespace {
             case AssetKind::ShaderAsset:    return "SAS";
             case AssetKind::SkyboxAsset:    return "SKY";
             case AssetKind::LensFlareAsset: return "FLR";
+            case AssetKind::EffectAsset:    return "EFX";
             case AssetKind::MaterialAsset:  return "MAT";
             case AssetKind::Material:       return "MTL";
             case AssetKind::Font:           return "FNT";
@@ -239,6 +241,7 @@ namespace {
             case AssetKind::ShaderAsset:    return IM_COL32(237, 132, 255, 255);
             case AssetKind::SkyboxAsset:    return IM_COL32(96, 182, 255, 255);
             case AssetKind::LensFlareAsset: return IM_COL32(255, 182, 76, 255);
+            case AssetKind::EffectAsset:    return IM_COL32(255, 138, 90, 255);
             case AssetKind::MaterialAsset:  return IM_COL32(90, 201, 155, 255);
             case AssetKind::Material:       return IM_COL32(62, 168, 212, 255);
             case AssetKind::Font:           return IM_COL32(104, 212, 219, 255);
@@ -304,6 +307,9 @@ namespace {
         }
         if(requested == AssetKind::LensFlareAsset){
             return offered == AssetKind::LensFlareAsset;
+        }
+        if(requested == AssetKind::EffectAsset){
+            return offered == AssetKind::EffectAsset;
         }
         if(requested == AssetKind::MaterialAsset){
             return offered == AssetKind::MaterialAsset;
@@ -832,6 +838,9 @@ AssetKind ClassifyPath(const std::filesystem::path& path, bool isDirectory){
     }
     if(endsWith(pathLower, ".flare.asset")){
         return AssetKind::LensFlareAsset;
+    }
+    if(endsWith(pathLower, ".effect.asset")){
+        return AssetKind::EffectAsset;
     }
     if(endsWith(pathLower, ".material.asset")){
         return AssetKind::MaterialAsset;
@@ -1611,15 +1620,34 @@ bool AcceptAssetDrop(const AssetKind* requestedKinds,
     return accepted;
 }
 
-bool DrawAssetDropInput(const char* label, char* buffer, size_t bufferSize, AssetKind requestedKind, bool readOnly, bool* outDropped){
+bool DrawAssetDropInput(const char* label,
+                        char* buffer,
+                        size_t bufferSize,
+                        AssetKind requestedKind,
+                        bool readOnly,
+                        bool* outDropped,
+                        bool* outCommitted){
     if(outDropped){
         *outDropped = false;
+    }
+    if(outCommitted){
+        *outCommitted = false;
     }
 
     ImGuiID ownerId = ImGui::GetID(label);
     ImGuiInputTextFlags flags = readOnly ? ImGuiInputTextFlags_ReadOnly : ImGuiInputTextFlags_None;
-    bool changed = ImGui::InputText(label, buffer, bufferSize, flags);
+    const ImGuiStyle& style = ImGui::GetStyle();
+    const float browseButtonWidth = ImGui::CalcTextSize("...").x + (style.FramePadding.x * 2.0f);
+    const float reservedWidth = browseButtonWidth + style.ItemInnerSpacing.x;
+    EditorPropertyUI::DrawLabel(label);
+    ImGui::PushItemWidth(EditorPropertyUI::GetFieldWidth(reservedWidth));
+    bool changed = ImGui::InputText(EditorPropertyUI::HiddenLabel(label).c_str(), buffer, bufferSize, flags);
+    ImGui::PopItemWidth();
     const bool inputHovered = ImGui::IsItemHovered();
+    const bool inputCommitted = !readOnly && ImGui::IsItemDeactivatedAfterEdit();
+    if(inputCommitted && outCommitted){
+        *outCommitted = true;
+    }
 
     AssetTransaction tx;
     if(AcceptAssetDrop(requestedKind, tx)){
@@ -1629,6 +1657,9 @@ bool DrawAssetDropInput(const char* label, char* buffer, size_t bufferSize, Asse
         changed = true;
         if(outDropped){
             *outDropped = true;
+        }
+        if(outCommitted){
+            *outCommitted = true;
         }
     }
 
@@ -1645,7 +1676,7 @@ bool DrawAssetDropInput(const char* label, char* buffer, size_t bufferSize, Asse
         }
     }
 
-    ImGui::SameLine();
+    ImGui::SameLine(0.0f, style.ItemInnerSpacing.x);
     std::string browseButtonId = StringUtils::Format("...##asset_picker_btn_%u", static_cast<unsigned int>(ownerId));
     if(ImGui::Button(browseButtonId.c_str())){
         requestPicker = true;
@@ -1668,14 +1699,26 @@ bool DrawAssetDropInput(const char* label, char* buffer, size_t bufferSize, Asse
         if(outDropped){
             *outDropped = true;
         }
+        if(outCommitted){
+            *outCommitted = true;
+        }
     }
 
     return changed;
 }
 
-bool DrawAssetDropInput(const char* label, std::string& value, const AssetKind* requestedKinds, size_t requestedKindCount, bool readOnly, bool* outDropped){
+bool DrawAssetDropInput(const char* label,
+                        std::string& value,
+                        const AssetKind* requestedKinds,
+                        size_t requestedKindCount,
+                        bool readOnly,
+                        bool* outDropped,
+                        bool* outCommitted){
     if(outDropped){
         *outDropped = false;
+    }
+    if(outCommitted){
+        *outCommitted = false;
     }
 
     ImGuiID ownerId = ImGui::GetID(label);
@@ -1695,10 +1738,20 @@ bool DrawAssetDropInput(const char* label, std::string& value, const AssetKind* 
     }
 
     ImGuiInputTextFlags flags = readOnly ? ImGuiInputTextFlags_ReadOnly : ImGuiInputTextFlags_None;
-    bool changed = ImGui::InputText(label, buffer.data(), buffer.size(), flags);
+    const ImGuiStyle& style = ImGui::GetStyle();
+    const float browseButtonWidth = ImGui::CalcTextSize("...").x + (style.FramePadding.x * 2.0f);
+    const float reservedWidth = browseButtonWidth + style.ItemInnerSpacing.x;
+    EditorPropertyUI::DrawLabel(label);
+    ImGui::PushItemWidth(EditorPropertyUI::GetFieldWidth(reservedWidth));
+    bool changed = ImGui::InputText(EditorPropertyUI::HiddenLabel(label).c_str(), buffer.data(), buffer.size(), flags);
+    ImGui::PopItemWidth();
     const bool inputHovered = ImGui::IsItemHovered();
+    const bool inputCommitted = !readOnly && ImGui::IsItemDeactivatedAfterEdit();
     if(changed){
         value = buffer.data();
+    }
+    if(inputCommitted && outCommitted){
+        *outCommitted = true;
     }
 
     AssetTransaction tx;
@@ -1707,6 +1760,9 @@ bool DrawAssetDropInput(const char* label, std::string& value, const AssetKind* 
         changed = true;
         if(outDropped){
             *outDropped = true;
+        }
+        if(outCommitted){
+            *outCommitted = true;
         }
     }
 
@@ -1724,7 +1780,7 @@ bool DrawAssetDropInput(const char* label, std::string& value, const AssetKind* 
         }
     }
 
-    ImGui::SameLine();
+    ImGui::SameLine(0.0f, style.ItemInnerSpacing.x);
     std::string browseButtonId = StringUtils::Format("...##asset_picker_btn_%u", static_cast<unsigned int>(ownerId));
     if(ImGui::Button(browseButtonId.c_str())){
         requestPicker = true;
@@ -1745,14 +1801,22 @@ bool DrawAssetDropInput(const char* label, std::string& value, const AssetKind* 
         if(outDropped){
             *outDropped = true;
         }
+        if(outCommitted){
+            *outCommitted = true;
+        }
     }
 
     return changed;
 }
 
-bool DrawAssetDropInput(const char* label, std::string& value, std::initializer_list<AssetKind> requestedKinds, bool readOnly, bool* outDropped){
+bool DrawAssetDropInput(const char* label,
+                        std::string& value,
+                        std::initializer_list<AssetKind> requestedKinds,
+                        bool readOnly,
+                        bool* outDropped,
+                        bool* outCommitted){
     const AssetKind* requestedPtr = requestedKinds.size() > 0 ? requestedKinds.begin() : nullptr;
-    return DrawAssetDropInput(label, value, requestedPtr, requestedKinds.size(), readOnly, outDropped);
+    return DrawAssetDropInput(label, value, requestedPtr, requestedKinds.size(), readOnly, outDropped, outCommitted);
 }
 
 } // namespace EditorAssetUI

@@ -14,6 +14,8 @@
 #include "Rendering/Lighting/Light.h"
 #include "Rendering/Lighting/DeferredSSAO.h"
 #include "Rendering/PostFX/ScreenEffects.h"
+#include "Rendering/PostFX/LoadedEffect.h"
+#include "Assets/Descriptors/EffectAsset.h"
 
 #include "Scene/Scene.h"
 #include <cstdint>
@@ -382,7 +384,117 @@ struct SSAOComponent : public IEditorCompatibleComponent {
     void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
 };
 
+/// @brief Enumerates stack effect entry kinds.
+enum class PostProcessingEffectKind {
+    DepthOfField = 0,
+    Bloom,
+    LensFlare,
+    AutoExposure,
+    AntiAliasing,
+    Loaded
+};
+
+/// @brief Holds runtime/settings data for a depth-of-field stack entry.
+struct DepthOfFieldEffectSettings {
+    bool adaptiveFocus = false;
+    bool adaptiveFocusDebugDraw = false;
+    float focusDistance = 8.0f;
+    float focusRange = 4.0f;
+    float focusBandWidth = 0.85f;
+    float blurRamp = 2.0f;
+    float blurDistanceLerp = 0.35f;
+    float fallbackFocusRange = 6.0f;
+    float blurStrength = 0.65f;
+    float maxBlurPx = 7.0f;
+    int sampleCount = 6;
+    bool debugCocView = false;
+    std::shared_ptr<DepthOfFieldEffect> runtimeEffect;
+};
+
+/// @brief Holds runtime/settings data for a bloom stack entry.
+struct BloomEffectSettings {
+    bool adaptiveBloom = false;
+    float threshold = 0.75f;
+    float softKnee = 0.5f;
+    float intensity = 0.65f;
+    float radiusPx = 6.0f;
+    int sampleCount = 8;
+    Math3D::Vec3 tint = Math3D::Vec3(1.0f, 1.0f, 1.0f);
+    std::shared_ptr<BloomEffect> runtimeEffect;
+    float liveThreshold = 0.75f;
+    float liveIntensity = 0.65f;
+    bool liveAutoExposureDriven = false;
+};
+
+/// @brief Holds runtime/settings data for a lens-flare stack entry.
+struct LensFlareEffectSettings {
+    std::shared_ptr<LensFlareEffect> runtimeEffect;
+};
+
+/// @brief Holds runtime/settings data for an auto-exposure stack entry.
+struct AutoExposureEffectSettings {
+    float minExposure = 0.6f;
+    float maxExposure = 2.4f;
+    float exposureCompensation = 0.0f;
+    float adaptationSpeedUp = 1.2f;
+    float adaptationSpeedDown = 0.7f;
+    std::shared_ptr<AutoExposureEffect> runtimeEffect;
+};
+
+/// @brief Holds runtime/settings data for an anti-aliasing stack entry.
+struct AntiAliasingEffectSettings {
+    AntiAliasingPreset preset = AntiAliasingPreset::FXAA_Medium;
+    std::shared_ptr<FXAAEffect> runtimeEffect;
+};
+
+/// @brief Holds data for a single post-processing stack effect entry.
+struct PostProcessingEffectEntry {
+    PostProcessingEffectKind kind = PostProcessingEffectKind::Bloom;
+    bool enabled = true;
+    bool hidden = false;
+    bool editorExpanded = false;
+
+    std::string effectAssetRef;
+    std::string cachedDisplayName;
+    std::vector<EffectInputBindingData> loadedInputs;
+    std::vector<EffectPropertyData> loadedProperties;
+    std::vector<std::string> loadedRequiredEffects;
+    std::uint64_t loadedAssetRevision = 0;
+    std::shared_ptr<LoadedEffect> runtimeLoadedEffect;
+
+    DepthOfFieldEffectSettings depthOfField;
+    BloomEffectSettings bloom;
+    LensFlareEffectSettings lensFlare;
+    AutoExposureEffectSettings autoExposure;
+    AntiAliasingEffectSettings antiAliasing;
+};
+
+/// @brief Holds data for PostProcessingStackComponent.
+struct PostProcessingStackComponent : public IEditorCompatibleComponent {
+    using IEditorCompatibleComponent::IEditorCompatibleComponent;
+    bool enabled = true;
+    std::vector<PostProcessingEffectEntry> effects;
+
+    bool* getEditorEnabledState() override { return &enabled; }
+    const bool* getEditorEnabledState() const override { return &enabled; }
+
+    bool addBuiltinEffect(PostProcessingEffectKind kind);
+    bool addLoadedEffect(const std::string& effectAssetRef, std::string* outError = nullptr);
+    bool moveEffect(size_t index, int delta);
+    void clearEffects();
+    bool hasEffectIdentifier(const std::string& identifier) const;
+    std::string getEffectIdentifier(const PostProcessingEffectEntry& effect) const;
+    std::string getEffectDisplayName(const PostProcessingEffectEntry& effect) const;
+    bool refreshLoadedEffect(PostProcessingEffectEntry& effect, std::string* outError = nullptr);
+    Graphics::PostProcessing::PPostProcessingEffect buildRuntimeEffect(PostProcessingEffectEntry& effect,
+                                                                       const CameraSettings& settings,
+                                                                       std::string* outError = nullptr);
+    void ensureDependenciesForEffect(const PostProcessingEffectEntry& effect);
+    void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
+};
+
 /// @brief Holds data for DepthOfFieldComponent.
+/// @deprecated Legacy compatibility shim. New work should use PostProcessingStackComponent.
 struct DepthOfFieldComponent : public IEditorCompatibleComponent {
     using IEditorCompatibleComponent::IEditorCompatibleComponent;
     bool enabled = false;
@@ -421,6 +533,7 @@ struct DepthOfFieldComponent : public IEditorCompatibleComponent {
 };
 
 /// @brief Holds data for BloomComponent.
+/// @deprecated Legacy compatibility shim. New work should use PostProcessingStackComponent.
 struct BloomComponent : public IEditorCompatibleComponent {
     using IEditorCompatibleComponent::IEditorCompatibleComponent;
     bool enabled = false;
@@ -457,6 +570,7 @@ struct BloomComponent : public IEditorCompatibleComponent {
 };
 
 /// @brief Holds data for LensFlareComponent.
+/// @deprecated Legacy compatibility shim. New work should use PostProcessingStackComponent.
 struct LensFlareComponent : public IEditorCompatibleComponent {
     using IEditorCompatibleComponent::IEditorCompatibleComponent;
     bool enabled = true;
@@ -483,6 +597,7 @@ struct LensFlareComponent : public IEditorCompatibleComponent {
 };
 
 /// @brief Holds data for AutoExposureComponent.
+/// @deprecated Legacy compatibility shim. New work should use PostProcessingStackComponent.
 struct AutoExposureComponent : public IEditorCompatibleComponent {
     using IEditorCompatibleComponent::IEditorCompatibleComponent;
     bool enabled = true;
@@ -519,6 +634,7 @@ struct AutoExposureComponent : public IEditorCompatibleComponent {
 };
 
 /// @brief Holds data for AntiAliasingComponent.
+/// @deprecated Legacy compatibility shim. New work should use PostProcessingStackComponent.
 struct AntiAliasingComponent : public IEditorCompatibleComponent {
     using IEditorCompatibleComponent::IEditorCompatibleComponent;
     AntiAliasingPreset preset = AntiAliasingPreset::FXAA_Medium;
@@ -562,5 +678,16 @@ struct ScriptComponent : public IEditorCompatibleComponent {
      */
     void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
 };
+
+/**
+ * @brief Migrates legacy per-effect camera components into a PostProcessingStackComponent.
+ * @param ecsPtr ECS instance that owns the entity.
+ * @param entity Camera entity to migrate.
+ * @param outError Optional migration error when stack creation fails.
+ * @return True when migration completed or no migration was needed.
+ */
+bool EnsurePostProcessingStackMigration(NeoECS::NeoECS* ecsPtr,
+                                        NeoECS::ECSEntity* entity,
+                                        std::string* outError = nullptr);
 
 #endif // ECSCOMPONENTS_H

@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 
+#include "Assets/Descriptors/EffectAsset.h"
 #include "Assets/Descriptors/MaterialAsset.h"
 #include "Assets/Descriptors/LensFlareAsset.h"
 #include "Assets/Descriptors/ModelAsset.h"
@@ -68,6 +69,10 @@ class FilePreviewWidget {
          * @brief Draws lens flare asset editor.
          */
         void drawLensFlareAssetEditor();
+        /**
+         * @brief Draws effect asset editor.
+         */
+        void drawEffectAssetEditor();
         /**
          * @brief Draws material asset editor.
          */
@@ -144,6 +149,7 @@ class FilePreviewWidget {
         bool isShaderAssetFile = false;
         bool isSkyboxAssetFile = false;
         bool isLensFlareAssetFile = false;
+        bool isEffectAssetFile = false;
         bool isMaterialAssetFile = false;
         bool isMaterialObjectFile = false;
         bool isModelAssetFile = false;
@@ -174,6 +180,10 @@ class FilePreviewWidget {
         LensFlareAssetData lensFlareData;
         char lensFlareName[128] = {};
         char lensFlareTexture[256] = {};
+        EffectAssetData effectAssetData;
+        char effectAssetName[128] = {};
+        char effectAssetVertex[256] = {};
+        char effectAssetFragment[256] = {};
 
         MaterialAssetData materialData;
         char materialName[128] = {};
@@ -206,6 +216,7 @@ class FilePreviewWidget {
         std::shared_ptr<Model> previewModel;
         bool skyboxAssetSavePending = false;
         bool lensFlareAssetSavePending = false;
+        bool effectAssetSavePending = false;
         bool materialAssetSavePending = false;
         bool previewMaterialDirty = true;
         bool previewModelDirty = true;

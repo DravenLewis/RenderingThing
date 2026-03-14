@@ -12,6 +12,7 @@
 #include "Assets/Core/AssetDescriptorUtils.h"
 #include "Foundation/IO/File.h"
 #include "Foundation/Logging/Logbot.h"
+#include "Assets/Descriptors/EffectAsset.h"
 #include "Assets/Descriptors/MaterialAsset.h"
 #include "Assets/Descriptors/LensFlareAsset.h"
 #include "Assets/Descriptors/ModelAsset.h"
@@ -305,6 +306,7 @@ void WorkspacePanel::commitAssetRename(std::filesystem::path& selectedAssetPath)
     const bool oldPathIsMaterialAsset = MaterialAssetIO::IsMaterialAssetPath(oldPath);
     const bool oldPathIsSkyboxAsset = SkyboxAssetIO::IsSkyboxAssetPath(oldPath);
     const bool oldPathIsLensFlareAsset = LensFlareAssetIO::IsLensFlareAssetPath(oldPath);
+    const bool oldPathIsEffectAsset = EffectAssetIO::IsEffectAssetPath(oldPath);
     const bool oldPathIsBundleAsset = AssetBundle::IsBundlePath(oldPath);
 
     std::string normalizedNewName = requestedName;
@@ -336,6 +338,8 @@ void WorkspacePanel::commitAssetRename(std::filesystem::path& selectedAssetPath)
         ensureSuffix(".skybox.asset");
     }else if(oldPathIsLensFlareAsset){
         ensureSuffix(".flare.asset");
+    }else if(oldPathIsEffectAsset){
+        ensureSuffix(".effect.asset");
     }else if(oldPathIsBundleAsset){
         ensureSuffix(".bundle.asset");
     }
@@ -1118,6 +1122,8 @@ void WorkspacePanel::draw(float x,
             label = label.substr(0, label.size() - std::strlen(".model.asset"));
         }else if(StringUtils::EndsWith(lowerName, ".shader.asset")){
             label = label.substr(0, label.size() - std::strlen(".shader.asset"));
+        }else if(StringUtils::EndsWith(lowerName, ".effect.asset")){
+            label = label.substr(0, label.size() - std::strlen(".effect.asset"));
         }else if(StringUtils::EndsWith(lowerName, ".bundle.asset")){
             label = label.substr(0, label.size() - std::strlen(".bundle.asset"));
         }
@@ -1400,6 +1406,26 @@ void WorkspacePanel::draw(float x,
         }
     };
 
+    auto createDefaultEffectAsset = [&](){
+        std::filesystem::path path = makeUniquePathWithSuffix(assetDir / "NewEffect.effect.asset", ".effect.asset");
+        EffectAssetData data;
+        data.name = path.stem().stem().string();
+        data.vertexAssetRef = std::string(ASSET_DELIMITER) + "/shader/PostFX_Screen.vert";
+        data.fragmentAssetRef.clear();
+        EffectInputBindingData screenColorInput;
+        screenColorInput.uniformName = "screenTexture";
+        screenColorInput.source = EffectInputSource::ScreenColor;
+        screenColorInput.textureSlot = 0;
+        data.inputs.push_back(screenColorInput);
+        std::string error;
+        if(EffectAssetIO::SaveToAbsolutePath(path, data, &error)){
+            selectedAssetPath = path;
+            browserCacheDirty = true;
+        }else{
+            LogBot.Log(LOG_ERRO, "Failed to create effect asset: %s", error.c_str());
+        }
+    };
+
     auto createDefaultBundleAsset = [&](){
         if(AssetBundleRegistry::IsVirtualEntryPath(assetDir)){
             LogBot.Log(LOG_WARN, "Nested asset bundles are not supported.");
@@ -1669,6 +1695,9 @@ void WorkspacePanel::draw(float x,
                     }
                     if(ImGui::MenuItem("Lens Flare Asset")){
                         createDefaultLensFlareAsset();
+                    }
+                    if(ImGui::MenuItem("Effect Asset")){
+                        createDefaultEffectAsset();
                     }
                     if(ImGui::MenuItem("Material (.material)")){
                         createDefaultMaterialObject();

@@ -7,9 +7,11 @@
 
 #include "Editor/Core/EditorAssetUI.h"
 #include "Editor/Core/EditorArrayUI.h"
+#include "Editor/Core/EditorPropertyUI.h"
 #include "Assets/Core/Asset.h"
 #include "Assets/Core/AssetDescriptorUtils.h"
 #include "Assets/Bundles/AssetBundleRegistry.h"
+#include "Assets/Descriptors/EffectAsset.h"
 #include "Rendering/Materials/ConstructedMaterial.h"
 #include "Rendering/Lighting/Environment.h"
 #include "Rendering/Core/FrameBuffer.h"
@@ -459,6 +461,8 @@ void FilePreviewWidget::setFilePath(const std::filesystem::path& path){
     previewModel.reset();
     bundleAssetSavePending = false;
     skyboxAssetSavePending = false;
+    lensFlareAssetSavePending = false;
+    effectAssetSavePending = false;
     materialAssetSavePending = false;
     previewMaterialDirty = true;
     previewModelDirty = true;
@@ -475,6 +479,11 @@ void FilePreviewWidget::setFilePath(const std::filesystem::path& path){
     std::memset(skyboxBottomFace, 0, sizeof(skyboxBottomFace));
     std::memset(skyboxFrontFace, 0, sizeof(skyboxFrontFace));
     std::memset(skyboxBackFace, 0, sizeof(skyboxBackFace));
+    std::memset(lensFlareName, 0, sizeof(lensFlareName));
+    std::memset(lensFlareTexture, 0, sizeof(lensFlareTexture));
+    std::memset(effectAssetName, 0, sizeof(effectAssetName));
+    std::memset(effectAssetVertex, 0, sizeof(effectAssetVertex));
+    std::memset(effectAssetFragment, 0, sizeof(effectAssetFragment));
     std::memset(modelAssetName, 0, sizeof(modelAssetName));
     std::memset(modelAssetSource, 0, sizeof(modelAssetSource));
     std::memset(modelAssetMaterialRef, 0, sizeof(modelAssetMaterialRef));
@@ -499,6 +508,7 @@ void FilePreviewWidget::reloadFromDisk(bool force){
     isShaderAssetFile = ShaderAssetIO::IsShaderAssetPath(filePath);
     isSkyboxAssetFile = SkyboxAssetIO::IsSkyboxAssetPath(filePath);
     isLensFlareAssetFile = LensFlareAssetIO::IsLensFlareAssetPath(filePath);
+    isEffectAssetFile = EffectAssetIO::IsEffectAssetPath(filePath);
     isMaterialAssetFile = MaterialAssetIO::IsMaterialAssetPath(filePath);
     isMaterialObjectFile = MaterialAssetIO::IsMaterialObjectPath(filePath);
     isModelAssetFile = ModelAssetIO::IsModelAssetPath(filePath);
@@ -570,6 +580,20 @@ void FilePreviewWidget::reloadFromDisk(bool force){
         copyBuffer(lensFlareName, sizeof(lensFlareName), lensFlareData.name);
         copyBuffer(lensFlareTexture, sizeof(lensFlareTexture), lensFlareData.textureRef);
         lensFlareAssetSavePending = false;
+        return;
+    }
+
+    if(isEffectAssetFile){
+        std::string error;
+        if(!EffectAssetIO::LoadFromAbsolutePath(filePath, effectAssetData, &error)){
+            statusIsError = true;
+            statusMessage = error;
+            return;
+        }
+        copyBuffer(effectAssetName, sizeof(effectAssetName), effectAssetData.name);
+        copyBuffer(effectAssetVertex, sizeof(effectAssetVertex), effectAssetData.vertexAssetRef);
+        copyBuffer(effectAssetFragment, sizeof(effectAssetFragment), effectAssetData.fragmentAssetRef);
+        effectAssetSavePending = false;
         return;
     }
 
@@ -698,6 +722,11 @@ void FilePreviewWidget::draw(){
         drawErrorByteDumpIfNeeded();
         return;
     }
+    if(isEffectAssetFile){
+        drawEffectAssetEditor();
+        drawErrorByteDumpIfNeeded();
+        return;
+    }
     if(isMaterialAssetFile){
         drawMaterialAssetEditor();
         drawErrorByteDumpIfNeeded();
@@ -733,7 +762,7 @@ void FilePreviewWidget::drawBundleAssetEditor(){
         return;
     }
 
-    const bool aliasChanged = ImGui::InputText("Bundle Alias", bundleAlias, sizeof(bundleAlias));
+    const bool aliasChanged = EditorPropertyUI::InputText("Bundle Alias", bundleAlias, sizeof(bundleAlias));
     if(aliasChanged){
         bundleAssetSavePending = true;
     }
@@ -800,7 +829,7 @@ void FilePreviewWidget::drawBundleAssetEditor(){
 
 void FilePreviewWidget::drawShaderAssetEditor(){
     bool changed = false;
-    changed |= ImGui::InputText("Cache Name", cacheName, sizeof(cacheName));
+    changed |= EditorPropertyUI::InputText("Cache Name", cacheName, sizeof(cacheName));
     changed |= EditorAssetUI::DrawAssetDropInput(
         "Vertex Shader",
         bundledShaderData.vertexAssetRef,
@@ -879,7 +908,7 @@ void FilePreviewWidget::drawShaderAssetEditor(){
 
 void FilePreviewWidget::drawSkyboxAssetEditor(){
     bool changed = false;
-    changed |= ImGui::InputText("Skybox Name", skyboxName, sizeof(skyboxName));
+    changed |= EditorPropertyUI::InputText("Skybox Name", skyboxName, sizeof(skyboxName));
 
     auto drawFaceField = [&](const char* label, char* pathBuffer, size_t bufferSize){
         bool localChanged = false;
@@ -949,19 +978,19 @@ void FilePreviewWidget::drawLensFlareAssetEditor(){
     static constexpr int kMaxLensFlareElements = 64;
 
     bool changed = false;
-    changed |= ImGui::InputText("Flare Name", lensFlareName, sizeof(lensFlareName));
+    changed |= EditorPropertyUI::InputText("Flare Name", lensFlareName, sizeof(lensFlareName));
 
-    changed |= ImGui::ColorEdit3("Tint", &lensFlareData.tint.x);
-    changed |= ImGui::DragFloat("Intensity", &lensFlareData.intensity, 0.01f, 0.0f, 8.0f);
-    changed |= ImGui::DragFloat("Sprite Scale", &lensFlareData.spriteScale, 0.25f, 8.0f, 512.0f);
-    changed |= ImGui::DragFloat("Ghost Intensity", &lensFlareData.ghostIntensity, 0.01f, 0.0f, 4.0f);
-    changed |= ImGui::DragFloat("Ghost Spacing", &lensFlareData.ghostSpacing, 0.01f, 0.0f, 1.2f);
-    changed |= ImGui::DragFloat("Halo Intensity", &lensFlareData.haloIntensity, 0.01f, 0.0f, 4.0f);
-    changed |= ImGui::DragFloat("Halo Scale", &lensFlareData.haloScale, 0.01f, 0.1f, 6.0f);
-    changed |= ImGui::DragFloat("Glare Threshold", &lensFlareData.glareThreshold, 0.01f, 0.0f, 16.0f);
-    changed |= ImGui::DragFloat("Glare Intensity", &lensFlareData.glareIntensity, 0.005f, 0.0f, 4.0f);
-    changed |= ImGui::DragFloat("Glare Length Px", &lensFlareData.glareLengthPx, 0.5f, 0.0f, 512.0f);
-    changed |= ImGui::DragFloat("Glare Falloff", &lensFlareData.glareFalloff, 0.01f, 0.05f, 8.0f);
+    changed |= EditorPropertyUI::ColorEdit3("Tint", &lensFlareData.tint.x);
+    changed |= EditorPropertyUI::DragFloat("Intensity", &lensFlareData.intensity, 0.01f, 0.0f, 8.0f);
+    changed |= EditorPropertyUI::DragFloat("Sprite Scale", &lensFlareData.spriteScale, 0.25f, 8.0f, 512.0f);
+    changed |= EditorPropertyUI::DragFloat("Ghost Intensity", &lensFlareData.ghostIntensity, 0.01f, 0.0f, 4.0f);
+    changed |= EditorPropertyUI::DragFloat("Ghost Spacing", &lensFlareData.ghostSpacing, 0.01f, 0.0f, 1.2f);
+    changed |= EditorPropertyUI::DragFloat("Halo Intensity", &lensFlareData.haloIntensity, 0.01f, 0.0f, 4.0f);
+    changed |= EditorPropertyUI::DragFloat("Halo Scale", &lensFlareData.haloScale, 0.01f, 0.1f, 6.0f);
+    changed |= EditorPropertyUI::DragFloat("Glare Threshold", &lensFlareData.glareThreshold, 0.01f, 0.0f, 16.0f);
+    changed |= EditorPropertyUI::DragFloat("Glare Intensity", &lensFlareData.glareIntensity, 0.005f, 0.0f, 4.0f);
+    changed |= EditorPropertyUI::DragFloat("Glare Length Px", &lensFlareData.glareLengthPx, 0.5f, 0.0f, 512.0f);
+    changed |= EditorPropertyUI::DragFloat("Glare Falloff", &lensFlareData.glareFalloff, 0.01f, 0.05f, 8.0f);
     ImGui::Spacing();
 
     if(ImGui::TreeNodeEx("Elements", ImGuiTreeNodeFlags_DefaultOpen)){
@@ -974,7 +1003,7 @@ void FilePreviewWidget::drawLensFlareAssetEditor(){
 
                 int typeIndex = static_cast<int>(element.type);
                 typeIndex = std::clamp(typeIndex, 0, static_cast<int>(IM_ARRAYSIZE(kElementTypeNames)) - 1);
-                if(ImGui::Combo("Type", &typeIndex, kElementTypeNames, IM_ARRAYSIZE(kElementTypeNames))){
+                if(EditorPropertyUI::Combo("Type", &typeIndex, kElementTypeNames, IM_ARRAYSIZE(kElementTypeNames))){
                     element.type = static_cast<LensFlareElementType>(typeIndex);
                     if(element.type == LensFlareElementType::Circle){
                         element.polygonSides = 64;
@@ -992,7 +1021,7 @@ void FilePreviewWidget::drawLensFlareAssetEditor(){
                     drawTexturePreviewSmall(elementTexture);
                 }else if(element.type == LensFlareElementType::Polygon){
                     int polygonSides = std::clamp(element.polygonSides, 3, 64);
-                    if(ImGui::InputInt("Count", &polygonSides)){
+                    if(EditorPropertyUI::InputInt("Count", &polygonSides)){
                         element.polygonSides = std::clamp(polygonSides, 3, 64);
                         elementChanged = true;
                     }
@@ -1001,10 +1030,10 @@ void FilePreviewWidget::drawLensFlareAssetEditor(){
                     ImGui::TextDisabled("Circle uses 64 polygon sides.");
                 }
 
-                elementChanged |= ImGui::ColorEdit3("Tint", &element.tint.x);
-                elementChanged |= ImGui::DragFloat("Intensity", &element.intensity, 0.01f, 0.0f, 8.0f);
-                elementChanged |= ImGui::DragFloat("Size Scale", &element.sizeScale, 0.01f, 0.05f, 8.0f);
-                elementChanged |= ImGui::DragFloat("Axis Position", &element.axisPosition, 0.01f, -3.0f, 3.0f);
+                elementChanged |= EditorPropertyUI::ColorEdit3("Tint", &element.tint.x);
+                elementChanged |= EditorPropertyUI::DragFloat("Intensity", &element.intensity, 0.01f, 0.0f, 8.0f);
+                elementChanged |= EditorPropertyUI::DragFloat("Size Scale", &element.sizeScale, 0.01f, 0.05f, 8.0f);
+                elementChanged |= EditorPropertyUI::DragFloat("Axis Position", &element.axisPosition, 0.01f, -3.0f, 3.0f);
                 return elementChanged;
             }
         );
@@ -1049,19 +1078,165 @@ void FilePreviewWidget::drawLensFlareAssetEditor(){
     }
 }
 
+void FilePreviewWidget::drawEffectAssetEditor(){
+    static constexpr int kMaxRequiredEffects = 16;
+
+    bool changed = false;
+    changed |= EditorPropertyUI::InputText("Effect Name", effectAssetName, sizeof(effectAssetName));
+
+    std::string vertexAssetRef = effectAssetData.vertexAssetRef;
+    if(EditorAssetUI::DrawAssetDropInput(
+            "Vertex Shader",
+            vertexAssetRef,
+            {EditorAssetUI::AssetKind::ShaderVertex, EditorAssetUI::AssetKind::ShaderGeneric})){
+        effectAssetData.vertexAssetRef = vertexAssetRef;
+        copyBuffer(effectAssetVertex, sizeof(effectAssetVertex), effectAssetData.vertexAssetRef);
+        changed = true;
+    }
+
+    std::string fragmentAssetRef = effectAssetData.fragmentAssetRef;
+    if(EditorAssetUI::DrawAssetDropInput(
+            "Fragment Shader",
+            fragmentAssetRef,
+            {EditorAssetUI::AssetKind::ShaderFragment, EditorAssetUI::AssetKind::ShaderGeneric})){
+        effectAssetData.fragmentAssetRef = fragmentAssetRef;
+        copyBuffer(effectAssetFragment, sizeof(effectAssetFragment), effectAssetData.fragmentAssetRef);
+        changed = true;
+    }
+
+    ImGui::Spacing();
+    ImGui::TextUnformatted("Properties");
+    ImGui::Separator();
+    if(effectAssetData.properties.empty()){
+        ImGui::TextDisabled("No exposed properties.");
+    }else{
+        ImGui::TextDisabled("Exposed parameters are built from the effect asset metadata.");
+        for(size_t i = 0; i < effectAssetData.properties.size(); ++i){
+            EffectPropertyData& property = effectAssetData.properties[i];
+            std::string displayName = property.displayName;
+            if(displayName.empty()){
+                const std::string sourceName = !property.key.empty() ? property.key : property.uniformName;
+                displayName = SanitizeEffectDisplayName(sourceName);
+            }
+            if(displayName.empty()){
+                displayName = "Property";
+            }
+
+            const std::string labelSource = StringUtils::ToLowerCase(
+                displayName + " " + property.key + " " + property.uniformName
+            );
+
+            ImGui::PushID(static_cast<int>(i));
+            switch(property.type){
+                case EffectPropertyType::Float:
+                    changed |= EditorPropertyUI::DragFloat(displayName.c_str(), &property.floatValue, 0.01f);
+                    break;
+                case EffectPropertyType::Int:
+                    changed |= EditorPropertyUI::InputInt(displayName.c_str(), &property.intValue);
+                    break;
+                case EffectPropertyType::Bool:
+                    changed |= EditorPropertyUI::Checkbox(displayName.c_str(), &property.boolValue);
+                    break;
+                case EffectPropertyType::Vec2:
+                    changed |= EditorPropertyUI::DragFloat2(displayName.c_str(), &property.vec2Value.x, 0.01f);
+                    break;
+                case EffectPropertyType::Vec3:
+                    if(labelSource.find("color") != std::string::npos || labelSource.find("tint") != std::string::npos){
+                        changed |= EditorPropertyUI::ColorEdit3(displayName.c_str(), &property.vec3Value.x);
+                    }else{
+                        changed |= EditorPropertyUI::DragFloat3(displayName.c_str(), &property.vec3Value.x, 0.01f);
+                    }
+                    break;
+                case EffectPropertyType::Vec4:
+                    if(labelSource.find("color") != std::string::npos || labelSource.find("tint") != std::string::npos){
+                        changed |= EditorPropertyUI::ColorEdit4(displayName.c_str(), &property.vec4Value.x);
+                    }else{
+                        changed |= EditorPropertyUI::DragFloat4(displayName.c_str(), &property.vec4Value.x, 0.01f);
+                    }
+                    break;
+                case EffectPropertyType::Texture2D:
+                    changed |= EditorAssetUI::DrawAssetDropInput(
+                        displayName.c_str(),
+                        property.textureAssetRef,
+                        {EditorAssetUI::AssetKind::Image}
+                    );
+                    drawTexturePreviewSmall(property.textureAssetRef);
+                    break;
+                default:
+                    break;
+            }
+            ImGui::PopID();
+        }
+    }
+
+    if(ImGui::TreeNodeEx("Dependencies", ImGuiTreeNodeFlags_DefaultOpen)){
+        ImGui::TextDisabled("Use builtin/... for built-ins or select another .effect.asset.");
+        changed |= EditorArrayUI::DrawArray("RequiredEffects",
+                                            effectAssetData.requiredEffects,
+                                            kMaxRequiredEffects,
+                                            "Required Effect",
+            [&](std::string& effectRef, size_t index) -> bool {
+                (void)index;
+                return EditorAssetUI::DrawAssetDropInput(
+                    "Effect Ref",
+                    effectRef,
+                    {EditorAssetUI::AssetKind::EffectAsset}
+                );
+            }
+        );
+        ImGui::TreePop();
+    }
+
+    if(changed){
+        effectAssetData.name = effectAssetName;
+        effectAssetSavePending = true;
+    }
+
+    const bool commitEditsNow = effectAssetSavePending && !ImGui::IsAnyItemActive();
+    if(commitEditsNow){
+        effectAssetData.name = effectAssetName;
+        std::string error;
+        if(EffectAssetIO::SaveToAbsolutePath(filePath, effectAssetData, &error)){
+            statusIsError = false;
+            statusMessage = "Saved.";
+            std::error_code ec;
+            lastWriteTime = std::filesystem::last_write_time(backingWritePath(filePath), ec);
+            effectAssetSavePending = false;
+            notifyEditedAsset(filePath, assetRoot);
+        }else{
+            statusIsError = true;
+            statusMessage = error;
+        }
+    }
+
+    if(effectAssetSavePending){
+        ImGui::TextDisabled("Release control to apply changes.");
+    }else if(statusMessage.empty()){
+        ImGui::TextDisabled("Edits save automatically.");
+    }else if(statusIsError){
+        ImGui::TextColored(ImVec4(1.0f, 0.35f, 0.35f, 1.0f), "%s", statusMessage.c_str());
+    }else{
+        ImGui::TextColored(ImVec4(0.45f, 0.85f, 0.45f, 1.0f), "%s", statusMessage.c_str());
+    }
+
+    if(!effectAssetData.isComplete()){
+        ImGui::TextDisabled("Assign both a vertex and fragment shader before this effect can compile.");
+    }
+}
+
 void FilePreviewWidget::drawMaterialAssetEditor(){
     static constexpr std::array<const char*, 7> kTypeNames = {
         "PBR", "Color", "Image", "LitColor", "LitImage", "FlatColor", "FlatImage"
     };
 
     bool changed = false;
-    changed |= ImGui::InputText("Material Name", materialName, sizeof(materialName));
+    changed |= EditorPropertyUI::InputText("Material Name", materialName, sizeof(materialName));
 
     int typeIndex = static_cast<int>(materialData.type);
     if(typeIndex < 0 || typeIndex >= static_cast<int>(kTypeNames.size())){
         typeIndex = 0;
     }
-    if(ImGui::Combo("Material Type", &typeIndex, kTypeNames.data(), static_cast<int>(kTypeNames.size()))){
+    if(EditorPropertyUI::Combo("Material Type", &typeIndex, kTypeNames.data(), static_cast<int>(kTypeNames.size()))){
         materialData.type = static_cast<MaterialAssetType>(typeIndex);
         changed = true;
     }
@@ -1069,13 +1244,13 @@ void FilePreviewWidget::drawMaterialAssetEditor(){
     changed |= EditorAssetUI::DrawAssetDropInput("Shader Asset", materialShaderAsset, sizeof(materialShaderAsset), EditorAssetUI::AssetKind::ShaderAsset);
 
     bool castsShadows = materialData.castsShadows;
-    if(ImGui::Checkbox("Casts Shadows", &castsShadows)){
+    if(EditorPropertyUI::Checkbox("Casts Shadows", &castsShadows)){
         materialData.castsShadows = castsShadows;
         changed = true;
     }
 
     bool receivesShadows = materialData.receivesShadows;
-    if(ImGui::Checkbox("Receives Shadows", &receivesShadows)){
+    if(EditorPropertyUI::Checkbox("Receives Shadows", &receivesShadows)){
         materialData.receivesShadows = receivesShadows;
         changed = true;
     }
@@ -1093,31 +1268,31 @@ void FilePreviewWidget::drawMaterialAssetEditor(){
     switch(materialData.type){
         case MaterialAssetType::PBR:{
             Math3D::Vec4 color = materialData.color;
-            if(ImGui::ColorEdit4("Base Color", &color.x)){
+            if(EditorPropertyUI::ColorEdit4("Base Color", &color.x)){
                 materialData.color = color;
                 changed = true;
             }
-            changed |= ImGui::SliderFloat("Metallic", &materialData.metallic, 0.0f, 1.0f);
-            changed |= ImGui::SliderFloat("Roughness", &materialData.roughness, 0.0f, 1.0f);
-            changed |= ImGui::DragFloat("Normal Scale", &materialData.normalScale, 0.01f, 0.0f, 8.0f);
-            changed |= ImGui::DragFloat("Height Scale", &materialData.heightScale, 0.001f, 0.0f, 1.0f);
-            changed |= ImGui::DragFloat("Emissive Strength", &materialData.emissiveStrength, 0.01f, 0.0f, 32.0f);
-            changed |= ImGui::SliderFloat("AO Strength", &materialData.occlusionStrength, 0.0f, 4.0f);
-            changed |= ImGui::DragFloat("Env Strength", &materialData.envStrength, 0.01f, 0.0f, 8.0f);
+            changed |= EditorPropertyUI::SliderFloat("Metallic", &materialData.metallic, 0.0f, 1.0f);
+            changed |= EditorPropertyUI::SliderFloat("Roughness", &materialData.roughness, 0.0f, 1.0f);
+            changed |= EditorPropertyUI::DragFloat("Normal Scale", &materialData.normalScale, 0.01f, 0.0f, 8.0f);
+            changed |= EditorPropertyUI::DragFloat("Height Scale", &materialData.heightScale, 0.001f, 0.0f, 1.0f);
+            changed |= EditorPropertyUI::DragFloat("Emissive Strength", &materialData.emissiveStrength, 0.01f, 0.0f, 32.0f);
+            changed |= EditorPropertyUI::SliderFloat("AO Strength", &materialData.occlusionStrength, 0.0f, 4.0f);
+            changed |= EditorPropertyUI::DragFloat("Env Strength", &materialData.envStrength, 0.01f, 0.0f, 8.0f);
 
             bool useEnvMap = (materialData.useEnvMap != 0);
-            if(ImGui::Checkbox("Use Env Map", &useEnvMap)){
+            if(EditorPropertyUI::Checkbox("Use Env Map", &useEnvMap)){
                 materialData.useEnvMap = useEnvMap ? 1 : 0;
                 changed = true;
             }
 
             bool useAlphaClip = (materialData.useAlphaClip != 0);
-            if(ImGui::Checkbox("Use Alpha Clip", &useAlphaClip)){
+            if(EditorPropertyUI::Checkbox("Use Alpha Clip", &useAlphaClip)){
                 materialData.useAlphaClip = useAlphaClip ? 1 : 0;
                 changed = true;
             }
             if(materialData.useAlphaClip != 0){
-                changed |= ImGui::SliderFloat("Alpha Cutoff", &materialData.alphaCutoff, 0.0f, 1.0f);
+                changed |= EditorPropertyUI::SliderFloat("Alpha Cutoff", &materialData.alphaCutoff, 0.0f, 1.0f);
             }
 
             changed |= drawTextureField("Base Color Tex", materialBaseColorTex, sizeof(materialBaseColorTex));
@@ -1133,13 +1308,13 @@ void FilePreviewWidget::drawMaterialAssetEditor(){
         case MaterialAssetType::LitImage:
         case MaterialAssetType::FlatImage:{
             Math3D::Vec4 color = materialData.color;
-            if(ImGui::ColorEdit4("Color", &color.x)){
+            if(EditorPropertyUI::ColorEdit4("Color", &color.x)){
                 materialData.color = color;
                 changed = true;
             }
             changed |= drawTextureField("Texture", materialTexture, sizeof(materialTexture));
             if(materialData.type == MaterialAssetType::Image){
-                changed |= ImGui::DragFloat2("UV", &materialData.uv.x, 0.01f, -64.0f, 64.0f);
+                changed |= EditorPropertyUI::DragFloat2("UV", &materialData.uv.x, 0.01f, -64.0f, 64.0f);
             }
             break;
         }
@@ -1148,7 +1323,7 @@ void FilePreviewWidget::drawMaterialAssetEditor(){
         case MaterialAssetType::FlatColor:
         default:{
             Math3D::Vec4 color = materialData.color;
-            if(ImGui::ColorEdit4("Color", &color.x)){
+            if(EditorPropertyUI::ColorEdit4("Color", &color.x)){
                 materialData.color = color;
                 changed = true;
             }
@@ -1249,7 +1424,7 @@ void FilePreviewWidget::drawMaterialAssetEditor(){
 
 void FilePreviewWidget::drawMaterialObjectEditor(){
     bool changed = false;
-    changed |= ImGui::InputText("Material Name", materialObjectName, sizeof(materialObjectName));
+    changed |= EditorPropertyUI::InputText("Material Name", materialObjectName, sizeof(materialObjectName));
     changed |= EditorAssetUI::DrawAssetDropInput(
         "Material Asset",
         materialObjectAssetRef,
@@ -1347,7 +1522,7 @@ void FilePreviewWidget::drawMaterialObjectEditor(){
 
 void FilePreviewWidget::drawModelAssetEditor(){
     bool changed = false;
-    changed |= ImGui::InputText("Model Name", modelAssetName, sizeof(modelAssetName));
+    changed |= EditorPropertyUI::InputText("Model Name", modelAssetName, sizeof(modelAssetName));
     changed |= EditorAssetUI::DrawAssetDropInput(
         "Source Model",
         modelAssetSource,
@@ -1362,7 +1537,7 @@ void FilePreviewWidget::drawModelAssetEditor(){
     );
 
     bool forceSmoothNormals = (modelAssetData.forceSmoothNormals != 0);
-    if(ImGui::Checkbox("Force Smooth Normals", &forceSmoothNormals)){
+    if(EditorPropertyUI::Checkbox("Force Smooth Normals", &forceSmoothNormals)){
         modelAssetData.forceSmoothNormals = forceSmoothNormals ? 1 : 0;
         changed = true;
     }
@@ -1582,7 +1757,7 @@ void FilePreviewWidget::drawMtlFilePreview(){
     }
 
     const char* comboPreview = mtlMaterials[(size_t)selectedMtlMaterialIndex].name.c_str();
-    if(ImGui::BeginCombo("MTL Material", comboPreview)){
+    if(EditorPropertyUI::BeginCombo("MTL Material", comboPreview)){
         for(int i = 0; i < static_cast<int>(mtlMaterials.size()); ++i){
             const bool selected = (i == selectedMtlMaterialIndex);
             const std::string& itemName = mtlMaterials[(size_t)i].name;

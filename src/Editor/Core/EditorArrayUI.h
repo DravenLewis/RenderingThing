@@ -11,20 +11,21 @@
 #include <string>
 #include <vector>
 
+#include "Editor/Core/EditorPropertyUI.h"
 #include "imgui.h"
 
 namespace EditorArrayUI {
 
 inline bool DrawValueEditor(const char* label, bool& value){
-    return ImGui::Checkbox(label, &value);
+    return EditorPropertyUI::Checkbox(label, &value);
 }
 
 inline bool DrawValueEditor(const char* label, int& value){
-    return ImGui::InputInt(label, &value);
+    return EditorPropertyUI::InputInt(label, &value);
 }
 
 inline bool DrawValueEditor(const char* label, float& value){
-    return ImGui::DragFloat(label, &value, 0.01f);
+    return EditorPropertyUI::DragFloat(label, &value, 0.01f);
 }
 
 inline bool DrawValueEditor(const char* label, std::string& value){
@@ -35,7 +36,7 @@ inline bool DrawValueEditor(const char* label, std::string& value){
         buffer.back() = '\0';
     }
 
-    if(!ImGui::InputText(label, buffer.data(), buffer.size())){
+    if(!EditorPropertyUI::InputText(label, buffer.data(), buffer.size())){
         return false;
     }
 
@@ -65,7 +66,7 @@ bool DrawArray(const char* label,
     ImGui::PushID(label);
 
     int size = static_cast<int>(values.size());
-    if(ImGui::InputInt("Size", &size)){
+    if(EditorPropertyUI::InputInt("Size", &size)){
         size = std::clamp(size, 0, std::max(maxSize, 0));
         if(size != static_cast<int>(values.size())){
             values.resize(static_cast<size_t>(size));
