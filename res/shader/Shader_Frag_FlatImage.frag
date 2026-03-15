@@ -1,6 +1,6 @@
 #version 410 core
 
-#define MAX_LIGHTS 16
+#define MAX_LIGHTS 128
 #define MAX_SHADOW_MAPS_2D 16
 #define MAX_SHADOW_MAPS_CUBE 2
 
@@ -115,7 +115,8 @@ float sampleShadow2D(int shadowType, int mapIndex, vec4 lightSpacePos, float bia
     float compareDepth = clamp(projCoords.z - (bias + pcfBias + receiverPlaneBias), 0.0, 1.0);
     vec2 uvMin = texelSize * 1.5;
     vec2 uvMax = vec2(1.0) - uvMin;
-    float rotation = hash13(floor(receiverPos * 32.0) * 0.754877666 + vec3(float(mapIndex), float(shadowType), 0.0)) * 6.28318530718;
+    // Avoid floor(receiverPos*32): small camera moves would snap rotation and cause banding.
+    float rotation = hash13(receiverPos * 0.754877666 + vec3(float(mapIndex), float(shadowType), 0.0)) * 6.28318530718;
     mat2 kernelRot = rotate2D(rotation);
 
     if(shadowType == 0){

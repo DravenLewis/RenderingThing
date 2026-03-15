@@ -75,7 +75,7 @@ namespace {
     GLuint g_fallbackShadowTexCube = 0;
     std::unordered_map<GLuint, uint64_t> g_shadowSamplersBoundFrame;
     float g_directionalCascadeKernelMarginTexels = 8.0f;
-    float g_shadowReceiverNormalBlend = 0.35f;
+    float g_shadowReceiverNormalBlend = 1.0f;
 
     /// @brief Represents Light Debug State data.
     struct LightDebugState {

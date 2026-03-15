@@ -25,7 +25,7 @@ enum class ShadowType {
     Smooth
 };
 
-#define MAX_LIGHTS 16
+#define MAX_LIGHTS 128
 
 /// @brief Holds data for Light.
 struct Light {

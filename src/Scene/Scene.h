@@ -269,8 +269,13 @@ class Scene : public View {
         std::shared_ptr<ShaderProgram> gBufferShader;
         std::shared_ptr<ShaderProgram> deferredLightShader;
         std::shared_ptr<ModelPart> deferredQuad;
+        PTexture deferredLightTileTexture;
+        std::vector<int> deferredLightTileCpuData;
         int gBufferWidth = 0;
         int gBufferHeight = 0;
+        int deferredLightTileGridWidth = 0;
+        int deferredLightTileGridHeight = 0;
+        int deferredLightTileSize = 16;
         bool gBufferValidationDirty = true;
         bool gBufferValidated = false;
         bool deferredDisabled = false;
@@ -305,6 +310,19 @@ class Scene : public View {
          * @param screen Active screen target.
          */
         void ensureDeferredResources(PScreen screen);
+        /**
+         * @brief Allocates or resizes tiled deferred-light metadata resources.
+         * @param width Active deferred viewport width.
+         * @param height Active deferred viewport height.
+         */
+        void ensureDeferredLightTileResources(int width, int height);
+        /**
+         * @brief Builds per-tile deferred light lists for the active screen-space lighting pass.
+         * @param cam Active camera.
+         * @param lights Lights uploaded for the current frame.
+         * @return True when tile metadata is ready for the deferred shader.
+         */
+        bool buildDeferredLightTiles(PCamera cam, const std::vector<Light>& lights);
         /**
          * @brief Allocates or resizes the selection-outline mask/composite resources.
          * @param screen Active screen target.

@@ -1,0 +1,29 @@
+Added Depth Based Tile Drawing for Lights and Shadows to fall more inline with Modern Deffered Renderers.
+(https://mynameismjp.wordpress.com/2010/09/05/position-from-depth-3/)
+
+
+Created issue where object shadows flicker when camera moves, if it is large and flat. Could be related to normals, but
+effect is shown on shadow debug map.
+
+== Probable Issues Locations
+- Shadow Renderer
+- DefferedLightingShader
+- Material Shaders shadow reciever logic.
+- only happens on LARGE flat objects (all shadows break when it happens tho)
+
+== Definitely Shadow Related, Effect still happens on hard shadows, shadows jitter on movement.
+ Shadow Rendering is now unstable.
+
+Refer back to Tutorial (https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping)
+                       (https://learnopengl.com/Advanced-Lighting/Shadows/Point-Shadows)
+
+
+
+Add+
+Glass BSDF
+Water BSDF
+
+== Make sure PBR Materials render at a higher quality further. Materials become muddy.
+
+
+Scripting Component

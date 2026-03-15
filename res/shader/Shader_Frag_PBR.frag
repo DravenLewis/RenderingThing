@@ -1,6 +1,6 @@
 #version 410 core
 
-#define MAX_LIGHTS 16
+#define MAX_LIGHTS 128
 #define MAX_SHADOW_MAPS_2D 16
 #define MAX_SHADOW_MAPS_CUBE 2
 #define PI 3.14159265359
@@ -149,7 +149,8 @@ float sampleShadow2D(int shadowType, int mapIndex, vec4 lightSpacePos, float bia
     float compareDepth = clamp(projCoords.z - (bias + pcfBias + receiverPlaneBias), 0.0, 1.0);
     vec2 uvMin = texelSize * 1.5;
     vec2 uvMax = vec2(1.0) - uvMin;
-    float rotation = hash13(floor(receiverPos * 32.0) * 0.754877666 + vec3(float(mapIndex), float(shadowType), 0.0)) * 6.28318530718;
+    // Avoid floor(receiverPos*32): small camera moves would snap rotation and cause banding.
+    float rotation = hash13(receiverPos * 0.754877666 + vec3(float(mapIndex), float(shadowType), 0.0)) * 6.28318530718;
     mat2 kernelRot = rotate2D(rotation);
 
     if(shadowType == 0){
@@ -372,14 +373,14 @@ vec2 applyHeightMapParallax(vec2 uv, vec2 duvDx, vec2 duvDy, vec3 viewDirWS, mat
         return uv;
     }
 
-    // Reduce parallax near grazing angles and UV borders to avoid seam lines/smearing.
-    float angleFade = viewZ * viewZ;
+    // Fade parallax aggressively on broad surfaces to avoid grazing-angle crawl.
+    float angleFade = smoothstep(0.18, 0.55, viewZ);
     float edgeDist = min(min(uv.x, uv.y), min(1.0 - uv.x, 1.0 - uv.y));
     float edgeFade = smoothstep(0.02, 0.08, edgeDist);
     vec2 hTexSize = vec2(textureSize(u_heightTex, 0));
     float texelFootprint = max(length(duvDx * hTexSize), length(duvDy * hTexSize));
-    // Continuous footprint attenuation avoids visible distance contour lines on broad surfaces.
-    float detailFade = 1.0 / (1.0 + texelFootprint * 0.35);
+    float detailFade = 1.0 - smoothstep(0.75, 3.0, texelFootprint);
+    detailFade *= detailFade;
     float parallaxFade = angleFade * edgeFade * detailFade;
     if(parallaxFade <= 1e-4){
         return uv;
@@ -395,14 +396,27 @@ vec2 applyHeightMapParallax(vec2 uv, vec2 duvDx, vec2 duvDy, vec3 viewDirWS, mat
     return clamp(displacedUv, vec2(0.001), vec2(0.999));
 }
 
-vec3 getNormal(vec2 uv, vec2 duvDx, vec2 duvDy, vec3 N, mat3 TBN){
+vec3 getNormal(vec2 uv, vec2 duvDx, vec2 duvDy, vec3 N, mat3 TBN, vec3 viewDirWS){
     if(u_useNormalTex == 0){
         return N;
     }
 
+    vec3 viewDir = safeNormalize(viewDirWS);
+    float viewFade = smoothstep(0.16, 0.50, abs(dot(N, viewDir)));
+    vec2 nTexSize = vec2(textureSize(u_normalTex, 0));
+    float texelFootprint = max(length(duvDx * nTexSize), length(duvDy * nTexSize));
+    float footprintFade = 1.0 - smoothstep(0.75, 4.0, texelFootprint);
+    float detailFade = clamp(viewFade * footprintFade, 0.0, 1.0);
+    detailFade = detailFade * detailFade * (3.0 - (2.0 * detailFade));
+    if(detailFade <= 1e-4){
+        return N;
+    }
+
     vec3 mapN = textureGrad(u_normalTex, uv, duvDx, duvDy).xyz * 2.0 - 1.0;
-    mapN.xy *= u_normalScale;
-    return safeNormalize(TBN * mapN);
+    mapN.xy *= u_normalScale * detailFade;
+    mapN.z = mix(1.0, mapN.z, detailFade);
+    vec3 detailNormal = safeNormalize(TBN * mapN);
+    return safeNormalize(mix(N, detailNormal, detailFade));
 }
 
 float applyOcclusionStrength(float occlusionSample, float strength){
@@ -437,6 +451,27 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness){
 
 vec3 FresnelSchlick(float cosTheta, vec3 F0){
     return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+}
+
+vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness){
+    vec3 oneMinusRough = vec3(max(1.0 - roughness, 0.0));
+    return F0 + (max(oneMinusRough, F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+}
+
+float applySpecularAaRoughness(float roughness, vec3 normal){
+    vec3 dndx = dFdx(normal);
+    vec3 dndy = dFdy(normal);
+    float variance = min(dot(dndx, dndx) + dot(dndy, dndy), 0.40);
+    float kernelRoughness2 = min(variance * 0.50, 0.18);
+    float roughness2 = clamp((roughness * roughness) + kernelRoughness2, 0.0016, 1.0);
+    return clamp(sqrt(roughness2), 0.04, 1.0);
+}
+
+vec3 sampleEnvironmentSpecular(vec3 reflectionDir, float roughness){
+    float baseSize = float(max(textureSize(u_envMap, 0).x, 1));
+    float maxMip = max(log2(baseSize), 0.0);
+    float lod = clamp((roughness * roughness) * maxMip, 0.0, maxMip);
+    return textureLod(u_envMap, safeNormalize(reflectionDir), lod).rgb;
 }
 
 int resolveShadowDebugMode(int lightIndex, Light light){
@@ -497,7 +532,8 @@ void main() {
         ao = applyOcclusionStrength(occl, u_aoStrength);
     }
 
-    vec3 N = getNormal(uv, duvDx, duvDy, baseN, TBN);
+    vec3 N = getNormal(uv, duvDx, duvDy, baseN, TBN, V);
+    roughness = applySpecularAaRoughness(roughness, N);
 
     vec3 albedo = baseColor.rgb;
     vec3 F0 = mix(vec3(0.04), albedo, metallic);
@@ -686,8 +722,8 @@ void main() {
     if(u_useEnvMap != 0){
         vec3 R = reflect(-V, N);
         float NdotV = max(dot(N, V), 0.0);
-        vec3 Fenv = FresnelSchlick(NdotV, F0);
-        vec3 envSample = texture(u_envMap, R).rgb;
+        vec3 Fenv = FresnelSchlickRoughness(NdotV, F0, roughness);
+        vec3 envSample = sampleEnvironmentSpecular(R, roughness);
         envSpec = envSample * Fenv * u_envStrength * (1.0 - roughness) * ao;
     }
     vec3 emissive = u_emissiveColor * u_emissiveStrength;

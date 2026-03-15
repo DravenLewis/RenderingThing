@@ -38,12 +38,13 @@ class DeferredScreenGI {
             in vec2 TexCoords;
 
             uniform sampler2D normalTexture;
-            uniform sampler2D positionTexture;
+            uniform sampler2D depthTexture;
             uniform sampler2D directLightTexture;
             uniform samplerCube envTexture;
             uniform mat4 u_viewMatrix;
             uniform mat4 u_invViewMatrix;
             uniform mat4 u_projMatrix;
+            uniform mat4 u_invProjMatrix;
             uniform vec3 u_samples[64];
             uniform int u_kernelSize;
             uniform int u_useEnvMap;
@@ -58,8 +59,11 @@ class DeferredScreenGI {
                 return (lenV > 1e-5) ? (v / lenV) : vec3(0.0, 0.0, 1.0);
             }
 
-            vec3 worldToViewPosition(vec3 worldPos){
-                return (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
+            vec3 reconstructViewPosition(vec2 uv){
+                float depth = texture(depthTexture, uv).r;
+                vec4 clip = vec4((uv * 2.0) - 1.0, (depth * 2.0) - 1.0, 1.0);
+                vec4 view = u_invProjMatrix * clip;
+                return view.xyz / max(abs(view.w), 1e-5);
             }
 
             vec3 worldToViewNormal(vec3 worldNormal){
@@ -104,7 +108,7 @@ class DeferredScreenGI {
                     return;
                 }
 
-                vec3 fragPosView = worldToViewPosition(texture(positionTexture, TexCoords).xyz);
+                vec3 fragPosView = reconstructViewPosition(TexCoords);
                 vec3 normalView = worldToViewNormal(normalWorld);
 
                 vec2 noiseSeed = floor(gl_FragCoord.xy);
@@ -176,7 +180,7 @@ class DeferredScreenGI {
                         continue;
                     }
 
-                    vec3 samplePosView = worldToViewPosition(texture(positionTexture, sampleUv).xyz);
+                    vec3 samplePosView = reconstructViewPosition(sampleUv);
                     vec3 sampleDeltaView = samplePosView - fragPosView;
                     float sampleDistance = length(sampleDeltaView);
                     if(sampleDistance <= minDistance || sampleDistance > radius){
@@ -235,8 +239,9 @@ class DeferredScreenGI {
 
             uniform sampler2D rawGiTexture;
             uniform sampler2D normalTexture;
-            uniform sampler2D positionTexture;
+            uniform sampler2D depthTexture;
             uniform mat4 u_viewMatrix;
+            uniform mat4 u_invProjMatrix;
             uniform vec2 u_texelSize;
             uniform float u_blurRadiusPx;
             uniform float u_blurSharpness;
@@ -246,8 +251,11 @@ class DeferredScreenGI {
                 return (lenV > 1e-5) ? (v / lenV) : vec3(0.0, 0.0, 1.0);
             }
 
-            vec3 worldToViewPosition(vec3 worldPos){
-                return (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
+            vec3 reconstructViewPosition(vec2 uv){
+                float depth = texture(depthTexture, uv).r;
+                vec4 clip = vec4((uv * 2.0) - 1.0, (depth * 2.0) - 1.0, 1.0);
+                vec4 view = u_invProjMatrix * clip;
+                return view.xyz / max(abs(view.w), 1e-5);
             }
 
             vec3 worldToViewNormal(vec3 worldNormal){
@@ -263,7 +271,7 @@ class DeferredScreenGI {
                 }
 
                 vec3 centerNormalView = worldToViewNormal(centerNormalWorld);
-                vec3 centerPosView = worldToViewPosition(texture(positionTexture, TexCoords).xyz);
+                vec3 centerPosView = reconstructViewPosition(TexCoords);
 
                 float blurRadius = max(u_blurRadiusPx, 0.5);
                 float sharpness = clamp(u_blurSharpness, 0.25, 8.0);
@@ -288,7 +296,7 @@ class DeferredScreenGI {
 
                         vec3 sampleGi = max(texture(rawGiTexture, sampleUv).rgb, vec3(0.0));
                         vec3 sampleNormalView = worldToViewNormal(sampleNormalWorld);
-                        vec3 samplePosView = worldToViewPosition(texture(positionTexture, sampleUv).xyz);
+                        vec3 samplePosView = reconstructViewPosition(sampleUv);
 
                         float kernelLen = length(kernelOffset);
                         float spatialWeight = exp(-(kernelLen * kernelLen) / max(2.0 * spatialSigma * spatialSigma, 0.0001));
@@ -458,14 +466,14 @@ class DeferredScreenGI {
                          int height,
                          const std::shared_ptr<ModelPart>& quad,
                          PTexture normalTexture,
-                         PTexture positionTexture,
+                         PTexture depthTexture,
                          PTexture directLightTexture,
                          PCubeMap envMap,
                          const Math3D::Mat4& viewMatrix,
                          const Math3D::Mat4& inverseViewMatrix,
                          const Math3D::Mat4& projectionMatrix,
                          const DeferredSSAOSettings& settings){
-            if(width <= 0 || height <= 0 || !quad || !normalTexture || !positionTexture || !directLightTexture){
+            if(width <= 0 || height <= 0 || !quad || !normalTexture || !depthTexture || !directLightTexture){
                 return false;
             }
             const int giWidth = ComputeTargetWidth(width);
@@ -497,12 +505,13 @@ class DeferredScreenGI {
             glClear(GL_COLOR_BUFFER_BIT);
             rawShader->bind();
             rawShader->setUniformFast("normalTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(normalTexture, 0)));
-            rawShader->setUniformFast("positionTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(positionTexture, 1)));
+            rawShader->setUniformFast("depthTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(depthTexture, 1)));
             rawShader->setUniformFast("directLightTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(directLightTexture, 2)));
             rawShader->setUniformFast("envTexture", Uniform<GLUniformUpload::CubeMapSlot>(GLUniformUpload::CubeMapSlot(envMap, 3)));
             rawShader->setUniformFast("u_viewMatrix", Uniform<Math3D::Mat4>(viewMatrix));
             rawShader->setUniformFast("u_invViewMatrix", Uniform<Math3D::Mat4>(inverseViewMatrix));
             rawShader->setUniformFast("u_projMatrix", Uniform<Math3D::Mat4>(projectionMatrix));
+            rawShader->setUniformFast("u_invProjMatrix", Uniform<Math3D::Mat4>(Math3D::Mat4(glm::inverse(glm::mat4(projectionMatrix)))));
             rawShader->setUniformFast("u_kernelSize", Uniform<int>(effectiveSamples));
             rawShader->setUniformFast("u_useEnvMap", Uniform<int>(envMap ? 1 : 0));
             rawShader->setUniformFast("u_texelSize", Uniform<Math3D::Vec2>(texelSize));
@@ -523,8 +532,9 @@ class DeferredScreenGI {
             blurShader->bind();
             blurShader->setUniformFast("rawGiTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(rawGiFbo->getTexture(), 0)));
             blurShader->setUniformFast("normalTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(normalTexture, 1)));
-            blurShader->setUniformFast("positionTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(positionTexture, 2)));
+            blurShader->setUniformFast("depthTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(depthTexture, 2)));
             blurShader->setUniformFast("u_viewMatrix", Uniform<Math3D::Mat4>(viewMatrix));
+            blurShader->setUniformFast("u_invProjMatrix", Uniform<Math3D::Mat4>(Math3D::Mat4(glm::inverse(glm::mat4(projectionMatrix)))));
             blurShader->setUniformFast("u_texelSize", Uniform<Math3D::Vec2>(texelSize));
             blurShader->setUniformFast("u_blurRadiusPx", Uniform<float>(scaledBlurRadiusPx));
             blurShader->setUniformFast("u_blurSharpness", Uniform<float>(Math3D::Clamp(settings.blurSharpness, 0.25f, 8.0f)));

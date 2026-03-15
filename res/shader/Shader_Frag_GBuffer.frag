@@ -2,8 +2,7 @@
 
 layout (location = 0) out vec4 gAlbedo;
 layout (location = 1) out vec4 gNormal;
-layout (location = 2) out vec4 gPosition;
-layout (location = 3) out vec4 gMaterial;
+layout (location = 2) out vec4 gMaterial;
 
 in vec3 v_fragPos;
 in vec3 v_normal;
@@ -85,14 +84,14 @@ vec2 applyHeightMapParallax(vec2 uv, vec2 duvDx, vec2 duvDy, vec3 viewDirWS, mat
         return uv;
     }
 
-    // Reduce parallax near grazing angles and UV borders to avoid seam lines/smearing.
-    float angleFade = viewZ * viewZ;
+    // Fade parallax aggressively on broad surfaces to avoid grazing-angle crawl.
+    float angleFade = smoothstep(0.18, 0.55, viewZ);
     float edgeDist = min(min(uv.x, uv.y), min(1.0 - uv.x, 1.0 - uv.y));
     float edgeFade = smoothstep(0.02, 0.08, edgeDist);
     vec2 hTexSize = vec2(textureSize(u_heightTex, 0));
     float texelFootprint = max(length(duvDx * hTexSize), length(duvDy * hTexSize));
-    // Continuous footprint attenuation avoids visible distance contour lines on broad surfaces.
-    float detailFade = 1.0 / (1.0 + texelFootprint * 0.35);
+    float detailFade = 1.0 - smoothstep(0.75, 3.0, texelFootprint);
+    detailFade *= detailFade;
     float parallaxFade = angleFade * edgeFade * detailFade;
     if(parallaxFade <= 1e-4){
         return uv;
@@ -108,20 +107,49 @@ vec2 applyHeightMapParallax(vec2 uv, vec2 duvDx, vec2 duvDy, vec3 viewDirWS, mat
     return clamp(displacedUv, vec2(0.001), vec2(0.999));
 }
 
-vec3 getNormal(vec2 uv, vec2 duvDx, vec2 duvDy, vec3 N, mat3 TBN){
+vec3 getNormal(vec2 uv, vec2 duvDx, vec2 duvDy, vec3 N, mat3 TBN, vec3 viewDirWS){
     if(u_useNormalTex == 0){
         return N;
     }
 
+    vec3 viewDir = safeNormalize(viewDirWS);
+    float viewFade = smoothstep(0.16, 0.50, abs(dot(N, viewDir)));
+    vec2 nTexSize = vec2(textureSize(u_normalTex, 0));
+    float texelFootprint = max(length(duvDx * nTexSize), length(duvDy * nTexSize));
+    float footprintFade = 1.0 - smoothstep(0.75, 4.0, texelFootprint);
+    float detailFade = clamp(viewFade * footprintFade, 0.0, 1.0);
+    detailFade = detailFade * detailFade * (3.0 - (2.0 * detailFade));
+    if(detailFade <= 1e-4){
+        return N;
+    }
+
     vec3 mapN = textureGrad(u_normalTex, uv, duvDx, duvDy).xyz * 2.0 - 1.0;
-    mapN.xy *= u_normalScale;
-    return safeNormalize(TBN * mapN);
+    mapN.xy *= u_normalScale * detailFade;
+    mapN.z = mix(1.0, mapN.z, detailFade);
+    vec3 detailNormal = safeNormalize(TBN * mapN);
+    return safeNormalize(mix(N, detailNormal, detailFade));
+}
+
+float applySpecularAaRoughness(float roughness, vec3 normal){
+    vec3 dndx = dFdx(normal);
+    vec3 dndy = dFdy(normal);
+    float variance = min(dot(dndx, dndx) + dot(dndy, dndy), 0.40);
+    float kernelRoughness2 = min(variance * 0.50, 0.18);
+    float roughness2 = clamp((roughness * roughness) + kernelRoughness2, 0.0016, 1.0);
+    return clamp(sqrt(roughness2), 0.04, 1.0);
 }
 
 float applyOcclusionStrength(float occlusionSample, float strength){
     float occlusion = clamp(occlusionSample, 0.0, 1.0);
     float effectStrength = max(strength, 0.0);
     return clamp(1.0 - ((1.0 - occlusion) * effectStrength), 0.0, 1.0);
+}
+
+float packAoEnv(vec2 aoEnv){
+    float aoQ = floor(clamp(aoEnv.x, 0.0, 1.0) * 31.0 + 0.5);
+    float envNorm = clamp(aoEnv.y * 0.5, 0.0, 1.0);
+    float envQ = floor(envNorm * 31.0 + 0.5);
+    return (aoQ + (envQ * 32.0)) / 1023.0;
 }
 
 void main(){
@@ -162,7 +190,8 @@ void main(){
         emissive *= textureGrad(u_emissiveTex, uv, duvDx, duvDy).rgb;
     }
 
-    vec3 N = getNormal(uv, duvDx, duvDy, baseN, TBN);
+    vec3 N = getNormal(uv, duvDx, duvDy, baseN, TBN, V);
+    roughness = applySpecularAaRoughness(roughness, N);
 
     float packedMode = metallic;
     if(u_surfaceMode == 1){
@@ -173,6 +202,5 @@ void main(){
 
     gAlbedo = vec4(baseColor.rgb, roughness);
     gNormal = vec4(safeNormalize(N), packedMode);
-    gPosition = vec4(v_fragPos, ao);
-    gMaterial = vec4(max(emissive, vec3(0.0)), max(u_envStrength, 0.0));
+    gMaterial = vec4(max(emissive, vec3(0.0)), packAoEnv(vec2(ao, max(u_envStrength, 0.0))));
 }

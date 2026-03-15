@@ -46,27 +46,22 @@ Texture::Texture(std::shared_ptr<Graphics::Image::Image> imagePtr, GLenum imageH
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_2D, textureID);
 
-    const bool preferNearest = (width <= 64 && height <= 64);
-    if(preferNearest){
-        // Preserve crisp texels for small pixel-art style textures (e.g. 16x16 terrain tiles).
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    }else{
-        // Use filtered mip sampling for larger lit/material textures on broad surfaces.
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        #if defined(GL_TEXTURE_MAX_ANISOTROPY) && defined(GL_MAX_TEXTURE_MAX_ANISOTROPY)
-            GLfloat maxAniso = 1.0f;
-            glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY, &maxAniso);
-            float targetAniso = (maxAniso > 8.0f) ? 8.0f : ((maxAniso < 1.0f) ? 1.0f : maxAniso);
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY, targetAniso);
-        #elif defined(GL_TEXTURE_MAX_ANISOTROPY_EXT) && defined(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT)
-            GLfloat maxAniso = 1.0f;
-            glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAniso);
-            float targetAniso = (maxAniso > 8.0f) ? 8.0f : ((maxAniso < 1.0f) ? 1.0f : maxAniso);
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, targetAniso);
-        #endif
-    }
+    // Default imported textures to trilinear + anisotropic filtering. The old
+    // size-based nearest path caused severe shimmer on repeated low-resolution
+    // terrain/material textures at grazing angles.
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    #if defined(GL_TEXTURE_MAX_ANISOTROPY) && defined(GL_MAX_TEXTURE_MAX_ANISOTROPY)
+        GLfloat maxAniso = 1.0f;
+        glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY, &maxAniso);
+        float targetAniso = (maxAniso > 8.0f) ? 8.0f : ((maxAniso < 1.0f) ? 1.0f : maxAniso);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY, targetAniso);
+    #elif defined(GL_TEXTURE_MAX_ANISOTROPY_EXT) && defined(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT)
+        GLfloat maxAniso = 1.0f;
+        glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAniso);
+        float targetAniso = (maxAniso > 8.0f) ? 8.0f : ((maxAniso < 1.0f) ? 1.0f : maxAniso);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, targetAniso);
+    #endif
     // Imported material textures should tile when UVs exceed [0, 1].
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);

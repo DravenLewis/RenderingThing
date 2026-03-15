@@ -47,9 +47,10 @@ class DeferredSSAO {
             in vec2 TexCoords;
 
             uniform sampler2D normalTexture;
-            uniform sampler2D positionTexture;
+            uniform sampler2D depthTexture;
             uniform mat4 u_viewMatrix;
             uniform mat4 u_projMatrix;
+            uniform mat4 u_invProjMatrix;
             uniform vec3 u_samples[64];
             uniform int u_kernelSize;
             uniform vec2 u_texelSize;
@@ -62,8 +63,11 @@ class DeferredSSAO {
                 return (lenV > 1e-5) ? (v / lenV) : vec3(0.0, 0.0, 1.0);
             }
 
-            vec3 worldToViewPosition(vec3 worldPos){
-                return (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
+            vec3 reconstructViewPosition(vec2 uv){
+                float depth = texture(depthTexture, uv).r;
+                vec4 clip = vec4((uv * 2.0) - 1.0, (depth * 2.0) - 1.0, 1.0);
+                vec4 view = u_invProjMatrix * clip;
+                return view.xyz / max(abs(view.w), 1e-5);
             }
 
             vec3 worldToViewNormal(vec3 worldNormal){
@@ -107,7 +111,7 @@ class DeferredSSAO {
                     return;
                 }
 
-                vec3 fragPosView = worldToViewPosition(texture(positionTexture, TexCoords).xyz);
+                vec3 fragPosView = reconstructViewPosition(TexCoords);
                 vec3 normalFromGBufferView = worldToViewNormal(normalWorld);
                 vec3 normalView = safeNormalize(normalFromGBufferView);
 
@@ -153,7 +157,7 @@ class DeferredSSAO {
                         continue;
                     }
 
-                    vec3 sampleScenePosView = worldToViewPosition(texture(positionTexture, sampleUv).xyz);
+                    vec3 sampleScenePosView = reconstructViewPosition(sampleUv);
                     vec3 sampleDeltaView = sampleScenePosView - fragPosView;
                     float sampleDistance = length(sampleDeltaView);
                     if(sampleDistance <= 1e-4 || sampleDistance > radius){
@@ -188,8 +192,9 @@ class DeferredSSAO {
 
             uniform sampler2D rawAoTexture;
             uniform sampler2D normalTexture;
-            uniform sampler2D positionTexture;
+            uniform sampler2D depthTexture;
             uniform mat4 u_viewMatrix;
+            uniform mat4 u_invProjMatrix;
             uniform vec2 u_texelSize;
             uniform float u_blurRadiusPx;
             uniform float u_blurSharpness;
@@ -199,8 +204,11 @@ class DeferredSSAO {
                 return (lenV > 1e-5) ? (v / lenV) : vec3(0.0, 0.0, 1.0);
             }
 
-            vec3 worldToViewPosition(vec3 worldPos){
-                return (u_viewMatrix * vec4(worldPos, 1.0)).xyz;
+            vec3 reconstructViewPosition(vec2 uv){
+                float depth = texture(depthTexture, uv).r;
+                vec4 clip = vec4((uv * 2.0) - 1.0, (depth * 2.0) - 1.0, 1.0);
+                vec4 view = u_invProjMatrix * clip;
+                return view.xyz / max(abs(view.w), 1e-5);
             }
 
             vec3 worldToViewNormal(vec3 worldNormal){
@@ -216,7 +224,7 @@ class DeferredSSAO {
                 }
 
                 vec3 centerNormalView = worldToViewNormal(centerNormalWorld);
-                vec3 centerPosView = worldToViewPosition(texture(positionTexture, TexCoords).xyz);
+                vec3 centerPosView = reconstructViewPosition(TexCoords);
 
                 float blurRadius = max(u_blurRadiusPx, 0.5);
                 float sharpness = clamp(u_blurSharpness, 0.25, 8.0);
@@ -241,7 +249,7 @@ class DeferredSSAO {
 
                         float sampleAo = clamp(texture(rawAoTexture, sampleUv).r, 0.0, 1.0);
                         vec3 sampleNormalView = worldToViewNormal(sampleNormalWorld);
-                        vec3 samplePosView = worldToViewPosition(texture(positionTexture, sampleUv).xyz);
+                        vec3 samplePosView = reconstructViewPosition(sampleUv);
 
                         float kernelLen = length(kernelOffset);
                         float spatialWeight = exp(-(kernelLen * kernelLen) / max(2.0 * spatialSigma * spatialSigma, 0.0001));
@@ -408,11 +416,11 @@ class DeferredSSAO {
                          int height,
                          const std::shared_ptr<ModelPart>& quad,
                          PTexture normalTexture,
-                         PTexture positionTexture,
+                         PTexture depthTexture,
                          const Math3D::Mat4& viewMatrix,
                          const Math3D::Mat4& projectionMatrix,
                          const DeferredSSAOSettings& settings){
-            if(width <= 0 || height <= 0 || !quad || !normalTexture || !positionTexture){
+            if(width <= 0 || height <= 0 || !quad || !normalTexture || !depthTexture){
                 return false;
             }
             const int aoWidth = scaleDimension(width, AO_RESOLUTION_SCALE);
@@ -440,9 +448,10 @@ class DeferredSSAO {
             glClear(GL_COLOR_BUFFER_BIT);
             rawShader->bind();
             rawShader->setUniformFast("normalTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(normalTexture, 0)));
-            rawShader->setUniformFast("positionTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(positionTexture, 1)));
+            rawShader->setUniformFast("depthTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(depthTexture, 1)));
             rawShader->setUniformFast("u_viewMatrix", Uniform<Math3D::Mat4>(viewMatrix));
             rawShader->setUniformFast("u_projMatrix", Uniform<Math3D::Mat4>(projectionMatrix));
+            rawShader->setUniformFast("u_invProjMatrix", Uniform<Math3D::Mat4>(Math3D::Mat4(glm::inverse(glm::mat4(projectionMatrix)))));
             rawShader->setUniformFast("u_kernelSize", Uniform<int>(effectiveSamples));
             rawShader->setUniformFast("u_texelSize", Uniform<Math3D::Vec2>(texelSize));
             rawShader->setUniformFast("u_radiusPx", Uniform<float>(scaledRadiusPx));
@@ -461,8 +470,9 @@ class DeferredSSAO {
             blurShader->bind();
             blurShader->setUniformFast("rawAoTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(rawAoFbo->getTexture(), 0)));
             blurShader->setUniformFast("normalTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(normalTexture, 1)));
-            blurShader->setUniformFast("positionTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(positionTexture, 2)));
+            blurShader->setUniformFast("depthTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(depthTexture, 2)));
             blurShader->setUniformFast("u_viewMatrix", Uniform<Math3D::Mat4>(viewMatrix));
+            blurShader->setUniformFast("u_invProjMatrix", Uniform<Math3D::Mat4>(Math3D::Mat4(glm::inverse(glm::mat4(projectionMatrix)))));
             blurShader->setUniformFast("u_texelSize", Uniform<Math3D::Vec2>(texelSize));
             blurShader->setUniformFast("u_blurRadiusPx", Uniform<float>(scaledBlurRadiusPx));
             blurShader->setUniformFast("u_blurSharpness", Uniform<float>(Math3D::Clamp(settings.blurSharpness, 0.25f, 8.0f)));

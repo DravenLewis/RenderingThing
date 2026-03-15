@@ -1,6 +1,6 @@
 #version 410 core
 
-#define MAX_LIGHTS 16
+#define MAX_LIGHTS 128
 #define MAX_SHADOW_MAPS_2D 16
 #define MAX_SHADOW_MAPS_CUBE 2
 #define PI 3.14159265359
@@ -21,13 +21,16 @@ out vec4 FragColor;
 
 uniform sampler2D gAlbedo;
 uniform sampler2D gNormal;
-uniform sampler2D gPosition;
 uniform sampler2D gMaterial;
+uniform sampler2D gDepth;
+uniform isampler2D gTileLightData;
 uniform sampler2D gSsaoRaw;
 uniform sampler2D gSsao;
 uniform sampler2D gGi;
 uniform vec3 u_viewPos;
 uniform mat4 u_cameraView;
+uniform mat4 u_invProjection;
+uniform mat4 u_invView;
 uniform samplerCube u_envMap;
 uniform int u_useEnvMap;
 uniform int u_useSsao;
@@ -35,6 +38,9 @@ uniform int u_useGi;
 uniform float u_ssaoIntensity;
 uniform int u_ssaoDebugView;
 uniform int u_lightPassMode; // 0=final composite, 1=direct diffuse prepass
+uniform int u_useLightTiles;
+uniform vec2 u_tileGrid;
+uniform int u_tileSize;
 uniform int u_debugShadows; // 0=off,1=visibility,2=cascade index,3=proj bounds
 uniform int u_debugSelectedLightIndex;
 uniform float u_shadowReceiverNormalBlend;
@@ -51,6 +57,58 @@ int resolveEffectiveShadowType(int lightIndex, Light light);
 vec3 safeNormalize(vec3 v){
     float lenV = length(v);
     return (lenV > 1e-5) ? (v / lenV) : vec3(0.0, -1.0, 0.0);
+}
+
+vec3 reconstructViewPosition(vec2 uv, float depth){
+    vec4 clip = vec4((uv * 2.0) - 1.0, (depth * 2.0) - 1.0, 1.0);
+    vec4 view = u_invProjection * clip;
+    return view.xyz / max(abs(view.w), 1e-5);
+}
+
+vec3 reconstructWorldPosition(vec2 uv, float depth){
+    vec3 viewPos = reconstructViewPosition(uv, depth);
+    return (u_invView * vec4(viewPos, 1.0)).xyz;
+}
+
+vec2 unpackAoEnv(float packedValue){
+    float scaled = floor(clamp(packedValue, 0.0, 1.0) * 1023.0 + 0.5);
+    float aoQ = mod(scaled, 32.0);
+    float envQ = floor(scaled / 32.0);
+    float ao = aoQ / 31.0;
+    float envStrength = (envQ / 31.0) * 2.0;
+    return vec2(ao, envStrength);
+}
+
+ivec2 getDeferredPixelCoord(vec2 uv){
+    ivec2 depthSize = max(textureSize(gDepth, 0), ivec2(1));
+    vec2 pixel = clamp(uv * vec2(depthSize), vec2(0.0), vec2(depthSize) - vec2(1.0));
+    return ivec2(pixel);
+}
+
+ivec2 getDeferredTileCoord(vec2 uv){
+    ivec2 tileGrid = max(ivec2(u_tileGrid + vec2(0.5)), ivec2(1));
+    ivec2 tileCoord = getDeferredPixelCoord(uv) / max(u_tileSize, 1);
+    return clamp(tileCoord, ivec2(0), tileGrid - ivec2(1));
+}
+
+int getDeferredTileIndex(vec2 uv){
+    ivec2 tileGrid = max(ivec2(u_tileGrid + vec2(0.5)), ivec2(1));
+    ivec2 tileCoord = getDeferredTileCoord(uv);
+    return tileCoord.x + (tileCoord.y * tileGrid.x);
+}
+
+int getDeferredLightCount(int tileIndex, int fallbackLightCount){
+    if(u_useLightTiles == 0){
+        return fallbackLightCount;
+    }
+    return clamp(texelFetch(gTileLightData, ivec2(0, tileIndex), 0).r, 0, MAX_LIGHTS);
+}
+
+int getDeferredLightIndex(int tileIndex, int listIndex){
+    if(u_useLightTiles == 0){
+        return listIndex;
+    }
+    return texelFetch(gTileLightData, ivec2(listIndex + 1, tileIndex), 0).r;
 }
 
 vec3 getShadowDirection(Light light, vec3 fragPos){
@@ -138,12 +196,21 @@ float sampleShadow2D(int shadowType, int mapIndex, vec4 lightSpacePos, float bia
         float rpScale = (shadowType == 1) ? 0.36 : 0.52;
         float rpCap = (shadowType == 1) ? 0.00055 : 0.00085;
         receiverPlaneBias = clamp(receiverSlope * texelRadius * rpScale, 0.0, rpCap);
+        float minRpBias = 0.00014;
+        receiverPlaneBias = max(receiverPlaneBias, minRpBias);
     }
     float compareDepth = clamp(projCoords.z - (bias + pcfBias + receiverPlaneBias), 0.0, 1.0);
     vec2 uvMin = texelSize * 1.5;
     vec2 uvMax = vec2(1.0) - uvMin;
-    float rotation = hash13(floor(receiverPos * 32.0) * 0.754877666 + vec3(float(mapIndex), float(shadowType), 0.0)) * 6.28318530718;
+
+    // Old Kernal Rotation Code.
+    // Avoid floor(receiverPos*32): small camera moves would snap rotation and cause banding.
+    float rotation = hash13(receiverPos * 0.754877666 + vec3(float(mapIndex), float(shadowType), 0.0)) * 6.28318530718;
     mat2 kernelRot = rotate2D(rotation);
+
+    //vec3 seed = vec3(gl_FragCoord.xy, float(mapIndex));
+    //float rotation = hash13(seed) * 6.28318530718;
+    //mat2 kernelRot = rotate2D(rotation);
 
     if(shadowType == 0){
         return compareShadowDepth2D(mapIndex, clamp(projCoords.xy, uvMin, uvMax), compareDepth);
@@ -230,8 +297,15 @@ float sampleShadowCube(int shadowType, int mapIndex, vec3 fragPos, vec3 lightPos
     vec3 up = (abs(dir.y) < 0.99) ? vec3(0.0, 1.0, 0.0) : vec3(1.0, 0.0, 0.0);
     vec3 tangent = safeNormalize(cross(up, dir));
     vec3 bitangent = cross(dir, tangent);
+
+    // Old Kernal Rotation Code.
     float rotation = hash13(fragPos * 0.37 + lightPos * 0.11) * 6.28318530718;
     mat2 kernelRot = rotate2D(rotation);
+
+    //vec3 seed = vec3(gl_FragCoord.xy, float(mapIndex));
+    //float rotation = hash13(seed) * 6.28318530718;
+    //mat2 kernelRot = rotate2D(rotation);
+
     float distScale = mix(0.85, 2.0, clamp(depth, 0.0, 1.0));
     float sampleRadius = cubeTexel * ((shadowType == 1) ? 1.4 : 2.4) * distScale;
     float shadow = 0.0;
@@ -282,22 +356,29 @@ float computeShadowBias(Light light, vec3 normal, vec3 fragPos){
     float slope = 1.0 - NdotL;
     float baseOffset = max(light.shadow.x, 0.0);
     float normalOffset = max(light.shadow.y, 0.0);
+    float viewDist = length(fragPos - u_viewPos);
+    float distBias = viewDist * 0.000005;
+    float grazingBias = smoothstep(0.45, 0.85, slope) * 0.00035;
+    float reconstructBias = 0.0;
     if(lightType == 1){
         float cascadeCount = max(light.shadow.z, 1.0);
         float singleCascadeScale = (cascadeCount <= 1.5) ? 1.45 : 1.0;
         float baseBias = baseOffset * 0.010 * singleCascadeScale;
         float slopeBias = normalOffset * (0.0014 + slope * 0.0120) * singleCascadeScale;
-        float minBias = (cascadeCount <= 1.5) ? 0.00005 : 0.00003;
-        float maxBias = (cascadeCount <= 1.5) ? 0.00078 : 0.00046;
-        return clamp(baseBias + slopeBias, minBias, maxBias);
+        float minBias = (cascadeCount <= 1.5) ? 0.00055 : 0.00045;
+        float maxBias = (cascadeCount <= 1.5) ? 0.00150 : 0.00100;
+        reconstructBias = (1.0 - slope) * 0.00055;
+        return clamp(baseBias + slopeBias + reconstructBias + distBias + grazingBias, minBias, maxBias);
     }else if(lightType == 2){
         float baseBias = baseOffset * 0.020;
         float slopeBias = normalOffset * (0.0030 + slope * 0.0160);
-        return clamp(baseBias + slopeBias, 0.00006, 0.00060);
+        reconstructBias = (1.0 - slope) * 0.00020;
+        return clamp(baseBias + slopeBias + reconstructBias + distBias + grazingBias, 0.00022, 0.00090);
     }else{
         float baseBias = baseOffset * 0.060;
         float slopeBias = normalOffset * (0.0100 + slope * 0.0400);
-        return clamp(baseBias + slopeBias, 0.00020, 0.00120);
+        reconstructBias = (1.0 - slope) * 0.00035;
+        return clamp(baseBias + slopeBias + reconstructBias + distBias + grazingBias, 0.00045, 0.00190);
     }
 }
 
@@ -312,8 +393,11 @@ vec3 offsetShadowReceiver(Light light, vec3 normal, vec3 fragPos){
         float cascadeCount = max(light.shadow.z, 1.0);
         float singleCascadeScale = (cascadeCount <= 1.5) ? 1.35 : 1.0;
         float worldOffset = (normalOffset * (0.0045 + grazing * 0.0150) + baseOffset * 0.0018) * singleCascadeScale;
-        float worldMax = (cascadeCount <= 1.5) ? 0.00058 : 0.00034;
+        float worldMax = (cascadeCount <= 1.5) ? 0.00095 : 0.00060;
         worldOffset = clamp(worldOffset, 0.0, worldMax);
+        float flatExtra = (1.0 - grazing) * 0.00055;
+        float grazingExtra = grazing * 0.00045;
+        worldOffset += flatExtra + grazingExtra;
         return fragPos + normalDir * worldOffset;
     }
 
@@ -333,20 +417,22 @@ vec3 offsetShadowReceiver(Light light, vec3 normal, vec3 fragPos){
 
 vec3 computeShadowNormal(vec3 shadingNormal, vec3 fragPos){
     vec3 baseN = safeNormalize(shadingNormal);
+    float blend = clamp(u_shadowReceiverNormalBlend, 0.0, 1.0);
+    if(blend <= 0.0){
+        return baseN;
+    }
     vec3 dpdx = dFdx(fragPos);
     vec3 dpdy = dFdy(fragPos);
     vec3 geom = cross(dpdx, dpdy);
     float geomLen = length(geom);
-    if(geomLen <= 1e-6){
+    if(geomLen <= 1e-5){
         return baseN;
     }
     vec3 geomN = geom / geomLen;
-    if(dot(geomN, baseN) < 0.0){
+    if(dot(geomN, baseN) < -0.02){
         geomN = -geomN;
     }
-    // Blend with the shading normal to damp derivative-driven temporal shimmer.
-    float normalBlend = clamp(u_shadowReceiverNormalBlend, 0.0, 1.0);
-    return safeNormalize(mix(baseN, geomN, normalBlend));
+    return safeNormalize(mix(baseN, geomN, blend));
 }
 
 float sampleShadowForLight(int lightIndex, Light light, vec3 normal, vec3 fragPos){
@@ -357,7 +443,7 @@ float sampleShadowForLight(int lightIndex, Light light, vec3 normal, vec3 fragPo
     int lightType = int(light.meta.x + 0.5);
     float receiverGradScale = 1.0;
     if(lightType == 1){
-        receiverGradScale = (light.shadow.z <= 1.5) ? 0.42 : 0.24;
+        receiverGradScale = (light.shadow.z <= 1.5) ? 0.52 : 0.32;
     }
     int shadowType = resolveEffectiveShadowType(lightIndex, light);
     int baseIndex = int(light.meta.z + 0.5);
@@ -388,12 +474,17 @@ float sampleShadowForLight(int lightIndex, Light light, vec3 normal, vec3 fragPo
     int cascadeCount = clamp(int(light.shadow.z + 0.5), 1, 4);
     int cascadeIndex = 0;
     float viewDepth = -(u_cameraView * vec4(receiverPos, 1.0)).z;
+    float farSplit = light.cascadeSplits[cascadeCount - 1];
+    float stableStep = max(1.0, farSplit * 0.018);
+    float viewDepthStable = floor(viewDepth / stableStep) * stableStep;
     if(cascadeCount > 1){
         for(int c = 0; c < 3; ++c){
             if(c >= (cascadeCount - 1)){
                 break;
             }
-            if(viewDepth > light.cascadeSplits[c]){
+            float split = light.cascadeSplits[c];
+            float margin = max(0.5, split * 0.015);
+            if(viewDepthStable > split + margin){
                 cascadeIndex = c + 1;
             }else{
                 break;
@@ -416,8 +507,8 @@ float sampleShadowForLight(int lightIndex, Light light, vec3 normal, vec3 fragPo
         float splitDist = light.cascadeSplits[cascadeIndex];
         float prevSplit = (cascadeIndex > 0) ? light.cascadeSplits[cascadeIndex - 1] : 0.0;
         float cascadeSpan = max(splitDist - prevSplit, 0.001);
-        float maxBlendRange = max(16.0, splitDist * 0.40);
-        float blendRange = clamp(cascadeSpan * 0.55, 1.5, maxBlendRange);
+        float maxBlendRange = max(16.0, splitDist * 0.50);
+        float blendRange = clamp(cascadeSpan * 0.70, 2.0, maxBlendRange);
         float blendStart = splitDist - blendRange;
         float blendT = clamp((viewDepth - blendStart) / blendRange, 0.0, 1.0);
         if(blendT > 0.0){
@@ -469,6 +560,18 @@ vec3 FresnelSchlick(float cosTheta, vec3 F0){
     return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
 
+vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness){
+    vec3 oneMinusRough = vec3(max(1.0 - roughness, 0.0));
+    return F0 + (max(oneMinusRough, F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+}
+
+vec3 sampleEnvironmentSpecular(vec3 reflectionDir, float roughness){
+    float baseSize = float(max(textureSize(u_envMap, 0).x, 1));
+    float maxMip = max(log2(baseSize), 0.0);
+    float lod = clamp((roughness * roughness) * maxMip, 0.0, maxMip);
+    return textureLod(u_envMap, safeNormalize(reflectionDir), lod).rgb;
+}
+
 int resolveShadowDebugMode(int lightIndex, Light light){
     if(u_debugShadows > 0){
         return clamp(u_debugShadows, 0, 3);
@@ -517,15 +620,18 @@ int resolveEffectiveShadowType(int lightIndex, Light light){
 void main(){
     vec4 albedoRough = texture(gAlbedo, v_uv);
     vec4 normalMetal = texture(gNormal, v_uv);
-    vec4 positionAo = texture(gPosition, v_uv);
     vec4 materialData = texture(gMaterial, v_uv);
+    // Bilinear depth sample avoids step discontinuities at pixel boundaries that cause
+    // horizontal banding (shadow acne) on flat surfaces with position-from-depth.
+    float depth = texture(gDepth, v_uv).r;
+    vec2 aoEnv = unpackAoEnv(materialData.a);
 
     vec3 albedo = albedoRough.rgb;
     float roughness = clamp(albedoRough.a, 0.04, 1.0);
     float packedMode = normalMetal.a;
-    float ao = clamp(positionAo.a, 0.0, 1.0);
+    float ao = clamp(aoEnv.x, 0.0, 1.0);
     vec3 emissive = max(materialData.rgb, vec3(0.0));
-    float envStrength = max(materialData.a, 0.0);
+    float envStrength = max(aoEnv.y, 0.0);
     bool hasGeometry = (length(normalMetal.rgb) > 1e-4);
 
     float ssaoRaw = 1.0;
@@ -580,10 +686,13 @@ void main(){
         return;
     }
 
-    vec3 fragPos = positionAo.rgb;
+    vec3 fragPos = reconstructWorldPosition(v_uv, depth);
     vec3 N = safeNormalize(normalMetal.rgb);
     vec3 V = safeNormalize(u_viewPos - fragPos);
     vec3 shadowNormal = computeShadowNormal(N, fragPos);
+    int fallbackLightCount = int(u_lightHeader.x + 0.5);
+    int tileIndex = getDeferredTileIndex(v_uv);
+    int lightCount = getDeferredLightCount(tileIndex, fallbackLightCount);
 
     bool legacyUnlit = (packedMode < -0.75);
     bool legacyLit = (packedMode < 0.0 && !legacyUnlit);
@@ -596,8 +705,11 @@ void main(){
     if(legacyLit){
         vec3 LoLegacyDiffuse = vec3(0.0);
         vec3 LoLegacySpec = vec3(0.0);
-        int lightCount = int(u_lightHeader.x + 0.5);
-        for(int i = 0; i < lightCount && i < MAX_LIGHTS; ++i){
+        for(int listIndex = 0; listIndex < lightCount && listIndex < MAX_LIGHTS; ++listIndex){
+            int i = getDeferredLightIndex(tileIndex, listIndex);
+            if(i < 0 || i >= MAX_LIGHTS){
+                continue;
+            }
             Light light = u_lights[i];
             int lightType = int(light.meta.x + 0.5);
 
@@ -668,8 +780,11 @@ void main(){
     vec3 LoSpecular = vec3(0.0);
     vec3 debugColorAccum = vec3(0.0);
     float debugWeight = 0.0;
-    int lightCount = int(u_lightHeader.x + 0.5);
-    for(int i = 0; i < lightCount && i < MAX_LIGHTS; ++i){
+    for(int listIndex = 0; listIndex < lightCount && listIndex < MAX_LIGHTS; ++listIndex){
+        int i = getDeferredLightIndex(tileIndex, listIndex);
+        if(i < 0 || i >= MAX_LIGHTS){
+            continue;
+        }
         Light light = u_lights[i];
         int lightType = int(light.meta.x + 0.5);
         int debugModeForLight = resolveShadowDebugMode(i, light);
@@ -713,12 +828,17 @@ void main(){
             int cascadeCountDebug = clamp(int(light.shadow.z + 0.5), 1, 4);
             int cascadeIndexDebug = 0;
             float viewDepthDebug = -(u_cameraView * vec4(shadowPosDebug, 1.0)).z;
+            float farSplitD = light.cascadeSplits[cascadeCountDebug - 1];
+            float stableStepD = max(1.0, farSplitD * 0.018);
+            float viewDepthStableD = floor(viewDepthDebug / stableStepD) * stableStepD;
             if(cascadeCountDebug > 1){
                 for(int c = 0; c < 3; ++c){
                     if(c >= (cascadeCountDebug - 1)){
                         break;
                     }
-                    if(viewDepthDebug > light.cascadeSplits[c]){
+                    float splitD = light.cascadeSplits[c];
+                    float marginD = max(0.5, splitD * 0.015);
+                    if(viewDepthStableD > splitD + marginD){
                         cascadeIndexDebug = c + 1;
                     }else{
                         break;
@@ -796,9 +916,13 @@ void main(){
     if(u_useEnvMap != 0){
         vec3 R = reflect(-V, N);
         float NdotV = max(dot(N, V), 0.0);
-        vec3 Fenv = FresnelSchlick(NdotV, F0);
-        vec3 envSample = texture(u_envMap, R).rgb;
-        envSpec = envSample * Fenv * envStrength * (1.0 - roughness) * combinedAo;
+        vec3 Fenv = FresnelSchlickRoughness(NdotV, F0, roughness);
+        vec3 envSample = sampleEnvironmentSpecular(R, roughness);
+        float envContrib = envStrength * (1.0 - roughness) * combinedAo;
+        // Reduce sky reflection on flat ground (N.y near 1) to avoid strong mirror look.
+        float flatFade = 1.0 - smoothstep(0.75, 0.98, N.y);
+        envContrib *= flatFade;
+        envSpec = envSample * Fenv * envContrib;
     }
 
     vec3 indirectDiffuse = giIrradiance * albedo * (1.0 - metallic);

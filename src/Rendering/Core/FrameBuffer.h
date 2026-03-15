@@ -63,8 +63,9 @@ struct FrameBuffer{
 
             glBindTexture(GL_TEXTURE_2D, depthTexture->getID());
 
-            // GL_DEPTH_COMPONENT24 is standard for precision
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+            // Use 32-bit float depth to keep deferred depth reconstruction stable on
+            // large, far flat surfaces where 24-bit precision caused visible banding.
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
             
             // Essential Texture Parameters for Depth
             // Linear filtering keeps post-process depth lookups (SSAO/DOF) stable across pixel edges.
@@ -127,7 +128,7 @@ struct FrameBuffer{
             // Resize Depth Texture
             if(depthTexture){
                 glBindTexture(GL_TEXTURE_2D, depthTexture->getID());
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
                 glBindTexture(GL_TEXTURE_2D, 0);
             }
 
@@ -228,7 +229,14 @@ struct FrameBuffer{
             auto fbuffer = std::make_shared<FrameBuffer>(width, height);
 
             fbuffer->gbufferAttachments.clear();
-            fbuffer->gbufferAttachments.reserve(4);
+            fbuffer->gbufferAttachments.reserve(3);
+
+            if(fbuffer->depthTexture && fbuffer->depthTexture->getID() != 0){
+                glBindTexture(GL_TEXTURE_2D, fbuffer->depthTexture->getID());
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                glBindTexture(GL_TEXTURE_2D, 0);
+            }
 
             auto createAttachment = [&](GLenum internalFormat, GLenum format, GLenum type) -> PTexture {
                 GLuint texId = 0;
@@ -266,28 +274,17 @@ struct FrameBuffer{
             }
 
             {
-                GBufferAttachment position;
-                // Large receivers (e.g. 200x200 ground planes) need full precision to avoid deferred-light banding.
-                position.internalFormat = GL_RGBA32F;
-                position.format = GL_RGBA;
-                position.type = GL_FLOAT;
-                position.texture = createAttachment(position.internalFormat, position.format, position.type);
-                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, position.texture->getID(), 0);
-                fbuffer->gbufferAttachments.push_back(position);
-            }
-
-            {
                 GBufferAttachment material;
                 material.internalFormat = GL_RGBA16F;
                 material.format = GL_RGBA;
                 material.type = GL_FLOAT;
                 material.texture = createAttachment(material.internalFormat, material.format, material.type);
-                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, material.texture->getID(), 0);
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, material.texture->getID(), 0);
                 fbuffer->gbufferAttachments.push_back(material);
             }
 
-            GLenum drawBuffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
-            glDrawBuffers(4, drawBuffers);
+            GLenum drawBuffers[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+            glDrawBuffers(3, drawBuffers);
             glReadBuffer(GL_COLOR_ATTACHMENT0);
 
             GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);

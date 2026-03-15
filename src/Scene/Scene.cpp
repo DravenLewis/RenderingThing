@@ -32,6 +32,7 @@
 
 namespace {
     const Math3D::Vec4 kSelectionOutlineColor(0.20392157f, 0.59607846f, 0.85882354f, 0.95f);
+    constexpr int kDeferredLightTileSize = 16;
 
     struct DeferredLightUploadCandidate {
         Light light;
@@ -478,6 +479,89 @@ namespace {
         const float normalizedDistance = distanceToCamera / range;
         const float distanceScore = 4.0f * (1.0f - Math3D::Clamp(normalizedDistance, 0.0f, 4.0f) * 0.25f);
         return intensityScore + rangeScore + distanceScore;
+    }
+
+    bool projectAabbToTileRect(const Math3D::Vec3& minV,
+                               const Math3D::Vec3& maxV,
+                               const Math3D::Mat4& clipMatrix,
+                               int viewportWidth,
+                               int viewportHeight,
+                               int tileSize,
+                               int& outMinTileX,
+                               int& outMinTileY,
+                               int& outMaxTileX,
+                               int& outMaxTileY){
+        if(viewportWidth <= 0 || viewportHeight <= 0 || tileSize <= 0){
+            return false;
+        }
+        if(!aabbIntersectsClipFrustum(minV, maxV, clipMatrix)){
+            return false;
+        }
+
+        std::array<glm::vec3, 8> corners;
+        fillAabbCorners(minV, maxV, corners);
+
+        const glm::mat4 m = static_cast<glm::mat4>(clipMatrix);
+        float minNdcX = 1.0f;
+        float minNdcY = 1.0f;
+        float maxNdcX = -1.0f;
+        float maxNdcY = -1.0f;
+        bool anyValidCorner = false;
+        bool fallbackToFullscreen = false;
+
+        for(const glm::vec3& corner : corners){
+            const glm::vec4 clip = m * glm::vec4(corner, 1.0f);
+            if(!std::isfinite(clip.x) || !std::isfinite(clip.y) || !std::isfinite(clip.z) || !std::isfinite(clip.w)){
+                fallbackToFullscreen = true;
+                break;
+            }
+            if(clip.w <= 1e-5f){
+                fallbackToFullscreen = true;
+                break;
+            }
+
+            const glm::vec3 ndc = glm::vec3(clip) / clip.w;
+            minNdcX = std::min(minNdcX, ndc.x);
+            minNdcY = std::min(minNdcY, ndc.y);
+            maxNdcX = std::max(maxNdcX, ndc.x);
+            maxNdcY = std::max(maxNdcY, ndc.y);
+            anyValidCorner = true;
+        }
+
+        const int tilesX = Math3D::Max(1, (viewportWidth + tileSize - 1) / tileSize);
+        const int tilesY = Math3D::Max(1, (viewportHeight + tileSize - 1) / tileSize);
+        if(fallbackToFullscreen || !anyValidCorner){
+            outMinTileX = 0;
+            outMinTileY = 0;
+            outMaxTileX = tilesX - 1;
+            outMaxTileY = tilesY - 1;
+            return true;
+        }
+
+        if(maxNdcX < -1.0f || minNdcX > 1.0f || maxNdcY < -1.0f || minNdcY > 1.0f){
+            return false;
+        }
+
+        minNdcX = Math3D::Clamp(minNdcX, -1.0f, 1.0f);
+        minNdcY = Math3D::Clamp(minNdcY, -1.0f, 1.0f);
+        maxNdcX = Math3D::Clamp(maxNdcX, -1.0f, 1.0f);
+        maxNdcY = Math3D::Clamp(maxNdcY, -1.0f, 1.0f);
+ 
+        
+        // Expand by one tile in pixel space so small camera movements don't cause
+        // lights to pop in/out of tiles at boundaries (reduces banding when camera
+        // position/look flickers between two values).
+        const float marginPx = static_cast<float>(tileSize);
+        const float minPx = std::max(0.0f, (minNdcX * 0.5f + 0.5f) * static_cast<float>(viewportWidth) - marginPx);
+        const float minPy = std::max(0.0f, (minNdcY * 0.5f + 0.5f) * static_cast<float>(viewportHeight) - marginPx);
+        const float maxPx = std::min(static_cast<float>(viewportWidth), (maxNdcX * 0.5f + 0.5f) * static_cast<float>(viewportWidth) + marginPx);
+        const float maxPy = std::min(static_cast<float>(viewportHeight), (maxNdcY * 0.5f + 0.5f) * static_cast<float>(viewportHeight) + marginPx);
+
+        outMinTileX = Math3D::Clamp(static_cast<int>(std::floor(minPx / static_cast<float>(tileSize))), 0, tilesX - 1);
+        outMinTileY = Math3D::Clamp(static_cast<int>(std::floor(minPy / static_cast<float>(tileSize))), 0, tilesY - 1);
+        outMaxTileX = Math3D::Clamp(static_cast<int>(std::floor(Math3D::Max(maxPx - 1.0f, 0.0f) / static_cast<float>(tileSize))), 0, tilesX - 1);
+        outMaxTileY = Math3D::Clamp(static_cast<int>(std::floor(Math3D::Max(maxPy - 1.0f, 0.0f) / static_cast<float>(tileSize))), 0, tilesY - 1);
+        return true;
     }
 
     PostProcessingEffectEntry* findPostEffectEntry(PostProcessingStackComponent* stack, PostProcessingEffectKind kind){
@@ -1714,9 +1798,24 @@ void Scene::updateSceneLights(){
         uploadCandidates.push_back(candidate);
     }
 
-    std::stable_sort(uploadCandidates.begin(), uploadCandidates.end(), [](const DeferredLightUploadCandidate& a, const DeferredLightUploadCandidate& b){
+    auto priorityGreater = [](const DeferredLightUploadCandidate& a, const DeferredLightUploadCandidate& b){
+        if(a.priority == b.priority){
+            return a.sourceIndex < b.sourceIndex;
+        }
         return a.priority > b.priority;
-    });
+    };
+
+    if(uploadCandidates.size() > MAX_LIGHTS){
+        std::partial_sort(
+            uploadCandidates.begin(),
+            uploadCandidates.begin() + MAX_LIGHTS,
+            uploadCandidates.end(),
+            priorityGreater
+        );
+        uploadCandidates.resize(MAX_LIGHTS);
+    }else{
+        std::sort(uploadCandidates.begin(), uploadCandidates.end(), priorityGreater);
+    }
 
     int remappedSelectedLightIndex = -1;
     for(const auto& candidate : uploadCandidates){
@@ -1772,9 +1871,13 @@ bool Scene::isDeferredCompatibleMaterial(const std::shared_ptr<Material>& materi
         return false;
     }
 
-    // Deferred path currently supports PBR data end-to-end.
-    // All other material families are rendered by forward fallback.
-    return (Material::GetAs<PBRMaterial>(material) != nullptr);
+    return (Material::GetAs<PBRMaterial>(material) != nullptr) ||
+           (Material::GetAs<MaterialDefaults::LitColorMaterial>(material) != nullptr) ||
+           (Material::GetAs<MaterialDefaults::LitImageMaterial>(material) != nullptr) ||
+           (Material::GetAs<MaterialDefaults::FlatColorMaterial>(material) != nullptr) ||
+           (Material::GetAs<MaterialDefaults::FlatImageMaterial>(material) != nullptr) ||
+           (Material::GetAs<MaterialDefaults::ColorMaterial>(material) != nullptr) ||
+           (Material::GetAs<MaterialDefaults::ImageMaterial>(material) != nullptr);
 }
 
 void Scene::ensureDeferredResources(PScreen screen){
@@ -1782,7 +1885,7 @@ void Scene::ensureDeferredResources(PScreen screen){
 
     int w = screen->getWidth();
     int h = screen->getHeight();
-    if(!gBuffer || gBuffer->getGBufferCount() < 4){
+    if(!gBuffer || gBuffer->getGBufferCount() < 3){
         gBuffer = FrameBuffer::CreateGBuffer(w, h);
         gBufferWidth = w;
         gBufferHeight = h;
@@ -1828,7 +1931,7 @@ void Scene::ensureDeferredResources(PScreen screen){
         auto vertexShader = AssetManager::Instance.getOrLoad("@assets/shader/Shader_Vert_Lit.vert");
         auto fragmentShader = AssetManager::Instance.getOrLoad("@assets/shader/Shader_Frag_GBuffer.frag");
         if(vertexShader && fragmentShader){
-            gBufferShader = ShaderCacheManager::INSTANCE.getOrCompile("GBufferPass_v2", vertexShader->asString(), fragmentShader->asString());
+            gBufferShader = ShaderCacheManager::INSTANCE.getOrCompile("GBufferPass_v3", vertexShader->asString(), fragmentShader->asString());
             if(gBufferShader && gBufferShader->getID() == 0){
                 LogBot.Log(LOG_ERRO, "Failed to link GBufferPass shader: \n%s", gBufferShader->getLog().c_str());
             }
@@ -1841,7 +1944,7 @@ void Scene::ensureDeferredResources(PScreen screen){
         auto vertexShader = AssetManager::Instance.getOrLoad("@assets/shader/Shader_Vert_Default.vert");
         auto fragmentShader = AssetManager::Instance.getOrLoad("@assets/shader/Shader_Frag_DeferredLight.frag");
         if(vertexShader && fragmentShader){
-            deferredLightShader = ShaderCacheManager::INSTANCE.getOrCompile("DeferredLightPass_v6", vertexShader->asString(), fragmentShader->asString());
+            deferredLightShader = ShaderCacheManager::INSTANCE.getOrCompile("DeferredLightPass_v7", vertexShader->asString(), fragmentShader->asString());
             if(deferredLightShader && deferredLightShader->getID() == 0){
                 LogBot.Log(LOG_ERRO, "Failed to link DeferredLightPass shader: \n%s", deferredLightShader->getLog().c_str());
             }
@@ -1859,6 +1962,123 @@ void Scene::ensureDeferredResources(PScreen screen){
             LogBot.Log(LOG_ERRO, "Deferred quad creation failed: unknown exception");
         }
     }
+}
+
+void Scene::ensureDeferredLightTileResources(int width, int height){
+    GLint maxTextureSize = 16384;
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+    if(maxTextureSize <= 0){
+        maxTextureSize = 16384;
+    }
+
+    int tileSize = kDeferredLightTileSize;
+    int tilesX = Math3D::Max(1, (width + tileSize - 1) / tileSize);
+    int tilesY = Math3D::Max(1, (height + tileSize - 1) / tileSize);
+    int tileCount = tilesX * tilesY;
+    while(tileCount > maxTextureSize && tileSize < 256){
+        tileSize += kDeferredLightTileSize;
+        tilesX = Math3D::Max(1, (width + tileSize - 1) / tileSize);
+        tilesY = Math3D::Max(1, (height + tileSize - 1) / tileSize);
+        tileCount = tilesX * tilesY;
+    }
+
+    const int tileStride = MAX_LIGHTS + 1;
+
+    if(!deferredLightTileTexture ||
+       deferredLightTileGridWidth != tilesX ||
+       deferredLightTileGridHeight != tilesY ||
+       deferredLightTileTexture->getWidth() != tileStride ||
+       deferredLightTileTexture->getHeight() != tileCount){
+        deferredLightTileTexture = Texture::CreateRenderTarget(tileStride, tileCount, GL_R32I, GL_RED_INTEGER, GL_INT);
+        deferredLightTileGridWidth = tilesX;
+        deferredLightTileGridHeight = tilesY;
+        deferredLightTileSize = tileSize;
+    }else{
+        deferredLightTileSize = tileSize;
+    }
+
+    deferredLightTileCpuData.assign(static_cast<size_t>(tileCount) * tileStride, -1);
+    for(int tileIndex = 0; tileIndex < tileCount; ++tileIndex){
+        deferredLightTileCpuData[static_cast<size_t>(tileIndex) * tileStride] = 0;
+    }
+}
+
+bool Scene::buildDeferredLightTiles(PCamera cam, const std::vector<Light>& lights){
+    if(!cam || gBufferWidth <= 0 || gBufferHeight <= 0){
+        return false;
+    }
+
+    ensureDeferredLightTileResources(gBufferWidth, gBufferHeight);
+    if(!deferredLightTileTexture || deferredLightTileTexture->getID() == 0 || deferredLightTileCpuData.empty()){
+        return false;
+    }
+
+    const int tilesX = deferredLightTileGridWidth;
+    const int tilesY = deferredLightTileGridHeight;
+    const int tileStride = MAX_LIGHTS + 1;
+    const Math3D::Mat4 clipMatrix = cam->getProjectionMatrix() * cam->getViewMatrix();
+
+    for(size_t lightIndex = 0; lightIndex < lights.size() && lightIndex < MAX_LIGHTS; ++lightIndex){
+        const Light& light = lights[lightIndex];
+        int minTileX = 0;
+        int minTileY = 0;
+        int maxTileX = tilesX - 1;
+        int maxTileY = tilesY - 1;
+
+        if(light.type != LightType::DIRECTIONAL){
+            float influenceRange = Math3D::Max(light.range, 0.1f);
+            if(light.shadowRange > 0.0f){
+                influenceRange = Math3D::Max(influenceRange, light.shadowRange);
+            }
+
+            const Math3D::Vec3 extent(influenceRange, influenceRange, influenceRange);
+            if(!projectAabbToTileRect(
+                light.position - extent,
+                light.position + extent,
+                clipMatrix,
+                gBufferWidth,
+                gBufferHeight,
+                deferredLightTileSize,
+                minTileX,
+                minTileY,
+                maxTileX,
+                maxTileY
+            )){
+                continue;
+            }
+        }
+
+        for(int tileY = minTileY; tileY <= maxTileY; ++tileY){
+            for(int tileX = minTileX; tileX <= maxTileX; ++tileX){
+                const int tileIndex = tileX + (tileY * tilesX);
+                int& lightCount = deferredLightTileCpuData[static_cast<size_t>(tileIndex) * tileStride];
+                if(lightCount < 0){
+                    lightCount = 0;
+                }
+                if(lightCount >= MAX_LIGHTS){
+                    continue;
+                }
+                const size_t writeIndex = (static_cast<size_t>(tileIndex) * tileStride) + 1 + static_cast<size_t>(lightCount);
+                deferredLightTileCpuData[writeIndex] = static_cast<int>(lightIndex);
+                ++lightCount;
+            }
+        }
+    }
+
+    glBindTexture(GL_TEXTURE_2D, deferredLightTileTexture->getID());
+    glTexSubImage2D(
+        GL_TEXTURE_2D,
+        0,
+        0,
+        0,
+        deferredLightTileTexture->getWidth(),
+        deferredLightTileTexture->getHeight(),
+        GL_RED_INTEGER,
+        GL_INT,
+        deferredLightTileCpuData.data()
+    );
+    glBindTexture(GL_TEXTURE_2D, 0);
+    return true;
 }
 
 Scene::~Scene(){
@@ -1936,6 +2156,7 @@ void Scene::drawDeferredGeometry(PCamera cam){
     gBufferShader->bind();
     const Math3D::Mat4 viewMatrix = cam->getViewMatrix();
     const Math3D::Mat4 projectionMatrix = cam->getProjectionMatrix();
+    const Math3D::Mat4 clipMatrix = projectionMatrix * viewMatrix;
     gBufferShader->setUniformFast("u_view", Uniform<Math3D::Mat4>(viewMatrix));
     gBufferShader->setUniformFast("u_projection", Uniform<Math3D::Mat4>(projectionMatrix));
     gBufferShader->setUniformFast("u_viewPos", Uniform<Math3D::Vec3>(cam->transform().position));
@@ -1948,6 +2169,7 @@ void Scene::drawDeferredGeometry(PCamera cam){
         if(!item.mesh || !item.material) continue;
         if(item.isTransparent) continue;
         if(!item.isDeferredCompatible) continue;
+        if(item.hasBounds && !aabbIntersectsClipFrustum(item.boundsMin, item.boundsMax, clipMatrix)) continue;
         deferredItems.push_back(&item);
     }
     std::sort(deferredItems.begin(), deferredItems.end(), [](const RenderItem* a, const RenderItem* b){
@@ -2132,7 +2354,7 @@ void Scene::drawDeferredLighting(PFrameBuffer targetBuffer,
                                  const std::shared_ptr<DeferredSSAO>& ssaoPass,
                                  const DeferredSSAOSettings* ssaoSettings,
                                  PTexture giTexture,
-                                 int lightPassMode){
+                                  int lightPassMode){
     if(!targetBuffer || !cam || !gBuffer || !deferredLightShader || deferredLightShader->getID() == 0 || !deferredQuad) return;
 
     targetBuffer->bind();
@@ -2145,30 +2367,51 @@ void Scene::drawDeferredLighting(PFrameBuffer targetBuffer,
 
     deferredLightShader->bind();
 
+    const Math3D::Mat4 viewMatrix = cam->getViewMatrix();
+    const Math3D::Mat4 projectionMatrix = cam->getProjectionMatrix();
+    const Math3D::Mat4 inverseProjectionMatrix = Math3D::Mat4(glm::inverse(glm::mat4(projectionMatrix)));
+    const Math3D::Mat4 inverseViewMatrix = Math3D::Mat4(glm::inverse(glm::mat4(viewMatrix)));
+    const int ssaoDebugView = (lightPassMode == 0 && ssaoSettings) ? Math3D::Clamp(ssaoSettings->debugView, 0, 4) : 0;
     deferredLightShader->setUniformFast("u_viewPos", Uniform<Math3D::Vec3>(cam->transform().position));
-    deferredLightShader->setUniformFast("u_cameraView", Uniform<Math3D::Mat4>(cam->getViewMatrix()));
+    deferredLightShader->setUniformFast("u_cameraView", Uniform<Math3D::Mat4>(viewMatrix));
+    deferredLightShader->setUniformFast("u_invProjection", Uniform<Math3D::Mat4>(inverseProjectionMatrix));
+    deferredLightShader->setUniformFast("u_invView", Uniform<Math3D::Mat4>(inverseViewMatrix));
     deferredLightShader->setUniformFast("gAlbedo", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(gBuffer->getGBufferTexture(0), 0)));
     deferredLightShader->setUniformFast("gNormal", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(gBuffer->getGBufferTexture(1), 1)));
-    deferredLightShader->setUniformFast("gPosition", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(gBuffer->getGBufferTexture(2), 2)));
-    deferredLightShader->setUniformFast("gMaterial", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(gBuffer->getGBufferTexture(3), 3)));
+    deferredLightShader->setUniformFast("gMaterial", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(gBuffer->getGBufferTexture(2), 2)));
+    deferredLightShader->setUniformFast("gDepth", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(gBuffer->getDepthTexture(), 3)));
+    deferredLightShader->setUniformFast("gTileLightData", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(deferredLightTileTexture, 4)));
     PTexture ssaoRawTex = ssaoPass ? ssaoPass->getRawAoTexture() : nullptr;
     PTexture ssaoBlurTex = ssaoPass ? ssaoPass->getBlurAoTexture() : nullptr;
     int useSsao = (ssaoRawTex && ssaoBlurTex) ? 1 : 0;
-    deferredLightShader->setUniformFast("gSsaoRaw", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(ssaoRawTex, 4)));
+    PTexture sharedAuxTexture = giTexture;
+    if(!sharedAuxTexture || ssaoDebugView == 2){
+        sharedAuxTexture = ssaoRawTex;
+    }
+    deferredLightShader->setUniformFast("gSsaoRaw", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(sharedAuxTexture, 6)));
     deferredLightShader->setUniformFast("gSsao", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(ssaoBlurTex, 5)));
-    deferredLightShader->setUniformFast("gGi", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(giTexture, 6)));
+    deferredLightShader->setUniformFast("gGi", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(sharedAuxTexture, 6)));
     deferredLightShader->setUniformFast("u_useSsao", Uniform<int>(useSsao));
     deferredLightShader->setUniformFast("u_ssaoIntensity", Uniform<float>(ssaoSettings ? Math3D::Clamp(ssaoSettings->intensity, 0.0f, 10.0f) : 0.0f));
     deferredLightShader->setUniformFast("u_useGi", Uniform<int>(giTexture ? 1 : 0));
-    deferredLightShader->setUniformFast("u_ssaoDebugView", Uniform<int>((lightPassMode == 0 && ssaoSettings) ? Math3D::Clamp(ssaoSettings->debugView, 0, 4) : 0));
+    deferredLightShader->setUniformFast("u_ssaoDebugView", Uniform<int>(ssaoDebugView));
     deferredLightShader->setUniformFast("u_lightPassMode", Uniform<int>(lightPassMode));
+    deferredLightShader->setUniformFast("u_useLightTiles", Uniform<int>(
+        (deferredLightTileTexture && deferredLightTileTexture->getID() != 0 &&
+         deferredLightTileGridWidth > 0 && deferredLightTileGridHeight > 0) ? 1 : 0
+    ));
+    deferredLightShader->setUniformFast("u_tileGrid", Uniform<Math3D::Vec2>(Math3D::Vec2(
+        static_cast<float>(deferredLightTileGridWidth),
+        static_cast<float>(deferredLightTileGridHeight)
+    )));
+    deferredLightShader->setUniformFast("u_tileSize", Uniform<int>(deferredLightTileSize));
 
     auto env = Screen::GetCurrentEnvironment();
     PCubeMap envMap = (env && env->getSkyBox()) ? env->getSkyBox()->getCubeMap() : nullptr;
     deferredLightShader->setUniformFast("u_useEnvMap", Uniform<int>(envMap ? 1 : 0));
     deferredLightShader->setUniformFast("u_envMap", Uniform<GLUniformUpload::CubeMapSlot>(GLUniformUpload::CubeMapSlot(envMap, 7)));
     static const std::vector<Light> EMPTY_LIGHTS;
-    const std::vector<Light>& lights = env ? env->getLightsForUpload() : EMPTY_LIGHTS;
+    const std::vector<Light>& lights = (env && env->isLightingEnabled()) ? env->getLightsForUpload() : EMPTY_LIGHTS;
     LightUniformUploader::UploadLights(deferredLightShader, lights);
     ShadowRenderer::BindShadowSamplers(deferredLightShader);
 
@@ -2304,9 +2547,9 @@ void Scene::renderDeferred(PScreen screen, PCamera cam){
     ensureDeferredResources(screen);
     static bool loggedInvalid = false;
     bool invalid = false;
-    if(!gBuffer || gBuffer->getGBufferCount() < 4){
+    if(!gBuffer || gBuffer->getGBufferCount() < 3){
         invalid = true;
-    }else if(!gBuffer->getGBufferTexture(0) || !gBuffer->getGBufferTexture(1) || !gBuffer->getGBufferTexture(2) || !gBuffer->getGBufferTexture(3)){
+    }else if(!gBuffer->getGBufferTexture(0) || !gBuffer->getGBufferTexture(1) || !gBuffer->getGBufferTexture(2) || !gBuffer->getDepthTexture()){
         invalid = true;
     }
 
@@ -2385,7 +2628,7 @@ void Scene::renderDeferred(PScreen screen, PCamera cam){
             gBufferHeight,
             deferredQuad,
             gBuffer->getGBufferTexture(1),
-            gBuffer->getGBufferTexture(2),
+            gBuffer->getDepthTexture(),
             cam->getViewMatrix(),
             cam->getProjectionMatrix(),
             ssaoSettings
@@ -2397,6 +2640,9 @@ void Scene::renderDeferred(PScreen screen, PCamera cam){
     PTexture giTexture = nullptr;
     auto env = screen ? screen->getEnvironment() : nullptr;
     PCubeMap giEnvMap = (env && env->getSkyBox()) ? env->getSkyBox()->getCubeMap() : nullptr;
+    static const std::vector<Light> EMPTY_LIGHTS;
+    const std::vector<Light>& uploadedLights = (env && env->isLightingEnabled()) ? env->getLightsForUpload() : EMPTY_LIGHTS;
+    buildDeferredLightTiles(cam, uploadedLights);
     const Math3D::Mat4 inverseViewMatrix = Math3D::Mat4(glm::inverse(glm::mat4(cam->getViewMatrix())));
     if(useSsao &&
        deferredQuad &&
@@ -2427,7 +2673,7 @@ void Scene::renderDeferred(PScreen screen, PCamera cam){
             gBufferHeight,
             deferredQuad,
             gBuffer->getGBufferTexture(1),
-            gBuffer->getGBufferTexture(2),
+            gBuffer->getDepthTexture(),
             deferredDirectLightBuffer->getTexture(),
             giEnvMap,
             cam->getViewMatrix(),
@@ -2594,8 +2840,7 @@ void Scene::drawModels3D(PCamera cam, RenderFilter filter, bool skipDeferredComp
     const auto& snapshot = renderSnapshots[frontIndex];
     const Math3D::Mat4 viewMatrix = cam->getViewMatrix();
     const Math3D::Mat4 projectionMatrix = cam->getProjectionMatrix();
-    const bool markDeferredIncompatible = (GameEngine::Engine &&
-                                           GameEngine::Engine->getRenderStrategy() == EngineRenderStrategy::Deferred);
+    const Math3D::Mat4 clipMatrix = projectionMatrix * viewMatrix;
     bool cullStateKnown = false;
     bool cullEnabled = true;
     std::shared_ptr<Material> lastBoundMaterial = nullptr;
@@ -2605,20 +2850,7 @@ void Scene::drawModels3D(PCamera cam, RenderFilter filter, bool skipDeferredComp
         if(filter == RenderFilter::Opaque && item.isTransparent) continue;
         if(filter == RenderFilter::Transparent && !item.isTransparent) continue;
         if(skipDeferredCompatible && item.isDeferredCompatible) continue;
-
-        std::shared_ptr<Material> drawMaterial = item.material;
-        if(markDeferredIncompatible && !item.isDeferredCompatible){
-            if(!deferredIncompatibleMaterial){
-                deferredIncompatibleMaterial = MaterialDefaults::ColorMaterial::Create(Color::MAGENTA);
-                if(deferredIncompatibleMaterial){
-                    deferredIncompatibleMaterial->setCastsShadows(false);
-                    deferredIncompatibleMaterial->setReceivesShadows(false);
-                }
-            }
-            if(deferredIncompatibleMaterial){
-                drawMaterial = deferredIncompatibleMaterial;
-            }
-        }
+        if(item.hasBounds && !aabbIntersectsClipFrustum(item.boundsMin, item.boundsMax, clipMatrix)) continue;
 
         if(!cullStateKnown || cullEnabled != item.enableBackfaceCulling){
             if(item.enableBackfaceCulling){
@@ -2632,10 +2864,10 @@ void Scene::drawModels3D(PCamera cam, RenderFilter filter, bool skipDeferredComp
             cullStateKnown = true;
         }
 
-        auto shader = drawMaterial ? drawMaterial->getShader() : nullptr;
-        if(drawMaterial != lastBoundMaterial){
-            drawMaterial->bind();
-            lastBoundMaterial = drawMaterial;
+        auto shader = item.material ? item.material->getShader() : nullptr;
+        if(item.material != lastBoundMaterial){
+            item.material->bind();
+            lastBoundMaterial = item.material;
             if(shader && shader->getID() != 0){
                 shader->setUniformFast("u_view", Uniform<Math3D::Mat4>(viewMatrix));
                 shader->setUniformFast("u_projection", Uniform<Math3D::Mat4>(projectionMatrix));
