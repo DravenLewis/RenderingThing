@@ -34,6 +34,7 @@ enum class AssetKind : int {
     ShaderGeneric,
     ShaderAsset,
     SkyboxAsset,
+    EnvironmentAsset,
     LensFlareAsset,
     EffectAsset,
     MaterialAsset,

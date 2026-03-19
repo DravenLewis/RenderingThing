@@ -23,7 +23,7 @@ void setPrefabError(std::string* outError, const std::string& message){
     }
 }
 
-bool parseOptionalObjectJson(const JsonSchema::RawJsonValue& raw, JsonUtils::Document& outDoc, yyjson_val*& outRoot, std::string* outError){
+bool parseOptionalObjectJson(const JsonSchema::RawJsonValue& raw, JsonUtils::Document& outDoc, JsonUtils::JsonVal*& outRoot, std::string* outError){
     outRoot = nullptr;
     if(!raw.hasValue || raw.json.empty()){
         return true;
@@ -42,7 +42,7 @@ bool parseOptionalObjectJson(const JsonSchema::RawJsonValue& raw, JsonUtils::Doc
     return true;
 }
 
-bool captureJsonValue(yyjson_val* value, std::string& outJson, std::string* outError, const char* debugName){
+bool captureJsonValue(JsonUtils::JsonVal* value, std::string& outJson, std::string* outError, const char* debugName){
     if(!value){
         setPrefabError(outError, std::string("Cannot capture null JSON value for '") + (debugName ? debugName : "value") + "'.");
         return false;
@@ -91,7 +91,7 @@ bool parseVariantDefinition(const JsonSchema::PrefabSchema& schema, ParsedVarian
         return false;
     }
 
-    yyjson_val* root = doc.root();
+    JsonUtils::JsonVal* root = doc.root();
     if(!root || !yyjson_is_obj(root)){
         setPrefabError(outError, "Variant metadata must be a JSON object.");
         return false;
@@ -114,7 +114,7 @@ bool parseVariantDefinition(const JsonSchema::PrefabSchema& schema, ParsedVarian
     }
 
     if(JsonUtils::ObjHasKey(root, "overrides")){
-        yyjson_val* overrideValue = JsonUtils::ObjGet(root, "overrides");
+        JsonUtils::JsonVal* overrideValue = JsonUtils::ObjGet(root, "overrides");
         if(!overrideValue || !yyjson_is_obj(overrideValue)){
             setPrefabError(outError, "variant.overrides must be an object when present.");
             return false;
@@ -274,7 +274,7 @@ bool applyPayloadMergePatch(
         }
         return false;
     }
-    yyjson_val* patchRoot = patchDoc.root();
+    JsonUtils::JsonVal* patchRoot = patchDoc.root();
     if(!patchRoot || !yyjson_is_obj(patchRoot)){
         setPrefabError(outError, "Variant override patch must be a JSON object.");
         return false;
@@ -298,7 +298,7 @@ bool applyPayloadMergePatch(
 
     std::string sourceType;
     int sourceVersion = 0;
-    yyjson_val* sourcePayload = nullptr;
+    JsonUtils::JsonVal* sourcePayload = nullptr;
     if(!JsonUtils::ReadStandardDocumentHeader(sourceDoc, sourceType, sourceVersion, &sourcePayload, outError)){
         if(outError && !outError->empty()){
             *outError = "Failed to read schema header before applying variant override patch: " + *outError;
@@ -316,7 +316,7 @@ bool applyPayloadMergePatch(
         return false;
     }
 
-    yyjson_mut_val* patchedPayload = yyjson_merge_patch(patchedDoc.get(), sourcePayload, patchRoot);
+    JsonUtils::JsonMutVal* patchedPayload = yyjson_merge_patch(patchedDoc.get(), sourcePayload, patchRoot);
     if(!patchedPayload){
         setPrefabError(outError, "Failed to apply variant override patch to schema payload.");
         return false;
@@ -436,7 +436,7 @@ bool resolveSchemaForInstantiationRecursive(
 
 bool buildPrefabSettingsRawJson(const PrefabIO::PrefabSettingsOptions& settings, JsonSchema::RawJsonValue& outSettings, std::string* outError){
     JsonUtils::MutableDocument doc;
-    yyjson_mut_val* root = doc.setRootObject();
+    JsonUtils::JsonMutVal* root = doc.setRootObject();
     if(!root){
         setPrefabError(outError, "Failed to allocate prefabSettings JSON object.");
         return false;
@@ -450,7 +450,7 @@ bool buildPrefabSettingsRawJson(const PrefabIO::PrefabSettingsOptions& settings,
         return false;
     }
 
-    yyjson_mut_val* exposedArr = yyjson_mut_obj_add_arr(doc.get(), root, "exposedProperties");
+    JsonUtils::JsonMutVal* exposedArr = yyjson_mut_obj_add_arr(doc.get(), root, "exposedProperties");
     if(!exposedArr){
         setPrefabError(outError, "Failed to create prefabSettings.exposedProperties array.");
         return false;
@@ -486,7 +486,7 @@ bool buildVariantRawJson(const PrefabIO::PrefabVariantOptions& variant, JsonSche
     }
 
     JsonUtils::MutableDocument doc;
-    yyjson_mut_val* root = doc.setRootObject();
+    JsonUtils::JsonMutVal* root = doc.setRootObject();
     if(!root){
         setPrefabError(outError, "Failed to allocate variant JSON object.");
         return false;
@@ -500,12 +500,12 @@ bool buildVariantRawJson(const PrefabIO::PrefabVariantOptions& variant, JsonSche
     }
 
     JsonUtils::Document overrideDoc;
-    yyjson_val* overrideRoot = nullptr;
+    JsonUtils::JsonVal* overrideRoot = nullptr;
     if(!parseOptionalObjectJson(variant.overrides, overrideDoc, overrideRoot, outError)){
         return false;
     }
     if(overrideRoot){
-        yyjson_mut_val* copied = yyjson_val_mut_copy(doc.get(), overrideRoot);
+        JsonUtils::JsonMutVal* copied = yyjson_val_mut_copy(doc.get(), overrideRoot);
         if(!copied){
             setPrefabError(outError, "Failed to copy variant overrides payload.");
             return false;
@@ -539,7 +539,7 @@ std::string readVariantBasePrefabRef(const JsonSchema::PrefabSchema& schema){
     if(!JsonUtils::LoadDocumentFromText(schema.variant.json, doc, &error)){
         return std::string();
     }
-    yyjson_val* root = doc.root();
+    JsonUtils::JsonVal* root = doc.root();
     if(!root || !yyjson_is_obj(root)){
         return std::string();
     }

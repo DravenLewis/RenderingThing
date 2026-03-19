@@ -121,6 +121,21 @@ namespace {
         dst[dstSize - 1] = '\0';
     }
 
+    void sanitizeEnvironmentSettings(EnvironmentSettings& settings){
+        settings.fogStart = Math3D::Max(0.0f, settings.fogStart);
+        settings.fogStop = Math3D::Max(settings.fogStart, settings.fogStop);
+        settings.fogEnd = Math3D::Max(settings.fogStop, settings.fogEnd);
+        settings.ambientIntensity = Math3D::Clamp(settings.ambientIntensity, 0.0f, 32.0f);
+        settings.rayleighStrength = Math3D::Max(0.0f, settings.rayleighStrength);
+        settings.mieStrength = Math3D::Max(0.0f, settings.mieStrength);
+        settings.mieAnisotropy = Math3D::Clamp(settings.mieAnisotropy, 0.0f, 0.99f);
+        if(settings.sunDirection.length() <= Math3D::EPSILON){
+            settings.sunDirection = Math3D::Vec3(0.0f, -1.0f, 0.0f);
+        }else{
+            settings.sunDirection = settings.sunDirection.normalize();
+        }
+    }
+
     bool tryParseStableEntityId(const std::string& value, std::uint64_t& outId){
         if(value.empty()){
             return false;
@@ -174,6 +189,7 @@ namespace {
         if(dynamic_cast<const RigidBodyComponent*>(component)){ return "RigidBodyComponent"; }
         if(dynamic_cast<const CameraComponent*>(component)){ return "CameraComponent"; }
         if(dynamic_cast<const SkyboxComponent*>(component)){ return "SkyboxComponent"; }
+        if(dynamic_cast<const EnvironmentComponent*>(component)){ return "EnvironmentComponent"; }
         if(dynamic_cast<const SSAOComponent*>(component)){ return "SSAOComponent"; }
         if(dynamic_cast<const DepthOfFieldComponent*>(component)){ return "DepthOfFieldComponent"; }
         if(dynamic_cast<const BloomComponent*>(component)){ return "BloomComponent"; }
@@ -200,6 +216,7 @@ namespace {
         if(typeName == "RigidBodyComponent"){ manager->removeECSComponent<RigidBodyComponent>(entity); return true; }
         if(typeName == "CameraComponent"){ manager->removeECSComponent<CameraComponent>(entity); return true; }
         if(typeName == "SkyboxComponent"){ manager->removeECSComponent<SkyboxComponent>(entity); return true; }
+        if(typeName == "EnvironmentComponent"){ manager->removeECSComponent<EnvironmentComponent>(entity); return true; }
         if(typeName == "SSAOComponent"){ manager->removeECSComponent<SSAOComponent>(entity); return true; }
         if(typeName == "DepthOfFieldComponent"){ manager->removeECSComponent<DepthOfFieldComponent>(entity); return true; }
         if(typeName == "BloomComponent"){ manager->removeECSComponent<BloomComponent>(entity); return true; }
@@ -448,6 +465,89 @@ namespace {
         return panelMax.y + kPanelGapY;
     }
 
+    bool applySceneSettingsRawJsonLocal(
+        PScene scene,
+        const JsonSchema::RawJsonValue& settings,
+        const std::unordered_map<std::uint64_t, NeoECS::ECSEntity*>& snapshotIdToEntity,
+        std::string* outError
+    ){
+        if(!scene || !scene->getECS() || !settings.hasValue || settings.json.empty()){
+            return true;
+        }
+
+        JsonUtils::Document doc;
+        if(!JsonUtils::LoadDocumentFromText(settings.json, doc, outError)){
+            if(outError && !outError->empty()){
+                *outError = "Failed to parse sceneSettings JSON: " + *outError;
+            }
+            return false;
+        }
+        JsonUtils::JsonVal* root = doc.root();
+        if(!root || !yyjson_is_obj(root)){
+            if(outError){
+                *outError = "sceneSettings must be a JSON object.";
+            }
+            return false;
+        }
+
+        bool outlineEnabled = scene->isOutlineEnabled();
+        JsonUtils::TryGetBool(root, "outlineEnabled", outlineEnabled);
+        scene->setOutlineEnabled(outlineEnabled);
+
+        std::uint64_t selectedSnapshotId = 0;
+        if(JsonUtils::TryGetUInt64(root, "selectedEntitySnapshotId", selectedSnapshotId)){
+            auto selectedIt = snapshotIdToEntity.find(selectedSnapshotId);
+            if(selectedIt != snapshotIdToEntity.end() && selectedIt->second){
+                scene->setSelectedEntityId(selectedIt->second->getNodeUniqueID());
+            }
+        }else{
+            std::string selectedEntityId;
+            if(JsonUtils::TryGetString(root, "selectedEntityId", selectedEntityId) && !selectedEntityId.empty()){
+                auto* selectedEntity = scene->getECS()->getEntityManager()->getSpecificEntity(selectedEntityId);
+                if(selectedEntity){
+                    scene->setSelectedEntityId(selectedEntityId);
+                }
+            }
+        }
+
+        std::uint64_t preferredCameraSnapshotId = 0;
+        if(JsonUtils::TryGetUInt64(root, "preferredCameraSnapshotId", preferredCameraSnapshotId)){
+            auto preferredIt = snapshotIdToEntity.find(preferredCameraSnapshotId);
+            if(preferredIt != snapshotIdToEntity.end() && preferredIt->second){
+                auto* cameraComp = scene->getECS()->getComponentManager()->getECSComponent<CameraComponent>(preferredIt->second);
+                if(cameraComp && IsComponentActive(cameraComp) && cameraComp->camera){
+                    scene->setPreferredCamera(cameraComp->camera, true);
+                }
+            }
+        }
+
+        return true;
+    }
+
+    void ensurePreferredCameraAfterSceneLoad(PScene scene){
+        if(!scene || scene->getPreferredCamera() || !scene->getECS()){
+            return;
+        }
+        auto* manager = scene->getECS()->getComponentManager();
+        auto* entityManager = scene->getECS()->getEntityManager();
+        if(!manager || !entityManager){
+            return;
+        }
+
+        const auto& entities = entityManager->getEntities();
+        for(const auto& entityPtr : entities){
+            NeoECS::ECSEntity* entity = entityPtr.get();
+            if(!entity){
+                continue;
+            }
+            auto* cameraComp = manager->getECSComponent<CameraComponent>(entity);
+            if(cameraComp && cameraComp->camera && IsComponentActive(cameraComp)){
+                scene->setPreferredCamera(cameraComp->camera, true);
+                return;
+            }
+        }
+    }
+
 }
 
 EditorScene::EditorScene(RenderWindow* window, PScene targetScene)
@@ -483,7 +583,7 @@ bool EditorScene::buildSceneHistoryEditorStateRawJson(JsonSchema::RawJsonValue& 
     outEditorState.json = "{}";
 
     JsonUtils::MutableDocument doc;
-    yyjson_mut_val* root = doc.setRootObject();
+    JsonUtils::JsonMutVal* root = doc.setRootObject();
     if(!root){
         if(outError){
             *outError = "Failed to allocate editor state JSON root.";
@@ -491,7 +591,7 @@ bool EditorScene::buildSceneHistoryEditorStateRawJson(JsonSchema::RawJsonValue& 
         return false;
     }
 
-    yyjson_mut_val* shadowDebug = yyjson_mut_obj_add_obj(doc.get(), root, "shadowDebug");
+    JsonUtils::JsonMutVal* shadowDebug = yyjson_mut_obj_add_obj(doc.get(), root, "shadowDebug");
     if(!shadowDebug){
         if(outError){
             *outError = "Failed to allocate editorState.shadowDebug.";
@@ -509,6 +609,23 @@ bool EditorScene::buildSceneHistoryEditorStateRawJson(JsonSchema::RawJsonValue& 
        !JsonUtils::MutObjAddFloat(doc.get(), shadowDebug, "receiverNormalBlend", receiverNormalBlend)){
         if(outError){
             *outError = "Failed to serialize editor shadow debug state.";
+        }
+        return false;
+    }
+
+    JsonUtils::JsonMutVal* sceneView = yyjson_mut_obj_add_obj(doc.get(), root, "sceneView");
+    if(!sceneView){
+        if(outError){
+            *outError = "Failed to allocate editorState.sceneView.";
+        }
+        return false;
+    }
+
+    if(!JsonUtils::MutObjAddBool(doc.get(), sceneView, "showGrid", showSceneGrid) ||
+       !JsonUtils::MutObjAddBool(doc.get(), sceneView, "showGizmos", showSceneGizmos) ||
+       !JsonUtils::MutObjAddBool(doc.get(), sceneView, "showPerformanceInfo", showScenePerformanceInfo)){
+        if(outError){
+            *outError = "Failed to serialize editor scene view state.";
         }
         return false;
     }
@@ -536,13 +653,13 @@ void EditorScene::applySceneHistoryEditorStateRawJson(const JsonSchema::RawJsonV
         return;
     }
 
-    yyjson_val* root = doc.root();
+    JsonUtils::JsonVal* root = doc.root();
     if(!root || !yyjson_is_obj(root)){
         LogBot.Log(LOG_WARN, "Editor state JSON root must be an object.");
         return;
     }
 
-    if(yyjson_val* shadowDebug = JsonUtils::ObjGetObject(root, "shadowDebug")){
+    if(JsonUtils::JsonVal* shadowDebug = JsonUtils::ObjGetObject(root, "shadowDebug")){
         bool globalOverrideEnabled = ShadowRenderer::GetGlobalDebugOverrideEnabled();
         int globalOverrideMode = Math3D::Clamp(ShadowRenderer::GetGlobalDebugOverrideMode(), 1, 3);
         float cascadeKernelMarginTexels = ShadowRenderer::GetDirectionalCascadeKernelMarginTexels();
@@ -557,6 +674,12 @@ void EditorScene::applySceneHistoryEditorStateRawJson(const JsonSchema::RawJsonV
         ShadowRenderer::SetGlobalDebugOverrideMode(Math3D::Clamp(globalOverrideMode, 1, 3));
         ShadowRenderer::SetDirectionalCascadeKernelMarginTexels(Math3D::Clamp(cascadeKernelMarginTexels, 0.0f, 32.0f));
         ShadowRenderer::SetShadowReceiverNormalBlend(Math3D::Clamp(receiverNormalBlend, 0.0f, 1.0f));
+    }
+
+    if(JsonUtils::JsonVal* sceneView = JsonUtils::ObjGetObject(root, "sceneView")){
+        JsonUtils::TryGetBool(sceneView, "showGrid", showSceneGrid);
+        JsonUtils::TryGetBool(sceneView, "showGizmos", showSceneGizmos);
+        JsonUtils::TryGetBool(sceneView, "showPerformanceInfo", showScenePerformanceInfo);
     }
 }
 
@@ -601,7 +724,7 @@ bool EditorScene::buildCurrentEditSnapshot(JsonSchema::SceneSchema& outSchema,
             return false;
         }
 
-        yyjson_mut_val* root = mutableSceneSettings.root();
+        JsonUtils::JsonMutVal* root = mutableSceneSettings.root();
         if(root && yyjson_mut_is_obj(root)){
             (void)yyjson_mut_obj_remove_key(root, "selectedEntitySnapshotId");
             (void)yyjson_mut_obj_remove_key(root, "selectedEntityId");
@@ -1461,6 +1584,17 @@ void EditorScene::syncTargetSceneAfterEditHistoryApply(std::uint64_t preferredSe
 }
 
 void EditorScene::observeTransientEditorSessionState(){
+    if(!observedSceneViewStateValid ||
+       showSceneGrid != lastObservedShowSceneGrid ||
+       showSceneGizmos != lastObservedShowSceneGizmos ||
+       showScenePerformanceInfo != lastObservedShowScenePerformanceInfo){
+        lastObservedShowSceneGrid = showSceneGrid;
+        lastObservedShowSceneGizmos = showSceneGizmos;
+        lastObservedShowScenePerformanceInfo = showScenePerformanceInfo;
+        observedSceneViewStateValid = true;
+        markEditorSessionDirty();
+    }
+
     const PropertiesPanel::State propertiesState = propertiesPanel.captureState();
     if(!observedPropertiesPanelStateValid ||
        propertiesState.showHiddenComponents != lastObservedPropertiesPanelState.showHiddenComponents){
@@ -1581,7 +1715,7 @@ bool EditorScene::saveEditorSessionToDisk(std::string* outError){
         return false;
     }
 
-    yyjson_mut_val* propertiesObj = yyjson_mut_obj_add_obj(doc.get(), refs.payload, "propertiesPanel");
+    JsonUtils::JsonMutVal* propertiesObj = yyjson_mut_obj_add_obj(doc.get(), refs.payload, "propertiesPanel");
     if(!propertiesObj){
         if(outError){
             *outError = "Failed to allocate propertiesPanel session object.";
@@ -1596,6 +1730,22 @@ bool EditorScene::saveEditorSessionToDisk(std::string* outError){
         return false;
     }
 
+    JsonUtils::JsonMutVal* sceneViewObj = yyjson_mut_obj_add_obj(doc.get(), refs.payload, "sceneView");
+    if(!sceneViewObj){
+        if(outError){
+            *outError = "Failed to allocate sceneView session object.";
+        }
+        return false;
+    }
+    if(!JsonUtils::MutObjAddBool(doc.get(), sceneViewObj, "showGrid", showSceneGrid) ||
+       !JsonUtils::MutObjAddBool(doc.get(), sceneViewObj, "showGizmos", showSceneGizmos) ||
+       !JsonUtils::MutObjAddBool(doc.get(), sceneViewObj, "showPerformanceInfo", showScenePerformanceInfo)){
+        if(outError){
+            *outError = "Failed to serialize scene-view session state.";
+        }
+        return false;
+    }
+
     Math3D::Transform cameraTransform;
     if(editorCamera){
         cameraTransform = editorCamera->transform();
@@ -1603,7 +1753,7 @@ bool EditorScene::saveEditorSessionToDisk(std::string* outError){
         cameraTransform = editorCameraTransform->local;
     }
 
-    yyjson_mut_val* cameraTransformObj = yyjson_mut_obj_add_obj(doc.get(), refs.payload, "editorCameraTransform");
+    JsonUtils::JsonMutVal* cameraTransformObj = yyjson_mut_obj_add_obj(doc.get(), refs.payload, "editorCameraTransform");
     if(!cameraTransformObj){
         if(outError){
             *outError = "Failed to allocate editorCameraTransform session object.";
@@ -1645,7 +1795,7 @@ bool EditorScene::loadEditorSessionFromDisk(std::string* outError){
 
     std::string type;
     int version = 0;
-    yyjson_val* payload = nullptr;
+    JsonUtils::JsonVal* payload = nullptr;
     if(!JsonUtils::ReadStandardDocumentHeader(doc, type, version, &payload, outError)){
         return false;
     }
@@ -1674,13 +1824,21 @@ bool EditorScene::loadEditorSessionFromDisk(std::string* outError){
     JsonUtils::TryGetString(payload, "sceneEditsJson", sceneEditsJson);
 
     PropertiesPanel::State propertiesState = propertiesPanel.captureState();
-    if(yyjson_val* propertiesObj = JsonUtils::ObjGetObject(payload, "propertiesPanel")){
+    if(JsonUtils::JsonVal* propertiesObj = JsonUtils::ObjGetObject(payload, "propertiesPanel")){
         JsonUtils::TryGetBool(propertiesObj, "showHiddenComponents", propertiesState.showHiddenComponents);
+    }
+    bool savedShowSceneGrid = showSceneGrid;
+    bool savedShowSceneGizmos = showSceneGizmos;
+    bool savedShowScenePerformanceInfo = showScenePerformanceInfo;
+    if(JsonUtils::JsonVal* sceneViewObj = JsonUtils::ObjGetObject(payload, "sceneView")){
+        JsonUtils::TryGetBool(sceneViewObj, "showGrid", savedShowSceneGrid);
+        JsonUtils::TryGetBool(sceneViewObj, "showGizmos", savedShowSceneGizmos);
+        JsonUtils::TryGetBool(sceneViewObj, "showPerformanceInfo", savedShowScenePerformanceInfo);
     }
 
     Math3D::Transform savedCameraTransform;
     bool hasSavedCameraTransform = false;
-    if(yyjson_val* cameraTransformObj = JsonUtils::ObjGetObject(payload, "editorCameraTransform")){
+    if(JsonUtils::JsonVal* cameraTransformObj = JsonUtils::ObjGetObject(payload, "editorCameraTransform")){
         hasSavedCameraTransform = true;
         JsonUtils::TryGetVec3(cameraTransformObj, "position", savedCameraTransform.position);
         Math3D::Vec3 savedRotationEuler = savedCameraTransform.rotation.ToEuler();
@@ -1718,6 +1876,9 @@ bool EditorScene::loadEditorSessionFromDisk(std::string* outError){
         resetEditHistoryToCurrentScene();
     }
 
+    showSceneGrid = savedShowSceneGrid;
+    showSceneGizmos = savedShowSceneGizmos;
+    showScenePerformanceInfo = savedShowScenePerformanceInfo;
     propertiesPanel.applyState(propertiesState);
 
     if(hasSavedCameraTransform){
@@ -1736,6 +1897,10 @@ bool EditorScene::loadEditorSessionFromDisk(std::string* outError){
 
     lastObservedPropertiesPanelState = propertiesPanel.captureState();
     observedPropertiesPanelStateValid = true;
+    lastObservedShowSceneGrid = showSceneGrid;
+    lastObservedShowSceneGizmos = showSceneGizmos;
+    lastObservedShowScenePerformanceInfo = showScenePerformanceInfo;
+    observedSceneViewStateValid = true;
     if(hasSavedCameraTransform){
         lastObservedEditorCameraTransform = savedCameraTransform;
         lastObservedEditorYaw = editorYaw;
@@ -1819,7 +1984,79 @@ bool EditorScene::createDefaultEditorCameraObject(){
     editorCameraObject->addComponent<TransformComponent>();
     editorCameraObject->addComponent<CameraComponent>();
     editorCameraObject->addComponent<BoundsComponent>();
+    editorCameraObject->addComponent<EnvironmentComponent>();
     return true;
+}
+
+void EditorScene::syncEditorCameraEnvironmentFromActiveScene(){
+    if(!editorCameraObject || !editorCameraObject->gameobject() || !getECS()){
+        return;
+    }
+
+    auto* editorManager = getECS()->getComponentManager();
+    NeoECS::ECSEntity* editorEntity = editorCameraObject->gameobject();
+    if(!editorManager || !editorEntity){
+        return;
+    }
+
+    auto* editorEnvironment = editorManager->getECSComponent<EnvironmentComponent>(editorEntity);
+    if(!editorEnvironment && editorCameraObject->addComponent<EnvironmentComponent>()){
+        editorEnvironment = editorManager->getECSComponent<EnvironmentComponent>(editorEntity);
+    }
+    if(!editorEnvironment){
+        return;
+    }
+
+    bool copiedFromSceneEnvironmentComponent = false;
+    if(targetScene && targetScene->getECS()){
+        auto* sourceManager = targetScene->getECS()->getComponentManager();
+        auto* sourceEntityManager = targetScene->getECS()->getEntityManager();
+        if(sourceManager && sourceEntityManager){
+            const auto& entities = sourceEntityManager->getEntities();
+            for(const auto& entityPtr : entities){
+                auto* entity = entityPtr.get();
+                if(!entity){
+                    continue;
+                }
+
+                auto* sourceEnvironment = sourceManager->getECSComponent<EnvironmentComponent>(entity);
+                if(!IsComponentActive(sourceEnvironment)){
+                    continue;
+                }
+
+                editorEnvironment->environmentAssetRef = sourceEnvironment->environmentAssetRef;
+                editorEnvironment->loadedEnvironmentAssetRef = sourceEnvironment->loadedEnvironmentAssetRef;
+                editorEnvironment->skyboxAssetRef = sourceEnvironment->skyboxAssetRef;
+                editorEnvironment->loadedSkyboxAssetRef.clear();
+                editorEnvironment->runtimeSkyBox.reset();
+                editorEnvironment->settings = sourceEnvironment->settings;
+                sanitizeEnvironmentSettings(editorEnvironment->settings);
+                copiedFromSceneEnvironmentComponent = true;
+                break;
+            }
+        }
+    }
+
+    if(copiedFromSceneEnvironmentComponent){
+        return;
+    }
+
+    editorEnvironment->environmentAssetRef.clear();
+    editorEnvironment->loadedEnvironmentAssetRef.clear();
+    editorEnvironment->skyboxAssetRef.clear();
+    editorEnvironment->loadedSkyboxAssetRef.clear();
+    editorEnvironment->runtimeSkyBox.reset();
+
+    EnvironmentSettings fallbackSettings;
+    if(targetScene){
+        if(auto mainScreen = targetScene->getMainScreen()){
+            if(auto environment = mainScreen->getEnvironment()){
+                fallbackSettings = environment->getSettings();
+            }
+        }
+    }
+    sanitizeEnvironmentSettings(fallbackSettings);
+    editorEnvironment->settings = fallbackSettings;
 }
 
 void EditorScene::setEditorCameraSettingsOpen(bool open){
@@ -1832,6 +2069,10 @@ void EditorScene::setEditorCameraSettingsOpen(bool open){
         if(!saveEditorCameraToPrefab(&saveError)){
             LogBot.Log(LOG_WARN, "Failed to save editor camera prefab on panel close: %s", saveError.c_str());
         }
+    }
+
+    if(open){
+        syncEditorCameraEnvironmentFromActiveScene();
     }
 
     showEditorCameraSettings = open;
@@ -1867,15 +2108,13 @@ void EditorScene::setActiveScene(PScene scene){
 void EditorScene::init(){
     assetRoot = std::filesystem::path(File::GetCWD()) / "res";
     workspacePanel.setAssetRoot(assetRoot);
-    ensureTargetInitialized();
-
-    std::string sessionError;
-    if(!loadEditorSessionFromDisk(&sessionError)){
-        if(!sessionError.empty()){
-            LogBot.Log(LOG_WARN, "Failed to restore editor session: %s", sessionError.c_str());
-        }
-        resetEditHistoryToCurrentScene();
-    }
+    startupBootstrapPending = true;
+    startupUiFramePresented = false;
+    startupLoadingOverlayActive = true;
+    startupSessionParsed = false;
+    startupSessionHasCachedScene = false;
+    startupCachedScenePath.clear();
+    clearStartupCachedSceneLoadState();
 }
 
 void EditorScene::ensureTargetInitialized(){
@@ -1937,6 +2176,9 @@ void EditorScene::applyActiveSceneState(){
             }
             if(!manager->getECSComponent<BoundsComponent>(editorEntity)){
                 editorCameraObject->addComponent<BoundsComponent>();
+            }
+            if(!manager->getECSComponent<EnvironmentComponent>(editorEntity)){
+                editorCameraObject->addComponent<EnvironmentComponent>();
             }
 
             // The editor viewport camera always exposes all post-process components,
@@ -2007,6 +2249,368 @@ void EditorScene::applyActiveSceneState(){
     }
 }
 
+bool EditorScene::parseStartupSessionState(std::string* outError){
+    startupSessionHasCachedScene = false;
+    startupCachedScenePath.clear();
+    startupSessionPropertiesState = propertiesPanel.captureState();
+    startupSessionHasCameraTransform = false;
+    startupSessionCameraTransform = Math3D::Transform();
+    startupSessionEditorYaw = editorYaw;
+    startupSessionEditorPitch = editorPitch;
+    startupSessionShowSceneGrid = showSceneGrid;
+    startupSessionShowSceneGizmos = showSceneGizmos;
+    startupSessionShowScenePerformanceInfo = showScenePerformanceInfo;
+
+    const std::filesystem::path sessionPath = resolveEditorSessionPath();
+    if(sessionPath.empty()){
+        if(outError){
+            *outError = "APPDATA is unavailable; editor session path cannot be resolved.";
+        }
+        return false;
+    }
+
+    std::error_code ec;
+    if(!std::filesystem::exists(sessionPath, ec) || std::filesystem::is_directory(sessionPath, ec)){
+        return false;
+    }
+
+    JsonUtils::Document doc;
+    if(!JsonUtils::LoadDocumentFromAbsolutePath(sessionPath, doc, outError)){
+        return false;
+    }
+
+    std::string type;
+    int version = 0;
+    JsonUtils::JsonVal* payload = nullptr;
+    if(!JsonUtils::ReadStandardDocumentHeader(doc, type, version, &payload, outError)){
+        return false;
+    }
+    if(type != kEditorSessionDocumentType){
+        if(outError){
+            *outError = "Editor session type mismatch.";
+        }
+        return false;
+    }
+    if(version != kEditorSessionDocumentVersion){
+        if(outError){
+            *outError = "Unsupported editor session version: " + std::to_string(version);
+        }
+        return false;
+    }
+    if(!payload || !yyjson_is_obj(payload)){
+        if(outError){
+            *outError = "Editor session payload must be an object.";
+        }
+        return false;
+    }
+
+    std::string lastLoadedScenePath;
+    JsonUtils::TryGetString(payload, "lastLoadedScenePath", lastLoadedScenePath);
+
+    if(JsonUtils::JsonVal* propertiesObj = JsonUtils::ObjGetObject(payload, "propertiesPanel")){
+        JsonUtils::TryGetBool(propertiesObj, "showHiddenComponents", startupSessionPropertiesState.showHiddenComponents);
+    }
+    if(JsonUtils::JsonVal* sceneViewObj = JsonUtils::ObjGetObject(payload, "sceneView")){
+        JsonUtils::TryGetBool(sceneViewObj, "showGrid", startupSessionShowSceneGrid);
+        JsonUtils::TryGetBool(sceneViewObj, "showGizmos", startupSessionShowSceneGizmos);
+        JsonUtils::TryGetBool(sceneViewObj, "showPerformanceInfo", startupSessionShowScenePerformanceInfo);
+    }
+
+    if(JsonUtils::JsonVal* cameraTransformObj = JsonUtils::ObjGetObject(payload, "editorCameraTransform")){
+        startupSessionHasCameraTransform = true;
+        JsonUtils::TryGetVec3(cameraTransformObj, "position", startupSessionCameraTransform.position);
+        Math3D::Vec3 savedRotationEuler = startupSessionCameraTransform.rotation.ToEuler();
+        JsonUtils::TryGetVec3(cameraTransformObj, "rotationEuler", savedRotationEuler);
+        startupSessionCameraTransform.setRotation(savedRotationEuler);
+        JsonUtils::TryGetVec3(cameraTransformObj, "scale", startupSessionCameraTransform.scale);
+    }
+
+    JsonUtils::TryGetFloat(payload, "editorYaw", startupSessionEditorYaw);
+    JsonUtils::TryGetFloat(payload, "editorPitch", startupSessionEditorPitch);
+
+    if(!lastLoadedScenePath.empty()){
+        std::filesystem::path sourcePath(lastLoadedScenePath);
+        std::error_code sourceEc;
+        if(std::filesystem::exists(sourcePath, sourceEc) &&
+           !std::filesystem::is_directory(sourcePath, sourceEc)){
+            startupSessionHasCachedScene = true;
+            startupCachedScenePath = sourcePath.lexically_normal();
+        }
+    }
+
+    return true;
+}
+
+void EditorScene::applyStartupSessionUiState(){
+    showSceneGrid = startupSessionShowSceneGrid;
+    showSceneGizmos = startupSessionShowSceneGizmos;
+    showScenePerformanceInfo = startupSessionShowScenePerformanceInfo;
+    propertiesPanel.applyState(startupSessionPropertiesState);
+
+    if(startupSessionHasCameraTransform){
+        if(editorCamera){
+            editorCamera->setTransform(startupSessionCameraTransform);
+        }
+        if(editorCameraTransform){
+            editorCameraTransform->local = startupSessionCameraTransform;
+        }
+        editorYaw = startupSessionEditorYaw;
+        editorPitch = startupSessionEditorPitch;
+        editorMoveVelocity = Math3D::Vec3::zero();
+        editorZoomVelocity = 0.0f;
+        viewportCamera = editorCamera ? editorCamera : viewportCamera;
+    }
+
+    lastObservedPropertiesPanelState = propertiesPanel.captureState();
+    observedPropertiesPanelStateValid = true;
+    lastObservedShowSceneGrid = showSceneGrid;
+    lastObservedShowSceneGizmos = showSceneGizmos;
+    lastObservedShowScenePerformanceInfo = showScenePerformanceInfo;
+    observedSceneViewStateValid = true;
+    if(startupSessionHasCameraTransform){
+        lastObservedEditorCameraTransform = startupSessionCameraTransform;
+        lastObservedEditorYaw = editorYaw;
+        lastObservedEditorPitch = editorPitch;
+        observedEditorCameraStateValid = true;
+    }else{
+        observedEditorCameraStateValid = false;
+    }
+
+    editorSessionDirty = false;
+    editorSessionSaveRequested = false;
+    editorSessionSaveDelaySeconds = 0.0f;
+}
+
+void EditorScene::clearStartupCachedSceneLoadState(){
+    startupLoadPhase = StartupLoadPhase::None;
+    startupLoadScene.reset();
+    startupLoadScenePath.clear();
+    startupLoadSchema.Clear();
+    startupLoadRecordsById.clear();
+    startupLoadPendingRecords.clear();
+    startupLoadGameObjectsBySnapshotId.clear();
+    startupLoadEntitiesBySnapshotId.clear();
+    startupLoadDeserializeIndex = 0;
+}
+
+bool EditorScene::beginStartupCachedSceneLoad(const std::filesystem::path& scenePath, std::string* outError){
+    clearStartupCachedSceneLoadState();
+
+    if(scenePath.empty()){
+        if(outError){
+            *outError = "Startup cached scene path is empty.";
+        }
+        return false;
+    }
+
+    std::filesystem::path normalizedPath = scenePath.lexically_normal();
+    if(!isPathWithExtension(normalizedPath, ".scene")){
+        normalizedPath += ".scene";
+    }
+
+    std::error_code ec;
+    if(!std::filesystem::exists(normalizedPath, ec) || std::filesystem::is_directory(normalizedPath, ec)){
+        if(outError){
+            *outError = "Startup cached scene does not exist.";
+        }
+        return false;
+    }
+
+    const std::filesystem::path sceneDirectory = normalizedPath.parent_path();
+    startupLoadScene = std::make_shared<LoadedScene>(getWindow(), normalizedPath.generic_string(), sceneDirectory);
+    if(!startupLoadScene){
+        if(outError){
+            *outError = "Failed to allocate startup cached scene.";
+        }
+        return false;
+    }
+    if(getWindow()){
+        startupLoadScene->attachWindow(getWindow());
+    }
+    if(inputManager){
+        startupLoadScene->setInputManager(inputManager);
+    }
+    if(auto mainScreen = startupLoadScene->getMainScreen()){
+        if(auto env = mainScreen->getEnvironment()){
+            env->setLightingEnabled(true);
+        }
+    }
+
+    if(!startupLoadSchema.LoadFromAbsolutePath(normalizedPath, outError)){
+        clearStartupCachedSceneLoadState();
+        return false;
+    }
+
+    startupLoadRecordsById.reserve(startupLoadSchema.entities.size());
+    startupLoadPendingRecords.reserve(startupLoadSchema.entities.size());
+    for(const auto& record : startupLoadSchema.entities){
+        if(record.id == 0){
+            if(outError){
+                *outError = "Snapshot entity has invalid id (0).";
+            }
+            clearStartupCachedSceneLoadState();
+            return false;
+        }
+        if(startupLoadRecordsById.find(record.id) != startupLoadRecordsById.end()){
+            if(outError){
+                *outError = "Snapshot contains duplicate entity id: " + std::to_string(record.id);
+            }
+            clearStartupCachedSceneLoadState();
+            return false;
+        }
+        startupLoadRecordsById[record.id] = &record;
+        startupLoadPendingRecords.push_back(&record);
+    }
+
+    startupLoadGameObjectsBySnapshotId.reserve(startupLoadSchema.entities.size());
+    startupLoadEntitiesBySnapshotId.reserve(startupLoadSchema.entities.size());
+    startupLoadScenePath = normalizedPath;
+    startupLoadDeserializeIndex = 0;
+    startupLoadPhase = StartupLoadPhase::CreateEntities;
+    return true;
+}
+
+bool EditorScene::stepStartupCachedSceneLoad(std::string* outError){
+    if(startupLoadPhase == StartupLoadPhase::None || !startupLoadScene || !startupLoadScene->getECS()){
+        return false;
+    }
+
+    if(startupLoadPhase == StartupLoadPhase::CreateEntities){
+        constexpr size_t kCreateBudgetPerUpdate = 64;
+        size_t createdThisUpdate = 0;
+        while(createdThisUpdate < kCreateBudgetPerUpdate && !startupLoadPendingRecords.empty()){
+            bool progressed = false;
+            for(size_t i = 0; i < startupLoadPendingRecords.size() && createdThisUpdate < kCreateBudgetPerUpdate;){
+                const auto* record = startupLoadPendingRecords[i];
+                NeoECS::GameObject* parentObject = nullptr;
+                if(record->hasParentId){
+                    auto parentCreated = startupLoadGameObjectsBySnapshotId.find(record->parentId);
+                    if(parentCreated == startupLoadGameObjectsBySnapshotId.end()){
+                        auto parentExists = startupLoadRecordsById.find(record->parentId);
+                        if(parentExists == startupLoadRecordsById.end()){
+                            if(outError){
+                                *outError = "Snapshot entity references missing parent id: " + std::to_string(record->parentId);
+                            }
+                            return false;
+                        }
+                        ++i;
+                        continue;
+                    }
+                    parentObject = parentCreated->second;
+                }
+
+                const std::string entityName = record->name.empty() ? std::string("GameObject") : record->name;
+                NeoECS::GameObject* createdObject = startupLoadScene->createECSGameObject(entityName, parentObject);
+                if(!createdObject || !createdObject->gameobject()){
+                    if(outError){
+                        *outError = "Failed to instantiate startup snapshot entity: " + entityName;
+                    }
+                    return false;
+                }
+
+                startupLoadGameObjectsBySnapshotId[record->id] = createdObject;
+                startupLoadEntitiesBySnapshotId[record->id] = createdObject->gameobject();
+                startupLoadPendingRecords.erase(startupLoadPendingRecords.begin() + static_cast<std::ptrdiff_t>(i));
+                ++createdThisUpdate;
+                progressed = true;
+            }
+
+            if(!progressed){
+                if(outError){
+                    *outError = "Failed to resolve parent dependencies while instantiating startup snapshot.";
+                }
+                return false;
+            }
+        }
+
+        if(startupLoadPendingRecords.empty()){
+            startupLoadPhase = StartupLoadPhase::DeserializeComponents;
+        }
+        return true;
+    }
+
+    if(startupLoadPhase == StartupLoadPhase::DeserializeComponents){
+        auto* manager = startupLoadScene->getECS()->getComponentManager();
+        auto* context = startupLoadScene->getECS()->getContext();
+        if(!manager || !context){
+            if(outError){
+                *outError = "Startup cached scene ECS is unavailable.";
+            }
+            return false;
+        }
+
+        constexpr size_t kDeserializeBudgetPerUpdate = 1;
+        size_t deserializedThisUpdate = 0;
+        const auto& registry = Serialization::DefaultComponentSerializationRegistry();
+        while(deserializedThisUpdate < kDeserializeBudgetPerUpdate &&
+              startupLoadDeserializeIndex < startupLoadSchema.entities.size()){
+            const auto& record = startupLoadSchema.entities[startupLoadDeserializeIndex];
+            auto entityIt = startupLoadEntitiesBySnapshotId.find(record.id);
+            if(entityIt == startupLoadEntitiesBySnapshotId.end() || !entityIt->second){
+                if(outError){
+                    *outError = "Missing runtime entity for startup snapshot id: " + std::to_string(record.id);
+                }
+                return false;
+            }
+
+            if(!registry.deserializeEntityComponents(
+                    context,
+                    manager,
+                    entityIt->second,
+                    record.components,
+                    outError)){
+                if(outError && !outError->empty()){
+                    *outError = "Entity '" + record.name + "' component restore failed: " + *outError;
+                }
+                return false;
+            }
+
+            ++startupLoadDeserializeIndex;
+            ++deserializedThisUpdate;
+        }
+
+        if(startupLoadDeserializeIndex >= startupLoadSchema.entities.size()){
+            startupLoadPhase = StartupLoadPhase::Finalize;
+        }
+        return true;
+    }
+
+    if(startupLoadPhase == StartupLoadPhase::Finalize){
+        PScene loadedScene = std::static_pointer_cast<Scene>(startupLoadScene);
+        if(!applySceneSettingsRawJsonLocal(loadedScene, startupLoadSchema.sceneSettings, startupLoadEntitiesBySnapshotId, outError)){
+            return false;
+        }
+        ensurePreferredCameraAfterSceneLoad(loadedScene);
+        startupLoadScene->setSourceScenePath(startupLoadScenePath);
+
+        std::error_code ec;
+        if(std::filesystem::exists(startupLoadScenePath, ec) &&
+           !ec &&
+           !std::filesystem::is_directory(startupLoadScenePath, ec) &&
+           !ec){
+            AssetManager::Instance.unmanageAsset(startupLoadScenePath.generic_string());
+            startupLoadScene->setSourceSceneAsset(AssetManager::Instance.getOrLoad(startupLoadScenePath.generic_string()));
+        }
+
+        const std::filesystem::path normalizedPath = startupLoadScenePath.lexically_normal();
+        const std::filesystem::path sceneDirectory = normalizedPath.parent_path();
+        std::shared_ptr<LoadedScene> readyScene = startupLoadScene;
+        setActiveScene(readyScene);
+        targetInitialized = true;
+        targetFactory = [normalizedPath, sceneDirectory](RenderWindow* window) -> PScene {
+            return std::make_shared<LoadedScene>(window, normalizedPath.generic_string(), sceneDirectory);
+        };
+        applyActiveSceneState();
+        activeScenePath = normalizedPath;
+        selectedAssetPath = normalizedPath;
+        resetEditHistoryToCurrentScene();
+        clearStartupCachedSceneLoadState();
+        return true;
+    }
+
+    return false;
+}
+
 void EditorScene::setInputManager(std::shared_ptr<InputManager> manager){
     inputManager = manager;
 
@@ -2031,6 +2635,56 @@ void EditorScene::setInputManager(std::shared_ptr<InputManager> manager){
 }
 
 void EditorScene::update(float deltaTime){
+    if(startupBootstrapPending){
+        if(!startupUiFramePresented){
+            return;
+        }
+
+        startupLoadingOverlayActive = true;
+
+        if(!startupSessionParsed){
+            startupSessionParsed = true;
+            std::string sessionError;
+            if(!parseStartupSessionState(&sessionError) && !sessionError.empty()){
+                LogBot.Log(LOG_WARN, "Failed to restore editor session: %s", sessionError.c_str());
+            }
+
+            if(startupSessionHasCachedScene){
+                std::string loadError;
+                if(!beginStartupCachedSceneLoad(startupCachedScenePath, &loadError)){
+                    if(!loadError.empty()){
+                        LogBot.Log(LOG_WARN, "Failed to begin cached startup scene load: %s", loadError.c_str());
+                    }
+                    clearStartupCachedSceneLoadState();
+                }
+            }
+        }
+
+        if(startupLoadPhase != StartupLoadPhase::None){
+            std::string loadError;
+            if(!stepStartupCachedSceneLoad(&loadError)){
+                if(!loadError.empty()){
+                    LogBot.Log(LOG_WARN, "Cached startup scene load failed: %s", loadError.c_str());
+                }
+                clearStartupCachedSceneLoadState();
+            }
+            if(startupLoadPhase != StartupLoadPhase::None){
+                return;
+            }
+        }
+
+        if(!targetInitialized){
+            ensureTargetInitialized();
+        }
+
+        resetEditHistoryToCurrentScene();
+        applyStartupSessionUiState();
+
+        startupBootstrapPending = false;
+        startupLoadingOverlayActive = false;
+        return;
+    }
+
     ensureTargetInitialized();
     if(!targetScene) return;
 
@@ -2400,13 +3054,15 @@ void EditorScene::update(float deltaTime){
 }
 
 void EditorScene::render(){
-    ensureTargetInitialized();
+    if(!startupBootstrapPending){
+        ensureTargetInitialized();
+    }
     if(resetRequested.exchange(false)){
         performStop();
         resetCompleted.store(true);
         return;
     }
-    if(targetScene){
+    if(targetScene && targetInitialized){
         if(playState == PlayState::Edit){
             previewCamera = resolveSelectedTargetCamera();
             auto mainScreen = targetScene->getMainScreen();
@@ -2516,6 +3172,7 @@ void EditorScene::render(){
         viewportRect.h = height;
         viewportRect.valid = (width > 1.0f && height > 1.0f);
         viewportHovered = true;
+        startupUiFramePresented = true;
         return;
     }
 
@@ -2637,6 +3294,7 @@ void EditorScene::render(){
     observeCurrentEditState(interactionActive);
     observeTransientEditorSessionState();
     flushEditorSessionAutosave(false, interactionActive);
+    startupUiFramePresented = true;
 }
 
 void EditorScene::drawToWindow(bool clearWindow, float, float, float, float){
@@ -2654,7 +3312,7 @@ void EditorScene::drawToWindow(bool clearWindow, float, float, float, float){
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
 
-    if(targetScene && viewportRect.valid){
+    if(targetScene && targetInitialized && viewportRect.valid){
         targetScene->drawToWindow(false, viewportRect.x, viewportRect.y, viewportRect.w, viewportRect.h);
     }
 }
@@ -3539,6 +4197,7 @@ void EditorScene::drawToolbar(float width, float height){
         if(ImGui::BeginMenu("View")){
             ImGui::MenuItem("Maximize On Play", nullptr, &maximizeOnPlay);
             if(ImGui::BeginMenu("Scene")){
+                ImGui::MenuItem("Show Grid", nullptr, &showSceneGrid);
                 ImGui::MenuItem("Gizmos", nullptr, &showSceneGizmos);
                 ImGui::MenuItem("Scene Performance Information", nullptr, &showScenePerformanceInfo);
                 ImGui::EndMenu();
@@ -3974,13 +4633,34 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
     ImGui::SetCursorScreenPos(pos);
     ImGui::InvisibleButton("##ViewportDragDropTarget", size);
     ImDrawList* drawList = ImGui::GetWindowDrawList();
+    const bool showLoadingOverlay = startupBootstrapPending || startupLoadingOverlayActive || !targetInitialized;
+    if(showLoadingOverlay && viewportRect.valid){
+        const ImVec2 viewportMin(viewportRect.x, viewportRect.y);
+        const ImVec2 viewportMax(viewportRect.x + viewportRect.w, viewportRect.y + viewportRect.h);
+        drawList->AddRectFilled(viewportMin, viewportMax, IM_COL32(0, 0, 0, 255));
+
+        static const char* kLoadingSuffixes[] = {"", ".", "..", "..."};
+        const int suffixCount = (int)(sizeof(kLoadingSuffixes) / sizeof(kLoadingSuffixes[0]));
+        const Uint64 dotIndex = (SDL_GetTicks() / 1000ULL) % (Uint64)suffixCount;
+        const std::string loadingText = StringUtils::Format(
+            "Please wait as the Scene is Loaded%s",
+            kLoadingSuffixes[(size_t)dotIndex]
+        );
+        const ImVec2 textSize = ImGui::CalcTextSize(loadingText.c_str());
+        const ImVec2 textPos(
+            viewportRect.x + ((viewportRect.w - textSize.x) * 0.5f),
+            viewportRect.y + ((viewportRect.h - textSize.y) * 0.5f)
+        );
+        drawList->AddText(ImVec2(textPos.x + 1.0f, textPos.y + 1.0f), IM_COL32(0, 0, 0, 180), loadingText.c_str());
+        drawList->AddText(textPos, IM_COL32(240, 240, 240, 245), loadingText.c_str());
+    }
     TransformWidget::Viewport viewport{viewportRect.x, viewportRect.y, viewportRect.w, viewportRect.h, viewportRect.valid};
     float topLeftOverlayY = viewportRect.y + 12.0f;
 
     bool sawViewportPrefabPayload = false;
     bool deliveredViewportPrefabPayload = false;
     std::filesystem::path viewportPrefabPayloadPath;
-    if(playState == PlayState::Edit && ImGui::BeginDragDropTarget()){
+    if(!showLoadingOverlay && playState == PlayState::Edit && ImGui::BeginDragDropTarget()){
         EditorAssetUI::AssetTransaction droppedAsset;
         bool isDelivery = false;
         if(EditorAssetUI::AcceptAssetDropInCurrentTarget(EditorAssetUI::AssetKind::Any, droppedAsset, true, &isDelivery) &&
@@ -4012,6 +4692,7 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
         auto* ecs = targetScene->getECS();
         auto* components = ecs->getComponentManager();
         ensureEditorIconsLoaded();
+        drawWorldGridOverlay(drawList, viewport);
         auto lightColorTint = [](const Math3D::Vec4& c) -> ImU32 {
             int r = (int)Math3D::Clamp(c.x * 255.0f, 0.0f, 255.0f);
             int g = (int)Math3D::Clamp(c.y * 255.0f, 0.0f, 255.0f);
@@ -4531,6 +5212,319 @@ void EditorScene::ensureEditorIconsLoaded(){
     icons.directional = iconLightDirectional;
     lightWidget.setIcons(icons);
     editorIconsLoaded = true;
+}
+
+void EditorScene::drawWorldGridOverlay(ImDrawList* drawList, const TransformWidget::Viewport& viewport) const{
+    if(!drawList || !showSceneGrid || !viewport.valid || !viewportCamera){
+        return;
+    }
+
+    const Math3D::Vec3 cameraPos = viewportCamera->transform().position;
+    const CameraSettings cameraSettings = viewportCamera->getSettings();
+    float farPlane = cameraSettings.farPlane;
+    if(!cameraSettings.isOrtho){
+        float nearPlane = cameraSettings.nearPlane;
+        Camera::SanitizePerspectivePlanes(nearPlane, farPlane);
+    }
+
+    constexpr float kGridFadeStartUnits = 500.0f;
+    constexpr float kGridFadeEndUnits = 700.0f;
+    const float fadeStartSq = kGridFadeStartUnits * kGridFadeStartUnits;
+    const float fadeEndSq = kGridFadeEndUnits * kGridFadeEndUnits;
+    const float orthoSpan = Math3D::Max(cameraSettings.viewPlane.size.x, cameraSettings.viewPlane.size.y);
+    const float baseRadius = cameraSettings.isOrtho
+        ? Math3D::Max(32.0f, orthoSpan * 0.65f)
+        : Math3D::Max(64.0f, farPlane * 0.75f);
+    const float altitudeRadius = std::fabs(cameraPos.y) * 4.0f;
+    const float coverageRadius = Math3D::Max(Math3D::Max(baseRadius, altitudeRadius), kGridFadeEndUnits + 8.0f);
+    constexpr int kMaxHalfCells = 2048;
+    const int halfCells = Math3D::Clamp(static_cast<int>(std::ceil(coverageRadius)), 32, kMaxHalfCells);
+
+    const int centerX = static_cast<int>(std::floor(cameraPos.x));
+    const int centerZ = static_cast<int>(std::floor(cameraPos.z));
+    const int minX = centerX - halfCells;
+    const int maxX = centerX + halfCells;
+    const int minZ = centerZ - halfCells;
+    const int maxZ = centerZ + halfCells;
+    const float gridPlaneY = 0.0f;
+
+    const glm::mat4 viewMatrix = (glm::mat4)viewportCamera->getViewMatrix();
+    const glm::mat4 projectionMatrix = (glm::mat4)viewportCamera->getProjectionMatrix();
+    const glm::mat4 clipFromWorld = projectionMatrix * viewMatrix;
+
+    const ImVec2 clipMin(viewport.x, viewport.y);
+    const ImVec2 clipMax(viewport.x + viewport.w, viewport.y + viewport.h);
+    auto clipLineToViewport = [&](ImVec2& start, ImVec2& end) -> bool {
+        float t0 = 0.0f;
+        float t1 = 1.0f;
+        const float dx = end.x - start.x;
+        const float dy = end.y - start.y;
+
+        auto clipTest = [&](float p, float q) -> bool {
+            if(Math3D::AreClose(p, 0.0f, 1e-6f)){
+                return q >= 0.0f;
+            }
+
+            const float r = q / p;
+            if(p < 0.0f){
+                if(r > t1){
+                    return false;
+                }
+                if(r > t0){
+                    t0 = r;
+                }
+            }else{
+                if(r < t0){
+                    return false;
+                }
+                if(r < t1){
+                    t1 = r;
+                }
+            }
+            return true;
+        };
+
+        if(!clipTest(-dx, start.x - clipMin.x) ||
+           !clipTest(dx, clipMax.x - start.x) ||
+           !clipTest(-dy, start.y - clipMin.y) ||
+           !clipTest(dy, clipMax.y - start.y) ||
+           t1 < t0){
+            return false;
+        }
+
+        const ImVec2 clippedStart(start.x + (dx * t0), start.y + (dy * t0));
+        const ImVec2 clippedEnd(start.x + (dx * t1), start.y + (dy * t1));
+        start = clippedStart;
+        end = clippedEnd;
+        return true;
+    };
+
+    auto drawGridSegment = [&](const Math3D::Vec3& worldStart, const Math3D::Vec3& worldEnd, ImU32 color, float thickness){
+        const glm::vec4 clipStart = clipFromWorld * glm::vec4((glm::vec3)worldStart, 1.0f);
+        const glm::vec4 clipEnd = clipFromWorld * glm::vec4((glm::vec3)worldEnd, 1.0f);
+        if(!std::isfinite(clipStart.x) || !std::isfinite(clipStart.y) || !std::isfinite(clipStart.z) || !std::isfinite(clipStart.w) ||
+           !std::isfinite(clipEnd.x) || !std::isfinite(clipEnd.y) || !std::isfinite(clipEnd.z) || !std::isfinite(clipEnd.w)){
+            return;
+        }
+
+        float tMin = 0.0f;
+        float tMax = 1.0f;
+        auto clipAgainstPlane = [&](float startDistance, float endDistance) -> bool {
+            const float delta = endDistance - startDistance;
+            if(Math3D::AreClose(delta, 0.0f, 1e-6f)){
+                return startDistance >= 0.0f;
+            }
+
+            const float t = -startDistance / delta;
+            if(delta > 0.0f){
+                tMin = Math3D::Max(tMin, t);
+            }else{
+                tMax = Math3D::Min(tMax, t);
+            }
+            return tMin <= tMax;
+        };
+
+        if(!clipAgainstPlane(clipStart.x + clipStart.w, clipEnd.x + clipEnd.w) || // left
+           !clipAgainstPlane(clipStart.w - clipStart.x, clipEnd.w - clipEnd.x) || // right
+           !clipAgainstPlane(clipStart.y + clipStart.w, clipEnd.y + clipEnd.w) || // bottom
+           !clipAgainstPlane(clipStart.w - clipStart.y, clipEnd.w - clipEnd.y) || // top
+           !clipAgainstPlane(clipStart.z + clipStart.w, clipEnd.z + clipEnd.w) || // near
+           !clipAgainstPlane(clipStart.w - clipStart.z, clipEnd.w - clipEnd.z)){  // far
+            return;
+        }
+
+        const glm::vec4 clippedStart = clipStart + ((clipEnd - clipStart) * tMin);
+        const glm::vec4 clippedEnd = clipStart + ((clipEnd - clipStart) * tMax);
+        if(Math3D::AreClose(clippedStart.w, 0.0f, 1e-6f) || Math3D::AreClose(clippedEnd.w, 0.0f, 1e-6f)){
+            return;
+        }
+
+        const glm::vec3 ndcStart = glm::vec3(clippedStart) / clippedStart.w;
+        const glm::vec3 ndcEnd = glm::vec3(clippedEnd) / clippedEnd.w;
+
+        ImVec2 screenStart(
+            viewport.x + ((ndcStart.x * 0.5f + 0.5f) * viewport.w),
+            viewport.y + ((0.5f - ndcStart.y * 0.5f) * viewport.h)
+        );
+        ImVec2 screenEnd(
+            viewport.x + ((ndcEnd.x * 0.5f + 0.5f) * viewport.w),
+            viewport.y + ((0.5f - ndcEnd.y * 0.5f) * viewport.h)
+        );
+
+        if(!clipLineToViewport(screenStart, screenEnd)){
+            return;
+        }
+        drawList->AddLine(screenStart, screenEnd, color, thickness);
+    };
+
+    constexpr int kMajorStep = 10;
+    const ImU32 minorColor = IM_COL32(139, 149, 165, 70);
+    const ImU32 majorColor = IM_COL32(168, 182, 204, 118);
+    const ImU32 axisXColor = IM_COL32(221, 98, 89, 188);
+    const ImU32 axisZColor = IM_COL32(73, 146, 219, 188);
+    auto colorWithOpacity = [&](ImU32 color, float opacity) -> ImU32 {
+        opacity = Math3D::Clamp(opacity, 0.0f, 1.0f);
+        const unsigned int baseAlpha = (color >> IM_COL32_A_SHIFT) & 0xFFu;
+        const unsigned int scaledAlpha = (unsigned int)Math3D::Clamp(baseAlpha * opacity, 0.0f, 255.0f);
+        return (color & ~IM_COL32_A_MASK) | (scaledAlpha << IM_COL32_A_SHIFT);
+    };
+    auto computeFadeAlpha = [&](float radius) -> float {
+        if(radius <= kGridFadeStartUnits){
+            return 1.0f;
+        }
+        if(radius >= kGridFadeEndUnits){
+            return 0.0f;
+        }
+        return 1.0f - ((radius - kGridFadeStartUnits) / (kGridFadeEndUnits - kGridFadeStartUnits));
+    };
+    auto drawGridSegmentFaded = [&](const Math3D::Vec3& worldStart,
+                                    const Math3D::Vec3& worldEnd,
+                                    ImU32 color,
+                                    float thickness,
+                                    float opacity){
+        if(opacity <= 0.001f){
+            return;
+        }
+        drawGridSegment(worldStart, worldEnd, colorWithOpacity(color, opacity), thickness);
+    };
+
+    drawList->PushClipRect(clipMin, clipMax, true);
+    const float cameraX = cameraPos.x;
+    const float cameraZ = cameraPos.z;
+    for(int x = minX; x <= maxX; ++x){
+        const bool isAxis = (x == 0);
+        const bool isMajor = (std::abs(x) % kMajorStep) == 0;
+        const ImU32 lineColorBase = isAxis ? axisZColor : (isMajor ? majorColor : minorColor);
+        const float thickness = isAxis ? 1.7f : (isMajor ? 1.25f : 1.0f);
+        const float worldX = static_cast<float>(x);
+        const float dx = std::fabs(worldX - cameraX);
+        if(dx > kGridFadeEndUnits){
+            continue;
+        }
+
+        const float fadeZHalf = std::sqrt(Math3D::Max(0.0f, fadeEndSq - (dx * dx)));
+        const float fadeMinZ = Math3D::Max(static_cast<float>(minZ), cameraZ - fadeZHalf);
+        const float fadeMaxZ = Math3D::Min(static_cast<float>(maxZ), cameraZ + fadeZHalf);
+        if(fadeMaxZ <= fadeMinZ){
+            continue;
+        }
+
+        if(dx < kGridFadeStartUnits){
+            const float fullZHalf = std::sqrt(Math3D::Max(0.0f, fadeStartSq - (dx * dx)));
+            const float fullMinZ = Math3D::Max(fadeMinZ, cameraZ - fullZHalf);
+            const float fullMaxZ = Math3D::Min(fadeMaxZ, cameraZ + fullZHalf);
+
+            if(fullMaxZ > fullMinZ){
+                drawGridSegment(
+                    Math3D::Vec3(worldX, gridPlaneY, fullMinZ),
+                    Math3D::Vec3(worldX, gridPlaneY, fullMaxZ),
+                    lineColorBase,
+                    thickness
+                );
+            }
+
+            if(fullMinZ > fadeMinZ){
+                const float midZ = (fadeMinZ + fullMinZ) * 0.5f;
+                const float radius = std::sqrt((dx * dx) + ((midZ - cameraZ) * (midZ - cameraZ)));
+                drawGridSegmentFaded(
+                    Math3D::Vec3(worldX, gridPlaneY, fadeMinZ),
+                    Math3D::Vec3(worldX, gridPlaneY, fullMinZ),
+                    lineColorBase,
+                    thickness,
+                    computeFadeAlpha(radius)
+                );
+            }
+            if(fadeMaxZ > fullMaxZ){
+                const float midZ = (fullMaxZ + fadeMaxZ) * 0.5f;
+                const float radius = std::sqrt((dx * dx) + ((midZ - cameraZ) * (midZ - cameraZ)));
+                drawGridSegmentFaded(
+                    Math3D::Vec3(worldX, gridPlaneY, fullMaxZ),
+                    Math3D::Vec3(worldX, gridPlaneY, fadeMaxZ),
+                    lineColorBase,
+                    thickness,
+                    computeFadeAlpha(radius)
+                );
+            }
+        }else{
+            const float midZ = (fadeMinZ + fadeMaxZ) * 0.5f;
+            const float radius = std::sqrt((dx * dx) + ((midZ - cameraZ) * (midZ - cameraZ)));
+            drawGridSegmentFaded(
+                Math3D::Vec3(worldX, gridPlaneY, fadeMinZ),
+                Math3D::Vec3(worldX, gridPlaneY, fadeMaxZ),
+                lineColorBase,
+                thickness,
+                computeFadeAlpha(radius)
+            );
+        }
+    }
+
+    for(int z = minZ; z <= maxZ; ++z){
+        const bool isAxis = (z == 0);
+        const bool isMajor = (std::abs(z) % kMajorStep) == 0;
+        const ImU32 lineColorBase = isAxis ? axisXColor : (isMajor ? majorColor : minorColor);
+        const float thickness = isAxis ? 1.7f : (isMajor ? 1.25f : 1.0f);
+        const float worldZ = static_cast<float>(z);
+        const float dz = std::fabs(worldZ - cameraZ);
+        if(dz > kGridFadeEndUnits){
+            continue;
+        }
+
+        const float fadeXHalf = std::sqrt(Math3D::Max(0.0f, fadeEndSq - (dz * dz)));
+        const float fadeMinX = Math3D::Max(static_cast<float>(minX), cameraX - fadeXHalf);
+        const float fadeMaxX = Math3D::Min(static_cast<float>(maxX), cameraX + fadeXHalf);
+        if(fadeMaxX <= fadeMinX){
+            continue;
+        }
+
+        if(dz < kGridFadeStartUnits){
+            const float fullXHalf = std::sqrt(Math3D::Max(0.0f, fadeStartSq - (dz * dz)));
+            const float fullMinX = Math3D::Max(fadeMinX, cameraX - fullXHalf);
+            const float fullMaxX = Math3D::Min(fadeMaxX, cameraX + fullXHalf);
+
+            if(fullMaxX > fullMinX){
+                drawGridSegment(
+                    Math3D::Vec3(fullMinX, gridPlaneY, worldZ),
+                    Math3D::Vec3(fullMaxX, gridPlaneY, worldZ),
+                    lineColorBase,
+                    thickness
+                );
+            }
+
+            if(fullMinX > fadeMinX){
+                const float midX = (fadeMinX + fullMinX) * 0.5f;
+                const float radius = std::sqrt((dz * dz) + ((midX - cameraX) * (midX - cameraX)));
+                drawGridSegmentFaded(
+                    Math3D::Vec3(fadeMinX, gridPlaneY, worldZ),
+                    Math3D::Vec3(fullMinX, gridPlaneY, worldZ),
+                    lineColorBase,
+                    thickness,
+                    computeFadeAlpha(radius)
+                );
+            }
+            if(fadeMaxX > fullMaxX){
+                const float midX = (fullMaxX + fadeMaxX) * 0.5f;
+                const float radius = std::sqrt((dz * dz) + ((midX - cameraX) * (midX - cameraX)));
+                drawGridSegmentFaded(
+                    Math3D::Vec3(fullMaxX, gridPlaneY, worldZ),
+                    Math3D::Vec3(fadeMaxX, gridPlaneY, worldZ),
+                    lineColorBase,
+                    thickness,
+                    computeFadeAlpha(radius)
+                );
+            }
+        }else{
+            const float midX = (fadeMinX + fadeMaxX) * 0.5f;
+            const float radius = std::sqrt((dz * dz) + ((midX - cameraX) * (midX - cameraX)));
+            drawGridSegmentFaded(
+                Math3D::Vec3(fadeMinX, gridPlaneY, worldZ),
+                Math3D::Vec3(fadeMaxX, gridPlaneY, worldZ),
+                lineColorBase,
+                thickness,
+                computeFadeAlpha(radius)
+            );
+        }
+    }
+    drawList->PopClipRect();
 }
 
 void EditorScene::drawBillboardIcon(ImDrawList* drawList,

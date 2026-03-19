@@ -34,6 +34,7 @@ namespace {
         RigidBody,
         Camera,
         Skybox,
+        Environment,
         SSAO,
         PostProcessingStack,
         Script
@@ -209,13 +210,12 @@ namespace {
                 }
                 return wrapper->addComponent<SSAOComponent>();
             case AddComponentKind::Skybox:
-                if(hasComponent<SkyboxComponent>(manager, entity)){
-                    return fail("Skybox Component already exists.");
+                return fail("Skybox is owned by Environment Component.");
+            case AddComponentKind::Environment:
+                if(hasComponent<EnvironmentComponent>(manager, entity)){
+                    return fail("Environment Component already exists.");
                 }
-                if(!hasComponent<CameraComponent>(manager, entity)){
-                    return fail("Skybox requires Camera Component.");
-                }
-                return wrapper->addComponent<SkyboxComponent>();
+                return wrapper->addComponent<EnvironmentComponent>();
             case AddComponentKind::PostProcessingStack:
                 if(hasComponent<PostProcessingStackComponent>(manager, entity)){
                     return fail("Post Processing Stack already exists.");
@@ -459,7 +459,7 @@ void PropertiesPanel::draw(float x,
             const bool hasCollider = (componentMgr->getECSComponent<ColliderComponent>(entity) != nullptr);
             const bool hasRigidBody = (componentMgr->getECSComponent<RigidBodyComponent>(entity) != nullptr);
             const bool hasCamera = (componentMgr->getECSComponent<CameraComponent>(entity) != nullptr);
-            const bool hasSkybox = (componentMgr->getECSComponent<SkyboxComponent>(entity) != nullptr);
+            const bool hasEnvironment = (componentMgr->getECSComponent<EnvironmentComponent>(entity) != nullptr);
             const bool hasPostFxStack = (componentMgr->getECSComponent<PostProcessingStackComponent>(entity) != nullptr);
             auto* scriptComp = componentMgr->getECSComponent<ScriptComponent>(entity);
             const bool hasScriptComponent = (scriptComp != nullptr);
@@ -504,13 +504,13 @@ void PropertiesPanel::draw(float x,
 
             if(ImGui::BeginMenu("Lighting")){
                 drawAddMenuItem("Light Component", AddComponentKind::Light, !hasLight, "Already added");
+                drawAddMenuItem("Environment Component", AddComponentKind::Environment, !hasEnvironment, "Already added");
                 ImGui::EndMenu();
             }
 
             if(ImGui::BeginMenu("Camera")){
                 drawAddMenuItem("Camera Component", AddComponentKind::Camera, !hasCamera, "Already added");
                 ImGui::Separator();
-                drawAddMenuItem("Skybox Component", AddComponentKind::Skybox, !hasSkybox && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
                 drawAddMenuItem("Post Processing Stack", AddComponentKind::PostProcessingStack, !hasPostFxStack && hasCamera, hasCamera ? "Already added" : "Requires Camera Component");
                 ImGui::EndMenu();
             }

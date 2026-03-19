@@ -25,7 +25,7 @@ class ManifestSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool DeserializePayload(yyjson_val* payload, int version, std::string* outError) override final;
+        bool DeserializePayload(JsonUtils::JsonVal* payload, int version, std::string* outError) override final;
         /**
          * @brief Serializes payload.
          * @param doc Value for doc.
@@ -34,7 +34,7 @@ class ManifestSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool SerializePayload(yyjson_mut_doc* doc, yyjson_mut_val* payload, int version, std::string* outError) const override final;
+        bool SerializePayload(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, int version, std::string* outError) const override final;
 
         /**
          * @brief Resets manifest state.
@@ -47,7 +47,7 @@ class ManifestSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        virtual bool DeserializeManifestPayload(yyjson_val* payload, int version, std::string* outError) = 0;
+        virtual bool DeserializeManifestPayload(JsonUtils::JsonVal* payload, int version, std::string* outError) = 0;
         /**
          * @brief Serializes manifest payload.
          * @param doc Value for doc.
@@ -56,7 +56,7 @@ class ManifestSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        virtual bool SerializeManifestPayload(yyjson_mut_doc* doc, yyjson_mut_val* payload, int version, std::string* outError) const = 0;
+        virtual bool SerializeManifestPayload(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, int version, std::string* outError) const = 0;
 
         /**
          * @brief Checks whether require string field.
@@ -66,7 +66,7 @@ class ManifestSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool RequireStringField(yyjson_val* obj, const char* key, std::string& outValue, std::string* outError) const;
+        bool RequireStringField(JsonUtils::JsonVal* obj, const char* key, std::string& outValue, std::string* outError) const;
         /**
          * @brief Checks whether require bool field.
          * @param obj Value for obj.
@@ -75,7 +75,7 @@ class ManifestSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool RequireBoolField(yyjson_val* obj, const char* key, bool& outValue, std::string* outError) const;
+        bool RequireBoolField(JsonUtils::JsonVal* obj, const char* key, bool& outValue, std::string* outError) const;
         /**
          * @brief Checks whether require int field.
          * @param obj Value for obj.
@@ -84,7 +84,7 @@ class ManifestSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool RequireIntField(yyjson_val* obj, const char* key, int& outValue, std::string* outError) const;
+        bool RequireIntField(JsonUtils::JsonVal* obj, const char* key, int& outValue, std::string* outError) const;
         /**
          * @brief Checks whether require u int64 field.
          * @param obj Value for obj.
@@ -93,7 +93,7 @@ class ManifestSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool RequireUInt64Field(yyjson_val* obj, const char* key, std::uint64_t& outValue, std::string* outError) const;
+        bool RequireUInt64Field(JsonUtils::JsonVal* obj, const char* key, std::uint64_t& outValue, std::string* outError) const;
         /**
          * @brief Checks whether require object field.
          * @param obj Value for obj.
@@ -102,7 +102,7 @@ class ManifestSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool RequireObjectField(yyjson_val* obj, const char* key, yyjson_val*& outValue, std::string* outError) const;
+        bool RequireObjectField(JsonUtils::JsonVal* obj, const char* key, JsonUtils::JsonVal*& outValue, std::string* outError) const;
         /**
          * @brief Checks whether require array field.
          * @param obj Value for obj.
@@ -111,7 +111,7 @@ class ManifestSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool RequireArrayField(yyjson_val* obj, const char* key, yyjson_val*& outValue, std::string* outError) const;
+        bool RequireArrayField(JsonUtils::JsonVal* obj, const char* key, JsonUtils::JsonVal*& outValue, std::string* outError) const;
 
         /**
          * @brief Reads optional string field.
@@ -121,7 +121,7 @@ class ManifestSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool ReadOptionalStringField(yyjson_val* obj, const char* key, std::string& outValue, std::string* outError) const;
+        bool ReadOptionalStringField(JsonUtils::JsonVal* obj, const char* key, std::string& outValue, std::string* outError) const;
         /**
          * @brief Reads optional bool field.
          * @param obj Value for obj.
@@ -130,7 +130,7 @@ class ManifestSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool ReadOptionalBoolField(yyjson_val* obj, const char* key, bool& outValue, std::string* outError) const;
+        bool ReadOptionalBoolField(JsonUtils::JsonVal* obj, const char* key, bool& outValue, std::string* outError) const;
         /**
          * @brief Reads optional int field.
          * @param obj Value for obj.
@@ -139,7 +139,7 @@ class ManifestSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool ReadOptionalIntField(yyjson_val* obj, const char* key, int& outValue, std::string* outError) const;
+        bool ReadOptionalIntField(JsonUtils::JsonVal* obj, const char* key, int& outValue, std::string* outError) const;
         /**
          * @brief Reads optional u int64 field.
          * @param obj Value for obj.
@@ -148,7 +148,7 @@ class ManifestSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool ReadOptionalUInt64Field(yyjson_val* obj, const char* key, std::uint64_t& outValue, std::string* outError) const;
+        bool ReadOptionalUInt64Field(JsonUtils::JsonVal* obj, const char* key, std::uint64_t& outValue, std::string* outError) const;
 
         /**
          * @brief Reads string array.
@@ -158,7 +158,7 @@ class ManifestSchemaBase : public ISchema {
          * @param debugName Name used for debug name.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool ReadStringArray(yyjson_val* arrValue, std::vector<std::string>& outValues, std::string* outError, const char* debugName = nullptr) const;
+        bool ReadStringArray(JsonUtils::JsonVal* arrValue, std::vector<std::string>& outValues, std::string* outError, const char* debugName = nullptr) const;
         /**
          * @brief Reads string array field.
          * @param obj Value for obj.
@@ -168,7 +168,7 @@ class ManifestSchemaBase : public ISchema {
          * @param required Flag controlling required.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool ReadStringArrayField(yyjson_val* obj, const char* key, std::vector<std::string>& outValues, std::string* outError, bool required = false) const;
+        bool ReadStringArrayField(JsonUtils::JsonVal* obj, const char* key, std::vector<std::string>& outValues, std::string* outError, bool required = false) const;
 
         /**
          * @brief Writes string array field.
@@ -179,7 +179,7 @@ class ManifestSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool WriteStringArrayField(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, const std::vector<std::string>& values, std::string* outError) const;
+        bool WriteStringArrayField(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* obj, const char* key, const std::vector<std::string>& values, std::string* outError) const;
         /**
          * @brief Writes string map field.
          * @param doc Value for doc.
@@ -189,7 +189,7 @@ class ManifestSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool WriteStringMapField(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, const std::map<std::string, std::string>& values, std::string* outError) const;
+        bool WriteStringMapField(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* obj, const char* key, const std::map<std::string, std::string>& values, std::string* outError) const;
 };
 
 /// @brief Represents the AssetManifestSchema type.
@@ -253,7 +253,7 @@ class AssetManifestSchema : public ManifestSchemaBase {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool DeserializeManifestPayload(yyjson_val* payload, int version, std::string* outError) override;
+        bool DeserializeManifestPayload(JsonUtils::JsonVal* payload, int version, std::string* outError) override;
         /**
          * @brief Serializes manifest payload.
          * @param doc Value for doc.
@@ -262,7 +262,7 @@ class AssetManifestSchema : public ManifestSchemaBase {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool SerializeManifestPayload(yyjson_mut_doc* doc, yyjson_mut_val* payload, int version, std::string* outError) const override;
+        bool SerializeManifestPayload(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, int version, std::string* outError) const override;
 
     private:
         /**
@@ -358,7 +358,7 @@ class GameManifestSchema : public ManifestSchemaBase {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool DeserializeManifestPayload(yyjson_val* payload, int version, std::string* outError) override;
+        bool DeserializeManifestPayload(JsonUtils::JsonVal* payload, int version, std::string* outError) override;
         /**
          * @brief Serializes manifest payload.
          * @param doc Value for doc.
@@ -367,7 +367,7 @@ class GameManifestSchema : public ManifestSchemaBase {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool SerializeManifestPayload(yyjson_mut_doc* doc, yyjson_mut_val* payload, int version, std::string* outError) const override;
+        bool SerializeManifestPayload(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, int version, std::string* outError) const override;
 
     private:
         /**

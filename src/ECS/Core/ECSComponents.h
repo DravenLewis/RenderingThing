@@ -351,6 +351,37 @@ struct SkyboxComponent : public IEditorCompatibleComponent {
     void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
 };
 
+/// @brief Holds data for EnvironmentComponent.
+struct EnvironmentComponent : public IEditorCompatibleComponent {
+    using IEditorCompatibleComponent::IEditorCompatibleComponent;
+
+    std::string environmentAssetRef;
+    std::string loadedEnvironmentAssetRef;
+    std::string skyboxAssetRef;
+    std::string loadedSkyboxAssetRef;
+    std::shared_ptr<SkyBox> runtimeSkyBox;
+    EnvironmentSettings settings;
+
+    /**
+     * @brief Loads settings from the assigned environment asset into this component.
+     * @param outError Output value for error.
+     * @return True when the operation succeeds; otherwise false.
+     */
+    bool loadFromAsset(std::string* outError = nullptr);
+    /**
+     * @brief Saves current component settings into the assigned environment asset.
+     * @param outError Output value for error.
+     * @return True when the operation succeeds; otherwise false.
+     */
+    bool saveToAsset(std::string* outError = nullptr) const;
+    /**
+     * @brief Draws editor controls for this component.
+     * @param ecsPtr ECS instance that owns the component.
+     * @param scenePtr Scene context used by editor widgets.
+     */
+    void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
+};
+
 /// @brief Holds data for SSAOComponent.
 struct SSAOComponent : public IEditorCompatibleComponent {
     using IEditorCompatibleComponent::IEditorCompatibleComponent;

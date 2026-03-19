@@ -171,6 +171,13 @@ class Scene : public View {
          */
         NeoECS::GameObject* createCameraGameObject(const std::string& name, NeoECS::GameObject* parent = nullptr);
         /**
+         * @brief Creates a game object configured with an environment component.
+         * @param name Display name for the object.
+         * @param parent Optional parent object.
+         * @return Pointer to the created game object.
+         */
+        NeoECS::GameObject* createEnvironmentGameObject(const std::string& name, NeoECS::GameObject* parent = nullptr);
+        /**
          * @brief Returns the scene root game object.
          * @return Pointer to the scene root object.
          */

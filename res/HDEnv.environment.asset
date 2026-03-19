@@ -1,0 +1,14 @@
+name=NewEnvironment.environment.asset
+skybox=@HDSkybox/HDCloudy.skybox.asset
+fog_enabled=true
+fog_color=0.720000,0.790000,0.880000,1.000000
+fog_start=24.000000
+fog_stop=80.000000
+fog_end=180.000000
+ambient_color=0.030000,0.030000,0.030000,1.000000
+ambient_intensity=1.000000
+use_procedural_sky=false
+sun_direction=0.000000,-1.000000,0.000000
+rayleigh_strength=1.000000
+mie_strength=0.350000
+mie_anisotropy=0.760000

@@ -212,6 +212,7 @@ namespace {
             case AssetKind::ShaderGeneric:  return "SHD";
             case AssetKind::ShaderAsset:    return "SAS";
             case AssetKind::SkyboxAsset:    return "SKY";
+            case AssetKind::EnvironmentAsset:return "ENV";
             case AssetKind::LensFlareAsset: return "FLR";
             case AssetKind::EffectAsset:    return "EFX";
             case AssetKind::MaterialAsset:  return "MAT";
@@ -241,6 +242,7 @@ namespace {
             case AssetKind::ShaderGeneric:  return IM_COL32(166, 96, 242, 255);
             case AssetKind::ShaderAsset:    return IM_COL32(237, 132, 255, 255);
             case AssetKind::SkyboxAsset:    return IM_COL32(96, 182, 255, 255);
+            case AssetKind::EnvironmentAsset:return IM_COL32(104, 186, 140, 255);
             case AssetKind::LensFlareAsset: return IM_COL32(255, 182, 76, 255);
             case AssetKind::EffectAsset:    return IM_COL32(255, 138, 90, 255);
             case AssetKind::MaterialAsset:  return IM_COL32(90, 201, 155, 255);
@@ -305,6 +307,9 @@ namespace {
         }
         if(requested == AssetKind::SkyboxAsset){
             return offered == AssetKind::SkyboxAsset;
+        }
+        if(requested == AssetKind::EnvironmentAsset){
+            return offered == AssetKind::EnvironmentAsset;
         }
         if(requested == AssetKind::LensFlareAsset){
             return offered == AssetKind::LensFlareAsset;
@@ -810,6 +815,9 @@ AssetKind ClassifyPath(const std::filesystem::path& path, bool isDirectory){
     }
     if(endsWith(pathLower, ".skybox.asset")){
         return AssetKind::SkyboxAsset;
+    }
+    if(endsWith(pathLower, ".environment.asset")){
+        return AssetKind::EnvironmentAsset;
     }
     if(endsWith(pathLower, ".flare.asset")){
         return AssetKind::LensFlareAsset;

@@ -12,6 +12,7 @@
 #include "Assets/Core/AssetDescriptorUtils.h"
 #include "Assets/Bundles/AssetBundleRegistry.h"
 #include "Assets/Descriptors/EffectAsset.h"
+#include "Assets/Descriptors/EnvironmentAsset.h"
 #include "Assets/Descriptors/ImageAsset.h"
 #include "Rendering/Materials/ConstructedMaterial.h"
 #include "Rendering/Lighting/Environment.h"
@@ -351,6 +352,21 @@ namespace {
         return ImageAssetIO::IsRawImagePath(path);
     }
 
+    void sanitizeEnvironmentSettings(EnvironmentSettings& settings){
+        settings.fogStart = Math3D::Max(0.0f, settings.fogStart);
+        settings.fogStop = Math3D::Max(settings.fogStart, settings.fogStop);
+        settings.fogEnd = Math3D::Max(settings.fogStop, settings.fogEnd);
+        settings.ambientIntensity = Math3D::Clamp(settings.ambientIntensity, 0.0f, 32.0f);
+        settings.rayleighStrength = Math3D::Max(0.0f, settings.rayleighStrength);
+        settings.mieStrength = Math3D::Max(0.0f, settings.mieStrength);
+        settings.mieAnisotropy = Math3D::Clamp(settings.mieAnisotropy, 0.0f, 0.99f);
+        if(settings.sunDirection.length() <= Math3D::EPSILON){
+            settings.sunDirection = Math3D::Vec3(0.0f, -1.0f, 0.0f);
+        }else{
+            settings.sunDirection = settings.sunDirection.normalize();
+        }
+    }
+
     bool computeModelBounds(const std::shared_ptr<Model>& model, Math3D::Vec3& outCenter, float& outRadius){
         if(!model){
             return false;
@@ -435,6 +451,7 @@ void FilePreviewWidget::setFilePath(const std::filesystem::path& path){
     previewModel.reset();
     bundleAssetSavePending = false;
     skyboxAssetSavePending = false;
+    environmentAssetSavePending = false;
     lensFlareAssetSavePending = false;
     effectAssetSavePending = false;
     materialAssetSavePending = false;
@@ -442,6 +459,8 @@ void FilePreviewWidget::setFilePath(const std::filesystem::path& path){
     previewModelDirty = true;
     mtlMaterials.clear();
     selectedMtlMaterialIndex = 0;
+    std::memset(environmentName, 0, sizeof(environmentName));
+    std::memset(environmentSkybox, 0, sizeof(environmentSkybox));
     std::memset(bundleAlias, 0, sizeof(bundleAlias));
     std::memset(bundleRootEntry, 0, sizeof(bundleRootEntry));
     std::memset(bundleAddEntryPath, 0, sizeof(bundleAddEntryPath));
@@ -465,6 +484,7 @@ void FilePreviewWidget::setFilePath(const std::filesystem::path& path){
     std::memset(imageAssetSource, 0, sizeof(imageAssetSource));
     std::memset(imageImportAssetPath, 0, sizeof(imageImportAssetPath));
     imageAssetData = ImageAssetData{};
+    environmentData = EnvironmentAssetData{};
     imageImportData = ImageAssetData{};
     imageAssetSavePending = false;
     imageImportPopupOpen = false;
@@ -487,6 +507,7 @@ void FilePreviewWidget::reloadFromDisk(bool force){
     statusIsError = false;
     isBundleAssetFile = AssetBundle::IsBundlePath(filePath);
     isShaderAssetFile = ShaderAssetIO::IsShaderAssetPath(filePath);
+    isEnvironmentAssetFile = EnvironmentAssetIO::IsEnvironmentAssetPath(filePath);
     isSkyboxAssetFile = SkyboxAssetIO::IsSkyboxAssetPath(filePath);
     isLensFlareAssetFile = LensFlareAssetIO::IsLensFlareAssetPath(filePath);
     isEffectAssetFile = EffectAssetIO::IsEffectAssetPath(filePath);
@@ -532,6 +553,20 @@ void FilePreviewWidget::reloadFromDisk(bool force){
 
         bundledShaderData = data;
         copyBuffer(cacheName, sizeof(cacheName), data.cacheName);
+        return;
+    }
+
+    if(isEnvironmentAssetFile){
+        std::string error;
+        if(!EnvironmentAssetIO::LoadFromAbsolutePath(filePath, environmentData, &error)){
+            statusIsError = true;
+            statusMessage = error;
+            return;
+        }
+        copyBuffer(environmentName, sizeof(environmentName), environmentData.name);
+        copyBuffer(environmentSkybox, sizeof(environmentSkybox), environmentData.skyboxAssetRef);
+        sanitizeEnvironmentSettings(environmentData.settings);
+        environmentAssetSavePending = false;
         return;
     }
 
@@ -705,6 +740,11 @@ void FilePreviewWidget::draw(){
     }
     if(isShaderAssetFile){
         drawShaderAssetEditor();
+        drawErrorByteDumpIfNeeded();
+        return;
+    }
+    if(isEnvironmentAssetFile){
+        drawEnvironmentAssetEditor();
         drawErrorByteDumpIfNeeded();
         return;
     }
@@ -902,6 +942,79 @@ void FilePreviewWidget::drawShaderAssetEditor(){
     }
 
     if(materialAssetSavePending){
+        ImGui::TextDisabled("Release control to apply changes.");
+    }else if(statusMessage.empty()){
+        ImGui::TextDisabled("Edits save automatically.");
+    }else if(statusIsError){
+        ImGui::TextColored(ImVec4(1.0f, 0.35f, 0.35f, 1.0f), "%s", statusMessage.c_str());
+    }else{
+        ImGui::TextColored(ImVec4(0.45f, 0.85f, 0.45f, 1.0f), "%s", statusMessage.c_str());
+    }
+}
+
+void FilePreviewWidget::drawEnvironmentAssetEditor(){
+    bool changed = false;
+    changed |= EditorPropertyUI::InputText("Environment Name", environmentName, sizeof(environmentName));
+    changed |= EditorAssetUI::DrawAssetDropInput(
+        "Skybox Asset",
+        environmentSkybox,
+        sizeof(environmentSkybox),
+        EditorAssetUI::AssetKind::SkyboxAsset
+    );
+
+    changed |= EditorPropertyUI::ColorEdit3("Ambient Color", &environmentData.settings.ambientColor.x);
+    changed |= EditorPropertyUI::SliderFloat("Ambient Intensity", &environmentData.settings.ambientIntensity, 0.0f, 8.0f, "%.2f");
+
+    ImGui::Separator();
+    changed |= EditorPropertyUI::Checkbox("Fog Enabled", &environmentData.settings.fogEnabled);
+    if(environmentData.settings.fogEnabled){
+        changed |= EditorPropertyUI::ColorEdit3("Fog Color", &environmentData.settings.fogColor.x);
+        changed |= EditorPropertyUI::DragFloat("Fog Start", &environmentData.settings.fogStart, 0.1f, 0.0f, 20000.0f, "%.2f");
+        changed |= EditorPropertyUI::DragFloat("Fog Stop", &environmentData.settings.fogStop, 0.1f, 0.0f, 20000.0f, "%.2f");
+        changed |= EditorPropertyUI::DragFloat("Fog End", &environmentData.settings.fogEnd, 0.1f, 0.0f, 20000.0f, "%.2f");
+    }
+
+    ImGui::Separator();
+    changed |= EditorPropertyUI::Checkbox("Use Procedural Sky", &environmentData.settings.useProceduralSky);
+    if(environmentData.settings.useProceduralSky){
+        float sunDirection[3] = {
+            environmentData.settings.sunDirection.x,
+            environmentData.settings.sunDirection.y,
+            environmentData.settings.sunDirection.z
+        };
+        if(EditorPropertyUI::DragFloat3("Sun Direction", sunDirection, 0.01f, -1.0f, 1.0f, "%.3f")){
+            environmentData.settings.sunDirection = Math3D::Vec3(sunDirection[0], sunDirection[1], sunDirection[2]);
+            changed = true;
+        }
+        changed |= EditorPropertyUI::SliderFloat("Rayleigh Strength", &environmentData.settings.rayleighStrength, 0.0f, 8.0f, "%.3f");
+        changed |= EditorPropertyUI::SliderFloat("Mie Strength", &environmentData.settings.mieStrength, 0.0f, 8.0f, "%.3f");
+        changed |= EditorPropertyUI::SliderFloat("Mie Anisotropy", &environmentData.settings.mieAnisotropy, 0.0f, 0.99f, "%.3f");
+    }
+
+    if(changed){
+        environmentData.name = environmentName;
+        environmentData.skyboxAssetRef = environmentSkybox;
+        sanitizeEnvironmentSettings(environmentData.settings);
+        environmentAssetSavePending = true;
+    }
+
+    const bool commitEditsNow = environmentAssetSavePending && !ImGui::IsAnyItemActive();
+    if(commitEditsNow){
+        std::string error;
+        if(EnvironmentAssetIO::SaveToAbsolutePath(filePath, environmentData, &error)){
+            statusIsError = false;
+            statusMessage = "Saved.";
+            std::error_code ec;
+            lastWriteTime = std::filesystem::last_write_time(backingWritePath(filePath), ec);
+            environmentAssetSavePending = false;
+            notifyEditedAsset(filePath, assetRoot);
+        }else{
+            statusIsError = true;
+            statusMessage = error;
+        }
+    }
+
+    if(environmentAssetSavePending){
         ImGui::TextDisabled("Release control to apply changes.");
     }else if(statusMessage.empty()){
         ImGui::TextDisabled("Edits save automatically.");

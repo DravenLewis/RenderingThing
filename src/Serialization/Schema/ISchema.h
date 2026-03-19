@@ -20,7 +20,7 @@ class ISchema {
         struct Header {
             std::string type;
             int version = 0;
-            yyjson_val* payload = nullptr;
+            JsonUtils::JsonVal* payload = nullptr;
         };
 
         /**
@@ -112,11 +112,11 @@ class ISchema {
         virtual bool SupportsWriteVersion(int version) const;
 
     protected:
-        virtual bool DeserializePayload(yyjson_val* payload, int version, std::string* outError) = 0;
-        virtual bool SerializePayload(yyjson_mut_doc* doc, yyjson_mut_val* payload, int version, std::string* outError) const = 0;
+        virtual bool DeserializePayload(JsonUtils::JsonVal* payload, int version, std::string* outError) = 0;
+        virtual bool SerializePayload(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, int version, std::string* outError) const = 0;
 
         // Optional preflight validation hook before DeserializePayload().
-        virtual bool ValidatePayload(yyjson_val* payload, int version, std::string* outError) const;
+        virtual bool ValidatePayload(JsonUtils::JsonVal* payload, int version, std::string* outError) const;
         virtual bool OnBeforeLoad(const Header& header, std::string* outError);
         virtual bool OnAfterLoad(const Header& header, std::string* outError);
         virtual bool OnBeforeSave(int version, std::string* outError) const;

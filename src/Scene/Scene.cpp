@@ -12,6 +12,7 @@
 #include "Assets/Descriptors/ImageAsset.h"
 #include "Assets/Descriptors/MaterialAsset.h"
 #include "Assets/Descriptors/ModelAsset.h"
+#include "Assets/Descriptors/EnvironmentAsset.h"
 #include "Assets/Descriptors/SkyboxAsset.h"
 #include "Assets/Importers/OBJLoader.h"
 #include "ECS/Core/ECSComponents.h"
@@ -24,6 +25,7 @@
 #include "Rendering/PostFX/LensFlareEffect.h"
 #include "Rendering/Shaders/ShaderProgram.h"
 #include "Assets/Core/Asset.h"
+#include "Foundation/Util/StringUtils.h"
 #include <algorithm>
 #include <chrono>
 #include <cmath>
@@ -102,6 +104,75 @@ namespace {
                textureRefDependsOnAsset(data.bottomFaceRef, changedAsset) ||
                textureRefDependsOnAsset(data.frontFaceRef, changedAsset) ||
                textureRefDependsOnAsset(data.backFaceRef, changedAsset);
+    }
+
+    bool environmentAssetDependsOnAsset(const std::string& environmentAssetRef, const std::string& changedAsset){
+        if(environmentAssetRef.empty()){
+            return false;
+        }
+        if(assetMatchesChanged(environmentAssetRef, changedAsset)){
+            return true;
+        }
+
+        EnvironmentAssetData data;
+        if(!EnvironmentAssetIO::LoadFromAssetRef(environmentAssetRef, data, nullptr)){
+            return false;
+        }
+        return skyboxAssetDependsOnAsset(StringUtils::Trim(data.skyboxAssetRef), changedAsset);
+    }
+
+    bool ensureRuntimeSkyboxLoaded(const std::string& skyboxAssetRefRaw,
+                                   std::string& loadedSkyboxAssetRef,
+                                   std::shared_ptr<SkyBox>& runtimeSkyBox,
+                                   const char* contextLabel){
+        const std::string skyboxAssetRef = StringUtils::Trim(skyboxAssetRefRaw);
+        if(skyboxAssetRef.empty()){
+            loadedSkyboxAssetRef.clear();
+            runtimeSkyBox.reset();
+            return false;
+        }
+
+        if(!runtimeSkyBox || loadedSkyboxAssetRef != skyboxAssetRef){
+            std::string error;
+            auto loadedSkybox = SkyboxAssetIO::InstantiateSkyBoxFromRef(skyboxAssetRef, &error);
+            if(!loadedSkybox){
+                if(!error.empty()){
+                    LogBot.Log(LOG_WARN, "Failed to load %s '%s': %s",
+                               contextLabel ? contextLabel : "skybox",
+                               skyboxAssetRef.c_str(),
+                               error.c_str());
+                }
+                loadedSkyboxAssetRef.clear();
+                runtimeSkyBox.reset();
+                return false;
+            }
+
+            runtimeSkyBox = loadedSkybox;
+            loadedSkyboxAssetRef = skyboxAssetRef;
+        }
+
+        return (runtimeSkyBox != nullptr);
+    }
+
+    EnvironmentComponent* findFirstActiveEnvironmentComponent(NeoECS::ECSComponentManager* manager,
+                                                              NeoECS::ECSEntityManager* entityManager){
+        if(!manager || !entityManager){
+            return nullptr;
+        }
+
+        const auto& entities = entityManager->getEntities();
+        for(const auto& entityPtr : entities){
+            auto* entity = entityPtr.get();
+            if(!entity){
+                continue;
+            }
+
+            auto* environment = manager->getECSComponent<EnvironmentComponent>(entity);
+            if(IsComponentActive(environment)){
+                return environment;
+            }
+        }
+        return nullptr;
     }
 
     bool flareAssetDependsOnAsset(const std::string& flareAssetRef, const std::string& changedAsset){
@@ -987,6 +1058,15 @@ NeoECS::GameObject* Scene::createCameraGameObject(const std::string& name, NeoEC
     return root;
 }
 
+NeoECS::GameObject* Scene::createEnvironmentGameObject(const std::string& name, NeoECS::GameObject* parent){
+    auto* root = createECSGameObject(name, parent);
+    if(!root){
+        return nullptr;
+    }
+    root->addComponent<EnvironmentComponent>();
+    return root;
+}
+
 NeoECS::ECSEntity* Scene::getSceneRootEntity() const{
     if(!sceneRootObject){
         return nullptr;
@@ -1039,6 +1119,30 @@ void Scene::handleAssetChanged(const std::string& assetRequest, const std::strin
             if(skyboxAssetDependsOnAsset(skybox->skyboxAssetRef, cacheKey)){
                 skybox->loadedSkyboxAssetRef.clear();
                 skybox->runtimeSkyBox.reset();
+                renderStateDirty = true;
+            }
+        }
+
+        if(auto* environment = componentManager->getECSComponent<EnvironmentComponent>(entity)){
+            bool environmentDirty = false;
+            if(environmentAssetDependsOnAsset(environment->environmentAssetRef, cacheKey)){
+                environment->loadedEnvironmentAssetRef.clear();
+                std::string loadError;
+                if(!StringUtils::Trim(environment->environmentAssetRef).empty() &&
+                   !environment->loadFromAsset(&loadError) &&
+                   !loadError.empty()){
+                    LogBot.Log(LOG_WARN, "Failed to refresh environment asset '%s': %s",
+                               environment->environmentAssetRef.c_str(),
+                               loadError.c_str());
+                }
+                environmentDirty = true;
+            }
+            if(skyboxAssetDependsOnAsset(environment->skyboxAssetRef, cacheKey)){
+                environment->loadedSkyboxAssetRef.clear();
+                environment->runtimeSkyBox.reset();
+                environmentDirty = true;
+            }
+            if(environmentDirty){
                 renderStateDirty = true;
             }
         }
@@ -1354,6 +1458,7 @@ void Scene::ApplyCameraEffectsToScreen(
     }
 
     NeoECS::ECSComponentManager* flareManager = effectSourceManager ? effectSourceManager : manager;
+    NeoECS::ECSComponentManager* environmentManager = effectSourceManager ? effectSourceManager : manager;
 
     auto env = screen->getEnvironment();
     auto* camComponent = manager->getECSComponent<CameraComponent>(cameraEntity);
@@ -1366,35 +1471,24 @@ void Scene::ApplyCameraEffectsToScreen(
 
     const CameraSettings& settings = camComponent->camera->getSettings();
 
-    if(auto* skybox = manager->getECSComponent<SkyboxComponent>(cameraEntity)){
-        if(IsComponentActive(skybox)){
-            if(skybox->skyboxAssetRef.empty()){
-                skybox->loadedSkyboxAssetRef.clear();
-                skybox->runtimeSkyBox.reset();
-                if(env){
-                    env->setSkyBox(nullptr);
-                }
-            }else{
-                if(!skybox->runtimeSkyBox || skybox->loadedSkyboxAssetRef != skybox->skyboxAssetRef){
-                    std::string error;
-                    auto runtimeSkybox = SkyboxAssetIO::InstantiateSkyBoxFromRef(skybox->skyboxAssetRef, &error);
-                    if(!runtimeSkybox){
-                        if(!error.empty()){
-                            LogBot.Log(LOG_WARN, "Failed to load skybox '%s': %s", skybox->skyboxAssetRef.c_str(), error.c_str());
-                        }
-                        skybox->loadedSkyboxAssetRef.clear();
-                        skybox->runtimeSkyBox.reset();
-                    }else{
-                        skybox->runtimeSkyBox = runtimeSkybox;
-                        skybox->loadedSkyboxAssetRef = skybox->skyboxAssetRef;
-                    }
-                }
+    EnvironmentComponent* activeEnvironment = findFirstActiveEnvironmentComponent(environmentManager, entityManager);
+    if(!activeEnvironment && environmentManager != manager){
+        activeEnvironment = findFirstActiveEnvironmentComponent(manager, entityManager);
+    }
 
-                if(env && skybox->runtimeSkyBox){
-                    env->setSkyBox(skybox->runtimeSkyBox);
-                }
+    if(env){
+        if(activeEnvironment){
+            env->setSettings(activeEnvironment->settings);
+            if(ensureRuntimeSkyboxLoaded(activeEnvironment->skyboxAssetRef,
+                                         activeEnvironment->loadedSkyboxAssetRef,
+                                         activeEnvironment->runtimeSkyBox,
+                                         "environment skybox")){
+                env->setSkyBox(activeEnvironment->runtimeSkyBox);
+            }else{
+                env->setSkyBox(nullptr);
             }
-        }else if(env){
+        }else{
+            env->setSettings(EnvironmentSettings{});
             env->setSkyBox(nullptr);
         }
     }
@@ -2411,9 +2505,20 @@ void Scene::drawDeferredLighting(PFrameBuffer targetBuffer,
     deferredLightShader->setUniformFast("u_tileSize", Uniform<int>(deferredLightTileSize));
 
     auto env = Screen::GetCurrentEnvironment();
+    EnvironmentSettings environmentSettings;
+    if(env){
+        environmentSettings = env->getSettings();
+    }
     PCubeMap envMap = (env && env->getSkyBox()) ? env->getSkyBox()->getCubeMap() : nullptr;
     deferredLightShader->setUniformFast("u_useEnvMap", Uniform<int>(envMap ? 1 : 0));
     deferredLightShader->setUniformFast("u_envMap", Uniform<GLUniformUpload::CubeMapSlot>(GLUniformUpload::CubeMapSlot(envMap, 7)));
+    deferredLightShader->setUniformFast("u_ambientColor", Uniform<Math3D::Vec4>(environmentSettings.ambientColor));
+    deferredLightShader->setUniformFast("u_ambientIntensity", Uniform<float>(environmentSettings.ambientIntensity));
+    deferredLightShader->setUniformFast("u_fogEnabled", Uniform<int>(environmentSettings.fogEnabled ? 1 : 0));
+    deferredLightShader->setUniformFast("u_fogColor", Uniform<Math3D::Vec4>(environmentSettings.fogColor));
+    deferredLightShader->setUniformFast("u_fogStart", Uniform<float>(environmentSettings.fogStart));
+    deferredLightShader->setUniformFast("u_fogStop", Uniform<float>(environmentSettings.fogStop));
+    deferredLightShader->setUniformFast("u_fogEnd", Uniform<float>(environmentSettings.fogEnd));
     static const std::vector<Light> EMPTY_LIGHTS;
     const std::vector<Light>& lights = (env && env->isLightingEnabled()) ? env->getLightsForUpload() : EMPTY_LIGHTS;
     LightUniformUploader::UploadLights(deferredLightShader, lights);

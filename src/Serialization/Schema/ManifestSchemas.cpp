@@ -48,7 +48,7 @@ bool ValidateManifestKind(const std::string& kind, const std::set<std::string>& 
 
 namespace JsonSchema {
 
-bool ManifestSchemaBase::DeserializePayload(yyjson_val* payload, int version, std::string* outError){
+bool ManifestSchemaBase::DeserializePayload(JsonUtils::JsonVal* payload, int version, std::string* outError){
     ResetManifestState();
 
     // Payload-level version mirror is optional when reading, but if present it must agree
@@ -72,7 +72,7 @@ bool ManifestSchemaBase::DeserializePayload(yyjson_val* payload, int version, st
     return DeserializeManifestPayload(payload, version, outError);
 }
 
-bool ManifestSchemaBase::SerializePayload(yyjson_mut_doc* doc, yyjson_mut_val* payload, int version, std::string* outError) const{
+bool ManifestSchemaBase::SerializePayload(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, int version, std::string* outError) const{
     if(!JsonUtils::MutObjAddInt(doc, payload, "manifestVersion", version)){
         SetManifestError(outError, "Failed to write 'manifestVersion' field.");
         return false;
@@ -80,7 +80,7 @@ bool ManifestSchemaBase::SerializePayload(yyjson_mut_doc* doc, yyjson_mut_val* p
     return SerializeManifestPayload(doc, payload, version, outError);
 }
 
-bool ManifestSchemaBase::RequireStringField(yyjson_val* obj, const char* key, std::string& outValue, std::string* outError) const{
+bool ManifestSchemaBase::RequireStringField(JsonUtils::JsonVal* obj, const char* key, std::string& outValue, std::string* outError) const{
     if(JsonUtils::TryGetString(obj, key, outValue)){
         return true;
     }
@@ -88,7 +88,7 @@ bool ManifestSchemaBase::RequireStringField(yyjson_val* obj, const char* key, st
     return false;
 }
 
-bool ManifestSchemaBase::RequireBoolField(yyjson_val* obj, const char* key, bool& outValue, std::string* outError) const{
+bool ManifestSchemaBase::RequireBoolField(JsonUtils::JsonVal* obj, const char* key, bool& outValue, std::string* outError) const{
     if(JsonUtils::TryGetBool(obj, key, outValue)){
         return true;
     }
@@ -96,7 +96,7 @@ bool ManifestSchemaBase::RequireBoolField(yyjson_val* obj, const char* key, bool
     return false;
 }
 
-bool ManifestSchemaBase::RequireIntField(yyjson_val* obj, const char* key, int& outValue, std::string* outError) const{
+bool ManifestSchemaBase::RequireIntField(JsonUtils::JsonVal* obj, const char* key, int& outValue, std::string* outError) const{
     if(JsonUtils::TryGetInt(obj, key, outValue)){
         return true;
     }
@@ -104,7 +104,7 @@ bool ManifestSchemaBase::RequireIntField(yyjson_val* obj, const char* key, int& 
     return false;
 }
 
-bool ManifestSchemaBase::RequireUInt64Field(yyjson_val* obj, const char* key, std::uint64_t& outValue, std::string* outError) const{
+bool ManifestSchemaBase::RequireUInt64Field(JsonUtils::JsonVal* obj, const char* key, std::uint64_t& outValue, std::string* outError) const{
     if(JsonUtils::TryGetUInt64(obj, key, outValue)){
         return true;
     }
@@ -112,7 +112,7 @@ bool ManifestSchemaBase::RequireUInt64Field(yyjson_val* obj, const char* key, st
     return false;
 }
 
-bool ManifestSchemaBase::RequireObjectField(yyjson_val* obj, const char* key, yyjson_val*& outValue, std::string* outError) const{
+bool ManifestSchemaBase::RequireObjectField(JsonUtils::JsonVal* obj, const char* key, JsonUtils::JsonVal*& outValue, std::string* outError) const{
     outValue = JsonUtils::ObjGetObject(obj, key);
     if(outValue){
         return true;
@@ -121,7 +121,7 @@ bool ManifestSchemaBase::RequireObjectField(yyjson_val* obj, const char* key, yy
     return false;
 }
 
-bool ManifestSchemaBase::RequireArrayField(yyjson_val* obj, const char* key, yyjson_val*& outValue, std::string* outError) const{
+bool ManifestSchemaBase::RequireArrayField(JsonUtils::JsonVal* obj, const char* key, JsonUtils::JsonVal*& outValue, std::string* outError) const{
     outValue = JsonUtils::ObjGetArray(obj, key);
     if(outValue){
         return true;
@@ -130,7 +130,7 @@ bool ManifestSchemaBase::RequireArrayField(yyjson_val* obj, const char* key, yyj
     return false;
 }
 
-bool ManifestSchemaBase::ReadOptionalStringField(yyjson_val* obj, const char* key, std::string& outValue, std::string* outError) const{
+bool ManifestSchemaBase::ReadOptionalStringField(JsonUtils::JsonVal* obj, const char* key, std::string& outValue, std::string* outError) const{
     if(!JsonUtils::ObjHasKey(obj, key)){
         return true;
     }
@@ -141,7 +141,7 @@ bool ManifestSchemaBase::ReadOptionalStringField(yyjson_val* obj, const char* ke
     return false;
 }
 
-bool ManifestSchemaBase::ReadOptionalBoolField(yyjson_val* obj, const char* key, bool& outValue, std::string* outError) const{
+bool ManifestSchemaBase::ReadOptionalBoolField(JsonUtils::JsonVal* obj, const char* key, bool& outValue, std::string* outError) const{
     if(!JsonUtils::ObjHasKey(obj, key)){
         return true;
     }
@@ -152,7 +152,7 @@ bool ManifestSchemaBase::ReadOptionalBoolField(yyjson_val* obj, const char* key,
     return false;
 }
 
-bool ManifestSchemaBase::ReadOptionalIntField(yyjson_val* obj, const char* key, int& outValue, std::string* outError) const{
+bool ManifestSchemaBase::ReadOptionalIntField(JsonUtils::JsonVal* obj, const char* key, int& outValue, std::string* outError) const{
     if(!JsonUtils::ObjHasKey(obj, key)){
         return true;
     }
@@ -163,7 +163,7 @@ bool ManifestSchemaBase::ReadOptionalIntField(yyjson_val* obj, const char* key, 
     return false;
 }
 
-bool ManifestSchemaBase::ReadOptionalUInt64Field(yyjson_val* obj, const char* key, std::uint64_t& outValue, std::string* outError) const{
+bool ManifestSchemaBase::ReadOptionalUInt64Field(JsonUtils::JsonVal* obj, const char* key, std::uint64_t& outValue, std::string* outError) const{
     if(!JsonUtils::ObjHasKey(obj, key)){
         return true;
     }
@@ -174,7 +174,7 @@ bool ManifestSchemaBase::ReadOptionalUInt64Field(yyjson_val* obj, const char* ke
     return false;
 }
 
-bool ManifestSchemaBase::ReadStringArray(yyjson_val* arrValue, std::vector<std::string>& outValues, std::string* outError, const char* debugName) const{
+bool ManifestSchemaBase::ReadStringArray(JsonUtils::JsonVal* arrValue, std::vector<std::string>& outValues, std::string* outError, const char* debugName) const{
     if(!arrValue || !yyjson_is_arr(arrValue)){
         SetManifestError(
             outError,
@@ -187,7 +187,7 @@ bool ManifestSchemaBase::ReadStringArray(yyjson_val* arrValue, std::vector<std::
     const size_t count = yyjson_arr_size(arrValue);
     outValues.reserve(count);
     for(size_t i = 0; i < count; ++i){
-        yyjson_val* item = yyjson_arr_get(arrValue, i);
+        JsonUtils::JsonVal* item = yyjson_arr_get(arrValue, i);
         if(!item || !yyjson_is_str(item)){
             SetManifestError(
                 outError,
@@ -202,8 +202,8 @@ bool ManifestSchemaBase::ReadStringArray(yyjson_val* arrValue, std::vector<std::
     return true;
 }
 
-bool ManifestSchemaBase::ReadStringArrayField(yyjson_val* obj, const char* key, std::vector<std::string>& outValues, std::string* outError, bool required) const{
-    yyjson_val* arr = JsonUtils::ObjGetArray(obj, key);
+bool ManifestSchemaBase::ReadStringArrayField(JsonUtils::JsonVal* obj, const char* key, std::vector<std::string>& outValues, std::string* outError, bool required) const{
+    JsonUtils::JsonVal* arr = JsonUtils::ObjGetArray(obj, key);
     if(!arr){
         if(required){
             SetManifestError(outError, "Missing required string array field '" + FieldName(key) + "'.");
@@ -215,12 +215,12 @@ bool ManifestSchemaBase::ReadStringArrayField(yyjson_val* obj, const char* key, 
     return ReadStringArray(arr, outValues, outError, key);
 }
 
-bool ManifestSchemaBase::WriteStringArrayField(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, const std::vector<std::string>& values, std::string* outError) const{
+bool ManifestSchemaBase::WriteStringArrayField(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* obj, const char* key, const std::vector<std::string>& values, std::string* outError) const{
     if(values.empty()){
         return true;
     }
 
-    yyjson_mut_val* arr = yyjson_mut_obj_add_arr(doc, obj, key);
+    JsonUtils::JsonMutVal* arr = yyjson_mut_obj_add_arr(doc, obj, key);
     if(!arr){
         SetManifestError(outError, "Failed to create array field '" + FieldName(key) + "'.");
         return false;
@@ -236,12 +236,12 @@ bool ManifestSchemaBase::WriteStringArrayField(yyjson_mut_doc* doc, yyjson_mut_v
     return true;
 }
 
-bool ManifestSchemaBase::WriteStringMapField(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, const std::map<std::string, std::string>& values, std::string* outError) const{
+bool ManifestSchemaBase::WriteStringMapField(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* obj, const char* key, const std::map<std::string, std::string>& values, std::string* outError) const{
     if(values.empty()){
         return true;
     }
 
-    yyjson_mut_val* child = yyjson_mut_obj_add_obj(doc, obj, key);
+    JsonUtils::JsonMutVal* child = yyjson_mut_obj_add_obj(doc, obj, key);
     if(!child){
         SetManifestError(outError, "Failed to create object field '" + FieldName(key) + "'.");
         return false;
@@ -283,7 +283,7 @@ void AssetManifestSchema::ResetManifestState(){
     Clear();
 }
 
-bool AssetManifestSchema::DeserializeManifestPayload(yyjson_val* payload, int, std::string* outError){
+bool AssetManifestSchema::DeserializeManifestPayload(JsonUtils::JsonVal* payload, int, std::string* outError){
     if(!ReadOptionalStringField(payload, "bundleAlias", bundleAlias, outError)){
         return false;
     }
@@ -291,7 +291,7 @@ bool AssetManifestSchema::DeserializeManifestPayload(yyjson_val* payload, int, s
         return false;
     }
 
-    yyjson_val* entriesArray = nullptr;
+    JsonUtils::JsonVal* entriesArray = nullptr;
     if(!RequireArrayField(payload, "entries", entriesArray, outError)){
         return false;
     }
@@ -301,7 +301,7 @@ bool AssetManifestSchema::DeserializeManifestPayload(yyjson_val* payload, int, s
     entries.reserve(count);
 
     for(size_t i = 0; i < count; ++i){
-        yyjson_val* item = yyjson_arr_get(entriesArray, i);
+        JsonUtils::JsonVal* item = yyjson_arr_get(entriesArray, i);
         if(!item || !yyjson_is_obj(item)){
             SetManifestError(outError, "Field 'entries' must contain only objects.");
             PrefixManifestError(outError, "entries[" + std::to_string(i) + "]: ");
@@ -352,7 +352,7 @@ bool AssetManifestSchema::DeserializeManifestPayload(yyjson_val* payload, int, s
         }
 
         if(JsonUtils::ObjHasKey(item, "tags")){
-            yyjson_val* tagsArray = JsonUtils::ObjGetArray(item, "tags");
+            JsonUtils::JsonVal* tagsArray = JsonUtils::ObjGetArray(item, "tags");
             if(!ReadStringArray(tagsArray, entry.tags, outError, "tags")){
                 PrefixManifestError(outError, "entries[" + std::to_string(i) + "]: ");
                 return false;
@@ -365,7 +365,7 @@ bool AssetManifestSchema::DeserializeManifestPayload(yyjson_val* payload, int, s
     return ValidateState(outError);
 }
 
-bool AssetManifestSchema::SerializeManifestPayload(yyjson_mut_doc* doc, yyjson_mut_val* payload, int, std::string* outError) const{
+bool AssetManifestSchema::SerializeManifestPayload(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, int, std::string* outError) const{
     if(!bundleAlias.empty() && !JsonUtils::MutObjAddString(doc, payload, "bundleAlias", bundleAlias)){
         SetManifestError(outError, "Failed to write 'bundleAlias'.");
         return false;
@@ -375,7 +375,7 @@ bool AssetManifestSchema::SerializeManifestPayload(yyjson_mut_doc* doc, yyjson_m
         return false;
     }
 
-    yyjson_mut_val* entriesArray = yyjson_mut_obj_add_arr(doc, payload, "entries");
+    JsonUtils::JsonMutVal* entriesArray = yyjson_mut_obj_add_arr(doc, payload, "entries");
     if(!entriesArray){
         SetManifestError(outError, "Failed to create 'entries' array.");
         return false;
@@ -383,7 +383,7 @@ bool AssetManifestSchema::SerializeManifestPayload(yyjson_mut_doc* doc, yyjson_m
 
     for(size_t i = 0; i < entries.size(); ++i){
         const Entry& entry = entries[i];
-        yyjson_mut_val* item = yyjson_mut_arr_add_obj(doc, entriesArray);
+        JsonUtils::JsonMutVal* item = yyjson_mut_arr_add_obj(doc, entriesArray);
         if(!item){
             SetManifestError(outError, "Failed to add entry object to 'entries'.");
             PrefixManifestError(outError, "entries[" + std::to_string(i) + "]: ");
@@ -504,8 +504,8 @@ void GameManifestSchema::ResetManifestState(){
     Clear();
 }
 
-bool GameManifestSchema::DeserializeManifestPayload(yyjson_val* payload, int, std::string* outError){
-    yyjson_val* gameObj = nullptr;
+bool GameManifestSchema::DeserializeManifestPayload(JsonUtils::JsonVal* payload, int, std::string* outError){
+    JsonUtils::JsonVal* gameObj = nullptr;
     if(RequireObjectField(payload, "game", gameObj, outError)){
         if(!RequireStringField(gameObj, "name", game.name, outError)){
             PrefixManifestError(outError, "game: ");
@@ -520,7 +520,7 @@ bool GameManifestSchema::DeserializeManifestPayload(yyjson_val* payload, int, st
     }
 
     if(JsonUtils::ObjHasKey(payload, "window")){
-        yyjson_val* windowObj = JsonUtils::ObjGetObject(payload, "window");
+        JsonUtils::JsonVal* windowObj = JsonUtils::ObjGetObject(payload, "window");
         if(!windowObj){
             SetManifestError(outError, "Field 'window' must be an object.");
             return false;
@@ -536,7 +536,7 @@ bool GameManifestSchema::DeserializeManifestPayload(yyjson_val* payload, int, st
     }
 
     if(JsonUtils::ObjHasKey(payload, "render")){
-        yyjson_val* renderObj = JsonUtils::ObjGetObject(payload, "render");
+        JsonUtils::JsonVal* renderObj = JsonUtils::ObjGetObject(payload, "render");
         if(!renderObj){
             SetManifestError(outError, "Field 'render' must be an object.");
             return false;
@@ -548,7 +548,7 @@ bool GameManifestSchema::DeserializeManifestPayload(yyjson_val* payload, int, st
     }
 
     if(JsonUtils::ObjHasKey(payload, "assetSources")){
-        yyjson_val* assetSourcesArray = JsonUtils::ObjGetArray(payload, "assetSources");
+        JsonUtils::JsonVal* assetSourcesArray = JsonUtils::ObjGetArray(payload, "assetSources");
         if(!assetSourcesArray){
             SetManifestError(outError, "Field 'assetSources' must be an array.");
             return false;
@@ -558,7 +558,7 @@ bool GameManifestSchema::DeserializeManifestPayload(yyjson_val* payload, int, st
         const size_t count = yyjson_arr_size(assetSourcesArray);
         assetSources.reserve(count);
         for(size_t i = 0; i < count; ++i){
-            yyjson_val* item = yyjson_arr_get(assetSourcesArray, i);
+            JsonUtils::JsonVal* item = yyjson_arr_get(assetSourcesArray, i);
             if(!item || !yyjson_is_obj(item)){
                 SetManifestError(outError, "Field 'assetSources' must contain only objects.");
                 PrefixManifestError(outError, "assetSources[" + std::to_string(i) + "]: ");
@@ -584,7 +584,7 @@ bool GameManifestSchema::DeserializeManifestPayload(yyjson_val* payload, int, st
         }
     }
 
-    yyjson_val* scenesArray = nullptr;
+    JsonUtils::JsonVal* scenesArray = nullptr;
     if(!RequireArrayField(payload, "scenes", scenesArray, outError)){
         return false;
     }
@@ -593,7 +593,7 @@ bool GameManifestSchema::DeserializeManifestPayload(yyjson_val* payload, int, st
     const size_t sceneCount = yyjson_arr_size(scenesArray);
     scenes.reserve(sceneCount);
     for(size_t i = 0; i < sceneCount; ++i){
-        yyjson_val* item = yyjson_arr_get(scenesArray, i);
+        JsonUtils::JsonVal* item = yyjson_arr_get(scenesArray, i);
         if(!item || !yyjson_is_obj(item)){
             SetManifestError(outError, "Field 'scenes' must contain only objects.");
             PrefixManifestError(outError, "scenes[" + std::to_string(i) + "]: ");
@@ -617,8 +617,8 @@ bool GameManifestSchema::DeserializeManifestPayload(yyjson_val* payload, int, st
     return ValidateState(outError);
 }
 
-bool GameManifestSchema::SerializeManifestPayload(yyjson_mut_doc* doc, yyjson_mut_val* payload, int, std::string* outError) const{
-    yyjson_mut_val* gameObj = yyjson_mut_obj_add_obj(doc, payload, "game");
+bool GameManifestSchema::SerializeManifestPayload(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, int, std::string* outError) const{
+    JsonUtils::JsonMutVal* gameObj = yyjson_mut_obj_add_obj(doc, payload, "game");
     if(!gameObj){
         SetManifestError(outError, "Failed to create 'game' object.");
         return false;
@@ -632,7 +632,7 @@ bool GameManifestSchema::SerializeManifestPayload(yyjson_mut_doc* doc, yyjson_mu
         return false;
     }
 
-    yyjson_mut_val* windowObj = yyjson_mut_obj_add_obj(doc, payload, "window");
+    JsonUtils::JsonMutVal* windowObj = yyjson_mut_obj_add_obj(doc, payload, "window");
     if(!windowObj){
         SetManifestError(outError, "Failed to create 'window' object.");
         return false;
@@ -648,7 +648,7 @@ bool GameManifestSchema::SerializeManifestPayload(yyjson_mut_doc* doc, yyjson_mu
         return false;
     }
 
-    yyjson_mut_val* renderObj = yyjson_mut_obj_add_obj(doc, payload, "render");
+    JsonUtils::JsonMutVal* renderObj = yyjson_mut_obj_add_obj(doc, payload, "render");
     if(!renderObj){
         SetManifestError(outError, "Failed to create 'render' object.");
         return false;
@@ -658,14 +658,14 @@ bool GameManifestSchema::SerializeManifestPayload(yyjson_mut_doc* doc, yyjson_mu
         return false;
     }
 
-    yyjson_mut_val* assetSourcesArray = yyjson_mut_obj_add_arr(doc, payload, "assetSources");
+    JsonUtils::JsonMutVal* assetSourcesArray = yyjson_mut_obj_add_arr(doc, payload, "assetSources");
     if(!assetSourcesArray){
         SetManifestError(outError, "Failed to create 'assetSources' array.");
         return false;
     }
     for(size_t i = 0; i < assetSources.size(); ++i){
         const AssetSource& source = assetSources[i];
-        yyjson_mut_val* item = yyjson_mut_arr_add_obj(doc, assetSourcesArray);
+        JsonUtils::JsonMutVal* item = yyjson_mut_arr_add_obj(doc, assetSourcesArray);
         if(!item){
             SetManifestError(outError, "Failed to add asset source object.");
             PrefixManifestError(outError, "assetSources[" + std::to_string(i) + "]: ");
@@ -689,14 +689,14 @@ bool GameManifestSchema::SerializeManifestPayload(yyjson_mut_doc* doc, yyjson_mu
         }
     }
 
-    yyjson_mut_val* scenesArray = yyjson_mut_obj_add_arr(doc, payload, "scenes");
+    JsonUtils::JsonMutVal* scenesArray = yyjson_mut_obj_add_arr(doc, payload, "scenes");
     if(!scenesArray){
         SetManifestError(outError, "Failed to create 'scenes' array.");
         return false;
     }
     for(size_t i = 0; i < scenes.size(); ++i){
         const SceneEntry& scene = scenes[i];
-        yyjson_mut_val* item = yyjson_mut_arr_add_obj(doc, scenesArray);
+        JsonUtils::JsonMutVal* item = yyjson_mut_arr_add_obj(doc, scenesArray);
         if(!item){
             SetManifestError(outError, "Failed to add scene object.");
             PrefixManifestError(outError, "scenes[" + std::to_string(i) + "]: ");

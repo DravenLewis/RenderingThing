@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "Assets/Descriptors/EffectAsset.h"
+#include "Assets/Descriptors/EnvironmentAsset.h"
 #include "Assets/Descriptors/ImageAsset.h"
 #include "Assets/Descriptors/MaterialAsset.h"
 #include "Assets/Descriptors/LensFlareAsset.h"
@@ -62,6 +63,10 @@ class FilePreviewWidget {
          * @brief Draws shader asset editor.
          */
         void drawShaderAssetEditor();
+        /**
+         * @brief Draws environment asset editor.
+         */
+        void drawEnvironmentAssetEditor();
         /**
          * @brief Draws skybox asset editor.
          */
@@ -161,6 +166,7 @@ class FilePreviewWidget {
         bool hasLoadedData = false;
         bool isBundleAssetFile = false;
         bool isShaderAssetFile = false;
+        bool isEnvironmentAssetFile = false;
         bool isSkyboxAssetFile = false;
         bool isLensFlareAssetFile = false;
         bool isEffectAssetFile = false;
@@ -185,6 +191,9 @@ class FilePreviewWidget {
         bool bundleAssetSavePending = false;
 
         ShaderAssetData bundledShaderData;
+        EnvironmentAssetData environmentData;
+        char environmentName[128] = {};
+        char environmentSkybox[256] = {};
         SkyboxAssetData skyboxData;
         char skyboxName[128] = {};
         char skyboxRightFace[256] = {};
@@ -238,6 +247,7 @@ class FilePreviewWidget {
         std::shared_ptr<Material> previewMaterial;
         std::shared_ptr<Model> previewModel;
         bool skyboxAssetSavePending = false;
+        bool environmentAssetSavePending = false;
         bool lensFlareAssetSavePending = false;
         bool effectAssetSavePending = false;
         bool materialAssetSavePending = false;

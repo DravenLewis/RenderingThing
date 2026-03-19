@@ -21,8 +21,8 @@ namespace Serialization {
 class ComponentSerializationRegistry {
     public:
         using ComponentRecord = JsonSchema::EntitySnapshotSchemaBase::ComponentRecord;
-        using SerializePayloadFn = std::function<bool(const NeoECS::ECSComponent* component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* outError)>;
-        using DeserializePayloadFn = std::function<bool(NeoECS::ECSComponent* component, yyjson_val* payload, int version, std::string* outError)>;
+        using SerializePayloadFn = std::function<bool(const NeoECS::ECSComponent* component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* outError)>;
+        using DeserializePayloadFn = std::function<bool(NeoECS::ECSComponent* component, JsonUtils::JsonVal* payload, int version, std::string* outError)>;
         using GetComponentFn = std::function<NeoECS::ECSComponent*(NeoECS::ECSComponentManager* manager, NeoECS::ECSEntity* entity)>;
         using EnsureComponentFn = std::function<bool(NeoECS::GameObject* wrapper, std::string* outError)>;
 
@@ -58,8 +58,8 @@ class ComponentSerializationRegistry {
         bool registerTypedSerializer(
             const std::string& typeName,
             int version,
-            std::function<bool(const TComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* outError)> serializePayload,
-            std::function<bool(TComponent& component, yyjson_val* payload, int version, std::string* outError)> deserializePayload,
+            std::function<bool(const TComponent& component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* outError)> serializePayload,
+            std::function<bool(TComponent& component, JsonUtils::JsonVal* payload, int version, std::string* outError)> deserializePayload,
             EnsureComponentFn ensureComponent = EnsureComponentFn(),
             std::string* outError = nullptr
         ){
@@ -97,7 +97,7 @@ class ComponentSerializationRegistry {
             }
 
             entry.serializePayload =
-                [serializePayload](const NeoECS::ECSComponent* component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
+                [serializePayload](const NeoECS::ECSComponent* component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* error) -> bool {
                     const TComponent* typed = dynamic_cast<const TComponent*>(component);
                     if(!typed){
                         if(error){
@@ -109,7 +109,7 @@ class ComponentSerializationRegistry {
                 };
 
             entry.deserializePayload =
-                [deserializePayload](NeoECS::ECSComponent* component, yyjson_val* payload, int payloadVersion, std::string* error) -> bool {
+                [deserializePayload](NeoECS::ECSComponent* component, JsonUtils::JsonVal* payload, int payloadVersion, std::string* error) -> bool {
                     TComponent* typed = dynamic_cast<TComponent*>(component);
                     if(!typed){
                         if(error){

@@ -39,7 +39,7 @@ bool ISchema::SupportsWriteVersion(int version) const{
     return SupportsVersion(version);
 }
 
-bool ISchema::ValidatePayload(yyjson_val* payload, int, std::string* outError) const{
+bool ISchema::ValidatePayload(JsonUtils::JsonVal* payload, int, std::string* outError) const{
     if(!payload){
         SetSchemaError(outError, "JSON schema payload is null.");
         return false;

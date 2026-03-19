@@ -1,13 +1,23 @@
 
-- Long Loading Times,
-    App Launches Black and unresposnive untill all assets load,
-    lets make the UI appear but while the Scene is loading the viewport will be black with
-    centered text that says "Please wait as the Scene is Loaded%s", and format it with {"",".","..","..."} where it cycles between them every second, if i > length, i = 0 so it loops.
-    also DemoScene is being loaded then the cached scene is being loaded after. 
-    can we load the cached scene first, then fallback to demoscene.
 
 Add+
 Glass BSDF
 Water BSDF
+
+Add a world grid along the XZ plane in the editor, can be toggiled with View -> Scene - Show Grid. (it should be infinite, squares are 1 unit by 1 unit)
+
+Save the state of editor changes like: Show Grid, Scene Performance Information, Show Gizmos so theyre persistant on reload, we already have session tracking.
+
+
+
+Add distance fog in environment, create new environment asset, component, and GameObject type that can be created in the ECS Tree,
+Environments (should if they dont) control SkyBox (current behavior) , Fog, FogColor, Fog Start, Fog Stop, FogEnd , Ambient light, etc etc, should be able to have all information to generate a Rahleigh Realistic
+Skybox in the future. 
+Should have a component that is built on top of exisiting Environment Object. Allow Environments to be serializable so they can be reused in an 
+Environment Asset. Allow the Environment to both be edited from its asset, and tweaked specifically from its component editor UI. If there is no Environment 
+Component found in the ECS tree then we just use the Default Environment that we already create as a fallback. As the ECS GameObject for Environment will have one.
+
+In the Edit tab under editor camera settings,can we add Environment Settings? it will populate the properties with the current Environment Properties? and all its information.
+(parsing the fallback into components if its the one we hit). 
 
 Scripting Component

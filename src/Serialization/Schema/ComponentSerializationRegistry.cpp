@@ -39,7 +39,7 @@ TEnum enumFromIntClamped(int value, int minValue, int maxValue, TEnum fallback){
     return static_cast<TEnum>(value);
 }
 
-bool readPayloadFromJsonString(const std::string& json, JsonUtils::Document& outDoc, yyjson_val*& outPayload, std::string* outError){
+bool readPayloadFromJsonString(const std::string& json, JsonUtils::Document& outDoc, JsonUtils::JsonVal*& outPayload, std::string* outError){
     if(!JsonUtils::LoadDocumentFromText(json, outDoc, outError)){
         if(outError && !outError->empty()){
             *outError = "Failed to parse component payload JSON: " + *outError;
@@ -55,8 +55,8 @@ bool readPayloadFromJsonString(const std::string& json, JsonUtils::Document& out
     return true;
 }
 
-bool addStringArrayField(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, const std::vector<std::string>& values, std::string* outError){
-    yyjson_mut_val* arr = yyjson_mut_obj_add_arr(doc, obj, key);
+bool addStringArrayField(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* obj, const char* key, const std::vector<std::string>& values, std::string* outError){
+    JsonUtils::JsonMutVal* arr = yyjson_mut_obj_add_arr(doc, obj, key);
     if(!arr){
         setComponentSerializationError(outError, std::string("Failed to create array field '") + key + "'.");
         return false;
@@ -70,9 +70,9 @@ bool addStringArrayField(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* k
     return true;
 }
 
-bool readStringArrayField(yyjson_val* obj, const char* key, std::vector<std::string>& outValues, std::string* outError){
+bool readStringArrayField(JsonUtils::JsonVal* obj, const char* key, std::vector<std::string>& outValues, std::string* outError){
     outValues.clear();
-    yyjson_val* arr = JsonUtils::ObjGetArray(obj, key);
+    JsonUtils::JsonVal* arr = JsonUtils::ObjGetArray(obj, key);
     if(!arr){
         return true;
     }
@@ -80,7 +80,7 @@ bool readStringArrayField(yyjson_val* obj, const char* key, std::vector<std::str
     const size_t count = yyjson_arr_size(arr);
     outValues.reserve(count);
     for(size_t i = 0; i < count; ++i){
-        yyjson_val* item = yyjson_arr_get(arr, i);
+        JsonUtils::JsonVal* item = yyjson_arr_get(arr, i);
         if(!item || !yyjson_is_str(item)){
             setComponentSerializationError(outError, std::string("Field '") + key + "' must be a string array.");
             return false;
@@ -93,7 +93,7 @@ bool readStringArrayField(yyjson_val* obj, const char* key, std::vector<std::str
 
 bool writeEffectPropertyField(const EffectPropertyData& property,
                               yyjson_mut_doc* doc,
-                              yyjson_mut_val* obj,
+                              JsonUtils::JsonMutVal* obj,
                               std::string* outError){
     if(!JsonUtils::MutObjAddString(doc, obj, "key", property.key) ||
        !JsonUtils::MutObjAddString(doc, obj, "displayName", property.displayName) ||
@@ -115,7 +115,7 @@ bool writeEffectPropertyField(const EffectPropertyData& property,
     return true;
 }
 
-bool readEffectPropertyField(yyjson_val* obj,
+bool readEffectPropertyField(JsonUtils::JsonVal* obj,
                              EffectPropertyData& outProperty,
                              std::string* outError){
     if(!obj || !yyjson_is_obj(obj)){
@@ -164,16 +164,16 @@ bool readEffectPropertyField(yyjson_val* obj,
 
 bool writePostProcessingStackEffectsField(const PostProcessingStackComponent& component,
                                           yyjson_mut_doc* doc,
-                                          yyjson_mut_val* payload,
+                                          JsonUtils::JsonMutVal* payload,
                                           std::string* outError){
-    yyjson_mut_val* effectsArr = yyjson_mut_obj_add_arr(doc, payload, "effects");
+    JsonUtils::JsonMutVal* effectsArr = yyjson_mut_obj_add_arr(doc, payload, "effects");
     if(!effectsArr){
         setComponentSerializationError(outError, "Failed to create post-processing effect array.");
         return false;
     }
 
     for(const PostProcessingEffectEntry& effect : component.effects){
-        yyjson_mut_val* effectObj = yyjson_mut_arr_add_obj(doc, effectsArr);
+        JsonUtils::JsonMutVal* effectObj = yyjson_mut_arr_add_obj(doc, effectsArr);
         if(!effectObj){
             setComponentSerializationError(outError, "Failed to append post-processing effect entry.");
             return false;
@@ -238,13 +238,13 @@ bool writePostProcessingStackEffectsField(const PostProcessingStackComponent& co
                     return false;
                 }
 
-                yyjson_mut_val* propertiesArr = yyjson_mut_obj_add_arr(doc, effectObj, "properties");
+                JsonUtils::JsonMutVal* propertiesArr = yyjson_mut_obj_add_arr(doc, effectObj, "properties");
                 if(!propertiesArr){
                     setComponentSerializationError(outError, "Failed to create loaded-effect properties array.");
                     return false;
                 }
                 for(const EffectPropertyData& property : effect.loadedProperties){
-                    yyjson_mut_val* propertyObj = yyjson_mut_arr_add_obj(doc, propertiesArr);
+                    JsonUtils::JsonMutVal* propertyObj = yyjson_mut_arr_add_obj(doc, propertiesArr);
                     if(!propertyObj){
                         setComponentSerializationError(outError, "Failed to append loaded-effect property.");
                         return false;
@@ -264,11 +264,11 @@ bool writePostProcessingStackEffectsField(const PostProcessingStackComponent& co
     return true;
 }
 
-bool readPostProcessingStackEffectsField(yyjson_val* payload,
+bool readPostProcessingStackEffectsField(JsonUtils::JsonVal* payload,
                                          PostProcessingStackComponent& component,
                                          std::string* outError){
     component.effects.clear();
-    yyjson_val* effectsArr = JsonUtils::ObjGetArray(payload, "effects");
+    JsonUtils::JsonVal* effectsArr = JsonUtils::ObjGetArray(payload, "effects");
     if(!effectsArr){
         return true;
     }
@@ -276,7 +276,7 @@ bool readPostProcessingStackEffectsField(yyjson_val* payload,
     const size_t effectCount = yyjson_arr_size(effectsArr);
     component.effects.reserve(effectCount);
     for(size_t i = 0; i < effectCount; ++i){
-        yyjson_val* effectObj = yyjson_arr_get(effectsArr, i);
+        JsonUtils::JsonVal* effectObj = yyjson_arr_get(effectsArr, i);
         if(!effectObj || !yyjson_is_obj(effectObj)){
             setComponentSerializationError(outError, "Post-processing effect entry must be an object.");
             return false;
@@ -340,12 +340,12 @@ bool readPostProcessingStackEffectsField(yyjson_val* payload,
                     return false;
                 }
 
-                yyjson_val* propertiesArr = JsonUtils::ObjGetArray(effectObj, "properties");
+                JsonUtils::JsonVal* propertiesArr = JsonUtils::ObjGetArray(effectObj, "properties");
                 if(propertiesArr){
                     const size_t propertyCount = yyjson_arr_size(propertiesArr);
                     effect.loadedProperties.reserve(propertyCount);
                     for(size_t propertyIndex = 0; propertyIndex < propertyCount; ++propertyIndex){
-                        yyjson_val* propertyObj = yyjson_arr_get(propertiesArr, propertyIndex);
+                        JsonUtils::JsonVal* propertyObj = yyjson_arr_get(propertiesArr, propertyIndex);
                         EffectPropertyData property;
                         if(!readEffectPropertyField(propertyObj, property, outError)){
                             return false;
@@ -372,7 +372,7 @@ bool readPostProcessingStackEffectsField(yyjson_val* payload,
 
 bool writeEditorComponentStateFields(const IEditorCompatibleComponent& component,
                                      yyjson_mut_doc* doc,
-                                     yyjson_mut_val* payload,
+                                     JsonUtils::JsonMutVal* payload,
                                      std::string* outError){
     const bool enabled = IsComponentActive(&component);
     const bool* hiddenState = component.getEditorHiddenState();
@@ -385,7 +385,7 @@ bool writeEditorComponentStateFields(const IEditorCompatibleComponent& component
     return true;
 }
 
-void readEditorComponentStateFields(IEditorCompatibleComponent& component, yyjson_val* payload){
+void readEditorComponentStateFields(IEditorCompatibleComponent& component, JsonUtils::JsonVal* payload){
     if(bool* enabledState = component.getEditorEnabledState()){
         JsonUtils::TryGetBool(payload, "componentEnabled", *enabledState);
     }
@@ -394,7 +394,22 @@ void readEditorComponentStateFields(IEditorCompatibleComponent& component, yyjso
     }
 }
 
-bool writeTransformFields(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* keyPrefix, const Math3D::Transform& transform){
+void sanitizeEnvironmentSettings(EnvironmentSettings& settings){
+    settings.fogStart = Math3D::Max(0.0f, settings.fogStart);
+    settings.fogStop = Math3D::Max(settings.fogStart, settings.fogStop);
+    settings.fogEnd = Math3D::Max(settings.fogStop, settings.fogEnd);
+    settings.ambientIntensity = Math3D::Clamp(settings.ambientIntensity, 0.0f, 32.0f);
+    settings.rayleighStrength = Math3D::Max(0.0f, settings.rayleighStrength);
+    settings.mieStrength = Math3D::Max(0.0f, settings.mieStrength);
+    settings.mieAnisotropy = Math3D::Clamp(settings.mieAnisotropy, 0.0f, 0.99f);
+    if(settings.sunDirection.length() <= Math3D::EPSILON){
+        settings.sunDirection = Math3D::Vec3(0.0f, -1.0f, 0.0f);
+    }else{
+        settings.sunDirection = settings.sunDirection.normalize();
+    }
+}
+
+bool writeTransformFields(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* obj, const char* keyPrefix, const Math3D::Transform& transform){
     (void)keyPrefix;
     Math3D::Vec3 rotationEuler = transform.rotation.ToEuler();
     return JsonUtils::MutObjAddVec3(doc, obj, "position", transform.position) &&
@@ -402,7 +417,7 @@ bool writeTransformFields(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* 
            JsonUtils::MutObjAddVec3(doc, obj, "scale", transform.scale);
 }
 
-void readTransformFields(yyjson_val* obj, Math3D::Transform& transform){
+void readTransformFields(JsonUtils::JsonVal* obj, Math3D::Transform& transform){
     Math3D::Vec3 position = transform.position;
     Math3D::Vec3 rotationEuler = transform.rotation.ToEuler();
     Math3D::Vec3 scale = transform.scale;
@@ -415,11 +430,11 @@ void readTransformFields(yyjson_val* obj, Math3D::Transform& transform){
 }
 
 bool addFloatArrayField(yyjson_mut_doc* doc,
-                        yyjson_mut_val* obj,
+                        JsonUtils::JsonMutVal* obj,
                         const char* key,
                         const std::vector<float>& values,
                         std::string* outError){
-    yyjson_mut_val* arr = yyjson_mut_obj_add_arr(doc, obj, key);
+    JsonUtils::JsonMutVal* arr = yyjson_mut_obj_add_arr(doc, obj, key);
     if(!arr){
         setComponentSerializationError(outError, std::string("Failed to create float array field '") + key + "'.");
         return false;
@@ -434,11 +449,11 @@ bool addFloatArrayField(yyjson_mut_doc* doc,
 }
 
 bool addUIntArrayField(yyjson_mut_doc* doc,
-                       yyjson_mut_val* obj,
+                       JsonUtils::JsonMutVal* obj,
                        const char* key,
                        const std::vector<std::uint32_t>& values,
                        std::string* outError){
-    yyjson_mut_val* arr = yyjson_mut_obj_add_arr(doc, obj, key);
+    JsonUtils::JsonMutVal* arr = yyjson_mut_obj_add_arr(doc, obj, key);
     if(!arr){
         setComponentSerializationError(outError, std::string("Failed to create uint array field '") + key + "'.");
         return false;
@@ -452,12 +467,12 @@ bool addUIntArrayField(yyjson_mut_doc* doc,
     return true;
 }
 
-bool readFloatArrayField(yyjson_val* obj,
+bool readFloatArrayField(JsonUtils::JsonVal* obj,
                          const char* key,
                          std::vector<float>& outValues,
                          std::string* outError){
     outValues.clear();
-    yyjson_val* arr = JsonUtils::ObjGetArray(obj, key);
+    JsonUtils::JsonVal* arr = JsonUtils::ObjGetArray(obj, key);
     if(!arr){
         return true;
     }
@@ -465,7 +480,7 @@ bool readFloatArrayField(yyjson_val* obj,
     const size_t count = yyjson_arr_size(arr);
     outValues.reserve(count);
     for(size_t i = 0; i < count; ++i){
-        yyjson_val* item = yyjson_arr_get(arr, i);
+        JsonUtils::JsonVal* item = yyjson_arr_get(arr, i);
         if(!item || !yyjson_is_num(item)){
             setComponentSerializationError(outError, std::string("Field '") + key + "' must be a number array.");
             return false;
@@ -475,12 +490,12 @@ bool readFloatArrayField(yyjson_val* obj,
     return true;
 }
 
-bool readUIntArrayField(yyjson_val* obj,
+bool readUIntArrayField(JsonUtils::JsonVal* obj,
                         const char* key,
                         std::vector<std::uint32_t>& outValues,
                         std::string* outError){
     outValues.clear();
-    yyjson_val* arr = JsonUtils::ObjGetArray(obj, key);
+    JsonUtils::JsonVal* arr = JsonUtils::ObjGetArray(obj, key);
     if(!arr){
         return true;
     }
@@ -488,7 +503,7 @@ bool readUIntArrayField(yyjson_val* obj,
     const size_t count = yyjson_arr_size(arr);
     outValues.reserve(count);
     for(size_t i = 0; i < count; ++i){
-        yyjson_val* item = yyjson_arr_get(arr, i);
+        JsonUtils::JsonVal* item = yyjson_arr_get(arr, i);
         if(!item || !yyjson_is_num(item)){
             setComponentSerializationError(outError, std::string("Field '") + key + "' must be a number array.");
             return false;
@@ -585,9 +600,9 @@ bool captureEmbeddedMaterialData(const std::shared_ptr<Material>& material, Mate
 
 bool writeEmbeddedMaterialDataField(const MaterialAssetData& data,
                                     yyjson_mut_doc* doc,
-                                    yyjson_mut_val* partObj,
+                                    JsonUtils::JsonMutVal* partObj,
                                     std::string* outError){
-    yyjson_mut_val* materialObj = yyjson_mut_obj_add_obj(doc, partObj, "embeddedMaterial");
+    JsonUtils::JsonMutVal* materialObj = yyjson_mut_obj_add_obj(doc, partObj, "embeddedMaterial");
     if(!materialObj){
         setComponentSerializationError(outError, "Failed to create embeddedMaterial object.");
         return false;
@@ -627,8 +642,8 @@ bool writeEmbeddedMaterialDataField(const MaterialAssetData& data,
     return true;
 }
 
-bool tryReadEmbeddedMaterialDataField(yyjson_val* partObj, MaterialAssetData& outData){
-    yyjson_val* materialObj = JsonUtils::ObjGetObject(partObj, "embeddedMaterial");
+bool tryReadEmbeddedMaterialDataField(JsonUtils::JsonVal* partObj, MaterialAssetData& outData){
+    JsonUtils::JsonVal* materialObj = JsonUtils::ObjGetObject(partObj, "embeddedMaterial");
     if(!materialObj){
         return false;
     }
@@ -671,7 +686,7 @@ bool tryReadEmbeddedMaterialDataField(yyjson_val* partObj, MaterialAssetData& ou
 
 bool writeModelPartEmbeddedMaterialOverridesField(const MeshRendererComponent& component,
                                                   yyjson_mut_doc* doc,
-                                                  yyjson_mut_val* payload,
+                                                  JsonUtils::JsonMutVal* payload,
                                                   std::string* outError){
     if(!component.model){
         return true;
@@ -695,7 +710,7 @@ bool writeModelPartEmbeddedMaterialOverridesField(const MeshRendererComponent& c
         return true;
     }
 
-    yyjson_mut_val* overridesArr = yyjson_mut_obj_add_arr(doc, payload, "modelPartEmbeddedMaterials");
+    JsonUtils::JsonMutVal* overridesArr = yyjson_mut_obj_add_arr(doc, payload, "modelPartEmbeddedMaterials");
     if(!overridesArr){
         setComponentSerializationError(outError, "Failed to create modelPartEmbeddedMaterials array.");
         return false;
@@ -703,7 +718,7 @@ bool writeModelPartEmbeddedMaterialOverridesField(const MeshRendererComponent& c
 
     for(size_t i = 0; i < parts.size(); ++i){
         const auto& part = parts[i];
-        yyjson_mut_val* partOverrideObj = yyjson_mut_arr_add_obj(doc, overridesArr);
+        JsonUtils::JsonMutVal* partOverrideObj = yyjson_mut_arr_add_obj(doc, overridesArr);
         if(!partOverrideObj){
             setComponentSerializationError(outError, "Failed to append model part material override.");
             return false;
@@ -723,7 +738,7 @@ bool writeModelPartEmbeddedMaterialOverridesField(const MeshRendererComponent& c
     return true;
 }
 
-void readModelPartEmbeddedMaterialOverridesField(yyjson_val* payload, MeshRendererComponent& component){
+void readModelPartEmbeddedMaterialOverridesField(JsonUtils::JsonVal* payload, MeshRendererComponent& component){
     if(!component.model){
         return;
     }
@@ -731,7 +746,7 @@ void readModelPartEmbeddedMaterialOverridesField(yyjson_val* payload, MeshRender
     const auto& parts = component.model->getParts();
     component.modelPartMaterialOverrides.assign(parts.size(), 0);
 
-    yyjson_val* overridesArr = JsonUtils::ObjGetArray(payload, "modelPartEmbeddedMaterials");
+    JsonUtils::JsonVal* overridesArr = JsonUtils::ObjGetArray(payload, "modelPartEmbeddedMaterials");
     if(!overridesArr){
         return;
     }
@@ -743,7 +758,7 @@ void readModelPartEmbeddedMaterialOverridesField(yyjson_val* payload, MeshRender
             continue;
         }
 
-        yyjson_val* partOverrideObj = yyjson_arr_get(overridesArr, i);
+        JsonUtils::JsonVal* partOverrideObj = yyjson_arr_get(overridesArr, i);
         if(!partOverrideObj || !yyjson_is_obj(partOverrideObj)){
             continue;
         }
@@ -762,13 +777,13 @@ void readModelPartEmbeddedMaterialOverridesField(yyjson_val* payload, MeshRender
 
 bool writeEmbeddedModelField(const MeshRendererComponent& component,
                              yyjson_mut_doc* doc,
-                             yyjson_mut_val* payload,
+                             JsonUtils::JsonMutVal* payload,
                              std::string* outError){
     if(!component.model){
         return true;
     }
 
-    yyjson_mut_val* embeddedModelObj = yyjson_mut_obj_add_obj(doc, payload, "embeddedModel");
+    JsonUtils::JsonMutVal* embeddedModelObj = yyjson_mut_obj_add_obj(doc, payload, "embeddedModel");
     if(!embeddedModelObj){
         setComponentSerializationError(outError, "Failed to create embeddedModel object.");
         return false;
@@ -779,7 +794,7 @@ bool writeEmbeddedModelField(const MeshRendererComponent& component,
         return false;
     }
 
-    yyjson_mut_val* partsArr = yyjson_mut_obj_add_arr(doc, embeddedModelObj, "parts");
+    JsonUtils::JsonMutVal* partsArr = yyjson_mut_obj_add_arr(doc, embeddedModelObj, "parts");
     if(!partsArr){
         setComponentSerializationError(outError, "Failed to create embeddedModel parts array.");
         return false;
@@ -815,7 +830,7 @@ bool writeEmbeddedModelField(const MeshRendererComponent& component,
             vertexData.push_back(vertex.TexCoords.y);
         }
 
-        yyjson_mut_val* partObj = yyjson_mut_arr_add_obj(doc, partsArr);
+        JsonUtils::JsonMutVal* partObj = yyjson_mut_arr_add_obj(doc, partsArr);
         if(!partObj){
             setComponentSerializationError(outError, "Failed to append embedded model part object.");
             return false;
@@ -852,15 +867,15 @@ bool writeEmbeddedModelField(const MeshRendererComponent& component,
     return true;
 }
 
-bool tryReadEmbeddedModelField(yyjson_val* payload,
+bool tryReadEmbeddedModelField(JsonUtils::JsonVal* payload,
                                MeshRendererComponent& component,
                                std::string* outError){
-    yyjson_val* embeddedModelObj = JsonUtils::ObjGetObject(payload, "embeddedModel");
+    JsonUtils::JsonVal* embeddedModelObj = JsonUtils::ObjGetObject(payload, "embeddedModel");
     if(!embeddedModelObj){
         return true;
     }
 
-    yyjson_val* partsArr = JsonUtils::ObjGetArray(embeddedModelObj, "parts");
+    JsonUtils::JsonVal* partsArr = JsonUtils::ObjGetArray(embeddedModelObj, "parts");
     if(!partsArr){
         return true;
     }
@@ -879,7 +894,7 @@ bool tryReadEmbeddedModelField(yyjson_val* payload,
     }
     component.modelPartMaterialOverrides.assign(partCount, 0);
     for(size_t i = 0; i < partCount; ++i){
-        yyjson_val* partObj = yyjson_arr_get(partsArr, i);
+        JsonUtils::JsonVal* partObj = yyjson_arr_get(partsArr, i);
         if(!partObj || !yyjson_is_obj(partObj)){
             continue;
         }
@@ -966,14 +981,14 @@ bool registerDefaultTransformSerializer(Serialization::ComponentSerializationReg
     return registry.registerTypedSerializer<TransformComponent>(
         "TransformComponent",
         1,
-        [](const TransformComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
+        [](const TransformComponent& component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* error) -> bool {
             Math3D::Vec3 rotationEuler = component.local.rotation.ToEuler();
             return JsonUtils::MutObjAddVec3(doc, payload, "position", component.local.position) &&
                    JsonUtils::MutObjAddVec3(doc, payload, "rotationEuler", rotationEuler) &&
                    JsonUtils::MutObjAddVec3(doc, payload, "scale", component.local.scale) &&
                    writeEditorComponentStateFields(component, doc, payload, error);
         },
-        [](TransformComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
+        [](TransformComponent& component, JsonUtils::JsonVal* payload, int version, std::string* error) -> bool {
             (void)version;
             (void)error;
             Math3D::Vec3 position = component.local.position;
@@ -999,11 +1014,11 @@ bool registerDefaultEntityPropertiesSerializer(Serialization::ComponentSerializa
     return registry.registerTypedSerializer<EntityPropertiesComponent>(
         "EntityPropertiesComponent",
         1,
-        [](const EntityPropertiesComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
+        [](const EntityPropertiesComponent& component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* error) -> bool {
             return JsonUtils::MutObjAddBool(doc, payload, "ignoreRaycastHit", component.ignoreRaycastHit) &&
                    writeEditorComponentStateFields(component, doc, payload, error);
         },
-        [](EntityPropertiesComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
+        [](EntityPropertiesComponent& component, JsonUtils::JsonVal* payload, int version, std::string* error) -> bool {
             (void)version;
             (void)error;
             JsonUtils::TryGetBool(payload, "ignoreRaycastHit", component.ignoreRaycastHit);
@@ -1019,7 +1034,7 @@ bool registerDefaultBoundsSerializer(Serialization::ComponentSerializationRegist
     return registry.registerTypedSerializer<BoundsComponent>(
         "BoundsComponent",
         2,
-        [](const BoundsComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
+        [](const BoundsComponent& component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* error) -> bool {
             return JsonUtils::MutObjAddInt(doc, payload, "type", static_cast<int>(component.type)) &&
                    JsonUtils::MutObjAddVec3(doc, payload, "size", component.size) &&
                    JsonUtils::MutObjAddFloat(doc, payload, "radius", component.radius) &&
@@ -1027,7 +1042,7 @@ bool registerDefaultBoundsSerializer(Serialization::ComponentSerializationRegist
                    JsonUtils::MutObjAddVec3(doc, payload, "offset", component.offset) &&
                    writeEditorComponentStateFields(component, doc, payload, error);
         },
-        [](BoundsComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
+        [](BoundsComponent& component, JsonUtils::JsonVal* payload, int version, std::string* error) -> bool {
             (void)error;
 
             int type = static_cast<int>(component.type);
@@ -1061,7 +1076,7 @@ bool registerDefaultMeshRendererSerializer(Serialization::ComponentSerialization
     return registry.registerTypedSerializer<MeshRendererComponent>(
         "MeshRendererComponent",
         3,
-        [](const MeshRendererComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
+        [](const MeshRendererComponent& component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* error) -> bool {
             std::string modelSourceRef = component.modelSourceRef;
             bool modelForceSmoothNormals = (component.modelForceSmoothNormals != 0);
             if(component.model){
@@ -1086,7 +1101,7 @@ bool registerDefaultMeshRendererSerializer(Serialization::ComponentSerialization
                 return false;
             }
 
-            yyjson_mut_val* offsetObj = yyjson_mut_obj_add_obj(doc, payload, "localOffset");
+            JsonUtils::JsonMutVal* offsetObj = yyjson_mut_obj_add_obj(doc, payload, "localOffset");
             if(!offsetObj){
                 setComponentSerializationError(error, "Failed to write mesh renderer localOffset object.");
                 return false;
@@ -1121,7 +1136,7 @@ bool registerDefaultMeshRendererSerializer(Serialization::ComponentSerialization
             }
             return true;
         },
-        [](MeshRendererComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
+        [](MeshRendererComponent& component, JsonUtils::JsonVal* payload, int version, std::string* error) -> bool {
             (void)version;
             JsonUtils::TryGetBool(payload, "visible", component.visible);
             JsonUtils::TryGetBool(payload, "enableBackfaceCulling", component.enableBackfaceCulling);
@@ -1132,7 +1147,7 @@ bool registerDefaultMeshRendererSerializer(Serialization::ComponentSerialization
             component.modelForceSmoothNormals = modelForceSmoothNormals ? 1 : 0;
             JsonUtils::TryGetString(payload, "materialAssetRef", component.materialAssetRef);
 
-            if(yyjson_val* offsetObj = JsonUtils::ObjGetObject(payload, "localOffset")){
+            if(JsonUtils::JsonVal* offsetObj = JsonUtils::ObjGetObject(payload, "localOffset")){
                 readTransformFields(offsetObj, component.localOffset);
             }
             readStringArrayField(payload, "modelPartMaterialAssetRefs", component.modelPartMaterialAssetRefs, nullptr);
@@ -1214,8 +1229,8 @@ bool registerDefaultLightSerializer(Serialization::ComponentSerializationRegistr
     return registry.registerTypedSerializer<LightComponent>(
         "LightComponent",
         2,
-        [](const LightComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
-            yyjson_mut_val* lightObj = yyjson_mut_obj_add_obj(doc, payload, "light");
+        [](const LightComponent& component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* error) -> bool {
+            JsonUtils::JsonMutVal* lightObj = yyjson_mut_obj_add_obj(doc, payload, "light");
             if(!lightObj){
                 setComponentSerializationError(error, "Failed to allocate light payload object.");
                 return false;
@@ -1242,11 +1257,11 @@ bool registerDefaultLightSerializer(Serialization::ComponentSerializationRegistr
                    JsonUtils::MutObjAddBool(doc, payload, "syncDirection", component.syncDirection) &&
                    writeEditorComponentStateFields(component, doc, payload, error);
         },
-        [](LightComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
+        [](LightComponent& component, JsonUtils::JsonVal* payload, int version, std::string* error) -> bool {
             (void)version;
             (void)error;
 
-            yyjson_val* lightObj = JsonUtils::ObjGetObject(payload, "light");
+            JsonUtils::JsonVal* lightObj = JsonUtils::ObjGetObject(payload, "light");
             if(lightObj){
                 int type = static_cast<int>(component.light.type);
                 int shadowType = static_cast<int>(component.light.shadowType);
@@ -1297,7 +1312,7 @@ bool registerDefaultCameraSerializer(Serialization::ComponentSerializationRegist
     return registry.registerTypedSerializer<CameraComponent>(
         "CameraComponent",
         1,
-        [](const CameraComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
+        [](const CameraComponent& component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* error) -> bool {
             if(!JsonUtils::MutObjAddBool(doc, payload, "hasCamera", component.camera != nullptr)){
                 setComponentSerializationError(error, "Failed to write hasCamera field.");
                 return false;
@@ -1310,7 +1325,7 @@ bool registerDefaultCameraSerializer(Serialization::ComponentSerializationRegist
             }
 
             const CameraSettings& settings = component.camera->getSettings();
-            yyjson_mut_val* cameraObj = yyjson_mut_obj_add_obj(doc, payload, "camera");
+            JsonUtils::JsonMutVal* cameraObj = yyjson_mut_obj_add_obj(doc, payload, "camera");
             if(!cameraObj){
                 setComponentSerializationError(error, "Failed to create camera payload object.");
                 return false;
@@ -1324,7 +1339,7 @@ bool registerDefaultCameraSerializer(Serialization::ComponentSerializationRegist
                    JsonUtils::MutObjAddVec2(doc, cameraObj, "viewPlanePosition", settings.viewPlane.position) &&
                    JsonUtils::MutObjAddVec2(doc, cameraObj, "viewPlaneSize", settings.viewPlane.size);
         },
-        [](CameraComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
+        [](CameraComponent& component, JsonUtils::JsonVal* payload, int version, std::string* error) -> bool {
             (void)version;
             bool hasCamera = (component.camera != nullptr);
             JsonUtils::TryGetBool(payload, "hasCamera", hasCamera);
@@ -1342,7 +1357,7 @@ bool registerDefaultCameraSerializer(Serialization::ComponentSerializationRegist
                 return false;
             }
 
-            if(yyjson_val* cameraObj = JsonUtils::ObjGetObject(payload, "camera")){
+            if(JsonUtils::JsonVal* cameraObj = JsonUtils::ObjGetObject(payload, "camera")){
                 CameraSettings settings = component.camera->getSettings();
                 JsonUtils::TryGetBool(cameraObj, "isOrtho", settings.isOrtho);
                 JsonUtils::TryGetFloat(cameraObj, "nearPlane", settings.nearPlane);
@@ -1366,11 +1381,11 @@ bool registerDefaultSkyboxSerializer(Serialization::ComponentSerializationRegist
     return registry.registerTypedSerializer<SkyboxComponent>(
         "SkyboxComponent",
         1,
-        [](const SkyboxComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
+        [](const SkyboxComponent& component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* error) -> bool {
             return JsonUtils::MutObjAddString(doc, payload, "skyboxAssetRef", StringUtils::Trim(component.skyboxAssetRef)) &&
                    writeEditorComponentStateFields(component, doc, payload, error);
         },
-        [](SkyboxComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
+        [](SkyboxComponent& component, JsonUtils::JsonVal* payload, int version, std::string* error) -> bool {
             (void)version;
             (void)error;
             JsonUtils::TryGetString(payload, "skyboxAssetRef", component.skyboxAssetRef);
@@ -1388,23 +1403,6 @@ bool registerDefaultSkyboxSerializer(Serialization::ComponentSerializationRegist
                 return false;
             }
 
-            if(!wrapper->hasComponent<CameraComponent>() && !wrapper->addComponent<CameraComponent>()){
-                if(error){
-                    *error = "SkyboxComponent requires CameraComponent.";
-                }
-                return false;
-            }
-            if(auto* camera = wrapper->getComponent<CameraComponent>()){
-                if(!camera->camera){
-                    camera->camera = Camera::CreatePerspective(45.0f, Math3D::Vec2(1280.0f, 720.0f), 0.1f, 1000.0f);
-                    if(!camera->camera){
-                        if(error){
-                            *error = "Failed to allocate default camera for SkyboxComponent.";
-                        }
-                        return false;
-                    }
-                }
-            }
             if(wrapper->hasComponent<SkyboxComponent>()){
                 return true;
             }
@@ -1420,11 +1418,84 @@ bool registerDefaultSkyboxSerializer(Serialization::ComponentSerializationRegist
     );
 }
 
+bool registerDefaultEnvironmentSerializer(Serialization::ComponentSerializationRegistry& registry, std::string* outError){
+    return registry.registerTypedSerializer<EnvironmentComponent>(
+        "EnvironmentComponent",
+        1,
+        [](const EnvironmentComponent& component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* error) -> bool {
+            if(!JsonUtils::MutObjAddString(doc, payload, "environmentAssetRef", StringUtils::Trim(component.environmentAssetRef)) ||
+               !JsonUtils::MutObjAddString(doc, payload, "skyboxAssetRef", StringUtils::Trim(component.skyboxAssetRef))){
+                setComponentSerializationError(error, "Failed to serialize environment component asset references.");
+                return false;
+            }
+
+            JsonUtils::JsonMutVal* settingsObj = yyjson_mut_obj_add_obj(doc, payload, "settings");
+            if(!settingsObj){
+                setComponentSerializationError(error, "Failed to create environment settings payload object.");
+                return false;
+            }
+
+            EnvironmentSettings settings = component.settings;
+            sanitizeEnvironmentSettings(settings);
+            if(!JsonUtils::MutObjAddBool(doc, settingsObj, "fogEnabled", settings.fogEnabled) ||
+               !JsonUtils::MutObjAddVec4(doc, settingsObj, "fogColor", settings.fogColor) ||
+               !JsonUtils::MutObjAddFloat(doc, settingsObj, "fogStart", settings.fogStart) ||
+               !JsonUtils::MutObjAddFloat(doc, settingsObj, "fogStop", settings.fogStop) ||
+               !JsonUtils::MutObjAddFloat(doc, settingsObj, "fogEnd", settings.fogEnd) ||
+               !JsonUtils::MutObjAddVec4(doc, settingsObj, "ambientColor", settings.ambientColor) ||
+               !JsonUtils::MutObjAddFloat(doc, settingsObj, "ambientIntensity", settings.ambientIntensity) ||
+               !JsonUtils::MutObjAddBool(doc, settingsObj, "useProceduralSky", settings.useProceduralSky) ||
+               !JsonUtils::MutObjAddVec3(doc, settingsObj, "sunDirection", settings.sunDirection) ||
+               !JsonUtils::MutObjAddFloat(doc, settingsObj, "rayleighStrength", settings.rayleighStrength) ||
+               !JsonUtils::MutObjAddFloat(doc, settingsObj, "mieStrength", settings.mieStrength) ||
+               !JsonUtils::MutObjAddFloat(doc, settingsObj, "mieAnisotropy", settings.mieAnisotropy)){
+                setComponentSerializationError(error, "Failed to serialize environment settings.");
+                return false;
+            }
+
+            return writeEditorComponentStateFields(component, doc, payload, error);
+        },
+        [](EnvironmentComponent& component, JsonUtils::JsonVal* payload, int version, std::string* error) -> bool {
+            (void)version;
+            (void)error;
+
+            JsonUtils::TryGetString(payload, "environmentAssetRef", component.environmentAssetRef);
+            JsonUtils::TryGetString(payload, "skyboxAssetRef", component.skyboxAssetRef);
+            component.environmentAssetRef = StringUtils::Trim(component.environmentAssetRef);
+            component.skyboxAssetRef = StringUtils::Trim(component.skyboxAssetRef);
+
+            if(JsonUtils::JsonVal* settingsObj = JsonUtils::ObjGetObject(payload, "settings")){
+                JsonUtils::TryGetBool(settingsObj, "fogEnabled", component.settings.fogEnabled);
+                JsonUtils::TryGetVec4(settingsObj, "fogColor", component.settings.fogColor);
+                JsonUtils::TryGetFloat(settingsObj, "fogStart", component.settings.fogStart);
+                JsonUtils::TryGetFloat(settingsObj, "fogStop", component.settings.fogStop);
+                JsonUtils::TryGetFloat(settingsObj, "fogEnd", component.settings.fogEnd);
+                JsonUtils::TryGetVec4(settingsObj, "ambientColor", component.settings.ambientColor);
+                JsonUtils::TryGetFloat(settingsObj, "ambientIntensity", component.settings.ambientIntensity);
+                JsonUtils::TryGetBool(settingsObj, "useProceduralSky", component.settings.useProceduralSky);
+                JsonUtils::TryGetVec3(settingsObj, "sunDirection", component.settings.sunDirection);
+                JsonUtils::TryGetFloat(settingsObj, "rayleighStrength", component.settings.rayleighStrength);
+                JsonUtils::TryGetFloat(settingsObj, "mieStrength", component.settings.mieStrength);
+                JsonUtils::TryGetFloat(settingsObj, "mieAnisotropy", component.settings.mieAnisotropy);
+            }
+
+            sanitizeEnvironmentSettings(component.settings);
+            component.loadedEnvironmentAssetRef.clear();
+            component.loadedSkyboxAssetRef.clear();
+            component.runtimeSkyBox.reset();
+            readEditorComponentStateFields(component, payload);
+            return true;
+        },
+        {},
+        outError
+    );
+}
+
 bool registerDefaultColliderSerializer(Serialization::ComponentSerializationRegistry& registry, std::string* outError){
     return registry.registerTypedSerializer<ColliderComponent>(
         "ColliderComponent",
         1,
-        [](const ColliderComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
+        [](const ColliderComponent& component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* error) -> bool {
             if(!JsonUtils::MutObjAddInt(doc, payload, "shape", static_cast<int>(component.shape)) ||
                !JsonUtils::MutObjAddVec3(doc, payload, "boxHalfExtents", component.boxHalfExtents) ||
                !JsonUtils::MutObjAddFloat(doc, payload, "sphereRadius", component.sphereRadius) ||
@@ -1437,13 +1508,13 @@ bool registerDefaultColliderSerializer(Serialization::ComponentSerializationRegi
                 return false;
             }
 
-            yyjson_mut_val* offsetObj = yyjson_mut_obj_add_obj(doc, payload, "localOffset");
+            JsonUtils::JsonMutVal* offsetObj = yyjson_mut_obj_add_obj(doc, payload, "localOffset");
             if(!offsetObj || !writeTransformFields(doc, offsetObj, "", component.localOffset)){
                 setComponentSerializationError(error, "Failed to write collider local offset.");
                 return false;
             }
 
-            yyjson_mut_val* materialObj = yyjson_mut_obj_add_obj(doc, payload, "material");
+            JsonUtils::JsonMutVal* materialObj = yyjson_mut_obj_add_obj(doc, payload, "material");
             if(!materialObj){
                 setComponentSerializationError(error, "Failed to write collider material object.");
                 return false;
@@ -1454,7 +1525,7 @@ bool registerDefaultColliderSerializer(Serialization::ComponentSerializationRegi
                    JsonUtils::MutObjAddFloat(doc, materialObj, "density", component.material.density) &&
                    writeEditorComponentStateFields(component, doc, payload, error);
         },
-        [](ColliderComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
+        [](ColliderComponent& component, JsonUtils::JsonVal* payload, int version, std::string* error) -> bool {
             (void)version;
             int shape = static_cast<int>(component.shape);
             int layer = static_cast<int>(component.layer);
@@ -1469,10 +1540,10 @@ bool registerDefaultColliderSerializer(Serialization::ComponentSerializationRegi
             JsonUtils::TryGetUInt64(payload, "collisionMask", mask);
             JsonUtils::TryGetBool(payload, "isTrigger", component.isTrigger);
 
-            if(yyjson_val* offsetObj = JsonUtils::ObjGetObject(payload, "localOffset")){
+            if(JsonUtils::JsonVal* offsetObj = JsonUtils::ObjGetObject(payload, "localOffset")){
                 readTransformFields(offsetObj, component.localOffset);
             }
-            if(yyjson_val* materialObj = JsonUtils::ObjGetObject(payload, "material")){
+            if(JsonUtils::JsonVal* materialObj = JsonUtils::ObjGetObject(payload, "material")){
                 JsonUtils::TryGetFloat(materialObj, "staticFriction", component.material.staticFriction);
                 JsonUtils::TryGetFloat(materialObj, "dynamicFriction", component.material.dynamicFriction);
                 JsonUtils::TryGetFloat(materialObj, "restitution", component.material.restitution);
@@ -1502,7 +1573,7 @@ bool registerDefaultRigidBodySerializer(Serialization::ComponentSerializationReg
     return registry.registerTypedSerializer<RigidBodyComponent>(
         "RigidBodyComponent",
         1,
-        [](const RigidBodyComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
+        [](const RigidBodyComponent& component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* error) -> bool {
             return JsonUtils::MutObjAddInt(doc, payload, "bodyType", static_cast<int>(component.bodyType)) &&
                    JsonUtils::MutObjAddFloat(doc, payload, "mass", component.mass) &&
                    JsonUtils::MutObjAddFloat(doc, payload, "gravityScale", component.gravityScale) &&
@@ -1521,7 +1592,7 @@ bool registerDefaultRigidBodySerializer(Serialization::ComponentSerializationReg
                    JsonUtils::MutObjAddBool(doc, payload, "startAwake", component.startAwake) &&
                    writeEditorComponentStateFields(component, doc, payload, error);
         },
-        [](RigidBodyComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
+        [](RigidBodyComponent& component, JsonUtils::JsonVal* payload, int version, std::string* error) -> bool {
             (void)version;
             (void)error;
 
@@ -1563,11 +1634,11 @@ bool registerDefaultScriptSerializer(Serialization::ComponentSerializationRegist
     return registry.registerTypedSerializer<ScriptComponent>(
         "ScriptComponent",
         1,
-        [](const ScriptComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
+        [](const ScriptComponent& component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* error) -> bool {
             return addStringArrayField(doc, payload, "scriptAssetRefs", component.scriptAssetRefs, error) &&
                    writeEditorComponentStateFields(component, doc, payload, error);
         },
-        [](ScriptComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
+        [](ScriptComponent& component, JsonUtils::JsonVal* payload, int version, std::string* error) -> bool {
             (void)version;
             std::vector<std::string> refs;
             if(!readStringArrayField(payload, "scriptAssetRefs", refs, error)){
@@ -1590,7 +1661,7 @@ bool registerDefaultSsaoSerializer(Serialization::ComponentSerializationRegistry
     return registry.registerTypedSerializer<SSAOComponent>(
         "SSAOComponent",
         3,
-        [](const SSAOComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
+        [](const SSAOComponent& component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* error) -> bool {
             return JsonUtils::MutObjAddBool(doc, payload, "enabled", component.enabled) &&
                    JsonUtils::MutObjAddFloat(doc, payload, "radiusPx", component.radiusPx) &&
                    JsonUtils::MutObjAddFloat(doc, payload, "depthRadius", component.depthRadius) &&
@@ -1603,7 +1674,7 @@ bool registerDefaultSsaoSerializer(Serialization::ComponentSerializationRegistry
                    JsonUtils::MutObjAddInt(doc, payload, "debugView", component.debugView) &&
                    writeEditorComponentStateFields(component, doc, payload, error);
         },
-        [](SSAOComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
+        [](SSAOComponent& component, JsonUtils::JsonVal* payload, int version, std::string* error) -> bool {
             (void)error;
             JsonUtils::TryGetBool(payload, "enabled", component.enabled);
             JsonUtils::TryGetFloat(payload, "radiusPx", component.radiusPx);
@@ -1629,11 +1700,11 @@ bool registerDefaultPostProcessingStackSerializer(Serialization::ComponentSerial
     return registry.registerTypedSerializer<PostProcessingStackComponent>(
         "PostProcessingStackComponent",
         1,
-        [](const PostProcessingStackComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
+        [](const PostProcessingStackComponent& component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* error) -> bool {
             return writePostProcessingStackEffectsField(component, doc, payload, error) &&
                    writeEditorComponentStateFields(component, doc, payload, error);
         },
-        [](PostProcessingStackComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
+        [](PostProcessingStackComponent& component, JsonUtils::JsonVal* payload, int version, std::string* error) -> bool {
             (void)version;
             if(!readPostProcessingStackEffectsField(payload, component, error)){
                 return false;
@@ -1650,7 +1721,7 @@ bool registerDefaultDepthOfFieldSerializer(Serialization::ComponentSerialization
     return registry.registerTypedSerializer<DepthOfFieldComponent>(
         "DepthOfFieldComponent",
         6,
-        [](const DepthOfFieldComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
+        [](const DepthOfFieldComponent& component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* error) -> bool {
             return JsonUtils::MutObjAddBool(doc, payload, "enabled", component.enabled) &&
                    JsonUtils::MutObjAddBool(doc, payload, "adaptiveFocus", component.adaptiveFocus) &&
                    JsonUtils::MutObjAddBool(doc, payload, "adaptiveFocusDebugDraw", component.adaptiveFocusDebugDraw) &&
@@ -1665,7 +1736,7 @@ bool registerDefaultDepthOfFieldSerializer(Serialization::ComponentSerialization
                    JsonUtils::MutObjAddInt(doc, payload, "sampleCount", component.sampleCount) &&
                    writeEditorComponentStateFields(component, doc, payload, error);
         },
-        [](DepthOfFieldComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
+        [](DepthOfFieldComponent& component, JsonUtils::JsonVal* payload, int version, std::string* error) -> bool {
             (void)error;
             JsonUtils::TryGetBool(payload, "enabled", component.enabled);
             component.adaptiveFocus = false;
@@ -1707,7 +1778,7 @@ bool registerDefaultBloomSerializer(Serialization::ComponentSerializationRegistr
     return registry.registerTypedSerializer<BloomComponent>(
         "BloomComponent",
         1,
-        [](const BloomComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
+        [](const BloomComponent& component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* error) -> bool {
             return JsonUtils::MutObjAddBool(doc, payload, "enabled", component.enabled) &&
                    JsonUtils::MutObjAddBool(doc, payload, "adaptiveBloom", component.adaptiveBloom) &&
                    JsonUtils::MutObjAddFloat(doc, payload, "threshold", component.threshold) &&
@@ -1718,7 +1789,7 @@ bool registerDefaultBloomSerializer(Serialization::ComponentSerializationRegistr
                    JsonUtils::MutObjAddVec3(doc, payload, "tint", component.tint) &&
                    writeEditorComponentStateFields(component, doc, payload, error);
         },
-        [](BloomComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
+        [](BloomComponent& component, JsonUtils::JsonVal* payload, int version, std::string* error) -> bool {
             (void)version;
             (void)error;
             JsonUtils::TryGetBool(payload, "enabled", component.enabled);
@@ -1743,11 +1814,11 @@ bool registerDefaultLensFlareSerializer(Serialization::ComponentSerializationReg
     return registry.registerTypedSerializer<LensFlareComponent>(
         "LensFlareComponent",
         1,
-        [](const LensFlareComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
+        [](const LensFlareComponent& component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* error) -> bool {
             return JsonUtils::MutObjAddBool(doc, payload, "enabled", component.enabled) &&
                    writeEditorComponentStateFields(component, doc, payload, error);
         },
-        [](LensFlareComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
+        [](LensFlareComponent& component, JsonUtils::JsonVal* payload, int version, std::string* error) -> bool {
             (void)version;
             (void)error;
             JsonUtils::TryGetBool(payload, "enabled", component.enabled);
@@ -1764,7 +1835,7 @@ bool registerDefaultAutoExposureSerializer(Serialization::ComponentSerialization
     return registry.registerTypedSerializer<AutoExposureComponent>(
         "AutoExposureComponent",
         1,
-        [](const AutoExposureComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
+        [](const AutoExposureComponent& component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* error) -> bool {
             return JsonUtils::MutObjAddBool(doc, payload, "enabled", component.enabled) &&
                    JsonUtils::MutObjAddFloat(doc, payload, "minExposure", component.minExposure) &&
                    JsonUtils::MutObjAddFloat(doc, payload, "maxExposure", component.maxExposure) &&
@@ -1773,7 +1844,7 @@ bool registerDefaultAutoExposureSerializer(Serialization::ComponentSerialization
                    JsonUtils::MutObjAddFloat(doc, payload, "adaptationSpeedDown", component.adaptationSpeedDown) &&
                    writeEditorComponentStateFields(component, doc, payload, error);
         },
-        [](AutoExposureComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
+        [](AutoExposureComponent& component, JsonUtils::JsonVal* payload, int version, std::string* error) -> bool {
             (void)version;
             (void)error;
             JsonUtils::TryGetBool(payload, "enabled", component.enabled);
@@ -1800,11 +1871,11 @@ bool registerDefaultAntiAliasingSerializer(Serialization::ComponentSerialization
     return registry.registerTypedSerializer<AntiAliasingComponent>(
         "AntiAliasingComponent",
         1,
-        [](const AntiAliasingComponent& component, yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* error) -> bool {
+        [](const AntiAliasingComponent& component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* error) -> bool {
             return JsonUtils::MutObjAddInt(doc, payload, "preset", static_cast<int>(component.preset)) &&
                    writeEditorComponentStateFields(component, doc, payload, error);
         },
-        [](AntiAliasingComponent& component, yyjson_val* payload, int version, std::string* error) -> bool {
+        [](AntiAliasingComponent& component, JsonUtils::JsonVal* payload, int version, std::string* error) -> bool {
             (void)version;
             (void)error;
             int preset = static_cast<int>(component.preset);
@@ -1943,7 +2014,7 @@ bool ComponentSerializationRegistry::serializeComponentRecord(
     const SerializerEntry& serializer = orderedSerializers[it->second];
 
     JsonUtils::MutableDocument payloadDoc;
-    yyjson_mut_val* payload = payloadDoc.setRootObject();
+    JsonUtils::JsonMutVal* payload = payloadDoc.setRootObject();
     if(!payload){
         setComponentSerializationError(outError, "Failed to allocate component payload object for type '" + typeName + "'.");
         return false;
@@ -2018,7 +2089,7 @@ bool ComponentSerializationRegistry::deserializeComponentRecordWithWrapper(
     }
 
     JsonUtils::Document payloadDoc;
-    yyjson_val* payload = nullptr;
+    JsonUtils::JsonVal* payload = nullptr;
     if(!readPayloadFromJsonString(record.payloadJson, payloadDoc, payload, outError)){
         if(outError && !outError->empty()){
             *outError = "Invalid payload for component '" + record.type + "': " + *outError;
@@ -2051,6 +2122,7 @@ void RegisterDefaultComponentSerializers(ComponentSerializationRegistry& registr
     if(!registry.hasSerializer("LightComponent") && !registerDefaultLightSerializer(registry, outError)) return;
     if(!registry.hasSerializer("CameraComponent") && !registerDefaultCameraSerializer(registry, outError)) return;
     if(!registry.hasSerializer("SkyboxComponent") && !registerDefaultSkyboxSerializer(registry, outError)) return;
+    if(!registry.hasSerializer("EnvironmentComponent") && !registerDefaultEnvironmentSerializer(registry, outError)) return;
     if(!registry.hasSerializer("ColliderComponent") && !registerDefaultColliderSerializer(registry, outError)) return;
     if(!registry.hasSerializer("RigidBodyComponent") && !registerDefaultRigidBodySerializer(registry, outError)) return;
     if(!registry.hasSerializer("ScriptComponent") && !registerDefaultScriptSerializer(registry, outError)) return;

@@ -27,7 +27,7 @@ std::string FieldName(const char* key){
     return key ? std::string(key) : std::string("<null>");
 }
 
-bool ReadStringArrayLocal(yyjson_val* arr, std::vector<std::string>& outValues, std::string* outError, const char* debugName){
+bool ReadStringArrayLocal(JsonUtils::JsonVal* arr, std::vector<std::string>& outValues, std::string* outError, const char* debugName){
     if(!arr || !yyjson_is_arr(arr)){
         SetDocSchemaError(outError, std::string("Expected string array for '") + (debugName ? debugName : "array") + "'.");
         return false;
@@ -37,7 +37,7 @@ bool ReadStringArrayLocal(yyjson_val* arr, std::vector<std::string>& outValues, 
     const size_t count = yyjson_arr_size(arr);
     outValues.reserve(count);
     for(size_t i = 0; i < count; ++i){
-        yyjson_val* item = yyjson_arr_get(arr, i);
+        JsonUtils::JsonVal* item = yyjson_arr_get(arr, i);
         if(!item || !yyjson_is_str(item)){
             SetDocSchemaError(
                 outError,
@@ -52,12 +52,12 @@ bool ReadStringArrayLocal(yyjson_val* arr, std::vector<std::string>& outValues, 
     return true;
 }
 
-bool WriteStringArrayLocal(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, const std::vector<std::string>& values, std::string* outError){
+bool WriteStringArrayLocal(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* obj, const char* key, const std::vector<std::string>& values, std::string* outError){
     if(values.empty()){
         return true;
     }
 
-    yyjson_mut_val* arr = yyjson_mut_obj_add_arr(doc, obj, key);
+    JsonUtils::JsonMutVal* arr = yyjson_mut_obj_add_arr(doc, obj, key);
     if(!arr){
         SetDocSchemaError(outError, "Failed to create array field '" + FieldName(key) + "'.");
         return false;
@@ -73,7 +73,7 @@ bool WriteStringArrayLocal(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char*
 }
 
 bool ReadMetadataBlock(
-    yyjson_val* payload,
+    JsonUtils::JsonVal* payload,
     JsonSchema::DocumentMetadata& metadata,
     std::string* outError
 ){
@@ -81,7 +81,7 @@ bool ReadMetadataBlock(
         return true;
     }
 
-    yyjson_val* metaObj = JsonUtils::ObjGetObject(payload, "metadata");
+    JsonUtils::JsonVal* metaObj = JsonUtils::ObjGetObject(payload, "metadata");
     if(!metaObj){
         SetDocSchemaError(outError, "Field 'metadata' must be an object.");
         return false;
@@ -113,7 +113,7 @@ bool ReadMetadataBlock(
         return false;
     }
     if(JsonUtils::ObjHasKey(metaObj, "tags")){
-        yyjson_val* tagsArr = JsonUtils::ObjGetArray(metaObj, "tags");
+        JsonUtils::JsonVal* tagsArr = JsonUtils::ObjGetArray(metaObj, "tags");
         if(!ReadStringArrayLocal(tagsArr, metadata.tags, outError, "metadata.tags")){
             PrefixDocSchemaError(outError, "metadata: ");
             return false;
@@ -127,11 +127,11 @@ bool ReadMetadataBlock(
 
 bool WriteMetadataBlock(
     yyjson_mut_doc* doc,
-    yyjson_mut_val* payload,
+    JsonUtils::JsonMutVal* payload,
     const JsonSchema::DocumentMetadata& metadata,
     std::string* outError
 ){
-    yyjson_mut_val* metaObj = yyjson_mut_obj_add_obj(doc, payload, "metadata");
+    JsonUtils::JsonMutVal* metaObj = yyjson_mut_obj_add_obj(doc, payload, "metadata");
     if(!metaObj){
         SetDocSchemaError(outError, "Failed to create 'metadata' object.");
         return false;
@@ -174,7 +174,7 @@ void EntitySnapshotSchemaBase::ClearSnapshot(){
     entities.clear();
 }
 
-bool EntitySnapshotSchemaBase::DeserializePayload(yyjson_val* payload, int version, std::string* outError){
+bool EntitySnapshotSchemaBase::DeserializePayload(JsonUtils::JsonVal* payload, int version, std::string* outError){
     ClearSnapshot();
     ResetDocumentFieldsState();
 
@@ -193,7 +193,7 @@ bool EntitySnapshotSchemaBase::DeserializePayload(yyjson_val* payload, int versi
     return ValidateDocumentState(outError);
 }
 
-bool EntitySnapshotSchemaBase::SerializePayload(yyjson_mut_doc* doc, yyjson_mut_val* payload, int version, std::string* outError) const{
+bool EntitySnapshotSchemaBase::SerializePayload(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, int version, std::string* outError) const{
     (void)version;
 
     if(!ValidateSnapshotState(outError)){
@@ -212,7 +212,7 @@ bool EntitySnapshotSchemaBase::ValidateDocumentState(std::string*) const{
     return true;
 }
 
-bool EntitySnapshotSchemaBase::RequireStringField(yyjson_val* obj, const char* key, std::string& outValue, std::string* outError) const{
+bool EntitySnapshotSchemaBase::RequireStringField(JsonUtils::JsonVal* obj, const char* key, std::string& outValue, std::string* outError) const{
     if(JsonUtils::TryGetString(obj, key, outValue)){
         return true;
     }
@@ -220,7 +220,7 @@ bool EntitySnapshotSchemaBase::RequireStringField(yyjson_val* obj, const char* k
     return false;
 }
 
-bool EntitySnapshotSchemaBase::RequireIntField(yyjson_val* obj, const char* key, int& outValue, std::string* outError) const{
+bool EntitySnapshotSchemaBase::RequireIntField(JsonUtils::JsonVal* obj, const char* key, int& outValue, std::string* outError) const{
     if(JsonUtils::TryGetInt(obj, key, outValue)){
         return true;
     }
@@ -228,7 +228,7 @@ bool EntitySnapshotSchemaBase::RequireIntField(yyjson_val* obj, const char* key,
     return false;
 }
 
-bool EntitySnapshotSchemaBase::RequireUInt64Field(yyjson_val* obj, const char* key, std::uint64_t& outValue, std::string* outError) const{
+bool EntitySnapshotSchemaBase::RequireUInt64Field(JsonUtils::JsonVal* obj, const char* key, std::uint64_t& outValue, std::string* outError) const{
     if(JsonUtils::TryGetUInt64(obj, key, outValue)){
         return true;
     }
@@ -236,7 +236,7 @@ bool EntitySnapshotSchemaBase::RequireUInt64Field(yyjson_val* obj, const char* k
     return false;
 }
 
-bool EntitySnapshotSchemaBase::RequireObjectField(yyjson_val* obj, const char* key, yyjson_val*& outValue, std::string* outError) const{
+bool EntitySnapshotSchemaBase::RequireObjectField(JsonUtils::JsonVal* obj, const char* key, JsonUtils::JsonVal*& outValue, std::string* outError) const{
     outValue = JsonUtils::ObjGetObject(obj, key);
     if(outValue){
         return true;
@@ -245,7 +245,7 @@ bool EntitySnapshotSchemaBase::RequireObjectField(yyjson_val* obj, const char* k
     return false;
 }
 
-bool EntitySnapshotSchemaBase::RequireArrayField(yyjson_val* obj, const char* key, yyjson_val*& outValue, std::string* outError) const{
+bool EntitySnapshotSchemaBase::RequireArrayField(JsonUtils::JsonVal* obj, const char* key, JsonUtils::JsonVal*& outValue, std::string* outError) const{
     outValue = JsonUtils::ObjGetArray(obj, key);
     if(outValue){
         return true;
@@ -254,7 +254,7 @@ bool EntitySnapshotSchemaBase::RequireArrayField(yyjson_val* obj, const char* ke
     return false;
 }
 
-bool EntitySnapshotSchemaBase::ReadOptionalStringField(yyjson_val* obj, const char* key, std::string& outValue, std::string* outError) const{
+bool EntitySnapshotSchemaBase::ReadOptionalStringField(JsonUtils::JsonVal* obj, const char* key, std::string& outValue, std::string* outError) const{
     if(!JsonUtils::ObjHasKey(obj, key)){
         return true;
     }
@@ -265,7 +265,7 @@ bool EntitySnapshotSchemaBase::ReadOptionalStringField(yyjson_val* obj, const ch
     return false;
 }
 
-bool EntitySnapshotSchemaBase::ReadOptionalBoolField(yyjson_val* obj, const char* key, bool& outValue, std::string* outError) const{
+bool EntitySnapshotSchemaBase::ReadOptionalBoolField(JsonUtils::JsonVal* obj, const char* key, bool& outValue, std::string* outError) const{
     if(!JsonUtils::ObjHasKey(obj, key)){
         return true;
     }
@@ -276,7 +276,7 @@ bool EntitySnapshotSchemaBase::ReadOptionalBoolField(yyjson_val* obj, const char
     return false;
 }
 
-bool EntitySnapshotSchemaBase::ReadOptionalIntField(yyjson_val* obj, const char* key, int& outValue, std::string* outError) const{
+bool EntitySnapshotSchemaBase::ReadOptionalIntField(JsonUtils::JsonVal* obj, const char* key, int& outValue, std::string* outError) const{
     if(!JsonUtils::ObjHasKey(obj, key)){
         return true;
     }
@@ -287,7 +287,7 @@ bool EntitySnapshotSchemaBase::ReadOptionalIntField(yyjson_val* obj, const char*
     return false;
 }
 
-bool EntitySnapshotSchemaBase::ReadOptionalUInt64Field(yyjson_val* obj, const char* key, std::uint64_t& outValue, std::string* outError) const{
+bool EntitySnapshotSchemaBase::ReadOptionalUInt64Field(JsonUtils::JsonVal* obj, const char* key, std::uint64_t& outValue, std::string* outError) const{
     if(!JsonUtils::ObjHasKey(obj, key)){
         return true;
     }
@@ -298,7 +298,7 @@ bool EntitySnapshotSchemaBase::ReadOptionalUInt64Field(yyjson_val* obj, const ch
     return false;
 }
 
-bool EntitySnapshotSchemaBase::ReadStringArray(yyjson_val* arr, std::vector<std::string>& outValues, std::string* outError, const char* debugName) const{
+bool EntitySnapshotSchemaBase::ReadStringArray(JsonUtils::JsonVal* arr, std::vector<std::string>& outValues, std::string* outError, const char* debugName) const{
     if(!arr || !yyjson_is_arr(arr)){
         SetDocSchemaError(outError, std::string("Expected string array for '") + (debugName ? debugName : "array") + "'.");
         return false;
@@ -308,7 +308,7 @@ bool EntitySnapshotSchemaBase::ReadStringArray(yyjson_val* arr, std::vector<std:
     const size_t count = yyjson_arr_size(arr);
     outValues.reserve(count);
     for(size_t i = 0; i < count; ++i){
-        yyjson_val* item = yyjson_arr_get(arr, i);
+        JsonUtils::JsonVal* item = yyjson_arr_get(arr, i);
         if(!item || !yyjson_is_str(item)){
             SetDocSchemaError(
                 outError,
@@ -323,7 +323,7 @@ bool EntitySnapshotSchemaBase::ReadStringArray(yyjson_val* arr, std::vector<std:
     return true;
 }
 
-bool EntitySnapshotSchemaBase::ReadUInt64Array(yyjson_val* arr, std::vector<std::uint64_t>& outValues, std::string* outError, const char* debugName) const{
+bool EntitySnapshotSchemaBase::ReadUInt64Array(JsonUtils::JsonVal* arr, std::vector<std::uint64_t>& outValues, std::string* outError, const char* debugName) const{
     if(!arr || !yyjson_is_arr(arr)){
         SetDocSchemaError(outError, std::string("Expected uint64 array for '") + (debugName ? debugName : "array") + "'.");
         return false;
@@ -333,7 +333,7 @@ bool EntitySnapshotSchemaBase::ReadUInt64Array(yyjson_val* arr, std::vector<std:
     const size_t count = yyjson_arr_size(arr);
     outValues.reserve(count);
     for(size_t i = 0; i < count; ++i){
-        yyjson_val* item = yyjson_arr_get(arr, i);
+        JsonUtils::JsonVal* item = yyjson_arr_get(arr, i);
         std::uint64_t value = 0;
         if(!item || !(yyjson_is_uint(item) || yyjson_is_int(item) || yyjson_is_sint(item))){
             SetDocSchemaError(
@@ -362,8 +362,8 @@ bool EntitySnapshotSchemaBase::ReadUInt64Array(yyjson_val* arr, std::vector<std:
     return true;
 }
 
-bool EntitySnapshotSchemaBase::ReadStringArrayField(yyjson_val* obj, const char* key, std::vector<std::string>& outValues, std::string* outError, bool required) const{
-    yyjson_val* arr = JsonUtils::ObjGetArray(obj, key);
+bool EntitySnapshotSchemaBase::ReadStringArrayField(JsonUtils::JsonVal* obj, const char* key, std::vector<std::string>& outValues, std::string* outError, bool required) const{
+    JsonUtils::JsonVal* arr = JsonUtils::ObjGetArray(obj, key);
     if(!arr){
         if(required){
             SetDocSchemaError(outError, "Missing required string array field '" + FieldName(key) + "'.");
@@ -375,12 +375,12 @@ bool EntitySnapshotSchemaBase::ReadStringArrayField(yyjson_val* obj, const char*
     return ReadStringArray(arr, outValues, outError, key);
 }
 
-bool EntitySnapshotSchemaBase::WriteStringArrayField(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, const std::vector<std::string>& values, std::string* outError) const{
+bool EntitySnapshotSchemaBase::WriteStringArrayField(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* obj, const char* key, const std::vector<std::string>& values, std::string* outError) const{
     if(values.empty()){
         return true;
     }
 
-    yyjson_mut_val* arr = yyjson_mut_obj_add_arr(doc, obj, key);
+    JsonUtils::JsonMutVal* arr = yyjson_mut_obj_add_arr(doc, obj, key);
     if(!arr){
         SetDocSchemaError(outError, "Failed to create array field '" + FieldName(key) + "'.");
         return false;
@@ -395,13 +395,13 @@ bool EntitySnapshotSchemaBase::WriteStringArrayField(yyjson_mut_doc* doc, yyjson
     return true;
 }
 
-bool EntitySnapshotSchemaBase::ReadOptionalRawJsonField(yyjson_val* obj, const char* key, RawJsonValue& outValue, std::string* outError, bool requireObject) const{
+bool EntitySnapshotSchemaBase::ReadOptionalRawJsonField(JsonUtils::JsonVal* obj, const char* key, RawJsonValue& outValue, std::string* outError, bool requireObject) const{
     if(!JsonUtils::ObjHasKey(obj, key)){
         outValue.Clear();
         return true;
     }
 
-    yyjson_val* value = JsonUtils::ObjGet(obj, key);
+    JsonUtils::JsonVal* value = JsonUtils::ObjGet(obj, key);
     if(!value){
         outValue.Clear();
         return true;
@@ -421,12 +421,12 @@ bool EntitySnapshotSchemaBase::ReadOptionalRawJsonField(yyjson_val* obj, const c
     return true;
 }
 
-bool EntitySnapshotSchemaBase::WriteOptionalRawJsonField(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, const RawJsonValue& value, std::string* outError, bool requireObject) const{
+bool EntitySnapshotSchemaBase::WriteOptionalRawJsonField(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* obj, const char* key, const RawJsonValue& value, std::string* outError, bool requireObject) const{
     if(!value.hasValue){
         return true;
     }
 
-    yyjson_mut_val* copied = nullptr;
+    JsonUtils::JsonMutVal* copied = nullptr;
     if(!CopyRawJsonToMutableValue(doc, value.json, copied, outError, key, requireObject)){
         return false;
     }
@@ -438,14 +438,14 @@ bool EntitySnapshotSchemaBase::WriteOptionalRawJsonField(yyjson_mut_doc* doc, yy
     return true;
 }
 
-bool EntitySnapshotSchemaBase::DeserializeSnapshotFields(yyjson_val* payload, std::string* outError){
-    yyjson_val* snapshotObj = nullptr;
+bool EntitySnapshotSchemaBase::DeserializeSnapshotFields(JsonUtils::JsonVal* payload, std::string* outError){
+    JsonUtils::JsonVal* snapshotObj = nullptr;
     if(!RequireObjectField(payload, "snapshot", snapshotObj, outError)){
         return false;
     }
 
     if(JsonUtils::ObjHasKey(snapshotObj, "rootEntityIds")){
-        yyjson_val* rootIdsArr = JsonUtils::ObjGetArray(snapshotObj, "rootEntityIds");
+        JsonUtils::JsonVal* rootIdsArr = JsonUtils::ObjGetArray(snapshotObj, "rootEntityIds");
         if(!rootIdsArr){
             SetDocSchemaError(outError, "Field 'snapshot.rootEntityIds' must be an array.");
             return false;
@@ -455,7 +455,7 @@ bool EntitySnapshotSchemaBase::DeserializeSnapshotFields(yyjson_val* payload, st
         }
     }
 
-    yyjson_val* entitiesArr = nullptr;
+    JsonUtils::JsonVal* entitiesArr = nullptr;
     if(!RequireArrayField(snapshotObj, "entities", entitiesArr, outError)){
         PrefixDocSchemaError(outError, "snapshot: ");
         return false;
@@ -465,7 +465,7 @@ bool EntitySnapshotSchemaBase::DeserializeSnapshotFields(yyjson_val* payload, st
     const size_t count = yyjson_arr_size(entitiesArr);
     entities.reserve(count);
     for(size_t i = 0; i < count; ++i){
-        yyjson_val* item = yyjson_arr_get(entitiesArr, i);
+        JsonUtils::JsonVal* item = yyjson_arr_get(entitiesArr, i);
         if(!item || !yyjson_is_obj(item)){
             SetDocSchemaError(outError, "Field 'snapshot.entities' must contain only objects.");
             PrefixDocSchemaError(outError, "snapshot.entities[" + std::to_string(i) + "]: ");
@@ -483,8 +483,8 @@ bool EntitySnapshotSchemaBase::DeserializeSnapshotFields(yyjson_val* payload, st
     return true;
 }
 
-bool EntitySnapshotSchemaBase::SerializeSnapshotFields(yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* outError) const{
-    yyjson_mut_val* snapshotObj = yyjson_mut_obj_add_obj(doc, payload, "snapshot");
+bool EntitySnapshotSchemaBase::SerializeSnapshotFields(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* outError) const{
+    JsonUtils::JsonMutVal* snapshotObj = yyjson_mut_obj_add_obj(doc, payload, "snapshot");
     if(!snapshotObj){
         SetDocSchemaError(outError, "Failed to create 'snapshot' object.");
         return false;
@@ -499,7 +499,7 @@ bool EntitySnapshotSchemaBase::SerializeSnapshotFields(yyjson_mut_doc* doc, yyjs
         return false;
     }
 
-    yyjson_mut_val* entitiesArr = yyjson_mut_obj_add_arr(doc, snapshotObj, "entities");
+    JsonUtils::JsonMutVal* entitiesArr = yyjson_mut_obj_add_arr(doc, snapshotObj, "entities");
     if(!entitiesArr){
         SetDocSchemaError(outError, "Failed to create 'snapshot.entities' array.");
         return false;
@@ -626,7 +626,7 @@ bool EntitySnapshotSchemaBase::ValidateSnapshotState(std::string* outError) cons
     return true;
 }
 
-bool EntitySnapshotSchemaBase::ReadEntityRecord(yyjson_val* obj, EntityRecord& outEntity, std::string* outError) const{
+bool EntitySnapshotSchemaBase::ReadEntityRecord(JsonUtils::JsonVal* obj, EntityRecord& outEntity, std::string* outError) const{
     if(!RequireUInt64Field(obj, "id", outEntity.id, outError)){
         return false;
     }
@@ -646,7 +646,7 @@ bool EntitySnapshotSchemaBase::ReadEntityRecord(yyjson_val* obj, EntityRecord& o
         return false;
     }
 
-    yyjson_val* componentsArr = JsonUtils::ObjGetArray(obj, "components");
+    JsonUtils::JsonVal* componentsArr = JsonUtils::ObjGetArray(obj, "components");
     if(!componentsArr){
         outEntity.components.clear();
         return true;
@@ -656,7 +656,7 @@ bool EntitySnapshotSchemaBase::ReadEntityRecord(yyjson_val* obj, EntityRecord& o
     outEntity.components.clear();
     outEntity.components.reserve(count);
     for(size_t i = 0; i < count; ++i){
-        yyjson_val* item = yyjson_arr_get(componentsArr, i);
+        JsonUtils::JsonVal* item = yyjson_arr_get(componentsArr, i);
         if(!item || !yyjson_is_obj(item)){
             SetDocSchemaError(outError, "Field 'components' must contain only objects.");
             PrefixDocSchemaError(outError, "components[" + std::to_string(i) + "]: ");
@@ -674,8 +674,8 @@ bool EntitySnapshotSchemaBase::ReadEntityRecord(yyjson_val* obj, EntityRecord& o
     return true;
 }
 
-bool EntitySnapshotSchemaBase::WriteEntityRecord(yyjson_mut_doc* doc, yyjson_mut_val* arr, const EntityRecord& entity, std::string* outError) const{
-    yyjson_mut_val* obj = yyjson_mut_arr_add_obj(doc, arr);
+bool EntitySnapshotSchemaBase::WriteEntityRecord(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* arr, const EntityRecord& entity, std::string* outError) const{
+    JsonUtils::JsonMutVal* obj = yyjson_mut_arr_add_obj(doc, arr);
     if(!obj){
         SetDocSchemaError(outError, "Failed to create entity object.");
         return false;
@@ -701,7 +701,7 @@ bool EntitySnapshotSchemaBase::WriteEntityRecord(yyjson_mut_doc* doc, yyjson_mut
         return false;
     }
 
-    yyjson_mut_val* componentsArr = yyjson_mut_obj_add_arr(doc, obj, "components");
+    JsonUtils::JsonMutVal* componentsArr = yyjson_mut_obj_add_arr(doc, obj, "components");
     if(!componentsArr){
         SetDocSchemaError(outError, "Failed to create entity 'components' array.");
         return false;
@@ -716,7 +716,7 @@ bool EntitySnapshotSchemaBase::WriteEntityRecord(yyjson_mut_doc* doc, yyjson_mut
     return true;
 }
 
-bool EntitySnapshotSchemaBase::ReadComponentRecord(yyjson_val* obj, ComponentRecord& outComponent, std::string* outError) const{
+bool EntitySnapshotSchemaBase::ReadComponentRecord(JsonUtils::JsonVal* obj, ComponentRecord& outComponent, std::string* outError) const{
     if(!RequireStringField(obj, "type", outComponent.type, outError)){
         return false;
     }
@@ -727,7 +727,7 @@ bool EntitySnapshotSchemaBase::ReadComponentRecord(yyjson_val* obj, ComponentRec
         outComponent.version = 1;
     }
 
-    yyjson_val* payload = JsonUtils::ObjGet(obj, "payload");
+    JsonUtils::JsonVal* payload = JsonUtils::ObjGet(obj, "payload");
     if(!payload){
         SetDocSchemaError(outError, "Missing required field 'payload'.");
         return false;
@@ -735,8 +735,8 @@ bool EntitySnapshotSchemaBase::ReadComponentRecord(yyjson_val* obj, ComponentRec
     return CaptureJsonValue(payload, outComponent.payloadJson, outError, "payload");
 }
 
-bool EntitySnapshotSchemaBase::WriteComponentRecord(yyjson_mut_doc* doc, yyjson_mut_val* arr, const ComponentRecord& component, std::string* outError) const{
-    yyjson_mut_val* obj = yyjson_mut_arr_add_obj(doc, arr);
+bool EntitySnapshotSchemaBase::WriteComponentRecord(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* arr, const ComponentRecord& component, std::string* outError) const{
+    JsonUtils::JsonMutVal* obj = yyjson_mut_arr_add_obj(doc, arr);
     if(!obj){
         SetDocSchemaError(outError, "Failed to create component object.");
         return false;
@@ -748,7 +748,7 @@ bool EntitySnapshotSchemaBase::WriteComponentRecord(yyjson_mut_doc* doc, yyjson_
         return false;
     }
 
-    yyjson_mut_val* payload = nullptr;
+    JsonUtils::JsonMutVal* payload = nullptr;
     if(!CopyRawJsonToMutableValue(doc, component.payloadJson, payload, outError, "payload", false)){
         return false;
     }
@@ -760,8 +760,8 @@ bool EntitySnapshotSchemaBase::WriteComponentRecord(yyjson_mut_doc* doc, yyjson_
     return true;
 }
 
-bool EntitySnapshotSchemaBase::WriteUInt64ArrayField(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, const std::vector<std::uint64_t>& values, std::string* outError) const{
-    yyjson_mut_val* arr = yyjson_mut_obj_add_arr(doc, obj, key);
+bool EntitySnapshotSchemaBase::WriteUInt64ArrayField(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* obj, const char* key, const std::vector<std::uint64_t>& values, std::string* outError) const{
+    JsonUtils::JsonMutVal* arr = yyjson_mut_obj_add_arr(doc, obj, key);
     if(!arr){
         SetDocSchemaError(outError, "Failed to create array field '" + FieldName(key) + "'.");
         return false;
@@ -776,7 +776,7 @@ bool EntitySnapshotSchemaBase::WriteUInt64ArrayField(yyjson_mut_doc* doc, yyjson
     return true;
 }
 
-bool EntitySnapshotSchemaBase::CaptureJsonValue(yyjson_val* value, std::string& outJson, std::string* outError, const char* debugName) const{
+bool EntitySnapshotSchemaBase::CaptureJsonValue(JsonUtils::JsonVal* value, std::string& outJson, std::string* outError, const char* debugName) const{
     if(!value){
         SetDocSchemaError(outError, std::string("Cannot capture null JSON value for '") + (debugName ? debugName : "value") + "'.");
         return false;
@@ -803,7 +803,7 @@ bool EntitySnapshotSchemaBase::CaptureJsonValue(yyjson_val* value, std::string& 
 bool EntitySnapshotSchemaBase::CopyRawJsonToMutableValue(
     yyjson_mut_doc* doc,
     const std::string& jsonText,
-    yyjson_mut_val*& outValue,
+    JsonUtils::JsonMutVal*& outValue,
     std::string* outError,
     const char* debugName,
     bool requireObject
@@ -816,7 +816,7 @@ bool EntitySnapshotSchemaBase::CopyRawJsonToMutableValue(
         return false;
     }
 
-    yyjson_val* root = temp.root();
+    JsonUtils::JsonVal* root = temp.root();
     if(!root){
         SetDocSchemaError(outError, std::string("Raw JSON for '") + (debugName ? debugName : "value") + "' has no root.");
         return false;
@@ -864,7 +864,7 @@ void PrefabSchema::ResetDocumentFieldsState(){
     variant.Clear();
 }
 
-bool PrefabSchema::DeserializeDocumentFields(yyjson_val* payload, int, std::string* outError){
+bool PrefabSchema::DeserializeDocumentFields(JsonUtils::JsonVal* payload, int, std::string* outError){
     if(!ReadMetadataBlock(payload, metadata, outError)){
         return false;
     }
@@ -884,7 +884,7 @@ bool PrefabSchema::DeserializeDocumentFields(yyjson_val* payload, int, std::stri
     return true;
 }
 
-bool PrefabSchema::SerializeDocumentFields(yyjson_mut_doc* doc, yyjson_mut_val* payload, int, std::string* outError) const{
+bool PrefabSchema::SerializeDocumentFields(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, int, std::string* outError) const{
     if(!WriteMetadataBlock(doc, payload, metadata, outError)){
         return false;
     }
@@ -941,7 +941,7 @@ void SceneSchema::ResetDocumentFieldsState(){
     editorState.Clear();
 }
 
-bool SceneSchema::DeserializeDocumentFields(yyjson_val* payload, int, std::string* outError){
+bool SceneSchema::DeserializeDocumentFields(JsonUtils::JsonVal* payload, int, std::string* outError){
     if(!ReadMetadataBlock(payload, metadata, outError)){
         return false;
     }
@@ -961,7 +961,7 @@ bool SceneSchema::DeserializeDocumentFields(yyjson_val* payload, int, std::strin
     return true;
 }
 
-bool SceneSchema::SerializeDocumentFields(yyjson_mut_doc* doc, yyjson_mut_val* payload, int, std::string* outError) const{
+bool SceneSchema::SerializeDocumentFields(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, int, std::string* outError) const{
     if(!WriteMetadataBlock(doc, payload, metadata, outError)){
         return false;
     }

@@ -50,7 +50,7 @@ bool buildSceneSettingsRawJson(
     }
 
     JsonUtils::MutableDocument doc;
-    yyjson_mut_val* root = doc.setRootObject();
+    JsonUtils::JsonMutVal* root = doc.setRootObject();
     if(!root){
         setSceneIoError(outError, "Failed to allocate sceneSettings object.");
         return false;
@@ -126,7 +126,7 @@ bool applySceneSettingsRawJson(
         }
         return false;
     }
-    yyjson_val* root = doc.root();
+    JsonUtils::JsonVal* root = doc.root();
     if(!root || !yyjson_is_obj(root)){
         setSceneIoError(outError, "sceneSettings must be a JSON object.");
         return false;

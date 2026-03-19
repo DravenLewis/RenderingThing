@@ -7,6 +7,7 @@
 
 #include "ECS/Core/ECSComponents.h"
 #include "Assets/Core/Asset.h"
+#include "Assets/Descriptors/EnvironmentAsset.h"
 #include "Assets/Descriptors/ImageAsset.h"
 #include "Assets/Descriptors/LensFlareAsset.h"
 #include "Assets/Descriptors/SkyboxAsset.h"
@@ -51,6 +52,26 @@ void addTextureDependencyIfValid(const std::string& candidate, std::set<std::str
     }
 }
 
+void addSkyboxDependenciesFromAssetRef(const std::string& skyboxAssetRef, std::set<std::string>& deps){
+    if(skyboxAssetRef.empty()){
+        return;
+    }
+
+    addDependencyIfValid(skyboxAssetRef, deps);
+
+    SkyboxAssetData skyboxData;
+    if(!SkyboxAssetIO::LoadFromAssetRef(skyboxAssetRef, skyboxData, nullptr)){
+        return;
+    }
+
+    addTextureDependencyIfValid(skyboxData.rightFaceRef, deps);
+    addTextureDependencyIfValid(skyboxData.leftFaceRef, deps);
+    addTextureDependencyIfValid(skyboxData.topFaceRef, deps);
+    addTextureDependencyIfValid(skyboxData.bottomFaceRef, deps);
+    addTextureDependencyIfValid(skyboxData.frontFaceRef, deps);
+    addTextureDependencyIfValid(skyboxData.backFaceRef, deps);
+}
+
 } // namespace
 
 namespace Serialization {
@@ -87,19 +108,24 @@ void CollectAssetDependenciesFromEntities(
         }
 
         if(auto* skybox = manager->getECSComponent<SkyboxComponent>(entity)){
-            addDependencyIfValid(skybox->skyboxAssetRef, deps);
+            addSkyboxDependenciesFromAssetRef(skybox->skyboxAssetRef, deps);
+        }
 
-            if(!skybox->skyboxAssetRef.empty()){
-                SkyboxAssetData skyboxData;
-                if(SkyboxAssetIO::LoadFromAssetRef(skybox->skyboxAssetRef, skyboxData, nullptr)){
-                    addTextureDependencyIfValid(skyboxData.rightFaceRef, deps);
-                    addTextureDependencyIfValid(skyboxData.leftFaceRef, deps);
-                    addTextureDependencyIfValid(skyboxData.topFaceRef, deps);
-                    addTextureDependencyIfValid(skyboxData.bottomFaceRef, deps);
-                    addTextureDependencyIfValid(skyboxData.frontFaceRef, deps);
-                    addTextureDependencyIfValid(skyboxData.backFaceRef, deps);
+        if(auto* environment = manager->getECSComponent<EnvironmentComponent>(entity)){
+            addDependencyIfValid(environment->environmentAssetRef, deps);
+
+            std::string resolvedSkyboxRef = environment->skyboxAssetRef;
+            if(!environment->environmentAssetRef.empty()){
+                EnvironmentAssetData environmentData;
+                if(EnvironmentAssetIO::LoadFromAssetRef(environment->environmentAssetRef, environmentData, nullptr)){
+                    addSkyboxDependenciesFromAssetRef(environmentData.skyboxAssetRef, deps);
+                    if(resolvedSkyboxRef.empty()){
+                        resolvedSkyboxRef = environmentData.skyboxAssetRef;
+                    }
                 }
             }
+
+            addSkyboxDependenciesFromAssetRef(resolvedSkyboxRef, deps);
         }
 
         if(auto* light = manager->getECSComponent<LightComponent>(entity)){

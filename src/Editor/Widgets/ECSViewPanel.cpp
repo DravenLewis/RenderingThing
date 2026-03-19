@@ -274,6 +274,9 @@ void ECSViewPanel::draw(float x,
             if(ImGui::MenuItem("Camera")){
                 pendingActions.push_back({PendingActionKind::CreateCamera, "", rootId});
             }
+            if(ImGui::MenuItem("Environment")){
+                pendingActions.push_back({PendingActionKind::CreateEnvironment, "", rootId});
+            }
             ImGui::EndMenu();
         }
 
@@ -370,6 +373,9 @@ void ECSViewPanel::drawEntityTree(NeoECS::ECSEntity* entity,
             }
             if(ImGui::MenuItem("Camera")){
                 pendingActions.push_back({PendingActionKind::CreateCamera, "", entityId});
+            }
+            if(ImGui::MenuItem("Environment")){
+                pendingActions.push_back({PendingActionKind::CreateEnvironment, "", entityId});
             }
             ImGui::EndMenu();
         }
@@ -507,7 +513,8 @@ void ECSViewPanel::applyPendingActions(PScene targetScene,
         switch(action.kind){
             case PendingActionKind::CreateEmpty:
             case PendingActionKind::CreateLight:
-            case PendingActionKind::CreateCamera: {
+            case PendingActionKind::CreateCamera:
+            case PendingActionKind::CreateEnvironment: {
                 NeoECS::ECSEntity* parentEntity = resolveParentEntity(action.targetEntityId);
                 if(!action.targetEntityId.empty() && !parentEntity){
                     break;
@@ -545,8 +552,11 @@ void ECSViewPanel::applyPendingActions(PScene targetScene,
                         selectEntity(createdId);
                     }
                 }else{
-                    const std::string uniqueName = makeUniqueChildName(parentEntity, "Camera");
-                    auto* created = targetScene->createCameraGameObject(uniqueName, parentWrapper.get());
+                    const bool createEnvironment = (action.kind == PendingActionKind::CreateEnvironment);
+                    const std::string uniqueName = makeUniqueChildName(parentEntity, createEnvironment ? "Environment" : "Camera");
+                    auto* created = createEnvironment
+                        ? targetScene->createEnvironmentGameObject(uniqueName, parentWrapper.get())
+                        : targetScene->createCameraGameObject(uniqueName, parentWrapper.get());
                     if(created && created->gameobject()){
                         const std::string createdId = created->gameobject()->getNodeUniqueID();
                         if(changeCallbacks.onEntityCreated){

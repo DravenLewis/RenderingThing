@@ -19,6 +19,7 @@
 #include "Assets/Descriptors/ImageAsset.h"
 #include "Assets/Descriptors/ModelAsset.h"
 #include "Assets/Descriptors/SkyboxAsset.h"
+#include "Assets/Descriptors/EnvironmentAsset.h"
 #include "Assets/Descriptors/EffectAsset.h"
 #include "Rendering/PostFX/LensFlareEffect.h"
 #include "Rendering/Materials/MaterialRegistry.h"
@@ -1581,6 +1582,64 @@ namespace {
         EditorPropertyUI::Combo("Debug View", &data.debugView, kSsaoDebugViews, IM_ARRAYSIZE(kSsaoDebugViews));
     }
 
+    void sanitizeEnvironmentSettings(EnvironmentSettings& settings){
+        settings.fogStart = Math3D::Max(0.0f, settings.fogStart);
+        settings.fogStop = Math3D::Max(settings.fogStart, settings.fogStop);
+        settings.fogEnd = Math3D::Max(settings.fogStop, settings.fogEnd);
+        settings.ambientIntensity = Math3D::Clamp(settings.ambientIntensity, 0.0f, 32.0f);
+        settings.rayleighStrength = Math3D::Max(0.0f, settings.rayleighStrength);
+        settings.mieStrength = Math3D::Max(0.0f, settings.mieStrength);
+        settings.mieAnisotropy = Math3D::Clamp(settings.mieAnisotropy, 0.0f, 0.99f);
+        if(settings.sunDirection.length() <= Math3D::EPSILON){
+            settings.sunDirection = Math3D::Vec3(0.0f, -1.0f, 0.0f);
+        }else{
+            settings.sunDirection = settings.sunDirection.normalize();
+        }
+    }
+
+    void copyEnvironmentDataToAsset(const EnvironmentComponent& component, EnvironmentAssetData& data){
+        data.name = component.environmentAssetRef.empty()
+            ? std::string()
+            : std::filesystem::path(component.environmentAssetRef).filename().string();
+        data.skyboxAssetRef = StringUtils::Trim(component.skyboxAssetRef);
+        data.settings = component.settings;
+        sanitizeEnvironmentSettings(data.settings);
+    }
+
+    void applyEnvironmentAssetToComponent(const EnvironmentAssetData& data, EnvironmentComponent& component){
+        component.settings = data.settings;
+        sanitizeEnvironmentSettings(component.settings);
+        component.skyboxAssetRef = StringUtils::Trim(data.skyboxAssetRef);
+        component.loadedSkyboxAssetRef.clear();
+        component.runtimeSkyBox.reset();
+    }
+
+    void drawEnvironmentSettingsFields(EnvironmentSettings& settings){
+        EditorPropertyUI::ColorEdit3("Ambient Color", &settings.ambientColor.x);
+        EditorPropertyUI::SliderFloat("Ambient Intensity", &settings.ambientIntensity, 0.0f, 8.0f, "%.2f");
+
+        ImGui::Separator();
+        EditorPropertyUI::Checkbox("Fog Enabled", &settings.fogEnabled);
+        if(settings.fogEnabled){
+            EditorPropertyUI::ColorEdit3("Fog Color", &settings.fogColor.x);
+            EditorPropertyUI::DragFloat("Fog Start", &settings.fogStart, 0.1f, 0.0f, 20000.0f, "%.2f");
+            EditorPropertyUI::DragFloat("Fog Stop", &settings.fogStop, 0.1f, 0.0f, 20000.0f, "%.2f");
+            EditorPropertyUI::DragFloat("Fog End", &settings.fogEnd, 0.1f, 0.0f, 20000.0f, "%.2f");
+        }
+
+        ImGui::Separator();
+        EditorPropertyUI::Checkbox("Use Procedural Sky", &settings.useProceduralSky);
+        if(settings.useProceduralSky){
+            float sunDir[3] = {settings.sunDirection.x, settings.sunDirection.y, settings.sunDirection.z};
+            if(EditorPropertyUI::DragFloat3("Sun Direction", sunDir, 0.01f, -1.0f, 1.0f, "%.3f")){
+                settings.sunDirection = Math3D::Vec3(sunDir[0], sunDir[1], sunDir[2]);
+            }
+            EditorPropertyUI::SliderFloat("Rayleigh Strength", &settings.rayleighStrength, 0.0f, 8.0f, "%.3f");
+            EditorPropertyUI::SliderFloat("Mie Strength", &settings.mieStrength, 0.0f, 8.0f, "%.3f");
+            EditorPropertyUI::SliderFloat("Mie Anisotropy", &settings.mieAnisotropy, 0.0f, 0.99f, "%.3f");
+        }
+    }
+
     bool canRemoveEditorComponent(const IEditorCompatibleComponent* component){
         if(!component){
             return false;
@@ -1611,6 +1670,7 @@ namespace {
         if(dynamic_cast<RigidBodyComponent*>(component)){ manager->removeECSComponent<RigidBodyComponent>(entity); return true; }
         if(dynamic_cast<CameraComponent*>(component)){ manager->removeECSComponent<CameraComponent>(entity); return true; }
         if(dynamic_cast<SkyboxComponent*>(component)){ manager->removeECSComponent<SkyboxComponent>(entity); return true; }
+        if(dynamic_cast<EnvironmentComponent*>(component)){ manager->removeECSComponent<EnvironmentComponent>(entity); return true; }
         if(dynamic_cast<SSAOComponent*>(component)){ manager->removeECSComponent<SSAOComponent>(entity); return true; }
         if(dynamic_cast<PostProcessingStackComponent*>(component)){ manager->removeECSComponent<PostProcessingStackComponent>(entity); return true; }
         if(dynamic_cast<DepthOfFieldComponent*>(component)){ manager->removeECSComponent<DepthOfFieldComponent>(entity); return true; }
@@ -2544,7 +2604,7 @@ void CameraComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
 void SkyboxComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     (void)ecsPtr;
     (void)scene;
-    if(!beginEditorComponentSection(this, "Skybox Component", ImGuiTreeNodeFlags_DefaultOpen, ecsPtr)){
+    if(!beginEditorComponentSection(this, "Skybox Component (Legacy)", ImGuiTreeNodeFlags_DefaultOpen, ecsPtr)){
         return;
     }
 
@@ -2568,8 +2628,96 @@ void SkyboxComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     if(runtimeSkyBox && loadedSkyboxAssetRef == StringUtils::Trim(skyboxAssetRef)){
         ImGui::TextDisabled("Loaded.");
     }else{
-        ImGui::TextDisabled("Loads when this camera is active.");
+        ImGui::TextDisabled("Legacy component. Use Environment Component.");
     }
+}
+
+bool EnvironmentComponent::loadFromAsset(std::string* outError){
+    environmentAssetRef = StringUtils::Trim(environmentAssetRef);
+    if(environmentAssetRef.empty()){
+        if(outError){
+            *outError = "Environment Asset is empty.";
+        }
+        return false;
+    }
+
+    EnvironmentAssetData data;
+    if(!EnvironmentAssetIO::LoadFromAssetRef(environmentAssetRef, data, outError)){
+        return false;
+    }
+
+    applyEnvironmentAssetToComponent(data, *this);
+    loadedEnvironmentAssetRef = environmentAssetRef;
+    return true;
+}
+
+bool EnvironmentComponent::saveToAsset(std::string* outError) const{
+    const std::string trimmedRef = StringUtils::Trim(environmentAssetRef);
+    if(trimmedRef.empty()){
+        if(outError){
+            *outError = "Environment Asset is empty.";
+        }
+        return false;
+    }
+
+    EnvironmentAssetData data;
+    copyEnvironmentDataToAsset(*this, data);
+    return EnvironmentAssetIO::SaveToAssetRef(trimmedRef, data, outError);
+}
+
+void EnvironmentComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
+    (void)scene;
+    if(!beginEditorComponentSection(this, "Environment Component", ImGuiTreeNodeFlags_DefaultOpen, ecsPtr)){
+        return;
+    }
+
+    bool environmentAssetDropped = false;
+    bool environmentAssetCommitted = false;
+    if(EditorAssetUI::DrawAssetDropInput(
+            "Environment Asset",
+            environmentAssetRef,
+            {EditorAssetUI::AssetKind::EnvironmentAsset},
+            false,
+            &environmentAssetDropped,
+            &environmentAssetCommitted)){
+        environmentAssetRef = StringUtils::Trim(environmentAssetRef);
+        loadedEnvironmentAssetRef.clear();
+        if(!environmentAssetRef.empty() && (environmentAssetDropped || environmentAssetCommitted)){
+            std::string error;
+            if(!loadFromAsset(&error)){
+                LogBot.Log(LOG_ERRO, "Failed to load environment asset '%s': %s", environmentAssetRef.c_str(), error.c_str());
+            }
+        }
+    }
+
+    if(!loadedEnvironmentAssetRef.empty()){
+        ImGui::TextDisabled("Loaded from: %s", loadedEnvironmentAssetRef.c_str());
+    }
+
+    if(EditorAssetUI::DrawAssetDropInput("Skybox Asset", skyboxAssetRef, {EditorAssetUI::AssetKind::SkyboxAsset})){
+        skyboxAssetRef = StringUtils::Trim(skyboxAssetRef);
+        loadedSkyboxAssetRef.clear();
+        runtimeSkyBox.reset();
+    }
+
+    if(!skyboxAssetRef.empty()){
+        if(ImGui::Button("Reload Skybox")){
+            loadedSkyboxAssetRef.clear();
+            runtimeSkyBox.reset();
+        }
+        ImGui::SameLine();
+        if(runtimeSkyBox && loadedSkyboxAssetRef == StringUtils::Trim(skyboxAssetRef)){
+            ImGui::TextDisabled("Skybox loaded.");
+        }else{
+            ImGui::TextDisabled("Skybox loads when this environment is active.");
+        }
+    }else{
+        ImGui::TextDisabled("No skybox assigned.");
+    }
+
+    ImGui::Separator();
+    drawEnvironmentSettingsFields(settings);
+    sanitizeEnvironmentSettings(settings);
 }
 
 DeferredSSAOSettings SSAOComponent::buildDeferredSsaoSettings() const{

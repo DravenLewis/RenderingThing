@@ -13,6 +13,7 @@
 #include "Foundation/IO/File.h"
 #include "Foundation/Logging/Logbot.h"
 #include "Assets/Descriptors/EffectAsset.h"
+#include "Assets/Descriptors/EnvironmentAsset.h"
 #include "Assets/Descriptors/ImageAsset.h"
 #include "Assets/Descriptors/MaterialAsset.h"
 #include "Assets/Descriptors/LensFlareAsset.h"
@@ -306,6 +307,7 @@ void WorkspacePanel::commitAssetRename(std::filesystem::path& selectedAssetPath)
     const bool oldPathIsMaterialObject = MaterialAssetIO::IsMaterialObjectPath(oldPath);
     const bool oldPathIsMaterialAsset = MaterialAssetIO::IsMaterialAssetPath(oldPath);
     const bool oldPathIsSkyboxAsset = SkyboxAssetIO::IsSkyboxAssetPath(oldPath);
+    const bool oldPathIsEnvironmentAsset = EnvironmentAssetIO::IsEnvironmentAssetPath(oldPath);
     const bool oldPathIsLensFlareAsset = LensFlareAssetIO::IsLensFlareAssetPath(oldPath);
     const bool oldPathIsEffectAsset = EffectAssetIO::IsEffectAssetPath(oldPath);
     const bool oldPathIsImageAsset = ImageAssetIO::IsImageAssetPath(oldPath);
@@ -338,6 +340,8 @@ void WorkspacePanel::commitAssetRename(std::filesystem::path& selectedAssetPath)
         }
     }else if(oldPathIsSkyboxAsset){
         ensureSuffix(".skybox.asset");
+    }else if(oldPathIsEnvironmentAsset){
+        ensureSuffix(".environment.asset");
     }else if(oldPathIsLensFlareAsset){
         ensureSuffix(".flare.asset");
     }else if(oldPathIsEffectAsset){
@@ -1177,6 +1181,8 @@ void WorkspacePanel::draw(float x,
             label = label.substr(0, label.size() - std::strlen(".shader.asset"));
         }else if(StringUtils::EndsWith(lowerName, ".effect.asset")){
             label = label.substr(0, label.size() - std::strlen(".effect.asset"));
+        }else if(StringUtils::EndsWith(lowerName, ".environment.asset")){
+            label = label.substr(0, label.size() - std::strlen(".environment.asset"));
         }else if(StringUtils::EndsWith(lowerName, ".image.asset")){
             label = label.substr(0, label.size() - std::strlen(".image.asset"));
         }else if(StringUtils::EndsWith(lowerName, ".bundle.asset")){
@@ -1414,6 +1420,19 @@ void WorkspacePanel::draw(float x,
             browserCacheDirty = true;
         }else{
             LogBot.Log(LOG_ERRO, "Failed to create skybox asset: %s", error.c_str());
+        }
+    };
+
+    auto createDefaultEnvironmentAsset = [&](){
+        std::filesystem::path path = makeUniquePathWithSuffix(assetDir / "NewEnvironment.environment.asset", ".environment.asset");
+        EnvironmentAssetData data;
+        data.name = path.filename().string();
+        std::string error;
+        if(EnvironmentAssetIO::SaveToAbsolutePath(path, data, &error)){
+            selectedAssetPath = path;
+            browserCacheDirty = true;
+        }else{
+            LogBot.Log(LOG_ERRO, "Failed to create environment asset: %s", error.c_str());
         }
     };
 
@@ -1747,6 +1766,9 @@ void WorkspacePanel::draw(float x,
                     }
                     if(ImGui::MenuItem("Skybox Asset")){
                         createDefaultSkyboxAsset();
+                    }
+                    if(ImGui::MenuItem("Environment Asset")){
+                        createDefaultEnvironmentAsset();
                     }
                     if(ImGui::MenuItem("Lens Flare Asset")){
                         createDefaultLensFlareAsset();

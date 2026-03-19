@@ -33,6 +33,13 @@ uniform mat4 u_invProjection;
 uniform mat4 u_invView;
 uniform samplerCube u_envMap;
 uniform int u_useEnvMap;
+uniform vec4 u_ambientColor;
+uniform float u_ambientIntensity;
+uniform int u_fogEnabled;
+uniform vec4 u_fogColor;
+uniform float u_fogStart;
+uniform float u_fogStop;
+uniform float u_fogEnd;
 uniform int u_useSsao;
 uniform int u_useGi;
 uniform float u_ssaoIntensity;
@@ -365,17 +372,17 @@ float computeShadowBias(Light light, vec3 normal, vec3 fragPos){
     float baseOffset = max(light.shadow.x, 0.0);
     float normalOffset = max(light.shadow.y, 0.0);
     float viewDist = length(fragPos - u_viewPos);
-    float distBias = viewDist * 0.000005;
-    float grazingBias = smoothstep(0.45, 0.85, slope) * 0.00035;
+    float distBias = viewDist * 0.0000035;
+    float grazingBias = smoothstep(0.45, 0.85, slope) * 0.00022;
     float reconstructBias = 0.0;
     if(lightType == 1){
         float cascadeCount = max(light.shadow.z, 1.0);
-        float singleCascadeScale = (cascadeCount <= 1.5) ? 1.45 : 1.0;
-        float baseBias = baseOffset * 0.010 * singleCascadeScale;
-        float slopeBias = normalOffset * (0.0014 + slope * 0.0120) * singleCascadeScale;
-        float minBias = (cascadeCount <= 1.5) ? 0.00055 : 0.00045;
-        float maxBias = (cascadeCount <= 1.5) ? 0.00150 : 0.00100;
-        reconstructBias = (1.0 - slope) * 0.00055;
+        float singleCascadeScale = (cascadeCount <= 1.5) ? 1.20 : 1.0;
+        float baseBias = baseOffset * 0.008 * singleCascadeScale;
+        float slopeBias = normalOffset * (0.0010 + slope * 0.0085) * singleCascadeScale;
+        float minBias = (cascadeCount <= 1.5) ? 0.00036 : 0.00030;
+        float maxBias = (cascadeCount <= 1.5) ? 0.00120 : 0.00085;
+        reconstructBias = (1.0 - slope) * 0.00022;
         return clamp(baseBias + slopeBias + reconstructBias + distBias + grazingBias, minBias, maxBias);
     }else if(lightType == 2){
         float baseBias = baseOffset * 0.020;
@@ -399,12 +406,12 @@ vec3 offsetShadowReceiver(Light light, vec3 normal, vec3 fragPos){
         vec3 shadowDir = getShadowDirection(light, fragPos);
         float grazing = 1.0 - max(dot(normalDir, shadowDir), 0.0);
         float cascadeCount = max(light.shadow.z, 1.0);
-        float singleCascadeScale = (cascadeCount <= 1.5) ? 1.35 : 1.0;
-        float worldOffset = (normalOffset * (0.0045 + grazing * 0.0150) + baseOffset * 0.0018) * singleCascadeScale;
-        float worldMax = (cascadeCount <= 1.5) ? 0.00095 : 0.00060;
+        float singleCascadeScale = (cascadeCount <= 1.5) ? 1.15 : 1.0;
+        float worldOffset = (normalOffset * (0.0026 + grazing * 0.0088) + baseOffset * 0.0011) * singleCascadeScale;
+        float worldMax = (cascadeCount <= 1.5) ? 0.00068 : 0.00044;
         worldOffset = clamp(worldOffset, 0.0, worldMax);
-        float flatExtra = (1.0 - grazing) * 0.00055;
-        float grazingExtra = grazing * 0.00045;
+        float flatExtra = (1.0 - grazing) * 0.00012;
+        float grazingExtra = grazing * 0.00018;
         worldOffset += flatExtra + grazingExtra;
         return fragPos + normalDir * worldOffset;
     }
@@ -436,9 +443,10 @@ vec3 computeShadowNormal(vec3 shadingNormal, vec3 fragPos){
     if(dot(geomN, baseN) < 0.0){
         geomN = -geomN;
     }
-    // Use geometric receiver normals for shadow bias/sampling to avoid seams caused by
-    // high-frequency normal maps crossing cascade/filter transitions.
-    return geomN;
+    // Bias/sampling works best with geometric normals, but expose blending to
+    // trade seam resistance against contact tightness when tuning shadows.
+    float receiverBlend = clamp(u_shadowReceiverNormalBlend, 0.0, 1.0);
+    return safeNormalize(mix(baseN, geomN, receiverBlend));
 }
 
 float sampleShadowForLight(int lightIndex, Light light, vec3 normal, vec3 fragPos){
@@ -575,6 +583,25 @@ vec3 sampleEnvironmentSpecular(vec3 reflectionDir, float roughness){
     float maxMip = max(log2(baseSize), 0.0);
     float lod = clamp((roughness * roughness) * maxMip, 0.0, maxMip);
     return textureLod(u_envMap, safeNormalize(reflectionDir), lod).rgb;
+}
+
+float computeFogFactor(float distanceToCamera){
+    if(u_fogEnabled == 0){
+        return 0.0;
+    }
+
+    float start = max(u_fogStart, 0.0);
+    float stop = max(u_fogStop, start);
+    float endDistance = max(u_fogEnd, stop);
+    if(distanceToCamera <= start){
+        return 0.0;
+    }
+
+    float nearSpan = max(stop - start, 1e-4);
+    float farSpan = max(endDistance - stop, 1e-4);
+    float nearPhase = clamp((distanceToCamera - start) / nearSpan, 0.0, 1.0);
+    float farPhase = clamp((distanceToCamera - stop) / farSpan, 0.0, 1.0);
+    return clamp((nearPhase * 0.5) + (farPhase * 0.5), 0.0, 1.0);
 }
 
 int resolveShadowDebugMode(int lightIndex, Light light){
@@ -911,7 +938,7 @@ void main(){
         return;
     }
 
-    vec3 ambient = vec3(0.03) * albedo * combinedAo;
+    vec3 ambient = u_ambientColor.rgb * max(u_ambientIntensity, 0.0) * albedo * combinedAo;
     vec3 envSpec = vec3(0.0);
     if(u_useEnvMap != 0){
         vec3 R = reflect(-V, N);
@@ -927,6 +954,8 @@ void main(){
 
     vec3 indirectDiffuse = giIrradiance * albedo * (1.0 - metallic);
     vec3 color = ambient + LoDiffuse + LoSpecular + envSpec + emissive + indirectDiffuse;
+    float fogFactor = computeFogFactor(length(fragPos - u_viewPos));
+    color = mix(color, u_fogColor.rgb, fogFactor);
     if(debugWeight > 0.0){
         FragColor = vec4(clamp(debugColorAccum / debugWeight, 0.0, 1.0), 1.0);
         return;

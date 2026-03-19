@@ -13,6 +13,9 @@
 #include <limits>
 
 namespace {
+    using JsonVal = JsonUtils::JsonVal;
+    using JsonMutVal = JsonUtils::JsonMutVal;
+
     std::string makeReadErrorString(const yyjson_read_err& err){
         std::string message = "JSON read failed";
         if(err.msg){
@@ -44,7 +47,7 @@ namespace {
         return flags;
     }
 
-    bool tryGetNumberValue(yyjson_val* value, double& outValue){
+    bool tryGetNumberValue(JsonVal* value, double& outValue){
         if(!value || !yyjson_is_num(value)){
             return false;
         }
@@ -52,7 +55,7 @@ namespace {
         return true;
     }
 
-    bool tryGetFloatValue(yyjson_val* value, float& outValue){
+    bool tryGetFloatValue(JsonVal* value, float& outValue){
         double number = 0.0;
         if(!tryGetNumberValue(value, number)){
             return false;
@@ -61,13 +64,13 @@ namespace {
         return true;
     }
 
-    bool tryReadVecNArray(yyjson_val* value, float* outValues, size_t count){
+    bool tryReadVecNArray(JsonVal* value, float* outValues, size_t count){
         if(!value || !yyjson_is_arr(value) || yyjson_arr_size(value) < count){
             return false;
         }
 
         for(size_t i = 0; i < count; ++i){
-            yyjson_val* entry = yyjson_arr_get(value, i);
+            JsonVal* entry = yyjson_arr_get(value, i);
             if(!tryGetFloatValue(entry, outValues[i])){
                 return false;
             }
@@ -104,7 +107,7 @@ void Document::reset(yyjson_doc* doc){
     docPtr = doc;
 }
 
-yyjson_val* Document::root() const{
+JsonVal* Document::root() const{
     return docPtr ? yyjson_doc_get_root(docPtr) : nullptr;
 }
 
@@ -157,21 +160,21 @@ bool MutableDocument::copyFrom(const MutableDocument& doc){
     return docPtr != nullptr;
 }
 
-yyjson_mut_val* MutableDocument::root() const{
+JsonMutVal* MutableDocument::root() const{
     return docPtr ? yyjson_mut_doc_get_root(docPtr) : nullptr;
 }
 
-void MutableDocument::setRoot(yyjson_mut_val* value){
+void MutableDocument::setRoot(JsonMutVal* value){
     if(docPtr){
         yyjson_mut_doc_set_root(docPtr, value);
     }
 }
 
-yyjson_mut_val* MutableDocument::setRootObject(){
+JsonMutVal* MutableDocument::setRootObject(){
     if(!docPtr && !create()){
         return nullptr;
     }
-    yyjson_mut_val* obj = yyjson_mut_obj(docPtr);
+    JsonMutVal* obj = yyjson_mut_obj(docPtr);
     if(!obj){
         return nullptr;
     }
@@ -179,11 +182,11 @@ yyjson_mut_val* MutableDocument::setRootObject(){
     return obj;
 }
 
-yyjson_mut_val* MutableDocument::setRootArray(){
+JsonMutVal* MutableDocument::setRootArray(){
     if(!docPtr && !create()){
         return nullptr;
     }
-    yyjson_mut_val* arr = yyjson_mut_arr(docPtr);
+    JsonMutVal* arr = yyjson_mut_arr(docPtr);
     if(!arr){
         return nullptr;
     }
@@ -321,7 +324,7 @@ bool CreateStandardDocument(MutableDocument& outDoc, const std::string& type, in
         return false;
     }
 
-    yyjson_mut_val* root = outDoc.setRootObject();
+    JsonMutVal* root = outDoc.setRootObject();
     if(!root){
         if(outError){
             *outError = "Failed to create JSON root object.";
@@ -337,7 +340,7 @@ bool CreateStandardDocument(MutableDocument& outDoc, const std::string& type, in
         return false;
     }
 
-    yyjson_mut_val* payload = yyjson_mut_obj_add_obj(outDoc.get(), root, "payload");
+    JsonMutVal* payload = yyjson_mut_obj_add_obj(outDoc.get(), root, "payload");
     if(!payload){
         if(outError){
             *outError = "Failed to create standard JSON payload object.";
@@ -350,8 +353,8 @@ bool CreateStandardDocument(MutableDocument& outDoc, const std::string& type, in
     return true;
 }
 
-bool ReadStandardDocumentHeader(const Document& doc, std::string& outType, int& outVersion, yyjson_val** outPayload, std::string* outError){
-    yyjson_val* root = doc.root();
+bool ReadStandardDocumentHeader(const Document& doc, std::string& outType, int& outVersion, JsonVal** outPayload, std::string* outError){
+    JsonVal* root = doc.root();
     if(!root || !yyjson_is_obj(root)){
         if(outError){
             *outError = "JSON root must be an object.";
@@ -373,7 +376,7 @@ bool ReadStandardDocumentHeader(const Document& doc, std::string& outType, int& 
         return false;
     }
 
-    yyjson_val* payload = ObjGet(root, "payload");
+    JsonVal* payload = ObjGet(root, "payload");
     if(!payload){
         if(outError){
             *outError = "JSON document missing field 'payload'.";
@@ -387,29 +390,29 @@ bool ReadStandardDocumentHeader(const Document& doc, std::string& outType, int& 
     return true;
 }
 
-yyjson_val* ObjGet(yyjson_val* obj, const char* key){
+JsonVal* ObjGet(JsonVal* obj, const char* key){
     if(!obj || !yyjson_is_obj(obj) || !key){
         return nullptr;
     }
     return yyjson_obj_get(obj, key);
 }
 
-yyjson_val* ObjGetObject(yyjson_val* obj, const char* key){
-    yyjson_val* value = ObjGet(obj, key);
+JsonVal* ObjGetObject(JsonVal* obj, const char* key){
+    JsonVal* value = ObjGet(obj, key);
     return (value && yyjson_is_obj(value)) ? value : nullptr;
 }
 
-yyjson_val* ObjGetArray(yyjson_val* obj, const char* key){
-    yyjson_val* value = ObjGet(obj, key);
+JsonVal* ObjGetArray(JsonVal* obj, const char* key){
+    JsonVal* value = ObjGet(obj, key);
     return (value && yyjson_is_arr(value)) ? value : nullptr;
 }
 
-bool ObjHasKey(yyjson_val* obj, const char* key){
+bool ObjHasKey(JsonVal* obj, const char* key){
     return ObjGet(obj, key) != nullptr;
 }
 
-bool TryGetString(yyjson_val* obj, const char* key, std::string& outValue){
-    yyjson_val* value = ObjGet(obj, key);
+bool TryGetString(JsonVal* obj, const char* key, std::string& outValue){
+    JsonVal* value = ObjGet(obj, key);
     if(!value || !yyjson_is_str(value)){
         return false;
     }
@@ -418,8 +421,8 @@ bool TryGetString(yyjson_val* obj, const char* key, std::string& outValue){
     return true;
 }
 
-bool TryGetBool(yyjson_val* obj, const char* key, bool& outValue){
-    yyjson_val* value = ObjGet(obj, key);
+bool TryGetBool(JsonVal* obj, const char* key, bool& outValue){
+    JsonVal* value = ObjGet(obj, key);
     if(!value || !yyjson_is_bool(value)){
         return false;
     }
@@ -427,7 +430,7 @@ bool TryGetBool(yyjson_val* obj, const char* key, bool& outValue){
     return true;
 }
 
-bool TryGetInt(yyjson_val* obj, const char* key, int& outValue){
+bool TryGetInt(JsonVal* obj, const char* key, int& outValue){
     int64_t temp = 0;
     if(!TryGetInt64(obj, key, temp)){
         return false;
@@ -439,8 +442,8 @@ bool TryGetInt(yyjson_val* obj, const char* key, int& outValue){
     return true;
 }
 
-bool TryGetInt64(yyjson_val* obj, const char* key, int64_t& outValue){
-    yyjson_val* value = ObjGet(obj, key);
+bool TryGetInt64(JsonVal* obj, const char* key, int64_t& outValue){
+    JsonVal* value = ObjGet(obj, key);
     if(!value){
         return false;
     }
@@ -462,8 +465,8 @@ bool TryGetInt64(yyjson_val* obj, const char* key, int64_t& outValue){
     return false;
 }
 
-bool TryGetUInt64(yyjson_val* obj, const char* key, uint64_t& outValue){
-    yyjson_val* value = ObjGet(obj, key);
+bool TryGetUInt64(JsonVal* obj, const char* key, uint64_t& outValue){
+    JsonVal* value = ObjGet(obj, key);
     if(!value){
         return false;
     }
@@ -485,50 +488,50 @@ bool TryGetUInt64(yyjson_val* obj, const char* key, uint64_t& outValue){
     return false;
 }
 
-bool TryGetFloat(yyjson_val* obj, const char* key, float& outValue){
+bool TryGetFloat(JsonVal* obj, const char* key, float& outValue){
     return tryGetFloatValue(ObjGet(obj, key), outValue);
 }
 
-bool TryGetDouble(yyjson_val* obj, const char* key, double& outValue){
+bool TryGetDouble(JsonVal* obj, const char* key, double& outValue){
     return tryGetNumberValue(ObjGet(obj, key), outValue);
 }
 
-std::string GetStringOrDefault(yyjson_val* obj, const char* key, const std::string& fallback){
+std::string GetStringOrDefault(JsonVal* obj, const char* key, const std::string& fallback){
     std::string value;
     return TryGetString(obj, key, value) ? value : fallback;
 }
 
-bool GetBoolOrDefault(yyjson_val* obj, const char* key, bool fallback){
+bool GetBoolOrDefault(JsonVal* obj, const char* key, bool fallback){
     bool value = false;
     return TryGetBool(obj, key, value) ? value : fallback;
 }
 
-int GetIntOrDefault(yyjson_val* obj, const char* key, int fallback){
+int GetIntOrDefault(JsonVal* obj, const char* key, int fallback){
     int value = 0;
     return TryGetInt(obj, key, value) ? value : fallback;
 }
 
-int64_t GetInt64OrDefault(yyjson_val* obj, const char* key, int64_t fallback){
+int64_t GetInt64OrDefault(JsonVal* obj, const char* key, int64_t fallback){
     int64_t value = 0;
     return TryGetInt64(obj, key, value) ? value : fallback;
 }
 
-uint64_t GetUInt64OrDefault(yyjson_val* obj, const char* key, uint64_t fallback){
+uint64_t GetUInt64OrDefault(JsonVal* obj, const char* key, uint64_t fallback){
     uint64_t value = 0;
     return TryGetUInt64(obj, key, value) ? value : fallback;
 }
 
-float GetFloatOrDefault(yyjson_val* obj, const char* key, float fallback){
+float GetFloatOrDefault(JsonVal* obj, const char* key, float fallback){
     float value = 0.0f;
     return TryGetFloat(obj, key, value) ? value : fallback;
 }
 
-double GetDoubleOrDefault(yyjson_val* obj, const char* key, double fallback){
+double GetDoubleOrDefault(JsonVal* obj, const char* key, double fallback){
     double value = 0.0;
     return TryGetDouble(obj, key, value) ? value : fallback;
 }
 
-bool TryReadVec2(yyjson_val* value, Math3D::Vec2& outValue){
+bool TryReadVec2(JsonVal* value, Math3D::Vec2& outValue){
     float data[2] = {};
     if(tryReadVecNArray(value, data, 2)){
         outValue = Math3D::Vec2(data[0], data[1]);
@@ -546,7 +549,7 @@ bool TryReadVec2(yyjson_val* value, Math3D::Vec2& outValue){
     return false;
 }
 
-bool TryReadVec3(yyjson_val* value, Math3D::Vec3& outValue){
+bool TryReadVec3(JsonVal* value, Math3D::Vec3& outValue){
     float data[3] = {};
     if(tryReadVecNArray(value, data, 3)){
         outValue = Math3D::Vec3(data[0], data[1], data[2]);
@@ -565,7 +568,7 @@ bool TryReadVec3(yyjson_val* value, Math3D::Vec3& outValue){
     return false;
 }
 
-bool TryReadVec4(yyjson_val* value, Math3D::Vec4& outValue){
+bool TryReadVec4(JsonVal* value, Math3D::Vec4& outValue){
     float data[4] = {};
     if(tryReadVecNArray(value, data, 4)){
         outValue = Math3D::Vec4(data[0], data[1], data[2], data[3]);
@@ -588,87 +591,87 @@ bool TryReadVec4(yyjson_val* value, Math3D::Vec4& outValue){
     return false;
 }
 
-bool TryGetVec2(yyjson_val* obj, const char* key, Math3D::Vec2& outValue){
+bool TryGetVec2(JsonVal* obj, const char* key, Math3D::Vec2& outValue){
     return TryReadVec2(ObjGet(obj, key), outValue);
 }
 
-bool TryGetVec3(yyjson_val* obj, const char* key, Math3D::Vec3& outValue){
+bool TryGetVec3(JsonVal* obj, const char* key, Math3D::Vec3& outValue){
     return TryReadVec3(ObjGet(obj, key), outValue);
 }
 
-bool TryGetVec4(yyjson_val* obj, const char* key, Math3D::Vec4& outValue){
+bool TryGetVec4(JsonVal* obj, const char* key, Math3D::Vec4& outValue){
     return TryReadVec4(ObjGet(obj, key), outValue);
 }
 
-Math3D::Vec2 GetVec2OrDefault(yyjson_val* obj, const char* key, const Math3D::Vec2& fallback){
+Math3D::Vec2 GetVec2OrDefault(JsonVal* obj, const char* key, const Math3D::Vec2& fallback){
     Math3D::Vec2 value;
     return TryGetVec2(obj, key, value) ? value : fallback;
 }
 
-Math3D::Vec3 GetVec3OrDefault(yyjson_val* obj, const char* key, const Math3D::Vec3& fallback){
+Math3D::Vec3 GetVec3OrDefault(JsonVal* obj, const char* key, const Math3D::Vec3& fallback){
     Math3D::Vec3 value;
     return TryGetVec3(obj, key, value) ? value : fallback;
 }
 
-Math3D::Vec4 GetVec4OrDefault(yyjson_val* obj, const char* key, const Math3D::Vec4& fallback){
+Math3D::Vec4 GetVec4OrDefault(JsonVal* obj, const char* key, const Math3D::Vec4& fallback){
     Math3D::Vec4 value;
     return TryGetVec4(obj, key, value) ? value : fallback;
 }
 
-bool MutObjAddString(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, const std::string& value){
+bool MutObjAddString(yyjson_mut_doc* doc, JsonMutVal* obj, const char* key, const std::string& value){
     if(!doc || !obj || !key){
         return false;
     }
     return yyjson_mut_obj_add_strcpy(doc, obj, key, value.c_str());
 }
 
-bool MutObjAddBool(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, bool value){
+bool MutObjAddBool(yyjson_mut_doc* doc, JsonMutVal* obj, const char* key, bool value){
     if(!doc || !obj || !key){
         return false;
     }
     return yyjson_mut_obj_add_bool(doc, obj, key, value);
 }
 
-bool MutObjAddInt(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, int value){
+bool MutObjAddInt(yyjson_mut_doc* doc, JsonMutVal* obj, const char* key, int value){
     if(!doc || !obj || !key){
         return false;
     }
     return yyjson_mut_obj_add_int(doc, obj, key, value);
 }
 
-bool MutObjAddInt64(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, int64_t value){
+bool MutObjAddInt64(yyjson_mut_doc* doc, JsonMutVal* obj, const char* key, int64_t value){
     if(!doc || !obj || !key){
         return false;
     }
     return yyjson_mut_obj_add_sint(doc, obj, key, value);
 }
 
-bool MutObjAddUInt64(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, uint64_t value){
+bool MutObjAddUInt64(yyjson_mut_doc* doc, JsonMutVal* obj, const char* key, uint64_t value){
     if(!doc || !obj || !key){
         return false;
     }
     return yyjson_mut_obj_add_uint(doc, obj, key, value);
 }
 
-bool MutObjAddFloat(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, float value){
+bool MutObjAddFloat(yyjson_mut_doc* doc, JsonMutVal* obj, const char* key, float value){
     if(!doc || !obj || !key){
         return false;
     }
     return yyjson_mut_obj_add_real(doc, obj, key, static_cast<double>(value));
 }
 
-bool MutObjAddDouble(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, double value){
+bool MutObjAddDouble(yyjson_mut_doc* doc, JsonMutVal* obj, const char* key, double value){
     if(!doc || !obj || !key){
         return false;
     }
     return yyjson_mut_obj_add_real(doc, obj, key, value);
 }
 
-bool MutObjAddVec2(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, const Math3D::Vec2& value){
+bool MutObjAddVec2(yyjson_mut_doc* doc, JsonMutVal* obj, const char* key, const Math3D::Vec2& value){
     if(!doc || !obj || !key){
         return false;
     }
-    yyjson_mut_val* arr = yyjson_mut_obj_add_arr(doc, obj, key);
+    JsonMutVal* arr = yyjson_mut_obj_add_arr(doc, obj, key);
     if(!arr){
         return false;
     }
@@ -676,11 +679,11 @@ bool MutObjAddVec2(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, co
            yyjson_mut_arr_add_real(doc, arr, value.y);
 }
 
-bool MutObjAddVec3(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, const Math3D::Vec3& value){
+bool MutObjAddVec3(yyjson_mut_doc* doc, JsonMutVal* obj, const char* key, const Math3D::Vec3& value){
     if(!doc || !obj || !key){
         return false;
     }
-    yyjson_mut_val* arr = yyjson_mut_obj_add_arr(doc, obj, key);
+    JsonMutVal* arr = yyjson_mut_obj_add_arr(doc, obj, key);
     if(!arr){
         return false;
     }
@@ -689,11 +692,11 @@ bool MutObjAddVec3(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, co
            yyjson_mut_arr_add_real(doc, arr, value.z);
 }
 
-bool MutObjAddVec4(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, const Math3D::Vec4& value){
+bool MutObjAddVec4(yyjson_mut_doc* doc, JsonMutVal* obj, const char* key, const Math3D::Vec4& value){
     if(!doc || !obj || !key){
         return false;
     }
-    yyjson_mut_val* arr = yyjson_mut_obj_add_arr(doc, obj, key);
+    JsonMutVal* arr = yyjson_mut_obj_add_arr(doc, obj, key);
     if(!arr){
         return false;
     }

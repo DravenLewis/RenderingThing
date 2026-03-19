@@ -64,6 +64,7 @@ class ECSViewPanel {
             CreateEmpty,
             CreateLight,
             CreateCamera,
+            CreateEnvironment,
             DeleteEntity,
             ReparentToEntity,
             ReparentToRoot

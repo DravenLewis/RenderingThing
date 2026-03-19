@@ -87,7 +87,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool DeserializePayload(yyjson_val* payload, int version, std::string* outError) override final;
+        bool DeserializePayload(JsonUtils::JsonVal* payload, int version, std::string* outError) override final;
         /**
          * @brief Serializes payload.
          * @param doc Value for doc.
@@ -96,7 +96,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool SerializePayload(yyjson_mut_doc* doc, yyjson_mut_val* payload, int version, std::string* outError) const override final;
+        bool SerializePayload(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, int version, std::string* outError) const override final;
 
         /**
          * @brief Resets document fields state.
@@ -109,7 +109,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        virtual bool DeserializeDocumentFields(yyjson_val* payload, int version, std::string* outError) = 0;
+        virtual bool DeserializeDocumentFields(JsonUtils::JsonVal* payload, int version, std::string* outError) = 0;
         /**
          * @brief Serializes document fields.
          * @param doc Value for doc.
@@ -118,7 +118,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        virtual bool SerializeDocumentFields(yyjson_mut_doc* doc, yyjson_mut_val* payload, int version, std::string* outError) const = 0;
+        virtual bool SerializeDocumentFields(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, int version, std::string* outError) const = 0;
         /**
          * @brief Checks whether validate document state.
          * @param outError Output value for error.
@@ -134,7 +134,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool RequireStringField(yyjson_val* obj, const char* key, std::string& outValue, std::string* outError) const;
+        bool RequireStringField(JsonUtils::JsonVal* obj, const char* key, std::string& outValue, std::string* outError) const;
         /**
          * @brief Checks whether require int field.
          * @param obj Value for obj.
@@ -143,7 +143,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool RequireIntField(yyjson_val* obj, const char* key, int& outValue, std::string* outError) const;
+        bool RequireIntField(JsonUtils::JsonVal* obj, const char* key, int& outValue, std::string* outError) const;
         /**
          * @brief Checks whether require u int64 field.
          * @param obj Value for obj.
@@ -152,7 +152,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool RequireUInt64Field(yyjson_val* obj, const char* key, std::uint64_t& outValue, std::string* outError) const;
+        bool RequireUInt64Field(JsonUtils::JsonVal* obj, const char* key, std::uint64_t& outValue, std::string* outError) const;
         /**
          * @brief Checks whether require object field.
          * @param obj Value for obj.
@@ -161,7 +161,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool RequireObjectField(yyjson_val* obj, const char* key, yyjson_val*& outValue, std::string* outError) const;
+        bool RequireObjectField(JsonUtils::JsonVal* obj, const char* key, JsonUtils::JsonVal*& outValue, std::string* outError) const;
         /**
          * @brief Checks whether require array field.
          * @param obj Value for obj.
@@ -170,7 +170,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool RequireArrayField(yyjson_val* obj, const char* key, yyjson_val*& outValue, std::string* outError) const;
+        bool RequireArrayField(JsonUtils::JsonVal* obj, const char* key, JsonUtils::JsonVal*& outValue, std::string* outError) const;
 
         /**
          * @brief Reads optional string field.
@@ -180,7 +180,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool ReadOptionalStringField(yyjson_val* obj, const char* key, std::string& outValue, std::string* outError) const;
+        bool ReadOptionalStringField(JsonUtils::JsonVal* obj, const char* key, std::string& outValue, std::string* outError) const;
         /**
          * @brief Reads optional bool field.
          * @param obj Value for obj.
@@ -189,7 +189,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool ReadOptionalBoolField(yyjson_val* obj, const char* key, bool& outValue, std::string* outError) const;
+        bool ReadOptionalBoolField(JsonUtils::JsonVal* obj, const char* key, bool& outValue, std::string* outError) const;
         /**
          * @brief Reads optional int field.
          * @param obj Value for obj.
@@ -198,7 +198,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool ReadOptionalIntField(yyjson_val* obj, const char* key, int& outValue, std::string* outError) const;
+        bool ReadOptionalIntField(JsonUtils::JsonVal* obj, const char* key, int& outValue, std::string* outError) const;
         /**
          * @brief Reads optional u int64 field.
          * @param obj Value for obj.
@@ -207,7 +207,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool ReadOptionalUInt64Field(yyjson_val* obj, const char* key, std::uint64_t& outValue, std::string* outError) const;
+        bool ReadOptionalUInt64Field(JsonUtils::JsonVal* obj, const char* key, std::uint64_t& outValue, std::string* outError) const;
 
         /**
          * @brief Reads string array field.
@@ -218,7 +218,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param required Flag controlling required.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool ReadStringArrayField(yyjson_val* obj, const char* key, std::vector<std::string>& outValues, std::string* outError, bool required = false) const;
+        bool ReadStringArrayField(JsonUtils::JsonVal* obj, const char* key, std::vector<std::string>& outValues, std::string* outError, bool required = false) const;
         /**
          * @brief Writes string array field.
          * @param doc Value for doc.
@@ -228,7 +228,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool WriteStringArrayField(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, const std::vector<std::string>& values, std::string* outError) const;
+        bool WriteStringArrayField(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* obj, const char* key, const std::vector<std::string>& values, std::string* outError) const;
 
         /**
          * @brief Reads optional raw json field.
@@ -239,7 +239,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param requireObject Value for require object.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool ReadOptionalRawJsonField(yyjson_val* obj, const char* key, RawJsonValue& outValue, std::string* outError, bool requireObject = false) const;
+        bool ReadOptionalRawJsonField(JsonUtils::JsonVal* obj, const char* key, RawJsonValue& outValue, std::string* outError, bool requireObject = false) const;
         /**
          * @brief Writes optional raw json field.
          * @param doc Value for doc.
@@ -250,7 +250,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param requireObject Value for require object.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool WriteOptionalRawJsonField(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, const RawJsonValue& value, std::string* outError, bool requireObject = false) const;
+        bool WriteOptionalRawJsonField(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* obj, const char* key, const RawJsonValue& value, std::string* outError, bool requireObject = false) const;
 
     private:
         /**
@@ -259,7 +259,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool DeserializeSnapshotFields(yyjson_val* payload, std::string* outError);
+        bool DeserializeSnapshotFields(JsonUtils::JsonVal* payload, std::string* outError);
         /**
          * @brief Serializes snapshot fields.
          * @param doc Value for doc.
@@ -267,7 +267,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool SerializeSnapshotFields(yyjson_mut_doc* doc, yyjson_mut_val* payload, std::string* outError) const;
+        bool SerializeSnapshotFields(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* outError) const;
         /**
          * @brief Checks whether validate snapshot state.
          * @param outError Output value for error.
@@ -291,7 +291,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool ReadEntityRecord(yyjson_val* obj, EntityRecord& outEntity, std::string* outError) const;
+        bool ReadEntityRecord(JsonUtils::JsonVal* obj, EntityRecord& outEntity, std::string* outError) const;
         /**
          * @brief Writes entity record.
          * @param doc Value for doc.
@@ -300,7 +300,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool WriteEntityRecord(yyjson_mut_doc* doc, yyjson_mut_val* arr, const EntityRecord& entity, std::string* outError) const;
+        bool WriteEntityRecord(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* arr, const EntityRecord& entity, std::string* outError) const;
         /**
          * @brief Reads component record.
          * @param obj Value for obj.
@@ -308,7 +308,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool ReadComponentRecord(yyjson_val* obj, ComponentRecord& outComponent, std::string* outError) const;
+        bool ReadComponentRecord(JsonUtils::JsonVal* obj, ComponentRecord& outComponent, std::string* outError) const;
         /**
          * @brief Writes component record.
          * @param doc Value for doc.
@@ -317,7 +317,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool WriteComponentRecord(yyjson_mut_doc* doc, yyjson_mut_val* arr, const ComponentRecord& component, std::string* outError) const;
+        bool WriteComponentRecord(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* arr, const ComponentRecord& component, std::string* outError) const;
 
         /**
          * @brief Reads string array.
@@ -327,7 +327,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param debugName Name used for debug name.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool ReadStringArray(yyjson_val* arr, std::vector<std::string>& outValues, std::string* outError, const char* debugName) const;
+        bool ReadStringArray(JsonUtils::JsonVal* arr, std::vector<std::string>& outValues, std::string* outError, const char* debugName) const;
         /**
          * @brief Reads u int64 array.
          * @param arr Value for arr.
@@ -336,7 +336,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param debugName Name used for debug name.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool ReadUInt64Array(yyjson_val* arr, std::vector<std::uint64_t>& outValues, std::string* outError, const char* debugName) const;
+        bool ReadUInt64Array(JsonUtils::JsonVal* arr, std::vector<std::uint64_t>& outValues, std::string* outError, const char* debugName) const;
         /**
          * @brief Writes u int64 array field.
          * @param doc Value for doc.
@@ -346,7 +346,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool WriteUInt64ArrayField(yyjson_mut_doc* doc, yyjson_mut_val* obj, const char* key, const std::vector<std::uint64_t>& values, std::string* outError) const;
+        bool WriteUInt64ArrayField(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* obj, const char* key, const std::vector<std::uint64_t>& values, std::string* outError) const;
 
         /**
          * @brief Checks whether capture json value.
@@ -356,7 +356,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param debugName Name used for debug name.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool CaptureJsonValue(yyjson_val* value, std::string& outJson, std::string* outError, const char* debugName) const;
+        bool CaptureJsonValue(JsonUtils::JsonVal* value, std::string& outJson, std::string* outError, const char* debugName) const;
         /**
          * @brief Copies raw json to mutable value.
          * @param doc Value for doc.
@@ -367,7 +367,7 @@ class EntitySnapshotSchemaBase : public ISchema {
          * @param requireObject Value for require object.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool CopyRawJsonToMutableValue(yyjson_mut_doc* doc, const std::string& jsonText, yyjson_mut_val*& outValue, std::string* outError, const char* debugName, bool requireObject) const;
+        bool CopyRawJsonToMutableValue(yyjson_mut_doc* doc, const std::string& jsonText, JsonUtils::JsonMutVal*& outValue, std::string* outError, const char* debugName, bool requireObject) const;
 };
 
 /// @brief Represents the PrefabSchema type.
@@ -391,8 +391,8 @@ class PrefabSchema : public EntitySnapshotSchemaBase {
 
     protected:
         void ResetDocumentFieldsState() override;
-        bool DeserializeDocumentFields(yyjson_val* payload, int version, std::string* outError) override;
-        bool SerializeDocumentFields(yyjson_mut_doc* doc, yyjson_mut_val* payload, int version, std::string* outError) const override;
+        bool DeserializeDocumentFields(JsonUtils::JsonVal* payload, int version, std::string* outError) override;
+        bool SerializeDocumentFields(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, int version, std::string* outError) const override;
         bool ValidateDocumentState(std::string* outError) const override;
 };
 
@@ -441,7 +441,7 @@ class SceneSchema : public EntitySnapshotSchemaBase {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool DeserializeDocumentFields(yyjson_val* payload, int version, std::string* outError) override;
+        bool DeserializeDocumentFields(JsonUtils::JsonVal* payload, int version, std::string* outError) override;
         /**
          * @brief Serializes document fields.
          * @param doc Value for doc.
@@ -450,7 +450,7 @@ class SceneSchema : public EntitySnapshotSchemaBase {
          * @param outError Output value for error.
          * @return True when the operation succeeds; otherwise false.
          */
-        bool SerializeDocumentFields(yyjson_mut_doc* doc, yyjson_mut_val* payload, int version, std::string* outError) const override;
+        bool SerializeDocumentFields(yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, int version, std::string* outError) const override;
         /**
          * @brief Checks whether validate document state.
          * @param outError Output value for error.

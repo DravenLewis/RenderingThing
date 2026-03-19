@@ -30,6 +30,8 @@
 #include "Rendering/Textures/Texture.h"
 #include "Serialization/IO/PrefabIO.h"
 
+class LoadedScene;
+
 // EditorScene is a wrapper/editor-host scene that contains and edits another scene instance.
 // It must keep its own editor camera for viewport navigation, while target-scene cameras are
 // edited/previewed and can be marked current for the target scene's runtime/play camera.
@@ -195,6 +197,7 @@ class EditorScene : public Scene {
         std::unordered_set<std::string> migratedLightSyncTransform;
         std::unordered_set<std::string> migratedLightDefaults;
         bool editorIconsLoaded = false;
+        bool showSceneGrid = true;
         bool showSceneGizmos = true;
         bool showScenePerformanceInfo = false;
         PTexture iconCamera;
@@ -291,9 +294,47 @@ class EditorScene : public Scene {
         float lastObservedEditorPitch = 0.0f;
         bool observedPropertiesPanelStateValid = false;
         PropertiesPanel::State lastObservedPropertiesPanelState;
+        bool observedSceneViewStateValid = false;
+        bool lastObservedShowSceneGrid = true;
+        bool lastObservedShowSceneGizmos = true;
+        bool lastObservedShowScenePerformanceInfo = false;
+        enum class StartupLoadPhase {
+            None = 0,
+            CreateEntities,
+            DeserializeComponents,
+            Finalize
+        };
+        bool startupBootstrapPending = true;
+        bool startupUiFramePresented = false;
+        bool startupLoadingOverlayActive = true;
+        bool startupSessionParsed = false;
+        bool startupSessionHasCachedScene = false;
+        std::filesystem::path startupCachedScenePath;
+        PropertiesPanel::State startupSessionPropertiesState;
+        bool startupSessionHasCameraTransform = false;
+        Math3D::Transform startupSessionCameraTransform;
+        float startupSessionEditorYaw = -90.0f;
+        float startupSessionEditorPitch = 0.0f;
+        bool startupSessionShowSceneGrid = true;
+        bool startupSessionShowSceneGizmos = true;
+        bool startupSessionShowScenePerformanceInfo = false;
+        StartupLoadPhase startupLoadPhase = StartupLoadPhase::None;
+        std::shared_ptr<LoadedScene> startupLoadScene;
+        std::filesystem::path startupLoadScenePath;
+        JsonSchema::SceneSchema startupLoadSchema;
+        std::unordered_map<std::uint64_t, const JsonSchema::EntitySnapshotSchemaBase::EntityRecord*> startupLoadRecordsById;
+        std::vector<const JsonSchema::EntitySnapshotSchemaBase::EntityRecord*> startupLoadPendingRecords;
+        std::unordered_map<std::uint64_t, NeoECS::GameObject*> startupLoadGameObjectsBySnapshotId;
+        std::unordered_map<std::uint64_t, NeoECS::ECSEntity*> startupLoadEntitiesBySnapshotId;
+        size_t startupLoadDeserializeIndex = 0;
 
         void ensureTargetInitialized();
         void applyActiveSceneState();
+        bool parseStartupSessionState(std::string* outError);
+        bool beginStartupCachedSceneLoad(const std::filesystem::path& scenePath, std::string* outError);
+        bool stepStartupCachedSceneLoad(std::string* outError);
+        void clearStartupCachedSceneLoadState();
+        void applyStartupSessionUiState();
         void drawToolbar(float width, float height);
         void drawEcsPanel(float x, float y, float w, float h, bool lightweight = false);
         void drawViewportPanel(float x, float y, float w, float h);
@@ -315,6 +356,7 @@ class EditorScene : public Scene {
                                PTexture texture,
                                float sizePx,
                                ImU32 tint) const;
+        void drawWorldGridOverlay(ImDrawList* drawList, const TransformWidget::Viewport& viewport) const;
         void ensurePointLightBounds(NeoECS::ECSEntity* entity, float radius);
         bool computeSceneBounds(Math3D::Vec3& outCenter, float& outRadius) const;
         void setIoStatus(const std::string& message, bool isError);
@@ -347,6 +389,7 @@ class EditorScene : public Scene {
         bool loadEditorCameraFromPrefab(std::string* outError = nullptr);
         bool saveEditorCameraToPrefab(std::string* outError = nullptr) const;
         bool createDefaultEditorCameraObject();
+        void syncEditorCameraEnvironmentFromActiveScene();
         void setEditorCameraSettingsOpen(bool open);
         bool buildSceneHistoryEditorStateRawJson(JsonSchema::RawJsonValue& outEditorState,
                                                  std::string* outError = nullptr) const;
