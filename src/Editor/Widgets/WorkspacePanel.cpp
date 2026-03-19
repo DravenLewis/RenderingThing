@@ -13,6 +13,7 @@
 #include "Foundation/IO/File.h"
 #include "Foundation/Logging/Logbot.h"
 #include "Assets/Descriptors/EffectAsset.h"
+#include "Assets/Descriptors/ImageAsset.h"
 #include "Assets/Descriptors/MaterialAsset.h"
 #include "Assets/Descriptors/LensFlareAsset.h"
 #include "Assets/Descriptors/ModelAsset.h"
@@ -307,6 +308,7 @@ void WorkspacePanel::commitAssetRename(std::filesystem::path& selectedAssetPath)
     const bool oldPathIsSkyboxAsset = SkyboxAssetIO::IsSkyboxAssetPath(oldPath);
     const bool oldPathIsLensFlareAsset = LensFlareAssetIO::IsLensFlareAssetPath(oldPath);
     const bool oldPathIsEffectAsset = EffectAssetIO::IsEffectAssetPath(oldPath);
+    const bool oldPathIsImageAsset = ImageAssetIO::IsImageAssetPath(oldPath);
     const bool oldPathIsBundleAsset = AssetBundle::IsBundlePath(oldPath);
 
     std::string normalizedNewName = requestedName;
@@ -340,6 +342,8 @@ void WorkspacePanel::commitAssetRename(std::filesystem::path& selectedAssetPath)
         ensureSuffix(".flare.asset");
     }else if(oldPathIsEffectAsset){
         ensureSuffix(".effect.asset");
+    }else if(oldPathIsImageAsset){
+        ensureSuffix(".image.asset");
     }else if(oldPathIsBundleAsset){
         ensureSuffix(".bundle.asset");
     }
@@ -1005,6 +1009,55 @@ void WorkspacePanel::draw(float x,
             }
         }
 
+        // Support persisted child -> parent image links for .image.asset wrappers.
+        for(const auto& entry : baseEntries){
+            if(entry.isUp || entry.isDirectory){
+                continue;
+            }
+            if(!ImageAssetIO::IsImageAssetPath(entry.path)){
+                continue;
+            }
+
+            ImageAssetData imageData;
+            std::string imageLoadError;
+            if(!ImageAssetIO::LoadFromAbsolutePath(entry.path, imageData, &imageLoadError)){
+                continue;
+            }
+
+            const std::string parentRef = StringUtils::Trim(imageData.linkParentRef);
+            if(parentRef.empty()){
+                continue;
+            }
+
+            std::filesystem::path parentPath;
+            if(!assetRefToAbsolutePath(parentRef, parentPath)){
+                continue;
+            }
+
+            std::error_code parentEc;
+            std::filesystem::path normalizedParentPath = std::filesystem::weakly_canonical(parentPath, parentEc);
+            if(parentEc){
+                normalizedParentPath = parentPath.lexically_normal();
+            }
+            if(!std::filesystem::exists(normalizedParentPath, parentEc) || std::filesystem::is_directory(normalizedParentPath, parentEc)){
+                continue;
+            }
+            if(normalizedPathKey(normalizedParentPath.parent_path()) != assetDirKey){
+                continue;
+            }
+
+            const std::string parentKey = normalizedPathKey(normalizedParentPath);
+            if(parentKey.empty()){
+                continue;
+            }
+
+            addLinkedChild(parentKey, entry.path);
+            const std::string linkedKey = normalizedPathKey(entry.path);
+            if(!linkedKey.empty()){
+                hiddenRelatedAssetKeys.insert(linkedKey);
+            }
+        }
+
         for(const auto& entry : baseEntries){
             const std::string& entryKey = entry.normalizedKey;
             if(!entry.isUp && !entry.isDirectory && hiddenRelatedAssetKeys.find(entryKey) != hiddenRelatedAssetKeys.end()){
@@ -1124,6 +1177,8 @@ void WorkspacePanel::draw(float x,
             label = label.substr(0, label.size() - std::strlen(".shader.asset"));
         }else if(StringUtils::EndsWith(lowerName, ".effect.asset")){
             label = label.substr(0, label.size() - std::strlen(".effect.asset"));
+        }else if(StringUtils::EndsWith(lowerName, ".image.asset")){
+            label = label.substr(0, label.size() - std::strlen(".image.asset"));
         }else if(StringUtils::EndsWith(lowerName, ".bundle.asset")){
             label = label.substr(0, label.size() - std::strlen(".bundle.asset"));
         }

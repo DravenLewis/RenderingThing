@@ -58,6 +58,9 @@ bool RenderWindow::initSDL(){
     gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress);
     
     glEnable(GL_DEPTH_TEST);
+    // Seamless cubemap filtering avoids visible face boundaries in reflections when
+    // normal mapping perturbs reflection vectors near cubemap face edges.
+    glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
     setVSyncMode(this->displayMode.vSyncMode);
 
     return true;

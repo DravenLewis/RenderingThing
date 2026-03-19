@@ -99,8 +99,6 @@ class GrayscaleEffect : public Graphics::PostProcessing::PostProcessingEffect{
             }
 
             outFbo->bind();
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
             glDisable(GL_DEPTH_TEST);
 
             shader->bind();
@@ -559,8 +557,6 @@ class SSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
             }
 
             outFbo->bind();
-            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
             glDisable(GL_DEPTH_TEST);
 
             shader->bind();
@@ -1029,8 +1025,6 @@ class RobustSSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
             int effectiveSamples = Math3D::Clamp(sampleCount, 4, MAX_KERNEL_SAMPLES);
 
             rawAoFbo->bind();
-            glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
             rawShader->bind();
             rawShader->setUniformFast("normalTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(sceneNormalTex, 0)));
             rawShader->setUniformFast("positionTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(scenePositionTex, 1)));
@@ -1048,8 +1042,6 @@ class RobustSSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
             rawAoFbo->unbind();
 
             blurAoFbo->bind();
-            glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
             blurShader->bind();
             blurShader->setUniformFast("rawAoTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(rawAoFbo->getTexture(), 0)));
             blurShader->setUniformFast("normalTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(sceneNormalTex, 1)));
@@ -1120,8 +1112,6 @@ class RobustSSAOEffect : public Graphics::PostProcessing::PostProcessingEffect {
             }
 
             outFbo->bind();
-            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
             compositeShader->bind();
             compositeShader->setUniformFast("screenTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(tex, 0)));
             compositeShader->setUniformFast("aoRawTexture", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(rawAoFbo->getTexture(), 1)));
@@ -1146,6 +1136,7 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
     private:
         std::shared_ptr<ShaderProgram> shader;
         bool compileAttempted = false;
+        GLuint adaptiveDepthReadFbo = 0;
         float resolvedFocusDistance = 8.0f;
         float resolvedFocusRange = 4.0f;
         bool focusAdaptationInitialized = false;
@@ -1162,7 +1153,6 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
         float debugAdaptiveTargetDistance = 0.0f;
         float debugAdaptiveFallbackDistance = 0.0f;
         std::chrono::steady_clock::time_point lastFocusAdaptationTime = std::chrono::steady_clock::now();
-        std::vector<float> adaptiveFocusDepthCpu;
         const std::string DOF_FRAG_SHADER = R"(
             #version 330 core
 
@@ -1371,49 +1361,83 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
             if(!depthTex || depthTex->getID() == 0){
                 return false;
             }
-
-            int width = 0;
-            int height = 0;
-            GLint prevTexBinding = 0;
-            glGetIntegerv(GL_TEXTURE_BINDING_2D, &prevTexBinding);
-            glBindTexture(GL_TEXTURE_2D, depthTex->getID());
-            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
-            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
+            const int width = depthTex->getWidth();
+            const int height = depthTex->getHeight();
             if(width <= 0 || height <= 0){
-                glBindTexture(GL_TEXTURE_2D, static_cast<GLuint>(prevTexBinding));
+                return false;
+            }
+            if(adaptiveDepthReadFbo == 0){
+                glGenFramebuffers(1, &adaptiveDepthReadFbo);
+            }
+            if(adaptiveDepthReadFbo == 0){
                 return false;
             }
 
-            size_t pixelCount = static_cast<size_t>(width) * static_cast<size_t>(height);
-            if(pixelCount == 0){
-                glBindTexture(GL_TEXTURE_2D, static_cast<GLuint>(prevTexBinding));
-                return false;
-            }
-            if(adaptiveFocusDepthCpu.size() != pixelCount){
-                adaptiveFocusDepthCpu.resize(pixelCount);
-            }
-            if(adaptiveFocusDepthCpu.empty()){
-                glBindTexture(GL_TEXTURE_2D, static_cast<GLuint>(prevTexBinding));
-                return false;
-            }
-
-            GLenum preReadErr = glGetError();
-            (void)preReadErr;
-            glGetTexImage(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, GL_FLOAT, adaptiveFocusDepthCpu.data());
-            GLenum readErr = glGetError();
-            glBindTexture(GL_TEXTURE_2D, static_cast<GLuint>(prevTexBinding));
-            if(readErr != GL_NO_ERROR){
+            GLint prevReadFbo = 0;
+            glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &prevReadFbo);
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, adaptiveDepthReadFbo);
+            glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTex->getID(), 0);
+            glReadBuffer(GL_NONE);
+            const bool complete = (glCheckFramebufferStatus(GL_READ_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
+            if(!complete){
+                glBindFramebuffer(GL_READ_FRAMEBUFFER, static_cast<GLuint>(prevReadFbo));
                 return false;
             }
 
             const float kSkyDepthCutoff = 0.9995f;
-            int x = Math3D::Clamp(static_cast<int>(std::round(focusUv.x * static_cast<float>(width - 1))), 0, width - 1);
-            int y = Math3D::Clamp(static_cast<int>(std::round(focusUv.y * static_cast<float>(height - 1))), 0, height - 1);
-            float depth = adaptiveFocusDepthCpu[static_cast<size_t>(y) * static_cast<size_t>(width) + static_cast<size_t>(x)];
-            if(!std::isfinite(depth) || depth >= kSkyDepthCutoff){
+            auto readDepthAt = [&](int x, int y, float& outDepth) -> bool {
+                float depth = 1.0f;
+                glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+                if(!std::isfinite(depth) || depth >= kSkyDepthCutoff){
+                    return false;
+                }
+                outDepth = depth;
+                return true;
+            };
+
+            const int centerX = Math3D::Clamp(
+                static_cast<int>(std::round(focusUv.x * static_cast<float>(width - 1))),
+                0,
+                width - 1
+            );
+            const int centerY = Math3D::Clamp(
+                static_cast<int>(std::round(focusUv.y * static_cast<float>(height - 1))),
+                0,
+                height - 1
+            );
+
+            float resolvedDepth = 1.0f;
+            bool gotDepth = readDepthAt(centerX, centerY, resolvedDepth);
+            if(!gotDepth){
+                static const int OFFSETS[8][2] = {
+                    { 1,  0}, {-1,  0},
+                    { 0,  1}, { 0, -1},
+                    { 2,  0}, {-2,  0},
+                    { 0,  2}, { 0, -2}
+                };
+                float accum = 0.0f;
+                int count = 0;
+                for(const auto& offset : OFFSETS){
+                    const int sx = Math3D::Clamp(centerX + offset[0], 0, width - 1);
+                    const int sy = Math3D::Clamp(centerY + offset[1], 0, height - 1);
+                    float sampleDepth = 1.0f;
+                    if(readDepthAt(sx, sy, sampleDepth)){
+                        accum += sampleDepth;
+                        count++;
+                    }
+                }
+                if(count > 0){
+                    resolvedDepth = accum / static_cast<float>(count);
+                    gotDepth = true;
+                }
+            }
+
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, static_cast<GLuint>(prevReadFbo));
+            if(!gotDepth){
                 return false;
             }
-            outDistance = linearizeDepthCpu(depth);
+
+            outDistance = linearizeDepthCpu(resolvedDepth);
             return std::isfinite(outDistance) && outDistance > 0.0f;
         }
 
@@ -1447,7 +1471,12 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
         /**
          * @brief Destroys this DepthOfFieldEffect instance.
          */
-        ~DepthOfFieldEffect() override = default;
+        ~DepthOfFieldEffect() override {
+            if(adaptiveDepthReadFbo != 0){
+                glDeleteFramebuffers(1, &adaptiveDepthReadFbo);
+                adaptiveDepthReadFbo = 0;
+            }
+        }
 
         /**
          * @brief Returns the resolved focus distance.
@@ -1538,8 +1567,6 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
             }
 
             outFbo->bind();
-            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
             glDisable(GL_DEPTH_TEST);
 
             float targetFocusRange = Math3D::Max(0.001f, focusRange);
@@ -1558,16 +1585,16 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
                 bool hasRayFocusTarget = false;
                 float targetFocusPlaneDistance = fallbackFocusDistance;
                 float sampledFocusDistance = 0.0f;
-                if(sampleAdaptiveFocusDistance(depthTex, sampledFocusDistance)){
-                    targetFocusPlaneDistance = Math3D::Max(0.01f, sampledFocusDistance);
-                    hasRayFocusTarget = true;
-                    debugAdaptiveCenterValid = true;
-                    debugAdaptiveCenterDistance = targetFocusPlaneDistance;
-                }else if(useExternalAdaptiveFocus && std::isfinite(externalAdaptiveDistance) && externalAdaptiveDistance > 0.0f){
+                if(useExternalAdaptiveFocus && std::isfinite(externalAdaptiveDistance) && externalAdaptiveDistance > 0.0f){
                     targetFocusPlaneDistance = Math3D::Max(0.01f, externalAdaptiveDistance);
                     hasRayFocusTarget = true;
                     debugAdaptiveRayValid = true;
                     debugAdaptiveRayDistance = targetFocusPlaneDistance;
+                }else if(sampleAdaptiveFocusDistance(depthTex, sampledFocusDistance)){
+                    targetFocusPlaneDistance = Math3D::Max(0.01f, sampledFocusDistance);
+                    hasRayFocusTarget = true;
+                    debugAdaptiveCenterValid = true;
+                    debugAdaptiveCenterDistance = targetFocusPlaneDistance;
                 }else{
                     targetFocusRange = Math3D::Max(0.001f, fallbackFocusRange);
                 }
@@ -1675,6 +1702,7 @@ class DepthOfFieldEffect : public Graphics::PostProcessing::PostProcessingEffect
 /// @brief Represents the BloomEffect type.
 class BloomEffect : public Graphics::PostProcessing::PostProcessingEffect {
     private:
+        static constexpr int METER_INTERVAL_FRAMES = 6;
         std::shared_ptr<ShaderProgram> shader;
         bool compileAttempted = false;
         const std::string BLOOM_FRAG_SHADER = R"(
@@ -1769,6 +1797,7 @@ class BloomEffect : public Graphics::PostProcessing::PostProcessingEffect {
         float smoothedThresholdScale = 1.0f;
         float smoothedIntensityScale = 1.0f;
         float smoothedExposureScale = 1.0f;
+        int meteringFrameCounter = 0;
         std::chrono::steady_clock::time_point lastAdaptationTime = std::chrono::steady_clock::now();
 
         /**
@@ -1843,10 +1872,20 @@ class BloomEffect : public Graphics::PostProcessing::PostProcessingEffect {
                 smoothedThresholdScale = 1.0f;
                 smoothedIntensityScale = 1.0f;
                 smoothedExposureScale = 1.0f;
+                meteringFrameCounter = 0;
                 outThresholdScale = smoothedThresholdScale;
                 outIntensityScale = smoothedIntensityScale;
                 outExposureScale = smoothedExposureScale;
                 return;
+            }
+
+            if(adaptationInitialized){
+                meteringFrameCounter = (meteringFrameCounter + 1) % METER_INTERVAL_FRAMES;
+                if(meteringFrameCounter != 0){
+                    return;
+                }
+            }else{
+                meteringFrameCounter = 0;
             }
 
             float observedLuminance = adaptedLuminance;
@@ -1970,8 +2009,6 @@ class BloomEffect : public Graphics::PostProcessing::PostProcessingEffect {
             }
 
             outFbo->bind();
-            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
             glDisable(GL_DEPTH_TEST);
 
             shader->bind();
@@ -1982,7 +2019,20 @@ class BloomEffect : public Graphics::PostProcessing::PostProcessingEffect {
             float exposureScale = 1.0f;
             float adaptiveThresholdScale = 1.0f;
             float adaptiveIntensityScale = 1.0f;
-            computeAdaptiveScales(tex, adaptiveThresholdScale, adaptiveIntensityScale, exposureScale);
+            const bool hasExternalExposureCoupling =
+                (std::abs(autoExposureThresholdScale - 1.0f) > 0.001f) ||
+                (std::abs(autoExposureIntensityScale - 1.0f) > 0.001f);
+            if(adaptiveBloom && !hasExternalExposureCoupling){
+                computeAdaptiveScales(tex, adaptiveThresholdScale, adaptiveIntensityScale, exposureScale);
+            }else{
+                adaptationInitialized = false;
+                meteringFrameCounter = 0;
+                adaptedLuminance = 0.35f;
+                filteredLuminance = 0.35f;
+                smoothedThresholdScale = 1.0f;
+                smoothedIntensityScale = 1.0f;
+                smoothedExposureScale = 1.0f;
+            }
             thresholdScale *= adaptiveThresholdScale;
             intensityScale *= adaptiveIntensityScale;
 
@@ -2026,12 +2076,14 @@ class BloomEffect : public Graphics::PostProcessing::PostProcessingEffect {
 /// @brief Represents the AutoExposureEffect type.
 class AutoExposureEffect : public Graphics::PostProcessing::PostProcessingEffect {
     private:
+        static constexpr int METER_INTERVAL_FRAMES = 6;
         std::shared_ptr<ShaderProgram> shader;
         bool compileAttempted = false;
         GLuint meteringReadFbo = 0;
         bool adaptationInitialized = false;
         float adaptedExposure = 1.0f;
         float filteredLogLuminance = std::log2(0.18f);
+        int meteringFrameCounter = 0;
         std::chrono::steady_clock::time_point lastAdaptationTime = std::chrono::steady_clock::now();
 
         const std::string AUTO_EXPOSURE_FRAG_SHADER = R"(
@@ -2100,20 +2152,16 @@ class AutoExposureEffect : public Graphics::PostProcessing::PostProcessingEffect
                 float weight;
             };
 
-            static const std::array<MeterTap, 13> kMeterTaps = {{
-                {0.50f, 0.50f, 0.22f},
-                {0.35f, 0.35f, 0.10f},
-                {0.65f, 0.35f, 0.10f},
-                {0.35f, 0.65f, 0.10f},
-                {0.65f, 0.65f, 0.10f},
-                {0.12f, 0.12f, 0.07f},
-                {0.88f, 0.12f, 0.07f},
-                {0.12f, 0.88f, 0.07f},
-                {0.88f, 0.88f, 0.07f},
-                {0.50f, 0.20f, 0.025f},
-                {0.20f, 0.50f, 0.025f},
-                {0.80f, 0.50f, 0.025f},
-                {0.50f, 0.80f, 0.025f}
+            static const std::array<MeterTap, 9> kMeterTaps = {{
+                {0.50f, 0.50f, 0.30f},
+                {0.35f, 0.35f, 0.14f},
+                {0.65f, 0.35f, 0.14f},
+                {0.35f, 0.65f, 0.14f},
+                {0.65f, 0.65f, 0.14f},
+                {0.12f, 0.12f, 0.035f},
+                {0.88f, 0.12f, 0.035f},
+                {0.12f, 0.88f, 0.035f},
+                {0.88f, 0.88f, 0.035f}
             }};
 
             std::array<float, kMeterTaps.size()> logLuminance{};
@@ -2171,6 +2219,15 @@ class AutoExposureEffect : public Graphics::PostProcessing::PostProcessingEffect
          * @param tex Value for tex.
          */
         void updateAdaptation(PTexture tex){
+            if(adaptationInitialized){
+                meteringFrameCounter = (meteringFrameCounter + 1) % METER_INTERVAL_FRAMES;
+                if(meteringFrameCounter != 0){
+                    return;
+                }
+            }else{
+                meteringFrameCounter = 0;
+            }
+
             float observedLuminance = 0.18f;
             if(!sampleSceneLuminance(tex, observedLuminance)){
                 return;
@@ -2186,6 +2243,7 @@ class AutoExposureEffect : public Graphics::PostProcessing::PostProcessingEffect
                 float targetExposure = (0.18f / Math3D::Max(observedLuminance, 0.0001f)) * compensationScale;
                 adaptedExposure = Math3D::Clamp(targetExposure, minExp, maxExp);
                 adaptationInitialized = true;
+                meteringFrameCounter = METER_INTERVAL_FRAMES / 2;
                 lastAdaptationTime = now;
                 return;
             }
@@ -2275,6 +2333,7 @@ class AutoExposureEffect : public Graphics::PostProcessing::PostProcessingEffect
             adaptationInitialized = false;
             adaptedExposure = 1.0f;
             filteredLogLuminance = std::log2(0.18f);
+            meteringFrameCounter = 0;
             lastAdaptationTime = std::chrono::steady_clock::now();
         }
 
@@ -2305,8 +2364,6 @@ class AutoExposureEffect : public Graphics::PostProcessing::PostProcessingEffect
             updateAdaptation(tex);
 
             outFbo->bind();
-            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
             glDisable(GL_DEPTH_TEST);
 
             shader->bind();
@@ -2483,8 +2540,6 @@ class FXAAEffect : public Graphics::PostProcessing::PostProcessingEffect {
             }
 
             outFbo->bind();
-            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
             glDisable(GL_DEPTH_TEST);
 
             shader->bind();

@@ -98,8 +98,12 @@ class LensFlareEffect : public Graphics::PostProcessing::PostProcessingEffect {
         bool compositeCompileAttempted = false;
         bool spriteCompileAttempted = false;
         GLuint depthReadFbo = 0;
+        GLint depthReadPrevFbo = 0;
+        bool depthReadPrepared = false;
 
         bool ensureShadersCompiled();
+        bool beginDepthRead(PTexture depthTex);
+        void endDepthRead();
         CachedFlareAsset* resolveAsset(const std::string& assetRef);
         PTexture resolveTexture(CachedFlareAsset& asset, const std::string& textureRef);
         float sampleDepthAtUv(PTexture depthTex, const Math3D::Vec2& uv);

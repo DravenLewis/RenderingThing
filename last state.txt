@@ -1,29 +1,13 @@
-Added Depth Based Tile Drawing for Lights and Shadows to fall more inline with Modern Deffered Renderers.
-(https://mynameismjp.wordpress.com/2010/09/05/position-from-depth-3/)
 
-
-Created issue where object shadows flicker when camera moves, if it is large and flat. Could be related to normals, but
-effect is shown on shadow debug map.
-
-== Probable Issues Locations
-- Shadow Renderer
-- DefferedLightingShader
-- Material Shaders shadow reciever logic.
-- only happens on LARGE flat objects (all shadows break when it happens tho)
-
-== Definitely Shadow Related, Effect still happens on hard shadows, shadows jitter on movement.
- Shadow Rendering is now unstable.
-
-Refer back to Tutorial (https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping)
-                       (https://learnopengl.com/Advanced-Lighting/Shadows/Point-Shadows)
-
-
+- Long Loading Times,
+    App Launches Black and unresposnive untill all assets load,
+    lets make the UI appear but while the Scene is loading the viewport will be black with
+    centered text that says "Please wait as the Scene is Loaded%s", and format it with {"",".","..","..."} where it cycles between them every second, if i > length, i = 0 so it loops.
+    also DemoScene is being loaded then the cached scene is being loaded after. 
+    can we load the cached scene first, then fallback to demoscene.
 
 Add+
 Glass BSDF
 Water BSDF
-
-== Make sure PBR Materials render at a higher quality further. currently  Materials become muddy a short distance from the player 
-
 
 Scripting Component

@@ -6,6 +6,7 @@
 #include "Rendering/PostFX/LensFlareEffect.h"
 
 #include "Assets/Core/Asset.h"
+#include "Assets/Descriptors/ImageAsset.h"
 #include "Foundation/Logging/Logbot.h"
 #include "Rendering/Core/Screen.h"
 
@@ -69,16 +70,15 @@ LensFlareEffect::LensFlareEffect(){
             vec3 glare = vec3(0.0);
 
             if(u_glareIntensity > 0.0001 && u_glareLengthPx > 0.5){
-                const vec2 kDirections[4] = vec2[](
+                const vec2 kDirections[3] = vec2[](
                     vec2(1.0, 0.0),
                     vec2(0.0, 1.0),
-                    normalize(vec2(1.0, 1.0)),
-                    normalize(vec2(1.0, -1.0))
+                    normalize(vec2(1.0, 1.0))
                 );
-                const float kDirectionWeights[4] = float[](0.90, 0.90, 1.00, 1.00);
-                const int kSamples = 6;
+                const float kDirectionWeights[3] = float[](1.00, 1.00, 1.15);
+                const int kSamples = 4;
 
-                for(int d = 0; d < 4; ++d){
+                for(int d = 0; d < 3; ++d){
                     vec3 directionAccum = vec3(0.0);
                     for(int i = 1; i <= kSamples; ++i){
                         float t = float(i) / float(kSamples);
@@ -192,6 +192,41 @@ bool LensFlareEffect::ensureShadersCompiled(){
     return compositeShader->getID() != 0 && spriteShader->getID() != 0;
 }
 
+bool LensFlareEffect::beginDepthRead(PTexture depthTex){
+    depthReadPrepared = false;
+    depthReadPrevFbo = 0;
+    if(!depthTex || depthTex->getID() == 0 || depthTex->getWidth() <= 0 || depthTex->getHeight() <= 0){
+        return false;
+    }
+    if(depthReadFbo == 0){
+        glGenFramebuffers(1, &depthReadFbo);
+    }
+    if(depthReadFbo == 0){
+        return false;
+    }
+
+    glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &depthReadPrevFbo);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, depthReadFbo);
+    glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTex->getID(), 0);
+    glReadBuffer(GL_NONE);
+    if(glCheckFramebufferStatus(GL_READ_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, static_cast<GLuint>(depthReadPrevFbo));
+        depthReadPrevFbo = 0;
+        return false;
+    }
+
+    depthReadPrepared = true;
+    return true;
+}
+
+void LensFlareEffect::endDepthRead(){
+    if(depthReadPrepared){
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, static_cast<GLuint>(depthReadPrevFbo));
+    }
+    depthReadPrepared = false;
+    depthReadPrevFbo = 0;
+}
+
 LensFlareEffect::CachedFlareAsset* LensFlareEffect::resolveAsset(const std::string& assetRef){
     if(assetRef.empty()){
         return nullptr;
@@ -230,7 +265,7 @@ PTexture LensFlareEffect::resolveTexture(CachedFlareAsset& asset, const std::str
         return nullptr;
     }
 
-    const std::uint64_t currentRevision = AssetManager::Instance.getRevision(resolvedRef);
+    const std::uint64_t currentRevision = ImageAssetIO::GetTextureRefRevision(resolvedRef);
     auto it = asset.textures.find(resolvedRef);
     auto revisionIt = asset.textureRevisions.find(resolvedRef);
     if(it != asset.textures.end() &&
@@ -239,11 +274,7 @@ PTexture LensFlareEffect::resolveTexture(CachedFlareAsset& asset, const std::str
         return it->second;
     }
 
-    PTexture texture = nullptr;
-    auto textureAsset = AssetManager::Instance.getOrLoad(resolvedRef);
-    if(textureAsset){
-        texture = Texture::Load(textureAsset);
-    }
+    PTexture texture = ImageAssetIO::InstantiateTextureFromRef(resolvedRef);
     if(!texture && !asset.warned){
         LogBot.Log(LOG_WARN, "Lens flare asset '%s' could not resolve a usable image element texture.", asset.data.name.c_str());
         asset.warned = true;
@@ -259,28 +290,24 @@ float LensFlareEffect::sampleDepthAtUv(PTexture depthTex, const Math3D::Vec2& uv
         return 1.0f;
     }
 
-    if(depthReadFbo == 0){
-        glGenFramebuffers(1, &depthReadFbo);
-    }
-    if(depthReadFbo == 0){
-        return 1.0f;
-    }
-
     const int width = depthTex->getWidth();
     const int height = depthTex->getHeight();
     const int x = Math3D::Clamp(static_cast<int>(std::round(uv.x * static_cast<float>(width - 1))), 0, width - 1);
     const int y = Math3D::Clamp(static_cast<int>(std::round(uv.y * static_cast<float>(height - 1))), 0, height - 1);
 
-    GLint prevReadFbo = 0;
-    glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &prevReadFbo);
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, depthReadFbo);
-    glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTex->getID(), 0);
-    glReadBuffer(GL_NONE);
     float sampledDepth = 1.0f;
-    if(glCheckFramebufferStatus(GL_READ_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE){
+    if(depthReadPrepared){
+        glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &sampledDepth);
+        return sampledDepth;
+    }
+
+    if(!beginDepthRead(depthTex)){
+        return 1.0f;
+    }
+    if(depthReadPrepared){
         glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &sampledDepth);
     }
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, static_cast<GLuint>(prevReadFbo));
+    endDepthRead();
     return sampledDepth;
 }
 
@@ -418,6 +445,7 @@ bool LensFlareEffect::apply(PTexture inputTex,
     float glareThresholdAccumulator = 0.0f;
     float glareFalloffAccumulator = 0.0f;
     int glareCount = 0;
+    beginDepthRead(depthTex);
 
     for(const FlareEmitter& emitter : emitters){
         CachedFlareAsset* asset = resolveAsset(emitter.assetRef);
@@ -426,18 +454,26 @@ bool LensFlareEffect::apply(PTexture inputTex,
         }
         hasAnyValidAsset = true;
 
-        glare.enabled = true;
-        glare.intensity = Math3D::Max(glare.intensity, Math3D::Max(asset->data.glareIntensity, 0.0f));
-        glare.lengthPx = Math3D::Max(glare.lengthPx, Math3D::Max(asset->data.glareLengthPx, 0.0f));
-        glareThresholdAccumulator += Math3D::Clamp(asset->data.glareThreshold, 0.0f, 64.0f);
-        glareFalloffAccumulator += Math3D::Clamp(asset->data.glareFalloff, 0.05f, 8.0f);
-        glareCount++;
-
         ProjectedEmitterSource emitterSource;
         if(buildProjectedEmitterSource(emitter, depthTex, emitterSource)){
+            glare.enabled = true;
+            const float glareVisibilityScale = Math3D::Clamp(
+                emitterSource.visibility * (0.50f + (emitterSource.brightnessScale * 0.35f)),
+                0.0f,
+                4.0f
+            );
+            glare.intensity = Math3D::Max(
+                glare.intensity,
+                Math3D::Max(asset->data.glareIntensity, 0.0f) * glareVisibilityScale
+            );
+            glare.lengthPx = Math3D::Max(glare.lengthPx, Math3D::Max(asset->data.glareLengthPx, 0.0f));
+            glareThresholdAccumulator += Math3D::Clamp(asset->data.glareThreshold, 0.0f, 64.0f);
+            glareFalloffAccumulator += Math3D::Clamp(asset->data.glareFalloff, 0.05f, 8.0f);
+            glareCount++;
             appendSpriteSources(emitter, *asset, emitterSource, spriteSources);
         }
     }
+    endDepthRead();
 
     if(!hasAnyValidAsset){
         return false;
@@ -447,12 +483,14 @@ bool LensFlareEffect::apply(PTexture inputTex,
         glare.threshold = glareThresholdAccumulator / static_cast<float>(glareCount);
         glare.falloff = glareFalloffAccumulator / static_cast<float>(glareCount);
     }
+    const bool hasGlarePass = glare.enabled && glare.intensity > 0.0001f && glare.lengthPx > 0.5f;
+    if(spriteSources.empty() && !hasGlarePass){
+        return false;
+    }
 
     frameBuffer->bind();
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
 
     static const Math3D::Mat4 IDENTITY;
 
@@ -462,10 +500,10 @@ bool LensFlareEffect::apply(PTexture inputTex,
         1.0f / static_cast<float>(Math3D::Max(frameBuffer->getWidth(), 1)),
         1.0f / static_cast<float>(Math3D::Max(frameBuffer->getHeight(), 1))
     )));
-    compositeShader->setUniformFast("u_glareThreshold", Uniform<float>(glare.enabled ? glare.threshold : 64.0f));
-    compositeShader->setUniformFast("u_glareIntensity", Uniform<float>(glare.enabled ? glare.intensity : 0.0f));
-    compositeShader->setUniformFast("u_glareLengthPx", Uniform<float>(glare.enabled ? glare.lengthPx : 0.0f));
-    compositeShader->setUniformFast("u_glareFalloff", Uniform<float>(glare.enabled ? glare.falloff : 1.35f));
+    compositeShader->setUniformFast("u_glareThreshold", Uniform<float>(hasGlarePass ? glare.threshold : 64.0f));
+    compositeShader->setUniformFast("u_glareIntensity", Uniform<float>(hasGlarePass ? glare.intensity : 0.0f));
+    compositeShader->setUniformFast("u_glareLengthPx", Uniform<float>(hasGlarePass ? glare.lengthPx : 0.0f));
+    compositeShader->setUniformFast("u_glareFalloff", Uniform<float>(hasGlarePass ? glare.falloff : 1.35f));
     compositeShader->setUniformFast("u_model", Uniform<Math3D::Mat4>(IDENTITY));
     compositeShader->setUniformFast("u_view", Uniform<Math3D::Mat4>(IDENTITY));
     compositeShader->setUniformFast("u_projection", Uniform<Math3D::Mat4>(IDENTITY));
@@ -485,6 +523,9 @@ bool LensFlareEffect::apply(PTexture inputTex,
         spriteShader->setUniformFast("u_projection", Uniform<Math3D::Mat4>(IDENTITY));
 
         for(const SpritePassSource& source : spriteSources){
+            if(source.intensity <= 0.0001f || source.sizePx <= 1.0f){
+                continue;
+            }
             if(source.type == LensFlareElementType::Image && (!source.texture || source.texture->getID() == 0)){
                 continue;
             }

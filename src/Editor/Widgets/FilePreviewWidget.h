@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "Assets/Descriptors/EffectAsset.h"
+#include "Assets/Descriptors/ImageAsset.h"
 #include "Assets/Descriptors/MaterialAsset.h"
 #include "Assets/Descriptors/LensFlareAsset.h"
 #include "Assets/Descriptors/ModelAsset.h"
@@ -94,6 +95,14 @@ class FilePreviewWidget {
          */
         void drawModelFilePreview();
         /**
+         * @brief Draws image file preview.
+         */
+        void drawImageFilePreview();
+        /**
+         * @brief Draws image asset editor.
+         */
+        void drawImageAssetEditor();
+        /**
          * @brief Draws generic info.
          */
         void drawGenericInfo() const;
@@ -139,6 +148,11 @@ class FilePreviewWidget {
          * @return True when the operation succeeds; otherwise false.
          */
         bool importCurrentModelAsAsset();
+        /**
+         * @brief Checks whether import current image as asset.
+         * @return True when the operation succeeds; otherwise false.
+         */
+        bool importCurrentImageAsAsset();
 
         std::filesystem::path assetRoot;
         std::filesystem::path filePath;
@@ -153,8 +167,10 @@ class FilePreviewWidget {
         bool isMaterialAssetFile = false;
         bool isMaterialObjectFile = false;
         bool isModelAssetFile = false;
+        bool isImageAssetFile = false;
         bool isMtlFile = false;
         bool isModelFile = false;
+        bool isImageFile = false;
         bool statusIsError = false;
         std::string statusMessage;
         std::string errorByteDump;
@@ -203,6 +219,13 @@ class FilePreviewWidget {
         char modelAssetName[128] = {};
         char modelAssetSource[256] = {};
         char modelAssetMaterialRef[256] = {};
+        ImageAssetData imageAssetData;
+        char imageAssetName[128] = {};
+        char imageAssetSource[256] = {};
+        bool imageAssetSavePending = false;
+        bool imageImportPopupOpen = false;
+        ImageAssetData imageImportData;
+        char imageImportAssetPath[256] = {};
         std::vector<MtlMaterialDefinition> mtlMaterials;
         int selectedMtlMaterialIndex = 0;
 

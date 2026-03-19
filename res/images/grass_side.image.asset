@@ -1,0 +1,8 @@
+name=grass_side.image.asset
+@link-parent=@assets/images/grass_side.png
+source_image=@assets/images/grass_side.png
+filter=Nearest
+wrap=Repeat
+map_type=Color
+supports_alpha=1
+flip_vertical=1

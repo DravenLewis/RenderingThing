@@ -7,6 +7,7 @@
 
 #include "Assets/Core/Asset.h"
 #include "Assets/Core/AssetDescriptorUtils.h"
+#include "Assets/Descriptors/ImageAsset.h"
 #include "Foundation/IO/File.h"
 #include "Foundation/Util/StringUtils.h"
 #include "Rendering/Textures/SkyBox.h"
@@ -101,10 +102,15 @@ namespace {
             return false;
         }
 
-        outAsset = AssetManager::Instance.getOrLoad(assetRef);
+        std::string sourceAssetRef;
+        if(!ImageAssetIO::ResolveTextureSourceAssetRef(assetRef, sourceAssetRef, nullptr, outError)){
+            return false;
+        }
+
+        outAsset = AssetManager::Instance.getOrLoad(sourceAssetRef);
         if(!outAsset){
             if(outError){
-                *outError = "Failed to load skybox face asset: " + assetRef;
+                *outError = "Failed to load skybox face asset: " + sourceAssetRef;
             }
             return false;
         }

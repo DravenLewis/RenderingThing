@@ -1,0 +1,8 @@
+name=dirt.image.asset
+@link-parent=@assets/images/dirt.png
+source_image=@assets/images/dirt.png
+filter=Nearest
+wrap=Repeat
+map_type=Color
+supports_alpha=1
+flip_vertical=1

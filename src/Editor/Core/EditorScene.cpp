@@ -4136,8 +4136,36 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
             }
 
             auto* componentManager = componentScene->getECS()->getComponentManager();
-            auto* dof = componentManager->getECSComponent<DepthOfFieldComponent>(cameraEntity);
-            if(!dof || !IsComponentActive(dof) || !dof->adaptiveFocus || !dof->adaptiveFocusDebugDraw){
+
+            bool adaptiveFocusEnabled = false;
+            bool adaptiveFocusDebugDraw = false;
+            float configuredFocusDistance = 8.0f;
+            float configuredFocusRange = 4.0f;
+            std::shared_ptr<DepthOfFieldEffect> runtimeDofEffect;
+
+            if(auto* dof = componentManager->getECSComponent<DepthOfFieldComponent>(cameraEntity);
+               dof && IsComponentActive(dof)){
+                adaptiveFocusEnabled = dof->adaptiveFocus;
+                adaptiveFocusDebugDraw = dof->adaptiveFocusDebugDraw;
+                configuredFocusDistance = dof->focusDistance;
+                configuredFocusRange = dof->focusRange;
+                runtimeDofEffect = dof->runtimeEffect;
+            }else if(auto* stack = componentManager->getECSComponent<PostProcessingStackComponent>(cameraEntity);
+                     stack && IsComponentActive(stack)){
+                for(auto& effect : stack->effects){
+                    if(effect.kind != PostProcessingEffectKind::DepthOfField || !effect.enabled){
+                        continue;
+                    }
+                    adaptiveFocusEnabled = effect.depthOfField.adaptiveFocus;
+                    adaptiveFocusDebugDraw = effect.depthOfField.adaptiveFocusDebugDraw;
+                    configuredFocusDistance = effect.depthOfField.focusDistance;
+                    configuredFocusRange = effect.depthOfField.focusRange;
+                    runtimeDofEffect = effect.depthOfField.runtimeEffect;
+                    break;
+                }
+            }
+
+            if(!adaptiveFocusEnabled || !adaptiveFocusDebugDraw){
                 return topY;
             }
 
@@ -4149,28 +4177,29 @@ void EditorScene::drawViewportPanel(float x, float y, float w, float h){
             float hitDistance = 0.0f;
             bool hasHit = adaptiveFocusSourceScene->computeAdaptiveFocusDistanceFromSnapshotForCamera(viewportCamera, hitDistance);
 
-            float resolvedFocusDistance = Math3D::Max(0.01f, dof->focusDistance);
-            float resolvedFocusRange = Math3D::Max(0.001f, dof->focusRange);
+            float resolvedFocusDistance = Math3D::Max(0.01f, configuredFocusDistance);
+            float resolvedFocusRange = Math3D::Max(0.001f, configuredFocusRange);
             bool centerDepthValid = false;
             float centerDepthDistance = 0.0f;
             bool rayTargetValid = hasHit;
             float rayTargetDistance = hasHit ? hitDistance : 0.0f;
             bool usedFallback = !hasHit;
             float targetFocusDistance = resolvedFocusDistance;
-            float fallbackFocusDistance = Math3D::Max(0.01f, dof->focusDistance);
-            if(dof->runtimeEffect){
-                resolvedFocusDistance = Math3D::Max(0.01f, dof->runtimeEffect->getResolvedFocusDistance());
-                resolvedFocusRange = Math3D::Max(0.001f, dof->runtimeEffect->getResolvedFocusRange());
-                centerDepthValid = dof->runtimeEffect->getDebugAdaptiveCenterValid();
-                centerDepthDistance = dof->runtimeEffect->getDebugAdaptiveCenterDistance();
-                rayTargetValid = dof->runtimeEffect->getDebugAdaptiveRayValid();
-                rayTargetDistance = dof->runtimeEffect->getDebugAdaptiveRayDistance();
-                usedFallback = dof->runtimeEffect->getDebugAdaptiveUsedFallback();
-                targetFocusDistance = dof->runtimeEffect->getDebugAdaptiveTargetDistance();
-                fallbackFocusDistance = dof->runtimeEffect->getDebugAdaptiveFallbackDistance();
+            float fallbackFocusDistance = Math3D::Max(0.01f, configuredFocusDistance);
+            if(runtimeDofEffect){
+                resolvedFocusDistance = Math3D::Max(0.01f, runtimeDofEffect->getResolvedFocusDistance());
+                resolvedFocusRange = Math3D::Max(0.001f, runtimeDofEffect->getResolvedFocusRange());
+                centerDepthValid = runtimeDofEffect->getDebugAdaptiveCenterValid();
+                centerDepthDistance = runtimeDofEffect->getDebugAdaptiveCenterDistance();
+                rayTargetValid = runtimeDofEffect->getDebugAdaptiveRayValid();
+                rayTargetDistance = runtimeDofEffect->getDebugAdaptiveRayDistance();
+                usedFallback = runtimeDofEffect->getDebugAdaptiveUsedFallback();
+                targetFocusDistance = runtimeDofEffect->getDebugAdaptiveTargetDistance();
+                fallbackFocusDistance = runtimeDofEffect->getDebugAdaptiveFallbackDistance();
             }
 
-            const CameraSettings cameraSettings = viewportCamera->getSettings();
+            CameraSettings cameraSettings = viewportCamera->getSettings();
+            Camera::SanitizePerspectivePlanes(cameraSettings.nearPlane, cameraSettings.farPlane);
             const float farLimit = Math3D::Max(1.0f, cameraSettings.farPlane * 0.95f);
             const float markerRange = resolvedFocusRange;
             float lineDistance = hasHit

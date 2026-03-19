@@ -27,14 +27,6 @@ struct Camera{
     private:
         static constexpr float kMinPerspectiveNear = 0.01f;
         static constexpr float kMaxPerspectiveDepthRatio = 60000.0f;
-        static void sanitizePerspectivePlanes(float& nearPlane, float& farPlane){
-            farPlane = Math3D::Max(farPlane, 0.05f);
-            nearPlane = Math3D::Max(nearPlane, kMinPerspectiveNear);
-            nearPlane = Math3D::Max(nearPlane, farPlane / kMaxPerspectiveDepthRatio);
-            if(nearPlane > farPlane - 0.001f){
-                nearPlane = Math3D::Max(0.001f, farPlane - 0.001f);
-            }
-        }
 
         Math3D::Transform cameraTransform;
         CameraSettings settings;
@@ -52,6 +44,15 @@ struct Camera{
         Camera() = default;
 
     public:
+
+        static void SanitizePerspectivePlanes(float& nearPlane, float& farPlane){
+            farPlane = Math3D::Max(farPlane, 0.05f);
+            nearPlane = Math3D::Max(nearPlane, kMinPerspectiveNear);
+            nearPlane = Math3D::Max(nearPlane, farPlane / kMaxPerspectiveDepthRatio);
+            if(nearPlane > farPlane - 0.001f){
+                nearPlane = Math3D::Max(0.001f, farPlane - 0.001f);
+            }
+        }
 
         /**
          * @brief Returns the transform value.
@@ -82,7 +83,7 @@ struct Camera{
 
             float nearPlane = settings.nearPlane;
             float farPlane = settings.farPlane;
-            sanitizePerspectivePlanes(nearPlane, farPlane);
+            SanitizePerspectivePlanes(nearPlane, farPlane);
             return glm::perspective(
                 glm::radians(settings.fov),
                 settings.aspect,
@@ -103,6 +104,7 @@ struct Camera{
             auto cam = std::shared_ptr<Camera>(new Camera());
             cam->settings.fov = fov;
             cam->settings.aspect = size.x / size.y;
+            SanitizePerspectivePlanes(zNear, zFar);
             cam->settings.nearPlane = zNear;
             cam->settings.farPlane = zFar;
             cam->settings.isOrtho = false;

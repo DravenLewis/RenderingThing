@@ -1,0 +1,849 @@
+{
+  "type": "prefab",
+  "version": 1,
+  "payload": {
+    "metadata": {
+      "name": "Plane"
+    },
+    "prefabSettings": {
+      "runtimeInstantiable": true,
+      "allowChildAdditions": true,
+      "allowChildRemovals": true,
+      "allowComponentOverrides": true,
+      "exposedProperties": []
+    },
+    "snapshot": {
+      "rootEntityIds": [
+        73
+      ],
+      "entities": [
+        {
+          "id": 73,
+          "name": "Plane",
+          "components": [
+            {
+              "type": "TransformComponent",
+              "version": 1,
+              "payload": {
+                "position": [
+                  -5.102658748626709,
+                  0.0,
+                  -24.751567840576172
+                ],
+                "rotationEuler": [
+                  0.0,
+                  -0.0,
+                  0.0
+                ],
+                "scale": [
+                  10.708724975585938,
+                  10.708724975585938,
+                  10.708724975585938
+                ],
+                "componentEnabled": true,
+                "componentHidden": false
+              }
+            },
+            {
+              "type": "EntityPropertiesComponent",
+              "version": 1,
+              "payload": {
+                "ignoreRaycastHit": false,
+                "componentEnabled": true,
+                "componentHidden": true
+              }
+            },
+            {
+              "type": "MeshRendererComponent",
+              "version": 3,
+              "payload": {
+                "visible": true,
+                "enableBackfaceCulling": true,
+                "modelAssetRef": "",
+                "modelSourceRef": "",
+                "modelForceSmoothNormals": false,
+                "materialAssetRef": "",
+                "localOffset": {
+                  "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "rotationEuler": [
+                    0.0,
+                    -0.0,
+                    0.0
+                  ],
+                  "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                  ]
+                },
+                "modelPartMaterialAssetRefs": [
+                  "",
+                  "",
+                  "",
+                  "",
+                  "",
+                  ""
+                ],
+                "embeddedModel": {
+                  "enableBackfaceCulling": true,
+                  "parts": [
+                    {
+                      "visible": true,
+                      "hideInEditorTree": true,
+                      "position": [
+                        0.0,
+                        0.10000000149011612,
+                        0.0
+                      ],
+                      "rotationEuler": [
+                        0.0,
+                        -0.0,
+                        0.0
+                      ],
+                      "scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                      ],
+                      "vertexData": [
+                        -1.0,
+                        0.0,
+                        -1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        -1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        1.0,
+                        -1.0,
+                        0.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                      ],
+                      "indexData": [
+                        0,
+                        3,
+                        2,
+                        2,
+                        1,
+                        0
+                      ],
+                      "embeddedMaterial": {
+                        "type": "PBR",
+                        "shaderAssetRef": "",
+                        "color": [
+                          1.0,
+                          1.0,
+                          1.0,
+                          1.0
+                        ],
+                        "uv": [
+                          0.0,
+                          0.0
+                        ],
+                        "textureRef": "",
+                        "metallic": 0.0,
+                        "roughness": 0.8999999761581421,
+                        "normalScale": 1.0,
+                        "heightScale": 0.019999999552965164,
+                        "emissiveColor": [
+                          0.0,
+                          0.0,
+                          0.0
+                        ],
+                        "emissiveStrength": 1.0,
+                        "occlusionStrength": 1.0,
+                        "envStrength": 0.10000000149011612,
+                        "useEnvMap": 1,
+                        "uvScale": [
+                          1.0,
+                          1.0
+                        ],
+                        "uvOffset": [
+                          0.0,
+                          0.0
+                        ],
+                        "alphaCutoff": 0.5,
+                        "useAlphaClip": 0,
+                        "baseColorTexRef": "@assets/images/grass_top_col.png",
+                        "roughnessTexRef": "",
+                        "metallicRoughnessTexRef": "",
+                        "normalTexRef": "",
+                        "heightTexRef": "",
+                        "emissiveTexRef": "",
+                        "occlusionTexRef": "",
+                        "castsShadows": true,
+                        "receivesShadows": true
+                      }
+                    },
+                    {
+                      "visible": false,
+                      "hideInEditorTree": true,
+                      "position": [
+                        0.0,
+                        -1.0,
+                        0.0
+                      ],
+                      "rotationEuler": [
+                        180.0,
+                        -0.0,
+                        0.0
+                      ],
+                      "scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                      ],
+                      "vertexData": [
+                        -1.0,
+                        0.0,
+                        -1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        -1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        1.0,
+                        -1.0,
+                        0.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                      ],
+                      "indexData": [
+                        0,
+                        3,
+                        2,
+                        2,
+                        1,
+                        0
+                      ],
+                      "embeddedMaterial": {
+                        "type": "PBR",
+                        "shaderAssetRef": "",
+                        "color": [
+                          1.0,
+                          1.0,
+                          1.0,
+                          1.0
+                        ],
+                        "uv": [
+                          0.0,
+                          0.0
+                        ],
+                        "textureRef": "",
+                        "metallic": 0.0,
+                        "roughness": 0.9800000190734863,
+                        "normalScale": 1.0,
+                        "heightScale": 0.019999999552965164,
+                        "emissiveColor": [
+                          0.0,
+                          0.0,
+                          0.0
+                        ],
+                        "emissiveStrength": 1.0,
+                        "occlusionStrength": 1.0,
+                        "envStrength": 0.03999999910593033,
+                        "useEnvMap": 1,
+                        "uvScale": [
+                          1.0,
+                          1.0
+                        ],
+                        "uvOffset": [
+                          0.0,
+                          0.0
+                        ],
+                        "alphaCutoff": 0.5,
+                        "useAlphaClip": 0,
+                        "baseColorTexRef": "@assets/images/dirt.png",
+                        "roughnessTexRef": "",
+                        "metallicRoughnessTexRef": "",
+                        "normalTexRef": "",
+                        "heightTexRef": "",
+                        "emissiveTexRef": "",
+                        "occlusionTexRef": "",
+                        "castsShadows": true,
+                        "receivesShadows": true
+                      }
+                    },
+                    {
+                      "visible": false,
+                      "hideInEditorTree": true,
+                      "position": [
+                        -1.0,
+                        0.0,
+                        0.0
+                      ],
+                      "rotationEuler": [
+                        -90.0,
+                        89.91606903076172,
+                        0.0
+                      ],
+                      "scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                      ],
+                      "vertexData": [
+                        -1.0,
+                        0.0,
+                        -1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        -1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        1.0,
+                        -1.0,
+                        0.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                      ],
+                      "indexData": [
+                        0,
+                        3,
+                        2,
+                        2,
+                        1,
+                        0
+                      ],
+                      "embeddedMaterial": {
+                        "type": "PBR",
+                        "shaderAssetRef": "",
+                        "color": [
+                          1.0,
+                          1.0,
+                          1.0,
+                          1.0
+                        ],
+                        "uv": [
+                          0.0,
+                          0.0
+                        ],
+                        "textureRef": "",
+                        "metallic": 0.0,
+                        "roughness": 0.949999988079071,
+                        "normalScale": 1.0,
+                        "heightScale": 0.019999999552965164,
+                        "emissiveColor": [
+                          0.0,
+                          0.0,
+                          0.0
+                        ],
+                        "emissiveStrength": 1.0,
+                        "occlusionStrength": 1.0,
+                        "envStrength": 0.07999999821186066,
+                        "useEnvMap": 1,
+                        "uvScale": [
+                          1.0,
+                          1.0
+                        ],
+                        "uvOffset": [
+                          0.0,
+                          0.0
+                        ],
+                        "alphaCutoff": 0.5,
+                        "useAlphaClip": 0,
+                        "baseColorTexRef": "@assets/images/grass_side.png",
+                        "roughnessTexRef": "",
+                        "metallicRoughnessTexRef": "",
+                        "normalTexRef": "",
+                        "heightTexRef": "",
+                        "emissiveTexRef": "",
+                        "occlusionTexRef": "",
+                        "castsShadows": true,
+                        "receivesShadows": true
+                      }
+                    },
+                    {
+                      "visible": false,
+                      "hideInEditorTree": true,
+                      "position": [
+                        1.0,
+                        0.0,
+                        0.0
+                      ],
+                      "rotationEuler": [
+                        269.9940185546875,
+                        -90.0,
+                        0.0
+                      ],
+                      "scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                      ],
+                      "vertexData": [
+                        -1.0,
+                        0.0,
+                        -1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        -1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        1.0,
+                        -1.0,
+                        0.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                      ],
+                      "indexData": [
+                        0,
+                        3,
+                        2,
+                        2,
+                        1,
+                        0
+                      ],
+                      "embeddedMaterial": {
+                        "type": "PBR",
+                        "shaderAssetRef": "",
+                        "color": [
+                          1.0,
+                          1.0,
+                          1.0,
+                          1.0
+                        ],
+                        "uv": [
+                          0.0,
+                          0.0
+                        ],
+                        "textureRef": "",
+                        "metallic": 0.0,
+                        "roughness": 0.949999988079071,
+                        "normalScale": 1.0,
+                        "heightScale": 0.019999999552965164,
+                        "emissiveColor": [
+                          0.0,
+                          0.0,
+                          0.0
+                        ],
+                        "emissiveStrength": 1.0,
+                        "occlusionStrength": 1.0,
+                        "envStrength": 0.07999999821186066,
+                        "useEnvMap": 1,
+                        "uvScale": [
+                          1.0,
+                          1.0
+                        ],
+                        "uvOffset": [
+                          0.0,
+                          0.0
+                        ],
+                        "alphaCutoff": 0.5,
+                        "useAlphaClip": 0,
+                        "baseColorTexRef": "@assets/images/grass_side.png",
+                        "roughnessTexRef": "",
+                        "metallicRoughnessTexRef": "",
+                        "normalTexRef": "",
+                        "heightTexRef": "",
+                        "emissiveTexRef": "",
+                        "occlusionTexRef": "",
+                        "castsShadows": true,
+                        "receivesShadows": true
+                      }
+                    },
+                    {
+                      "visible": false,
+                      "hideInEditorTree": true,
+                      "position": [
+                        0.0,
+                        0.0,
+                        1.0
+                      ],
+                      "rotationEuler": [
+                        90.0,
+                        -0.000005122641596244648,
+                        -180.0
+                      ],
+                      "scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                      ],
+                      "vertexData": [
+                        -1.0,
+                        0.0,
+                        -1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        -1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        1.0,
+                        -1.0,
+                        0.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                      ],
+                      "indexData": [
+                        0,
+                        3,
+                        2,
+                        2,
+                        1,
+                        0
+                      ],
+                      "embeddedMaterial": {
+                        "type": "PBR",
+                        "shaderAssetRef": "",
+                        "color": [
+                          1.0,
+                          1.0,
+                          1.0,
+                          1.0
+                        ],
+                        "uv": [
+                          0.0,
+                          0.0
+                        ],
+                        "textureRef": "",
+                        "metallic": 0.0,
+                        "roughness": 0.949999988079071,
+                        "normalScale": 1.0,
+                        "heightScale": 0.019999999552965164,
+                        "emissiveColor": [
+                          0.0,
+                          0.0,
+                          0.0
+                        ],
+                        "emissiveStrength": 1.0,
+                        "occlusionStrength": 1.0,
+                        "envStrength": 0.07999999821186066,
+                        "useEnvMap": 1,
+                        "uvScale": [
+                          1.0,
+                          1.0
+                        ],
+                        "uvOffset": [
+                          0.0,
+                          0.0
+                        ],
+                        "alphaCutoff": 0.5,
+                        "useAlphaClip": 0,
+                        "baseColorTexRef": "@assets/images/grass_side.png",
+                        "roughnessTexRef": "",
+                        "metallicRoughnessTexRef": "",
+                        "normalTexRef": "",
+                        "heightTexRef": "",
+                        "emissiveTexRef": "",
+                        "occlusionTexRef": "",
+                        "castsShadows": true,
+                        "receivesShadows": true
+                      }
+                    },
+                    {
+                      "visible": false,
+                      "hideInEditorTree": true,
+                      "position": [
+                        0.0,
+                        0.0,
+                        -1.0
+                      ],
+                      "rotationEuler": [
+                        -90.0,
+                        -0.000005008956122765085,
+                        0.000005008956577512436
+                      ],
+                      "scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                      ],
+                      "vertexData": [
+                        -1.0,
+                        0.0,
+                        -1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        -1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        1.0,
+                        -1.0,
+                        0.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                      ],
+                      "indexData": [
+                        0,
+                        3,
+                        2,
+                        2,
+                        1,
+                        0
+                      ],
+                      "embeddedMaterial": {
+                        "type": "PBR",
+                        "shaderAssetRef": "",
+                        "color": [
+                          1.0,
+                          1.0,
+                          1.0,
+                          1.0
+                        ],
+                        "uv": [
+                          0.0,
+                          0.0
+                        ],
+                        "textureRef": "",
+                        "metallic": 0.0,
+                        "roughness": 0.949999988079071,
+                        "normalScale": 1.0,
+                        "heightScale": 0.019999999552965164,
+                        "emissiveColor": [
+                          0.0,
+                          0.0,
+                          0.0
+                        ],
+                        "emissiveStrength": 1.0,
+                        "occlusionStrength": 1.0,
+                        "envStrength": 0.07999999821186066,
+                        "useEnvMap": 1,
+                        "uvScale": [
+                          1.0,
+                          1.0
+                        ],
+                        "uvOffset": [
+                          0.0,
+                          0.0
+                        ],
+                        "alphaCutoff": 0.5,
+                        "useAlphaClip": 0,
+                        "baseColorTexRef": "@assets/images/grass_side.png",
+                        "roughnessTexRef": "",
+                        "metallicRoughnessTexRef": "",
+                        "normalTexRef": "",
+                        "heightTexRef": "",
+                        "emissiveTexRef": "",
+                        "occlusionTexRef": "",
+                        "castsShadows": true,
+                        "receivesShadows": true
+                      }
+                    }
+                  ]
+                },
+                "componentEnabled": true,
+                "componentHidden": false
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

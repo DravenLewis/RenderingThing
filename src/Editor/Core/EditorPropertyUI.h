@@ -38,7 +38,8 @@ inline std::string HiddenLabel(const char* label){
     if(idMarker == std::string::npos){
         return "##" + out;
     }
-    return out.substr(idMarker);
+    // Keep the complete original identifier while hiding the rendered text.
+    return "##" + out;
 }
 
 inline void DrawLabel(const char* label){

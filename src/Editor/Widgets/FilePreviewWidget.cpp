@@ -12,6 +12,7 @@
 #include "Assets/Core/AssetDescriptorUtils.h"
 #include "Assets/Bundles/AssetBundleRegistry.h"
 #include "Assets/Descriptors/EffectAsset.h"
+#include "Assets/Descriptors/ImageAsset.h"
 #include "Rendering/Materials/ConstructedMaterial.h"
 #include "Rendering/Lighting/Environment.h"
 #include "Rendering/Core/FrameBuffer.h"
@@ -46,8 +47,7 @@ namespace {
     /// @brief Represents Texture Preview Cache Entry data.
     struct TexturePreviewCacheEntry{
         std::shared_ptr<Texture> texture;
-        std::filesystem::file_time_type writeTime{};
-        bool hasWriteTime = false;
+        std::uint64_t sourceRevision = 0;
         int lastValidationFrame = -100000;
         int lastUsedFrame = -100000;
     };
@@ -283,6 +283,7 @@ namespace {
         }
         const int frameNow = ImGui::GetFrameCount();
         pruneTexturePreviewCache(frameNow);
+        const std::uint64_t currentRevision = ImageAssetIO::GetTextureRefRevision(assetRef);
 
         auto cachedIt = g_texturePreviewCache.find(assetRef);
         if(cachedIt != g_texturePreviewCache.end()){
@@ -294,55 +295,24 @@ namespace {
                 if(!needsValidation){
                     return cached.texture;
                 }
-
-                std::filesystem::path absolutePath;
-                if(!AssetDescriptorUtils::AssetRefToAbsolutePath(assetRef, absolutePath)){
-                    absolutePath = std::filesystem::path(assetRef);
-                }
-
-                std::filesystem::path writePath = backingWritePath(absolutePath);
-                std::error_code ec;
-                bool hasWriteTime = false;
-                std::filesystem::file_time_type writeTime{};
-                if(std::filesystem::exists(writePath, ec) && !std::filesystem::is_directory(writePath, ec)){
-                    writeTime = std::filesystem::last_write_time(writePath, ec);
-                    hasWriteTime = !ec;
-                }
                 cached.lastValidationFrame = frameNow;
-
-                const bool cacheValid =
-                    (cached.hasWriteTime == hasWriteTime) &&
-                    (!hasWriteTime || cached.writeTime == writeTime);
-                if(cacheValid){
+                if(cached.sourceRevision == currentRevision){
                     return cached.texture;
                 }
             }
         }
 
-        auto asset = AssetManager::Instance.getOrLoad(assetRef);
-        if(!asset){
-            return nullptr;
-        }
-        auto tex = Texture::Load(asset);
+        auto tex = ImageAssetIO::InstantiateTextureFromRef(assetRef);
         if(!tex){
             return nullptr;
         }
+        tex->setFilterMode(TextureFilterMode::NEAREST);
 
         TexturePreviewCacheEntry entry;
         entry.texture = tex;
+        entry.sourceRevision = currentRevision;
         entry.lastValidationFrame = frameNow;
         entry.lastUsedFrame = frameNow;
-
-        std::filesystem::path absolutePath;
-        if(!AssetDescriptorUtils::AssetRefToAbsolutePath(assetRef, absolutePath)){
-            absolutePath = std::filesystem::path(assetRef);
-        }
-        const std::filesystem::path writePath = backingWritePath(absolutePath);
-        std::error_code ec;
-        if(std::filesystem::exists(writePath, ec) && !std::filesystem::is_directory(writePath, ec)){
-            entry.writeTime = std::filesystem::last_write_time(writePath, ec);
-            entry.hasWriteTime = !ec;
-        }
 
         g_texturePreviewCache[assetRef] = entry;
         return tex;
@@ -375,6 +345,10 @@ namespace {
 
     bool isMtlPath(const std::filesystem::path& path){
         return StringUtils::ToLowerCase(path.extension().string()) == ".mtl";
+    }
+
+    bool isImagePath(const std::filesystem::path& path){
+        return ImageAssetIO::IsRawImagePath(path);
     }
 
     bool computeModelBounds(const std::shared_ptr<Model>& model, Math3D::Vec3& outCenter, float& outRadius){
@@ -487,6 +461,13 @@ void FilePreviewWidget::setFilePath(const std::filesystem::path& path){
     std::memset(modelAssetName, 0, sizeof(modelAssetName));
     std::memset(modelAssetSource, 0, sizeof(modelAssetSource));
     std::memset(modelAssetMaterialRef, 0, sizeof(modelAssetMaterialRef));
+    std::memset(imageAssetName, 0, sizeof(imageAssetName));
+    std::memset(imageAssetSource, 0, sizeof(imageAssetSource));
+    std::memset(imageImportAssetPath, 0, sizeof(imageImportAssetPath));
+    imageAssetData = ImageAssetData{};
+    imageImportData = ImageAssetData{};
+    imageAssetSavePending = false;
+    imageImportPopupOpen = false;
     previewOrbitYaw = 45.0f;
     previewOrbitPitch = 22.5f;
     previewOrbitDistance = 4.25f;
@@ -512,8 +493,10 @@ void FilePreviewWidget::reloadFromDisk(bool force){
     isMaterialAssetFile = MaterialAssetIO::IsMaterialAssetPath(filePath);
     isMaterialObjectFile = MaterialAssetIO::IsMaterialObjectPath(filePath);
     isModelAssetFile = ModelAssetIO::IsModelAssetPath(filePath);
+    isImageAssetFile = ImageAssetIO::IsImageAssetPath(filePath);
     isMtlFile = isMtlPath(filePath);
     isModelFile = isModelPath(filePath);
+    isImageFile = isImagePath(filePath) || isImageAssetFile;
 
     std::error_code ec;
     const std::filesystem::path writePath = backingWritePath(filePath);
@@ -646,6 +629,19 @@ void FilePreviewWidget::reloadFromDisk(bool force){
         return;
     }
 
+    if(isImageAssetFile){
+        std::string error;
+        if(!ImageAssetIO::LoadFromAbsolutePath(filePath, imageAssetData, &error)){
+            statusIsError = true;
+            statusMessage = error;
+            return;
+        }
+        copyBuffer(imageAssetName, sizeof(imageAssetName), imageAssetData.name);
+        copyBuffer(imageAssetSource, sizeof(imageAssetSource), imageAssetData.sourceImageRef);
+        imageAssetSavePending = false;
+        return;
+    }
+
     if(isMtlFile){
         std::string error;
         if(!MtlMaterialImporter::LoadFromAbsolutePath(filePath, mtlMaterials, &error)){
@@ -739,6 +735,16 @@ void FilePreviewWidget::draw(){
     }
     if(isModelAssetFile){
         drawModelAssetEditor();
+        drawErrorByteDumpIfNeeded();
+        return;
+    }
+    if(isImageAssetFile){
+        drawImageAssetEditor();
+        drawErrorByteDumpIfNeeded();
+        return;
+    }
+    if(isImageFile){
+        drawImageFilePreview();
         drawErrorByteDumpIfNeeded();
         return;
     }
@@ -1737,6 +1743,260 @@ bool FilePreviewWidget::importCurrentModelAsAsset(){
     statusIsError = false;
     statusMessage = "Imported model asset: " + modelAssetPath.filename().string();
     return true;
+}
+
+bool FilePreviewWidget::importCurrentImageAsAsset(){
+    if(!isImageFile || isImageAssetFile){
+        statusIsError = true;
+        statusMessage = "No source image selected for import.";
+        return false;
+    }
+
+    const std::string sourceAssetRef = toAssetRef(filePath, assetRoot);
+    if(sourceAssetRef.empty()){
+        statusIsError = true;
+        statusMessage = "Failed to resolve source image asset ref.";
+        return false;
+    }
+
+    std::string fileName = StringUtils::Trim(imageImportAssetPath);
+    if(fileName.empty()){
+        fileName = filePath.stem().string();
+    }
+    if(fileName.empty()){
+        fileName = "ImportedImage";
+    }
+
+    std::string lowerName = StringUtils::ToLowerCase(fileName);
+    if(!StringUtils::EndsWith(lowerName, ".image.asset")){
+        fileName += ".image.asset";
+    }
+
+    const std::filesystem::path targetPath = filePath.parent_path() / fileName;
+    if(pathExists(targetPath)){
+        statusIsError = true;
+        statusMessage = "Target image asset already exists: " + targetPath.filename().string();
+        return false;
+    }
+
+    ImageAssetData data = imageImportData;
+    data.name = targetPath.filename().string();
+    data.linkParentRef = sourceAssetRef;
+    data.sourceImageRef = sourceAssetRef;
+
+    std::string error;
+    if(!ImageAssetIO::SaveToAbsolutePath(targetPath, data, &error)){
+        statusIsError = true;
+        statusMessage = error.empty() ? "Failed to save image asset." : error;
+        return false;
+    }
+
+    notifyEditedAsset(targetPath, assetRoot);
+    EditorAssetUI::InvalidateAllThumbnails();
+    statusIsError = false;
+    statusMessage = "Imported image asset: " + targetPath.filename().string();
+    return true;
+}
+
+void FilePreviewWidget::drawImageFilePreview(){
+    const std::string sourceAssetRef = toAssetRef(filePath, assetRoot);
+    auto preview = loadTextureAsset(sourceAssetRef);
+
+    if(preview && preview->getID() != 0){
+        ImGui::TextDisabled("Resolution: %d x %d", preview->getWidth(), preview->getHeight());
+    }else{
+        ImGui::TextDisabled("Preview unavailable for this image.");
+    }
+
+    const float availW = ImGui::GetContentRegionAvail().x;
+    const float imageSize = Math3D::Clamp(availW > 1.0f ? availW : 196.0f, 96.0f, 340.0f);
+    if(preview && preview->getID() != 0){
+        ImGui::Image((ImTextureID)(intptr_t)preview->getID(), ImVec2(imageSize, imageSize), ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
+    }else{
+        ImGui::BeginDisabled();
+        ImGui::Button("Preview Unavailable", ImVec2(imageSize, imageSize));
+        ImGui::EndDisabled();
+    }
+
+    if(ImGui::Button("Import As Image Asset...")){
+        imageImportData = ImageAssetData{};
+        imageImportData.filterMode = ImageAssetFilterMode::Nearest;
+        imageImportData.wrapMode = ImageAssetWrapMode::Repeat;
+        imageImportData.mapType = ImageAssetMapType::Color;
+        imageImportData.supportsAlpha = 1;
+        imageImportData.flipVertical = 1;
+        imageImportData.linkParentRef = sourceAssetRef;
+        imageImportData.sourceImageRef = sourceAssetRef;
+
+        std::filesystem::path defaultPath = filePath.parent_path() / (filePath.stem().string() + ".image.asset");
+        int suffixIndex = 1;
+        while(pathExists(defaultPath)){
+            defaultPath = filePath.parent_path() /
+                          StringUtils::Format("%s_%d.image.asset", filePath.stem().string().c_str(), suffixIndex);
+            suffixIndex++;
+        }
+        copyBuffer(imageImportAssetPath, sizeof(imageImportAssetPath), defaultPath.filename().string());
+        imageImportPopupOpen = true;
+        ImGui::OpenPopup("Import Image Asset");
+    }
+
+    if(ImGui::BeginPopupModal("Import Image Asset", nullptr, ImGuiWindowFlags_AlwaysAutoResize)){
+        EditorPropertyUI::InputText("Asset File", imageImportAssetPath, sizeof(imageImportAssetPath));
+        bool supportsAlpha = (imageImportData.supportsAlpha != 0);
+        if(EditorPropertyUI::Checkbox("Supports Alpha", &supportsAlpha)){
+            imageImportData.supportsAlpha = supportsAlpha ? 1 : 0;
+        }
+        bool flipVertical = (imageImportData.flipVertical != 0);
+        if(EditorPropertyUI::Checkbox("Flip Vertical", &flipVertical)){
+            imageImportData.flipVertical = flipVertical ? 1 : 0;
+        }
+
+        int filterIndex = static_cast<int>(imageImportData.filterMode);
+        const char* filterNames[] = {"Nearest", "Linear", "Trilinear"};
+        if(EditorPropertyUI::Combo("Filter", &filterIndex, filterNames, IM_ARRAYSIZE(filterNames))){
+            imageImportData.filterMode = static_cast<ImageAssetFilterMode>(std::clamp(filterIndex, 0, 2));
+        }
+
+        int wrapIndex = static_cast<int>(imageImportData.wrapMode);
+        const char* wrapNames[] = {"Repeat", "ClampEdge", "ClampBorder"};
+        if(EditorPropertyUI::Combo("Wrap", &wrapIndex, wrapNames, IM_ARRAYSIZE(wrapNames))){
+            imageImportData.wrapMode = static_cast<ImageAssetWrapMode>(std::clamp(wrapIndex, 0, 2));
+        }
+
+        int mapTypeIndex = static_cast<int>(imageImportData.mapType);
+        const char* mapTypeNames[] = {"Color", "Normal", "Height", "Roughness", "Metallic", "Occlusion", "Emissive", "Opacity", "Data"};
+        if(EditorPropertyUI::Combo("Map Type", &mapTypeIndex, mapTypeNames, IM_ARRAYSIZE(mapTypeNames))){
+            imageImportData.mapType = static_cast<ImageAssetMapType>(std::clamp(mapTypeIndex, 0, 8));
+        }
+
+        ImGui::TextDisabled("Source: %s", sourceAssetRef.c_str());
+
+        bool closePopup = false;
+        if(ImGui::Button("Create")){
+            if(importCurrentImageAsAsset()){
+                closePopup = true;
+            }
+        }
+        ImGui::SameLine();
+        if(ImGui::Button("Cancel")){
+            closePopup = true;
+            statusIsError = false;
+            statusMessage.clear();
+        }
+
+        if(closePopup){
+            imageImportPopupOpen = false;
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
+
+    if(statusMessage.empty()){
+        ImGui::TextDisabled("Preview uses nearest filtering in the file picker.");
+    }else if(statusIsError){
+        ImGui::TextColored(ImVec4(1.0f, 0.35f, 0.35f, 1.0f), "%s", statusMessage.c_str());
+    }else{
+        ImGui::TextColored(ImVec4(0.45f, 0.85f, 0.45f, 1.0f), "%s", statusMessage.c_str());
+    }
+}
+
+void FilePreviewWidget::drawImageAssetEditor(){
+    bool changed = false;
+    changed |= EditorPropertyUI::InputText("Asset Name", imageAssetName, sizeof(imageAssetName));
+    changed |= EditorAssetUI::DrawAssetDropInput(
+        "Source Image",
+        imageAssetSource,
+        sizeof(imageAssetSource),
+        EditorAssetUI::AssetKind::Image
+    );
+
+    bool supportsAlpha = (imageAssetData.supportsAlpha != 0);
+    if(EditorPropertyUI::Checkbox("Supports Alpha", &supportsAlpha)){
+        imageAssetData.supportsAlpha = supportsAlpha ? 1 : 0;
+        changed = true;
+    }
+
+    bool flipVertical = (imageAssetData.flipVertical != 0);
+    if(EditorPropertyUI::Checkbox("Flip Vertical", &flipVertical)){
+        imageAssetData.flipVertical = flipVertical ? 1 : 0;
+        changed = true;
+    }
+
+    int filterIndex = static_cast<int>(imageAssetData.filterMode);
+    const char* filterNames[] = {"Nearest", "Linear", "Trilinear"};
+    if(EditorPropertyUI::Combo("Filter", &filterIndex, filterNames, IM_ARRAYSIZE(filterNames))){
+        imageAssetData.filterMode = static_cast<ImageAssetFilterMode>(std::clamp(filterIndex, 0, 2));
+        changed = true;
+    }
+
+    int wrapIndex = static_cast<int>(imageAssetData.wrapMode);
+    const char* wrapNames[] = {"Repeat", "ClampEdge", "ClampBorder"};
+    if(EditorPropertyUI::Combo("Wrap", &wrapIndex, wrapNames, IM_ARRAYSIZE(wrapNames))){
+        imageAssetData.wrapMode = static_cast<ImageAssetWrapMode>(std::clamp(wrapIndex, 0, 2));
+        changed = true;
+    }
+
+    int mapTypeIndex = static_cast<int>(imageAssetData.mapType);
+    const char* mapTypeNames[] = {"Color", "Normal", "Height", "Roughness", "Metallic", "Occlusion", "Emissive", "Opacity", "Data"};
+    if(EditorPropertyUI::Combo("Map Type", &mapTypeIndex, mapTypeNames, IM_ARRAYSIZE(mapTypeNames))){
+        imageAssetData.mapType = static_cast<ImageAssetMapType>(std::clamp(mapTypeIndex, 0, 8));
+        changed = true;
+    }
+
+    if(changed){
+        imageAssetData.name = imageAssetName;
+        imageAssetData.sourceImageRef = imageAssetSource;
+        imageAssetSavePending = true;
+    }
+
+    const bool commitEditsNow = imageAssetSavePending && !ImGui::IsAnyItemActive();
+    if(commitEditsNow){
+        std::filesystem::path sourcePath;
+        std::error_code ec;
+        const bool sourceIsRef = AssetDescriptorUtils::AssetRefToAbsolutePath(imageAssetData.sourceImageRef, sourcePath);
+        if(!sourceIsRef || sourcePath.empty() || !std::filesystem::exists(sourcePath, ec) || std::filesystem::is_directory(sourcePath, ec)){
+            statusIsError = true;
+            statusMessage = "Source Image must point to a valid raw image asset.";
+        }else if(ImageAssetIO::IsImageAssetPath(sourcePath) || !ImageAssetIO::IsRawImagePath(sourcePath)){
+            statusIsError = true;
+            statusMessage = "Source Image must reference a raw image file (png/jpg/bmp/tga/dds/hdr).";
+        }else{
+            std::string error;
+            if(ImageAssetIO::SaveToAbsolutePath(filePath, imageAssetData, &error)){
+                statusIsError = false;
+                statusMessage = "Saved.";
+                lastWriteTime = std::filesystem::last_write_time(backingWritePath(filePath), ec);
+                imageAssetSavePending = false;
+                EditorAssetUI::InvalidateAllThumbnails();
+                notifyEditedAsset(filePath, assetRoot);
+            }else{
+                statusIsError = true;
+                statusMessage = error.empty() ? "Failed to save image asset." : error;
+            }
+        }
+    }
+
+    std::string selfAssetRef = toAssetRef(filePath, assetRoot);
+    auto preview = loadTextureAsset(selfAssetRef);
+    const float availW = ImGui::GetContentRegionAvail().x;
+    const float imageSize = Math3D::Clamp(availW > 1.0f ? availW : 196.0f, 96.0f, 340.0f);
+    if(preview && preview->getID() != 0){
+        ImGui::Image((ImTextureID)(intptr_t)preview->getID(), ImVec2(imageSize, imageSize), ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
+    }else{
+        ImGui::BeginDisabled();
+        ImGui::Button("Preview Unavailable", ImVec2(imageSize, imageSize));
+        ImGui::EndDisabled();
+    }
+
+    if(imageAssetSavePending){
+        ImGui::TextDisabled("Release control to apply changes.");
+    }else if(statusMessage.empty()){
+        ImGui::TextDisabled("Edits save automatically.");
+    }else if(statusIsError){
+        ImGui::TextColored(ImVec4(1.0f, 0.35f, 0.35f, 1.0f), "%s", statusMessage.c_str());
+    }else{
+        ImGui::TextColored(ImVec4(0.45f, 0.85f, 0.45f, 1.0f), "%s", statusMessage.c_str());
+    }
 }
 
 void FilePreviewWidget::drawMtlFilePreview(){

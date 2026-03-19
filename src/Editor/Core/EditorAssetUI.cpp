@@ -9,6 +9,7 @@
 #include "Assets/Core/Asset.h"
 #include "Assets/Bundles/AssetBundleRegistry.h"
 #include "Assets/Core/AssetDescriptorUtils.h"
+#include "Assets/Descriptors/ImageAsset.h"
 #include "Rendering/Lighting/Environment.h"
 #include "Rendering/Core/FrameBuffer.h"
 #include "Foundation/Logging/Logbot.h"
@@ -24,6 +25,7 @@
 #include "imgui.h"
 
 #include <algorithm>
+#include <cstdint>
 #include <cctype>
 #include <cstring>
 #include <unordered_map>
@@ -44,8 +46,7 @@ namespace {
     /// @brief Represents Thumbnail Cache Entry data.
     struct ThumbnailCacheEntry {
         std::shared_ptr<Texture> texture;
-        std::filesystem::file_time_type writeTime{};
-        bool hasWriteTime = false;
+        std::uint64_t sourceRevision = 0;
         int lastValidationFrame = -100000;
         int lastUsedFrame = -100000;
     };
@@ -339,26 +340,13 @@ namespace {
             if(cachedIt != g_imageThumbnailCache.end()){
                 ThumbnailCacheEntry& cached = cachedIt->second;
                 if(cached.texture){
+                    const std::uint64_t currentRevision = ImageAssetIO::GetTextureRefRevision(tx.assetRef);
                     if((frameNow - cached.lastValidationFrame) < kThumbnailValidationIntervalFrames){
                         cached.lastUsedFrame = frameNow;
                         return cached.texture;
                     }
 
-                    std::error_code ec;
-                    bool hasWriteTime = false;
-                    std::filesystem::file_time_type writeTime{};
-                    if(!tx.absolutePath.empty() && std::filesystem::exists(tx.absolutePath, ec)){
-                        writeTime = std::filesystem::last_write_time(tx.absolutePath, ec);
-                        hasWriteTime = !ec;
-                    }
-
-                    bool cacheValid = false;
-                    if(!hasWriteTime && !cached.hasWriteTime){
-                        cacheValid = true;
-                    }else if(hasWriteTime && cached.hasWriteTime && cached.writeTime == writeTime){
-                        cacheValid = true;
-                    }
-                    if(cacheValid){
+                    if(cached.sourceRevision == currentRevision){
                         cached.lastValidationFrame = frameNow;
                         cached.lastUsedFrame = frameNow;
                         return cached.texture;
@@ -366,28 +354,15 @@ namespace {
                 }
             }
 
-            auto asset = AssetManager::Instance.getOrLoad(tx.assetRef);
-            if(!asset){
-                return nullptr;
-            }
-            auto texture = Texture::Load(asset);
+            auto texture = ImageAssetIO::InstantiateTextureFromRef(tx.assetRef, nullptr, nullptr);
             if(!texture || texture->getID() == 0){
                 return nullptr;
             }
+            texture->setFilterMode(TextureFilterMode::NEAREST);
 
             ThumbnailCacheEntry entry;
             entry.texture = texture;
-            {
-                std::error_code ec;
-                bool hasWriteTime = false;
-                std::filesystem::file_time_type writeTime{};
-                if(!tx.absolutePath.empty() && std::filesystem::exists(tx.absolutePath, ec)){
-                    writeTime = std::filesystem::last_write_time(tx.absolutePath, ec);
-                    hasWriteTime = !ec;
-                }
-                entry.writeTime = writeTime;
-                entry.hasWriteTime = hasWriteTime;
-            }
+            entry.sourceRevision = ImageAssetIO::GetTextureRefRevision(tx.assetRef);
             entry.lastValidationFrame = frameNow;
             entry.lastUsedFrame = frameNow;
             g_imageThumbnailCache[tx.assetRef] = entry;
@@ -847,6 +822,9 @@ AssetKind ClassifyPath(const std::filesystem::path& path, bool isDirectory){
     }
     if(endsWith(pathLower, ".mat.asset")){
         return AssetKind::MaterialAsset;
+    }
+    if(endsWith(pathLower, ".image.asset")){
+        return AssetKind::Image;
     }
     if(endsWith(pathLower, ".material")){
         return AssetKind::Material;

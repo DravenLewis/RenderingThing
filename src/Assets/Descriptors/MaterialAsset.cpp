@@ -7,6 +7,7 @@
 
 #include "Assets/Core/Asset.h"
 #include "Assets/Core/AssetDescriptorUtils.h"
+#include "Assets/Descriptors/ImageAsset.h"
 #include "Foundation/IO/File.h"
 #include "Rendering/Materials/MaterialDefaults.h"
 #include "Rendering/Materials/PBRMaterial.h"
@@ -174,11 +175,7 @@ namespace {
         if(ref.empty()){
             return nullptr;
         }
-        auto asset = AssetManager::Instance.getOrLoad(ref);
-        if(!asset){
-            return nullptr;
-        }
-        return Texture::Load(asset);
+        return ImageAssetIO::InstantiateTextureFromRef(ref, nullptr, nullptr);
     }
 
     std::shared_ptr<Texture> defaultPreviewTexture(){

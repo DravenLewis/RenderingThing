@@ -13,6 +13,7 @@
 #include "Assets/Core/Asset.h"
 #include "Assets/Core/AssetDescriptorUtils.h"
 #include "Assets/Descriptors/EffectAsset.h"
+#include "Assets/Descriptors/ImageAsset.h"
 #include "Foundation/Logging/Logbot.h"
 #include "Rendering/Core/Graphics.h"
 #include "Rendering/Shaders/ShaderProgram.h"
@@ -192,15 +193,12 @@ class LoadedEffect : public Graphics::PostProcessing::PostProcessingEffect {
                 case EffectPropertyType::Texture2D:{
                     const std::uint64_t revision = property.textureAssetRef.empty()
                         ? 0
-                        : AssetManager::Instance.getRevision(property.textureAssetRef);
+                        : ImageAssetIO::GetTextureRefRevision(property.textureAssetRef);
                     if(property.loadedTextureRef != property.textureAssetRef ||
                        property.loadedTextureRevision != revision){
                         property.texturePtr.reset();
                         if(!property.textureAssetRef.empty()){
-                            auto textureAsset = AssetManager::Instance.getOrLoad(property.textureAssetRef);
-                            if(textureAsset){
-                                property.texturePtr = Texture::Load(textureAsset);
-                            }
+                            property.texturePtr = ImageAssetIO::InstantiateTextureFromRef(property.textureAssetRef);
                         }
                         property.loadedTextureRef = property.textureAssetRef;
                         property.loadedTextureRevision = revision;

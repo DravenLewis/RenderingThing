@@ -6,6 +6,7 @@
 #include "Rendering/Materials/ConstructedMaterial.h"
 
 #include "Assets/Core/Asset.h"
+#include "Assets/Descriptors/ImageAsset.h"
 #include "Rendering/Materials/PBRMaterial.h"
 #include "Rendering/Textures/Texture.h"
 
@@ -225,15 +226,12 @@ void ConstructedMaterial::applyFieldInternal(Field& field){
         case FieldType::Texture2D:{
             const std::uint64_t currentRevision = field.textureAssetRef.empty()
                 ? 0
-                : AssetManager::Instance.getRevision(field.textureAssetRef);
+                : ImageAssetIO::GetTextureRefRevision(field.textureAssetRef);
             if(field.loadedTextureRef != field.textureAssetRef ||
                field.loadedTextureRevision != currentRevision){
                 field.texturePtr.reset();
                 if(!field.textureAssetRef.empty()){
-                    auto texAsset = AssetManager::Instance.getOrLoad(field.textureAssetRef);
-                    if(texAsset){
-                        field.texturePtr = Texture::Load(texAsset);
-                    }
+                    field.texturePtr = ImageAssetIO::InstantiateTextureFromRef(field.textureAssetRef);
                 }
                 field.loadedTextureRef = field.textureAssetRef;
                 field.loadedTextureRevision = currentRevision;

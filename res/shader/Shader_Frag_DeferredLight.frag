@@ -425,13 +425,6 @@ vec3 offsetShadowReceiver(Light light, vec3 normal, vec3 fragPos){
 
 vec3 computeShadowNormal(vec3 shadingNormal, vec3 fragPos){
     vec3 baseN = safeNormalize(shadingNormal);
-    float blend = clamp(u_shadowReceiverNormalBlend, 0.0, 1.0);
-    // Position-from-depth derivatives get noisy at distance; cap geometric
-    // influence to avoid large-scale shadow instability on flat receivers.
-    blend = min(blend, 0.22);
-    if(blend <= 0.0){
-        return baseN;
-    }
     vec3 dpdx = dFdx(fragPos);
     vec3 dpdy = dFdy(fragPos);
     vec3 geom = cross(dpdx, dpdy);
@@ -440,18 +433,12 @@ vec3 computeShadowNormal(vec3 shadingNormal, vec3 fragPos){
         return baseN;
     }
     vec3 geomN = geom / geomLen;
-    if(dot(geomN, baseN) < -0.02){
+    if(dot(geomN, baseN) < 0.0){
         geomN = -geomN;
     }
-    float align = abs(dot(baseN, geomN));
-    float alignWeight = smoothstep(0.55, 0.98, align);
-    float viewDepth = max(-(u_cameraView * vec4(fragPos, 1.0)).z, 0.0);
-    float depthWeight = 1.0 - smoothstep(25.0, 140.0, viewDepth);
-    float effectiveBlend = blend * alignWeight * depthWeight;
-    if(effectiveBlend <= 1e-4){
-        return baseN;
-    }
-    return safeNormalize(mix(baseN, geomN, effectiveBlend));
+    // Use geometric receiver normals for shadow bias/sampling to avoid seams caused by
+    // high-frequency normal maps crossing cascade/filter transitions.
+    return geomN;
 }
 
 float sampleShadowForLight(int lightIndex, Light light, vec3 normal, vec3 fragPos){

@@ -16,6 +16,7 @@
 #include "Editor/Core/EditorPropertyUI.h"
 #include "Assets/Descriptors/ShaderAsset.h"
 #include "Assets/Descriptors/MaterialAsset.h"
+#include "Assets/Descriptors/ImageAsset.h"
 #include "Assets/Descriptors/ModelAsset.h"
 #include "Assets/Descriptors/SkyboxAsset.h"
 #include "Assets/Descriptors/EffectAsset.h"
@@ -174,14 +175,13 @@ namespace {
         if(assetRef.empty()){
             return nullptr;
         }
-        auto asset = AssetManager::Instance.getOrLoad(assetRef);
-        if(!asset){
-            LogBot.Log(LOG_ERRO, "Failed to load texture asset: %s", assetRef.c_str());
-            return nullptr;
-        }
-        auto tex = Texture::Load(asset);
+        std::string error;
+        auto tex = ImageAssetIO::InstantiateTextureFromRef(assetRef, nullptr, &error);
         if(!tex){
-            LogBot.Log(LOG_ERRO, "Failed to create texture from asset: %s", assetRef.c_str());
+            if(error.empty()){
+                error = "Unknown texture decode error.";
+            }
+            LogBot.Log(LOG_ERRO, "Failed to create texture from asset '%s': %s", assetRef.c_str(), error.c_str());
             return nullptr;
         }
         return tex;
@@ -1319,8 +1319,11 @@ namespace {
         data.runtimeEffect->maxBlurPx = Math3D::Clamp(data.maxBlurPx, 0.0f, 16.0f);
         data.runtimeEffect->sampleCount = Math3D::Clamp(data.sampleCount, 1, 8);
         data.runtimeEffect->debugCocView = data.debugCocView;
-        data.runtimeEffect->nearPlane = Math3D::Max(0.001f, settings.nearPlane);
-        data.runtimeEffect->farPlane = Math3D::Max(data.runtimeEffect->nearPlane + 0.001f, settings.farPlane);
+        float dofNear = settings.nearPlane;
+        float dofFar = settings.farPlane;
+        Camera::SanitizePerspectivePlanes(dofNear, dofFar);
+        data.runtimeEffect->nearPlane = dofNear;
+        data.runtimeEffect->farPlane = Math3D::Max(data.runtimeEffect->nearPlane + 0.001f, dofFar);
         return data.runtimeEffect;
     }
 
@@ -2464,8 +2467,7 @@ void CameraComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     }
 
     CameraSettings& settings = camera->getSettings();
-    settings.farPlane = Math3D::Max(settings.farPlane, settings.nearPlane + 0.001f);
-    settings.nearPlane = Math3D::Max(settings.nearPlane, Math3D::Max(0.01f, settings.farPlane / 60000.0f));
+    Camera::SanitizePerspectivePlanes(settings.nearPlane, settings.farPlane);
     bool isOrtho = settings.isOrtho;
     if(EditorPropertyUI::Checkbox("Orthographic", &isOrtho)){
         settings.isOrtho = isOrtho;
@@ -2473,13 +2475,13 @@ void CameraComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
 
     float nearPlane = settings.nearPlane;
     float farPlane = settings.farPlane;
-    const float minNearForPrecision = Math3D::Max(0.01f, settings.farPlane / 60000.0f);
     if(EditorPropertyUI::DragFloat("Near Plane", &nearPlane, 0.01f, 0.001f, 5000.0f, "%.3f")){
-        settings.nearPlane = Math3D::Clamp(nearPlane, minNearForPrecision, settings.farPlane - 0.001f);
+        settings.nearPlane = nearPlane;
+        Camera::SanitizePerspectivePlanes(settings.nearPlane, settings.farPlane);
     }
     if(EditorPropertyUI::DragFloat("Far Plane", &farPlane, 0.1f, 0.01f, 100000.0f, "%.2f")){
-        settings.farPlane = Math3D::Max(farPlane, settings.nearPlane + 0.001f);
-        settings.nearPlane = Math3D::Max(settings.nearPlane, Math3D::Max(0.01f, settings.farPlane / 60000.0f));
+        settings.farPlane = farPlane;
+        Camera::SanitizePerspectivePlanes(settings.nearPlane, settings.farPlane);
     }
     ImGui::TextDisabled("Near plane is precision-clamped for deferred depth reconstruction.");
 
@@ -2666,7 +2668,7 @@ bool PostProcessingStackComponent::refreshLoadedEffect(PostProcessingEffectEntry
     const bool needsReload =
         (effect.loadedAssetRevision != revision) ||
         effect.cachedDisplayName.empty() ||
-        (!effect.runtimeLoadedEffect && effect.loadedProperties.empty() && effect.loadedInputs.empty());
+        (effect.runtimeLoadedEffect == nullptr);
 
     EffectAssetData assetData;
     if(needsReload){
@@ -2717,12 +2719,15 @@ bool PostProcessingStackComponent::refreshLoadedEffect(PostProcessingEffectEntry
         effect.runtimeLoadedEffect = std::make_shared<LoadedEffect>();
     }
     if(effect.runtimeLoadedEffect){
-        effect.runtimeLoadedEffect->setSourceEffectRef(effect.effectAssetRef);
         if(!needsReload){
-            if(!EffectAssetIO::LoadFromAssetRef(effect.effectAssetRef, assetData, outError)){
-                return false;
+            assetData = effect.runtimeLoadedEffect->effectData();
+            if(!assetData.isComplete()){
+                if(!EffectAssetIO::LoadFromAssetRef(effect.effectAssetRef, assetData, outError)){
+                    return false;
+                }
             }
         }
+        effect.runtimeLoadedEffect->setSourceEffectRef(effect.effectAssetRef);
         assetData.inputs = effect.loadedInputs;
         assetData.properties = effect.loadedProperties;
         effect.runtimeLoadedEffect->setEffectData(assetData);

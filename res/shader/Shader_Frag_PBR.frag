@@ -20,6 +20,7 @@ in vec3 v_fragPos;
 in vec3 v_normal;
 in vec2 v_uv;
 in vec4 v_color;
+in vec4 v_tangent;
 
 out vec4 FragColor;
 
@@ -339,13 +340,23 @@ vec3 offsetShadowReceiver(Light light, vec3 normal, vec3 fragPos){
     return fragPos + normalDir * worldOffset;
 }
 
-mat3 buildTBN(vec2 uv, vec3 N){
+mat3 buildTBN(vec2 uv, vec3 N, vec4 tangentData){
+    vec3 tangent = tangentData.xyz;
+    float tangentLen = length(tangent);
+    if(tangentLen > 1e-5){
+        vec3 T = tangent / tangentLen;
+        T = safeNormalize(T - N * dot(N, T));
+        float handedness = (tangentData.w < 0.0) ? -1.0 : 1.0;
+        vec3 B = safeNormalize(cross(N, T)) * handedness;
+        return mat3(T, B, N);
+    }
+
     vec3 dp1 = dFdx(v_fragPos);
     vec3 dp2 = dFdy(v_fragPos);
     vec2 duv1 = dFdx(uv);
     vec2 duv2 = dFdy(uv);
     float det = (duv1.x * duv2.y) - (duv1.y * duv2.x);
-    if(abs(det) < 1e-8){
+    if(abs(det) < 1e-10){
         // UV derivatives can become degenerate at steep viewing angles; build a stable basis from N.
         vec3 up = (abs(N.y) < 0.999) ? vec3(0.0, 1.0, 0.0) : vec3(1.0, 0.0, 0.0);
         vec3 T = safeNormalize(cross(up, N));
@@ -355,45 +366,23 @@ mat3 buildTBN(vec2 uv, vec3 N){
 
     float invDet = 1.0 / det;
     vec3 T = (dp1 * duv2.y - dp2 * duv1.y) * invDet;
+    vec3 B = (dp2 * duv1.x - dp1 * duv2.x) * invDet;
+
     T = safeNormalize(T - N * dot(N, T));
-    vec3 B = safeNormalize(cross(N, T));
-    if(det < 0.0){
-        B = -B;
+    B = safeNormalize(B - N * dot(N, B));
+
+    if(dot(cross(T, B), N) < 0.0){
+        T = -T;
     }
+
+    B = safeNormalize(cross(N, T));
     return mat3(T, B, N);
 }
 
 vec2 applyHeightMapParallax(vec2 uv, vec2 duvDx, vec2 duvDy, vec3 viewDirWS, mat3 TBN){
-    if(u_useHeightTex == 0 || u_heightScale <= 0.0){
-        return uv;
-    }
-    vec3 viewDirTS = transpose(TBN) * safeNormalize(viewDirWS);
-    float viewZ = max(viewDirTS.z, 0.0);
-    if(viewZ <= 1e-4){
-        return uv;
-    }
-
-    // Fade parallax aggressively on broad surfaces to avoid grazing-angle crawl.
-    float angleFade = smoothstep(0.18, 0.55, viewZ);
-    float edgeDist = min(min(uv.x, uv.y), min(1.0 - uv.x, 1.0 - uv.y));
-    float edgeFade = smoothstep(0.02, 0.08, edgeDist);
-    vec2 hTexSize = vec2(textureSize(u_heightTex, 0));
-    float texelFootprint = max(length(duvDx * hTexSize), length(duvDy * hTexSize));
-    float detailFade = 1.0 - smoothstep(0.75, 3.0, texelFootprint);
-    detailFade *= detailFade;
-    float parallaxFade = angleFade * edgeFade * detailFade;
-    if(parallaxFade <= 1e-4){
-        return uv;
-    }
-    float parallaxStrength = u_heightScale * parallaxFade;
-
-    float denom = max(viewZ, 0.25);
-    float height = textureGrad(u_heightTex, uv, duvDx, duvDy).r;
-    float parallax = (height - 0.5) * parallaxStrength;
-    vec2 displacedUv = uv - (viewDirTS.xy / denom) * parallax;
-
-    // Keep sampling in-range for clamp-to-edge textures.
-    return clamp(displacedUv, vec2(0.001), vec2(0.999));
+    // Height/parallax mapping in this derivative-based path can introduce visible seams
+    // across broad surfaces; keep UVs stable until tangent-space parallax is reworked.
+    return uv;
 }
 
 vec3 getNormal(vec2 uv, vec2 duvDx, vec2 duvDy, vec3 N, mat3 TBN, vec3 viewDirWS){
@@ -401,22 +390,10 @@ vec3 getNormal(vec2 uv, vec2 duvDx, vec2 duvDy, vec3 N, mat3 TBN, vec3 viewDirWS
         return N;
     }
 
-    vec3 viewDir = safeNormalize(viewDirWS);
-    float viewFade = smoothstep(0.16, 0.50, abs(dot(N, viewDir)));
-    vec2 nTexSize = vec2(textureSize(u_normalTex, 0));
-    float texelFootprint = max(length(duvDx * nTexSize), length(duvDy * nTexSize));
-    float footprintFade = 1.0 - smoothstep(0.75, 4.0, texelFootprint);
-    float detailFade = clamp(viewFade * footprintFade, 0.0, 1.0);
-    detailFade = detailFade * detailFade * (3.0 - (2.0 * detailFade));
-    if(detailFade <= 1e-4){
-        return N;
-    }
-
     vec3 mapN = textureGrad(u_normalTex, uv, duvDx, duvDy).xyz * 2.0 - 1.0;
-    mapN.xy *= u_normalScale * detailFade;
-    mapN.z = mix(1.0, mapN.z, detailFade);
-    vec3 detailNormal = safeNormalize(TBN * mapN);
-    return safeNormalize(mix(N, detailNormal, detailFade));
+    mapN.xy *= u_normalScale;
+    mapN = safeNormalize(mapN);
+    return safeNormalize(TBN * mapN);
 }
 
 float applyOcclusionStrength(float occlusionSample, float strength){
@@ -505,7 +482,7 @@ void main() {
     vec2 duvDy = dFdy(uvBase);
     vec3 V = safeNormalize(u_viewPos - v_fragPos);
     vec3 baseN = safeNormalize(v_normal);
-    mat3 TBN = buildTBN(uvBase, baseN);
+    mat3 TBN = buildTBN(uvBase, baseN, v_tangent);
     vec2 uv = applyHeightMapParallax(uvBase, duvDx, duvDy, V, TBN);
     vec4 baseTex = (u_useBaseColorTex != 0) ? textureGrad(u_baseColorTex, uv, duvDx, duvDy) : vec4(1.0);
     vec4 baseColor = u_baseColor * baseTex * v_color;
@@ -533,7 +510,9 @@ void main() {
     }
 
     vec3 N = getNormal(uv, duvDx, duvDy, baseN, TBN, V);
-    roughness = applySpecularAaRoughness(roughness, N);
+    // Use geometric normal for specular AA; mapped-normal derivatives can create
+    // visible screen-space seams on broad close-up surfaces.
+    roughness = applySpecularAaRoughness(roughness, baseN);
 
     vec3 albedo = baseColor.rgb;
     vec3 F0 = mix(vec3(0.04), albedo, metallic);

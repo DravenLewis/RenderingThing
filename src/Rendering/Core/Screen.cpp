@@ -111,7 +111,6 @@ void Screen::processRenderPipeline(){
     std::shared_ptr<FrameBuffer> writeTarget = buffer->getEditBuffer();
     auto originalDepth = buffer->getDrawBuffer()->getDepthTexture();
 
-    bool performedAnyEffects = false;
     int appliedEffectCount = 0;
 
     // 2. Run the Effect Stack (Ping-Pong Logic)
@@ -119,7 +118,6 @@ void Screen::processRenderPipeline(){
     for (auto& effect : effects) {
         if (!effect) continue;
 
-        performedAnyEffects = true;
         appliedEffectCount++;
 
         // Apply the effect: Read from Source -> Write to Target
@@ -136,31 +134,32 @@ void Screen::processRenderPipeline(){
     }
 
     // 3. Finalization
-    // We need to ensure the final image ends up in the specific "Middle" buffer 
-    // so that buffer->swapBuffers() works correctly.
-    
-    // The valid image is currently inside 'readSource' (because we swapped at end of loop).
-    // The required destination is 'buffer->getEditBuffer()' (The Middle Buffer).
-    
-    // We need a final copy pass if:
-    // A) No effects ran (Raw Scene is in Back, needs to go to Middle)
-    // B) The Ping-Pong loop ended with the image in 'Back' instead of 'Middle'
-    if (!performedAnyEffects || readSource != buffer->getEditBuffer()) {
-        
-        auto finalDestination = buffer->getEditBuffer();
+    // Avoid a mandatory final full-screen copy by rotating the triple-buffer
+    // according to whichever buffer now holds the latest post-FX result.
+    auto frontBuffer = buffer->getFront();
+    auto middleBuffer = buffer->getMiddle();
+    auto backBuffer = buffer->getBack();
 
+    if(readSource == middleBuffer){
+        // Odd effect count: latest image is already in middle.
+        buffer->setFront(middleBuffer);
+        buffer->setMiddle(backBuffer);
+        buffer->setBack(frontBuffer);
+    }else if(readSource == backBuffer){
+        // Even effect count (or no effects): latest image is in back.
+        buffer->setFront(backBuffer);
+        buffer->setMiddle(frontBuffer);
+        buffer->setBack(middleBuffer);
+    }else{
+        // Safety fallback: keep prior behavior if pointers ever diverge.
+        auto finalDestination = buffer->getEditBuffer();
         if(!passthroughCopy(readSource, finalDestination)){
             finalDestination->bind();
             finalDestination->clear(Color::CLEAR);
             finalDestination->unbind();
         }
+        buffer->swapBuffers();
     }
-
-    // 4. Rotate the TrippleBuffer
-    // Middle (which now DEFINITELY holds the final image) becomes Front.
-    // Front becomes Back.
-    // Back becomes Middle.
-    buffer->swapBuffers();
     presentFrameIndex++;
 
     auto pipelineEnd = clock::now();

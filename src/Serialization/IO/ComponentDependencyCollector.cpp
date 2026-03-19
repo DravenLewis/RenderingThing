@@ -7,6 +7,7 @@
 
 #include "ECS/Core/ECSComponents.h"
 #include "Assets/Core/Asset.h"
+#include "Assets/Descriptors/ImageAsset.h"
 #include "Assets/Descriptors/LensFlareAsset.h"
 #include "Assets/Descriptors/SkyboxAsset.h"
 
@@ -27,6 +28,27 @@ void addDependencyIfValid(const std::string& candidate, std::set<std::string>& d
         return;
     }
     deps.insert(candidate);
+}
+
+void addTextureDependencyIfValid(const std::string& candidate, std::set<std::string>& deps){
+    if(candidate.empty()){
+        return;
+    }
+
+    addDependencyIfValid(candidate, deps);
+
+    std::string sourceAssetRef;
+    std::string imageAssetRef;
+    if(!ImageAssetIO::ResolveTextureSourceAssetRef(candidate, sourceAssetRef, &imageAssetRef, nullptr)){
+        return;
+    }
+
+    if(!imageAssetRef.empty()){
+        addDependencyIfValid(imageAssetRef, deps);
+    }
+    if(!sourceAssetRef.empty()){
+        addDependencyIfValid(sourceAssetRef, deps);
+    }
 }
 
 } // namespace
@@ -70,12 +92,12 @@ void CollectAssetDependenciesFromEntities(
             if(!skybox->skyboxAssetRef.empty()){
                 SkyboxAssetData skyboxData;
                 if(SkyboxAssetIO::LoadFromAssetRef(skybox->skyboxAssetRef, skyboxData, nullptr)){
-                    addDependencyIfValid(skyboxData.rightFaceRef, deps);
-                    addDependencyIfValid(skyboxData.leftFaceRef, deps);
-                    addDependencyIfValid(skyboxData.topFaceRef, deps);
-                    addDependencyIfValid(skyboxData.bottomFaceRef, deps);
-                    addDependencyIfValid(skyboxData.frontFaceRef, deps);
-                    addDependencyIfValid(skyboxData.backFaceRef, deps);
+                    addTextureDependencyIfValid(skyboxData.rightFaceRef, deps);
+                    addTextureDependencyIfValid(skyboxData.leftFaceRef, deps);
+                    addTextureDependencyIfValid(skyboxData.topFaceRef, deps);
+                    addTextureDependencyIfValid(skyboxData.bottomFaceRef, deps);
+                    addTextureDependencyIfValid(skyboxData.frontFaceRef, deps);
+                    addTextureDependencyIfValid(skyboxData.backFaceRef, deps);
                 }
             }
         }
@@ -91,7 +113,7 @@ void CollectAssetDependenciesFromEntities(
                             continue;
                         }
 
-                        addDependencyIfValid(element.textureRef, deps);
+                        addTextureDependencyIfValid(element.textureRef, deps);
                     }
                 }
             }

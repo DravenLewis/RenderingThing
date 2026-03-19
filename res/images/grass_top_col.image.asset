@@ -1,0 +1,8 @@
+name=grass_top_col.image.asset
+@link-parent=@assets/images/grass_top_col.png
+source_image=@assets/images/grass_top_col.png
+filter=Nearest
+wrap=Repeat
+map_type=Color
+supports_alpha=1
+flip_vertical=1

@@ -231,8 +231,10 @@ struct Vertex{
 class Mesh : public IDrawable{
     private:
         std::vector<Vertex> verticies;
+        std::vector<Math3D::Vec4> tangents;
         std::vector<uint32_t> faces;
         VertexBufferObject VBO = 0;
+        VertexBufferObject tangentVBO = 0;
         VertexArrayObject VAO = 0;
         ElementBufferObject EBO = 0;
         Math3D::Vec3 localBoundsMin = Math3D::Vec3(0.0f, 0.0f, 0.0f);
@@ -253,6 +255,10 @@ class Mesh : public IDrawable{
          * @brief Computes local bounds.
          */
         void computeLocalBounds();
+        /**
+         * @brief Computes per-vertex tangents used by tangent-space normal mapping.
+         */
+        void computeTangents();
 
     public:
         /**

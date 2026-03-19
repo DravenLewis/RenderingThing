@@ -597,11 +597,7 @@ static void computeDirectionalCascades(
     float nearPlane = camera->getSettings().nearPlane;
     float shadowRange = safeFloat(light.shadowRange, light.range);
     float farPlane = Math3D::Min(camera->getSettings().farPlane, (shadowRange > 0.0f) ? shadowRange : camera->getSettings().farPlane);
-    nearPlane = Math3D::Max(nearPlane, 0.01f);
-    nearPlane = Math3D::Max(nearPlane, farPlane / 60000.0f);
-    if(nearPlane > farPlane - 0.001f){
-        nearPlane = Math3D::Max(0.001f, farPlane - 0.001f);
-    }
+    Camera::SanitizePerspectivePlanes(nearPlane, farPlane);
     // Respect user-controlled lambda directly (0=linear, 1=logarithmic).
     float lambda = Math3D::Clamp(safeFloat(light.cascadeLambda, 0.82f), 0.0f, 1.0f);
 

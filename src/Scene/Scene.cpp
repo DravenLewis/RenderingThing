@@ -9,6 +9,7 @@
 #include "Rendering/Lighting/ShadowRenderer.h"
 #include "Foundation/Logging/Logbot.h"
 #include "Rendering/Textures/SkyBox.h"
+#include "Assets/Descriptors/ImageAsset.h"
 #include "Assets/Descriptors/MaterialAsset.h"
 #include "Assets/Descriptors/ModelAsset.h"
 #include "Assets/Descriptors/SkyboxAsset.h"
@@ -45,16 +46,20 @@ namespace {
         return !candidate.empty() && AssetManager::Instance.isSameAsset(candidate, changedAsset);
     }
 
+    bool textureRefDependsOnAsset(const std::string& textureRef, const std::string& changedAsset){
+        return ImageAssetIO::RefDependsOnAsset(textureRef, changedAsset);
+    }
+
     bool materialDataDependsOnAsset(const MaterialAssetData& data, const std::string& changedAsset){
         return assetMatchesChanged(data.shaderAssetRef, changedAsset) ||
-               assetMatchesChanged(data.textureRef, changedAsset) ||
-               assetMatchesChanged(data.baseColorTexRef, changedAsset) ||
-               assetMatchesChanged(data.roughnessTexRef, changedAsset) ||
-               assetMatchesChanged(data.metallicRoughnessTexRef, changedAsset) ||
-               assetMatchesChanged(data.normalTexRef, changedAsset) ||
-               assetMatchesChanged(data.heightTexRef, changedAsset) ||
-               assetMatchesChanged(data.emissiveTexRef, changedAsset) ||
-               assetMatchesChanged(data.occlusionTexRef, changedAsset);
+               textureRefDependsOnAsset(data.textureRef, changedAsset) ||
+               textureRefDependsOnAsset(data.baseColorTexRef, changedAsset) ||
+               textureRefDependsOnAsset(data.roughnessTexRef, changedAsset) ||
+               textureRefDependsOnAsset(data.metallicRoughnessTexRef, changedAsset) ||
+               textureRefDependsOnAsset(data.normalTexRef, changedAsset) ||
+               textureRefDependsOnAsset(data.heightTexRef, changedAsset) ||
+               textureRefDependsOnAsset(data.emissiveTexRef, changedAsset) ||
+               textureRefDependsOnAsset(data.occlusionTexRef, changedAsset);
     }
 
     bool materialRefDependsOnAsset(const std::string& materialRef, const std::string& changedAsset){
@@ -91,12 +96,12 @@ namespace {
             return false;
         }
 
-        return assetMatchesChanged(data.rightFaceRef, changedAsset) ||
-               assetMatchesChanged(data.leftFaceRef, changedAsset) ||
-               assetMatchesChanged(data.topFaceRef, changedAsset) ||
-               assetMatchesChanged(data.bottomFaceRef, changedAsset) ||
-               assetMatchesChanged(data.frontFaceRef, changedAsset) ||
-               assetMatchesChanged(data.backFaceRef, changedAsset);
+        return textureRefDependsOnAsset(data.rightFaceRef, changedAsset) ||
+               textureRefDependsOnAsset(data.leftFaceRef, changedAsset) ||
+               textureRefDependsOnAsset(data.topFaceRef, changedAsset) ||
+               textureRefDependsOnAsset(data.bottomFaceRef, changedAsset) ||
+               textureRefDependsOnAsset(data.frontFaceRef, changedAsset) ||
+               textureRefDependsOnAsset(data.backFaceRef, changedAsset);
     }
 
     bool flareAssetDependsOnAsset(const std::string& flareAssetRef, const std::string& changedAsset){
@@ -114,7 +119,7 @@ namespace {
 
         for(const LensFlareElementData& element : data.elements){
             if(element.type == LensFlareElementType::Image &&
-               assetMatchesChanged(element.textureRef, changedAsset)){
+               textureRefDependsOnAsset(element.textureRef, changedAsset)){
                 return true;
             }
         }
@@ -272,12 +277,11 @@ namespace {
         }
 
         const std::string textureRef = currentTexture->getSourceAssetRef();
-        if(!assetMatchesChanged(textureRef, changedAsset)){
+        if(!textureRefDependsOnAsset(textureRef, changedAsset)){
             return false;
         }
 
-        auto textureAsset = AssetManager::Instance.getOrLoad(textureRef);
-        textureField = textureAsset ? Texture::Load(textureAsset) : nullptr;
+        textureField = ImageAssetIO::InstantiateTextureFromRef(textureRef, nullptr, nullptr);
         return true;
     }
 
@@ -313,8 +317,8 @@ namespace {
                     continue;
                 }
 
-                if(assetMatchesChanged(field.textureAssetRef, changedAsset) ||
-                   (field.texturePtr && assetMatchesChanged(field.texturePtr->getSourceAssetRef(), changedAsset))){
+                if(textureRefDependsOnAsset(field.textureAssetRef, changedAsset) ||
+                   (field.texturePtr && textureRefDependsOnAsset(field.texturePtr->getSourceAssetRef(), changedAsset))){
                     field.loadedTextureRef.clear();
                     field.loadedTextureRevision = 0;
                     fieldChanged = true;
@@ -2396,10 +2400,10 @@ void Scene::drawDeferredLighting(PFrameBuffer targetBuffer,
     deferredLightShader->setUniformFast("u_useGi", Uniform<int>(giTexture ? 1 : 0));
     deferredLightShader->setUniformFast("u_ssaoDebugView", Uniform<int>(ssaoDebugView));
     deferredLightShader->setUniformFast("u_lightPassMode", Uniform<int>(lightPassMode));
-    deferredLightShader->setUniformFast("u_useLightTiles", Uniform<int>(
-        (deferredLightTileTexture && deferredLightTileTexture->getID() != 0 &&
-         deferredLightTileGridWidth > 0 && deferredLightTileGridHeight > 0) ? 1 : 0
-    ));
+    // Tile-light culling can introduce visible screen-space boundaries on broad surfaces
+    // when light bounds projection misses edge tiles. Keep visual output stable by
+    // using the full light list in shading until tiled culling is reworked.
+    deferredLightShader->setUniformFast("u_useLightTiles", Uniform<int>(0));
     deferredLightShader->setUniformFast("u_tileGrid", Uniform<Math3D::Vec2>(Math3D::Vec2(
         static_cast<float>(deferredLightTileGridWidth),
         static_cast<float>(deferredLightTileGridHeight)
