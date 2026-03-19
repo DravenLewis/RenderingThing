@@ -46,37 +46,17 @@ struct FrameBuffer{
         FrameBuffer(int width, int height) : width(width), height(height) {
             glGenFramebuffers(1, &fboID);
             
-            // 1. Create the Depth Texture
-            // We do this manually here (or you could add a helper in Texture.h)
-            depthTexture = std::make_shared<Texture>();
-            // Note: We don't set width/height on the Texture object here manually 
-            // unless your Texture class requires it.
-
-            GLuint tid;
-            glGenTextures(1, &tid);
-            depthTexture->getID() = tid;
-
-            // DEBUG CHECK
-            if(depthTexture->getID() == 0) {
-                LogBot.Log(LOG_FATL, "[FrameBuffer] CRITICAL: glGenTextures failed for Depth Texture!");
+            depthTexture = Texture::CreateDepthTarget(
+                width,
+                height,
+                GL_DEPTH_COMPONENT32F,
+                GL_FLOAT,
+                TextureFilterMode::LINEAR,
+                TextureWrapMode::CLAMP_BORDER
+            );
+            if(depthTexture){
+                depthTexture->setBorderColor(Color::WHITE);
             }
-
-            glBindTexture(GL_TEXTURE_2D, depthTexture->getID());
-
-            // Use 32-bit float depth to keep deferred depth reconstruction stable on
-            // large, far flat surfaces where 24-bit precision caused visible banding.
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-            
-            // Essential Texture Parameters for Depth
-            // Linear filtering keeps post-process depth lookups (SSAO/DOF) stable across pixel edges.
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER); 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-            
-            // Border color for depth (white = far away) prevents artifacts at screen edges
-            float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-            glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
             // 2. Attach Depth Texture to FBO
             bind();
@@ -231,11 +211,9 @@ struct FrameBuffer{
             fbuffer->gbufferAttachments.clear();
             fbuffer->gbufferAttachments.reserve(3);
 
-            if(fbuffer->depthTexture && fbuffer->depthTexture->getID() != 0){
-                glBindTexture(GL_TEXTURE_2D, fbuffer->depthTexture->getID());
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-                glBindTexture(GL_TEXTURE_2D, 0);
+            if(fbuffer->depthTexture){
+                fbuffer->depthTexture->setFilterMode(TextureFilterMode::NEAREST);
+                fbuffer->depthTexture->setWrapMode(TextureWrapMode::CLAMP_EDGE);
             }
 
             auto createAttachment = [&](GLenum internalFormat, GLenum format, GLenum type) -> PTexture {

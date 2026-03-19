@@ -25,6 +25,17 @@ struct CameraSettings{
 /// @brief Holds data for Camera.
 struct Camera{
     private:
+        static constexpr float kMinPerspectiveNear = 0.01f;
+        static constexpr float kMaxPerspectiveDepthRatio = 60000.0f;
+        static void sanitizePerspectivePlanes(float& nearPlane, float& farPlane){
+            farPlane = Math3D::Max(farPlane, 0.05f);
+            nearPlane = Math3D::Max(nearPlane, kMinPerspectiveNear);
+            nearPlane = Math3D::Max(nearPlane, farPlane / kMaxPerspectiveDepthRatio);
+            if(nearPlane > farPlane - 0.001f){
+                nearPlane = Math3D::Max(0.001f, farPlane - 0.001f);
+            }
+        }
+
         Math3D::Transform cameraTransform;
         CameraSettings settings;
         /**
@@ -69,11 +80,14 @@ struct Camera{
                 );
             }
 
+            float nearPlane = settings.nearPlane;
+            float farPlane = settings.farPlane;
+            sanitizePerspectivePlanes(nearPlane, farPlane);
             return glm::perspective(
                 glm::radians(settings.fov),
                 settings.aspect,
-                settings.nearPlane,
-                settings.farPlane
+                nearPlane,
+                farPlane
             );
         }
 

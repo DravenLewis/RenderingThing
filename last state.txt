@@ -23,7 +23,7 @@ Add+
 Glass BSDF
 Water BSDF
 
-== Make sure PBR Materials render at a higher quality further. Materials become muddy.
+== Make sure PBR Materials render at a higher quality further. currently  Materials become muddy a short distance from the player 
 
 
 Scripting Component

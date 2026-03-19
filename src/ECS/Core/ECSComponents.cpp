@@ -187,16 +187,20 @@ namespace {
         return tex;
     }
 
-    void drawTextureOutputSmall(const std::shared_ptr<Texture>& texture, bool hasAssignedAsset){
+    void drawTextureOutputSmall(const std::shared_ptr<Texture>& texture, bool hasAssignedAsset, const char* uniqueId){
         const ImVec2 previewSize(44.0f, 44.0f);
+
         if(texture && texture->getID() != 0){
             ImTextureID texId = (ImTextureID)(intptr_t)texture->getID();
             ImGui::Image(texId, previewSize, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
             return;
         }
 
+        std::string buttonLabel = std::string(hasAssignedAsset ? "Missing##" : "None##") +
+                                  (uniqueId ? uniqueId : "tex_preview");
+
         ImGui::BeginDisabled();
-        ImGui::Button(hasAssignedAsset ? "Missing" : "None", previewSize);
+        ImGui::Button(buttonLabel.c_str(), previewSize);
         ImGui::EndDisabled();
     }
 
@@ -473,7 +477,8 @@ namespace {
                     }
                     case ConstructedMaterial::FieldType::Texture2D:{
                         changedField |= EditorAssetUI::DrawAssetDropInput(fieldLabel.c_str(), field.textureAssetRef, {EditorAssetUI::AssetKind::Image});
-                        drawTextureOutputSmall(field.texturePtr, !field.textureAssetRef.empty());
+                        std::string previewId = std::string(idSuffix) + "_constructed_" + std::to_string(i) + "_preview";
+                        drawTextureOutputSmall(field.texturePtr, !field.textureAssetRef.empty(), previewId.c_str());
                         break;
                     }
                     default:
@@ -847,7 +852,8 @@ namespace {
                 previewTex = readTexture();
             }
 
-            drawTextureOutputSmall(previewTex, pathBuffer[0] != '\0');
+            std::string previewId = std::string(idSuffix) + "_" + key + "_preview";
+            drawTextureOutputSmall(previewTex, pathBuffer[0] != '\0', previewId.c_str());
 
             if(committed){
                 std::string assetRef = pathBuffer;
@@ -1548,7 +1554,8 @@ namespace {
                     property.textureAssetRef,
                     {EditorAssetUI::AssetKind::Image}
                 );
-                drawTextureOutputSmall(property.texturePtr, !property.textureAssetRef.empty());
+                std::string previewId = idSuffix + "_effect_" + property.key + "_preview";
+                drawTextureOutputSmall(property.texturePtr, !property.textureAssetRef.empty(), previewId.c_str());
                 return changed;
             }
             default:
@@ -2457,6 +2464,8 @@ void CameraComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
     }
 
     CameraSettings& settings = camera->getSettings();
+    settings.farPlane = Math3D::Max(settings.farPlane, settings.nearPlane + 0.001f);
+    settings.nearPlane = Math3D::Max(settings.nearPlane, Math3D::Max(0.01f, settings.farPlane / 60000.0f));
     bool isOrtho = settings.isOrtho;
     if(EditorPropertyUI::Checkbox("Orthographic", &isOrtho)){
         settings.isOrtho = isOrtho;
@@ -2464,12 +2473,15 @@ void CameraComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
 
     float nearPlane = settings.nearPlane;
     float farPlane = settings.farPlane;
+    const float minNearForPrecision = Math3D::Max(0.01f, settings.farPlane / 60000.0f);
     if(EditorPropertyUI::DragFloat("Near Plane", &nearPlane, 0.01f, 0.001f, 5000.0f, "%.3f")){
-        settings.nearPlane = Math3D::Clamp(nearPlane, 0.001f, settings.farPlane - 0.001f);
+        settings.nearPlane = Math3D::Clamp(nearPlane, minNearForPrecision, settings.farPlane - 0.001f);
     }
     if(EditorPropertyUI::DragFloat("Far Plane", &farPlane, 0.1f, 0.01f, 100000.0f, "%.2f")){
         settings.farPlane = Math3D::Max(farPlane, settings.nearPlane + 0.001f);
+        settings.nearPlane = Math3D::Max(settings.nearPlane, Math3D::Max(0.01f, settings.farPlane / 60000.0f));
     }
+    ImGui::TextDisabled("Near plane is precision-clamped for deferred depth reconstruction.");
 
     if(settings.isOrtho){
         float rectPos[2] = { settings.viewPlane.position.x, settings.viewPlane.position.y };

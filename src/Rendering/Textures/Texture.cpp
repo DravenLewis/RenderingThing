@@ -94,6 +94,72 @@ void Texture::unbind() const {
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+void Texture::setFilterMode(TextureFilterMode mode, bool generateMipmaps){
+    if(textureID == 0){
+        return;
+    }
+
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    switch(mode){
+        case TextureFilterMode::NEAREST:
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            break;
+        case TextureFilterMode::LINEAR:
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            break;
+        case TextureFilterMode::TRILINEAR:
+            if(generateMipmaps){
+                glGenerateMipmap(GL_TEXTURE_2D);
+            }
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            break;
+    }
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Texture::setWrapMode(TextureWrapMode mode){
+    if(textureID == 0){
+        return;
+    }
+
+    GLint wrap = GL_REPEAT;
+    switch(mode){
+        case TextureWrapMode::REPEAT:
+            wrap = GL_REPEAT;
+            break;
+        case TextureWrapMode::CLAMP_EDGE:
+            wrap = GL_CLAMP_TO_EDGE;
+            break;
+        case TextureWrapMode::CLAMP_BORDER:
+            wrap = GL_CLAMP_TO_BORDER;
+            break;
+    }
+
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Texture::setBorderColor(const Color& color){
+    if(textureID == 0){
+        return;
+    }
+
+    float borderColor[] = {
+        color.x,
+        color.y,
+        color.z,
+        color.w
+    };
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 void Texture::dispose(){
     if(textureID != 0 && ownsTexture){
         const GLuint idToDelete = textureID;
@@ -171,7 +237,12 @@ std::shared_ptr<Graphics::Image::Image> Texture::LoadImage(PAsset asset, bool fl
     return cpuImg;
 }
 
-std::shared_ptr<Texture> Texture::CreateEmpty(int width, int height){
+std::shared_ptr<Texture> Texture::CreateEmpty(
+    int width,
+    int height,
+    TextureFilterMode filterMode,
+    TextureWrapMode wrapMode
+){
     auto tex = std::make_shared<Texture>();
     tex->width = width;
     tex->height = height;
@@ -181,13 +252,9 @@ std::shared_ptr<Texture> Texture::CreateEmpty(int width, int height){
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
-    // Render targets should stay nearest to avoid unintended blur in post/deferred passes.
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
     glBindTexture(GL_TEXTURE_2D, 0);
+    tex->setFilterMode(filterMode);
+    tex->setWrapMode(wrapMode);
     return tex;
 }
 
@@ -196,7 +263,9 @@ std::shared_ptr<Texture> Texture::CreateRenderTarget(
     int height,
     GLenum internalFormat,
     GLenum format,
-    GLenum type
+    GLenum type,
+    TextureFilterMode filterMode,
+    TextureWrapMode wrapMode
 ){
     auto tex = std::make_shared<Texture>();
     tex->width = width;
@@ -207,16 +276,41 @@ std::shared_ptr<Texture> Texture::CreateRenderTarget(
 
     glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, NULL);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
     glBindTexture(GL_TEXTURE_2D, 0);
+    tex->setFilterMode(filterMode);
+    tex->setWrapMode(wrapMode);
     return tex;
 }
 
-std::shared_ptr<Texture> Texture::CreateFromAlphaBuffer(int width, int height, const unsigned char* alphaData){
+std::shared_ptr<Texture> Texture::CreateDepthTarget(
+    int width,
+    int height,
+    GLenum internalFormat,
+    GLenum type,
+    TextureFilterMode filterMode,
+    TextureWrapMode wrapMode
+){
+    auto tex = std::make_shared<Texture>();
+    tex->width = width;
+    tex->height = height;
+
+    glGenTextures(1, &tex->getID());
+    glBindTexture(GL_TEXTURE_2D, tex->getID());
+    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, GL_DEPTH_COMPONENT, type, NULL);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    tex->setFilterMode(filterMode);
+    tex->setWrapMode(wrapMode);
+    return tex;
+}
+
+std::shared_ptr<Texture> Texture::CreateFromAlphaBuffer(
+    int width,
+    int height,
+    const unsigned char* alphaData,
+    TextureFilterMode filterMode,
+    TextureWrapMode wrapMode
+){
     auto tex = std::make_shared<Texture>(width,height);
 
     // Convert 1-channel Alpha to 4-channel RGBA
@@ -239,13 +333,9 @@ std::shared_ptr<Texture> Texture::CreateFromAlphaBuffer(int width, int height, c
     // Upload as Standard RGBA
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, rgbaData.data());
 
-    // Linear filtering usually looks better for text than Nearest
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
     glBindTexture(GL_TEXTURE_2D, 0);
+    tex->setFilterMode(filterMode);
+    tex->setWrapMode(wrapMode);
     return tex;
 }
 

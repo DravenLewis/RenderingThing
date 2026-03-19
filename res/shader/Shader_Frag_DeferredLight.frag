@@ -62,7 +62,9 @@ vec3 safeNormalize(vec3 v){
 vec3 reconstructViewPosition(vec2 uv, float depth){
     vec4 clip = vec4((uv * 2.0) - 1.0, (depth * 2.0) - 1.0, 1.0);
     vec4 view = u_invProjection * clip;
-    return view.xyz / max(abs(view.w), 1e-5);
+
+    float invW = (abs(view.w) > 1e-6) ? (1.0 / view.w) : 0.0;
+    return view.xyz * invW;
 }
 
 vec3 reconstructWorldPosition(vec2 uv, float depth){
@@ -170,12 +172,13 @@ float sampleShadow2D(int shadowType, int mapIndex, vec4 lightSpacePos, float bia
     }else if(shadowType == 2){
         pcfBias = max(0.00022, max(texelSize.x, texelSize.y) * clampedFilterScale * 0.24);
     }
-    // Receiver-plane depth gradient keeps PCF taps on the same surface at grazing angles.
     vec2 uvDx = dFdx(projCoords.xy);
     vec2 uvDy = dFdy(projCoords.xy);
     float zDx = dFdx(projCoords.z);
     float zDy = dFdy(projCoords.z);
+
     float det = uvDx.x * uvDy.y - uvDx.y * uvDy.x;
+
     vec2 receiverDepthGrad = vec2(0.0);
     if(abs(det) > 1e-8){
         receiverDepthGrad = vec2(
@@ -183,34 +186,39 @@ float sampleShadow2D(int shadowType, int mapIndex, vec4 lightSpacePos, float bia
             (zDy * uvDx.x - zDx * uvDy.x) / det
         );
     }
-    receiverDepthGrad *= clamp(receiverGradScale, 0.0, 1.0);
+
+    // Reconstructed depth is noisier than an explicit position buffer,
+    // so keep this correction conservative.
+    receiverDepthGrad *= clamp(receiverGradScale, 0.0, 1.0) * 0.35;
+
     float receiverSlope = length(receiverDepthGrad);
-    if(receiverSlope > 10.0){
-        receiverDepthGrad *= (10.0 / receiverSlope);
-        receiverSlope = 10.0;
+    if(receiverSlope > 2.5){
+        receiverDepthGrad *= (2.5 / receiverSlope);
+        receiverSlope = 2.5;
     }
+
     float receiverPlaneBias = 0.0;
     if(shadowType != 0){
         float kernelRadius = (shadowType == 1) ? 1.00 : 1.55;
         float texelRadius = kernelRadius * clampedFilterScale * max(texelSize.x, texelSize.y);
-        float rpScale = (shadowType == 1) ? 0.36 : 0.52;
-        float rpCap = (shadowType == 1) ? 0.00055 : 0.00085;
+
+        float rpScale = (shadowType == 1) ? 0.18 : 0.24;
+        float rpCap   = (shadowType == 1) ? 0.00028 : 0.00042;
+
         receiverPlaneBias = clamp(receiverSlope * texelRadius * rpScale, 0.0, rpCap);
-        float minRpBias = 0.00014;
-        receiverPlaneBias = max(receiverPlaneBias, minRpBias);
     }
     float compareDepth = clamp(projCoords.z - (bias + pcfBias + receiverPlaneBias), 0.0, 1.0);
     vec2 uvMin = texelSize * 1.5;
     vec2 uvMax = vec2(1.0) - uvMin;
 
-    // Old Kernal Rotation Code.
-    // Avoid floor(receiverPos*32): small camera moves would snap rotation and cause banding.
-    float rotation = hash13(receiverPos * 0.754877666 + vec3(float(mapIndex), float(shadowType), 0.0)) * 6.28318530718;
+    vec2 pixel = floor(gl_FragCoord.xy);
+    vec3 seed = vec3(
+        pixel.x + float(mapIndex) * 17.0,
+        pixel.y + float(shadowType) * 31.0,
+        float(mapIndex) * 13.0 + float(shadowType) * 7.0
+    );
+    float rotation = hash13(seed) * 6.28318530718;
     mat2 kernelRot = rotate2D(rotation);
-
-    //vec3 seed = vec3(gl_FragCoord.xy, float(mapIndex));
-    //float rotation = hash13(seed) * 6.28318530718;
-    //mat2 kernelRot = rotate2D(rotation);
 
     if(shadowType == 0){
         return compareShadowDepth2D(mapIndex, clamp(projCoords.xy, uvMin, uvMax), compareDepth);
@@ -235,7 +243,7 @@ float sampleShadow2D(int shadowType, int mapIndex, vec4 lightSpacePos, float bia
             vec2 tapOffset = (kernelRot * kernel[i]) * pcfTexel * 1.00;
             vec2 sampleUv = clamp(projCoords.xy + tapOffset, uvMin, uvMax);
             float weight = 1.0 - smoothstep(0.75, 1.10, length(kernel[i]));
-            float receiverOffset = clamp(dot(receiverDepthGrad, tapOffset), -0.0012 * clampedFilterScale, 0.0012 * clampedFilterScale);
+            float receiverOffset = clamp(dot(receiverDepthGrad, tapOffset), -0.00045 * clampedFilterScale, 0.00045 * clampedFilterScale);
             float compareDepthTap = clamp(compareDepth + receiverOffset, 0.0, 1.0);
             shadow += compareShadowDepth2D(mapIndex, sampleUv, compareDepthTap) * weight;
             weightSum += weight;
@@ -256,7 +264,7 @@ float sampleShadow2D(int shadowType, int mapIndex, vec4 lightSpacePos, float bia
             vec2 tapOffset = (kernelRot * kernel[i]) * pcfTexel * 1.55;
             vec2 sampleUv = clamp(projCoords.xy + tapOffset, uvMin, uvMax);
             float weight = 1.0 - smoothstep(0.70, 1.15, length(kernel[i]));
-            float receiverOffset = clamp(dot(receiverDepthGrad, tapOffset), -0.0020 * clampedFilterScale, 0.0020 * clampedFilterScale);
+            float receiverOffset = clamp(dot(receiverDepthGrad, tapOffset), -0.00075 * clampedFilterScale, 0.00075 * clampedFilterScale);
             float compareDepthTap = clamp(compareDepth + receiverOffset, 0.0, 1.0);
             shadow += compareShadowDepth2D(mapIndex, sampleUv, compareDepthTap) * weight;
             weightSum += weight;
@@ -418,6 +426,9 @@ vec3 offsetShadowReceiver(Light light, vec3 normal, vec3 fragPos){
 vec3 computeShadowNormal(vec3 shadingNormal, vec3 fragPos){
     vec3 baseN = safeNormalize(shadingNormal);
     float blend = clamp(u_shadowReceiverNormalBlend, 0.0, 1.0);
+    // Position-from-depth derivatives get noisy at distance; cap geometric
+    // influence to avoid large-scale shadow instability on flat receivers.
+    blend = min(blend, 0.22);
     if(blend <= 0.0){
         return baseN;
     }
@@ -432,7 +443,15 @@ vec3 computeShadowNormal(vec3 shadingNormal, vec3 fragPos){
     if(dot(geomN, baseN) < -0.02){
         geomN = -geomN;
     }
-    return safeNormalize(mix(baseN, geomN, blend));
+    float align = abs(dot(baseN, geomN));
+    float alignWeight = smoothstep(0.55, 0.98, align);
+    float viewDepth = max(-(u_cameraView * vec4(fragPos, 1.0)).z, 0.0);
+    float depthWeight = 1.0 - smoothstep(25.0, 140.0, viewDepth);
+    float effectiveBlend = blend * alignWeight * depthWeight;
+    if(effectiveBlend <= 1e-4){
+        return baseN;
+    }
+    return safeNormalize(mix(baseN, geomN, effectiveBlend));
 }
 
 float sampleShadowForLight(int lightIndex, Light light, vec3 normal, vec3 fragPos){
@@ -473,18 +492,15 @@ float sampleShadowForLight(int lightIndex, Light light, vec3 normal, vec3 fragPo
 
     int cascadeCount = clamp(int(light.shadow.z + 0.5), 1, 4);
     int cascadeIndex = 0;
-    float viewDepth = -(u_cameraView * vec4(receiverPos, 1.0)).z;
-    float farSplit = light.cascadeSplits[cascadeCount - 1];
-    float stableStep = max(1.0, farSplit * 0.018);
-    float viewDepthStable = floor(viewDepth / stableStep) * stableStep;
+    // Pick cascades from the unoffset receiver depth to avoid bias-driven cascade jitter.
+    float viewDepth = -(u_cameraView * vec4(fragPos, 1.0)).z;
     if(cascadeCount > 1){
         for(int c = 0; c < 3; ++c){
             if(c >= (cascadeCount - 1)){
                 break;
             }
             float split = light.cascadeSplits[c];
-            float margin = max(0.5, split * 0.015);
-            if(viewDepthStable > split + margin){
+            if(viewDepth > split){
                 cascadeIndex = c + 1;
             }else{
                 break;
@@ -507,8 +523,10 @@ float sampleShadowForLight(int lightIndex, Light light, vec3 normal, vec3 fragPo
         float splitDist = light.cascadeSplits[cascadeIndex];
         float prevSplit = (cascadeIndex > 0) ? light.cascadeSplits[cascadeIndex - 1] : 0.0;
         float cascadeSpan = max(splitDist - prevSplit, 0.001);
-        float maxBlendRange = max(16.0, splitDist * 0.50);
-        float blendRange = clamp(cascadeSpan * 0.70, 2.0, maxBlendRange);
+        float blendFrac = (shadowType == 0) ? 0.12 : 0.30;
+        float minBlend = (shadowType == 0) ? 0.75 : 1.50;
+        float maxBlendRange = max((shadowType == 0) ? 3.5 : 8.0, splitDist * ((shadowType == 0) ? 0.10 : 0.25));
+        float blendRange = clamp(cascadeSpan * blendFrac, minBlend, maxBlendRange);
         float blendStart = splitDist - blendRange;
         float blendT = clamp((viewDepth - blendStart) / blendRange, 0.0, 1.0);
         if(blendT > 0.0){
@@ -621,9 +639,8 @@ void main(){
     vec4 albedoRough = texture(gAlbedo, v_uv);
     vec4 normalMetal = texture(gNormal, v_uv);
     vec4 materialData = texture(gMaterial, v_uv);
-    // Bilinear depth sample avoids step discontinuities at pixel boundaries that cause
-    // horizontal banding (shadow acne) on flat surfaces with position-from-depth.
-    float depth = texture(gDepth, v_uv).r;
+    ivec2 deferredPixel = getDeferredPixelCoord(v_uv);
+    float depth = texelFetch(gDepth, deferredPixel, 0).r;
     vec2 aoEnv = unpackAoEnv(materialData.a);
 
     vec3 albedo = albedoRough.rgb;
@@ -827,18 +844,14 @@ void main(){
             vec3 shadowPosDebug = offsetShadowReceiver(light, shadowNormal, fragPos);
             int cascadeCountDebug = clamp(int(light.shadow.z + 0.5), 1, 4);
             int cascadeIndexDebug = 0;
-            float viewDepthDebug = -(u_cameraView * vec4(shadowPosDebug, 1.0)).z;
-            float farSplitD = light.cascadeSplits[cascadeCountDebug - 1];
-            float stableStepD = max(1.0, farSplitD * 0.018);
-            float viewDepthStableD = floor(viewDepthDebug / stableStepD) * stableStepD;
+            float viewDepthDebug = -(u_cameraView * vec4(fragPos, 1.0)).z;
             if(cascadeCountDebug > 1){
                 for(int c = 0; c < 3; ++c){
                     if(c >= (cascadeCountDebug - 1)){
                         break;
                     }
                     float splitD = light.cascadeSplits[c];
-                    float marginD = max(0.5, splitD * 0.015);
-                    if(viewDepthStableD > splitD + marginD){
+                    if(viewDepthDebug > splitD){
                         cascadeIndexDebug = c + 1;
                     }else{
                         break;
@@ -933,5 +946,3 @@ void main(){
     }
     FragColor = vec4(max(color, vec3(0.0)), ao);
 }
-
-

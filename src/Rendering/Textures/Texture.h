@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "Assets/Core/Asset.h"
+#include "Foundation/Math/Color.h"
 
 namespace Graphics { // Hollow Structure of the Graphics Class.
     namespace Image{
@@ -19,6 +20,18 @@ namespace Graphics { // Hollow Structure of the Graphics Class.
         class BufferedImage;
     }
 }
+
+enum class TextureFilterMode{
+    NEAREST,
+    LINEAR,
+    TRILINEAR
+};
+
+enum class TextureWrapMode{
+    REPEAT,
+    CLAMP_EDGE,
+    CLAMP_BORDER
+};
 
 /// @brief Represents the Texture type.
 class Texture{
@@ -42,6 +55,9 @@ class Texture{
         void bind(unsigned int slot = 0) const;
         void unbind() const;
         void dispose();
+        void setFilterMode(TextureFilterMode mode, bool generateMipmaps = false);
+        void setWrapMode(TextureWrapMode mode);
+        void setBorderColor(const Color& color);
 
         inline int getWidth() {return this->width;}
         inline int getHeight() {return this->height;}
@@ -53,15 +69,36 @@ class Texture{
 
         static std::shared_ptr<Texture> Load(PAsset asset, GLenum imageHint = GL_TEXTURE_2D, bool flipVertically = true);
         static std::shared_ptr<Graphics::Image::Image> LoadImage(PAsset asset, bool flipVertically = true);
-        static std::shared_ptr<Texture> CreateEmpty(int width, int height);
+        static std::shared_ptr<Texture> CreateEmpty(
+            int width,
+            int height,
+            TextureFilterMode filterMode = TextureFilterMode::NEAREST,
+            TextureWrapMode wrapMode = TextureWrapMode::CLAMP_EDGE
+        );
         static std::shared_ptr<Texture> CreateRenderTarget(
             int width,
             int height,
             GLenum internalFormat = GL_RGBA16F,
             GLenum format = GL_RGBA,
-            GLenum type = GL_FLOAT
+            GLenum type = GL_FLOAT,
+            TextureFilterMode filterMode = TextureFilterMode::NEAREST,
+            TextureWrapMode wrapMode = TextureWrapMode::CLAMP_EDGE
         );
-        static std::shared_ptr<Texture> CreateFromAlphaBuffer(int width, int height, const unsigned char* alphaData);
+        static std::shared_ptr<Texture> CreateDepthTarget(
+            int width,
+            int height,
+            GLenum internalFormat = GL_DEPTH_COMPONENT32F,
+            GLenum type = GL_FLOAT,
+            TextureFilterMode filterMode = TextureFilterMode::NEAREST,
+            TextureWrapMode wrapMode = TextureWrapMode::CLAMP_EDGE
+        );
+        static std::shared_ptr<Texture> CreateFromAlphaBuffer(
+            int width,
+            int height,
+            const unsigned char* alphaData,
+            TextureFilterMode filterMode = TextureFilterMode::LINEAR,
+            TextureWrapMode wrapMode = TextureWrapMode::CLAMP_EDGE
+        );
         static std::shared_ptr<Texture> CreateFromExisting(GLuint id, int width, int height, bool owns = false);
         static void FlushPendingDeletes();
 
