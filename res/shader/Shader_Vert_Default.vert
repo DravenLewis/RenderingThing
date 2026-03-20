@@ -8,10 +8,14 @@ layout (location = 3) in vec2 aTexCoord;
 uniform mat4 u_model;
 uniform mat4 u_view;
 uniform mat4 u_projection;
+uniform int u_useUserClipPlane;
+uniform vec4 u_userClipPlane;
 
 out vec2 v_uv;
     
 void main() {
     v_uv = aTexCoord;
-    gl_Position = u_projection * u_view * u_model * vec4(aPos, 1.0);
+    vec4 worldPos = u_model * vec4(aPos, 1.0);
+    gl_ClipDistance[0] = (u_useUserClipPlane != 0) ? dot(worldPos, u_userClipPlane) : 1.0;
+    gl_Position = u_projection * u_view * worldPos;
 }

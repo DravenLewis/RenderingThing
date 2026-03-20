@@ -17,6 +17,7 @@
 #include "Platform/Input/InputManager.h"
 #include "Rendering/Geometry/Model.h"
 #include "Rendering/Lighting/DeferredScreenGI.h"
+#include "Rendering/Lighting/DeferredSSR.h"
 #include "Rendering/Lighting/DeferredSSAO.h"
 #include "Rendering/Lighting/Light.h"
 #include "neoecs.hpp"
@@ -242,6 +243,7 @@ class Scene : public View {
             bool enableBackfaceCulling = true;
             bool isTransparent = false;
             bool isDeferredCompatible = false;
+            bool planarReflectionSource = false;
             std::string entityId;
             bool ignoreRaycastHit = false;
             bool castsShadows = true;
@@ -250,9 +252,24 @@ class Scene : public View {
             Math3D::Vec3 boundsMax = Math3D::Vec3(0.0f, 0.0f, 0.0f);
         };
 
+        /// @brief Holds data for ReflectionProbeSnapshot.
+        struct ReflectionProbeSnapshot {
+            std::string entityId;
+            int resolution = 128;
+            int priority = 0;
+            bool autoUpdate = false;
+            int updateIntervalFrames = 30;
+            Math3D::Vec3 center = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+            Math3D::Vec3 captureBoundsMin = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+            Math3D::Vec3 captureBoundsMax = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+            Math3D::Vec3 influenceBoundsMin = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+            Math3D::Vec3 influenceBoundsMax = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+        };
+
         /// @brief Holds data for RenderSnapshot.
         struct RenderSnapshot {
             std::vector<RenderItem> drawItems;
+            std::vector<ReflectionProbeSnapshot> reflectionProbes;
             std::vector<Light> lights;
         };
 
@@ -290,8 +307,44 @@ class Scene : public View {
         NeoECS::ECSEntity* activeCameraEntity = nullptr;
         std::shared_ptr<DeferredSSAO> deferredSsaoPass;
         std::shared_ptr<DeferredScreenGI> deferredScreenGiPass;
+        std::shared_ptr<DeferredSSR> deferredSsrPass;
+        struct PlanarReflectionSurface {
+            PFrameBuffer buffer = nullptr;
+            std::string entityId;
+            Math3D::Vec3 center = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+            Math3D::Vec3 normal = Math3D::Vec3(0.0f, 1.0f, 0.0f);
+            Math3D::Mat4 viewProjection;
+            float strength = 1.0f;
+            float receiverFadeDistance = 1.0f;
+            bool valid = false;
+        };
+        PlanarReflectionSurface activePlanarReflection{};
+        bool userClipPlaneActive = false;
+        Math3D::Vec4 userClipPlane = Math3D::Vec4(0.0f, 1.0f, 0.0f, 0.0f);
+        struct LocalReflectionProbe {
+            PCubeMap cubeMap = nullptr;
+            unsigned int captureFbo = 0;
+            unsigned int captureDepthRenderBuffer = 0;
+            int faceSize = 0;
+            bool valid = false;
+            std::string anchorEntityId;
+            Math3D::Vec3 center = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+            Math3D::Vec3 captureBoundsMin = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+            Math3D::Vec3 captureBoundsMax = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+            Math3D::Vec3 influenceBoundsMin = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+            Math3D::Vec3 influenceBoundsMax = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+            unsigned long long lastUpdateFrame = 0;
+        };
+        LocalReflectionProbe deferredLocalReflectionProbe{};
+        bool localReflectionProbeCaptureActive = false;
+        unsigned long long reflectionCaptureFrameCounter = 0;
+        PFrameBuffer transparentSsrSourceBuffer;
+        DeferredSSRSettings transparentSsrSettings{};
+        bool transparentSsrEnabled = false;
         bool hasDeferredSsaoOverride = false;
         DeferredSSAOSettings deferredSsaoOverrideSettings{};
+        bool hasDeferredSsrOverride = false;
+        DeferredSSRSettings deferredSsrOverrideSettings{};
 
         /// @brief Enumerates values for RenderFilter.
         enum class RenderFilter{
@@ -354,6 +407,16 @@ class Scene : public View {
                                          NeoECS::ECSEntity* cameraEntity,
                                          DeferredSSAOSettings& outSettings) const;
         /**
+         * @brief Resolves deferred SSR settings for the active camera.
+         * @param manager ECS component manager.
+         * @param cameraEntity Camera entity to inspect.
+         * @param outSettings Output settings when SSR is enabled.
+         * @return True when deferred SSR should run.
+         */
+        bool resolveDeferredSsrSettings(NeoECS::ECSComponentManager* manager,
+                                        NeoECS::ECSEntity* cameraEntity,
+                                        DeferredSSRSettings& outSettings) const;
+        /**
          * @brief Rebuilds post-process effects for the active camera.
          * @param activeCameraEntity Active camera entity.
          * @param manager ECS component manager.
@@ -363,7 +426,7 @@ class Scene : public View {
          * @brief Draws geometry into deferred G-buffer targets.
          * @param cam Active camera.
          */
-        void drawDeferredGeometry(PCamera cam);
+        void drawDeferredGeometry(PCamera cam, const std::string* excludedEntityId = nullptr);
         /**
          * @brief Executes deferred lighting over the populated G-buffer.
          * @param screen Destination screen.
@@ -376,6 +439,13 @@ class Scene : public View {
                                   const DeferredSSAOSettings* ssaoSettings = nullptr,
                                   PTexture giTexture = nullptr,
                                   int lightPassMode = 0);
+        bool ensureLocalReflectionProbeResources(int faceSize);
+        void clearLocalReflectionProbe();
+        void releaseLocalReflectionProbeResources();
+        void clearPlanarReflection();
+        bool ensurePlanarReflectionResources(int width, int height);
+        bool updatePlanarReflection(PScreen screen, PCamera cam);
+        bool updateLocalReflectionProbe(PScreen screen, PCamera cam);
         /**
          * @brief Runs the full deferred rendering pipeline.
          * @param screen Destination screen.
@@ -402,8 +472,12 @@ class Scene : public View {
          * @param cam Active camera.
          * @param filter Opaque/transparent filter selection.
          * @param skipDeferredCompatible True to skip deferred-compatible items.
+         * @param excludedEntityId Optional entity id to exclude from the draw.
          */
-        void drawModels3D(PCamera cam, RenderFilter filter = RenderFilter::All, bool skipDeferredCompatible = false);
+        void drawModels3D(PCamera cam,
+                          RenderFilter filter = RenderFilter::All,
+                          bool skipDeferredCompatible = false,
+                          const std::string* excludedEntityId = nullptr);
         /**
          * @brief Renders shadow maps for shadow-casting lights.
          */

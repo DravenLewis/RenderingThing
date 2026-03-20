@@ -181,10 +181,8 @@ inline bool Combo(const char* label, int* currentItem, const char* const items[]
 
 inline bool BeginCombo(const char* label, const char* previewValue, ImGuiComboFlags flags = ImGuiComboFlags_None){
     DrawLabel(label);
-    ImGui::PushItemWidth(GetFieldWidth());
-    const bool opened = ImGui::BeginCombo(HiddenLabel(label).c_str(), previewValue, flags);
-    ImGui::PopItemWidth();
-    return opened;
+    ImGui::SetNextItemWidth(GetFieldWidth());
+    return ImGui::BeginCombo(HiddenLabel(label).c_str(), previewValue, flags);
 }
 
 } // namespace EditorPropertyUI

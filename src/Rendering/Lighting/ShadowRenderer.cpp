@@ -23,7 +23,11 @@
 namespace {
     constexpr int MAX_SHADOW_MAPS_2D = 16;
     constexpr int MAX_SHADOW_MAPS_CUBE = 2;
-    constexpr int SHADOW_TEX_UNIT_BASE_2D = 8;
+    // Reserve units 8-11 for reflection inputs used by forward/deferred composites:
+    // 8 = scene color / planar fallback, 9 = scene depth / deferred local probe,
+    // 10 = planar reflection, 11 = forward local probe.
+    // Shadow samplers must stay above those slots or reflection captures can stomp shadow bindings.
+    constexpr int SHADOW_TEX_UNIT_BASE_2D = 12;
     // Hybrid defaults: keep high-quality directional/spot shadows, trim point shadows first.
     constexpr int SHADOW_MAP_SIZE_DIRECTIONAL = 4096;
     constexpr int SHADOW_MAP_SIZE_SPOT = 1536;

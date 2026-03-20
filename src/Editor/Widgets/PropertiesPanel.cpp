@@ -28,6 +28,7 @@ namespace {
     enum class AddComponentKind {
         Transform,
         MeshRenderer,
+        ReflectionProbe,
         Light,
         Bounds,
         Collider,
@@ -138,6 +139,14 @@ namespace {
                     return fail("Failed to ensure Transform Component.");
                 }
                 return wrapper->addComponent<MeshRendererComponent>();
+            case AddComponentKind::ReflectionProbe:
+                if(hasComponent<ReflectionProbeComponent>(manager, entity)){
+                    return fail("Reflection Probe Component already exists.");
+                }
+                if(!ensureTransformComponent(wrapper.get(), manager, entity)){
+                    return fail("Reflection Probe requires Transform Component.");
+                }
+                return wrapper->addComponent<ReflectionProbeComponent>();
             case AddComponentKind::Light:
                 if(hasComponent<LightComponent>(manager, entity)){
                     return fail("Light Component already exists.");
@@ -198,6 +207,12 @@ namespace {
                     wrapper->addComponent<SSAOComponent>();
                     if(auto* ssaoComp = manager->getECSComponent<SSAOComponent>(entity)){
                         ssaoComp->enabled = false;
+                    }
+                }
+                if(!hasComponent<SSRComponent>(manager, entity)){
+                    wrapper->addComponent<SSRComponent>();
+                    if(auto* ssrComp = manager->getECSComponent<SSRComponent>(entity)){
+                        ssrComp->enabled = false;
                     }
                 }
                 return true;
@@ -426,6 +441,9 @@ void PropertiesPanel::draw(float x,
             if(hasCameraComponent && dynamic_cast<SSAOComponent*>(component)){
                 continue;
             }
+            if(hasCameraComponent && dynamic_cast<SSRComponent*>(component)){
+                continue;
+            }
             if(editorComponentPtr->isEditorHidden() && !showHiddenComponents){
                 continue;
             }
@@ -454,6 +472,7 @@ void PropertiesPanel::draw(float x,
             addComponentPopupOpen = true;
             const bool hasTransform = (componentMgr->getECSComponent<TransformComponent>(entity) != nullptr);
             const bool hasMesh = (componentMgr->getECSComponent<MeshRendererComponent>(entity) != nullptr);
+            const bool hasReflectionProbe = (componentMgr->getECSComponent<ReflectionProbeComponent>(entity) != nullptr);
             const bool hasLight = (componentMgr->getECSComponent<LightComponent>(entity) != nullptr);
             const bool hasBounds = (componentMgr->getECSComponent<BoundsComponent>(entity) != nullptr);
             const bool hasCollider = (componentMgr->getECSComponent<ColliderComponent>(entity) != nullptr);
@@ -499,6 +518,7 @@ void PropertiesPanel::draw(float x,
 
             if(ImGui::BeginMenu("Rendering")){
                 drawAddMenuItem("Mesh Renderer Component", AddComponentKind::MeshRenderer, !hasMesh, "Already added");
+                drawAddMenuItem("Reflection Probe Component", AddComponentKind::ReflectionProbe, !hasReflectionProbe, "Already added");
                 ImGui::EndMenu();
             }
 

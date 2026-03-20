@@ -49,6 +49,12 @@ void MaterialRegistry::ensureBuiltIns(){
     builtInFactories.push_back({"Builtin/PBR", [](){
         return std::static_pointer_cast<Material>(PBRMaterial::Create(Color::WHITE));
     }});
+    builtInFactories.push_back({"Builtin/Glass", [](){
+        return std::static_pointer_cast<Material>(PBRMaterial::CreateGlass());
+    }});
+    builtInFactories.push_back({"Builtin/Water", [](){
+        return std::static_pointer_cast<Material>(PBRMaterial::CreateWater());
+    }});
     builtInFactories.push_back({"Builtin/Color", [](){
         return std::static_pointer_cast<Material>(MaterialDefaults::ColorMaterial::Create(Color::WHITE));
     }});

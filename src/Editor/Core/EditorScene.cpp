@@ -191,6 +191,8 @@ namespace {
         if(dynamic_cast<const SkyboxComponent*>(component)){ return "SkyboxComponent"; }
         if(dynamic_cast<const EnvironmentComponent*>(component)){ return "EnvironmentComponent"; }
         if(dynamic_cast<const SSAOComponent*>(component)){ return "SSAOComponent"; }
+        if(dynamic_cast<const SSRComponent*>(component)){ return "SSRComponent"; }
+        if(dynamic_cast<const ReflectionProbeComponent*>(component)){ return "ReflectionProbeComponent"; }
         if(dynamic_cast<const DepthOfFieldComponent*>(component)){ return "DepthOfFieldComponent"; }
         if(dynamic_cast<const BloomComponent*>(component)){ return "BloomComponent"; }
         if(dynamic_cast<const LensFlareComponent*>(component)){ return "LensFlareComponent"; }
@@ -218,6 +220,8 @@ namespace {
         if(typeName == "SkyboxComponent"){ manager->removeECSComponent<SkyboxComponent>(entity); return true; }
         if(typeName == "EnvironmentComponent"){ manager->removeECSComponent<EnvironmentComponent>(entity); return true; }
         if(typeName == "SSAOComponent"){ manager->removeECSComponent<SSAOComponent>(entity); return true; }
+        if(typeName == "SSRComponent"){ manager->removeECSComponent<SSRComponent>(entity); return true; }
+        if(typeName == "ReflectionProbeComponent"){ manager->removeECSComponent<ReflectionProbeComponent>(entity); return true; }
         if(typeName == "DepthOfFieldComponent"){ manager->removeECSComponent<DepthOfFieldComponent>(entity); return true; }
         if(typeName == "BloomComponent"){ manager->removeECSComponent<BloomComponent>(entity); return true; }
         if(typeName == "LensFlareComponent"){ manager->removeECSComponent<LensFlareComponent>(entity); return true; }
@@ -2186,6 +2190,11 @@ void EditorScene::applyActiveSceneState(){
             if(!manager->getECSComponent<SSAOComponent>(editorEntity) && editorCameraObject->addComponent<SSAOComponent>()){
                 if(auto* ssao = manager->getECSComponent<SSAOComponent>(editorEntity)){
                     SetComponentActive(ssao, false);
+                }
+            }
+            if(!manager->getECSComponent<SSRComponent>(editorEntity) && editorCameraObject->addComponent<SSRComponent>()){
+                if(auto* ssr = manager->getECSComponent<SSRComponent>(editorEntity)){
+                    SetComponentActive(ssr, false);
                 }
             }
             if(!manager->getECSComponent<BloomComponent>(editorEntity) && editorCameraObject->addComponent<BloomComponent>()){

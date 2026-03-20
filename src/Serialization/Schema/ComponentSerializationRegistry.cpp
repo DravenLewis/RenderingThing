@@ -536,7 +536,14 @@ bool captureEmbeddedMaterialData(const std::shared_ptr<Material>& material, Mate
     outData.receivesShadows = material->receivesShadows();
 
     if(auto pbr = Material::GetAs<PBRMaterial>(material)){
-        outData.type = MaterialAssetType::PBR;
+        const int bsdfModel = Math3D::Clamp(pbr->BsdfModel.get(), 0, 2);
+        if(bsdfModel == static_cast<int>(PBRBsdfModel::Glass)){
+            outData.type = MaterialAssetType::Glass;
+        }else if(bsdfModel == static_cast<int>(PBRBsdfModel::Water)){
+            outData.type = MaterialAssetType::Water;
+        }else{
+            outData.type = MaterialAssetType::PBR;
+        }
         outData.color = pbr->BaseColor.get();
         outData.metallic = pbr->Metallic.get();
         outData.roughness = pbr->Roughness.get();
@@ -551,6 +558,21 @@ bool captureEmbeddedMaterialData(const std::shared_ptr<Material>& material, Mate
         outData.uvOffset = pbr->UVOffset.get();
         outData.alphaCutoff = pbr->AlphaCutoff.get();
         outData.useAlphaClip = pbr->UseAlphaClip.get();
+        outData.transmission = pbr->Transmission.get();
+        outData.ior = pbr->Ior.get();
+        outData.thickness = pbr->Thickness.get();
+        outData.attenuationColor = pbr->AttenuationColor.get();
+        outData.attenuationDistance = pbr->AttenuationDistance.get();
+        outData.scatteringStrength = pbr->ScatteringStrength.get();
+        outData.enableWaveDisplacement = pbr->EnableWaveDisplacement.get();
+        outData.waveAmplitude = pbr->WaveAmplitude.get();
+        outData.waveFrequency = pbr->WaveFrequency.get();
+        outData.waveSpeed = pbr->WaveSpeed.get();
+        outData.waveChoppiness = pbr->WaveChoppiness.get();
+        outData.waveSecondaryScale = pbr->WaveSecondaryScale.get();
+        outData.waveDirection = pbr->WaveDirection.get();
+        outData.waveTextureInfluence = pbr->WaveTextureInfluence.get();
+        outData.waveTextureSpeed = pbr->WaveTextureSpeed.get();
         outData.baseColorTexRef = textureSourceRef(pbr->BaseColorTex.get());
         outData.roughnessTexRef = textureSourceRef(pbr->RoughnessTex.get());
         outData.metallicRoughnessTexRef = textureSourceRef(pbr->MetallicRoughnessTex.get());
@@ -626,6 +648,21 @@ bool writeEmbeddedMaterialDataField(const MaterialAssetData& data,
        !JsonUtils::MutObjAddVec2(doc, materialObj, "uvOffset", data.uvOffset) ||
        !JsonUtils::MutObjAddFloat(doc, materialObj, "alphaCutoff", data.alphaCutoff) ||
        !JsonUtils::MutObjAddInt(doc, materialObj, "useAlphaClip", data.useAlphaClip) ||
+       !JsonUtils::MutObjAddFloat(doc, materialObj, "transmission", data.transmission) ||
+       !JsonUtils::MutObjAddFloat(doc, materialObj, "ior", data.ior) ||
+       !JsonUtils::MutObjAddFloat(doc, materialObj, "thickness", data.thickness) ||
+       !JsonUtils::MutObjAddVec3(doc, materialObj, "attenuationColor", data.attenuationColor) ||
+       !JsonUtils::MutObjAddFloat(doc, materialObj, "attenuationDistance", data.attenuationDistance) ||
+       !JsonUtils::MutObjAddFloat(doc, materialObj, "scatteringStrength", data.scatteringStrength) ||
+       !JsonUtils::MutObjAddInt(doc, materialObj, "enableWaveDisplacement", data.enableWaveDisplacement) ||
+       !JsonUtils::MutObjAddFloat(doc, materialObj, "waveAmplitude", data.waveAmplitude) ||
+       !JsonUtils::MutObjAddFloat(doc, materialObj, "waveFrequency", data.waveFrequency) ||
+       !JsonUtils::MutObjAddFloat(doc, materialObj, "waveSpeed", data.waveSpeed) ||
+       !JsonUtils::MutObjAddFloat(doc, materialObj, "waveChoppiness", data.waveChoppiness) ||
+       !JsonUtils::MutObjAddFloat(doc, materialObj, "waveSecondaryScale", data.waveSecondaryScale) ||
+       !JsonUtils::MutObjAddVec2(doc, materialObj, "waveDirection", data.waveDirection) ||
+       !JsonUtils::MutObjAddFloat(doc, materialObj, "waveTextureInfluence", data.waveTextureInfluence) ||
+       !JsonUtils::MutObjAddVec2(doc, materialObj, "waveTextureSpeed", data.waveTextureSpeed) ||
        !JsonUtils::MutObjAddString(doc, materialObj, "baseColorTexRef", data.baseColorTexRef) ||
        !JsonUtils::MutObjAddString(doc, materialObj, "roughnessTexRef", data.roughnessTexRef) ||
        !JsonUtils::MutObjAddString(doc, materialObj, "metallicRoughnessTexRef", data.metallicRoughnessTexRef) ||
@@ -672,6 +709,21 @@ bool tryReadEmbeddedMaterialDataField(JsonUtils::JsonVal* partObj, MaterialAsset
     JsonUtils::TryGetVec2(materialObj, "uvOffset", outData.uvOffset);
     JsonUtils::TryGetFloat(materialObj, "alphaCutoff", outData.alphaCutoff);
     JsonUtils::TryGetInt(materialObj, "useAlphaClip", outData.useAlphaClip);
+    JsonUtils::TryGetFloat(materialObj, "transmission", outData.transmission);
+    JsonUtils::TryGetFloat(materialObj, "ior", outData.ior);
+    JsonUtils::TryGetFloat(materialObj, "thickness", outData.thickness);
+    JsonUtils::TryGetVec3(materialObj, "attenuationColor", outData.attenuationColor);
+    JsonUtils::TryGetFloat(materialObj, "attenuationDistance", outData.attenuationDistance);
+    JsonUtils::TryGetFloat(materialObj, "scatteringStrength", outData.scatteringStrength);
+    JsonUtils::TryGetInt(materialObj, "enableWaveDisplacement", outData.enableWaveDisplacement);
+    JsonUtils::TryGetFloat(materialObj, "waveAmplitude", outData.waveAmplitude);
+    JsonUtils::TryGetFloat(materialObj, "waveFrequency", outData.waveFrequency);
+    JsonUtils::TryGetFloat(materialObj, "waveSpeed", outData.waveSpeed);
+    JsonUtils::TryGetFloat(materialObj, "waveChoppiness", outData.waveChoppiness);
+    JsonUtils::TryGetFloat(materialObj, "waveSecondaryScale", outData.waveSecondaryScale);
+    JsonUtils::TryGetVec2(materialObj, "waveDirection", outData.waveDirection);
+    JsonUtils::TryGetFloat(materialObj, "waveTextureInfluence", outData.waveTextureInfluence);
+    JsonUtils::TryGetVec2(materialObj, "waveTextureSpeed", outData.waveTextureSpeed);
     JsonUtils::TryGetString(materialObj, "baseColorTexRef", outData.baseColorTexRef);
     JsonUtils::TryGetString(materialObj, "roughnessTexRef", outData.roughnessTexRef);
     JsonUtils::TryGetString(materialObj, "metallicRoughnessTexRef", outData.metallicRoughnessTexRef);
@@ -1075,7 +1127,7 @@ bool registerDefaultBoundsSerializer(Serialization::ComponentSerializationRegist
 bool registerDefaultMeshRendererSerializer(Serialization::ComponentSerializationRegistry& registry, std::string* outError){
     return registry.registerTypedSerializer<MeshRendererComponent>(
         "MeshRendererComponent",
-        3,
+        4,
         [](const MeshRendererComponent& component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* error) -> bool {
             std::string modelSourceRef = component.modelSourceRef;
             bool modelForceSmoothNormals = (component.modelForceSmoothNormals != 0);
@@ -1093,6 +1145,7 @@ bool registerDefaultMeshRendererSerializer(Serialization::ComponentSerialization
 
             if(!JsonUtils::MutObjAddBool(doc, payload, "visible", component.visible) ||
                !JsonUtils::MutObjAddBool(doc, payload, "enableBackfaceCulling", component.enableBackfaceCulling) ||
+               !JsonUtils::MutObjAddBool(doc, payload, "planarReflectionSurface", component.planarReflectionSurface) ||
                !JsonUtils::MutObjAddString(doc, payload, "modelAssetRef", component.modelAssetRef) ||
                !JsonUtils::MutObjAddString(doc, payload, "modelSourceRef", modelSourceRef) ||
                !JsonUtils::MutObjAddBool(doc, payload, "modelForceSmoothNormals", modelForceSmoothNormals) ||
@@ -1140,6 +1193,7 @@ bool registerDefaultMeshRendererSerializer(Serialization::ComponentSerialization
             (void)version;
             JsonUtils::TryGetBool(payload, "visible", component.visible);
             JsonUtils::TryGetBool(payload, "enableBackfaceCulling", component.enableBackfaceCulling);
+            JsonUtils::TryGetBool(payload, "planarReflectionSurface", component.planarReflectionSurface);
             JsonUtils::TryGetString(payload, "modelAssetRef", component.modelAssetRef);
             JsonUtils::TryGetString(payload, "modelSourceRef", component.modelSourceRef);
             bool modelForceSmoothNormals = (component.modelForceSmoothNormals != 0);
@@ -1696,6 +1750,91 @@ bool registerDefaultSsaoSerializer(Serialization::ComponentSerializationRegistry
     );
 }
 
+bool registerDefaultSsrSerializer(Serialization::ComponentSerializationRegistry& registry, std::string* outError){
+    return registry.registerTypedSerializer<SSRComponent>(
+        "SSRComponent",
+        1,
+        [](const SSRComponent& component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* error) -> bool {
+            return JsonUtils::MutObjAddBool(doc, payload, "enabled", component.enabled) &&
+                   JsonUtils::MutObjAddFloat(doc, payload, "intensity", component.intensity) &&
+                   JsonUtils::MutObjAddFloat(doc, payload, "maxDistance", component.maxDistance) &&
+                   JsonUtils::MutObjAddFloat(doc, payload, "thickness", component.thickness) &&
+                   JsonUtils::MutObjAddFloat(doc, payload, "stride", component.stride) &&
+                   JsonUtils::MutObjAddFloat(doc, payload, "jitter", component.jitter) &&
+                   JsonUtils::MutObjAddInt(doc, payload, "maxSteps", component.maxSteps) &&
+                   JsonUtils::MutObjAddFloat(doc, payload, "roughnessCutoff", component.roughnessCutoff) &&
+                   JsonUtils::MutObjAddFloat(doc, payload, "edgeFade", component.edgeFade) &&
+                   JsonUtils::MutObjAddBool(doc, payload, "useCameraReflectionCache", component.useCameraReflectionCache) &&
+                   JsonUtils::MutObjAddInt(doc, payload, "cameraReflectionUpdateInterval", component.cameraReflectionUpdateInterval) &&
+                   JsonUtils::MutObjAddFloat(doc, payload, "cameraReflectionInfluenceRadius", component.cameraReflectionInfluenceRadius) &&
+                   writeEditorComponentStateFields(component, doc, payload, error);
+        },
+        [](SSRComponent& component, JsonUtils::JsonVal* payload, int version, std::string* error) -> bool {
+            (void)version;
+            (void)error;
+            JsonUtils::TryGetBool(payload, "enabled", component.enabled);
+            JsonUtils::TryGetFloat(payload, "intensity", component.intensity);
+            JsonUtils::TryGetFloat(payload, "maxDistance", component.maxDistance);
+            JsonUtils::TryGetFloat(payload, "thickness", component.thickness);
+            JsonUtils::TryGetFloat(payload, "stride", component.stride);
+            JsonUtils::TryGetFloat(payload, "jitter", component.jitter);
+            JsonUtils::TryGetInt(payload, "maxSteps", component.maxSteps);
+            JsonUtils::TryGetFloat(payload, "roughnessCutoff", component.roughnessCutoff);
+            JsonUtils::TryGetFloat(payload, "edgeFade", component.edgeFade);
+            JsonUtils::TryGetBool(payload, "useCameraReflectionCache", component.useCameraReflectionCache);
+            JsonUtils::TryGetInt(payload, "cameraReflectionUpdateInterval", component.cameraReflectionUpdateInterval);
+            JsonUtils::TryGetFloat(payload, "cameraReflectionInfluenceRadius", component.cameraReflectionInfluenceRadius);
+            readEditorComponentStateFields(component, payload);
+            return true;
+        },
+        {},
+        outError
+    );
+}
+
+bool registerDefaultReflectionProbeSerializer(Serialization::ComponentSerializationRegistry& registry, std::string* outError){
+    return registry.registerTypedSerializer<ReflectionProbeComponent>(
+        "ReflectionProbeComponent",
+        1,
+        [](const ReflectionProbeComponent& component, yyjson_mut_doc* doc, JsonUtils::JsonMutVal* payload, std::string* error) -> bool {
+            return JsonUtils::MutObjAddBool(doc, payload, "enabled", component.enabled) &&
+                   JsonUtils::MutObjAddInt(doc, payload, "resolution", component.resolution) &&
+                   JsonUtils::MutObjAddInt(doc, payload, "priority", component.priority) &&
+                   JsonUtils::MutObjAddBool(doc, payload, "autoUpdate", component.autoUpdate) &&
+                   JsonUtils::MutObjAddInt(doc, payload, "updateIntervalFrames", component.updateIntervalFrames) &&
+                   JsonUtils::MutObjAddVec3(doc, payload, "captureExtents", component.captureExtents) &&
+                   JsonUtils::MutObjAddVec3(doc, payload, "influenceExtents", component.influenceExtents) &&
+                   writeEditorComponentStateFields(component, doc, payload, error);
+        },
+        [](ReflectionProbeComponent& component, JsonUtils::JsonVal* payload, int version, std::string* error) -> bool {
+            (void)version;
+            (void)error;
+            JsonUtils::TryGetBool(payload, "enabled", component.enabled);
+            JsonUtils::TryGetInt(payload, "resolution", component.resolution);
+            JsonUtils::TryGetInt(payload, "priority", component.priority);
+            JsonUtils::TryGetBool(payload, "autoUpdate", component.autoUpdate);
+            JsonUtils::TryGetInt(payload, "updateIntervalFrames", component.updateIntervalFrames);
+            JsonUtils::TryGetVec3(payload, "captureExtents", component.captureExtents);
+            JsonUtils::TryGetVec3(payload, "influenceExtents", component.influenceExtents);
+            component.resolution = Math3D::Clamp(component.resolution, 64, 512);
+            component.updateIntervalFrames = Math3D::Clamp(component.updateIntervalFrames, 1, 240);
+            component.captureExtents.x = Math3D::Max(component.captureExtents.x, 0.25f);
+            component.captureExtents.y = Math3D::Max(component.captureExtents.y, 0.25f);
+            component.captureExtents.z = Math3D::Max(component.captureExtents.z, 0.25f);
+            component.influenceExtents.x = Math3D::Max(component.influenceExtents.x, 0.25f);
+            component.influenceExtents.y = Math3D::Max(component.influenceExtents.y, 0.25f);
+            component.influenceExtents.z = Math3D::Max(component.influenceExtents.z, 0.25f);
+            component.captureExtents.x = Math3D::Max(component.captureExtents.x, component.influenceExtents.x);
+            component.captureExtents.y = Math3D::Max(component.captureExtents.y, component.influenceExtents.y);
+            component.captureExtents.z = Math3D::Max(component.captureExtents.z, component.influenceExtents.z);
+            readEditorComponentStateFields(component, payload);
+            return true;
+        },
+        {},
+        outError
+    );
+}
+
 bool registerDefaultPostProcessingStackSerializer(Serialization::ComponentSerializationRegistry& registry, std::string* outError){
     return registry.registerTypedSerializer<PostProcessingStackComponent>(
         "PostProcessingStackComponent",
@@ -2127,6 +2266,8 @@ void RegisterDefaultComponentSerializers(ComponentSerializationRegistry& registr
     if(!registry.hasSerializer("RigidBodyComponent") && !registerDefaultRigidBodySerializer(registry, outError)) return;
     if(!registry.hasSerializer("ScriptComponent") && !registerDefaultScriptSerializer(registry, outError)) return;
     if(!registry.hasSerializer("SSAOComponent") && !registerDefaultSsaoSerializer(registry, outError)) return;
+    if(!registry.hasSerializer("SSRComponent") && !registerDefaultSsrSerializer(registry, outError)) return;
+    if(!registry.hasSerializer("ReflectionProbeComponent") && !registerDefaultReflectionProbeSerializer(registry, outError)) return;
     if(!registry.hasSerializer("PostProcessingStackComponent") && !registerDefaultPostProcessingStackSerializer(registry, outError)) return;
     if(!registry.hasSerializer("DepthOfFieldComponent") && !registerDefaultDepthOfFieldSerializer(registry, outError)) return;
     if(!registry.hasSerializer("BloomComponent") && !registerDefaultBloomSerializer(registry, outError)) return;

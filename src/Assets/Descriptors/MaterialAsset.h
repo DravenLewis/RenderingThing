@@ -22,7 +22,9 @@ enum class MaterialAssetType {
     LitColor,
     LitImage,
     FlatColor,
-    FlatImage
+    FlatImage,
+    Glass,
+    Water
 };
 
 // Descriptor wrappers around runtime materials (text metadata files, not Asset subclasses).
@@ -50,6 +52,21 @@ struct MaterialAssetData {
     Math3D::Vec2 uvOffset = Math3D::Vec2(0.0f, 0.0f);
     float alphaCutoff = 0.5f;
     int useAlphaClip = 0;
+    float transmission = 0.0f;
+    float ior = 1.50f;
+    float thickness = 0.10f;
+    Math3D::Vec3 attenuationColor = Math3D::Vec3(1.0f, 1.0f, 1.0f);
+    float attenuationDistance = 8.0f;
+    float scatteringStrength = 0.0f;
+    int enableWaveDisplacement = 0;
+    float waveAmplitude = 0.0f;
+    float waveFrequency = 1.0f;
+    float waveSpeed = 0.75f;
+    float waveChoppiness = 0.25f;
+    float waveSecondaryScale = 1.0f;
+    Math3D::Vec2 waveDirection = Math3D::Vec2(0.85f, 0.45f);
+    float waveTextureInfluence = 0.6f;
+    Math3D::Vec2 waveTextureSpeed = Math3D::Vec2(0.03f, 0.01f);
 
     std::string baseColorTexRef;
     std::string roughnessTexRef;

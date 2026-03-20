@@ -22,6 +22,7 @@ out vec4 FragColor;
 uniform sampler2D gAlbedo;
 uniform sampler2D gNormal;
 uniform sampler2D gMaterial;
+uniform sampler2D gSurface;
 uniform sampler2D gDepth;
 uniform isampler2D gTileLightData;
 uniform sampler2D gSsaoRaw;
@@ -32,7 +33,14 @@ uniform mat4 u_cameraView;
 uniform mat4 u_invProjection;
 uniform mat4 u_invView;
 uniform samplerCube u_envMap;
+uniform samplerCube u_localProbe;
 uniform int u_useEnvMap;
+uniform int u_useLocalProbe;
+uniform vec3 u_localProbeCenter;
+uniform vec3 u_localProbeCaptureMin;
+uniform vec3 u_localProbeCaptureMax;
+uniform vec3 u_localProbeInfluenceMin;
+uniform vec3 u_localProbeInfluenceMax;
 uniform vec4 u_ambientColor;
 uniform float u_ambientIntensity;
 uniform int u_fogEnabled;
@@ -77,15 +85,6 @@ vec3 reconstructViewPosition(vec2 uv, float depth){
 vec3 reconstructWorldPosition(vec2 uv, float depth){
     vec3 viewPos = reconstructViewPosition(uv, depth);
     return (u_invView * vec4(viewPos, 1.0)).xyz;
-}
-
-vec2 unpackAoEnv(float packedValue){
-    float scaled = floor(clamp(packedValue, 0.0, 1.0) * 1023.0 + 0.5);
-    float aoQ = mod(scaled, 32.0);
-    float envQ = floor(scaled / 32.0);
-    float ao = aoQ / 31.0;
-    float envStrength = (envQ / 31.0) * 2.0;
-    return vec2(ao, envStrength);
 }
 
 ivec2 getDeferredPixelCoord(vec2 uv){
@@ -578,11 +577,52 @@ vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness){
     return F0 + (max(oneMinusRough, F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
 
-vec3 sampleEnvironmentSpecular(vec3 reflectionDir, float roughness){
-    float baseSize = float(max(textureSize(u_envMap, 0).x, 1));
+vec3 sampleCubeSpecular(samplerCube cubeMap, vec3 reflectionDir, float roughness){
+    float baseSize = float(max(textureSize(cubeMap, 0).x, 1));
     float maxMip = max(log2(baseSize), 0.0);
     float lod = clamp((roughness * roughness) * maxMip, 0.0, maxMip);
-    return textureLod(u_envMap, safeNormalize(reflectionDir), lod).rgb;
+    return textureLod(cubeMap, safeNormalize(reflectionDir), lod).rgb;
+}
+
+float computeLocalProbeInfluence(vec3 worldPos){
+    if(u_useLocalProbe == 0){
+        return 0.0;
+    }
+    vec3 probeCenter = (u_localProbeInfluenceMin + u_localProbeInfluenceMax) * 0.5;
+    vec3 probeExtent = max((u_localProbeInfluenceMax - u_localProbeInfluenceMin) * 0.5, vec3(0.001));
+    vec3 probeLocal = abs(worldPos - probeCenter) / probeExtent;
+    float axis = max(max(probeLocal.x, probeLocal.y), probeLocal.z);
+    return 1.0 - smoothstep(0.70, 1.05, axis);
+}
+
+vec3 parallaxCorrectLocalProbeDir(vec3 worldPos, vec3 reflectionDir){
+    vec3 dir = safeNormalize(reflectionDir);
+    vec3 safeDir = dir;
+    safeDir.x = (abs(safeDir.x) > 1e-4) ? safeDir.x : ((safeDir.x < 0.0) ? -1e-4 : 1e-4);
+    safeDir.y = (abs(safeDir.y) > 1e-4) ? safeDir.y : ((safeDir.y < 0.0) ? -1e-4 : 1e-4);
+    safeDir.z = (abs(safeDir.z) > 1e-4) ? safeDir.z : ((safeDir.z < 0.0) ? -1e-4 : 1e-4);
+
+    vec3 tMin = (u_localProbeCaptureMin - worldPos) / safeDir;
+    vec3 tMax = (u_localProbeCaptureMax - worldPos) / safeDir;
+    vec3 t1 = min(tMin, tMax);
+    vec3 t2 = max(tMin, tMax);
+    float tNear = max(max(t1.x, t1.y), t1.z);
+    float tFar = min(min(t2.x, t2.y), t2.z);
+    float hitDistance = (tNear > 0.0) ? tNear : tFar;
+    if(tFar <= 0.0 || tNear > tFar){
+        return dir;
+    }
+
+    vec3 hitPos = worldPos + (dir * max(hitDistance, 0.0));
+    return safeNormalize(hitPos - u_localProbeCenter);
+}
+
+vec3 sampleLocalProbeSpecular(vec3 worldPos, vec3 reflectionDir, float roughness){
+    return sampleCubeSpecular(u_localProbe, parallaxCorrectLocalProbeDir(worldPos, reflectionDir), roughness);
+}
+
+vec3 sampleEnvironmentSpecular(vec3 reflectionDir, float roughness){
+    return sampleCubeSpecular(u_envMap, reflectionDir, roughness);
 }
 
 float computeFogFactor(float distanceToCamera){
@@ -653,16 +693,18 @@ void main(){
     vec4 albedoRough = texture(gAlbedo, v_uv);
     vec4 normalMetal = texture(gNormal, v_uv);
     vec4 materialData = texture(gMaterial, v_uv);
+    vec4 surfaceData = texture(gSurface, v_uv);
     ivec2 deferredPixel = getDeferredPixelCoord(v_uv);
     float depth = texelFetch(gDepth, deferredPixel, 0).r;
-    vec2 aoEnv = unpackAoEnv(materialData.a);
 
     vec3 albedo = albedoRough.rgb;
-    float roughness = clamp(albedoRough.a, 0.04, 1.0);
+    float roughness = clamp(surfaceData.r, 0.04, 1.0);
     float packedMode = normalMetal.a;
-    float ao = clamp(aoEnv.x, 0.0, 1.0);
+    int bsdfModel = 0; // 0=Standard, 1=Glass, 2=Water
+    float ao = clamp(surfaceData.g, 0.0, 1.0);
     vec3 emissive = max(materialData.rgb, vec3(0.0));
-    float envStrength = max(aoEnv.y, 0.0);
+    float envStrength = max(surfaceData.b, 0.0);
+    float transmission = clamp(surfaceData.a, 0.0, 1.0);
     bool hasGeometry = (length(normalMetal.rgb) > 1e-4);
 
     float ssaoRaw = 1.0;
@@ -701,15 +743,15 @@ void main(){
         return;
     }
     if(u_ssaoDebugView == 1){
-        FragColor = vec4(vec3(combinedAo), 1.0);
+        FragColor = vec4(vec3(1.0 - combinedAo), 1.0);
         return;
     }
     if(u_ssaoDebugView == 2){
-        FragColor = vec4(vec3(ssaoRaw), 1.0);
+        FragColor = vec4(vec3(1.0 - ssaoRaw), 1.0);
         return;
     }
     if(u_ssaoDebugView == 3){
-        FragColor = vec4(vec3(ao), 1.0);
+        FragColor = vec4(vec3(1.0 - ao), 1.0);
         return;
     }
     if(u_ssaoDebugView == 4){
@@ -727,6 +769,12 @@ void main(){
 
     bool legacyUnlit = (packedMode < -0.75);
     bool legacyLit = (packedMode < 0.0 && !legacyUnlit);
+
+    float metallic = 0.0;
+    if(!legacyLit && !legacyUnlit){
+        bsdfModel = clamp(int(floor((packedMode + 1e-4) * 0.5)), 0, 2);
+        metallic = clamp(packedMode - (float(bsdfModel) * 2.0), 0.0, 1.0);
+    }
 
     if(legacyUnlit){
         FragColor = (u_lightPassMode == 1) ? vec4(0.0, 0.0, 0.0, 1.0) : vec4(albedo, 1.0);
@@ -804,8 +852,21 @@ void main(){
         return;
     }
 
-    float metallic = clamp(packedMode, 0.0, 1.0);
-    vec3 F0 = mix(vec3(0.04), albedo, metallic);
+    vec3 bsdfAlbedo = albedo;
+    if(bsdfModel == 2){
+        bsdfAlbedo = mix(albedo, vec3(0.06, 0.32, 0.45), 0.35);
+    }
+
+    if(bsdfModel == 1 || bsdfModel == 2){
+        metallic = 0.0;
+    }
+
+    vec3 F0 = mix(vec3(0.04), bsdfAlbedo, metallic);
+    if(bsdfModel == 1){
+        F0 = mix(vec3(0.04), bsdfAlbedo, 0.08);
+    }else if(bsdfModel == 2){
+        F0 = mix(vec3(0.02), bsdfAlbedo, 0.04);
+    }
 
     vec3 LoDiffuse = vec3(0.0);
     vec3 LoSpecular = vec3(0.0);
@@ -927,10 +988,27 @@ void main(){
 
         vec3 kS = F;
         vec3 kD = (vec3(1.0) - kS) * (1.0 - metallic);
+        if(bsdfModel == 1){
+            // Keep a small diffuse/transmission lobe so glass does not collapse to near-black.
+            kD = vec3(0.05 * (1.0 - roughness));
+            specular *= 1.65;
+        }else if(bsdfModel == 2){
+            kD *= 0.35;
+            specular *= 1.18;
+        }
 
         vec3 radiance = light.color.rgb * light.params.x * attenuation * visibility;
-        LoDiffuse += (kD * albedo / PI) * radiance * NdotL;
-        LoSpecular += specular * radiance * NdotL;
+        vec3 diffuseTerm = (kD * bsdfAlbedo / PI) * radiance * NdotL;
+        vec3 specularTerm = specular * radiance * NdotL;
+        if(bsdfModel == 1 || bsdfModel == 2){
+            float glintPower = mix(180.0, 1400.0, 1.0 - roughness);
+            float glint = pow(max(dot(reflect(-L, N), V), 0.0), glintPower);
+            float glintStrength = ((bsdfModel == 1) ? 2.2 : 1.4) * (0.35 + transmission);
+            specularTerm += radiance * glint * glintStrength;
+        }
+
+        LoDiffuse += diffuseTerm;
+        LoSpecular += specularTerm;
     }
 
     if(u_lightPassMode == 1){
@@ -938,22 +1016,67 @@ void main(){
         return;
     }
 
-    vec3 ambient = u_ambientColor.rgb * max(u_ambientIntensity, 0.0) * albedo * combinedAo;
+    vec3 ambient = u_ambientColor.rgb * max(u_ambientIntensity, 0.0) * bsdfAlbedo * combinedAo;
+    if(bsdfModel == 1){
+        ambient *= 0.22;
+    }else if(bsdfModel == 2){
+        ambient *= 0.45;
+    }
     vec3 envSpec = vec3(0.0);
-    if(u_useEnvMap != 0){
+    if(u_useEnvMap != 0 || u_useLocalProbe != 0){
         vec3 R = reflect(-V, N);
         float NdotV = max(dot(N, V), 0.0);
         vec3 Fenv = FresnelSchlickRoughness(NdotV, F0, roughness);
-        vec3 envSample = sampleEnvironmentSpecular(R, roughness);
+        float localProbeInfluence = computeLocalProbeInfluence(fragPos);
+        vec3 envSample = vec3(0.0);
+        if(u_useEnvMap != 0){
+            envSample = sampleEnvironmentSpecular(R, roughness);
+        }
+        if(localProbeInfluence > 1e-4){
+            vec3 localProbeSample = sampleLocalProbeSpecular(fragPos, R, roughness);
+            envSample = (u_useEnvMap != 0)
+                ? mix(envSample, localProbeSample, localProbeInfluence)
+                : localProbeSample;
+        }
         float envContrib = envStrength * (1.0 - roughness) * combinedAo;
-        // Reduce sky reflection on flat ground (N.y near 1) to avoid strong mirror look.
-        float flatFade = 1.0 - smoothstep(0.75, 0.98, N.y);
-        envContrib *= flatFade;
+        float viewDistance = length(fragPos - u_viewPos);
+        if(bsdfModel == 1){
+            envContrib = envStrength * mix(0.55, 1.60, 1.0 - roughness) * (0.45 + (0.55 * combinedAo));
+        }else if(bsdfModel == 2){
+            envContrib = envStrength * mix(0.25, 0.95, 1.0 - roughness) * (0.45 + (0.55 * combinedAo));
+        }else{
+            float smoothness = 1.0 - roughness;
+            envContrib *= mix(0.30, 1.35, metallic) * mix(0.20, 1.0, smoothness * smoothness);
+        }
+        // Reduce sky reflection on flat or distant rough opaque surfaces.
+        if(bsdfModel == 0){
+            float flatFade = 1.0 - smoothstep(0.55, 0.94, N.y);
+            flatFade = mix(flatFade, 1.0, metallic);
+            float roughFarFade =
+                1.0 -
+                (smoothstep(0.22, 0.70, roughness) *
+                 (1.0 - metallic) *
+                 smoothstep(24.0, 120.0, viewDistance));
+            envContrib *= flatFade * roughFarFade;
+        }
         envSpec = envSample * Fenv * envContrib;
     }
 
-    vec3 indirectDiffuse = giIrradiance * albedo * (1.0 - metallic);
+    vec3 indirectDiffuse = giIrradiance * bsdfAlbedo * (1.0 - metallic);
+    if(bsdfModel == 1){
+        indirectDiffuse *= 0.15;
+    }else if(bsdfModel == 2){
+        indirectDiffuse *= 0.50;
+    }
     vec3 color = ambient + LoDiffuse + LoSpecular + envSpec + emissive + indirectDiffuse;
+    if(bsdfModel == 1){
+        vec3 transmissionTint = mix(vec3(1.0), bsdfAlbedo, 0.20);
+        color += (LoDiffuse + ambient + indirectDiffuse) * transmission * transmissionTint * 0.65;
+        color += transmissionTint * (0.035 + (0.09 * transmission));
+    }else if(bsdfModel == 2){
+        vec3 waterScatter = vec3(0.02, 0.08, 0.12) * (0.35 + (0.65 * (1.0 - roughness)));
+        color += waterScatter * (0.35 + transmission);
+    }
     float fogFactor = computeFogFactor(length(fragPos - u_viewPos));
     color = mix(color, u_fogColor.rgb, fogFactor);
     if(debugWeight > 0.0){

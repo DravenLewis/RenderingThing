@@ -56,6 +56,15 @@ void CubeMap::dispose(){
     }
 }
 
+void CubeMap::generateMipmaps() const{
+    if(textureID == 0){
+        return;
+    }
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+    glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+}
+
 static bool loadFace(GLuint cubemapId, GLenum face, const PAsset& asset, int& outSize){
     if(!asset){
         cubemapLogger.Log(LOG_ERRO, "Cubemap face asset was null.");
@@ -179,6 +188,59 @@ std::shared_ptr<CubeMap> CubeMap::Load(
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_BASE_LEVEL, 0);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, maxMipLevel);
 
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+    return cubemap;
+}
+
+std::shared_ptr<CubeMap> CubeMap::CreateRenderTarget(
+    int faceSize,
+    GLenum internalFormat,
+    GLenum format,
+    GLenum type,
+    bool allowMipmaps
+){
+    if(faceSize <= 0){
+        cubemapLogger.Log(LOG_ERRO, "CreateRenderTarget requires a positive face size.");
+        return nullptr;
+    }
+
+    auto cubemap = std::make_shared<CubeMap>();
+    cubemap->size = faceSize;
+
+    glGenTextures(1, &cubemap->textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap->textureID);
+    for(int face = 0; face < 6; ++face){
+        glTexImage2D(
+            GL_TEXTURE_CUBE_MAP_POSITIVE_X + face,
+            0,
+            internalFormat,
+            faceSize,
+            faceSize,
+            0,
+            format,
+            type,
+            nullptr
+        );
+    }
+
+    int maxMipLevel = 0;
+    if(allowMipmaps){
+        for(int mipSize = faceSize; mipSize > 1; mipSize /= 2){
+            ++maxMipLevel;
+        }
+    }
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, allowMipmaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_BASE_LEVEL, 0);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, maxMipLevel);
+    if(allowMipmaps){
+        glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+    }
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
     return cubemap;

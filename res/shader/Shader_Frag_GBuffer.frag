@@ -3,6 +3,7 @@
 layout (location = 0) out vec4 gAlbedo;
 layout (location = 1) out vec4 gNormal;
 layout (location = 2) out vec4 gMaterial;
+layout (location = 3) out vec4 gSurface;
 
 in vec3 v_fragPos;
 in vec3 v_normal;
@@ -44,6 +45,8 @@ uniform vec3 u_viewPos;
 
 uniform int u_useAlphaClip;
 uniform float u_alphaCutoff;
+uniform float u_transmission;
+uniform int u_bsdfModel; // 0=Standard, 1=Glass, 2=Water
 uniform int u_surfaceMode; // 0=PBR, 1=LegacyLit, 2=LegacyUnlit
 
 vec3 safeNormalize(vec3 v){
@@ -122,13 +125,6 @@ float applyOcclusionStrength(float occlusionSample, float strength){
     return clamp(1.0 - ((1.0 - occlusion) * effectStrength), 0.0, 1.0);
 }
 
-float packAoEnv(vec2 aoEnv){
-    float aoQ = floor(clamp(aoEnv.x, 0.0, 1.0) * 31.0 + 0.5);
-    float envNorm = clamp(aoEnv.y * 0.5, 0.0, 1.0);
-    float envQ = floor(envNorm * 31.0 + 0.5);
-    return (aoQ + (envQ * 32.0)) / 1023.0;
-}
-
 void main(){
     vec2 uvBase = v_uv * u_uvScale + u_uvOffset;
     vec2 duvDx = dFdx(uvBase);
@@ -137,10 +133,15 @@ void main(){
     mat3 TBN = buildTBN(uvBase, baseN, v_tangent);
     vec3 V = safeNormalize(u_viewPos - v_fragPos);
     vec2 uv = applyHeightMapParallax(uvBase, duvDx, duvDy, V, TBN);
+    int bsdfModel = clamp(u_bsdfModel, 0, 2);
     vec4 baseTex = (u_useBaseColorTex != 0) ? textureGrad(u_baseColorTex, uv, duvDx, duvDy) : vec4(1.0);
-    vec4 baseColor = u_baseColor * baseTex * v_color;
+    float alphaTex = (bsdfModel == 0) ? baseTex.a : 1.0;
+    vec4 baseColor = vec4(
+        (u_baseColor.rgb * baseTex.rgb) * v_color.rgb,
+        u_baseColor.a * alphaTex * v_color.a
+    );
 
-    if(u_useAlphaClip != 0 && baseColor.a < u_alphaCutoff){
+    if(bsdfModel == 0 && u_useAlphaClip != 0 && baseColor.a < u_alphaCutoff){
         discard;
     }
 
@@ -172,14 +173,21 @@ void main(){
     // visible screen-space seams on broad close-up surfaces.
     roughness = applySpecularAaRoughness(roughness, baseN);
 
-    float packedMode = metallic;
+    float packedMode = metallic + (float(bsdfModel) * 2.0);
     if(u_surfaceMode == 1){
         packedMode = -0.5;
     }else if(u_surfaceMode == 2){
         packedMode = -1.0;
     }
 
-    gAlbedo = vec4(baseColor.rgb, roughness);
+    float transmission = clamp(u_transmission, 0.0, 1.0);
+    if(bsdfModel != 0){
+        transmission = clamp(max(transmission, 1.0 - baseColor.a), 0.0, 1.0);
+    }else{
+        transmission = 0.0;
+    }
+    gAlbedo = vec4(baseColor.rgb, baseColor.a);
     gNormal = vec4(safeNormalize(N), packedMode);
-    gMaterial = vec4(max(emissive, vec3(0.0)), packAoEnv(vec2(ao, max(u_envStrength, 0.0))));
+    gMaterial = vec4(max(emissive, vec3(0.0)), 1.0);
+    gSurface = vec4(roughness, ao, max(u_envStrength, 0.0), transmission);
 }

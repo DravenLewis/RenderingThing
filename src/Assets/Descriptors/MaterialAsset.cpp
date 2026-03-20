@@ -193,9 +193,85 @@ namespace {
         return cached;
     }
 
+    void applyPbrMaterialData(const MaterialAssetData& data, const std::shared_ptr<PBRMaterial>& pbr){
+        if(!pbr){
+            return;
+        }
+
+        int bsdfModel = static_cast<int>(PBRBsdfModel::Standard);
+        if(data.type == MaterialAssetType::Glass){
+            bsdfModel = static_cast<int>(PBRBsdfModel::Glass);
+        }else if(data.type == MaterialAssetType::Water){
+            bsdfModel = static_cast<int>(PBRBsdfModel::Water);
+        }
+
+        pbr->BaseColor = data.color;
+        pbr->BsdfModel = bsdfModel;
+        pbr->Metallic = data.metallic;
+        pbr->Roughness = data.roughness;
+        pbr->NormalScale = data.normalScale;
+        pbr->HeightScale = data.heightScale;
+        pbr->EmissiveColor = data.emissiveColor;
+        pbr->EmissiveStrength = data.emissiveStrength;
+        pbr->OcclusionStrength = data.occlusionStrength;
+        pbr->EnvStrength = data.envStrength;
+        pbr->UseEnvMap = data.useEnvMap;
+        pbr->UVScale = data.uvScale;
+        pbr->UVOffset = data.uvOffset;
+        pbr->AlphaCutoff = data.alphaCutoff;
+        pbr->UseAlphaClip = data.useAlphaClip;
+        pbr->Transmission = Math3D::Clamp(data.transmission, 0.0f, 1.0f);
+        pbr->Ior = Math3D::Clamp(data.ior, 1.0f, 2.5f);
+        pbr->Thickness = Math3D::Max(0.001f, data.thickness);
+        pbr->AttenuationColor = Math3D::Vec3(
+            Math3D::Clamp(data.attenuationColor.x, 0.001f, 1.0f),
+            Math3D::Clamp(data.attenuationColor.y, 0.001f, 1.0f),
+            Math3D::Clamp(data.attenuationColor.z, 0.001f, 1.0f)
+        );
+        pbr->AttenuationDistance = Math3D::Max(0.001f, data.attenuationDistance);
+        pbr->ScatteringStrength = Math3D::Clamp(data.scatteringStrength, 0.0f, 4.0f);
+        pbr->EnableWaveDisplacement = data.enableWaveDisplacement != 0 ? 1 : 0;
+        pbr->WaveAmplitude = Math3D::Max(0.0f, data.waveAmplitude);
+        pbr->WaveFrequency = Math3D::Max(0.0f, data.waveFrequency);
+        pbr->WaveSpeed = data.waveSpeed;
+        pbr->WaveChoppiness = Math3D::Clamp(data.waveChoppiness, 0.0f, 1.0f);
+        pbr->WaveSecondaryScale = Math3D::Max(0.01f, data.waveSecondaryScale);
+        pbr->WaveDirection = data.waveDirection;
+        pbr->WaveTextureInfluence = Math3D::Max(0.0f, data.waveTextureInfluence);
+        pbr->WaveTextureSpeed = data.waveTextureSpeed;
+        pbr->BaseColorTex = loadTextureFromRef(data.baseColorTexRef);
+        pbr->RoughnessTex = loadTextureFromRef(data.roughnessTexRef);
+        pbr->MetallicRoughnessTex = loadTextureFromRef(data.metallicRoughnessTexRef);
+        pbr->NormalTex = loadTextureFromRef(data.normalTexRef);
+        pbr->HeightTex = loadTextureFromRef(data.heightTexRef);
+        pbr->EmissiveTex = loadTextureFromRef(data.emissiveTexRef);
+        pbr->OcclusionTex = loadTextureFromRef(data.occlusionTexRef);
+    }
+
     bool parseMaterialAssetText(const std::string& text, MaterialAssetData& outData){
         std::istringstream stream(text);
         std::string line;
+        bool hasTransmission = false;
+        bool hasIor = false;
+        bool hasThickness = false;
+        bool hasAttenuationColor = false;
+        bool hasAttenuationDistance = false;
+        bool hasScatteringStrength = false;
+        bool hasWaveEnabled = false;
+        bool hasWaveAmplitude = false;
+        bool hasWaveFrequency = false;
+        bool hasWaveSpeed = false;
+        bool hasWaveChoppiness = false;
+        bool hasWaveSecondaryScale = false;
+        bool hasWaveDirection = false;
+        bool hasWaveTextureInfluence = false;
+        bool hasWaveTextureSpeed = false;
+        bool hasMetallic = false;
+        bool hasRoughness = false;
+        bool hasNormalScale = false;
+        bool hasEnvStrength = false;
+        bool hasUseEnvMap = false;
+        bool hasUseAlphaClip = false;
         while(std::getline(stream, line)){
             std::string trimmed = trimCopy(line);
             if(trimmed.empty()){
@@ -227,10 +303,13 @@ namespace {
                 outData.textureRef = value;
             }else if(key == "metallic"){
                 outData.metallic = parseFloat(value, outData.metallic);
+                hasMetallic = true;
             }else if(key == "roughness"){
                 outData.roughness = parseFloat(value, outData.roughness);
+                hasRoughness = true;
             }else if(key == "normal_scale"){
                 outData.normalScale = parseFloat(value, outData.normalScale);
+                hasNormalScale = true;
             }else if(key == "height_scale"){
                 outData.heightScale = parseFloat(value, outData.heightScale);
             }else if(key == "emissive_color"){
@@ -241,8 +320,10 @@ namespace {
                 outData.occlusionStrength = parseFloat(value, outData.occlusionStrength);
             }else if(key == "env_strength"){
                 outData.envStrength = parseFloat(value, outData.envStrength);
+                hasEnvStrength = true;
             }else if(key == "use_env_map"){
                 outData.useEnvMap = parseInt(value, outData.useEnvMap);
+                hasUseEnvMap = true;
             }else if(key == "uv_scale"){
                 outData.uvScale = parseVec2(value, outData.uvScale);
             }else if(key == "uv_offset"){
@@ -251,6 +332,52 @@ namespace {
                 outData.alphaCutoff = parseFloat(value, outData.alphaCutoff);
             }else if(key == "use_alpha_clip"){
                 outData.useAlphaClip = parseInt(value, outData.useAlphaClip);
+                hasUseAlphaClip = true;
+            }else if(key == "transmission"){
+                outData.transmission = parseFloat(value, outData.transmission);
+                hasTransmission = true;
+            }else if(key == "ior"){
+                outData.ior = parseFloat(value, outData.ior);
+                hasIor = true;
+            }else if(key == "thickness"){
+                outData.thickness = parseFloat(value, outData.thickness);
+                hasThickness = true;
+            }else if(key == "attenuation_color"){
+                outData.attenuationColor = parseVec3(value, outData.attenuationColor);
+                hasAttenuationColor = true;
+            }else if(key == "attenuation_distance"){
+                outData.attenuationDistance = parseFloat(value, outData.attenuationDistance);
+                hasAttenuationDistance = true;
+            }else if(key == "scattering_strength"){
+                outData.scatteringStrength = parseFloat(value, outData.scatteringStrength);
+                hasScatteringStrength = true;
+            }else if(key == "enable_wave_displacement" || key == "wave_enabled"){
+                outData.enableWaveDisplacement = parseInt(value, outData.enableWaveDisplacement);
+                hasWaveEnabled = true;
+            }else if(key == "wave_amplitude"){
+                outData.waveAmplitude = parseFloat(value, outData.waveAmplitude);
+                hasWaveAmplitude = true;
+            }else if(key == "wave_frequency"){
+                outData.waveFrequency = parseFloat(value, outData.waveFrequency);
+                hasWaveFrequency = true;
+            }else if(key == "wave_speed"){
+                outData.waveSpeed = parseFloat(value, outData.waveSpeed);
+                hasWaveSpeed = true;
+            }else if(key == "wave_choppiness"){
+                outData.waveChoppiness = parseFloat(value, outData.waveChoppiness);
+                hasWaveChoppiness = true;
+            }else if(key == "wave_secondary_scale"){
+                outData.waveSecondaryScale = parseFloat(value, outData.waveSecondaryScale);
+                hasWaveSecondaryScale = true;
+            }else if(key == "wave_direction"){
+                outData.waveDirection = parseVec2(value, outData.waveDirection);
+                hasWaveDirection = true;
+            }else if(key == "wave_texture_influence"){
+                outData.waveTextureInfluence = parseFloat(value, outData.waveTextureInfluence);
+                hasWaveTextureInfluence = true;
+            }else if(key == "wave_texture_speed"){
+                outData.waveTextureSpeed = parseVec2(value, outData.waveTextureSpeed);
+                hasWaveTextureSpeed = true;
             }else if(key == "base_color_tex"){
                 outData.baseColorTexRef = value;
             }else if(key == "roughness_tex"){
@@ -271,6 +398,53 @@ namespace {
                 outData.receivesShadows = parseBool(value, outData.receivesShadows);
             }
         }
+
+        if(!hasTransmission){
+            if(outData.type == MaterialAssetType::Glass || outData.type == MaterialAssetType::Water){
+                outData.transmission = Math3D::Clamp(1.0f - outData.color.w, 0.0f, 1.0f);
+            }else{
+                outData.transmission = 0.0f;
+            }
+        }
+        if(outData.type == MaterialAssetType::Glass){
+            if(!hasTransmission && outData.color.w >= 0.999f) outData.transmission = 0.98f;
+            if(!hasMetallic) outData.metallic = 0.0f;
+            if(!hasRoughness) outData.roughness = 0.02f;
+            if(!hasNormalScale) outData.normalScale = 1.0f;
+            if(!hasUseEnvMap) outData.useEnvMap = 1;
+            if(!hasEnvStrength) outData.envStrength = 1.15f;
+            if(!hasUseAlphaClip) outData.useAlphaClip = 0;
+            if(!hasIor) outData.ior = 1.52f;
+            if(!hasThickness) outData.thickness = 0.12f;
+            if(!hasAttenuationColor) outData.attenuationColor = Math3D::Vec3(0.92f, 0.97f, 1.0f);
+            if(!hasAttenuationDistance) outData.attenuationDistance = 0.25f;
+            if(!hasScatteringStrength) outData.scatteringStrength = 0.03f;
+        }
+
+        if(outData.type == MaterialAssetType::Water){
+            if(!hasTransmission && outData.color.w >= 0.999f) outData.transmission = 0.96f;
+            if(!hasMetallic) outData.metallic = 0.0f;
+            if(!hasRoughness) outData.roughness = 0.04f;
+            if(!hasNormalScale) outData.normalScale = 1.30f;
+            if(!hasUseEnvMap) outData.useEnvMap = 1;
+            if(!hasEnvStrength) outData.envStrength = 1.35f;
+            if(!hasUseAlphaClip) outData.useAlphaClip = 0;
+            if(!hasIor) outData.ior = 1.333f;
+            if(!hasThickness) outData.thickness = 1.35f;
+            if(!hasAttenuationColor) outData.attenuationColor = Math3D::Vec3(0.18f, 0.46f, 0.78f);
+            if(!hasAttenuationDistance) outData.attenuationDistance = 2.75f;
+            if(!hasScatteringStrength) outData.scatteringStrength = 0.62f;
+            if(!hasWaveEnabled) outData.enableWaveDisplacement = 1;
+            if(!hasWaveAmplitude) outData.waveAmplitude = 0.06f;
+            if(!hasWaveFrequency) outData.waveFrequency = 1.65f;
+            if(!hasWaveSpeed) outData.waveSpeed = 0.92f;
+            if(!hasWaveChoppiness) outData.waveChoppiness = 0.48f;
+            if(!hasWaveSecondaryScale) outData.waveSecondaryScale = 1.55f;
+            if(!hasWaveDirection) outData.waveDirection = Math3D::Vec2(0.92f, 0.39f);
+            if(!hasWaveTextureInfluence) outData.waveTextureInfluence = 0.55f;
+            if(!hasWaveTextureSpeed) outData.waveTextureSpeed = Math3D::Vec2(0.035f, 0.012f);
+        }
+
         return true;
     }
 
@@ -325,12 +499,17 @@ const char* TypeToString(MaterialAssetType type){
         case MaterialAssetType::LitImage: return "LitImage";
         case MaterialAssetType::FlatColor: return "FlatColor";
         case MaterialAssetType::FlatImage: return "FlatImage";
+        case MaterialAssetType::Glass: return "Glass";
+        case MaterialAssetType::Water: return "Water";
         default: return "PBR";
     }
 }
 
 MaterialAssetType TypeFromString(const std::string& value){
     std::string lower = toLowerCopy(trimCopy(value));
+    if(lower == "pbr") return MaterialAssetType::PBR;
+    if(lower == "glass") return MaterialAssetType::Glass;
+    if(lower == "water") return MaterialAssetType::Water;
     if(lower == "color") return MaterialAssetType::Color;
     if(lower == "image") return MaterialAssetType::Image;
     if(lower == "litcolor" || lower == "lit_color") return MaterialAssetType::LitColor;
@@ -421,6 +600,21 @@ bool SaveToAbsolutePath(const std::filesystem::path& path, const MaterialAssetDa
     text += StringUtils::Format("uv_offset=%s\n", vec2ToString(data.uvOffset).c_str());
     text += StringUtils::Format("alpha_cutoff=%.6f\n", data.alphaCutoff);
     text += StringUtils::Format("use_alpha_clip=%d\n", data.useAlphaClip);
+    text += StringUtils::Format("transmission=%.6f\n", data.transmission);
+    text += StringUtils::Format("ior=%.6f\n", data.ior);
+    text += StringUtils::Format("thickness=%.6f\n", data.thickness);
+    text += StringUtils::Format("attenuation_color=%s\n", vec3ToString(data.attenuationColor).c_str());
+    text += StringUtils::Format("attenuation_distance=%.6f\n", data.attenuationDistance);
+    text += StringUtils::Format("scattering_strength=%.6f\n", data.scatteringStrength);
+    text += StringUtils::Format("enable_wave_displacement=%d\n", data.enableWaveDisplacement);
+    text += StringUtils::Format("wave_amplitude=%.6f\n", data.waveAmplitude);
+    text += StringUtils::Format("wave_frequency=%.6f\n", data.waveFrequency);
+    text += StringUtils::Format("wave_speed=%.6f\n", data.waveSpeed);
+    text += StringUtils::Format("wave_choppiness=%.6f\n", data.waveChoppiness);
+    text += StringUtils::Format("wave_secondary_scale=%.6f\n", data.waveSecondaryScale);
+    text += StringUtils::Format("wave_direction=%s\n", vec2ToString(data.waveDirection).c_str());
+    text += StringUtils::Format("wave_texture_influence=%.6f\n", data.waveTextureInfluence);
+    text += StringUtils::Format("wave_texture_speed=%s\n", vec2ToString(data.waveTextureSpeed).c_str());
     text += StringUtils::Format("base_color_tex=%s\n", data.baseColorTexRef.c_str());
     text += StringUtils::Format("roughness_tex=%s\n", data.roughnessTexRef.c_str());
     text += StringUtils::Format("metallic_roughness_tex=%s\n", data.metallicRoughnessTexRef.c_str());
@@ -455,6 +649,21 @@ bool SaveToAssetRef(const std::string& assetRef, const MaterialAssetData& data, 
     text += StringUtils::Format("uv_offset=%s\n", vec2ToString(data.uvOffset).c_str());
     text += StringUtils::Format("alpha_cutoff=%.6f\n", data.alphaCutoff);
     text += StringUtils::Format("use_alpha_clip=%d\n", data.useAlphaClip);
+    text += StringUtils::Format("transmission=%.6f\n", data.transmission);
+    text += StringUtils::Format("ior=%.6f\n", data.ior);
+    text += StringUtils::Format("thickness=%.6f\n", data.thickness);
+    text += StringUtils::Format("attenuation_color=%s\n", vec3ToString(data.attenuationColor).c_str());
+    text += StringUtils::Format("attenuation_distance=%.6f\n", data.attenuationDistance);
+    text += StringUtils::Format("scattering_strength=%.6f\n", data.scatteringStrength);
+    text += StringUtils::Format("enable_wave_displacement=%d\n", data.enableWaveDisplacement);
+    text += StringUtils::Format("wave_amplitude=%.6f\n", data.waveAmplitude);
+    text += StringUtils::Format("wave_frequency=%.6f\n", data.waveFrequency);
+    text += StringUtils::Format("wave_speed=%.6f\n", data.waveSpeed);
+    text += StringUtils::Format("wave_choppiness=%.6f\n", data.waveChoppiness);
+    text += StringUtils::Format("wave_secondary_scale=%.6f\n", data.waveSecondaryScale);
+    text += StringUtils::Format("wave_direction=%s\n", vec2ToString(data.waveDirection).c_str());
+    text += StringUtils::Format("wave_texture_influence=%.6f\n", data.waveTextureInfluence);
+    text += StringUtils::Format("wave_texture_speed=%s\n", vec2ToString(data.waveTextureSpeed).c_str());
     text += StringUtils::Format("base_color_tex=%s\n", data.baseColorTexRef.c_str());
     text += StringUtils::Format("roughness_tex=%s\n", data.roughnessTexRef.c_str());
     text += StringUtils::Format("metallic_roughness_tex=%s\n", data.metallicRoughnessTexRef.c_str());
@@ -501,31 +710,19 @@ std::shared_ptr<Material> InstantiateMaterial(const MaterialAssetData& data, std
             material = MaterialDefaults::FlatImageMaterial::Create(tex, data.color);
             break;
         }
+        case MaterialAssetType::Glass:
+        case MaterialAssetType::Water:
         case MaterialAssetType::PBR:
         default:{
-            auto pbr = PBRMaterial::Create(data.color);
-            if(pbr){
-                pbr->Metallic = data.metallic;
-                pbr->Roughness = data.roughness;
-                pbr->NormalScale = data.normalScale;
-                pbr->HeightScale = data.heightScale;
-                pbr->EmissiveColor = data.emissiveColor;
-                pbr->EmissiveStrength = data.emissiveStrength;
-                pbr->OcclusionStrength = data.occlusionStrength;
-                pbr->EnvStrength = data.envStrength;
-                pbr->UseEnvMap = data.useEnvMap;
-                pbr->UVScale = data.uvScale;
-                pbr->UVOffset = data.uvOffset;
-                pbr->AlphaCutoff = data.alphaCutoff;
-                pbr->UseAlphaClip = data.useAlphaClip;
-                pbr->BaseColorTex = loadTextureFromRef(data.baseColorTexRef);
-                pbr->RoughnessTex = loadTextureFromRef(data.roughnessTexRef);
-                pbr->MetallicRoughnessTex = loadTextureFromRef(data.metallicRoughnessTexRef);
-                pbr->NormalTex = loadTextureFromRef(data.normalTexRef);
-                pbr->HeightTex = loadTextureFromRef(data.heightTexRef);
-                pbr->EmissiveTex = loadTextureFromRef(data.emissiveTexRef);
-                pbr->OcclusionTex = loadTextureFromRef(data.occlusionTexRef);
+            std::shared_ptr<PBRMaterial> pbr;
+            if(data.type == MaterialAssetType::Glass){
+                pbr = PBRMaterial::CreateGlass(data.color);
+            }else if(data.type == MaterialAssetType::Water){
+                pbr = PBRMaterial::CreateWater(data.color);
+            }else{
+                pbr = PBRMaterial::Create(data.color);
             }
+            applyPbrMaterialData(data, pbr);
             material = pbr;
             break;
         }

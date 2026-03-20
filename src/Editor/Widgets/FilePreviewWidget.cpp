@@ -1344,19 +1344,101 @@ void FilePreviewWidget::drawEffectAssetEditor(){
 }
 
 void FilePreviewWidget::drawMaterialAssetEditor(){
-    static constexpr std::array<const char*, 7> kTypeNames = {
-        "PBR", "Color", "Image", "LitColor", "LitImage", "FlatColor", "FlatImage"
+    static constexpr std::array<const char*, 9> kTypeNames = {
+        "PBR", "Color", "Image", "LitColor", "LitImage", "FlatColor", "FlatImage", "Glass", "Water"
     };
 
     bool changed = false;
     changed |= EditorPropertyUI::InputText("Material Name", materialName, sizeof(materialName));
 
+    const MaterialAssetType previousType = materialData.type;
     int typeIndex = static_cast<int>(materialData.type);
     if(typeIndex < 0 || typeIndex >= static_cast<int>(kTypeNames.size())){
         typeIndex = 0;
     }
     if(EditorPropertyUI::Combo("Material Type", &typeIndex, kTypeNames.data(), static_cast<int>(kTypeNames.size()))){
         materialData.type = static_cast<MaterialAssetType>(typeIndex);
+        if(materialData.type != previousType){
+            if(materialData.type == MaterialAssetType::Glass){
+                materialData.color = Math3D::Vec4(0.97f, 0.985f, 1.00f, 0.18f);
+                materialData.metallic = 0.0f;
+                materialData.roughness = 0.02f;
+                materialData.normalScale = 1.0f;
+                materialData.heightScale = 0.0f;
+                materialData.emissiveColor = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+                materialData.emissiveStrength = 1.0f;
+                materialData.occlusionStrength = 1.0f;
+                materialData.useEnvMap = 1;
+                materialData.envStrength = 1.15f;
+                materialData.useAlphaClip = 0;
+                materialData.transmission = 0.98f;
+                materialData.ior = 1.52f;
+                materialData.thickness = 0.12f;
+                materialData.attenuationColor = Math3D::Vec3(0.92f, 0.97f, 1.0f);
+                materialData.attenuationDistance = 0.25f;
+                materialData.scatteringStrength = 0.03f;
+                materialData.enableWaveDisplacement = 0;
+                materialData.castsShadows = false;
+                materialData.receivesShadows = false;
+                materialData.baseColorTexRef.clear();
+                materialData.roughnessTexRef.clear();
+                materialData.metallicRoughnessTexRef.clear();
+                materialData.normalTexRef.clear();
+                materialData.heightTexRef.clear();
+                materialData.emissiveTexRef.clear();
+                materialData.occlusionTexRef.clear();
+                materialBaseColorTex[0] = '\0';
+                materialRoughnessTex[0] = '\0';
+                materialMetalRoughTex[0] = '\0';
+                materialNormalTex[0] = '\0';
+                materialHeightTex[0] = '\0';
+                materialEmissiveTex[0] = '\0';
+                materialOcclusionTex[0] = '\0';
+            }else if(materialData.type == MaterialAssetType::Water){
+                materialData.color = Math3D::Vec4(0.10f, 0.34f, 0.52f, 0.22f);
+                materialData.metallic = 0.0f;
+                materialData.roughness = 0.04f;
+                materialData.normalScale = 1.3f;
+                materialData.heightScale = 0.0f;
+                materialData.emissiveColor = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+                materialData.emissiveStrength = 1.0f;
+                materialData.occlusionStrength = 1.0f;
+                materialData.useEnvMap = 1;
+                materialData.envStrength = 1.35f;
+                materialData.useAlphaClip = 0;
+                materialData.transmission = 0.96f;
+                materialData.ior = 1.333f;
+                materialData.thickness = 1.35f;
+                materialData.attenuationColor = Math3D::Vec3(0.18f, 0.46f, 0.78f);
+                materialData.attenuationDistance = 2.75f;
+                materialData.scatteringStrength = 0.62f;
+                materialData.enableWaveDisplacement = 1;
+                materialData.waveAmplitude = 0.06f;
+                materialData.waveFrequency = 1.65f;
+                materialData.waveSpeed = 0.92f;
+                materialData.waveChoppiness = 0.48f;
+                materialData.waveSecondaryScale = 1.55f;
+                materialData.waveDirection = Math3D::Vec2(0.92f, 0.39f);
+                materialData.waveTextureInfluence = 0.55f;
+                materialData.waveTextureSpeed = Math3D::Vec2(0.035f, 0.012f);
+                materialData.castsShadows = false;
+                materialData.receivesShadows = false;
+                materialData.baseColorTexRef.clear();
+                materialData.roughnessTexRef.clear();
+                materialData.metallicRoughnessTexRef.clear();
+                materialData.normalTexRef.clear();
+                materialData.heightTexRef.clear();
+                materialData.emissiveTexRef.clear();
+                materialData.occlusionTexRef.clear();
+                materialBaseColorTex[0] = '\0';
+                materialRoughnessTex[0] = '\0';
+                materialMetalRoughTex[0] = '\0';
+                materialNormalTex[0] = '\0';
+                materialHeightTex[0] = '\0';
+                materialEmissiveTex[0] = '\0';
+                materialOcclusionTex[0] = '\0';
+            }
+        }
         changed = true;
     }
 
@@ -1385,7 +1467,9 @@ void FilePreviewWidget::drawMaterialAssetEditor(){
     };
 
     switch(materialData.type){
-        case MaterialAssetType::PBR:{
+        case MaterialAssetType::PBR:
+        case MaterialAssetType::Glass:
+        case MaterialAssetType::Water:{
             Math3D::Vec4 color = materialData.color;
             if(EditorPropertyUI::ColorEdit4("Base Color", &color.x)){
                 materialData.color = color;
@@ -1398,6 +1482,37 @@ void FilePreviewWidget::drawMaterialAssetEditor(){
             changed |= EditorPropertyUI::DragFloat("Emissive Strength", &materialData.emissiveStrength, 0.01f, 0.0f, 32.0f);
             changed |= EditorPropertyUI::SliderFloat("AO Strength", &materialData.occlusionStrength, 0.0f, 4.0f);
             changed |= EditorPropertyUI::DragFloat("Env Strength", &materialData.envStrength, 0.01f, 0.0f, 8.0f);
+
+            if(materialData.type == MaterialAssetType::Glass || materialData.type == MaterialAssetType::Water){
+                changed |= EditorPropertyUI::SliderFloat("Transmission", &materialData.transmission, 0.0f, 1.0f);
+                changed |= EditorPropertyUI::DragFloat("IOR", &materialData.ior, 0.001f, 1.0f, 2.5f, "%.3f");
+                changed |= EditorPropertyUI::DragFloat("Thickness", &materialData.thickness, 0.001f, 0.001f, 32.0f, "%.4f");
+                Math3D::Vec3 attenuationColor = materialData.attenuationColor;
+                if(EditorPropertyUI::ColorEdit3("Attenuation Color", &attenuationColor.x)){
+                    materialData.attenuationColor = attenuationColor;
+                    changed = true;
+                }
+                changed |= EditorPropertyUI::DragFloat("Attenuation Distance", &materialData.attenuationDistance, 0.01f, 0.001f, 256.0f, "%.3f");
+            }
+
+            if(materialData.type == MaterialAssetType::Water){
+                changed |= EditorPropertyUI::SliderFloat("Scattering", &materialData.scatteringStrength, 0.0f, 4.0f);
+                bool waveEnabled = (materialData.enableWaveDisplacement != 0);
+                if(EditorPropertyUI::Checkbox("Enable Waves", &waveEnabled)){
+                    materialData.enableWaveDisplacement = waveEnabled ? 1 : 0;
+                    changed = true;
+                }
+                if(materialData.enableWaveDisplacement != 0){
+                    changed |= EditorPropertyUI::DragFloat("Wave Amplitude", &materialData.waveAmplitude, 0.001f, 0.0f, 4.0f, "%.4f");
+                    changed |= EditorPropertyUI::DragFloat("Wave Frequency", &materialData.waveFrequency, 0.01f, 0.0f, 16.0f, "%.3f");
+                    changed |= EditorPropertyUI::DragFloat("Wave Speed", &materialData.waveSpeed, 0.01f, -8.0f, 8.0f, "%.3f");
+                    changed |= EditorPropertyUI::SliderFloat("Wave Choppiness", &materialData.waveChoppiness, 0.0f, 1.0f);
+                    changed |= EditorPropertyUI::DragFloat("Wave Secondary Scale", &materialData.waveSecondaryScale, 0.01f, 0.01f, 8.0f, "%.3f");
+                    changed |= EditorPropertyUI::DragFloat2("Wave Direction", &materialData.waveDirection.x, 0.01f, -1.0f, 1.0f);
+                    changed |= EditorPropertyUI::SliderFloat("Wave Texture Influence", &materialData.waveTextureInfluence, 0.0f, 4.0f);
+                    changed |= EditorPropertyUI::DragFloat2("Wave Texture Speed", &materialData.waveTextureSpeed.x, 0.001f, -4.0f, 4.0f);
+                }
+            }
 
             bool useEnvMap = (materialData.useEnvMap != 0);
             if(EditorPropertyUI::Checkbox("Use Env Map", &useEnvMap)){

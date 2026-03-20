@@ -66,6 +66,7 @@ class CubeMap {
          */
         int getSize() const { return size; }
         GLuint getID() const { return textureID; }
+        void generateMipmaps() const;
 
         static std::shared_ptr<CubeMap> Load(
             PAsset posX,
@@ -74,6 +75,13 @@ class CubeMap {
             PAsset negY,
             PAsset posZ,
             PAsset negZ
+        );
+        static std::shared_ptr<CubeMap> CreateRenderTarget(
+            int size,
+            GLenum internalFormat = GL_RGBA16F,
+            GLenum format = GL_RGBA,
+            GLenum type = GL_FLOAT,
+            bool generateMipmaps = true
         );
 };
 

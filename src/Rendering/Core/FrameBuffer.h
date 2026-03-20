@@ -209,7 +209,7 @@ struct FrameBuffer{
             auto fbuffer = std::make_shared<FrameBuffer>(width, height);
 
             fbuffer->gbufferAttachments.clear();
-            fbuffer->gbufferAttachments.reserve(3);
+            fbuffer->gbufferAttachments.reserve(4);
 
             if(fbuffer->depthTexture){
                 fbuffer->depthTexture->setFilterMode(TextureFilterMode::NEAREST);
@@ -261,8 +261,18 @@ struct FrameBuffer{
                 fbuffer->gbufferAttachments.push_back(material);
             }
 
-            GLenum drawBuffers[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-            glDrawBuffers(3, drawBuffers);
+            {
+                GBufferAttachment surface;
+                surface.internalFormat = GL_RGBA16F;
+                surface.format = GL_RGBA;
+                surface.type = GL_FLOAT;
+                surface.texture = createAttachment(surface.internalFormat, surface.format, surface.type);
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, surface.texture->getID(), 0);
+                fbuffer->gbufferAttachments.push_back(surface);
+            }
+
+            GLenum drawBuffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+            glDrawBuffers(4, drawBuffers);
             glReadBuffer(GL_COLOR_ATTACHMENT0);
 
             GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);

@@ -324,6 +324,14 @@ namespace {
         }
 
         if(auto pbr = Material::GetAs<PBRMaterial>(material)){
+            int bsdfModel = Math3D::Clamp(pbr->BsdfModel.get(), 0, 2);
+            static const char* bsdfModes[] = { "Standard", "Glass", "Water" };
+            std::string bsdfLabel = std::string("BSDF##") + idSuffix;
+            if(EditorPropertyUI::Combo(bsdfLabel.c_str(), &bsdfModel, bsdfModes, IM_ARRAYSIZE(bsdfModes))){
+                pbr->BsdfModel = bsdfModel;
+                changed = true;
+            }
+
             Math3D::Vec4 baseColor = pbr->BaseColor.get();
             std::string baseColorLabel = std::string("Base Color##") + idSuffix;
             if(EditorPropertyUI::ColorEdit4(baseColorLabel.c_str(), &baseColor.x)){
@@ -343,6 +351,52 @@ namespace {
             if(EditorPropertyUI::SliderFloat(roughnessLabel.c_str(), &roughness, 0.0f, 1.0f)){
                 pbr->Roughness = roughness;
                 changed = true;
+            }
+
+            if(bsdfModel != static_cast<int>(PBRBsdfModel::Standard)){
+                float transmission = pbr->Transmission.get();
+                std::string transmissionLabel = std::string("Transmission##") + idSuffix;
+                if(EditorPropertyUI::SliderFloat(transmissionLabel.c_str(), &transmission, 0.0f, 1.0f)){
+                    pbr->Transmission = transmission;
+                    changed = true;
+                }
+
+                float ior = pbr->Ior.get();
+                std::string iorLabel = std::string("IOR##") + idSuffix;
+                if(EditorPropertyUI::DragFloat(iorLabel.c_str(), &ior, 0.001f, 1.0f, 2.5f, "%.3f")){
+                    pbr->Ior = ior;
+                    changed = true;
+                }
+
+                float thickness = pbr->Thickness.get();
+                std::string thicknessLabel = std::string("Thickness##") + idSuffix;
+                if(EditorPropertyUI::DragFloat(thicknessLabel.c_str(), &thickness, 0.001f, 0.001f, 32.0f, "%.4f")){
+                    pbr->Thickness = thickness;
+                    changed = true;
+                }
+
+                Math3D::Vec3 attenuationColor = pbr->AttenuationColor.get();
+                std::string attenuationColorLabel = std::string("Attenuation Color##") + idSuffix;
+                if(EditorPropertyUI::ColorEdit3(attenuationColorLabel.c_str(), &attenuationColor.x)){
+                    pbr->AttenuationColor = attenuationColor;
+                    changed = true;
+                }
+
+                float attenuationDistance = pbr->AttenuationDistance.get();
+                std::string attenuationDistanceLabel = std::string("Attenuation Distance##") + idSuffix;
+                if(EditorPropertyUI::DragFloat(attenuationDistanceLabel.c_str(), &attenuationDistance, 0.01f, 0.001f, 256.0f, "%.3f")){
+                    pbr->AttenuationDistance = attenuationDistance;
+                    changed = true;
+                }
+
+                if(bsdfModel == static_cast<int>(PBRBsdfModel::Water)){
+                    float scatteringStrength = pbr->ScatteringStrength.get();
+                    std::string scatteringStrengthLabel = std::string("Scattering##") + idSuffix;
+                    if(EditorPropertyUI::SliderFloat(scatteringStrengthLabel.c_str(), &scatteringStrength, 0.0f, 4.0f)){
+                        pbr->ScatteringStrength = scatteringStrength;
+                        changed = true;
+                    }
+                }
             }
 
             float normalScale = pbr->NormalScale.get();
@@ -406,6 +460,73 @@ namespace {
                 if(EditorPropertyUI::SliderFloat(alphaCutoffLabel.c_str(), &alphaCutoff, 0.0f, 1.0f)){
                     pbr->AlphaCutoff = alphaCutoff;
                     changed = true;
+                }
+            }
+
+            if(bsdfModel == static_cast<int>(PBRBsdfModel::Water)){
+                bool waveEnabled = (pbr->EnableWaveDisplacement.get() != 0);
+                std::string waveEnabledLabel = std::string("Enable Waves##") + idSuffix;
+                if(EditorPropertyUI::Checkbox(waveEnabledLabel.c_str(), &waveEnabled)){
+                    pbr->EnableWaveDisplacement = waveEnabled ? 1 : 0;
+                    changed = true;
+                }
+
+                if(waveEnabled){
+                    float waveAmplitude = pbr->WaveAmplitude.get();
+                    std::string waveAmplitudeLabel = std::string("Wave Amplitude##") + idSuffix;
+                    if(EditorPropertyUI::DragFloat(waveAmplitudeLabel.c_str(), &waveAmplitude, 0.001f, 0.0f, 4.0f, "%.4f")){
+                        pbr->WaveAmplitude = waveAmplitude;
+                        changed = true;
+                    }
+
+                    float waveFrequency = pbr->WaveFrequency.get();
+                    std::string waveFrequencyLabel = std::string("Wave Frequency##") + idSuffix;
+                    if(EditorPropertyUI::DragFloat(waveFrequencyLabel.c_str(), &waveFrequency, 0.01f, 0.0f, 16.0f, "%.3f")){
+                        pbr->WaveFrequency = waveFrequency;
+                        changed = true;
+                    }
+
+                    float waveSpeed = pbr->WaveSpeed.get();
+                    std::string waveSpeedLabel = std::string("Wave Speed##") + idSuffix;
+                    if(EditorPropertyUI::DragFloat(waveSpeedLabel.c_str(), &waveSpeed, 0.01f, -8.0f, 8.0f, "%.3f")){
+                        pbr->WaveSpeed = waveSpeed;
+                        changed = true;
+                    }
+
+                    float waveChoppiness = pbr->WaveChoppiness.get();
+                    std::string waveChoppinessLabel = std::string("Wave Choppiness##") + idSuffix;
+                    if(EditorPropertyUI::SliderFloat(waveChoppinessLabel.c_str(), &waveChoppiness, 0.0f, 1.0f)){
+                        pbr->WaveChoppiness = waveChoppiness;
+                        changed = true;
+                    }
+
+                    float waveSecondaryScale = pbr->WaveSecondaryScale.get();
+                    std::string waveSecondaryScaleLabel = std::string("Wave Secondary Scale##") + idSuffix;
+                    if(EditorPropertyUI::DragFloat(waveSecondaryScaleLabel.c_str(), &waveSecondaryScale, 0.01f, 0.01f, 8.0f, "%.3f")){
+                        pbr->WaveSecondaryScale = waveSecondaryScale;
+                        changed = true;
+                    }
+
+                    Math3D::Vec2 waveDirection = pbr->WaveDirection.get();
+                    std::string waveDirectionLabel = std::string("Wave Direction##") + idSuffix;
+                    if(EditorPropertyUI::DragFloat2(waveDirectionLabel.c_str(), &waveDirection.x, 0.01f, -1.0f, 1.0f)){
+                        pbr->WaveDirection = waveDirection;
+                        changed = true;
+                    }
+
+                    float waveTextureInfluence = pbr->WaveTextureInfluence.get();
+                    std::string waveTextureInfluenceLabel = std::string("Wave Texture Influence##") + idSuffix;
+                    if(EditorPropertyUI::SliderFloat(waveTextureInfluenceLabel.c_str(), &waveTextureInfluence, 0.0f, 4.0f)){
+                        pbr->WaveTextureInfluence = waveTextureInfluence;
+                        changed = true;
+                    }
+
+                    Math3D::Vec2 waveTextureSpeed = pbr->WaveTextureSpeed.get();
+                    std::string waveTextureSpeedLabel = std::string("Wave Texture Speed##") + idSuffix;
+                    if(EditorPropertyUI::DragFloat2(waveTextureSpeedLabel.c_str(), &waveTextureSpeed.x, 0.001f, -4.0f, 4.0f)){
+                        pbr->WaveTextureSpeed = waveTextureSpeed;
+                        changed = true;
+                    }
                 }
             }
 
@@ -1582,6 +1703,32 @@ namespace {
         EditorPropertyUI::Combo("Debug View", &data.debugView, kSsaoDebugViews, IM_ARRAYSIZE(kSsaoDebugViews));
     }
 
+    void drawSsrSettingsFields(SSRComponent& data){
+        EditorPropertyUI::Checkbox("Enabled", &data.enabled);
+        EditorPropertyUI::SliderFloat("Intensity", &data.intensity, 0.0f, 4.0f, "%.2f");
+        EditorPropertyUI::SliderFloat("Max Distance", &data.maxDistance, 1.0f, 2500.0f, "%.1f");
+        EditorPropertyUI::SliderInt("Max Steps", &data.maxSteps, 8, 256);
+        EditorPropertyUI::SliderFloat("Stride", &data.stride, 0.1f, 8.0f, "%.2f");
+        EditorPropertyUI::SliderFloat("Thickness", &data.thickness, 0.005f, 4.0f, "%.3f");
+        EditorPropertyUI::SliderFloat("Jitter", &data.jitter, 0.0f, 1.0f, "%.2f");
+        EditorPropertyUI::SliderFloat("Roughness Cutoff", &data.roughnessCutoff, 0.05f, 1.0f, "%.2f");
+        EditorPropertyUI::SliderFloat("Edge Fade", &data.edgeFade, 0.01f, 0.5f, "%.2f");
+    }
+
+    void drawReflectionProbeFields(ReflectionProbeComponent& data){
+        EditorPropertyUI::Checkbox("Enabled", &data.enabled);
+        EditorPropertyUI::SliderInt("Resolution", &data.resolution, 64, 512);
+        EditorPropertyUI::DragInt("Priority", &data.priority, 1.0f, -32, 32);
+        EditorPropertyUI::DragFloat3("Capture Extents", &data.captureExtents.x, 0.05f, 0.25f, 256.0f, "%.2f");
+        EditorPropertyUI::DragFloat3("Influence Extents", &data.influenceExtents.x, 0.05f, 0.25f, 256.0f, "%.2f");
+        EditorPropertyUI::Checkbox("Auto Update", &data.autoUpdate);
+        if(data.autoUpdate){
+            EditorPropertyUI::SliderInt("Update Interval", &data.updateIntervalFrames, 1, 240);
+        }
+        ImGui::TextDisabled("Capture extents should cover surrounding geometry.");
+        ImGui::TextDisabled("Influence extents define where this probe blends in.");
+    }
+
     void sanitizeEnvironmentSettings(EnvironmentSettings& settings){
         settings.fogStart = Math3D::Max(0.0f, settings.fogStart);
         settings.fogStop = Math3D::Max(settings.fogStart, settings.fogStop);
@@ -1672,6 +1819,8 @@ namespace {
         if(dynamic_cast<SkyboxComponent*>(component)){ manager->removeECSComponent<SkyboxComponent>(entity); return true; }
         if(dynamic_cast<EnvironmentComponent*>(component)){ manager->removeECSComponent<EnvironmentComponent>(entity); return true; }
         if(dynamic_cast<SSAOComponent*>(component)){ manager->removeECSComponent<SSAOComponent>(entity); return true; }
+        if(dynamic_cast<SSRComponent*>(component)){ manager->removeECSComponent<SSRComponent>(entity); return true; }
+        if(dynamic_cast<ReflectionProbeComponent*>(component)){ manager->removeECSComponent<ReflectionProbeComponent>(entity); return true; }
         if(dynamic_cast<PostProcessingStackComponent*>(component)){ manager->removeECSComponent<PostProcessingStackComponent>(entity); return true; }
         if(dynamic_cast<DepthOfFieldComponent*>(component)){ manager->removeECSComponent<DepthOfFieldComponent>(entity); return true; }
         if(dynamic_cast<BloomComponent*>(component)){ manager->removeECSComponent<BloomComponent>(entity); return true; }
@@ -1826,6 +1975,7 @@ void MeshRendererComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene sc
         ImGui::TextUnformatted("Mesh Renderer");
         EditorPropertyUI::Checkbox("Visible", &renderer->visible);
         EditorPropertyUI::Checkbox("Backface Cull", &renderer->enableBackfaceCulling);
+        EditorPropertyUI::Checkbox("Planar Reflection Capture", &renderer->planarReflectionSurface);
         drawModelSelectionUI(renderer, "mesh_renderer_model_asset");
 
         const bool deferredActive = (GameEngine::Engine &&
@@ -2595,9 +2745,39 @@ void CameraComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
             }
             ImGui::TreePop();
         }
+
+        if(ImGui::TreeNode("Screen Space Reflections")){
+            SSRComponent* ssr = nullptr;
+            NeoECS::ECSEntity* parentEntity = getParentEntity();
+            NeoECS::ECSComponentManager* componentManager = ecsPtr ? ecsPtr->getComponentManager() : nullptr;
+            if(componentManager && parentEntity){
+                ssr = componentManager->getECSComponent<SSRComponent>(parentEntity);
+            }
+
+            if(!ssr && ecsPtr && parentEntity){
+                std::unique_ptr<NeoECS::GameObject> wrapper(
+                    NeoECS::GameObject::CreateFromECSEntity(ecsPtr->getContext(), parentEntity)
+                );
+                if(wrapper && wrapper->addComponent<SSRComponent>() && componentManager){
+                    ssr = componentManager->getECSComponent<SSRComponent>(parentEntity);
+                    if(ssr){
+                        ssr->enabled = false;
+                    }
+                }
+            }
+
+            if(ssr){
+                ImGui::PushID("CameraSSR");
+                drawSsrSettingsFields(*ssr);
+                ImGui::PopID();
+            }else{
+                ImGui::TextDisabled("SSR settings could not be initialized for this camera.");
+            }
+            ImGui::TreePop();
+        }
     }else{
         ImGui::Separator();
-        ImGui::TextDisabled("SSAO / GI is available only in Deferred mode.");
+        ImGui::TextDisabled("SSAO / GI and SSR are available only in Deferred mode.");
     }
 }
 
@@ -2741,6 +2921,55 @@ void SSAOComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
         return;
     }
     drawSsaoSettingsFields(*this);
+}
+
+DeferredSSRSettings SSRComponent::buildDeferredSsrSettings() const{
+    DeferredSSRSettings settings;
+    settings.enabled = enabled;
+    settings.intensity = Math3D::Clamp(intensity, 0.0f, 4.0f);
+    settings.maxDistance = Math3D::Clamp(maxDistance, 1.0f, 2500.0f);
+    settings.thickness = Math3D::Clamp(thickness, 0.005f, 4.0f);
+    settings.stride = Math3D::Clamp(stride, 0.1f, 8.0f);
+    settings.jitter = Math3D::Clamp(jitter, 0.0f, 1.0f);
+    settings.maxSteps = Math3D::Clamp(maxSteps, 8, 256);
+    settings.roughnessCutoff = Math3D::Clamp(roughnessCutoff, 0.05f, 1.0f);
+    settings.edgeFade = Math3D::Clamp(edgeFade, 0.001f, 0.5f);
+    settings.useCameraReflectionCache = false;
+    settings.cameraReflectionUpdateInterval = 2;
+    settings.cameraReflectionInfluenceRadius = 18.0f;
+    return settings;
+}
+
+void SSRComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
+    (void)ecsPtr;
+    (void)scene;
+    if(!beginEditorComponentSection(this, "Screen Space Reflections", 0, ecsPtr)){
+        return;
+    }
+    drawSsrSettingsFields(*this);
+}
+
+void ReflectionProbeComponent::drawPropertyWidget(NeoECS::NeoECS* ecsPtr, PScene scene){
+    (void)ecsPtr;
+    (void)scene;
+    if(!beginEditorComponentSection(this, "Reflection Probe", 0, ecsPtr)){
+        return;
+    }
+
+    resolution = Math3D::Clamp(resolution, 64, 512);
+    updateIntervalFrames = Math3D::Clamp(updateIntervalFrames, 1, 240);
+    captureExtents.x = Math3D::Max(captureExtents.x, 0.25f);
+    captureExtents.y = Math3D::Max(captureExtents.y, 0.25f);
+    captureExtents.z = Math3D::Max(captureExtents.z, 0.25f);
+    influenceExtents.x = Math3D::Max(influenceExtents.x, 0.25f);
+    influenceExtents.y = Math3D::Max(influenceExtents.y, 0.25f);
+    influenceExtents.z = Math3D::Max(influenceExtents.z, 0.25f);
+
+    drawReflectionProbeFields(*this);
+
+    captureExtents.x = Math3D::Max(captureExtents.x, influenceExtents.x);
+    captureExtents.y = Math3D::Max(captureExtents.y, influenceExtents.y);
+    captureExtents.z = Math3D::Max(captureExtents.z, influenceExtents.z);
 }
 
 bool PostProcessingStackComponent::hasEffectIdentifier(const std::string& identifier) const{

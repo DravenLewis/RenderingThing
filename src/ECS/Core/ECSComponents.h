@@ -13,6 +13,7 @@
 #include "Rendering/Geometry/Model.h"
 #include "Rendering/Lighting/Light.h"
 #include "Rendering/Lighting/DeferredSSAO.h"
+#include "Rendering/Lighting/DeferredSSR.h"
 #include "Rendering/PostFX/ScreenEffects.h"
 #include "Rendering/PostFX/LoadedEffect.h"
 #include "Assets/Descriptors/EffectAsset.h"
@@ -165,6 +166,7 @@ struct MeshRendererComponent : public IEditorCompatibleComponent {
     Math3D::Transform localOffset;
     bool visible = true;
     bool enableBackfaceCulling = true;
+    bool planarReflectionSurface = false;
 
     /**
      * @brief Draws editor controls for this component.
@@ -407,6 +409,66 @@ struct SSAOComponent : public IEditorCompatibleComponent {
      * @return Clamped settings used by the core deferred SSAO pass.
      */
     DeferredSSAOSettings buildDeferredSsaoSettings() const;
+    /**
+     * @brief Draws editor controls for this component.
+     * @param ecsPtr ECS instance that owns the component.
+     * @param scenePtr Scene context used by editor widgets.
+     */
+    void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
+};
+
+/// @brief Holds data for SSRComponent.
+struct SSRComponent : public IEditorCompatibleComponent {
+    using IEditorCompatibleComponent::IEditorCompatibleComponent;
+    bool enabled = true;
+    float intensity = 0.85f;
+    float maxDistance = 80.0f;
+    float thickness = 0.18f;
+    float stride = 0.75f;
+    float jitter = 0.35f;
+    int maxSteps = 56;
+    float roughnessCutoff = 0.82f;
+    float edgeFade = 0.18f;
+    bool useCameraReflectionCache = false;
+    int cameraReflectionUpdateInterval = 2;
+    float cameraReflectionInfluenceRadius = 18.0f;
+
+    /**
+     * @brief Gets a mutable pointer to the editor-enabled flag.
+     * @return Pointer to the enabled flag.
+     */
+    bool* getEditorEnabledState() override { return &enabled; }
+    const bool* getEditorEnabledState() const override { return &enabled; }
+    /**
+     * @brief Builds deferred SSR settings for the active camera.
+     * @return Clamped settings used by the core deferred SSR pass.
+     */
+    DeferredSSRSettings buildDeferredSsrSettings() const;
+    /**
+     * @brief Draws editor controls for this component.
+     * @param ecsPtr ECS instance that owns the component.
+     * @param scenePtr Scene context used by editor widgets.
+     */
+    void drawPropertyWidget(NeoECS::NeoECS* ecsPtr = nullptr, PScene scenePtr = nullptr) override;
+};
+
+/// @brief Holds data for ReflectionProbeComponent.
+struct ReflectionProbeComponent : public IEditorCompatibleComponent {
+    using IEditorCompatibleComponent::IEditorCompatibleComponent;
+    bool enabled = true;
+    int resolution = 128;
+    int priority = 0;
+    bool autoUpdate = false;
+    int updateIntervalFrames = 30;
+    Math3D::Vec3 captureExtents = Math3D::Vec3(8.0f, 6.0f, 8.0f);
+    Math3D::Vec3 influenceExtents = Math3D::Vec3(6.0f, 4.0f, 6.0f);
+
+    /**
+     * @brief Gets a mutable pointer to the editor-enabled flag.
+     * @return Pointer to the enabled flag.
+     */
+    bool* getEditorEnabledState() override { return &enabled; }
+    const bool* getEditorEnabledState() const override { return &enabled; }
     /**
      * @brief Draws editor controls for this component.
      * @param ecsPtr ECS instance that owns the component.

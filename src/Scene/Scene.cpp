@@ -36,6 +36,109 @@
 namespace {
     const Math3D::Vec4 kSelectionOutlineColor(0.20392157f, 0.59607846f, 0.85882354f, 0.95f);
     constexpr int kDeferredLightTileSize = 16;
+    constexpr int kDeferredSsrLocalProbeSize = 256;
+    const std::array<Math3D::Vec3, 6> kDeferredSsrLocalProbeDirs = {{
+        Math3D::Vec3( 1.0f,  0.0f,  0.0f),
+        Math3D::Vec3(-1.0f,  0.0f,  0.0f),
+        Math3D::Vec3( 0.0f,  1.0f,  0.0f),
+        Math3D::Vec3( 0.0f, -1.0f,  0.0f),
+        Math3D::Vec3( 0.0f,  0.0f,  1.0f),
+        Math3D::Vec3( 0.0f,  0.0f, -1.0f)
+    }};
+    const std::array<Math3D::Vec3, 6> kDeferredSsrLocalProbeUps = {{
+        Math3D::Vec3( 0.0f, -1.0f,  0.0f),
+        Math3D::Vec3( 0.0f, -1.0f,  0.0f),
+        Math3D::Vec3( 0.0f,  0.0f,  1.0f),
+        Math3D::Vec3( 0.0f,  0.0f, -1.0f),
+        Math3D::Vec3( 0.0f, -1.0f,  0.0f),
+        Math3D::Vec3( 0.0f, -1.0f,  0.0f)
+    }};
+
+    Math3D::Vec3 safeNormalizeVec3(const Math3D::Vec3& value, const Math3D::Vec3& fallback){
+        if(std::isfinite(value.x) && std::isfinite(value.y) && std::isfinite(value.z)){
+            const float len = value.length();
+            if(len > Math3D::EPSILON){
+                return value * (1.0f / len);
+            }
+        }
+        return fallback;
+    }
+
+    Math3D::Vec3 transformDirection(const Math3D::Mat4& matrix, const Math3D::Vec3& direction){
+        glm::mat3 linear = glm::mat3(static_cast<glm::mat4>(matrix));
+        const float determinant = glm::determinant(linear);
+        if(std::abs(determinant) <= 1e-8f){
+            return safeNormalizeVec3(direction, Math3D::Vec3::up());
+        }
+
+        glm::mat3 normalMatrix = glm::transpose(glm::inverse(linear));
+        return safeNormalizeVec3(Math3D::Vec3(normalMatrix * static_cast<glm::vec3>(direction)), Math3D::Vec3::up());
+    }
+
+    Math3D::Vec3 reflectPointAcrossPlane(const Math3D::Vec3& point,
+                                         const Math3D::Vec3& planePoint,
+                                         const Math3D::Vec3& planeNormal){
+        const float signedDistance = Math3D::Vec3::dot(point - planePoint, planeNormal);
+        return point - (planeNormal * (2.0f * signedDistance));
+    }
+
+    Math3D::Vec3 reflectDirectionAcrossPlane(const Math3D::Vec3& direction,
+                                             const Math3D::Vec3& planeNormal){
+        return direction - (planeNormal * (2.0f * Math3D::Vec3::dot(direction, planeNormal)));
+    }
+
+    Math3D::Vec4 makePlaneEquation(const Math3D::Vec3& planePoint,
+                                   const Math3D::Vec3& planeNormal,
+                                   float clipOffset = 0.0f){
+        return Math3D::Vec4(
+            planeNormal.x,
+            planeNormal.y,
+            planeNormal.z,
+            -Math3D::Vec3::dot(planeNormal, planePoint) - clipOffset
+        );
+    }
+
+    float computePlanarReflectivityScore(const std::shared_ptr<PBRMaterial>& pbr){
+        if(!pbr){
+            return 0.0f;
+        }
+
+        const int bsdfModel = Math3D::Clamp(pbr->BsdfModel.get(), 0, 2);
+        const float roughness = Math3D::Clamp(pbr->Roughness.get(), 0.0f, 1.0f);
+        const float metallic = Math3D::Clamp(pbr->Metallic.get(), 0.0f, 1.0f);
+        const float transmission = Math3D::Clamp(pbr->Transmission.get(), 0.0f, 1.0f);
+        const float envStrength = Math3D::Max(pbr->EnvStrength.get(), 0.0f);
+
+        float reflectivity =
+            ((1.0f - roughness) * 1.15f) +
+            (metallic * 0.90f) +
+            (transmission * 0.35f) +
+            (envStrength * 0.20f);
+        if(bsdfModel == static_cast<int>(PBRBsdfModel::Glass)){
+            reflectivity = Math3D::Max(reflectivity, 0.95f + ((1.0f - roughness) * 0.30f));
+        }else if(bsdfModel == static_cast<int>(PBRBsdfModel::Water)){
+            reflectivity = Math3D::Max(reflectivity, 0.75f + ((1.0f - roughness) * 0.25f));
+        }
+
+        return Math3D::Clamp(reflectivity, 0.0f, 4.0f);
+    }
+
+    int findSmallestExtentAxis(const Math3D::Vec3& extents){
+        if(extents.x <= extents.y && extents.x <= extents.z){
+            return 0;
+        }
+        if(extents.y <= extents.x && extents.y <= extents.z){
+            return 1;
+        }
+        return 2;
+    }
+
+    float distancePointToAabb(const Math3D::Vec3& point, const Math3D::Vec3& minBounds, const Math3D::Vec3& maxBounds){
+        const float dx = Math3D::Max(Math3D::Max(minBounds.x - point.x, 0.0f), point.x - maxBounds.x);
+        const float dy = Math3D::Max(Math3D::Max(minBounds.y - point.y, 0.0f), point.y - maxBounds.y);
+        const float dz = Math3D::Max(Math3D::Max(minBounds.z - point.z, 0.0f), point.z - maxBounds.z);
+        return std::sqrt((dx * dx) + (dy * dy) + (dz * dz));
+    }
 
     struct DeferredLightUploadCandidate {
         Light light;
@@ -1250,7 +1353,7 @@ void Scene::refreshRenderState(){
     auto& entities = ecsInstance->getEntityManager()->getEntities();
     snapshot.drawItems.reserve(entities.size());
     snapshot.lights.reserve(entities.size());
-    NeoECS::ECSEntity* activeCameraEntity = nullptr;
+    NeoECS::ECSEntity* resolvedActiveCameraEntity = nullptr;
     NeoECS::ECSEntity* firstEnabledCameraEntity = nullptr;
     NeoECS::ECSEntity* preferredEnabledCameraEntity = nullptr;
     PCamera firstEnabledCamera = nullptr;
@@ -1274,14 +1377,17 @@ void Scene::refreshRenderState(){
         auto* lightComponent = componentManager->getECSComponent<LightComponent>(entity);
         auto* boundsComp = componentManager->getECSComponent<BoundsComponent>(entity);
         auto* cameraComponent = componentManager->getECSComponent<CameraComponent>(entity);
+        auto* reflectionProbeComponent = componentManager->getECSComponent<ReflectionProbeComponent>(entity);
         const bool rendererActive = IsComponentActive(renderer);
         const bool lightActive = IsComponentActive(lightComponent);
         const bool boundsActive = IsComponentActive(boundsComp);
         const bool cameraActive = IsComponentActive(cameraComponent);
+        const bool reflectionProbeActive = IsComponentActive(reflectionProbeComponent);
         const bool entityPropertiesActive = IsComponentActive(entityProperties);
 
         const bool needsWorld = (rendererActive && renderer && renderer->visible) ||
                                 (lightActive && lightComponent && (lightComponent->syncTransform || lightComponent->syncDirection)) ||
+                                (reflectionProbeActive && transform) ||
                                 (cameraComponent && cameraComponent->camera && transform);
 
         Math3D::Mat4 world(1.0f);
@@ -1304,7 +1410,7 @@ void Scene::refreshRenderState(){
             }
 
             if(renderer->model){
-                cull = renderer->model->isBackfaceCullingEnabled();
+                cull = cull && renderer->model->isBackfaceCullingEnabled();
                 const auto& parts = renderer->model->getParts();
                 for(const auto& part : parts){
                     if(!part || !part->visible || !part->mesh || !part->material) continue;
@@ -1315,6 +1421,7 @@ void Scene::refreshRenderState(){
                     item.enableBackfaceCulling = cull;
                     item.isTransparent = isMaterialTransparent(item.material);
                     item.isDeferredCompatible = isDeferredCompatibleMaterial(item.material);
+                    item.planarReflectionSource = renderer->planarReflectionSurface;
                     item.entityId = entity->getNodeUniqueID();
                     item.ignoreRaycastHit = (entityPropertiesActive && entityProperties && entityProperties->ignoreRaycastHit);
                     item.castsShadows = item.material->castsShadows();
@@ -1336,6 +1443,7 @@ void Scene::refreshRenderState(){
                 item.enableBackfaceCulling = cull;
                 item.isTransparent = isMaterialTransparent(item.material);
                 item.isDeferredCompatible = isDeferredCompatibleMaterial(item.material);
+                item.planarReflectionSource = renderer->planarReflectionSurface;
                 item.entityId = entity->getNodeUniqueID();
                 item.ignoreRaycastHit = (entityPropertiesActive && entityProperties && entityProperties->ignoreRaycastHit);
                 item.castsShadows = item.material->castsShadows();
@@ -1349,6 +1457,34 @@ void Scene::refreshRenderState(){
                 }
                 snapshot.drawItems.push_back(std::move(item));
             }
+        }
+
+        if(reflectionProbeActive && reflectionProbeComponent && transform){
+            ReflectionProbeSnapshot probe;
+            probe.entityId = entity->getNodeUniqueID();
+            probe.resolution = Math3D::Clamp(reflectionProbeComponent->resolution, 64, 512);
+            probe.priority = reflectionProbeComponent->priority;
+            probe.autoUpdate = reflectionProbeComponent->autoUpdate;
+            probe.updateIntervalFrames = Math3D::Clamp(reflectionProbeComponent->updateIntervalFrames, 1, 240);
+            probe.center = world.getPosition();
+
+            Math3D::Vec3 captureExtents = reflectionProbeComponent->captureExtents;
+            Math3D::Vec3 influenceExtents = reflectionProbeComponent->influenceExtents;
+            captureExtents.x = Math3D::Max(captureExtents.x, 0.25f);
+            captureExtents.y = Math3D::Max(captureExtents.y, 0.25f);
+            captureExtents.z = Math3D::Max(captureExtents.z, 0.25f);
+            influenceExtents.x = Math3D::Max(influenceExtents.x, 0.25f);
+            influenceExtents.y = Math3D::Max(influenceExtents.y, 0.25f);
+            influenceExtents.z = Math3D::Max(influenceExtents.z, 0.25f);
+            captureExtents.x = Math3D::Max(captureExtents.x, influenceExtents.x);
+            captureExtents.y = Math3D::Max(captureExtents.y, influenceExtents.y);
+            captureExtents.z = Math3D::Max(captureExtents.z, influenceExtents.z);
+
+            probe.captureBoundsMin = probe.center - captureExtents;
+            probe.captureBoundsMax = probe.center + captureExtents;
+            probe.influenceBoundsMin = probe.center - influenceExtents;
+            probe.influenceBoundsMax = probe.center + influenceExtents;
+            snapshot.reflectionProbes.push_back(std::move(probe));
         }
 
         if(lightActive && lightComponent){
@@ -1398,7 +1534,7 @@ void Scene::refreshRenderState(){
                     preferredEnabledCameraEntity = entity;
                 }
                 if(activeCamera && cameraComponent->camera == activeCamera){
-                    activeCameraEntity = entity;
+                    resolvedActiveCameraEntity = entity;
                 }
             }
         }
@@ -1406,9 +1542,9 @@ void Scene::refreshRenderState(){
 
     NeoECS::ECSEntity* resolvedCameraEntity = nullptr;
     PCamera resolvedCamera = nullptr;
-    if(activeCameraEntity && activeCamera){
+    if(resolvedActiveCameraEntity && activeCamera){
         resolvedCamera = activeCamera;
-        resolvedCameraEntity = activeCameraEntity;
+        resolvedCameraEntity = resolvedActiveCameraEntity;
     }else if(preferredEnabledCamera){
         resolvedCamera = preferredEnabledCamera;
         resolvedCameraEntity = preferredEnabledCameraEntity;
@@ -1418,7 +1554,7 @@ void Scene::refreshRenderState(){
     }
 
     preferredCamera = resolvedCamera;
-    activeCameraEntity = resolvedCameraEntity;
+    this->activeCameraEntity = resolvedCameraEntity;
     if(mainScreen && mainScreen->getCamera() != resolvedCamera){
         mainScreen->setCamera(resolvedCamera);
     }
@@ -1765,6 +1901,26 @@ bool Scene::resolveDeferredSsaoSettings(NeoECS::ECSComponentManager* manager,
     return true;
 }
 
+bool Scene::resolveDeferredSsrSettings(NeoECS::ECSComponentManager* manager,
+                                       NeoECS::ECSEntity* cameraEntity,
+                                       DeferredSSRSettings& outSettings) const{
+    if(hasDeferredSsrOverride){
+        outSettings = deferredSsrOverrideSettings;
+        return outSettings.enabled;
+    }
+    if(!manager || !cameraEntity){
+        return false;
+    }
+
+    auto* ssr = manager->getECSComponent<SSRComponent>(cameraEntity);
+    if(!IsComponentActive(ssr)){
+        return false;
+    }
+
+    outSettings = ssr->buildDeferredSsrSettings();
+    return outSettings.enabled;
+}
+
 void Scene::applyCameraEffectsToScreen(PScreen screen,
                                        NeoECS::ECSEntity* cameraEntity,
                                        bool clearExisting,
@@ -1787,6 +1943,7 @@ void Scene::applyCameraEffectsToScreen(PScreen screen,
 
     if(ssaoRenderTargetScene && clearExisting){
         ssaoRenderTargetScene->hasDeferredSsaoOverride = false;
+        ssaoRenderTargetScene->hasDeferredSsrOverride = false;
     }
 
     if(manager && cameraEntity){
@@ -1842,6 +1999,12 @@ void Scene::applyCameraEffectsToScreen(PScreen screen,
             if(IsComponentActive(ssao)){
                 ssaoRenderTargetScene->deferredSsaoOverrideSettings = ssao->buildDeferredSsaoSettings();
                 ssaoRenderTargetScene->hasDeferredSsaoOverride = true;
+            }
+        }
+        if(auto* ssr = manager->getECSComponent<SSRComponent>(cameraEntity)){
+            if(IsComponentActive(ssr)){
+                ssaoRenderTargetScene->deferredSsrOverrideSettings = ssr->buildDeferredSsrSettings();
+                ssaoRenderTargetScene->hasDeferredSsrOverride = true;
             }
         }
     }
@@ -1936,6 +2099,13 @@ bool Scene::isMaterialTransparent(const std::shared_ptr<Material>& material) con
     if(!material) return false;
 
     if(auto pbr = Material::GetAs<PBRMaterial>(material)){
+        const int bsdfModel = Math3D::Clamp(pbr->BsdfModel.get(), 0, 2);
+        if(bsdfModel == static_cast<int>(PBRBsdfModel::Glass) ||
+           bsdfModel == static_cast<int>(PBRBsdfModel::Water)){
+            // Keep transmissive materials blended so they read as actual glass/water.
+            // Deferred still handles opaque surfaces; glass/water are composited in the transparent pass.
+            return true;
+        }
         if(pbr->UseAlphaClip.get() != 0){
             return false;
         }
@@ -1983,7 +2153,7 @@ void Scene::ensureDeferredResources(PScreen screen){
 
     int w = screen->getWidth();
     int h = screen->getHeight();
-    if(!gBuffer || gBuffer->getGBufferCount() < 3){
+    if(!gBuffer || gBuffer->getGBufferCount() < 4){
         gBuffer = FrameBuffer::CreateGBuffer(w, h);
         gBufferWidth = w;
         gBufferHeight = h;
@@ -2029,7 +2199,7 @@ void Scene::ensureDeferredResources(PScreen screen){
         auto vertexShader = AssetManager::Instance.getOrLoad("@assets/shader/Shader_Vert_Lit.vert");
         auto fragmentShader = AssetManager::Instance.getOrLoad("@assets/shader/Shader_Frag_GBuffer.frag");
         if(vertexShader && fragmentShader){
-            gBufferShader = ShaderCacheManager::INSTANCE.getOrCompile("GBufferPass_v3", vertexShader->asString(), fragmentShader->asString());
+            gBufferShader = ShaderCacheManager::INSTANCE.getOrCompile("GBufferPass_v4", vertexShader->asString(), fragmentShader->asString());
             if(gBufferShader && gBufferShader->getID() == 0){
                 LogBot.Log(LOG_ERRO, "Failed to link GBufferPass shader: \n%s", gBufferShader->getLog().c_str());
             }
@@ -2042,7 +2212,7 @@ void Scene::ensureDeferredResources(PScreen screen){
         auto vertexShader = AssetManager::Instance.getOrLoad("@assets/shader/Shader_Vert_Default.vert");
         auto fragmentShader = AssetManager::Instance.getOrLoad("@assets/shader/Shader_Frag_DeferredLight.frag");
         if(vertexShader && fragmentShader){
-            deferredLightShader = ShaderCacheManager::INSTANCE.getOrCompile("DeferredLightPass_v7", vertexShader->asString(), fragmentShader->asString());
+            deferredLightShader = ShaderCacheManager::INSTANCE.getOrCompile("DeferredLightPass_v8", vertexShader->asString(), fragmentShader->asString());
             if(deferredLightShader && deferredLightShader->getID() == 0){
                 LogBot.Log(LOG_ERRO, "Failed to link DeferredLightPass shader: \n%s", deferredLightShader->getLog().c_str());
             }
@@ -2179,7 +2349,561 @@ bool Scene::buildDeferredLightTiles(PCamera cam, const std::vector<Light>& light
     return true;
 }
 
+void Scene::clearLocalReflectionProbe(){
+    deferredLocalReflectionProbe.valid = false;
+    deferredLocalReflectionProbe.anchorEntityId.clear();
+    deferredLocalReflectionProbe.center = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+    deferredLocalReflectionProbe.captureBoundsMin = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+    deferredLocalReflectionProbe.captureBoundsMax = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+    deferredLocalReflectionProbe.influenceBoundsMin = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+    deferredLocalReflectionProbe.influenceBoundsMax = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+    deferredLocalReflectionProbe.lastUpdateFrame = 0;
+}
+
+void Scene::releaseLocalReflectionProbeResources(){
+    clearLocalReflectionProbe();
+    deferredLocalReflectionProbe.cubeMap.reset();
+    if(deferredLocalReflectionProbe.captureDepthRenderBuffer != 0){
+        glDeleteRenderbuffers(1, &deferredLocalReflectionProbe.captureDepthRenderBuffer);
+        deferredLocalReflectionProbe.captureDepthRenderBuffer = 0;
+    }
+    if(deferredLocalReflectionProbe.captureFbo != 0){
+        glDeleteFramebuffers(1, &deferredLocalReflectionProbe.captureFbo);
+        deferredLocalReflectionProbe.captureFbo = 0;
+    }
+    deferredLocalReflectionProbe.faceSize = 0;
+}
+
+bool Scene::ensureLocalReflectionProbeResources(int faceSize){
+    if(faceSize <= 0){
+        return false;
+    }
+
+    auto& probe = deferredLocalReflectionProbe;
+    const bool needsProbeTexture =
+        !probe.cubeMap ||
+        probe.faceSize != faceSize ||
+        probe.cubeMap->getID() == 0 ||
+        probe.cubeMap->getSize() != faceSize;
+    if(needsProbeTexture){
+        probe.cubeMap = CubeMap::CreateRenderTarget(faceSize, GL_RGBA16F, GL_RGBA, GL_FLOAT, true);
+        probe.faceSize = faceSize;
+    }
+
+    if(probe.captureFbo == 0){
+        glGenFramebuffers(1, &probe.captureFbo);
+    }
+    if(probe.captureDepthRenderBuffer == 0){
+        glGenRenderbuffers(1, &probe.captureDepthRenderBuffer);
+    }
+    if(!probe.cubeMap || probe.captureFbo == 0 || probe.captureDepthRenderBuffer == 0){
+        return false;
+    }
+
+    glBindRenderbuffer(GL_RENDERBUFFER, probe.captureDepthRenderBuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, faceSize, faceSize);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, probe.captureFbo);
+    glFramebufferTexture2D(
+        GL_FRAMEBUFFER,
+        GL_COLOR_ATTACHMENT0,
+        GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+        probe.cubeMap->getID(),
+        0
+    );
+    glFramebufferRenderbuffer(
+        GL_FRAMEBUFFER,
+        GL_DEPTH_ATTACHMENT,
+        GL_RENDERBUFFER,
+        probe.captureDepthRenderBuffer
+    );
+    const GLenum drawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+    glDrawBuffers(1, drawBuffers);
+    glReadBuffer(GL_COLOR_ATTACHMENT0);
+    const bool complete = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    return complete;
+}
+
+void Scene::clearPlanarReflection(){
+    activePlanarReflection.valid = false;
+    activePlanarReflection.entityId.clear();
+    activePlanarReflection.center = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+    activePlanarReflection.normal = Math3D::Vec3(0.0f, 1.0f, 0.0f);
+    activePlanarReflection.viewProjection = Math3D::Mat4();
+    activePlanarReflection.strength = 1.0f;
+    activePlanarReflection.receiverFadeDistance = 1.0f;
+}
+
+bool Scene::ensurePlanarReflectionResources(int width, int height){
+    if(width <= 0 || height <= 0){
+        return false;
+    }
+
+    const bool needsResize =
+        !activePlanarReflection.buffer ||
+        activePlanarReflection.buffer->getWidth() != width ||
+        activePlanarReflection.buffer->getHeight() != height ||
+        !activePlanarReflection.buffer->getTexture();
+
+    if(needsResize){
+        activePlanarReflection.buffer = FrameBuffer::Create(width, height);
+        if(activePlanarReflection.buffer){
+            activePlanarReflection.buffer->attachTexture(
+                Texture::CreateRenderTarget(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT)
+            );
+            if(activePlanarReflection.buffer->getTexture()){
+                glBindTexture(GL_TEXTURE_2D, activePlanarReflection.buffer->getTexture()->getID());
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                glGenerateMipmap(GL_TEXTURE_2D);
+                glBindTexture(GL_TEXTURE_2D, 0);
+            }
+            if(!activePlanarReflection.buffer->validate()){
+                activePlanarReflection.buffer.reset();
+            }
+        }
+    }
+
+    return activePlanarReflection.buffer && activePlanarReflection.buffer->getTexture();
+}
+
+bool Scene::updatePlanarReflection(PScreen screen, PCamera cam){
+    clearPlanarReflection();
+    if(!screen || !cam || cam->getSettings().isOrtho){
+        return false;
+    }
+    if(!ensurePlanarReflectionResources(screen->getWidth(), screen->getHeight())){
+        return false;
+    }
+
+    const int frontIndex = renderSnapshotIndex.load(std::memory_order_acquire);
+    const auto& snapshot = renderSnapshots[frontIndex];
+    const Math3D::Mat4 viewMatrix = cam->getViewMatrix();
+    const Math3D::Mat4 projectionMatrix = cam->getProjectionMatrix();
+    const Math3D::Mat4 clipMatrix = projectionMatrix * viewMatrix;
+    const Math3D::Vec3 cameraPosition = cam->transform().position;
+
+    const RenderItem* bestItem = nullptr;
+    Math3D::Vec3 bestCenter;
+    Math3D::Vec3 bestNormal = Math3D::Vec3(0.0f, 1.0f, 0.0f);
+    float bestReflectivity = 1.0f;
+    float bestReceiverFadeDistance = 1.0f;
+    float bestScore = -1.0f;
+    auto resolvePlanarReflectionSurface = [&](const RenderItem& item,
+                                              Math3D::Vec3& outCenter,
+                                              Math3D::Vec3& outNormal,
+                                              float& outReceiverFadeDistance) -> bool {
+        if(!item.hasBounds){
+            return false;
+        }
+
+        outCenter = (item.boundsMin + item.boundsMax) * 0.5f;
+        Math3D::Vec3 worldExtents = item.boundsMax - item.boundsMin;
+        Math3D::Vec3 worldNormal = Math3D::Vec3::up();
+        float dominantExtent = Math3D::Max(
+            Math3D::Max(worldExtents.x, worldExtents.y),
+            Math3D::Max(worldExtents.z, 0.25f)
+        );
+
+        Math3D::Vec3 localMin;
+        Math3D::Vec3 localMax;
+        if(item.mesh && item.mesh->getLocalBounds(localMin, localMax)){
+            const Math3D::Vec3 localExtents = localMax - localMin;
+            dominantExtent = Math3D::Max(
+                dominantExtent,
+                Math3D::Max(Math3D::Max(localExtents.x, localExtents.y), localExtents.z)
+            );
+
+            Math3D::Vec3 localNormal = Math3D::Vec3::up();
+            switch(findSmallestExtentAxis(localExtents)){
+                case 0:
+                    localNormal = Math3D::Vec3::right();
+                    break;
+                case 1:
+                    localNormal = Math3D::Vec3::up();
+                    break;
+                default:
+                    localNormal = Math3D::Vec3::forward();
+                    break;
+            }
+            worldNormal = transformDirection(item.model, localNormal);
+        }else{
+            switch(findSmallestExtentAxis(worldExtents)){
+                case 0:
+                    worldNormal = Math3D::Vec3::right();
+                    break;
+                case 1:
+                    worldNormal = Math3D::Vec3::up();
+                    break;
+                default:
+                    worldNormal = Math3D::Vec3::forward();
+                    break;
+            }
+        }
+
+        worldNormal = safeNormalizeVec3(worldNormal, Math3D::Vec3::up());
+        outNormal = worldNormal;
+        outReceiverFadeDistance = Math3D::Clamp(Math3D::Max(dominantExtent * 0.45f, 1.0f), 1.0f, 30.0f);
+        return true;
+    };
+
+    for(const auto& item : snapshot.drawItems){
+        if(!item.mesh || !item.material || !item.planarReflectionSource || !item.hasBounds){
+            continue;
+        }
+
+        Math3D::Vec3 center;
+        Math3D::Vec3 worldNormal;
+        float receiverFadeDistance = 1.0f;
+        if(!resolvePlanarReflectionSurface(item, center, worldNormal, receiverFadeDistance)){
+            continue;
+        }
+
+        const Math3D::Vec3 worldExtents = item.boundsMax - item.boundsMin;
+        if(Math3D::Max(Math3D::Max(worldExtents.x, worldExtents.y), worldExtents.z) <= 0.10f){
+            continue;
+        }
+
+        Math3D::Vec3 toCamera = cameraPosition - center;
+        const float distanceToCenter = Math3D::Max(toCamera.length(), 0.25f);
+        Math3D::Vec3 viewDirection = safeNormalizeVec3(toCamera, worldNormal);
+        const float facingWeight = Math3D::Clamp(std::abs(Math3D::Vec3::dot(worldNormal, viewDirection)), 0.0f, 1.0f);
+        if(facingWeight < 0.02f){
+            continue;
+        }
+
+        const glm::vec4 clipCenter = static_cast<glm::mat4>(clipMatrix) * glm::vec4(center.x, center.y, center.z, 1.0f);
+        if(clipCenter.w <= 1e-4f){
+            continue;
+        }
+
+        const glm::vec3 ndc = glm::vec3(clipCenter) / clipCenter.w;
+        if(ndc.z < -0.2f || ndc.z > 1.2f){
+            continue;
+        }
+
+        const float screenDistance = std::sqrt((ndc.x * ndc.x) + (ndc.y * ndc.y));
+        if(screenDistance > 1.75f){
+            continue;
+        }
+
+        const float centerWeight = Math3D::Clamp(1.0f - (screenDistance / 1.75f), 0.0f, 1.0f);
+        const float projectedRadius = Math3D::Clamp(((item.boundsMax - item.boundsMin).length() * 0.5f / distanceToCenter) * 6.0f, 0.10f, 2.50f);
+        const float score =
+            (0.25f + (0.75f * facingWeight)) *
+            projectedRadius *
+            (0.25f + (0.75f * centerWeight));
+        if(score <= bestScore){
+            continue;
+        }
+
+        bestItem = &item;
+        bestCenter = center;
+        bestNormal = worldNormal;
+        bestReceiverFadeDistance = receiverFadeDistance;
+        bestReflectivity = 1.0f;
+        if(auto pbr = Material::GetAs<PBRMaterial>(item.material)){
+            bestReflectivity = Math3D::Max(1.0f, computePlanarReflectivityScore(pbr));
+        }
+        bestScore = score;
+    }
+
+    if(!bestItem || !activePlanarReflection.buffer || !activePlanarReflection.buffer->getTexture()){
+        return false;
+    }
+
+    activePlanarReflection.entityId = bestItem->entityId;
+    activePlanarReflection.center = bestCenter;
+    activePlanarReflection.normal = bestNormal;
+    activePlanarReflection.strength = Math3D::Clamp(0.75f + (bestReflectivity * 0.18f), 0.85f, 1.35f);
+    activePlanarReflection.receiverFadeDistance = bestReceiverFadeDistance;
+    Math3D::Vec3 captureNormal = bestNormal;
+    if(Math3D::Vec3::dot(captureNormal, cameraPosition - bestCenter) < 0.0f){
+        captureNormal = captureNormal * -1.0f;
+    }
+
+    auto reflectionCamera = Camera::CreatePerspective(
+        cam->getSettings().fov,
+        Math3D::Vec2(static_cast<float>(screen->getWidth()), static_cast<float>(screen->getHeight())),
+        cam->getSettings().nearPlane,
+        cam->getSettings().farPlane
+    );
+    if(!reflectionCamera){
+        clearPlanarReflection();
+        return false;
+    }
+
+    reflectionCamera->getSettings() = cam->getSettings();
+    reflectionCamera->resize(static_cast<float>(screen->getWidth()), static_cast<float>(screen->getHeight()));
+
+    const Math3D::Vec3 sourceForward = safeNormalizeVec3(cam->transform().forward(), Math3D::Vec3::forward());
+    const Math3D::Vec3 sourceUp = safeNormalizeVec3(cam->transform().up(), Math3D::Vec3::up());
+    const Math3D::Vec3 reflectedPosition = reflectPointAcrossPlane(cameraPosition, bestCenter, bestNormal);
+    const Math3D::Vec3 reflectedForward = safeNormalizeVec3(
+        reflectDirectionAcrossPlane(sourceForward, bestNormal),
+        sourceForward * -1.0f
+    );
+    Math3D::Vec3 reflectedUp = safeNormalizeVec3(
+        reflectDirectionAcrossPlane(sourceUp, bestNormal),
+        Math3D::Vec3::up()
+    );
+    if(std::abs(Math3D::Vec3::dot(reflectedForward, reflectedUp)) > 0.995f){
+        reflectedUp = safeNormalizeVec3(reflectDirectionAcrossPlane(cam->transform().right(), bestNormal), Math3D::Vec3::up());
+        reflectedUp = safeNormalizeVec3(Math3D::Vec3::cross(reflectedUp, reflectedForward), Math3D::Vec3::up());
+    }
+
+    reflectionCamera->transform().position = reflectedPosition;
+    reflectionCamera->transform().lookAt(reflectedPosition + reflectedForward, reflectedUp);
+
+    auto previousCamera = Screen::GetCurrentCamera();
+    auto previousEnvironment = Screen::GetCurrentEnvironment();
+    GLint previousFramebuffer = 0;
+    GLint previousViewport[4] = {0, 0, 0, 0};
+    GLint previousCullFace = GL_BACK;
+    GLboolean wasDepthTest = glIsEnabled(GL_DEPTH_TEST);
+    GLboolean wasCullFace = glIsEnabled(GL_CULL_FACE);
+    GLboolean wasBlend = glIsEnabled(GL_BLEND);
+    GLboolean wasClipDistance0 = glIsEnabled(GL_CLIP_DISTANCE0);
+    GLboolean previousDepthMask = GL_TRUE;
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFramebuffer);
+    glGetIntegerv(GL_VIEWPORT, previousViewport);
+    glGetIntegerv(GL_CULL_FACE_MODE, &previousCullFace);
+    glGetBooleanv(GL_DEPTH_WRITEMASK, &previousDepthMask);
+
+    activePlanarReflection.buffer->bind();
+    activePlanarReflection.buffer->clear(screen->getClearColor());
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+    glDisable(GL_BLEND);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+
+    Screen::MakeCameraCurrent(reflectionCamera);
+    Screen::MakeEnvironmentCurrent(screen->getEnvironment());
+
+    drawSkybox(reflectionCamera, true);
+
+    userClipPlaneActive = true;
+    userClipPlane = makePlaneEquation(
+        bestCenter,
+        captureNormal,
+        Math3D::Max(reflectionCamera->getSettings().nearPlane * 0.35f, 0.01f)
+    );
+    glEnable(GL_CLIP_DISTANCE0);
+    drawModels3D(reflectionCamera, RenderFilter::Opaque, false, &activePlanarReflection.entityId);
+    userClipPlaneActive = false;
+    if(!wasClipDistance0){
+        glDisable(GL_CLIP_DISTANCE0);
+    }
+
+    if(activePlanarReflection.buffer->getTexture()){
+        glBindTexture(GL_TEXTURE_2D, activePlanarReflection.buffer->getTexture()->getID());
+        glGenerateMipmap(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    activePlanarReflection.viewProjection = reflectionCamera->getProjectionMatrix() * reflectionCamera->getViewMatrix();
+    activePlanarReflection.valid = true;
+
+    if(previousFramebuffer != 0){
+        glBindFramebuffer(GL_FRAMEBUFFER, static_cast<GLuint>(previousFramebuffer));
+    }else{
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+    glViewport(previousViewport[0], previousViewport[1], previousViewport[2], previousViewport[3]);
+
+    if(wasDepthTest) glEnable(GL_DEPTH_TEST); else glDisable(GL_DEPTH_TEST);
+    if(wasCullFace){
+        glEnable(GL_CULL_FACE);
+        glCullFace(previousCullFace);
+    }else{
+        glDisable(GL_CULL_FACE);
+    }
+    if(wasBlend) glEnable(GL_BLEND); else glDisable(GL_BLEND);
+    glDepthMask(previousDepthMask);
+    Screen::MakeCameraCurrent(previousCamera);
+    Screen::MakeEnvironmentCurrent(previousEnvironment);
+    return true;
+}
+
+bool Scene::updateLocalReflectionProbe(PScreen screen, PCamera cam){
+    if(!screen || !cam || cam->getSettings().isOrtho){
+        clearLocalReflectionProbe();
+        return false;
+    }
+
+    const int frontIndex = renderSnapshotIndex.load(std::memory_order_acquire);
+    const auto& snapshot = renderSnapshots[frontIndex];
+    if(snapshot.reflectionProbes.empty()){
+        clearLocalReflectionProbe();
+        return false;
+    }
+
+    const Math3D::Vec3 cameraPosition = cam->transform().position;
+    const ReflectionProbeSnapshot* bestProbe = nullptr;
+    float bestScore = -FLT_MAX;
+    for(const auto& candidate : snapshot.reflectionProbes){
+        const float influenceDistance = distancePointToAabb(
+            cameraPosition,
+            candidate.influenceBoundsMin,
+            candidate.influenceBoundsMax
+        );
+        const bool insideInfluence = influenceDistance <= 1e-4f;
+        const float centerDistance = Math3D::Max((candidate.center - cameraPosition).length(), 0.1f);
+        float score = static_cast<float>(candidate.priority) * 1000.0f;
+        score += insideInfluence ? 500.0f : 0.0f;
+        score += 220.0f / (1.0f + influenceDistance);
+        score += 25.0f / (1.0f + centerDistance);
+        if(score > bestScore){
+            bestScore = score;
+            bestProbe = &candidate;
+        }
+    }
+
+    if(!bestProbe){
+        clearLocalReflectionProbe();
+        return false;
+    }
+
+    const int requestedFaceSize = Math3D::Clamp(bestProbe->resolution, 64, 512);
+    if(!ensureLocalReflectionProbeResources(requestedFaceSize)){
+        clearLocalReflectionProbe();
+        return false;
+    }
+
+    auto& probe = deferredLocalReflectionProbe;
+    auto nearlyEqualVec3 = [](const Math3D::Vec3& a, const Math3D::Vec3& b) -> bool {
+        return Math3D::Vec3::distance(a, b) <= 0.01f;
+    };
+
+    auto captureProbeFaces = [&](const std::string* excludedEntityId) -> bool {
+        const Math3D::Vec3 captureExtent = (probe.captureBoundsMax - probe.captureBoundsMin) * 0.5f;
+        const float captureRadius = captureExtent.length();
+        const float nearPlane = Math3D::Clamp(captureRadius * 0.035f, 0.03f, 0.30f);
+        const float farPlane = Math3D::Min(
+            Math3D::Max(captureRadius * 10.0f, 12.0f),
+            Math3D::Max(cam->getSettings().farPlane, 12.0f)
+        );
+
+        GLint previousFramebuffer = 0;
+        GLint previousViewport[4] = {0, 0, 0, 0};
+        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFramebuffer);
+        glGetIntegerv(GL_VIEWPORT, previousViewport);
+        auto previousCamera = Screen::GetCurrentCamera();
+        auto previousEnvironment = Screen::GetCurrentEnvironment();
+
+        glBindFramebuffer(GL_FRAMEBUFFER, probe.captureFbo);
+        glFramebufferRenderbuffer(
+            GL_FRAMEBUFFER,
+            GL_DEPTH_ATTACHMENT,
+            GL_RENDERBUFFER,
+            probe.captureDepthRenderBuffer
+        );
+
+        localReflectionProbeCaptureActive = true;
+        const GLenum drawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+        for(int face = 0; face < 6; ++face){
+            glFramebufferTexture2D(
+                GL_FRAMEBUFFER,
+                GL_COLOR_ATTACHMENT0,
+                GL_TEXTURE_CUBE_MAP_POSITIVE_X + face,
+                probe.cubeMap->getID(),
+                0
+            );
+            glDrawBuffers(1, drawBuffers);
+            glReadBuffer(GL_COLOR_ATTACHMENT0);
+            if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
+                localReflectionProbeCaptureActive = false;
+                glBindFramebuffer(GL_FRAMEBUFFER, previousFramebuffer);
+                glViewport(previousViewport[0], previousViewport[1], previousViewport[2], previousViewport[3]);
+                Screen::MakeCameraCurrent(previousCamera);
+                Screen::MakeEnvironmentCurrent(previousEnvironment);
+                clearLocalReflectionProbe();
+                return false;
+            }
+
+            auto faceCamera = Camera::CreatePerspective(
+                90.0f,
+                Math3D::Vec2(static_cast<float>(probe.faceSize), static_cast<float>(probe.faceSize)),
+                nearPlane,
+                farPlane
+            );
+            if(!faceCamera){
+                continue;
+            }
+
+            faceCamera->transform().position = probe.center;
+            faceCamera->transform().lookAt(probe.center + kDeferredSsrLocalProbeDirs[face], kDeferredSsrLocalProbeUps[face]);
+            Screen::MakeCameraCurrent(faceCamera);
+            Screen::MakeEnvironmentCurrent(screen->getEnvironment());
+
+            glViewport(0, 0, probe.faceSize, probe.faceSize);
+            glEnable(GL_DEPTH_TEST);
+            glDepthMask(GL_TRUE);
+            glDisable(GL_BLEND);
+            glEnable(GL_CULL_FACE);
+            glCullFace(GL_BACK);
+            glClearColor(
+                screen->getClearColor().getRed(),
+                screen->getClearColor().getGreen(),
+                screen->getClearColor().getBlue(),
+                screen->getClearColor().getAlpha()
+            );
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            drawSkybox(faceCamera, true);
+            drawModels3D(faceCamera, RenderFilter::Opaque, false, excludedEntityId);
+        }
+
+        localReflectionProbeCaptureActive = false;
+        probe.cubeMap->generateMipmaps();
+        glBindFramebuffer(GL_FRAMEBUFFER, previousFramebuffer);
+        glViewport(previousViewport[0], previousViewport[1], previousViewport[2], previousViewport[3]);
+        Screen::MakeCameraCurrent(previousCamera);
+        Screen::MakeEnvironmentCurrent(previousEnvironment);
+        probe.valid = true;
+        probe.lastUpdateFrame = reflectionCaptureFrameCounter;
+        return true;
+    };
+
+    const bool sameProbe = (probe.anchorEntityId == bestProbe->entityId);
+    const bool boundsChanged =
+        !sameProbe ||
+        !nearlyEqualVec3(probe.center, bestProbe->center) ||
+        !nearlyEqualVec3(probe.captureBoundsMin, bestProbe->captureBoundsMin) ||
+        !nearlyEqualVec3(probe.captureBoundsMax, bestProbe->captureBoundsMax) ||
+        !nearlyEqualVec3(probe.influenceBoundsMin, bestProbe->influenceBoundsMin) ||
+        !nearlyEqualVec3(probe.influenceBoundsMax, bestProbe->influenceBoundsMax);
+    const bool intervalElapsed =
+        bestProbe->autoUpdate &&
+        (!probe.valid ||
+         ((reflectionCaptureFrameCounter - probe.lastUpdateFrame) >=
+          static_cast<unsigned long long>(Math3D::Clamp(bestProbe->updateIntervalFrames, 1, 240))));
+
+    probe.anchorEntityId = bestProbe->entityId;
+    probe.center = bestProbe->center;
+    probe.captureBoundsMin = bestProbe->captureBoundsMin;
+    probe.captureBoundsMax = bestProbe->captureBoundsMax;
+    probe.influenceBoundsMin = bestProbe->influenceBoundsMin;
+    probe.influenceBoundsMax = bestProbe->influenceBoundsMax;
+
+    if(probe.valid && !boundsChanged && !intervalElapsed && probe.faceSize == requestedFaceSize){
+        return true;
+    }
+
+    const std::string* excludedEntityId = probe.anchorEntityId.empty() ? nullptr : &probe.anchorEntityId;
+    return captureProbeFaces(excludedEntityId);
+}
+
 Scene::~Scene(){
+    clearPlanarReflection();
+    activePlanarReflection.buffer.reset();
+    releaseLocalReflectionProbeResources();
     if(assetChangeListenerHandle >= 0){
         AssetManager::Instance.removeChangeListener(assetChangeListenerHandle);
         assetChangeListenerHandle = -1;
@@ -2241,7 +2965,7 @@ void Scene::ensureOutlineResources(PScreen screen){
     }
 }
 
-void Scene::drawDeferredGeometry(PCamera cam){
+void Scene::drawDeferredGeometry(PCamera cam, const std::string* excludedEntityId){
     if(!cam || !gBuffer || !gBufferShader || gBufferShader->getID() == 0) return;
 
     gBuffer->bind();
@@ -2258,6 +2982,9 @@ void Scene::drawDeferredGeometry(PCamera cam){
     gBufferShader->setUniformFast("u_view", Uniform<Math3D::Mat4>(viewMatrix));
     gBufferShader->setUniformFast("u_projection", Uniform<Math3D::Mat4>(projectionMatrix));
     gBufferShader->setUniformFast("u_viewPos", Uniform<Math3D::Vec3>(cam->transform().position));
+    static const std::chrono::steady_clock::time_point kWaveStartTime = std::chrono::steady_clock::now();
+    const float shaderTimeSeconds = std::chrono::duration<float>(std::chrono::steady_clock::now() - kWaveStartTime).count();
+    gBufferShader->setUniformFast("u_time", Uniform<float>(shaderTimeSeconds));
 
     const int frontIndex = renderSnapshotIndex.load(std::memory_order_acquire);
     const auto& snapshot = renderSnapshots[frontIndex];
@@ -2265,6 +2992,7 @@ void Scene::drawDeferredGeometry(PCamera cam){
     deferredItems.reserve(snapshot.drawItems.size());
     for(const auto& item : snapshot.drawItems){
         if(!item.mesh || !item.material) continue;
+        if(excludedEntityId && !excludedEntityId->empty() && item.entityId == *excludedEntityId) continue;
         if(item.isTransparent) continue;
         if(!item.isDeferredCompatible) continue;
         if(item.hasBounds && !aabbIntersectsClipFrustum(item.boundsMin, item.boundsMax, clipMatrix)) continue;
@@ -2335,6 +3063,17 @@ void Scene::drawDeferredGeometry(PCamera cam){
             Math3D::Vec2 uvOffset(0.0f, 0.0f);
             int useAlphaClip = 0;
             float alphaCutoff = 0.5f;
+            float transmission = 0.0f;
+            int enableWaveDisplacement = 0;
+            float waveAmplitude = 0.0f;
+            float waveFrequency = 1.0f;
+            float waveSpeed = 0.75f;
+            float waveChoppiness = 0.25f;
+            float waveSecondaryScale = 1.0f;
+            Math3D::Vec2 waveDirection(0.85f, 0.45f);
+            float waveTextureInfluence = 0.6f;
+            Math3D::Vec2 waveTextureSpeed(0.03f, 0.01f);
+            int bsdfModel = static_cast<int>(PBRBsdfModel::Standard);
             int surfaceMode = 0; // 0=PBR, 1=LegacyLit, 2=LegacyUnlit
 
             if(auto pbr = Material::GetAs<PBRMaterial>(material)){
@@ -2365,6 +3104,17 @@ void Scene::drawDeferredGeometry(PCamera cam){
                 uvOffset = pbr->UVOffset.get();
                 useAlphaClip = pbr->UseAlphaClip.get();
                 alphaCutoff = pbr->AlphaCutoff.get();
+                transmission = pbr->Transmission.get();
+                enableWaveDisplacement = pbr->EnableWaveDisplacement.get();
+                waveAmplitude = pbr->WaveAmplitude.get();
+                waveFrequency = pbr->WaveFrequency.get();
+                waveSpeed = pbr->WaveSpeed.get();
+                waveChoppiness = pbr->WaveChoppiness.get();
+                waveSecondaryScale = pbr->WaveSecondaryScale.get();
+                waveDirection = pbr->WaveDirection.get();
+                waveTextureInfluence = pbr->WaveTextureInfluence.get();
+                waveTextureSpeed = pbr->WaveTextureSpeed.get();
+                bsdfModel = Math3D::Clamp(pbr->BsdfModel.get(), 0, 2);
                 surfaceMode = 0;
             }else if(auto litImage = Material::GetAs<MaterialDefaults::LitImageMaterial>(material)){
                 baseColor = litImage->Color.get();
@@ -2400,6 +3150,10 @@ void Scene::drawDeferredGeometry(PCamera cam){
                 surfaceMode = 1;
             }
 
+            if(bsdfModel != static_cast<int>(PBRBsdfModel::Standard) && transmission <= 0.0001f){
+                transmission = Math3D::Clamp(1.0f - baseColor.w, 0.0f, 1.0f);
+            }
+
             gBufferShader->setUniformFast("u_baseColor", Uniform<Math3D::Vec4>(baseColor));
             gBufferShader->setUniformFast("u_useBaseColorTex", Uniform<int>(useBaseColorTex));
             gBufferShader->setUniformFast("u_baseColorTex", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(baseColorTex, 0)));
@@ -2432,6 +3186,17 @@ void Scene::drawDeferredGeometry(PCamera cam){
             gBufferShader->setUniformFast("u_uvOffset", Uniform<Math3D::Vec2>(uvOffset));
             gBufferShader->setUniformFast("u_useAlphaClip", Uniform<int>(useAlphaClip));
             gBufferShader->setUniformFast("u_alphaCutoff", Uniform<float>(alphaCutoff));
+            gBufferShader->setUniformFast("u_transmission", Uniform<float>(Math3D::Clamp(transmission, 0.0f, 1.0f)));
+            gBufferShader->setUniformFast("u_enableWaveDisplacement", Uniform<int>(enableWaveDisplacement != 0 ? 1 : 0));
+            gBufferShader->setUniformFast("u_waveAmplitude", Uniform<float>(Math3D::Max(0.0f, waveAmplitude)));
+            gBufferShader->setUniformFast("u_waveFrequency", Uniform<float>(Math3D::Max(0.0f, waveFrequency)));
+            gBufferShader->setUniformFast("u_waveSpeed", Uniform<float>(waveSpeed));
+            gBufferShader->setUniformFast("u_waveChoppiness", Uniform<float>(Math3D::Clamp(waveChoppiness, 0.0f, 1.0f)));
+            gBufferShader->setUniformFast("u_waveSecondaryScale", Uniform<float>(Math3D::Max(0.01f, waveSecondaryScale)));
+            gBufferShader->setUniformFast("u_waveDirection", Uniform<Math3D::Vec2>(waveDirection));
+            gBufferShader->setUniformFast("u_waveTextureInfluence", Uniform<float>(Math3D::Max(0.0f, waveTextureInfluence)));
+            gBufferShader->setUniformFast("u_waveTextureSpeed", Uniform<Math3D::Vec2>(waveTextureSpeed));
+            gBufferShader->setUniformFast("u_bsdfModel", Uniform<int>(bsdfModel));
             gBufferShader->setUniformFast("u_surfaceMode", Uniform<int>(surfaceMode));
             lastMaterial = material;
         }
@@ -2477,6 +3242,8 @@ void Scene::drawDeferredLighting(PFrameBuffer targetBuffer,
     deferredLightShader->setUniformFast("gAlbedo", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(gBuffer->getGBufferTexture(0), 0)));
     deferredLightShader->setUniformFast("gNormal", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(gBuffer->getGBufferTexture(1), 1)));
     deferredLightShader->setUniformFast("gMaterial", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(gBuffer->getGBufferTexture(2), 2)));
+    // Use a dedicated slot for gSurface. It must not alias u_envMap or shadow samplers.
+    deferredLightShader->setUniformFast("gSurface", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(gBuffer->getGBufferTexture(3), 8)));
     deferredLightShader->setUniformFast("gDepth", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(gBuffer->getDepthTexture(), 3)));
     deferredLightShader->setUniformFast("gTileLightData", Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(deferredLightTileTexture, 4)));
     PTexture ssaoRawTex = ssaoPass ? ssaoPass->getRawAoTexture() : nullptr;
@@ -2510,8 +3277,22 @@ void Scene::drawDeferredLighting(PFrameBuffer targetBuffer,
         environmentSettings = env->getSettings();
     }
     PCubeMap envMap = (env && env->getSkyBox()) ? env->getSkyBox()->getCubeMap() : nullptr;
+    const bool useLocalProbe =
+        deferredLocalReflectionProbe.valid &&
+        deferredLocalReflectionProbe.cubeMap &&
+        deferredLocalReflectionProbe.cubeMap->getID() != 0;
     deferredLightShader->setUniformFast("u_useEnvMap", Uniform<int>(envMap ? 1 : 0));
     deferredLightShader->setUniformFast("u_envMap", Uniform<GLUniformUpload::CubeMapSlot>(GLUniformUpload::CubeMapSlot(envMap, 7)));
+    deferredLightShader->setUniformFast("u_useLocalProbe", Uniform<int>(useLocalProbe ? 1 : 0));
+    deferredLightShader->setUniformFast("u_localProbe", Uniform<GLUniformUpload::CubeMapSlot>(GLUniformUpload::CubeMapSlot(
+        useLocalProbe ? deferredLocalReflectionProbe.cubeMap : nullptr,
+        9
+    )));
+    deferredLightShader->setUniformFast("u_localProbeCenter", Uniform<Math3D::Vec3>(deferredLocalReflectionProbe.center));
+    deferredLightShader->setUniformFast("u_localProbeCaptureMin", Uniform<Math3D::Vec3>(deferredLocalReflectionProbe.captureBoundsMin));
+    deferredLightShader->setUniformFast("u_localProbeCaptureMax", Uniform<Math3D::Vec3>(deferredLocalReflectionProbe.captureBoundsMax));
+    deferredLightShader->setUniformFast("u_localProbeInfluenceMin", Uniform<Math3D::Vec3>(deferredLocalReflectionProbe.influenceBoundsMin));
+    deferredLightShader->setUniformFast("u_localProbeInfluenceMax", Uniform<Math3D::Vec3>(deferredLocalReflectionProbe.influenceBoundsMax));
     deferredLightShader->setUniformFast("u_ambientColor", Uniform<Math3D::Vec4>(environmentSettings.ambientColor));
     deferredLightShader->setUniformFast("u_ambientIntensity", Uniform<float>(environmentSettings.ambientIntensity));
     deferredLightShader->setUniformFast("u_fogEnabled", Uniform<int>(environmentSettings.fogEnabled ? 1 : 0));
@@ -2575,7 +3356,11 @@ void Scene::drawOutlines(PScreen screen, PCamera cam){
     glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
-    glDepthMask(GL_FALSE);
+    // Keep mask coverage stable even when depth differs slightly from the main pass
+    // (for example from deferred/forward path differences or animated surfaces).
+    glDepthMask(GL_TRUE);
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonOffset(-1.0f, -2.0f);
 
     outlineMaskShader->bind();
     outlineMaskShader->setUniformFast("u_view", Uniform<Math3D::Mat4>(viewMatrix));
@@ -2610,6 +3395,7 @@ void Scene::drawOutlines(PScreen screen, PCamera cam){
     }
 
     drawBuffer->bind();
+    glDisable(GL_POLYGON_OFFSET_FILL);
     glDisable(GL_CULL_FACE);
     if(!drewMask){
         glDepthFunc(GL_LESS);
@@ -2656,9 +3442,13 @@ void Scene::renderDeferred(PScreen screen, PCamera cam){
     ensureDeferredResources(screen);
     static bool loggedInvalid = false;
     bool invalid = false;
-    if(!gBuffer || gBuffer->getGBufferCount() < 3){
+    if(!gBuffer || gBuffer->getGBufferCount() < 4){
         invalid = true;
-    }else if(!gBuffer->getGBufferTexture(0) || !gBuffer->getGBufferTexture(1) || !gBuffer->getGBufferTexture(2) || !gBuffer->getDepthTexture()){
+    }else if(!gBuffer->getGBufferTexture(0) ||
+             !gBuffer->getGBufferTexture(1) ||
+             !gBuffer->getGBufferTexture(2) ||
+             !gBuffer->getGBufferTexture(3) ||
+             !gBuffer->getDepthTexture()){
         invalid = true;
     }
 
@@ -2713,7 +3503,11 @@ void Scene::renderDeferred(PScreen screen, PCamera cam){
         }
     };
 
-    drawDeferredGeometry(cam);
+    const std::string* deferredExcludedEntityId =
+        (activePlanarReflection.valid && !activePlanarReflection.entityId.empty())
+            ? &activePlanarReflection.entityId
+            : nullptr;
+    drawDeferredGeometry(cam, deferredExcludedEntityId);
     checkGlError("geometry pass");
     if(deferredDisabled){
         drawSkybox(cam);
@@ -2721,10 +3515,83 @@ void Scene::renderDeferred(PScreen screen, PCamera cam){
         return;
     }
 
+    NeoECS::ECSEntity* deferredCameraEntity = activeCameraEntity;
+    if(ecsInstance && cam){
+        auto* manager = ecsInstance->getComponentManager();
+        auto* entityManager = ecsInstance->getEntityManager();
+        auto cameraMatches = [&](NeoECS::ECSEntity* entity) -> bool {
+            if(!manager || !entity){
+                return false;
+            }
+            auto* cameraComponent = manager->getECSComponent<CameraComponent>(entity);
+            return cameraComponent &&
+                   IsComponentActive(cameraComponent) &&
+                   cameraComponent->camera == cam;
+        };
+
+        if(!cameraMatches(deferredCameraEntity) && manager && entityManager){
+            const auto& entities = entityManager->getEntities();
+            for(const auto& entityPtr : entities){
+                auto* entity = entityPtr.get();
+                if(cameraMatches(entity)){
+                    deferredCameraEntity = entity;
+                    this->activeCameraEntity = entity;
+                    break;
+                }
+            }
+        }
+    }
+
+    reflectionCaptureFrameCounter++;
+
+    DeferredSSRSettings ssrSettings;
+    bool useSsr = resolveDeferredSsrSettings(
+        ecsInstance ? ecsInstance->getComponentManager() : nullptr,
+        deferredCameraEntity,
+        ssrSettings
+    );
+    if(!useSsr && ecsInstance){
+        auto* manager = ecsInstance->getComponentManager();
+        auto* entityManager = ecsInstance->getEntityManager();
+        if(manager && entityManager){
+            const auto& entities = entityManager->getEntities();
+            for(const auto& entityPtr : entities){
+                auto* entity = entityPtr.get();
+                if(!entity){
+                    continue;
+                }
+                auto* cameraComponent = manager->getECSComponent<CameraComponent>(entity);
+                auto* ssrComponent = manager->getECSComponent<SSRComponent>(entity);
+                if(!IsComponentActive(cameraComponent) ||
+                   !cameraComponent->camera ||
+                   !IsComponentActive(ssrComponent)){
+                    continue;
+                }
+                const DeferredSSRSettings candidate = ssrComponent->buildDeferredSsrSettings();
+                if(!candidate.enabled){
+                    continue;
+                }
+                ssrSettings = candidate;
+                useSsr = true;
+                deferredCameraEntity = entity;
+                this->activeCameraEntity = entity;
+                break;
+            }
+        }
+    }
+    if(!useSsr){
+        static bool loggedSsrDisabledNoComponent = false;
+        if(!loggedSsrDisabledNoComponent){
+            LogBot.Log(LOG_WARN, "Deferred SSR disabled: no enabled SSR component resolved for the active camera.");
+            loggedSsrDisabledNoComponent = true;
+        }
+    }
+    ssrSettings.enabled = useSsr;
+
     DeferredSSAOSettings ssaoSettings;
     const bool useSsao = resolveDeferredSsaoSettings(
         ecsInstance ? ecsInstance->getComponentManager() : nullptr,
-        activeCameraEntity,
+        deferredCameraEntity,
         ssaoSettings
     );
     std::shared_ptr<DeferredSSAO> ssaoPass = nullptr;
@@ -2794,6 +3661,8 @@ void Scene::renderDeferred(PScreen screen, PCamera cam){
         }
     }
 
+    updateLocalReflectionProbe(screen, cam);
+
     auto drawBuffer = screen ? screen->getDrawBuffer() : nullptr;
     drawDeferredLighting(
         drawBuffer,
@@ -2812,6 +3681,120 @@ void Scene::renderDeferred(PScreen screen, PCamera cam){
     }
     if((ssaoPass || giTexture) && ssaoSettings.debugView != 0){
         return;
+    }
+
+    transparentSsrSettings = ssrSettings;
+    transparentSsrEnabled = false;
+
+    const bool ssrInputsReady =
+        drawBuffer &&
+        drawBuffer->getTexture() &&
+        deferredQuad &&
+        gBuffer &&
+        gBuffer->getGBufferCount() > 3 &&
+        gBuffer->getGBufferTexture(1) &&
+        gBuffer->getGBufferTexture(3) &&
+        gBuffer->getDepthTexture() &&
+        drawBuffer->getWidth() == gBufferWidth &&
+        drawBuffer->getHeight() == gBufferHeight;
+
+    if(useSsr && ssrInputsReady){
+        if(!deferredSsrPass){
+            deferredSsrPass = std::make_shared<DeferredSSR>();
+        }
+
+        auto ssrEnv = screen ? screen->getEnvironment() : nullptr;
+        PCubeMap ssrEnvMap = (ssrEnv && ssrEnv->getSkyBox()) ? ssrEnv->getSkyBox()->getCubeMap() : nullptr;
+
+        static bool loggedSsrCompositeFailure = false;
+        const bool usePlanarReflectionForSsr =
+            activePlanarReflection.valid &&
+            activePlanarReflection.buffer &&
+            activePlanarReflection.buffer->getTexture();
+        const bool renderedSsr = deferredSsrPass->renderComposite(
+            gBufferWidth,
+            gBufferHeight,
+            deferredQuad,
+            drawBuffer->getTexture(),
+            nullptr,
+            deferredLocalReflectionProbe.valid ? deferredLocalReflectionProbe.cubeMap : nullptr,
+            deferredLocalReflectionProbe.center,
+            deferredLocalReflectionProbe.captureBoundsMin,
+            deferredLocalReflectionProbe.captureBoundsMax,
+            deferredLocalReflectionProbe.influenceBoundsMin,
+            deferredLocalReflectionProbe.influenceBoundsMax,
+            usePlanarReflectionForSsr ? activePlanarReflection.buffer->getTexture() : nullptr,
+            usePlanarReflectionForSsr ? activePlanarReflection.viewProjection : Math3D::Mat4(),
+            usePlanarReflectionForSsr ? activePlanarReflection.center : Math3D::Vec3(0.0f, 0.0f, 0.0f),
+            usePlanarReflectionForSsr ? activePlanarReflection.normal : Math3D::Vec3(0.0f, 1.0f, 0.0f),
+            usePlanarReflectionForSsr ? activePlanarReflection.strength : 1.0f,
+            usePlanarReflectionForSsr ? activePlanarReflection.receiverFadeDistance : 1.0f,
+            gBuffer->getGBufferTexture(0),
+            gBuffer->getGBufferTexture(1),
+            gBuffer->getDepthTexture(),
+            gBuffer->getGBufferTexture(3),
+            cam->getViewMatrix(),
+            cam->getProjectionMatrix(),
+            cam->getProjectionMatrix(),
+            ssrEnvMap,
+            ssrSettings
+        );
+        if(renderedSsr){
+            bool copiedSsr = false;
+            PTexture ssrTexture = deferredSsrPass->getCompositeTexture();
+            PFrameBuffer ssrBuffer = deferredSsrPass->getCompositeBuffer();
+            if(ssrTexture && ssrTexture->getID() != 0 && drawBuffer->getTexture() && drawBuffer->getTexture()->getID() != 0){
+                if(glCopyImageSubData){
+                    glCopyImageSubData(
+                        ssrTexture->getID(), GL_TEXTURE_2D, 0, 0, 0, 0,
+                        drawBuffer->getTexture()->getID(), GL_TEXTURE_2D, 0, 0, 0, 0,
+                        gBufferWidth, gBufferHeight, 1
+                    );
+                    copiedSsr = (glGetError() == GL_NO_ERROR);
+                }
+
+                if(!copiedSsr && ssrBuffer){
+                    glBindFramebuffer(GL_READ_FRAMEBUFFER, ssrBuffer->getID());
+                    glReadBuffer(GL_COLOR_ATTACHMENT0);
+                    glBindTexture(GL_TEXTURE_2D, drawBuffer->getTexture()->getID());
+                    glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, gBufferWidth, gBufferHeight);
+                    copiedSsr = (glGetError() == GL_NO_ERROR);
+                    glBindTexture(GL_TEXTURE_2D, 0);
+                }
+
+                if(!copiedSsr && ssrBuffer){
+                    glBindFramebuffer(GL_READ_FRAMEBUFFER, ssrBuffer->getID());
+                    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, drawBuffer->getID());
+                    glReadBuffer(GL_COLOR_ATTACHMENT0);
+                    glDrawBuffer(GL_COLOR_ATTACHMENT0);
+                    glBlitFramebuffer(
+                        0, 0, gBufferWidth, gBufferHeight,
+                        0, 0, drawBuffer->getWidth(), drawBuffer->getHeight(),
+                        GL_COLOR_BUFFER_BIT, GL_NEAREST
+                    );
+                    copiedSsr = (glGetError() == GL_NO_ERROR);
+                }
+            }
+            if(!copiedSsr){
+                LogBot.Log(LOG_WARN, "Deferred SSR composite copy failed; using base deferred lighting result.");
+            }
+            glBindFramebuffer(GL_FRAMEBUFFER, drawBuffer->getID());
+        }else if(!loggedSsrCompositeFailure){
+            LogBot.Log(
+                LOG_WARN,
+                "Deferred SSR enabled but composite pass did not render (shader compile/target setup likely failed)."
+            );
+            loggedSsrCompositeFailure = true;
+        }
+    }else if(useSsr && !ssrInputsReady){
+        static bool loggedSsrPrereqFailure = false;
+        if(!loggedSsrPrereqFailure){
+            LogBot.Log(
+                LOG_WARN,
+                "Deferred SSR enabled but required inputs are missing or size-mismatched."
+            );
+            loggedSsrPrereqFailure = true;
+        }
     }
 
     if(drawBuffer){
@@ -2867,9 +3850,83 @@ void Scene::renderDeferred(PScreen screen, PCamera cam){
 
     drawSkybox(cam, true);
 
+    if(drawBuffer && drawBuffer->getTexture()){
+        const int drawWidth = drawBuffer->getWidth();
+        const int drawHeight = drawBuffer->getHeight();
+        const bool needsNewTransparentSsrBuffer =
+            !transparentSsrSourceBuffer ||
+            transparentSsrSourceBuffer->getWidth() != drawWidth ||
+            transparentSsrSourceBuffer->getHeight() != drawHeight ||
+            !transparentSsrSourceBuffer->getTexture();
+
+        if(needsNewTransparentSsrBuffer){
+            transparentSsrSourceBuffer = FrameBuffer::Create(drawWidth, drawHeight);
+            if(transparentSsrSourceBuffer){
+                transparentSsrSourceBuffer->attachTexture(
+                    Texture::CreateRenderTarget(drawWidth, drawHeight, GL_RGBA16F, GL_RGBA, GL_FLOAT)
+                );
+                if(!transparentSsrSourceBuffer->validate()){
+                    transparentSsrSourceBuffer = nullptr;
+                }
+            }
+        }
+
+        if(transparentSsrSourceBuffer && transparentSsrSourceBuffer->getTexture()){
+            glBindTexture(GL_TEXTURE_2D, transparentSsrSourceBuffer->getTexture()->getID());
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glBindTexture(GL_TEXTURE_2D, 0);
+            bool copiedSceneColor = false;
+            PTexture srcColor = drawBuffer->getTexture();
+            PTexture dstColor = transparentSsrSourceBuffer->getTexture();
+            if(srcColor && dstColor && srcColor->getID() != 0 && dstColor->getID() != 0){
+                if(glCopyImageSubData){
+                    glCopyImageSubData(
+                        srcColor->getID(), GL_TEXTURE_2D, 0, 0, 0, 0,
+                        dstColor->getID(), GL_TEXTURE_2D, 0, 0, 0, 0,
+                        drawWidth, drawHeight, 1
+                    );
+                    copiedSceneColor = (glGetError() == GL_NO_ERROR);
+                }
+
+                if(!copiedSceneColor){
+                    glBindFramebuffer(GL_READ_FRAMEBUFFER, drawBuffer->getID());
+                    glReadBuffer(GL_COLOR_ATTACHMENT0);
+                    glBindTexture(GL_TEXTURE_2D, dstColor->getID());
+                    glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, drawWidth, drawHeight);
+                    copiedSceneColor = (glGetError() == GL_NO_ERROR);
+                    glBindTexture(GL_TEXTURE_2D, 0);
+                }
+
+                if(!copiedSceneColor){
+                    glBindFramebuffer(GL_READ_FRAMEBUFFER, drawBuffer->getID());
+                    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, transparentSsrSourceBuffer->getID());
+                    glBlitFramebuffer(
+                        0, 0, drawWidth, drawHeight,
+                        0, 0, drawWidth, drawHeight,
+                        GL_COLOR_BUFFER_BIT, GL_NEAREST
+                    );
+                    copiedSceneColor = (glGetError() == GL_NO_ERROR);
+                }
+            }
+
+            if(!copiedSceneColor){
+                static bool loggedTransparentSsrCopyFailure = false;
+                if(!loggedTransparentSsrCopyFailure){
+                    LogBot.Log(LOG_WARN, "Transparent scene-color copy failed; disabling transparent glass/water compositing for this frame.");
+                    loggedTransparentSsrCopyFailure = true;
+                }
+            }
+            transparentSsrEnabled = copiedSceneColor;
+            glBindFramebuffer(GL_FRAMEBUFFER, drawBuffer->getID());
+        }
+    }
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDepthMask(GL_FALSE);
     drawModels3D(cam, RenderFilter::Transparent);
+    glDepthMask(GL_TRUE);
     glDisable(GL_BLEND);
     checkGlError("transparent pass");
     if(deferredDisabled){
@@ -2921,6 +3978,8 @@ void Scene::render3DPass(){
         std::chrono::duration<float, std::milli> shadowMs = shadowEnd - shadowStart;
         debugStats.shadowMs.store(shadowMs.count(), std::memory_order_relaxed);
 
+        updatePlanarReflection(screen, cam);
+
         bool useDeferred = (GameEngine::Engine && GameEngine::Engine->getRenderStrategy() == EngineRenderStrategy::Deferred);
         auto drawStart = std::chrono::steady_clock::now();
         if(useDeferred){
@@ -2942,24 +4001,95 @@ void Scene::render3DPass(){
     debugStats.postFxEffectCount.store(screen->getLastPostProcessEffectCount(), std::memory_order_relaxed);
 }
 
-void Scene::drawModels3D(PCamera cam, RenderFilter filter, bool skipDeferredCompatible){
+void Scene::drawModels3D(PCamera cam, RenderFilter filter, bool skipDeferredCompatible, const std::string* excludedEntityId){
     if(!cam) return;
 
     const int frontIndex = renderSnapshotIndex.load(std::memory_order_acquire);
     const auto& snapshot = renderSnapshots[frontIndex];
     const Math3D::Mat4 viewMatrix = cam->getViewMatrix();
     const Math3D::Mat4 projectionMatrix = cam->getProjectionMatrix();
+    const Math3D::Mat4 inverseProjectionMatrix = Math3D::Mat4(glm::inverse(glm::mat4(projectionMatrix)));
     const Math3D::Mat4 clipMatrix = projectionMatrix * viewMatrix;
+    const bool hasTransparentSceneColor =
+        (filter == RenderFilter::Transparent) &&
+        transparentSsrEnabled &&
+        transparentSsrSourceBuffer &&
+        transparentSsrSourceBuffer->getTexture();
+    const bool hasTransparentSceneDepth =
+        hasTransparentSceneColor &&
+        gBuffer &&
+        gBuffer->getDepthTexture() &&
+        transparentSsrSourceBuffer &&
+        transparentSsrSourceBuffer->getWidth() == gBuffer->getWidth() &&
+        transparentSsrSourceBuffer->getHeight() == gBuffer->getHeight();
+    const bool useTransparentSsr = hasTransparentSceneColor && transparentSsrSettings.enabled;
+    PTexture transparentSsrColor = hasTransparentSceneColor ? transparentSsrSourceBuffer->getTexture() : nullptr;
+    PTexture transparentSceneDepth = hasTransparentSceneDepth ? gBuffer->getDepthTexture() : nullptr;
+    const float transparentSsrIntensity = useTransparentSsr ? Math3D::Clamp(transparentSsrSettings.intensity, 0.0f, 4.0f) : 0.0f;
+    const float transparentSsrMaxDistance = useTransparentSsr ? Math3D::Clamp(transparentSsrSettings.maxDistance, 0.5f, 2500.0f) : 0.0f;
+    const float transparentSsrThickness = useTransparentSsr ? Math3D::Clamp(transparentSsrSettings.thickness, 0.005f, 4.0f) : 0.18f;
+    const float transparentSsrStride = useTransparentSsr ? Math3D::Clamp(transparentSsrSettings.stride, 0.1f, 8.0f) : 0.75f;
+    const float transparentSsrJitter = useTransparentSsr ? Math3D::Clamp(transparentSsrSettings.jitter, 0.0f, 1.0f) : 0.35f;
+    const int transparentSsrMaxSteps = useTransparentSsr ? Math3D::Clamp(transparentSsrSettings.maxSteps, 8, 256) : 56;
+    const float transparentSsrRoughnessCutoff = useTransparentSsr ? Math3D::Clamp(transparentSsrSettings.roughnessCutoff, 0.05f, 1.0f) : 0.05f;
+    const float transparentSsrEdgeFade = useTransparentSsr ? Math3D::Clamp(transparentSsrSettings.edgeFade, 0.001f, 0.5f) : 0.001f;
+    const bool hasPlanarReflection =
+        activePlanarReflection.valid &&
+        activePlanarReflection.buffer &&
+        activePlanarReflection.buffer->getTexture();
+    const bool hasLocalReflectionProbe =
+        !localReflectionProbeCaptureActive &&
+        deferredLocalReflectionProbe.valid &&
+        deferredLocalReflectionProbe.cubeMap &&
+        deferredLocalReflectionProbe.cubeMap->getID() != 0;
+    static const Math3D::Mat4 IDENTITY;
+    std::vector<const RenderItem*> drawItems;
+    drawItems.reserve(snapshot.drawItems.size());
+    for(const auto& item : snapshot.drawItems){
+        if(!item.mesh || !item.material) continue;
+        if(excludedEntityId && !excludedEntityId->empty() && item.entityId == *excludedEntityId) continue;
+        if(filter == RenderFilter::Opaque && item.isTransparent) continue;
+        if(filter == RenderFilter::Transparent && !item.isTransparent) continue;
+        const bool isPlanarReflectorItem = hasPlanarReflection && item.entityId == activePlanarReflection.entityId;
+        if(skipDeferredCompatible && item.isDeferredCompatible && !isPlanarReflectorItem) continue;
+        if(item.hasBounds && !aabbIntersectsClipFrustum(item.boundsMin, item.boundsMax, clipMatrix)) continue;
+        drawItems.push_back(&item);
+    }
+    if(filter == RenderFilter::Transparent){
+        std::sort(drawItems.begin(), drawItems.end(), [&](const RenderItem* a, const RenderItem* b){
+            Math3D::Vec3 centerA = a->model.getPosition();
+            Math3D::Vec3 centerB = b->model.getPosition();
+            if(a->hasBounds){
+                centerA = (a->boundsMin + a->boundsMax) * 0.5f;
+            }
+            if(b->hasBounds){
+                centerB = (b->boundsMin + b->boundsMax) * 0.5f;
+            }
+
+            const glm::vec4 viewCenterA = static_cast<glm::mat4>(viewMatrix) * static_cast<glm::vec4>(Math3D::Vec4(centerA, 1.0f));
+            const glm::vec4 viewCenterB = static_cast<glm::mat4>(viewMatrix) * static_cast<glm::vec4>(Math3D::Vec4(centerB, 1.0f));
+            const float depthA = -viewCenterA.z;
+            const float depthB = -viewCenterB.z;
+            if(std::abs(depthA - depthB) > 1e-4f){
+                return depthA > depthB;
+            }
+            if(a->enableBackfaceCulling != b->enableBackfaceCulling){
+                return a->enableBackfaceCulling > b->enableBackfaceCulling;
+            }
+            if(a->material.get() != b->material.get()){
+                return a->material.get() < b->material.get();
+            }
+            return a->mesh.get() < b->mesh.get();
+        });
+    }
     bool cullStateKnown = false;
     bool cullEnabled = true;
     std::shared_ptr<Material> lastBoundMaterial = nullptr;
-    for(const auto& item : snapshot.drawItems){
-        if(!item.mesh || !item.material) continue;
-
-        if(filter == RenderFilter::Opaque && item.isTransparent) continue;
-        if(filter == RenderFilter::Transparent && !item.isTransparent) continue;
-        if(skipDeferredCompatible && item.isDeferredCompatible) continue;
-        if(item.hasBounds && !aabbIntersectsClipFrustum(item.boundsMin, item.boundsMax, clipMatrix)) continue;
+    for(const RenderItem* itemPtr : drawItems){
+        if(!itemPtr){
+            continue;
+        }
+        const RenderItem& item = *itemPtr;
 
         if(!cullStateKnown || cullEnabled != item.enableBackfaceCulling){
             if(item.enableBackfaceCulling){
@@ -2980,11 +4110,93 @@ void Scene::drawModels3D(PCamera cam, RenderFilter filter, bool skipDeferredComp
             if(shader && shader->getID() != 0){
                 shader->setUniformFast("u_view", Uniform<Math3D::Mat4>(viewMatrix));
                 shader->setUniformFast("u_projection", Uniform<Math3D::Mat4>(projectionMatrix));
+                shader->setUniformFast("u_useSceneColor", Uniform<int>(hasTransparentSceneColor ? 1 : 0));
+                shader->setUniformFast("u_useSceneDepth", Uniform<int>(hasTransparentSceneDepth ? 1 : 0));
+                shader->setUniformFast("u_useSsr", Uniform<int>(useTransparentSsr ? 1 : 0));
+                shader->setUniformFast(
+                    "u_ssrColor",
+                    Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(transparentSsrColor, 8))
+                );
+                shader->setUniformFast(
+                    "u_sceneDepth",
+                    Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(transparentSceneDepth, 9))
+                );
+                shader->setUniformFast("u_ssrIntensity", Uniform<float>(transparentSsrIntensity));
+                shader->setUniformFast("u_ssrMaxDistance", Uniform<float>(transparentSsrMaxDistance));
+                shader->setUniformFast("u_ssrThickness", Uniform<float>(transparentSsrThickness));
+                shader->setUniformFast("u_ssrStride", Uniform<float>(transparentSsrStride));
+                shader->setUniformFast("u_ssrJitter", Uniform<float>(transparentSsrJitter));
+                shader->setUniformFast("u_ssrMaxSteps", Uniform<int>(transparentSsrMaxSteps));
+                shader->setUniformFast("u_ssrRoughnessCutoff", Uniform<float>(transparentSsrRoughnessCutoff));
+                shader->setUniformFast("u_ssrEdgeFade", Uniform<float>(transparentSsrEdgeFade));
+                shader->setUniformFast("u_invProjection", Uniform<Math3D::Mat4>(inverseProjectionMatrix));
+                shader->setUniformFast("u_useUserClipPlane", Uniform<int>(userClipPlaneActive ? 1 : 0));
+                shader->setUniformFast("u_userClipPlane", Uniform<Math3D::Vec4>(userClipPlane));
             }
         }
         if(shader && shader->getID() != 0){
             shader->setUniformFast("u_model", Uniform<Math3D::Mat4>(item.model));
+            shader->setUniformFast("u_useLocalProbe", Uniform<int>(hasLocalReflectionProbe ? 1 : 0));
+            shader->setUniformFast(
+                "u_localProbe",
+                Uniform<GLUniformUpload::CubeMapSlot>(GLUniformUpload::CubeMapSlot(
+                    hasLocalReflectionProbe ? deferredLocalReflectionProbe.cubeMap : nullptr,
+                    11
+                ))
+            );
+            shader->setUniformFast(
+                "u_localProbeCenter",
+                Uniform<Math3D::Vec3>(hasLocalReflectionProbe ? deferredLocalReflectionProbe.center : Math3D::Vec3(0.0f, 0.0f, 0.0f))
+            );
+            shader->setUniformFast(
+                "u_localProbeCaptureMin",
+                Uniform<Math3D::Vec3>(hasLocalReflectionProbe ? deferredLocalReflectionProbe.captureBoundsMin : Math3D::Vec3(0.0f, 0.0f, 0.0f))
+            );
+            shader->setUniformFast(
+                "u_localProbeCaptureMax",
+                Uniform<Math3D::Vec3>(hasLocalReflectionProbe ? deferredLocalReflectionProbe.captureBoundsMax : Math3D::Vec3(0.0f, 0.0f, 0.0f))
+            );
+            shader->setUniformFast(
+                "u_localProbeInfluenceMin",
+                Uniform<Math3D::Vec3>(hasLocalReflectionProbe ? deferredLocalReflectionProbe.influenceBoundsMin : Math3D::Vec3(0.0f, 0.0f, 0.0f))
+            );
+            shader->setUniformFast(
+                "u_localProbeInfluenceMax",
+                Uniform<Math3D::Vec3>(hasLocalReflectionProbe ? deferredLocalReflectionProbe.influenceBoundsMax : Math3D::Vec3(0.0f, 0.0f, 0.0f))
+            );
+            shader->setUniformFast("u_usePlanarReflection", Uniform<int>(hasPlanarReflection ? 1 : 0));
+            shader->setUniformFast(
+                "u_planarReflectionTex",
+                Uniform<GLUniformUpload::TextureSlot>(GLUniformUpload::TextureSlot(
+                    hasPlanarReflection ? activePlanarReflection.buffer->getTexture() : nullptr,
+                    10
+                ))
+            );
+            shader->setUniformFast(
+                "u_planarReflectionMatrix",
+                Uniform<Math3D::Mat4>(hasPlanarReflection ? activePlanarReflection.viewProjection : IDENTITY)
+            );
+            shader->setUniformFast(
+                "u_planarReflectionStrength",
+                Uniform<float>(hasPlanarReflection ? activePlanarReflection.strength : 1.0f)
+            );
+            shader->setUniformFast(
+                "u_planarReflectionCenter",
+                Uniform<Math3D::Vec3>(hasPlanarReflection ? activePlanarReflection.center : Math3D::Vec3(0.0f, 0.0f, 0.0f))
+            );
+            shader->setUniformFast(
+                "u_planarReflectionNormal",
+                Uniform<Math3D::Vec3>(hasPlanarReflection ? activePlanarReflection.normal : Math3D::Vec3(0.0f, 1.0f, 0.0f))
+            );
+            shader->setUniformFast(
+                "u_planarReflectionReceiverFadeDistance",
+                Uniform<float>(hasPlanarReflection ? activePlanarReflection.receiverFadeDistance : 1.0f)
+            );
         }
+
+        // The current transmissive shader solves a single screen-space composite.
+        // Drawing both front and back faces double-applies that composite and causes
+        // view-dependent opacity swings on closed glass meshes, so keep one stable pass.
         item.mesh->draw();
     }
 
@@ -3017,9 +4229,12 @@ void Scene::drawShadowsPass(){
 
 void Scene::drawSkybox(PCamera cam, bool depthTested){
     if(!cam) return;
-    auto screen = getMainScreen();
-    if(!screen) return;
-    auto env = screen->getEnvironment();
+    auto env = Screen::GetCurrentEnvironment();
+    if(!env){
+        auto screen = getMainScreen();
+        if(!screen) return;
+        env = screen->getEnvironment();
+    }
     if(env && env->getSkyBox()){
         env->getSkyBox()->draw(cam, depthTested);
     }
