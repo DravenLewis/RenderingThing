@@ -317,6 +317,11 @@ class Scene : public View {
             float strength = 1.0f;
             float receiverFadeDistance = 1.0f;
             bool valid = false;
+            Math3D::Vec3 lastCaptureCameraPosition = Math3D::Vec3(0.0f, 0.0f, 0.0f);
+            Math3D::Vec3 lastCaptureCameraForward = Math3D::Vec3(0.0f, 0.0f, -1.0f);
+            unsigned long long lastCaptureFrame = 0;
+            int captureWidth = 0;
+            int captureHeight = 0;
         };
         PlanarReflectionSurface activePlanarReflection{};
         bool userClipPlaneActive = false;
